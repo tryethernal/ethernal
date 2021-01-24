@@ -51,7 +51,7 @@
                         <input  v-if="!contract.artifact" type="file" ref="file" v-on:change="handleFileUpload()"/>
 
                         <div v-if="Object.keys(contract.dependencies).length" class="mb-1">
-                            <h5>This contract needs some dependencies:</h5>
+                            <h5>This contract has dependencies:</h5>
                         </div>
                     
                         <div v-for="(dep, key, idx) in contract.dependencies" :key="idx" class="mb-2">
