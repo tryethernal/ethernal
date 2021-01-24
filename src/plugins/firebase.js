@@ -19,7 +19,7 @@ export const dbPlugin = {
             collection: function(path) {
                 var networkId = store.getters.networkId;
                 var currentWorkspace = store.getters.currentWorkspace;
-                if (!currentUser() || !networkId || !currentWorkspace) return _db.collection(path);
+                if (!currentUser() || !networkId || !currentWorkspace) return;
                 return _db.collection('users')
                     .doc(currentUser().uid)
                     .collection('workspaces')
@@ -30,7 +30,7 @@ export const dbPlugin = {
             },
             settings: function() {
                 var currentWorkspace = store.getters.currentWorkspace;
-                if (!currentUser() || !currentWorkspace) return _db.collection('settings');
+                if (!currentUser() || !currentWorkspace) return;
                 return _db.collection('users')
                     .doc(currentUser().uid)
                     .collection('workspaces')
@@ -48,7 +48,7 @@ export const dbPlugin = {
                     .doc(currentUser().uid);
             },
             workspaces: function() {
-                if (!currentUser()) return  _db.collection('workspaces');
+                if (!currentUser()) return;
                 return _db.collection('users')
                     .doc(currentUser().uid)
                     .collection('workspaces')
@@ -76,6 +76,9 @@ export const dbPlugin = {
                     
                     if (snapshot.data().storageStructure)
                         Object.defineProperty(res, 'storageStructure', { value: JSON.parse(snapshot.data().storageStructure) })
+
+                    if (!snapshot.data().dependencies)
+                        Object.defineProperty(res, 'dependencies', { value: {} })
 
                     return res
                 }

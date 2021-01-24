@@ -165,7 +165,8 @@ export default {
                 else {
                     this.$store.dispatch('updateSettings', settingsQuery.data());
                     this.appBarComponent = 'rpc-connector';
-                    this.routerComponent = 'router-view';
+                    if (this.$store.getters.networkId !== null)
+                        this.routerComponent = 'router-view';
                 }
             });
         }

@@ -46,9 +46,22 @@
                 <h4>Truffle Artifact</h4>
                 <v-card outlined class="mb-4">
                     <v-card-subtitle v-if="!contract.artifact">Upload a Truffle artifact to read contract storage and interact with it.</v-card-subtitle>
-                    <v-card-subtitle v-if="contract.artifact">Truffle artifact has been loaded, but you can update it.</v-card-subtitle>
-                    <v-card-text>
+                    <v-card-subtitle v-if="contract.artifact">Artifact for contract "<b>{{ contract.artifact.contractName }}</b>" has been loaded.</v-card-subtitle>
+                    <v-card-text v-if="!contract.artifact || Object.keys(contract.dependencies).length">
                         <input type="file" ref="file" v-on:change="handleFileUpload()"/>
+
+                        <div v-if="Object.keys(contract.dependencies).length" class="mb-1">
+                            <h5>This contract needs some dependencies:</h5>
+                        </div>
+                    
+                        <div v-for="(dep, key, idx) in contract.dependencies" :key="idx" class="mb-2">
+                            <div v-if="!dep.artifact">
+                                Upload artifact for <b>{{ dep.name }}</b>: <input type="file" :ref="`file-${key}`" v-on:change="uploadArtifactDep(key)"/>
+                            </div>
+                            <div v-if="dep.artifact">
+                                Artifact for <b>{{ dep.name }}</b> has been uploaded.
+                            </div>
+                        </div>
                     </v-card-text>
                 </v-card>
 
@@ -208,7 +221,8 @@ export default {
     data: () => ({
         balance: 0,
         contract: {
-            storageStructure: {}
+            storageStructure: {},
+            dependencies: {}
         },
         jsonInterface: null,
         accounts: [],
@@ -282,9 +296,30 @@ export default {
             var fileReader = new FileReader();
             fileReader.onload = () => {
                 var artifact = fileReader.result;
-                this.db.collection('contracts').doc(this.hash).update({ artifact: artifact }).then(this.handleContractArtifact);
+                var parsedArtifact = JSON.parse(artifact);
+                var dependencies = {}
+                Object.entries(parsedArtifact.ast.exportedSymbols)
+                    .forEach(symbol => {
+                        if (symbol[0] != parsedArtifact.contractName) {
+                            dependencies[symbol[1][0]] = {
+                                name: symbol[0],
+                                artifact: null
+                            }
+                        }
+                    })
+                this.db.collection('contracts').doc(this.hash).update({ artifact: artifact, dependencies: dependencies }).then(this.handleContractArtifact);
             };
             fileReader.readAsText(this.$refs.file.files[0]);
+        },
+        uploadArtifactDep: function(dep_id) {
+            var fileReader = new FileReader();
+            fileReader.onload = () => {
+                var artifact = fileReader.result;
+                var updateHash = {}
+                updateHash[`dependencies.${dep_id}.artifact`] = artifact;
+                this.db.collection('contracts').doc(this.hash).update(updateHash).then(this.handleContractArtifact);
+            };
+            fileReader.readAsText(this.$refs[`file-${dep_id}`][0].files[0]);
         },
         getTransactionDirection(trx) {
             if (this.transactionsFrom.indexOf(trx) > -1) {
@@ -295,13 +330,15 @@ export default {
             }
         },
         updateStorageStructure: function() {
-            this.instanceDecoder.variables().then((res) => {
-                var storageStructure = {};
-                res.forEach(function(variable) {
-                    storageStructure[variable.name] = this.buildVariableStruct(variable);
-                }, this);
-                this.db.collection('contracts').doc(this.hash).update({ storageStructure: JSON.stringify(storageStructure) });
-            }); 
+            return new Promise((resolve) => {
+                this.instanceDecoder.variables().then((res) => {
+                    var storageStructure = {};
+                    res.forEach(function(variable) {
+                        storageStructure[variable.name] = this.buildVariableStruct(variable);
+                    }, this);
+                    this.db.collection('contracts').doc(this.hash).update({ storageStructure: JSON.stringify(storageStructure) }).then(resolve);
+                }); 
+            })
         },
         readVariables: function(transaction) {
             if (!this.instanceDecoder || !transaction) {
@@ -461,17 +498,26 @@ export default {
             this.jsonInterface = new ethers.utils.Interface(this.contract.artifact.abi);
             this.contractInstance = new this.web3.eth.Contract(this.contract.artifact.abi, this.hash);
             this.contract.artifact.web3 = this.web3;
-            Decoder.forContract(this.contract.artifact)
+            
+            for (const key in this.contract.dependencies) {
+               if (this.contract.dependencies[key].artifact === null)
+                    return;
+            }
+            this.decodeContract();
+        },
+        decodeContract: function() {
+            var dependencies = Object.entries(this.contract.dependencies).map(dep => JSON.parse(dep[1].artifact));
+            Decoder.forContract(this.contract.artifact, dependencies)
                 .then(decoder => decoder.forInstance()
                     .then(instanceDecoder => {
                         this.instanceDecoder = instanceDecoder;
                         if (!this.contract.storageStructure)
-                            this.updateStorageStructure();
-
-                        Object.entries(this.contract.storageStructure).map(entry => this.watchStorageStructure(entry[1]));
+                            this.updateStorageStructure().then(() => {
+                                Object.entries(this.contract.storageStructure).map(entry => this.watchStorageStructure(entry[1]));
+                            })
                     })
                 )
-        }
+        },
     },
     watch: {
         hash: {
