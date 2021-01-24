@@ -137,10 +137,9 @@
                                     outlined
                                     dense
                                     hide-details="auto"
-                                    class="pt-1"
+                                    class="py-1"
+                                    v-for="(input, inputIdx) in member.inputs" :key="inputIdx"
                                     @change="contractInputChanged(member.name, inputIdx, $event)"
-                                    v-for="(input, inputIdx) in member.inputs"
-                                    :key="inputIdx"
                                     :label="`${input.name || '<input>'}  (${input.type})`">
                                 </v-text-field>
                                 <div class="grey lighten-3 pa-2 mt-1" v-show="!!contractQueriesRes[member.signature]">
@@ -149,7 +148,20 @@
                                         {{ contractQueriesRes[member.signature] }}
                                     </span>
                                 </div>
-                                <v-btn depressed class="mt-1" color="primary" @click="queryWriteMethod(member)">Query</v-btn>
+                                <v-divider class="my-2"></v-divider>
+                                Eth to send:
+                                <div class="col-4 px-0 py-1">
+                                    <v-text-field
+                                        small
+                                        outlined
+                                        dense
+                                        v-model="queryValues[memberIdx]"
+                                        type="number"
+                                        hide-details="auto"
+                                        label="Value (in eth)">
+                                    </v-text-field>
+                                </div>
+                                <v-btn depressed class="mt-1" color="primary" @click="queryWriteMethod(member, queryValues[memberIdx])">Query</v-btn>
                             </v-col>
                         </v-row>
                     </v-card-text>
@@ -230,6 +242,7 @@ export default {
         contractInstance: null,
         contractMethodsParams: {},
         contractQueriesRes: {},
+        queryValues: {},
         callOptions: {
             from: null,
             gas: null,
@@ -479,8 +492,17 @@ export default {
                     this.$set(this.contractQueriesRes, member.signature, error);
                 })
         },
-        queryWriteMethod: function(member) {
-            this.contractInstance.methods[member.name](...(this.contractMethodsParams[member.name] || [])).send({ ...this.callOptions })
+        queryWriteMethod: function(member, value = 0) {
+            if (parseInt(value) == isNaN || value == '') {
+                value = 0;
+            }
+
+            var callOptions = {
+                ...this.callOptions,
+                value: this.web3.utils.toWei(value.toString(), 'ether')
+            };
+
+            this.contractInstance.methods[member.name](...(this.contractMethodsParams[member.name] || [])).send(JSON.parse(JSON.stringify(callOptions)))
                 .then(res => {
                     this.$set(this.contractQueriesRes, member.signature, res.transactionHash);
                 })
