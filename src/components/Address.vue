@@ -46,9 +46,9 @@
                 <h4>Truffle Artifact</h4>
                 <v-card outlined class="mb-4">
                     <v-card-subtitle v-if="!contract.artifact">Upload a Truffle artifact to read contract storage and interact with it.</v-card-subtitle>
-                    <v-card-subtitle v-if="contract.artifact">Artifact for contract "<b>{{ contract.artifact.contractName }}</b>" has been loaded.</v-card-subtitle>
+                    <v-card-subtitle v-if="contract.artifact">Artifact for contract "<b>{{ contract.artifact.contractName }}</b>" has been uploaded.</v-card-subtitle>
                     <v-card-text v-if="!contract.artifact || Object.keys(contract.dependencies).length">
-                        <input type="file" ref="file" v-on:change="handleFileUpload()"/>
+                        <input  v-if="!contract.artifact" type="file" ref="file" v-on:change="handleFileUpload()"/>
 
                         <div v-if="Object.keys(contract.dependencies).length" class="mb-1">
                             <h5>This contract needs some dependencies:</h5>
@@ -56,10 +56,10 @@
                     
                         <div v-for="(dep, key, idx) in contract.dependencies" :key="idx" class="mb-2">
                             <div v-if="!dep.artifact">
-                                Upload artifact for <b>{{ dep.name }}</b>: <input type="file" :ref="`file-${key}`" v-on:change="uploadArtifactDep(key)"/>
+                                Upload artifact for contract <b>{{ dep.name }}</b>: <input type="file" :ref="`file-${key}`" v-on:change="uploadArtifactDep(key)"/>
                             </div>
                             <div v-if="dep.artifact">
-                                Artifact for <b>{{ dep.name }}</b> has been uploaded.
+                                Artifact for contract <b>{{ dep.name }}</b> has been uploaded.
                             </div>
                         </div>
                     </v-card-text>
@@ -499,10 +499,10 @@ export default {
             this.contractInstance = new this.web3.eth.Contract(this.contract.artifact.abi, this.hash);
             this.contract.artifact.web3 = this.web3;
             
-            for (const key in this.contract.dependencies) {
-               if (this.contract.dependencies[key].artifact === null)
-                    return;
+            if (this.dependenciesNeded()) {
+                return;
             }
+
             this.decodeContract();
         },
         decodeContract: function() {
@@ -518,6 +518,13 @@ export default {
                     })
                 )
         },
+        dependenciesNeded: function() {
+            for (const key in this.contract.dependencies) {
+               if (this.contract.dependencies[key].artifact === null)
+                    return true;
+            }
+            return false;
+        }
     },
     watch: {
         hash: {
