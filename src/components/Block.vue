@@ -59,7 +59,7 @@
                         <div class="text-overline">
                             <strong>Value</strong>
                         </div>
-                        <div>{{ tx.value.toLocaleString() }}</div>
+                        <div>{{ tx.value.toLocaleString() | fromWei }}</div>
                     </v-col>
                 </v-row>
             </v-col>
@@ -70,12 +70,16 @@
 
 <script>
 import HashLink from './HashLink';
+import FromWei from '../filters/FromWei';
 
 export default {
     name: 'Block',
     props: ['number'],
     components: {
         HashLink
+    },
+    filters: {
+        FromWei
     },
     data: () => ({
         block: {

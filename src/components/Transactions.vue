@@ -22,6 +22,9 @@
             <template v-slot:item.fee="{ item }">
                 {{ item.gasPrice * item.gas | fromWei }}
             </template>
+            <template v-slot:item.value="{ item }">
+                {{ item.value | fromWei }}
+            </template>
         </v-data-table>
     </v-container>
 </template>
