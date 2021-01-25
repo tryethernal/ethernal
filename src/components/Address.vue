@@ -348,6 +348,7 @@ export default {
         updateStorageStructure: function() {
             return new Promise((resolve) => {
                 this.instanceDecoder.variables().then((res) => {
+                    console.log(res);
                     var storageStructure = {};
                     res.forEach(function(variable) {
                         storageStructure[variable.name] = this.buildVariableStruct(variable);
@@ -484,6 +485,7 @@ export default {
             if (struct.children) {
                 struct.children.forEach((child) => this.watchStorageStructure(child), this);
             }
+            console.log(struct.path)
             this.instanceDecoder.watchMappingKey(...struct.path);
         },
         queryReadMethod: function(member) {
@@ -536,10 +538,14 @@ export default {
                 .then(decoder => decoder.forInstance()
                     .then(instanceDecoder => {
                         this.instanceDecoder = instanceDecoder;
-                        if (!this.contract.storageStructure)
+                        if (!this.contract.storageStructure) {
                             this.updateStorageStructure().then(() => {
                                 Object.entries(this.contract.storageStructure).map(entry => this.watchStorageStructure(entry[1]));
                             })
+                        }
+                        else {
+                            Object.entries(this.contract.storageStructure).map(entry => this.watchStorageStructure(entry[1]));
+                        }
                     })
                 )
         },
