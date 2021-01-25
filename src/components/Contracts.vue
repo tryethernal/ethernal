@@ -7,9 +7,6 @@
             <template v-slot:item.address="{ item }">
                 <Hash-Link :type="'address'" :hash="item.address" />
             </template>
-            <template v-slot:item.balance="{ item }">
-                {{ item.balance | fromWei  }}
-            </template>
         </v-data-table>
     </v-container>
 </template>
@@ -31,6 +28,10 @@ export default {
             {
                 text: 'Address',
                 value: 'address'
+            },
+            {
+                text: 'Name',
+                value: 'name'
             }
         ]
     }),

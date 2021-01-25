@@ -320,7 +320,7 @@ export default {
                             }
                         }
                     })
-                this.db.collection('contracts').doc(this.hash).update({ artifact: artifact, dependencies: dependencies }).then(this.handleContractArtifact);
+                this.db.collection('contracts').doc(this.hash).update({ name: parsedArtifact.contractName, artifact: artifact, dependencies: dependencies }).then(this.handleContractArtifact);
             };
             fileReader.readAsText(this.$refs.file.files[0]);
         },
