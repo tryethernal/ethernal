@@ -4,7 +4,7 @@
             <v-list-item>
                 <v-list-item-content>
                     <v-list-item-title class="title">Ethernal</v-list-item-title>
-                    <v-list-item-subtitle>Beta</v-list-item-subtitle>
+                    <v-list-item-subtitle>Beta - v{{ version }}</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
 
@@ -94,6 +94,7 @@ export default {
         CreateWorkspaceModal
     },
     data: () => ({
+        version: process.env.VUE_APP_VERSION,
         userLoggedIn: null,
         routerComponent: Vue.component({
             template: '<v-container fluid>Loading...</v-container>'

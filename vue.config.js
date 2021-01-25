@@ -1,4 +1,5 @@
 const CopyPlugin = require("copy-webpack-plugin");
+process.env.VUE_APP_VERSION = process.env.COMMIT_REF.slice(-5);
 
 module.exports = {
     "transpileDependencies": [
