@@ -2,12 +2,12 @@
     <v-toolbar dense flat class="grey lighten-3 fixed">
         Workspace: {{ currentWorkspace }}
         <v-divider vertical inset class="mx-2"></v-divider>
-        <v-icon class="mr-1" small :color="connected ? 'green darken-2' : 'red darken-2'">mdi-checkbox-blank-circle</v-icon>
+        <v-icon class="mr-1" small :color="this.connected ? 'green darken-2' : 'red darken-2'">mdi-checkbox-blank-circle</v-icon>
         {{ connected ? `Connected to ${settings.rpcServer}` : 'Not connected' }}
         <v-divider vertical inset class="mx-2"></v-divider>
-        Network Id: {{ connected ? networkId : '/' }}
+        Network Id: {{ this.connected ? networkId : '/' }}
         <v-divider vertical inset class="mx-2"></v-divider>
-        Current Block: {{ connected ? currentBlock : '/' }}
+        Current Block: {{ this.connected ? currentBlock : '/' }}
     </v-toolbar>
 </template>
 
@@ -24,7 +24,6 @@ export default Vue.extend({
     name: 'RpcConnector',
     props: ['rpcServer'],
     data: () => ({
-        connected: false,
         web3: null
     }),
     created: function() {
@@ -45,10 +44,10 @@ export default Vue.extend({
         },
         disconnect: function() {
             this.web3.eth.clearSubscriptions();
-            this.connected = false;
+            this.$store.dispatch('updateConnected', false);
         },
         onConnected: function() {
-            this.connected = true;
+            this.$store.dispatch('updateConnected', true);
             this.db.collection('accounts').get().then(doc => {
                 if (doc.empty) {
                     this.web3.eth.getAccounts().then(accounts => {
@@ -65,7 +64,7 @@ export default Vue.extend({
         onError: function(error) {
             if (error)
                 console.log(error);
-            this.connected = false;
+            this.$store.dispatch('updateConnected', true);
             this.web3.eth.clearSubscriptions();
             setTimeout(this.connect, 5 * 1000);
         },
@@ -94,10 +93,13 @@ export default Vue.extend({
                 receipt: transactionReceipt,
                 timestamp: block.timestamp
             }
-            this.db.collection('transactions').doc(sTransaction.hash).set(txSynced);
-
-            bus.$emit(`tx-${transaction.to}`, txSynced);
-            bus.$emit(`tx-${transaction.from}`, txSynced);
+            this.db.collection('transactions')
+                .doc(sTransaction.hash)
+                .set(txSynced)
+                .then(() => {
+                    bus.$emit(`tx-${transaction.to}`, txSynced);
+                    bus.$emit(`tx-${transaction.from}`, txSynced);
+                })
 
             if (transaction.to === null) {
                 var contractAddress = transactionReceipt.contractAddress;
@@ -110,7 +112,8 @@ export default Vue.extend({
             'networkId',
             'settings',
             'currentBlock',
-            'currentWorkspace'
+            'currentWorkspace',
+            'connected'
         ])
     },
     updated: function(){

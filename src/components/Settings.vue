@@ -43,6 +43,11 @@
                             hide-details="auto"
                             label="Default Maximum Gas">
                         </v-text-field>
+
+                        <div justify="end">
+                            <v-btn v-show="!updating" depressed color="primary" class="mt-1" @click="update()">Update</v-btn>
+                            <v-btn v-show="updating" disabled depressed color="primary" class="mt-1" @click="update()"><v-icon>mdi-cached</v-icon>Updating...</v-btn>
+                        </div>
                     </v-card-text>
                 </v-card>
 
@@ -66,9 +71,6 @@
                         </v-data-table>
                     </v-card-text>
                 </v-card>
-
-                <v-btn v-show="!updating" depressed color="primary" class="mt-1" @click="update()">Update</v-btn>
-                <v-btn v-show="updating" disabled depressed color="primary" class="mt-1" @click="update()"><v-icon>mdi-cached</v-icon>Updating...</v-btn>
             </v-col>
         </v-row>
     </v-container>

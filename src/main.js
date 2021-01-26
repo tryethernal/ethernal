@@ -66,7 +66,9 @@ const store = new Vuex.Store({
             gasPrice: null,
             gas: null
         },
-        currentWorkspace: null
+        currentWorkspace: null,
+        connected: false,
+        buses: [],
     },
     mutations: {
         SET_USER(state, data) {
@@ -83,7 +85,11 @@ const store = new Vuex.Store({
         },
         SET_CURRENT_WORKSPACE(state, currentWorkspace) {
             state.currentWorkspace = currentWorkspace;
+        },
+        SET_CONNECTED(state, connected) {
+            state.connected = connected;
         }
+
     },
     actions: {
         updateUser({ commit }, user) {
@@ -105,6 +111,9 @@ const store = new Vuex.Store({
         },
         updateCurrentWorkspace({ commit }, currentWorkspace) {
             commit('SET_CURRENT_WORKSPACE', currentWorkspace);
+        },
+        updateConnected({ commit }, connected) {
+            commit('SET_CONNECTED', connected);
         }
     },
     getters: {
@@ -112,7 +121,8 @@ const store = new Vuex.Store({
         networkId: state => state.networkId,
         settings: state => state.settings,
         currentBlock: state => state.currentBlock,
-        currentWorkspace: state => state.currentWorkspace
+        currentWorkspace: state => state.currentWorkspace,
+        connected: state => state.connected
     }
 });
 

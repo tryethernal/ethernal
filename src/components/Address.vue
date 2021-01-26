@@ -184,8 +184,13 @@
                 </v-card>
 
                 <h4>Current Storage</h4>
-                <v-card outlined class="mb-4">
-                    <v-card-text v-if="transactionsTo[0]">
+                <v-card outlined class="mb-4" v-if="transactionsTo[0]">
+                    <v-card-subtitle>
+                        Txn: <Hash-Link :type="'address'" :hash="transactionsTo[0].hash" /> |
+                        Block: <router-link :to="'/block/' + transactionsTo[0].blockNumber">#{{ transactionsTo[0].blockNumber }}</router-link> | 
+                        Mined {{ transactionsTo[0].timestamp | moment('from') }}
+                    </v-card-subtitle>
+                    <v-card-text>
                         <pre>{{ transactionsTo[0].storage }}</pre>
                         <TransactionData class="mt-1" :jsonInterface="jsonInterface" :transaction="transactionsTo[0]" :key="transactionsTo[0].hash"  />
                     </v-card-text>
@@ -298,6 +303,7 @@ export default {
         this.web3 = new Web3(new Web3.providers.WebsocketProvider(this.settings.rpcServer));
         bus.$on(`tx-${this.hash}`, (tx) => {
             if (this.contract) {
+                console.log(tx)
                 this.readVariables(tx);
             }
             this.web3.eth.getBalance(this.hash).then(balance => this.balance = balance);
@@ -306,6 +312,9 @@ export default {
         this.callOptions.from = this.settings.defaultAccount;
         this.callOptions.gas = this.settings.gas;
         this.callOptions.gasPrice = this.settings.gasPrice;
+    },
+    beforeDestroy() {
+        bus.$off(`tx-${this.hash}`);
     },
     methods: {
         handleFileUpload: function() {
@@ -348,7 +357,6 @@ export default {
         updateStorageStructure: function() {
             return new Promise((resolve) => {
                 this.instanceDecoder.variables().then((res) => {
-                    console.log(res);
                     var storageStructure = {};
                     res.forEach(function(variable) {
                         storageStructure[variable.name] = this.buildVariableStruct(variable);
@@ -382,9 +390,36 @@ export default {
                     for (var i = 0; i < variable.value.value.length; i++) {
                         this.buildVariableTree(variable.value.value[i], tree[name]);
                     }
-                break;
+                    break;
+                case 'array':
+                    tree[name] = [];
+                    for (var j = 0; j < variable.value.value.length; j++) {
+                        tree[name].push(this.buildArrayChild(variable.value.value[j]))
+                    }
+                    break;
             }
             return tree;
+        },
+        buildArrayChild: function(variable) {
+            var res = '';
+            var base = variable.type ? variable : variable.value;
+
+            switch(base.type.typeClass) {
+                case 'uint':
+                    res = base.value.asBN.toString();
+                    break;
+                case 'address':
+                    res = base.value.asAddress;
+                    break;
+                case 'struct':
+                    res = {};
+                    for (var i = 0; i < base.value.length; i++) {
+                        res[base.value[i].name] = this.buildArrayChild(base.value[i]);
+                    }
+                    break;
+            }
+
+            return res;
         },
         buildVariableStruct: function(variable, path = []) {
             var label = '';
@@ -401,6 +436,10 @@ export default {
                     for (var i = 0; i < variable.value.value.length; i++) {
                         children.push(this.buildMappingChild(variable.value.value[i], [...path]))
                     }
+                    break;
+                case 'array':
+                    var baseType = variable.value.type.baseType;
+                    label = `${baseType.typeName ? baseType.typeName : baseType.typeHint}[ ] ${variable.name};`
                     break;
             }
             return {
@@ -485,7 +524,6 @@ export default {
             if (struct.children) {
                 struct.children.forEach((child) => this.watchStorageStructure(child), this);
             }
-            console.log(struct.path)
             this.instanceDecoder.watchMappingKey(...struct.path);
         },
         queryReadMethod: function(member) {
@@ -545,6 +583,7 @@ export default {
                         }
                         else {
                             Object.entries(this.contract.storageStructure).map(entry => this.watchStorageStructure(entry[1]));
+                            this.instanceDecoder.variables().then(console.log)
                         }
                     })
                 )
