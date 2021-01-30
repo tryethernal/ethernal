@@ -10,7 +10,7 @@
                         <v-text-field
                             outlined
                             disabled
-                            v-model="settings.rpcServer"
+                            v-model="currentWorkspace.rpcServer"
                             hide-details="auto"
                             label="RPC Server">
                         </v-text-field>
@@ -76,6 +76,7 @@
     </v-container>
 </template>
 <script>
+import { mapGetters } from 'vuex';
 import CreateWorkspaceModal from './CreateWorkspaceModal';
 
 export default {
@@ -98,22 +99,18 @@ export default {
                 value: 'actions'
             }
         ],
+        settings: {},
         workspaces: [],
         accounts: [],
         updating: false,
         updateSuccess: false,
         updateError: false,
-        settings: {
-            rpcServer: null,
-            defaultAccount: null,
-            gasPrice: null,
-            gas: null
-        }
     }),
     mounted: function() {
         this.$bind('workspaces', this.db.workspaces());
         this.$bind('settings', this.db.settings());
         this.$bind('accounts', this.db.collection('accounts'));
+        this.settings = this.currentWorkspace.settings;
     },
     methods: {
         update: function() {
@@ -123,7 +120,7 @@ export default {
             this.db.settings().update({settings: Object.fromEntries(Object.entries(this.settings).filter(([, v]) => v != null))})
                 .then(() => {
                     this.updateSuccess = true;
-                    this.$store.dispatch('updateSettings', this.settings);
+                    this.$store.dispatch('updateWorkspace', this.currentWorkspace);
                 })
                 .catch(() => this.updateError = true)
                 .finally(() => this.updating = false)
@@ -135,6 +132,11 @@ export default {
         switchWorkspace: function(workspace) {
             this.db.currentUser().update({ currentWorkspace: workspace.id }).then(() => document.location.reload() )
         }
+    },
+    computed: {
+        ...mapGetters([
+            'currentWorkspace'
+        ])
     }
 }
 </script>

@@ -1,13 +1,13 @@
 <template>
     <v-toolbar dense flat class="grey lighten-3 fixed">
-        Workspace: {{ currentWorkspace }}
+        Workspace: {{ currentWorkspace.name }}
         <v-divider vertical inset class="mx-2"></v-divider>
-        <v-icon class="mr-1" small :color="this.connected ? 'green darken-2' : 'red darken-2'">mdi-checkbox-blank-circle</v-icon>
-        {{ connected ? `Connected to ${settings.rpcServer}` : 'Not connected' }}
+        <v-icon class="mr-1" small :color="connected ? 'green darken-2' : 'red darken-2'">mdi-checkbox-blank-circle</v-icon>
+        {{ connected ? `Connected to ${currentWorkspace.rpcServer}` : 'Not connected' }}
         <v-divider vertical inset class="mx-2"></v-divider>
-        Network Id: {{ this.connected ? networkId : '/' }}
+        Network Id: {{ connected ? currentWorkspace.networkId : '/' }}
         <v-divider vertical inset class="mx-2"></v-divider>
-        Current Block: {{ this.connected ? currentBlock : '/' }}
+        Current Block: {{ connected ? currentBlock : '/' }}
     </v-toolbar>
 </template>
 
@@ -22,89 +22,43 @@ const Web3 = require('web3');
 
 export default Vue.extend({
     name: 'RpcConnector',
-    props: ['rpcServer'],
     data: () => ({
-        web3: null
+        web3: null,
+        connected: false
     }),
     created: function() {
         if (auth().currentUser) {
-            this.connect();
+            this.initWeb3();
         }
     },
     methods: {
+        initWeb3: function() {
+            this.web3 = new Web3(new Web3.providers.WebsocketProvider(this.currentWorkspace.rpcServer));
+            this.web3.eth.net.isListening()
+                .then(isListening => {
+                    if (isListening === true)
+                        this.connect();
+                    else
+                        setTimeout(this.initWeb3, 5 * 1000);
+                })
+                .catch(() => setTimeout(this.initWeb3, 5 * 1000));
+        },
         connect: function() {
-            this.web3 = new Web3(new Web3.providers.WebsocketProvider(this.settings.rpcServer));
-            this.web3.eth.net.getId().then(networkId => this.$store.dispatch('updateNetworkId', networkId));
             this.web3.eth.getBlockNumber().then(blockNumber => this.$store.dispatch('updateCurrentBlock', blockNumber));
             this.web3.eth.subscribe('newBlockHeaders')
-                .on('connected', this.onConnected)
-                .on('data', this.onNewBlock)
                 .on('error', this.onError);
+            this.web3.eth.getAccounts().then(accounts => accounts.forEach(this.syncAccount));
             bus.$on('syncAccount', this.syncAccount);
-        },
-        disconnect: function() {
-            this.web3.eth.clearSubscriptions();
-            this.$store.dispatch('updateConnected', false);
-        },
-        onConnected: function() {
-            this.$store.dispatch('updateConnected', true);
-            this.db.collection('accounts').get().then(doc => {
-                if (doc.empty) {
-                    this.web3.eth.getAccounts().then(accounts => {
-                        accounts.forEach(function(account) {
-                            this.db.collection('accounts').doc(account).set({ address: account, balance: '0' }).then(() => this.syncAccount(account));
-                        }, this);
-                    });
-                }
-                else {
-                    doc.forEach(account => this.syncAccount(account.id), this);
-                }
-            })
+            this.connected = true;
         },
         onError: function(error) {
             if (error)
                 console.log(error);
-            this.$store.dispatch('updateConnected', true);
-            this.web3.eth.clearSubscriptions();
-            setTimeout(this.connect, 5 * 1000);
-        },
-        onNewBlock: function(blockHeader, error) {
-            if (error)
-                return console.log(error);
-
-            this.web3.eth.getBlock(blockHeader.hash, true).then(this.syncBlock);
+            this.connected = false;
+            setTimeout(this.initWeb3, 5 * 1000);
         },
         syncAccount: function(account) {
-            this.web3.eth.getBalance(account).then(balance => this.db.collection('accounts').doc(account).update({ balance: balance }));
-        },
-        syncBlock: function(block) {
-            var sBlock = JSON.parse(JSON.stringify(block));
-            this.db.collection('blocks').doc(sBlock.number.toString()).set(sBlock);
-            this.$store.dispatch('updateCurrentBlock', block.number);
-
-            sBlock.transactions.forEach(transaction => {
-                this.web3.eth.getTransactionReceipt(transaction.hash).then(receipt => this.syncTransaction(sBlock, transaction, receipt));
-            }, this);
-        },
-        syncTransaction: function(block, transaction, transactionReceipt) {
-            var sTransaction = JSON.parse(JSON.stringify(transaction));
-            var txSynced = {
-                ...sTransaction,
-                receipt: transactionReceipt,
-                timestamp: block.timestamp
-            }
-            this.db.collection('transactions')
-                .doc(sTransaction.hash)
-                .set(txSynced)
-                .then(() => {
-                    bus.$emit(`tx-${transaction.to}`, txSynced);
-                    bus.$emit(`tx-${transaction.from}`, txSynced);
-                })
-
-            if (transaction.to === null) {
-                var contractAddress = transactionReceipt.contractAddress;
-                this.db.collection('contracts').doc(contractAddress).set({ address: contractAddress });
-            }
+            this.web3.eth.getBalance(account).then(balance => this.db.collection('accounts').doc(account).set({ balance: balance }));
         }
     },
     computed: {
@@ -112,15 +66,8 @@ export default Vue.extend({
             'networkId',
             'settings',
             'currentBlock',
-            'currentWorkspace',
-            'connected'
+            'currentWorkspace'
         ])
-    },
-    updated: function(){
-        this.connect();
-    },
-    beforeDestroy: function() {
-        this.disconnect();
-    },
+    }
 });
 </script>

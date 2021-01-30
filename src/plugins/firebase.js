@@ -17,19 +17,16 @@ export const dbPlugin = {
 
         Vue.prototype.db = {
             collection: function(path) {
-                var networkId = store.getters.networkId;
-                var currentWorkspace = store.getters.currentWorkspace;
-                if (!currentUser() || !networkId || !currentWorkspace) return;
+                var currentWorkspace = store.getters.currentWorkspace.name;
+                if (!currentUser() || !currentWorkspace) return;
                 return _db.collection('users')
                     .doc(currentUser().uid)
                     .collection('workspaces')
                     .doc(currentWorkspace)
-                    .collection('networks')
-                    .doc(networkId.toString())
                     .collection(path);
             },
             settings: function() {
-                var currentWorkspace = store.getters.currentWorkspace;
+                var currentWorkspace = store.getters.currentWorkspace.name;
                 if (!currentUser() || !currentWorkspace) return;
                 return _db.collection('users')
                     .doc(currentUser().uid)
@@ -56,8 +53,20 @@ export const dbPlugin = {
                         fromFirestore: function(snapshot, options) {
                             return {
                                 id: snapshot.id,
-                                rpcServer: snapshot.data(options).settings.rpcServer
+                                rpcServer: snapshot.data(options).rpcServer
                             };
+                        }
+                    })
+            },
+            getWorkspace: function(workspace) {
+                if (!currentUser() || !workspace) return;
+                return _db.collection('users')
+                    .doc(currentUser().uid)
+                    .collection('workspaces')
+                    .doc(workspace)
+                    .withConverter({
+                        fromFirestore: function(snapshot, options) {
+                            return Object.defineProperty(snapshot.data(options), 'name', { value: workspace })
                         }
                     })
             },

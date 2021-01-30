@@ -118,7 +118,7 @@ export default {
                     else {
                         this.db.workspaces().get().then(workspacesQuery => {
                             if (workspacesQuery.docs.length) {
-                                this.loadWorkspace(workspacesQuery.docs[0].id);
+                                this.loadWorkspace(workspacesQuery.docs[0]);
                             }
                             else {
                                 this.createWorkspace();
@@ -127,12 +127,9 @@ export default {
                     }
                 });
             }
-            if (mutation.type == 'SET_NETWORK_ID' && state.networkId !== null) {
-                this.routerComponent = 'router-view';
-                unsubscribe();
-            }
             if (mutation.type == 'SET_USER' && state.user == null) {
                 this.routerComponent = 'router-view';
+                unsubscribe();
             }
         })
     },
@@ -149,26 +146,11 @@ export default {
                     }
                 })
         },
-        loadWorkspace: function(workspace) {
-            this.$store.dispatch('updateCurrentWorkspace', workspace);
-            this.db.settings().get().then(settingsQuery => {
-                if (!settingsQuery.data()) {
-                    this.db.workspaces().limit(1).get().then(workspacesQuery => {
-                        if (!workspacesQuery.empty) {
-                            this.loadWorkspace(workspacesQuery.docs[0].id);
-                            this.db.currentUser().update({ currentWorkspace: workspacesQuery.docs[0].id });
-                        }
-                        else {
-                            this.createWorkspace();
-                        }
-                    });
-                }
-                else {
-                    this.$store.dispatch('updateSettings', settingsQuery.data());
-                    this.appBarComponent = 'rpc-connector';
-                    if (this.$store.getters.networkId !== null)
-                        this.routerComponent = 'router-view';
-                }
+        loadWorkspace: function(currentWorkspace) {
+            this.db.getWorkspace(currentWorkspace).get().then((workspace) => {
+                this.$store.dispatch('updateCurrentWorkspace', workspace.data());
+                this.appBarComponent = 'rpc-connector';
+                this.routerComponent = 'router-view';    
             });
         }
     }

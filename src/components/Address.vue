@@ -107,21 +107,9 @@
                 <h4>Read Methods</h4>
                 <v-card outlined class="mb-4">
                     <v-card-text v-if="contract.artifact">
-                        <v-row v-for="(member, memberIdx) in contractReadMethods" :key="memberIdx" class="pb-4">
+                        <v-row v-for="(method, methodIdx) in contractReadMethods" :key="methodIdx" class="pb-4">
                             <v-col cols="5">
-                                <div class="pb-1 font-weight-bold">{{ member.name }}</div>
-                                <v-text-field
-                                    outlined
-                                    dense
-                                    hide-details="auto"
-                                    @change="contractInputChanged(member.name, inputIdx, $event)"
-                                    v-for="(input, inputIdx) in member.inputs"
-                                    :key="inputIdx"
-                                    :label="`${input.name || '<input>'}  (${input.type})`">
-                                </v-text-field>
-                                <div>=> {{ member.outputs.map(output => output.type).join(', ') }}</div>
-                                <div class="grey lighten-3 pa-2" v-show="!!contractQueriesRes[member.signature]">{{ contractQueriesRes[member.signature] }}</div>
-                                <v-btn class="mt-1" depressed color="primary" @click="queryReadMethod(member)">Query</v-btn>
+                                <Contract-Read-Method :contract="contractInstance" :method="method" :options="callOptions" />
                             </v-col>
                         </v-row>
                     </v-card-text>
@@ -133,38 +121,9 @@
                 <h4>Write Methods</h4>
                 <v-card outlined class="mb-4">
                     <v-card-text v-if="contract.artifact">
-                        <v-row v-for="(member, memberIdx) in contractWriteMethods" :key="memberIdx" class="pb-4">
+                        <v-row v-for="(method, methodIdx) in contractWriteMethods" :key="methodIdx" class="pb-4">
                             <v-col cols="5">
-                                <div class="font-weight-bold">{{ member.name }}</div>
-                                <v-text-field
-                                    outlined
-                                    dense
-                                    hide-details="auto"
-                                    class="py-1"
-                                    v-for="(input, inputIdx) in member.inputs" :key="inputIdx"
-                                    @change="contractInputChanged(member.name, inputIdx, $event)"
-                                    :label="`${input.name || '<input>'}  (${input.type})`">
-                                </v-text-field>
-                                <div class="grey lighten-3 pa-2 mt-1" v-show="!!contractQueriesRes[member.signature]">
-                                    <a v-show="contractQueriesRes[member.signature] && contractQueriesRes[member.signature].startsWith('0x')" :href="`/transaction/${contractQueriesRes[member.signature]}`" target="_blank">See Transaction</a>
-                                    <span v-show="contractQueriesRes[member.signature] && !contractQueriesRes[member.signature].startsWith('0x')">
-                                        {{ contractQueriesRes[member.signature] }}
-                                    </span>
-                                </div>
-                                <v-divider class="my-2"></v-divider>
-                                Eth to send:
-                                <div class="col-4 px-0 py-1">
-                                    <v-text-field
-                                        small
-                                        outlined
-                                        dense
-                                        v-model="queryValues[memberIdx]"
-                                        type="number"
-                                        hide-details="auto"
-                                        label="Value (in eth)">
-                                    </v-text-field>
-                                </div>
-                                <v-btn depressed class="mt-1" color="primary" @click="queryWriteMethod(member, queryValues[memberIdx])">Query</v-btn>
+                                <Contract-Write-Method :contract="contractInstance" :method="method" :options="callOptions" />
                             </v-col>
                         </v-row>
                     </v-card-text>
@@ -189,6 +148,7 @@
                         Txn: <Hash-Link :type="'address'" :hash="transactionsTo[0].hash" /> |
                         Block: <router-link :to="'/block/' + transactionsTo[0].blockNumber">#{{ transactionsTo[0].blockNumber }}</router-link> | 
                         Mined {{ transactionsTo[0].timestamp | moment('from') }}
+                        <span  v-if="!transactionsTo[0].storage && instanceDecoder"> | <a @click.prevent="readVariables(transactionsTo[0], transactionsTo[0].blockNumber)">Read</a></span>
                     </v-card-subtitle>
                     <v-card-text>
                         <pre>{{ transactionsTo[0].storage }}</pre>
@@ -202,6 +162,7 @@
                         Txn: <Hash-Link :type="'address'" :hash="transaction.hash" /> |
                         Block: <router-link :to="'/block/' + transaction.blockNumber">#{{ transaction.blockNumber }}</router-link> | 
                         Mined {{ transaction.timestamp | moment('from') }}
+                        <span  v-if="!transaction.storage && instanceDecoder"> | <a @click.prevent="readVariables(transaction, transaction.blockNumber)">Read</a></span>
                     </v-card-subtitle>
                     <v-card-text>
                         <pre>{{ transaction.storage }}</pre>
@@ -220,11 +181,11 @@ const Decoder = require("@truffle/decoder");
 import { ethers } from 'ethers';
 import { mapGetters } from 'vuex';
 
-import { bus } from '../bus';
-
 import HashLink from './HashLink';
 import StorageStructure from './StorageStructure';
 import TransactionData from './TransactionData';
+import ContractReadMethod from './ContractReadMethod';
+import ContractWriteMethod from './ContractWriteMethod';
 import FromWei from '../filters/FromWei';
 
 export default {
@@ -233,7 +194,9 @@ export default {
     components: {
         HashLink,
         StorageStructure,
-        TransactionData
+        TransactionData,
+        ContractReadMethod,
+        ContractWriteMethod
     },
     filters: {
         FromWei
@@ -248,9 +211,6 @@ export default {
         accounts: [],
         web3: null,
         contractInstance: null,
-        contractMethodsParams: {},
-        contractQueriesRes: {},
-        queryValues: {},
         callOptions: {
             from: null,
             gas: null,
@@ -300,21 +260,11 @@ export default {
         ]
     }),
     created: function() {
-        this.web3 = new Web3(new Web3.providers.WebsocketProvider(this.settings.rpcServer));
-        bus.$on(`tx-${this.hash}`, (tx) => {
-            if (this.contract) {
-                console.log(tx)
-                this.readVariables(tx);
-            }
-            this.web3.eth.getBalance(this.hash).then(balance => this.balance = balance);
-        });
+        this.web3 = new Web3(new Web3.providers.WebsocketProvider(this.currentWorkspace.rpcServer));
         this.web3.eth.getBalance(this.hash).then(balance => this.balance = balance);
-        this.callOptions.from = this.settings.defaultAccount;
-        this.callOptions.gas = this.settings.gas;
-        this.callOptions.gasPrice = this.settings.gasPrice;
-    },
-    beforeDestroy() {
-        bus.$off(`tx-${this.hash}`);
+        this.callOptions.from = this.currentWorkspace.settings.defaultAccount;
+        this.callOptions.gas = this.currentWorkspace.settings.gas;
+        this.callOptions.gasPrice = this.currentWorkspace.settings.gasPrice;
     },
     methods: {
         handleFileUpload: function() {
@@ -365,11 +315,11 @@ export default {
                 }); 
             })
         },
-        readVariables: function(transaction) {
+        readVariables: function(transaction, blockNumber = 'latest') {
             if (!this.instanceDecoder || !transaction) {
                 return;
             }
-            this.instanceDecoder.variables().then((res) => {
+            this.instanceDecoder.variables(blockNumber).then((res) => {
                 var hist = {};
                 res.forEach(variable => Object.assign(hist, this.buildVariableTree(variable)));
                 this.db.collection('transactions')
@@ -526,39 +476,6 @@ export default {
             }
             this.instanceDecoder.watchMappingKey(...struct.path);
         },
-        queryReadMethod: function(member) {
-            this.contractInstance.methods[member.name](...(this.contractMethodsParams[member.name] || [])).call({ ...this.callOptions })
-                .then(res => {
-                    this.$set(this.contractQueriesRes, member.signature, res);
-                })
-                .catch(error => {
-                    this.$set(this.contractQueriesRes, member.signature, error);
-                })
-        },
-        queryWriteMethod: function(member, value = 0) {
-            if (parseInt(value) == isNaN || value == '') {
-                value = 0;
-            }
-
-            var callOptions = {
-                ...this.callOptions,
-                value: this.web3.utils.toWei(value.toString(), 'ether')
-            };
-
-            this.contractInstance.methods[member.name](...(this.contractMethodsParams[member.name] || [])).send(JSON.parse(JSON.stringify(callOptions)))
-                .then(res => {
-                    this.$set(this.contractQueriesRes, member.signature, res.transactionHash);
-                })
-                .catch(error => {
-                    this.$set(this.contractQueriesRes, member.signature, error.message);
-                })
-        },
-        contractInputChanged: function(name, memberIdx, value) {
-            if (!this.contractMethodsParams[name]) {
-                this.contractMethodsParams[name] = [];
-            }
-            this.contractMethodsParams[name][memberIdx] = value;
-        },
         handleContractArtifact: function() {
             this.jsonInterface = new ethers.utils.Interface(this.contract.artifact.abi);
             this.contractInstance = new this.web3.eth.Contract(this.contract.artifact.abi, this.hash);
@@ -583,7 +500,6 @@ export default {
                         }
                         else {
                             Object.entries(this.contract.storageStructure).map(entry => this.watchStorageStructure(entry[1]));
-                            this.instanceDecoder.variables().then(console.log)
                         }
                     })
                 )
@@ -603,20 +519,28 @@ export default {
                 this.$bind('accounts', this.db.collection('accounts'));
                 this.$bind('transactionsFrom', this.db.collection('transactions').where('from', '==', hash));
                 this.$bind('transactionsTo', this.db.collection('transactions').where('to', '==', hash).orderBy('blockNumber', 'desc'));
-                this.$bind('contract',
-                    this.db.collection('contracts').doc(hash), this.db.contractSerializer).then(() => {
-                        if (!this.contract || !this.contract.artifact) {
-                            return;
-                        }
-                        this.handleContractArtifact();
-                    })
+                this.$bind('contract', this.db.collection('contracts').doc(hash), this.db.contractSerializer).then(() => {
+                    if (!this.contract || !this.contract.artifact) {
+                        return;
+                    }
+                    this.handleContractArtifact();
+                    this.db.collection('transactions').where('to', '==', hash).onSnapshot((snapshot) => {
+                        snapshot.docChanges().forEach((change) => {
+                            if (change.type == 'added') {
+                                var tx = change.doc.data();
+                                if (!tx.storage) {
+                                    this.readVariables(tx, tx.blockNumber);
+                                }
+                            }
+                        })
+                    });
+                })
             }
         }
     },
     computed: {
         ...mapGetters([
-            'networkId',
-            'settings'
+            'currentWorkspace'
         ]),
         allTransactions: function() {
             return [...this.transactionsTo, ...this.transactionsFrom];

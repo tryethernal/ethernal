@@ -58,30 +58,25 @@ const router = new VueRouter({
 const store = new Vuex.Store({
     state: {
         user: null,
-        networkId: null,
         currentBlock: null,
-        settings: {
+        currentWorkspace: {
+            networkId: null,
             rpcServer: null,
-            defaultAccount: null,
-            gasPrice: null,
-            gas: null
+            name: null,
+            settings: {
+                defaultAccount: null,
+                gasPrice: null,
+                gas: null
+            },
         },
-        currentWorkspace: null,
-        connected: false,
-        buses: [],
+        connected: false
     },
     mutations: {
         SET_USER(state, data) {
             state.user = data;
         },
-        SET_NETWORK_ID(state, networkId) {
-            state.networkId = networkId;
-        },
         SET_CURRENT_BLOCK(state, newBlockNumber) {
             state.currentBlock = newBlockNumber;
-        },
-        SET_SETTINGS(state, settings) {
-            state.settings = settings;
         },
         SET_CURRENT_WORKSPACE(state, currentWorkspace) {
             state.currentWorkspace = currentWorkspace;
@@ -100,26 +95,19 @@ const store = new Vuex.Store({
                 commit('SET_USER', null);
             }
         },
-        updateNetworkId({ commit }, networkId) {
-            commit('SET_NETWORK_ID', networkId);
-        },
         updateCurrentBlock({ commit }, newBlockNumber) {
             commit('SET_CURRENT_BLOCK', newBlockNumber);
-        },
-        updateSettings({ commit }, settings) {
-            commit('SET_SETTINGS', settings);
         },
         updateCurrentWorkspace({ commit }, currentWorkspace) {
             commit('SET_CURRENT_WORKSPACE', currentWorkspace);
         },
         updateConnected({ commit }, connected) {
             commit('SET_CONNECTED', connected);
-        }
+        },
+
     },
     getters: {
         user: state => state.user,
-        networkId: state => state.networkId,
-        settings: state => state.settings,
         currentBlock: state => state.currentBlock,
         currentWorkspace: state => state.currentWorkspace,
         connected: state => state.connected

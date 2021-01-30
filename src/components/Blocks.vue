@@ -1,6 +1,5 @@
 <template>
     <v-container fluid>
-        <h2>Blocks</h2>
         <v-data-table
             loading="true"
             :items="blocks"
