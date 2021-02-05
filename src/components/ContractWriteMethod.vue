@@ -27,7 +27,7 @@
                 label="Value (in eth)">
             </v-text-field>
         </div>
-        <v-btn depressed class="mt-1" color="primary" @click="sendMethod(method)">Query</v-btn>
+        <v-btn :loading="loading" depressed class="mt-1" color="primary" @click="sendMethod(method)">Query</v-btn>
     </div>
 </template>
 <script>
@@ -43,11 +43,17 @@ export default {
             txHash: null,
             message: null
         },
-        web3: new Web3()
+        web3: new Web3(),
+        loading: false
     }),
     methods: {
         sendMethod: function(method) {
             try {
+                this.loading = true;
+                this.result = {
+                    txHash: null,
+                    message: null
+                };
                 var options = this.options;
                 options.value = this.value;
                 this.contract.methods[method.name](...Object.values(this.params)).send(options)
@@ -55,15 +61,31 @@ export default {
                         this.result.txHash = res.transactionHash;
                     })
                     .catch(error => {
-                        var txHash = Object.keys(error.data)[0];
-                        this.result = {
-                            txHash: txHash,
-                            message: `Error: ${error.data[txHash].error} (${error.data[txHash].reason})`
-                        };
+                        if (error.data) {
+                            var txHash = Object.keys(error.data)[0];
+                            this.result = {
+                                txHash: txHash,
+                                message: `Error: ${error.data[txHash].error} (${error.data[txHash].reason})`
+                            };
+                        }
+                        else if (error.message) {
+                            this.result.message = error.message;
+                        }
+                        else {
+                            this.result.message = 'Error while sending the transaction';
+                        }
+                    })
+                    .finally(() => {
+                        this.loading = false;
                     });
             } catch(error) {
-                console.log(error);
-                this.result = `Error: ${error.reason.split('(')[0]}`;
+                if (error.reason) {
+                    this.result.message = `Error: ${error.reason.split('(')[0]}`;
+                }
+                else {
+                    this.result.message = 'Error while sending the transaction.'
+                }
+                this.loading = false;
             }
         }
     },
