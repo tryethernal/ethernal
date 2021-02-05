@@ -1,44 +1,30 @@
 <template>
-    <div class="pa-2 grey lighten-3">
-        <div v-if="jsonInterface">
-            <div class="mb-2">
-                Function: {{ getSignatureFromFragment(parsedTransactionData.functionFragment) }}
-            </div>
-            Params:
-            <div v-for="(input, index) in parsedTransactionData.functionFragment.inputs" :key="index">
-                {{ input.name }}: {{ parsedTransactionData.args[index] }}
-            </div>
-        </div>
-        <div v-else>
-            <i>Upload contract artifact <router-link :to="`/address/${transaction.to}`">here</router-link> to read function data</i>
-        </div>
-    </div>
+    <v-card outlined>
+        <v-card-text>
+            <pre>{{ transaction.storage }}</pre>
+            <Transaction-Function-Call class="my-1" :jsonInterface="jsonInterface" :transaction="transaction"  />
+            <Transaction-Event v-for="(log, idx) in transaction.receipt.logs" :jsonInterface="jsonInterface" :log="log" :key="idx" />
+        </v-card-text>
+    </v-card>
 </template>
 <script>
+import { ethers } from 'ethers';
+
+import TransactionFunctionCall from './TransactionFunctionCall';
+import TransactionEvent from './TransactionEvent';
+
 export default {
     name: 'TransactionData',
-    props: ['jsonInterface', 'transaction'],
+    props: ['transaction', 'abi'],
+    components: {
+        TransactionFunctionCall,
+        TransactionEvent
+    },
     data: () => ({
-        parsedTransactionData: {
-            functionFragment: {
-                inputs: []
-            }
-        }
+        jsonInterface: null
     }),
     mounted: function() {
-        if (this.jsonInterface) {
-            this.parsedTransactionData = this.jsonInterface.parseTransaction({data: this.transaction.input, value: this.transaction.value});
-        }
-    },
-    watch: {
-        jsonInterface: function() {
-            this.parsedTransactionData = this.jsonInterface.parseTransaction({data: this.transaction.input, value: this.transaction.value});
-        }
-    },
-    methods: {
-        getSignatureFromFragment: function(fragment) {
-            return `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')'
-        }
+        this.jsonInterface = new ethers.utils.Interface(this.abi);
     }
 }
 </script>

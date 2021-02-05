@@ -2,7 +2,7 @@
     <div class="pa-2 grey lighten-3">
         <div v-if="jsonInterface">
             <div class="mb-2">
-                Name: {{ getSignatureFromFragment(parsedLog.eventFragment) }}
+                Event: {{ getSignatureFromFragment(parsedLog.eventFragment) }}
             </div>
             Data:
             <div v-for="(input, index) in parsedLog.eventFragment.inputs" :key="index">
@@ -10,13 +10,13 @@
             </div>
         </div>
         <div v-else>
-            <i>Upload contract artifact <router-link :to="`/address/${log.address}`">here</router-link> to read events data</i>
+            <i>Upload contract artifact <router-link :to="`/address/${log.address}`">here</router-link> to decode events data.</i>
         </div>
     </div>
 </template>
 <script>
 export default {
-    name: 'TransactionData',
+    name: 'TransactionEvent',
     props: ['jsonInterface', 'log'],
     data: () => ({
         parsedLog: {
@@ -26,8 +26,8 @@ export default {
         }
     }),
     watch: {
-        jsonInterface: function() {
-            this.parsedLog = this.jsonInterface.parseLog(this.log);    
+        jsonInterface: function(jsonInterface) {
+            this.parsedLog = jsonInterface.parseLog(this.log);
         }
     },
     methods: {

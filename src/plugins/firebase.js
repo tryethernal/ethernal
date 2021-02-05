@@ -83,8 +83,8 @@ export const dbPlugin = {
                     if (snapshot.data().artifact)
                         Object.defineProperty(res, 'artifact', { value: JSON.parse(snapshot.data().artifact) })
                     
-                    if (snapshot.data().storageStructure)
-                        Object.defineProperty(res, 'storageStructure', { value: JSON.parse(snapshot.data().storageStructure) })
+                    if (snapshot.data().watchedPaths)
+                        Object.defineProperty(res, 'watchedPaths', { value: JSON.parse(snapshot.data().watchedPaths) })
 
                     if (!snapshot.data().dependencies)
                         Object.defineProperty(res, 'dependencies', { value: {} })

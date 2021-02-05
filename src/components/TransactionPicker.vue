@@ -1,0 +1,48 @@
+<template>
+    <v-card outlined>
+        <v-card-text v-if="transactions.length">
+            <v-list three-line>
+                <v-list-item-group @change="selectedTransactionChanged" :value="selectedTransaction" active-class="primary--text">
+                    <template v-for="(transaction, index) in transactions">
+                        <v-list-item :key="transaction.hash" :value="transaction">
+                            <v-list-item-content>
+                                <v-list-item-title v-text="`${transaction.hash.slice(0, 15)}...`"></v-list-item-title>
+                                <v-list-item-subtitle>
+                                    {{ transaction.timestamp | moment('MM/DD hh:mm:ss') }} |
+                                    {{ transaction.blockNumber }}
+                                </v-list-item-subtitle>
+                                <v-list-item-subtitle>
+                                    {{ transaction.functionSignature }}
+                                </v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-divider v-if="index < transactions.length - 1" :key="index"></v-divider>
+                    </template>
+                </v-list-item-group>
+            </v-list>
+        </v-card-text>
+        <v-card-text v-else>
+            <i>No transactions here yet.</i>
+        </v-card-text>
+    </v-card>
+</template>
+<script>
+export default {
+    name: 'TransactionPicker',
+    props: ['transactions'],
+    data: () => ({
+        selectedTransaction: {}
+    }),
+    mounted: function() {
+        this.selectedTransaction = this.transactions[0];
+        this.selectedTransactionChanged(this.selectedTransaction);
+    },
+    methods: {
+        selectedTransactionChanged: function(transaction) {
+            if (transaction) {
+                this.$emit('selectedTransactionChanged', transaction);
+            }
+        }
+    }
+}
+</script>

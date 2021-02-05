@@ -23,12 +23,12 @@ export default {
                 .open({ variableIndex: structIndex })
                 .then(res => {
                     if (res) {
-                        this.addStorageStructureChild(null, res.variableIndex, res.key);
+                        this.addStorageStructureChild(this.storage, res.variableIndex, res.key);
                     }
                 });
         },
         addStorageStructureChild: function(storage, idx, key) {
-            this.$emit('addStorageStructureChild', this.storage, idx, key);
+            this.$emit('addStorageStructureChild', storage, idx, key);
         }
     }
 };
