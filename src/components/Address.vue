@@ -269,7 +269,7 @@ export default {
             if (this.dependenciesNeded()) return;
 
             var dependenciesArtifacts = Object.entries(this.contract.dependencies).map(dep => JSON.parse(dep[1].artifact));
-            Decoder.forDeployedArtifact(this.contract.artifact, this.web3, dependenciesArtifacts)
+            Decoder.forArtifactAt(this.contract.artifact, this.web3, this.contract.address, dependenciesArtifacts)
                 .then(instanceDecoder => {
                     this.storage = new Storage(instanceDecoder);
                     this.storage.buildStructure().then(() => this.storage.watch(this.contract.watchedPaths));
