@@ -1,3 +1,5 @@
+import LogRocket from 'logrocket';
+
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Vuex from 'vuex';
@@ -121,10 +123,16 @@ new Vue({
     router,
     store: store,
     mounted: function() {
+        if (process.env.NODE_ENV == 'production')
+            LogRocket.init('lqunne/ethernal');
+
         auth().onAuthStateChanged(this.authStateChanged);
     },
     methods: {
         authStateChanged: function(user) {
+            if (process.env.NODE_ENV == 'production')
+                LogRocket.identify(user.uid, email: user.email);
+            
             var currentPath = this.$router.currentRoute.path;
             store.dispatch('updateUser', user);            
             if (currentPath != '/auth' && !user) {

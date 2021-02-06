@@ -21,6 +21,7 @@
     "ethers": "^5.0.24",
     "firebase": "^8.2.1",
     "firebaseui": "^4.7.1",
+    "logrocket": "^1.0.14",
     "vue": "^2.6.11",
     "vue-moment": "^4.1.0",
     "vue-router": "^3.4.9",
