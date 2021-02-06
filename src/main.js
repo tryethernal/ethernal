@@ -130,7 +130,7 @@ new Vue({
     },
     methods: {
         authStateChanged: function(user) {
-            if (process.env.NODE_ENV == 'production')
+            if (process.env.NODE_ENV == 'production' && user)
                 LogRocket.identify(user.uid, { email: user.email });
 
             var currentPath = this.$router.currentRoute.path;
