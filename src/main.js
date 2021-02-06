@@ -123,6 +123,7 @@ new Vue({
     router,
     store: store,
     mounted: function() {
+        console.log(process.env.NODE_ENV);
         if (process.env.NODE_ENV == 'production')
             LogRocket.init('lqunne/ethernal');
 
