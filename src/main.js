@@ -131,8 +131,8 @@ new Vue({
     methods: {
         authStateChanged: function(user) {
             if (process.env.NODE_ENV == 'production')
-                LogRocket.identify(user.uid, email: user.email);
-            
+                LogRocket.identify(user.uid, { email: user.email });
+
             var currentPath = this.$router.currentRoute.path;
             store.dispatch('updateUser', user);            
             if (currentPath != '/auth' && !user) {
