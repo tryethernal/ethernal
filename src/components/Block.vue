@@ -21,62 +21,30 @@
                 {{ block.hash }}
             </v-col>
         </v-row>
-        <h3>Transactions</h3>
-        <v-row class="my-2 grey lighten-3" v-for="tx in transactions" :key="tx.hash">
-            <v-col cols="12">
-                <v-row>
-                    <v-col>
-                        <div class="text-overline">
-                            <strong>Tx Hash</strong>
-                        </div>
-                        <div>
-                            <Hash-Link :type="'transaction'" :hash="tx.hash" :fullHash="true" />
-                        </div>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="4">
-                        <div class="text-overline">
-                            <strong>From</strong>
-                        </div>
-                        <div><Hash-Link :type="'address'" :hash="tx.from" :fullHash="true" /></div>
-                    </v-col>
-                    <v-col cols="4">
-                        <div class="text-overline">
-                            <strong>To</strong>
-                        </div>
-                        <div><Hash-Link :type="'address'" :hash="tx.to" :fullHash="true" /></div>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="2">
-                        <div class="text-overline">
-                            <strong>Gas Used</strong>
-                        </div>
-                        <div>{{ tx.receipt.gasUsed.toLocaleString() }}</div>
-                    </v-col>
-                    <v-col cols="2">
-                        <div class="text-overline">
-                            <strong>Value</strong>
-                        </div>
-                        <div>{{ tx.value.toLocaleString() | fromWei }}</div>
-                    </v-col>
-                </v-row>
+        <v-row>
+            <v-col cols="3">
+                <h4>Transactions</h4>
+                <Transaction-Picker :transactions="transactions" @selectedTransactionChanged="selectedTransactionChanged" />
             </v-col>
-            <v-divider></v-divider>
+            <v-col cols="9">
+                <h4>Data</h4>
+                <Transaction-Data v-if="selectedTransaction.hash" :transactionHash="selectedTransaction.hash" :abi="contract.artifact.abi" :key="selectedTransaction.hash" />
+            </v-col>
         </v-row>
     </v-container>
 </template>
 
 <script>
-import HashLink from './HashLink';
+import TransactionPicker from './TransactionPicker';
+import TransactionData from './TransactionData';
 import FromWei from '../filters/FromWei';
 
 export default {
     name: 'Block',
     props: ['number'],
     components: {
-        HashLink
+        TransactionPicker,
+        TransactionData
     },
     filters: {
         FromWei
@@ -85,8 +53,21 @@ export default {
         block: {
             gasLimit: 0
         },
-        transactions: []
+        transactions: [],
+        selectedTransaction: {},
+        contract: {
+            abi: {}
+        }
     }),
+    methods: {
+        selectedTransactionChanged: function(transaction) {
+            if (transaction.to) {
+                this.$bind('contract', this.db.collection('contracts').doc(transaction.to), this.db.contractSerializer).then(() => {
+                    this.selectedTransaction = transaction;
+                })
+            }
+        },
+    },
     watch: {
         number: {
             immediate: true,

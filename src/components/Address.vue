@@ -128,7 +128,7 @@
                     </v-col>
                     <v-col cols="9">
                         <h4>Data</h4>
-                        <Transaction-Data v-if="selectedTransaction.hash" :transaction="selectedTransaction" :abi="contract.artifact.abi" :key="selectedTransaction.hash" />
+                        <Transaction-Data v-if="selectedTransaction.hash" :transactionHash="selectedTransaction.hash" :abi="contract.artifact.abi" :key="selectedTransaction.hash" />
                     </v-col>
                 </v-row>
             </v-tab-item>

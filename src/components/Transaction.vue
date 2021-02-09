@@ -40,17 +40,10 @@
             </v-col>
         </v-row>
 
-        <v-row class="my-2">
+        <v-row class="my-2" v-if="contract && contract.artifact">
             <v-col>
                 <h3>Data</h3>
-                <Transaction-Data :jsonInterface="jsonInterface" :transaction="transaction" />
-            </v-col>
-        </v-row>
-
-        <v-row class="my-2">
-            <v-col>
-                <h3>Events</h3>
-                <Transaction-Event v-for="(log, idx) in transaction.receipt.logs" :jsonInterface="jsonInterface" :log="log" :key="idx" />
+                <Transaction-Data :abi="contract.artifact.abi" :transactionHash="transaction.hash" />
             </v-col>
         </v-row>
     </v-container>
@@ -59,10 +52,7 @@
 <script>
 import HashLink from './HashLink';
 import TransactionData from './TransactionData';
-import TransactionEvent from './TransactionEvent';
 import FromWei from '../filters/FromWei';
-
-import { ethers } from 'ethers';
 
 export default {
     name: 'Transaction',
@@ -70,7 +60,6 @@ export default {
     components: {
         HashLink,
         TransactionData,
-        TransactionEvent
     },
     filters: {
         FromWei
@@ -100,8 +89,9 @@ export default {
         },
         transaction: function(transaction) {
             this.$bind('block', this.db.collection('blocks').doc(transaction.blockNumber.toString()));
-            this.$bind('contract', this.db.collection('contracts').doc(transaction.to.toString()), this.db.contractSerializer)
-                .then(() => this.jsonInterface = new ethers.utils.Interface(this.contract.artifact.abi))
+            if (transaction.to) {
+                this.$bind('contract', this.db.collection('contracts').doc(transaction.to.toString()), this.db.contractSerializer);
+            }
         }
     }
 }

@@ -62,11 +62,16 @@ export default {
                     })
                     .catch(error => {
                         if (error.data) {
-                            var txHash = Object.keys(error.data)[0];
-                            this.result = {
-                                txHash: txHash,
-                                message: `Error: ${error.data[txHash].error} (${error.data[txHash].reason})`
-                            };
+                            if (error.data.stack) {
+                                this.result.message = error.data.stack.split('\n')[0];
+                            }
+                            else {
+                                var txHash = Object.keys(error.data)[0];
+                                this.result = {
+                                    txHash: txHash,
+                                    message: `Error: ${error.data[txHash].error} (${error.data[txHash].reason})`
+                                };
+                            }
                         }
                         else if (error.message) {
                             this.result.message = error.message;

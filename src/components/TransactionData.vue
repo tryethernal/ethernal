@@ -15,16 +15,22 @@ import TransactionEvent from './TransactionEvent';
 
 export default {
     name: 'TransactionData',
-    props: ['transaction', 'abi'],
+    props: ['transactionHash', 'abi'],
     components: {
         TransactionFunctionCall,
         TransactionEvent
     },
     data: () => ({
-        jsonInterface: null
+        keyStorage: 0,
+        jsonInterface: null,
+        transaction: {
+            receipt: {}
+        }
     }),
     mounted: function() {
-        this.jsonInterface = new ethers.utils.Interface(this.abi);
+        this.$bind('transaction', this.db.collection('transactions').doc(this.transactionHash)).then(() => {
+            this.jsonInterface = new ethers.utils.Interface(this.abi);
+        })
     }
 }
 </script>
