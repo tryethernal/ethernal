@@ -1,11 +1,13 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
+import 'firebase/database';
 
 import { FIREBASE_CONFIG } from '../config/firebase.js';
 
 const app = firebase.initializeApp(FIREBASE_CONFIG);
 const _db = app.firestore();
+const _rtdb = firebase.database();
 
 export const dbPlugin = {
     install(Vue, options) {
@@ -16,6 +18,11 @@ export const dbPlugin = {
         };
 
         Vue.prototype.db = {
+            contractStorage(contractAddress) {
+                var currentWorkspace = store.getters.currentWorkspace.name;
+                if (!currentUser() || !currentWorkspace) return;
+                return _rtdb.ref(`/users/${currentUser().uid}/workspaces/${currentWorkspace}/contracts/${contractAddress}`);
+            },
             collection: function(path) {
                 var currentWorkspace = store.getters.currentWorkspace.name;
                 if (!currentUser() || !currentWorkspace) return;
@@ -76,21 +83,15 @@ export const dbPlugin = {
                     .doc(id)
                     .set({ currentWorkspace: '' });
             },
-            contractSerializer: {
-                serialize: snapshot => {
-                    var res = snapshot.data();
-                    
-                    if (snapshot.data().artifact)
-                        Object.defineProperty(res, 'artifact', { value: JSON.parse(snapshot.data().artifact) })
-                    
-                    if (snapshot.data().watchedPaths)
-                        Object.defineProperty(res, 'watchedPaths', { value: JSON.parse(snapshot.data().watchedPaths) })
+            contractSerializer: snapshot => {
+                var res = snapshot.data();
+                
+                if (snapshot.data().watchedPaths)
+                    Object.defineProperty(res, 'watchedPaths', { value: JSON.parse(snapshot.data().watchedPaths) })
 
-                    if (!snapshot.data().dependencies)
-                        Object.defineProperty(res, 'dependencies', { value: {} })
+                Object.defineProperty(res, 'dependencies', { value: {} })
 
-                    return res
-                }
+                return res;
             }
         };
     }

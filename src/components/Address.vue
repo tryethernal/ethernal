@@ -47,7 +47,28 @@
 
             <v-tab-item v-if="contract">
                 <h4>Artifact</h4>
-                <Artifact-Uploader :contract="contract" :web3="web3" />
+                <v-card outlined class="mb-4">
+                    <v-card-text v-if="contract.artifact">
+                        <div class="mb-2">Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded.</div>
+                        <div v-if="Object.keys(contract.dependencies).length" class="mb-1">
+                            <h5>This contract has dependencies:</h5>
+                        </div>
+                    
+                        <div v-for="(dep, key, idx) in contract.dependencies" :key="idx" class="mb-2">
+                            <div v-if="!dep.artifact">
+                                Upload artifact for contract <b>{{ dep.name }}</b>
+                            </div>
+                            <div v-else>
+                                Artifact for contract <b>{{ key }}</b> has been uploaded.
+                            </div>
+                        </div>
+                    </v-card-text>
+                    <v-card-text v-else>
+                        <i>Upload an artifact to read contract storage and interact with it.</i><br />
+                        For Truffle projects, use our <a href="https://www.npmjs.com/package/ethernal" target="_blank">CLI</a>.<br />
+                        For Hardhat project, use our <a href="https://github.com/antoinedc/hardhat-ethernal" target="_blank">plugin</a>.<br />
+                    </v-card-text>
+                </v-card>
 
                 <h4>Call Options</h4>
                 <v-card outlined class="mb-4">
@@ -128,7 +149,7 @@
                     </v-col>
                     <v-col cols="9">
                         <h4>Data</h4>
-                        <Transaction-Data v-if="selectedTransaction.hash" :transactionHash="selectedTransaction.hash" :abi="contract.artifact.abi" :key="selectedTransaction.hash" />
+                        <Transaction-Data v-if="selectedTransaction.hash" :transactionHash="selectedTransaction.hash" :abi="contract.abi" :key="selectedTransaction.hash" />
                     </v-col>
                 </v-row>
             </v-tab-item>
@@ -149,7 +170,6 @@ import TransactionPicker from './TransactionPicker';
 import TransactionData from './TransactionData';
 import ContractReadMethod from './ContractReadMethod';
 import ContractWriteMethod from './ContractWriteMethod';
-import ArtifactUploader from './ArtifactUploader';
 import FromWei from '../filters/FromWei';
 
 export default {
@@ -162,7 +182,6 @@ export default {
         TransactionData,
         ContractReadMethod,
         ContractWriteMethod,
-        ArtifactUploader
     },
     filters: {
         FromWei
@@ -265,12 +284,13 @@ export default {
             });
         },
         decodeContract: function() {
-            this.contractInstance = new this.web3.eth.Contract(this.contract.artifact.abi, this.hash);
+            
             if (this.dependenciesNeded()) return;
 
             var dependenciesArtifacts = Object.entries(this.contract.dependencies).map(dep => JSON.parse(dep[1].artifact));
-            Decoder.forArtifactAt(this.contract.artifact, this.web3, this.contract.address, dependenciesArtifacts)
+            Decoder.forArtifactAt(JSON.parse(this.contract.artifact), this.web3, this.contract.address, dependenciesArtifacts)
                 .then(instanceDecoder => {
+                    this.contractInstance = new this.web3.eth.Contract(this.contract.abi, this.hash);
                     this.storage = new Storage(instanceDecoder);
                     this.storage.buildStructure().then(() => this.storage.watch(this.contract.watchedPaths));
                 });
@@ -290,10 +310,22 @@ export default {
                 this.$bind('accounts', this.db.collection('accounts'));
                 this.$bind('transactionsFrom', this.db.collection('transactions').where('from', '==', hash));
                 this.$bind('transactionsTo', this.db.collection('transactions').where('to', '==', hash).orderBy('blockNumber', 'desc'));
-                this.$bind('contract', this.db.collection('contracts').doc(hash), this.db.contractSerializer).then(() => {
-                    if (this.contract && this.contract.artifact) {
-                        this.decodeContract();
+                this.db.collection('contracts').doc(hash).withConverter({ fromFirestore: this.db.contractSerializer }).get().then((doc) => {
+                    if (!doc.exists) {
+                        return;
                     }
+                    this.contract = doc.data();
+                    this.db.contractStorage(hash).once('value', (snapshot) => {
+                        if (snapshot.val()) {
+                            this.contract.artifact = snapshot.val().artifact;
+                            Object.entries(snapshot.val().dependencies).map((dep) => {
+                                this.contract.dependencies[dep[0]] = {
+                                    artifact: dep[1]
+                                }
+                            });
+                            this.decodeContract();
+                        }
+                    });
                 })
             }
         }
@@ -306,16 +338,16 @@ export default {
             return [...this.transactionsTo, ...this.transactionsFrom];
         },
         contractReadMethods: function() {
-            if (!this.contract.artifact) {
+            if (!this.contract.abi) {
                 return [];
             }
-            return this.contract.artifact.abi.filter(member => member.type == 'function' && member.stateMutability == 'view');
+            return this.contract.abi.filter(member => member.type == 'function' && member.stateMutability == 'view');
         },
         contractWriteMethods: function() {
-            if (!this.contract.artifact) {
+            if (!this.contract.abi) {
                 return [];
             }
-            return this.contract.artifact.abi.filter(member => member.type == 'function' && member.stateMutability != 'view');
+            return this.contract.abi.filter(member => member.type == 'function' && member.stateMutability != 'view');
         }
     }
 }

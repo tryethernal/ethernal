@@ -8,6 +8,9 @@ var DataNode = class DataNode {
             case 'uint':
                 tree[this.name] = variable.value.value.asBN.toString();
                 break;
+            case 'string':
+                tree[this.name] = variable.value.value.asString;
+                break;
             case 'mapping':
                 if (!tree.name) {
                     tree[this.name] = {}
@@ -123,6 +126,9 @@ var StructureNode = class StructureNode {
 
         switch(variable.value.type.typeClass) {
             case 'uint':
+                this.label = `${variable.value.type.typeHint} ${variable.name};`;
+                break;
+            case 'string':
                 this.label = `${variable.value.type.typeHint} ${variable.name};`;
                 break;
             case 'mapping':
