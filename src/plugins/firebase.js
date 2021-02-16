@@ -42,7 +42,7 @@ export const dbPlugin = {
                     .withConverter({
                         fromFirestore: function(snapshot, options) {
                             const data = snapshot.data(options);
-                            return data.settings;
+                            return data.settings ? data.settings : {};
                         }
                     })
             },

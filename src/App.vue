@@ -69,7 +69,7 @@
             </template>
         </v-navigation-drawer>
 
-        <Create-Workspace-Modal ref="createWorkspaceModal" />
+        <Onboarding-Modal ref="onboardingModal" />
 
         <v-app-bar app dense fixed flat v-if="userLoggedIn" color="grey lighten-3">
             <component :is="appBarComponent"></component>
@@ -85,13 +85,13 @@
 import Vue from 'vue';
 import { auth } from './plugins/firebase';
 import RpcConnector from './components/RpcConnector';
-import CreateWorkspaceModal from './components/CreateWorkspaceModal';
+import OnboardingModal from './components/OnboardingModal';
 
 export default {
     name: 'App',
     components: {
         RpcConnector,
-        CreateWorkspaceModal
+        OnboardingModal
     },
     data: () => ({
         version: process.env.VUE_APP_VERSION,
@@ -110,7 +110,7 @@ export default {
                 this.db.currentUser().get().then(currentUserQuery => {
                     var currentUser = currentUserQuery.data();
                     if (!currentUser) {
-                        this.db.createUser(auth().currentUser.uid).then(this.createWorkspace);
+                        this.db.createUser(auth().currentUser.uid).then(this.launchOnboarding);
                     }
                     else if (currentUser.currentWorkspace) {
                         this.loadWorkspace(currentUser.currentWorkspace);
@@ -118,10 +118,10 @@ export default {
                     else {
                         this.db.workspaces().get().then(workspacesQuery => {
                             if (workspacesQuery.docs.length) {
-                                this.loadWorkspace(workspacesQuery.docs[0]);
+                                this.loadWorkspace(workspacesQuery.docs[0].id);
                             }
                             else {
-                                this.createWorkspace();
+                                this.launchOnboarding();
                             }
                         });
                     }
@@ -138,8 +138,8 @@ export default {
             this.userLoggedIn = false;
             auth().signOut();
         },
-        createWorkspace: function() {
-            this.$refs.createWorkspaceModal.open({ workspaces: [] })
+        launchOnboarding: function() {
+            this.$refs.onboardingModal.open()
                 .then((res) => {
                     if (res) {
                         this.loadWorkspace(res.name);

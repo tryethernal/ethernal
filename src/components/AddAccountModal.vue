@@ -5,13 +5,13 @@
 
         <v-card-text>
             <div>Make sure the account has been unlocked before adding it.</div>
-            <v-text-field v-model="address" label="Key*" required></v-text-field>
+            <v-text-field outlined class="mt-2" v-model="address" label="Key*" required></v-text-field>
         </v-card-text>
         
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn text @click.stop="close()">Close</v-btn>
-            <v-btn color="primary" :disabled="!address" text @click.stop="addAccount(address)">Add</v-btn>
+            <v-btn color="primary" text @click="close()">Close</v-btn>
+            <v-btn color="primary" :disabled="!address" @click.stop="addAccount(address)">Add</v-btn>
         </v-card-actions>
     </v-card>
 </v-dialog>
