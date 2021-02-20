@@ -318,11 +318,14 @@ export default {
                     this.db.contractStorage(hash).once('value', (snapshot) => {
                         if (snapshot.val()) {
                             this.contract.artifact = snapshot.val().artifact;
-                            Object.entries(snapshot.val().dependencies).map((dep) => {
-                                this.contract.dependencies[dep[0]] = {
-                                    artifact: dep[1]
-                                }
-                            });
+                            var dependencies = snapshot.val().dependencies;
+                            if (dependencies) {
+                                Object.entries(dependencies).map((dep) => {
+                                    this.contract.dependencies[dep[0]] = {
+                                        artifact: dep[1]
+                                    }
+                                });
+                            }
                             this.decodeContract();
                         }
                     });

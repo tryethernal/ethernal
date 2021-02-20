@@ -1,5 +1,5 @@
 <template>
-    <v-toolbar dense flat class="grey lighten-3 fixed">
+    <v-toolbar dense flat class="grey lighten-3">
         Workspace: {{ currentWorkspace.name }}
         <v-divider vertical inset class="mx-2"></v-divider>
         <v-icon class="mr-1" small :color="connected ? 'green darken-2' : 'red darken-2'">mdi-checkbox-blank-circle</v-icon>

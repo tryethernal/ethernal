@@ -3,7 +3,7 @@
         <v-navigation-drawer app permanent v-if="userLoggedIn">
             <v-list-item>
                 <v-list-item-content>
-                    <v-list-item-title class="title">Ethernal</v-list-item-title>
+                    <v-list-item-title class="logo">Ethernal</v-list-item-title>
                     <v-list-item-subtitle>Beta - {{ version }}</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
@@ -156,3 +156,11 @@ export default {
     }
 };
 </script>
+<style scoped>
+.logo {
+    font-family: "Exo";
+    font-weight: 600;
+    font-size: 24px;
+    color: var(--v-accent-base);
+}
+</style>
