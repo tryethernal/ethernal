@@ -156,11 +156,3 @@ export default {
     }
 };
 </script>
-<style scoped>
-.logo {
-    font-family: "Exo";
-    font-weight: 600;
-    font-size: 24px;
-    color: var(--v-accent-base);
-}
-</style>

@@ -1,14 +1,19 @@
 <template>
-    <v-layout fill-height>
-        <v-row class="fill-height">
+    <v-layout fill-height class="background">
+        <v-row class="fill-height my-0">
             <v-col cols="7" class="fill-height">
-                <v-row class="fill-height" align-self="center" align="center">
-                    <v-col class="fill-height">
-                        <iframe height="100%" id="ston-ezj3cSR8Nn" width="100%" frameBorder="0" name="StonlyExplanation" allowfullscreen src="https://stonly.com/borderlessembed/ezj3cSR8Nn/view/"> </iframe>
+                <v-row class="fill-height" align="center">
+                    <v-col class="text-center">
+                        <h1 class="logo">Ethernal</h1>
+                        <p>
+                            Ethernal is a block explorer for private Ethereum blockchains, currently in open Beta.
+                        </p>
+                        <p>
+                            If you are new to Ethernal, you should keep the <a href="https://doc.tryethernal.com" target="_blank">doc</a> in a tab nearby!
+                        </p>
                     </v-col>
-            </v-row>
+                </v-row>
             </v-col>
-            <v-spacer></v-spacer>
             <v-col cols="5" class="primary fill-height">
                 <v-row class="fill-height" align-self="center" align="center">
                     <v-col>
