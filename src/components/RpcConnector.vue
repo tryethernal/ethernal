@@ -8,6 +8,8 @@
         Network Id: {{ connected ? currentWorkspace.networkId : '/' }}
         <v-divider vertical inset class="mx-2"></v-divider>
         Current Block: {{ connected ? currentBlock : '/' }}
+        <v-spacer></v-spacer>
+        <a href="https://doc.tryethernal.com" target="_blank">Documentation</a>
     </v-toolbar>
 </template>
 
