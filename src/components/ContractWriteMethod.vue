@@ -32,6 +32,7 @@
 </template>
 <script>
 const Web3 = require('web3');
+import { sanitize } from '../lib/utils';
 
 export default {
     name: 'ContractWriteMethod',
@@ -54,8 +55,10 @@ export default {
                     txHash: null,
                     message: null
                 };
-                var options = this.options;
-                options.value = this.value;
+                var options = sanitize(this.options);
+                if (!this.options.gas || parseInt(this.options.gas) < 1) {
+                    throw { reason: 'You must set a gas limit' }
+                }
                 this.contract.methods[method.name](...Object.values(this.params)).send(options)
                     .then(res => {
                         this.result.txHash = res.transactionHash;

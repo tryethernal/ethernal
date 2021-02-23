@@ -110,7 +110,6 @@ export default {
         this.$bind('workspaces', this.db.workspaces());
         this.$bind('settings', this.db.settings());
         this.$bind('accounts', this.db.collection('accounts'));
-        this.settings = this.currentWorkspace.settings;
     },
     methods: {
         update: function() {
@@ -120,7 +119,8 @@ export default {
             this.db.settings().update({settings: Object.fromEntries(Object.entries(this.settings).filter(([, v]) => v != null))})
                 .then(() => {
                     this.updateSuccess = true;
-                    this.$store.dispatch('updateWorkspace', this.currentWorkspace);
+                    this.currentWorkspace.settings = this.settings;
+                    this.$store.dispatch('updateCurrentWorkspace', this.currentWorkspace);
                 })
                 .catch(() => this.updateError = true)
                 .finally(() => this.updating = false)

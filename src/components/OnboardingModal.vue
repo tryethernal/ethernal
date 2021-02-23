@@ -14,7 +14,7 @@
             <v-stepper-step step="2" :complete="stepperIndex > 2">Set up the CLI</v-stepper-step>
             <v-stepper-content step="2">
                 <p>
-                    Ethernal uses a <a href="https://www.npmjs.com/package/ethernal" target="_blank">CLI</a> to synchronize your transactions and display them on your dashboard.
+                    Ethernal uses a <a href="https://www.npmjs.com/package/ethernal" target="_blank">CLI</a> to synchronize your transactions and display them on your dashboard (<a href="https://doc.tryethernal.com" target="_blank">doc</a>).
                 </p>
                 <p>
                     Install it with <code>npm install ethernal -g</code>
@@ -31,7 +31,7 @@
             <v-stepper-step step="3" :complete="stepperIndex > 3">Listen for transactions</v-stepper-step>
             <v-stepper-content step="3">
                 <p>
-                    Run <code>ethernal listen</code> to listen to transactions
+                    Run <code>ethernal listen</code> to listen to transactions (<a href="https://doc.tryethernal.com" target="_blank">doc</a>).
                 </p>
                 <p v-if="!transactions.length">
                     Waiting for your first transaction...

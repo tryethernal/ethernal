@@ -49,8 +49,8 @@
                 <h4>Artifact</h4>
                 <v-card outlined class="mb-4">
                     <v-card-text v-if="contract.artifact">
-                        <div class="mb-2">Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded.</div>
-                        <div v-if="Object.keys(contract.dependencies).length" class="mb-1">
+                        Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded.
+                        <div v-if="Object.keys(contract.dependencies).length" class="mb-1 mt-2">
                             <h5>This contract has dependencies:</h5>
                         </div>
                     

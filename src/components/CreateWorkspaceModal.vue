@@ -46,40 +46,44 @@ export default {
             this.resolve(false);
             this.reset();
         },
-        createWorkspace: function(name, rpcServer) {
+        createWorkspace: async function(name, rpcServer) {
             try {
                 if (this.existingWorkspaces.indexOf(name) > -1) {
                     return this.errorMessage = 'A workspace with this name already exists.';
                 }
-                
-                var web3 = new Web3(new Web3.providers.WebsocketProvider(rpcServer));
-                web3.eth.net.isListening()
-                    .then((res) => {
-                        if (res !== true) {
-                            return this.errorMessage = res;
-                        }
-                        this.errorMessage = null;
-                        this.loading = true;
 
-                        web3.eth.net.getId().then((id) => {
-                            this.db.currentUser().collection('workspaces').doc(name).set({
-                                networkId: String(id),
-                                rpcServer: rpcServer,
-                                settings: {
-                                    defaultAccount: ''
-                                }
-                            }).then(() => {
-                                this.resolve({ name: name });
-                                this.reset();
-                            }).catch((error) => {
-                                this.errorMessage = error.message;
-                                this.loading = false;
-                            })
-                        });
-                    })
-                    .catch(() => this.errorMessage = "Can't connect to server.");
+                var web3 = new Web3(new Web3.providers.WebsocketProvider(rpcServer));
+
+                await web3.eth.net.isListening();
+
+                this.errorMessage = null;
+                this.loading = true;
+
+                var networkId = await web3.eth.net.getId();
+                var latestBlock = await web3.eth.getBlock('latest')
+                var accounts = await web3.eth.getAccounts();
+                var gasLimit = latestBlock.gasLimit;
+
+                var res = this.db.currentUser()
+                    .collection('workspaces')
+                    .doc(name).set({
+                        networkId: String(networkId),
+                        rpcServer: rpcServer,
+                        settings: {
+                            defaultAccount: accounts[0],
+                            gas: gasLimit
+                        }
+                    });
+
+                if (res) {
+                    this.resolve({ name: name });
+                    this.reset();
+                }
             } catch(error) {
-                this.errorMessage = error.message;
+                if (error.code && error.code == 1006) {
+                    return this.errorMessage = "Can't connect to the server";
+                }
+                this.errorMessage = error.message ? error.message : error;
             }
         },
         reset: function() {
