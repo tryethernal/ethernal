@@ -10,6 +10,8 @@
         Current Block: {{ connected ? currentBlock : '/' }}
         <v-spacer></v-spacer>
         <a href="https://doc.tryethernal.com" target="_blank">Documentation</a>
+        <v-divider vertical inset class="mx-2"></v-divider>
+        <a href="https://github.com/tryethernal/support/discussions" target="_blank">Community / Help</a>
     </v-toolbar>
 </template>
 
