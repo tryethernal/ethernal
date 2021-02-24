@@ -88,7 +88,7 @@ export default {
         workspacesDataTableHeaders: [
             {
                 text: 'Name',
-                value: 'id'    
+                value: 'id'
             },
             {
                 text: 'RPC Server',

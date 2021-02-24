@@ -85,7 +85,7 @@ export const dbPlugin = {
             },
             contractSerializer: snapshot => {
                 var res = snapshot.data();
-                
+
                 if (snapshot.data().watchedPaths)
                     Object.defineProperty(res, 'watchedPaths', { value: JSON.parse(snapshot.data().watchedPaths) })
 

@@ -33,7 +33,7 @@ export default {
     components: {
         HashLink,
         AddAccountModal
-    }, 
+    },
     filters: {
         FromWei
     },

@@ -93,7 +93,7 @@ const store = new Vuex.Store({
             if (user) {
                 commit('SET_USER', { uid: user.uid, email: user.email, loggedIn: true });
             }
-            else  {
+            else {
                 commit('SET_USER', null);
             }
         },
@@ -134,7 +134,7 @@ new Vue({
                 LogRocket.identify(user.uid, { email: user.email });
 
             var currentPath = this.$router.currentRoute.path;
-            store.dispatch('updateUser', user);            
+            store.dispatch('updateUser', user);
             if (currentPath != '/auth' && !user) {
                 return this.$router.push('/auth');
             }

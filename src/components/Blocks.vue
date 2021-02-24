@@ -47,7 +47,7 @@ export default {
         ]
     }),
     mounted: function() {
-        this.$bind('blocks', this.db.collection('blocks'), { 
+        this.$bind('blocks', this.db.collection('blocks'), {
             serialize: snapshot => {
                 if (snapshot.data().transactions === undefined)
                     return Object.defineProperty(snapshot.data(), 'transactions', { value: [] })
