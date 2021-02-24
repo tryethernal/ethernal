@@ -89,7 +89,6 @@ export default {
                     this.reset();
                 }
             } catch(error) {
-                console.log(JSON.parse(JSON.stringify(error)))
                 if (error.code && error.code == 1006) {
                     return this.errorMessage = "Can't connect to the server";
                 }

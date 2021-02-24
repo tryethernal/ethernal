@@ -59,8 +59,10 @@
       "parser": "babel-eslint"
     },
     "rules": {
-      "no-multi-spaces": 2,
-      "no-trailing-spaces": 2
+      "no-multi-spaces": "error",
+      "no-trailing-spaces": "error",
+      "eol-last": "error",
+      "no-console": "error"
     }
   },
   "browserslist": [

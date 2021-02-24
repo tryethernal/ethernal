@@ -62,8 +62,9 @@ export default Vue.extend({
             this.connected = true;
         },
         onError: function(error) {
-            if (error)
-                console.log(error);
+            if (error) {
+                console.log(error); // eslint-disable-line no-console
+            }
             this.connected = false;
             setTimeout(this.initWeb3, 5 * 1000);
         },
