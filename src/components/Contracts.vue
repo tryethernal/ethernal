@@ -18,7 +18,7 @@ export default {
     name: 'Contracts',
     components: {
         HashLink
-    }, 
+    },
     filters: {
         FromWei
     },

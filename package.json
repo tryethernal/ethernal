@@ -58,7 +58,10 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "no-multi-spaces": 2,
+      "no-trailing-spaces": 2
+    }
   },
   "browserslist": [
     "> 1%",

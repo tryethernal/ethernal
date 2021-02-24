@@ -6,7 +6,7 @@
         <v-card-text>
             <v-text-field v-model="newKeyToTrack" label="Key*" required></v-text-field>
         </v-card-text>
-        
+
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text @click.stop="close()">Close</v-btn>
