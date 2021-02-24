@@ -53,7 +53,7 @@
                         <div v-if="Object.keys(contract.dependencies).length" class="mb-1 mt-2">
                             <h5>This contract has dependencies:</h5>
                         </div>
-                    
+
                         <div v-for="(dep, key, idx) in contract.dependencies" :key="idx" class="mb-2">
                             <div v-if="!dep.artifact">
                                 Upload artifact for contract <b>{{ dep.name }}</b>
@@ -161,8 +161,9 @@
 const Web3 = require('web3');
 const Decoder = require("@truffle/decoder");
 
-import { Storage } from '../lib/storage';
 import { mapGetters } from 'vuex';
+import { Storage } from '../lib/storage';
+import { getProvider } from '../lib/utils';
 
 import HashLink from './HashLink';
 import StorageStructure from './StorageStructure';
@@ -244,11 +245,14 @@ export default {
         ]
     }),
     created: function() {
-        this.web3 = new Web3(new Web3.providers.WebsocketProvider(this.currentWorkspace.rpcServer));
-        this.web3.eth.getBalance(this.hash).then(balance => this.balance = balance);
-        this.callOptions.from = this.currentWorkspace.settings.defaultAccount;
-        this.callOptions.gas = this.currentWorkspace.settings.gas;
-        this.callOptions.gasPrice = this.currentWorkspace.settings.gasPrice;
+        var provider = getProvider(this.currentWorkspace.rpcServer);
+        if (provider) {
+            this.web3 = new Web3(provider);
+            this.web3.eth.getBalance(this.hash).then(balance => this.balance = balance);
+            this.callOptions.from = this.currentWorkspace.settings.defaultAccount;
+            this.callOptions.gas = this.currentWorkspace.settings.gas;
+            this.callOptions.gasPrice = this.currentWorkspace.settings.gasPrice;
+        }
     },
     methods: {
         getTransactionDirection(trx) {
@@ -284,7 +288,7 @@ export default {
             });
         },
         decodeContract: function() {
-            
+
             if (this.dependenciesNeded()) return;
 
             var dependenciesArtifacts = Object.entries(this.contract.dependencies).map(dep => JSON.parse(dep[1].artifact));

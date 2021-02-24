@@ -21,6 +21,7 @@ import { mapGetters } from 'vuex';
 
 import { auth } from '../plugins/firebase.js';
 import { bus } from '../bus.js';
+import { getProvider } from '../lib/utils.js';
 
 const Web3 = require('web3');
 
@@ -37,27 +38,33 @@ export default Vue.extend({
     },
     methods: {
         initWeb3: function() {
-            this.web3 = new Web3(new Web3.providers.WebsocketProvider(this.currentWorkspace.rpcServer));
-            this.web3.eth.net.isListening()
-                .then(isListening => {
-                    if (isListening === true)
-                        this.connect();
-                    else
-                        setTimeout(this.initWeb3, 5 * 1000);
-                })
-                .catch(() => setTimeout(this.initWeb3, 5 * 1000));
+            var provider = getProvider(this.currentWorkspace.rpcServer);
+            if (provider) {
+                this.web3 = new Web3(provider);
+                this.web3.eth.net.isListening()
+                    .then(isListening => {
+                        if (isListening === true)
+                            this.connect();
+                        else
+                            setTimeout(this.initWeb3, 5 * 1000);
+                    })
+                    .catch(() => setTimeout(this.initWeb3, 5 * 1000));
+            }
         },
         connect: function() {
             this.web3.eth.getBlockNumber().then(blockNumber => this.$store.dispatch('updateCurrentBlock', blockNumber));
-            this.web3.eth.subscribe('newBlockHeaders')
-                .on('error', this.onError);
+            if (this.web3.currentProvider.connection == WebSocket) {
+                this.web3.eth.subscribe('newBlockHeaders')
+                    .on('error', this.onError);
+            }
             this.web3.eth.getAccounts().then(accounts => accounts.forEach(this.syncAccount));
             bus.$on('syncAccount', this.syncAccount);
             this.connected = true;
         },
         onError: function(error) {
-            if (error)
-                console.log(error);
+            if (error) {
+                console.log(error); // eslint-disable-line no-console
+            }
             this.connected = false;
             setTimeout(this.initWeb3, 5 * 1000);
         },

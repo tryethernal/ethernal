@@ -63,7 +63,7 @@ var DataNode = class DataNode {
                 }
                 break;
         }
-        return res;        
+        return res;
     }
 }
 

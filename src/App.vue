@@ -150,7 +150,7 @@ export default {
             this.db.getWorkspace(currentWorkspace).get().then((workspace) => {
                 this.$store.dispatch('updateCurrentWorkspace', workspace.data());
                 this.appBarComponent = 'rpc-connector';
-                this.routerComponent = 'router-view';    
+                this.routerComponent = 'router-view';
             });
         }
     }
