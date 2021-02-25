@@ -15,34 +15,7 @@
             <v-tab v-if="contract && contract.address != null">Storage</v-tab>
 
             <v-tab-item>
-                <v-data-table
-                    :items="allTransactions"
-                    :headers="headers"
-                    :sort-by="'blockNumber'"
-                    :sort-desc="true"
-                    item-key="hash">
-                    <template v-slot:item.timestamp="{ item }">
-                        {{ item.timestamp | moment('from') }}
-                    </template>
-                    <template v-slot:item.hash="{ item }">
-                        <Hash-Link :type="'transaction'" :hash="item.hash" />
-                    </template>
-                    <template v-slot:item.direction="{ item }">
-                        {{ getTransactionDirection(item) }}
-                    </template>
-                    <template v-slot:item.from="{ item }">
-                        <Hash-Link :type="'address'" :hash="item.from" />
-                    </template>
-                    <template v-slot:item.to="{ item }">
-                        <Hash-Link :type="'address'" :hash="item.to" />
-                    </template>
-                    <template v-slot:item.fee="{ item }">
-                        {{ item.gasPrice * item.gas | fromWei }}
-                    </template>
-                    <template v-slot:item.value="{ item }">
-                        {{ item.value | fromWei }}
-                    </template>
-                </v-data-table>
+                <Transactions-List :transactions="allTransactions" :currentAddress="hash" />
             </v-tab-item>
 
             <v-tab-item v-if="contract">
@@ -165,19 +138,20 @@ import { mapGetters } from 'vuex';
 import { Storage } from '../lib/storage';
 import { getProvider } from '../lib/utils';
 
-import HashLink from './HashLink';
+import TransactionsList from './TransactionsList';
 import StorageStructure from './StorageStructure';
 import TransactionPicker from './TransactionPicker';
 import TransactionData from './TransactionData';
 import ContractReadMethod from './ContractReadMethod';
 import ContractWriteMethod from './ContractWriteMethod';
+
 import FromWei from '../filters/FromWei';
 
 export default {
     name: 'Address',
     props: ['hash'],
     components: {
-        HashLink,
+        TransactionsList,
         StorageStructure,
         TransactionPicker,
         TransactionData,
@@ -207,42 +181,6 @@ export default {
         storage: {},
         transactionsFrom: [],
         transactionsTo: [],
-        transactionsHistory: [],
-        headers: [
-            {
-                text: 'Txn Hash',
-                value: 'hash',
-                align: 'start'
-            },
-            {
-                text: 'Block',
-                value: 'blockNumber'
-            },
-            {
-                text: 'Age',
-                value: 'timestamp'
-            },
-            {
-                text: '',
-                value: 'direction'
-            },
-            {
-                text: 'From',
-                value: 'from'
-            },
-            {
-                text: 'To',
-                value: 'to'
-            },
-            {
-                text: 'Value',
-                value: 'value'
-            },
-            {
-                text: 'Fee',
-                value: 'fee'
-            }
-        ]
     }),
     created: function() {
         var provider = getProvider(this.currentWorkspace.rpcServer);
