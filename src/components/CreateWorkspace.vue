@@ -42,7 +42,6 @@ export default {
                     return this.errorMessage = 'Only ws(s):// and http(s):// endpoints are supported at the moment.';
                 }
 
-
                 await web3.eth.net.isListening();
 
                 this.errorMessage = null;

@@ -17,6 +17,7 @@
                 {{ item.timestamp | moment('from') }}
             </template>
             <template v-slot:item.hash="{ item }">
+                <v-icon small v-if="!item.receipt.status" color="error lighten-1" class="mr-2">mdi-alert-circle</v-icon>
                 <Hash-Link :type="'transaction'" :hash="item.hash" />
             </template>
             <template v-slot:item.fee="{ item }">
@@ -77,6 +78,11 @@ export default {
     }),
     mounted: function() {
         this.$bind('transactions', this.db.collection('transactions'));
+    },
+    methods: {
+        getRowClass: function(item) {
+            return item.receipt.status ? '' : 'error lighten-5';
+        }
     }
 }
 </script>
