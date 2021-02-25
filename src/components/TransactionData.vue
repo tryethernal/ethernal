@@ -1,9 +1,12 @@
 <template>
     <v-card outlined>
-        <v-card-text>
+        <v-card-text v-if="transactionHash">
             <pre>{{ transaction.storage }}</pre>
             <Transaction-Function-Call class="my-1" :jsonInterface="jsonInterface" :transaction="transaction"  />
             <Transaction-Event v-for="(log, idx) in transaction.receipt.logs" :jsonInterface="jsonInterface" :log="log" :key="idx" />
+        </v-card-text>
+        <v-card-text v-else>
+            <i>Select a transaction.</i>
         </v-card-text>
     </v-card>
 </template>

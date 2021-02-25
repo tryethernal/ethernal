@@ -127,7 +127,7 @@
                     </v-col>
                     <v-col cols="9">
                         <h4>Data</h4>
-                        <Transaction-Data v-if="selectedTransaction.hash" :transactionHash="selectedTransaction.hash" :abi="contract.abi" :key="selectedTransaction.hash" />
+                        <Transaction-Data :transactionHash="selectedTransaction.hash" :abi="contract.abi" :key="selectedTransaction.hash" />
                     </v-col>
                 </v-row>
             </v-tab-item>
@@ -196,6 +196,9 @@ export default {
             this.callOptions.gas = this.currentWorkspace.settings.gas;
             this.callOptions.gasPrice = this.currentWorkspace.settings.gasPrice;
         }
+        if (!this.tab) {
+            this.tab = 'transactions';
+        }
     },
     methods: {
         getTransactionDirection(trx) {
@@ -208,7 +211,7 @@ export default {
         },
         selectedTransactionChanged: function(transaction) {
             this.selectedTransaction = transaction;
-            if (!this.selectedTransaction.storage && typeof this.storage == Storage ) {
+            if (!this.selectedTransaction.storage && this.storage != {} ) {
                 this.storage.decodeData(transaction.blockNumber).then((data) => {
                     this.db.collection('transactions')
                         .doc(transaction.hash)
@@ -286,7 +289,6 @@ export default {
         ]),
         tab: {
             set (tab) {
-                console.log(tab, this.$route.query)
                 this.$router.replace({ query: { ...this.$route.query, tab } });
             },
             get () {
