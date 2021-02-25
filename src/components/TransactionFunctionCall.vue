@@ -10,7 +10,7 @@
             </div>
         </div>
          <div v-else>
-            <i>Upload contract artifact <router-link :to="`/address/${this.transaction.to}`">here</router-link> to decode function parameters.</i>
+            <i>Upload contract artifact <router-link :to="`/address/${this.transaction.to}?tab=contract`">here</router-link> to decode function parameters.</i>
         </div>
     </div>
 </template>
