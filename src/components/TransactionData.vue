@@ -29,7 +29,9 @@ export default {
     }),
     mounted: function() {
         this.$bind('transaction', this.db.collection('transactions').doc(this.transactionHash)).then(() => {
-            this.jsonInterface = new ethers.utils.Interface(this.abi);
+            if (this.abi) {
+                this.jsonInterface = new ethers.utils.Interface(this.abi);
+            }
         })
     }
 }

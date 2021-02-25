@@ -9,16 +9,18 @@
                 </v-card>
             </v-col>
         </v-row>
-        <v-tabs>
-            <v-tab>Transactions</v-tab>
-            <v-tab v-if="contract && contract.address != null">Contract</v-tab>
-            <v-tab v-if="contract && contract.address != null">Storage</v-tab>
+        <v-tabs optional v-model="tab">
+            <v-tab href="#transactions">Transactions</v-tab>
+            <v-tab href="#contract" v-if="contract && contract.address != null">Contract</v-tab>
+            <v-tab href="#storage" v-if="contract && contract.address != null">Storage</v-tab>
 
-            <v-tab-item>
+            <v-tab-item value="transactions">
                 <Transactions-List :transactions="allTransactions" :currentAddress="hash" />
             </v-tab-item>
+        </v-tabs>
 
-            <v-tab-item v-if="contract">
+        <v-tabs-items :value="tab">
+            <v-tab-item value="contract" v-if="contract">
                 <h4>Artifact</h4>
                 <v-card outlined class="mb-4">
                     <v-card-text v-if="contract.artifact">
@@ -108,11 +110,14 @@
                 </v-card>
             </v-tab-item>
 
-            <v-tab-item v-if="contract">
+            <v-tab-item value="storage" v-if="contract">
                 <h4>Structure</h4>
                 <v-card outlined class="mb-4">
                     <v-card-text v-if="storage.structure">
                         <Storage-Structure :storage="node" @addStorageStructureChild="addStorageStructureChild" v-for="(node, key, idx) in storage.structure.nodes" :key="idx" />
+                    </v-card-text>
+                    <v-card-text v-else>
+                        <i>Upload contract artifact <router-link :to="`/address/${this.contract.address}?tab=contract`">here</router-link> to see variables of this contract.</i>
                     </v-card-text>
                 </v-card>
                 <v-row>
@@ -126,7 +131,7 @@
                     </v-col>
                 </v-row>
             </v-tab-item>
-        </v-tabs>
+        </v-tabs-items>
     </v-container>
 </template>
 
@@ -203,7 +208,7 @@ export default {
         },
         selectedTransactionChanged: function(transaction) {
             this.selectedTransaction = transaction;
-            if (!this.selectedTransaction.storage) {
+            if (!this.selectedTransaction.storage && typeof this.storage == Storage ) {
                 this.storage.decodeData(transaction.blockNumber).then((data) => {
                     this.db.collection('transactions')
                         .doc(transaction.hash)
@@ -279,6 +284,15 @@ export default {
         ...mapGetters([
             'currentWorkspace'
         ]),
+        tab: {
+            set (tab) {
+                console.log(tab, this.$route.query)
+                this.$router.replace({ query: { ...this.$route.query, tab } });
+            },
+            get () {
+                return this.$route.query.tab;
+            }
+        },
         allTransactions: function() {
             return [...this.transactionsTo, ...this.transactionsFrom];
         },
