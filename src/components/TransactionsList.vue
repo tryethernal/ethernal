@@ -7,7 +7,12 @@
         :headers="headers"
         item-key="hash">
         <template v-slot:item.hash="{ item }">
-            <v-icon small v-if="!item.receipt.status" color="error lighten-1" class="mr-2">mdi-alert-circle</v-icon>
+            <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                    <v-icon v-bind="attrs" v-on="on" small v-if="!item.receipt.status" color="error lighten-1" class="mr-2">mdi-alert-circle</v-icon>
+                </template>
+                <span>Failed Transaction</span>
+            </v-tooltip>
             <Hash-Link :type="'transaction'" :hash="item.hash" />
         </template>
         <template v-slot:item.timestamp="{ item }">
