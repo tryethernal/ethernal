@@ -61,8 +61,7 @@
     "rules": {
       "no-multi-spaces": "error",
       "no-trailing-spaces": "error",
-      "eol-last": "error",
-      "no-console": "error"
+      "eol-last": "error"
     }
   },
   "browserslist": [
