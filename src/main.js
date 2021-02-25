@@ -34,7 +34,7 @@ var redirectIfLoggedIn = function (to, from, next) {
 
 var redirectIfLoggedOut = function (to, from, next) {
     if (!auth().currentUser) {
-        next({ path: `/auth?next=${document.location.pathname}` });
+        next({ path: '/auth', query: { next: document.location.pathname, ...to.query }});
     }
     else next();
 }
@@ -139,7 +139,9 @@ new Vue({
                 return this.$router.push('/auth');
             }
             if (currentPath == '/auth' && user) {
-                return this.$router.push(this.$route.query.next || '/transactions');
+                var queryParams = { ...this.$route.query };
+                delete queryParams.next;
+                return this.$router.push({ path: this.$route.query.next || '/transactions', query: queryParams});
             }
         }
     },

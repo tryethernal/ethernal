@@ -10,7 +10,7 @@
             </div>
         </div>
         <div v-else>
-            <i>Upload contract artifact <router-link :to="`/address/${log.address}`">here</router-link> to decode events data.</i>
+            <i>Upload contract artifact <router-link :to="`/address/${log.address}?tab=contract`">here</router-link> to decode events data.</i>
         </div>
     </div>
 </template>
