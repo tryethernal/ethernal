@@ -10,8 +10,10 @@
             <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
                     <v-icon v-bind="attrs" v-on="on" small v-if="!item.receipt.status" color="error lighten-1" class="mr-2">mdi-alert-circle</v-icon>
+                    <v-icon v-bind="attrs" v-on="on" small v-else color="success lighten-1" class="mr-2">mdi-check-circle</v-icon>
                 </template>
-                <span>Failed Transaction</span>
+                <span v-if="!item.receipt.status">Failed Transaction</span>
+                <span v-else>Succeeded Transaction</span>
             </v-tooltip>
             <Hash-Link :type="'transaction'" :hash="item.hash" />
         </template>
