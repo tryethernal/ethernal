@@ -1,14 +1,30 @@
 <template>
     <v-container>
-        <h2 class="text-truncate">Tx {{ transaction.hash }}</h2>
+        <h2 class="text-truncate mb-2">Tx {{ transaction.hash }}</h2>
+        <v-chip small class="success mr-2" v-if="transaction.receipt.status">
+            <v-icon small class="white--text mr-1">mdi-check</v-icon>
+            Transaction Succeeded
+        </v-chip>
+        <v-chip small class="error" v-else>
+            <v-icon small class="white--text mr-1">mdi-alert-circle</v-icon>
+            Transaction Failed
+        </v-chip>
+        <v-chip small v-if="!transaction.to">
+            <v-icon small class="mr-1">mdi-file</v-icon>
+            Contract Creation
+        </v-chip>
         <v-row class="my-2">
             <v-col cols="5" class="text-truncate">
                 <div class="text-overline">From</div>
                 <Hash-Link :type="'address'" :hash="transaction.from" :fullHash="true" />
             </v-col>
-            <v-col cols="5" class="text-truncate">
+            <v-col cols="5" class="text-truncate" v-if="transaction.to">
                 <div class="text-overline">To</div>
                 <Hash-Link :type="'address'" :hash="transaction.to" :fullHash="true" />
+            </v-col>
+            <v-col cols="5" class="text-truncate" v-else>
+                <div class="text-overline">Contract Created</div>
+                <Hash-Link :type="'address'" :hash="transaction.receipt.contractAddress" :fullHash="true" />
             </v-col>
         </v-row>
         <v-row class="mb-4">
@@ -40,10 +56,15 @@
             </v-col>
         </v-row>
 
-        <v-row class="my-2" v-if="contract && contract.artifact">
+        <v-row class="my-2">
             <v-col>
                 <h3>Data</h3>
-                <Transaction-Data :abi="contract.artifact.abi" :transactionHash="transaction.hash" />
+                <div v-if="contract.abi">
+                    <Transaction-Data :abi="contract.abi" :transactionHash="hash" />
+                </div>
+                <div v-else class="pa-2 grey lighten-3">
+                    <i>No data for this transaction.</i>
+                </div>
             </v-col>
         </v-row>
     </v-container>
@@ -84,13 +105,12 @@ export default {
         hash: {
             immediate: true,
             handler(hash) {
-                this.$bind('transaction', this.db.collection('transactions').doc(hash));
-            }
-        },
-        transaction: function(transaction) {
-            this.$bind('block', this.db.collection('blocks').doc(transaction.blockNumber.toString()));
-            if (transaction.to) {
-                this.$bind('contract', this.db.collection('contracts').doc(transaction.to.toString()), this.db.contractSerializer);
+                this.$bind('transaction', this.db.collection('transactions').doc(hash)).then(() => {
+                    this.$bind('block', this.db.collection('blocks').doc(this.transaction.blockNumber.toString()));
+                    if (this.transaction.to) {
+                        this.$bind('contract', this.db.collection('contracts').doc(this.transaction.to.toString()), this.db.contractSerializer);
+                    }
+                })
             }
         }
     }
