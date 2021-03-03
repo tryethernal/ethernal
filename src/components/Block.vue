@@ -21,30 +21,22 @@
                 {{ block.hash }}
             </v-col>
         </v-row>
-        <v-row>
-            <v-col cols="3">
-                <h4>Transactions</h4>
-                <Transaction-Picker :transactions="transactions" @selectedTransactionChanged="selectedTransactionChanged" />
-            </v-col>
-            <v-col cols="9">
-                <h4>Data</h4>
-                <Transaction-Data v-if="selectedTransaction.hash" :transactionHash="selectedTransaction.hash" :abi="contract.artifact.abi" :key="selectedTransaction.hash" />
-            </v-col>
-        </v-row>
+        <h4>Transactions</h4>
+        <v-card outlined>
+            <Transactions-List :transactions="transactions" />
+        </v-card>
     </v-container>
 </template>
 
 <script>
-import TransactionPicker from './TransactionPicker';
-import TransactionData from './TransactionData';
 import FromWei from '../filters/FromWei';
+import TransactionsList from './TransactionsList';
 
 export default {
     name: 'Block',
     props: ['number'],
     components: {
-        TransactionPicker,
-        TransactionData
+        TransactionsList
     },
     filters: {
         FromWei
