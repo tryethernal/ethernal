@@ -55,7 +55,7 @@ export default {
                     txHash: null,
                     message: null
                 };
-                var options = sanitize(this.options);
+                var options = sanitize({...this.options, value: this.value});
                 if (!this.options.gas || parseInt(this.options.gas) < 1) {
                     throw { reason: 'You must set a gas limit' }
                 }
