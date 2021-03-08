@@ -1,13 +1,6 @@
 <template>
     <v-toolbar dense flat class="grey lighten-3">
         Workspace: {{ currentWorkspace.name }}
-        <v-divider vertical inset class="mx-2"></v-divider>
-        <v-icon class="mr-1" small :color="connected ? 'green darken-2' : 'red darken-2'">mdi-checkbox-blank-circle</v-icon>
-        {{ connected ? `Connected to ${currentWorkspace.rpcServer}` : 'Not connected' }}
-        <v-divider vertical inset class="mx-2"></v-divider>
-        Network Id: {{ connected ? currentWorkspace.networkId : '/' }}
-        <v-divider vertical inset class="mx-2"></v-divider>
-        Current Block: {{ connected ? currentBlock : '/' }}
         <v-spacer></v-spacer>
         <a href="https://doc.tryethernal.com" target="_blank">Documentation</a>
         <v-divider vertical inset class="mx-2"></v-divider>
@@ -17,66 +10,32 @@
 
 <script>
 import Vue from 'vue';
+import Web3 from 'web3';
 import { mapGetters } from 'vuex';
 
 import { auth } from '../plugins/firebase.js';
 import { bus } from '../bus.js';
 import { getProvider } from '../lib/utils.js';
 
-const Web3 = require('web3');
-
 export default Vue.extend({
     name: 'RpcConnector',
     data: () => ({
         web3: null,
-        connected: false
     }),
     created: function() {
         if (auth().currentUser) {
-            this.initWeb3();
+            this.web3 = new Web3(getProvider(this.currentWorkspace.rpcServer));
+            bus.$on('syncAccount', this.syncAccount);
+            this.web3.eth.getAccounts().then(accounts => accounts.forEach(this.syncAccount));
         }
     },
     methods: {
-        initWeb3: function() {
-            var provider = getProvider(this.currentWorkspace.rpcServer);
-            if (provider) {
-                this.web3 = new Web3(provider);
-                this.web3.eth.net.isListening()
-                    .then(isListening => {
-                        if (isListening === true)
-                            this.connect();
-                        else
-                            setTimeout(this.initWeb3, 5 * 1000);
-                    })
-                    .catch(() => setTimeout(this.initWeb3, 5 * 1000));
-            }
-        },
-        connect: function() {
-            this.web3.eth.getBlockNumber().then(blockNumber => this.$store.dispatch('updateCurrentBlock', blockNumber));
-            if (this.web3.currentProvider.connection == WebSocket) {
-                this.web3.eth.subscribe('newBlockHeaders')
-                    .on('error', this.onError);
-            }
-            this.web3.eth.getAccounts().then(accounts => accounts.forEach(this.syncAccount));
-            bus.$on('syncAccount', this.syncAccount);
-            this.connected = true;
-        },
-        onError: function(error) {
-            if (error) {
-                console.log(error); // eslint-disable-line no-console
-            }
-            this.connected = false;
-            setTimeout(this.initWeb3, 5 * 1000);
-        },
         syncAccount: function(account) {
             this.web3.eth.getBalance(account).then(balance => this.db.collection('accounts').doc(account).set({ balance: balance }));
         }
     },
     computed: {
         ...mapGetters([
-            'networkId',
-            'settings',
-            'currentBlock',
             'currentWorkspace'
         ])
     }

@@ -18,8 +18,7 @@
 </v-dialog>
 </template>
 <script>
-
-const Web3 = require('web3');
+import { functions } from '../plugins/firebase';
 
 export default {
     name: 'CreateWorkspaceModal',
@@ -48,41 +47,11 @@ export default {
         },
         createWorkspace: async function(name, rpcServer) {
             try {
-                if (this.existingWorkspaces.indexOf(name) > -1) {
-                    return this.errorMessage = 'A workspace with this name already exists.';
-                }
-
-                var web3;
-                if (rpcServer.startsWith('ws://') || rpcServer.startsWith('wss://')) {
-                    web3 = new Web3(new Web3.providers.WebsocketProvider(rpcServer));
-                }
-                else if (rpcServer.startsWith('http://') || rpcServer.startsWith('https://')) {
-                    web3 = new Web3(new Web3.providers.HttpProvider(rpcServer));
-                }
-                if (!web3) {
-                    return this.errorMessage = 'Only ws(s):// and http(s):// endpoints are supported at the moment.';
-                }
-
-                await web3.eth.net.isListening();
-
-                this.errorMessage = null;
-                this.loading = true;
-
-                var networkId = await web3.eth.net.getId();
-                var latestBlock = await web3.eth.getBlock('latest')
-                var accounts = await web3.eth.getAccounts();
-                var gasLimit = latestBlock.gasLimit;
+                var workspace = await functions.httpsCallable('initRpcServer')({ rpcServer: rpcServer })
 
                 var res = this.db.currentUser()
                     .collection('workspaces')
-                    .doc(name).set({
-                        networkId: String(networkId),
-                        rpcServer: rpcServer,
-                        settings: {
-                            defaultAccount: accounts[0],
-                            gas: gasLimit
-                        }
-                    });
+                    .doc(name).set(workspace.data);
 
                 if (res) {
                     this.resolve({ name: name });
