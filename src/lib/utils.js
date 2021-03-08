@@ -1,4 +1,5 @@
 const Web3 = require('web3');
+const Web3HttpProvider = require('web3-providers-http');
 
 export const sanitize = function(obj) {
     return Object.fromEntries(Object.entries(obj).filter(([, v]) => v != null));
@@ -9,6 +10,6 @@ export const getProvider = function(rpcServer) {
         return new Web3.providers.WebsocketProvider(rpcServer);
     }
     if (rpcServer.startsWith('http://') || rpcServer.startsWith('https://')) {
-        return new Web3.providers.HttpProvider(rpcServer);
+        return new Web3.providers.HttpProvider(rpcServer, { keepAlive: true, withCredentials: true });
     }
 }

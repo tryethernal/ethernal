@@ -2,6 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 import 'firebase/database';
+import 'firebase/functions';
 
 import { FIREBASE_CONFIG } from '../config/firebase.js';
 
@@ -98,4 +99,11 @@ export const dbPlugin = {
 };
 
 export const auth = firebase.auth;
+var _functions = firebase.functions();
+
+if (process.env.NODE_ENV == 'development') {
+    _functions.useFunctionsEmulator('http://localhost:5001');
+}
+
+export const functions = _functions;
 export const FieldValue = firebase.firestore.FieldValue;
