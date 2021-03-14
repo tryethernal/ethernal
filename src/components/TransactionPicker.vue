@@ -39,9 +39,7 @@ export default {
     },
     methods: {
         selectedTransactionChanged: function(transaction) {
-            if (transaction) {
-                this.$emit('selectedTransactionChanged', transaction);
-            }
+            this.$emit('selectedTransactionChanged', transaction || {});
         }
     }
 }

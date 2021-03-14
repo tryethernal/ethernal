@@ -23,101 +23,129 @@
             <v-tab-item value="contract" v-if="contract">
                 <h4>Artifact</h4>
                 <v-card outlined class="mb-4">
-                    <v-card-text v-if="contract.artifact">
-                        Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded.
-                        <div v-if="Object.keys(contract.dependencies).length" class="mb-1 mt-2">
-                            <h5>This contract has dependencies:</h5>
-                        </div>
+                    <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
+                    <div v-else>
+                        <v-card-text v-if="contract.artifact">
+                            Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded.
+                            <div v-if="Object.keys(contract.dependencies).length" class="mb-1 mt-2">
+                                <h5>This contract has dependencies:</h5>
+                            </div>
 
-                        <div v-for="(dep, key, idx) in contract.dependencies" :key="idx" class="mb-2">
-                            <div v-if="!dep.artifact">
-                                Upload artifact for contract <b>{{ dep.name }}</b>
+                            <div v-for="(dep, key, idx) in contract.dependencies" :key="idx" class="mb-2">
+                                <div v-if="!dep.artifact">
+                                    Upload artifact for contract <b>{{ dep.name }}</b>
+                                </div>
+                                <div v-else>
+                                    Artifact for contract <b>{{ key }}</b> has been uploaded.
+                                </div>
                             </div>
-                            <div v-else>
-                                Artifact for contract <b>{{ key }}</b> has been uploaded.
-                            </div>
-                        </div>
-                    </v-card-text>
-                    <v-card-text v-else>
-                        <i>Upload an artifact to read contract storage and interact with it.</i><br />
-                        For Truffle projects, use our <a href="https://www.npmjs.com/package/ethernal" target="_blank">CLI</a>.<br />
-                        For Hardhat project, use our <a href="https://github.com/antoinedc/hardhat-ethernal" target="_blank">plugin</a>.<br />
-                    </v-card-text>
+                        </v-card-text>
+                        <v-card-text v-else>
+                            <i>Upload an artifact to read contract storage and interact with it.</i><br />
+                            For Truffle projects, use our <a href="https://www.npmjs.com/package/ethernal" target="_blank">CLI</a>.<br />
+                            For Hardhat project, use our <a href="https://github.com/antoinedc/hardhat-ethernal" target="_blank">plugin</a>.<br />
+                        </v-card-text>
+                    </div>
                 </v-card>
 
                 <h4>Call Options</h4>
                 <v-card outlined class="mb-4">
-                    <v-card-text v-if="contract.artifact">
-                        <v-row>
-                            <v-col cols="5">
-                                <v-select
-                                    outlined
-                                    dense
-                                    label="Select from address"
-                                    v-model="callOptions.from"
-                                    :item-text="'id'"
-                                    :items="accounts">
-                                </v-select>
-                                <v-text-field
-                                    outlined
-                                    dense
-                                    type="number"
-                                    v-model="callOptions.gasPrice"
-                                    label="Gas Price (wei)">
-                                </v-text-field>
-                                <v-text-field
-                                    outlined
-                                    dense
-                                    type="number"
-                                    hide-details="auto"
-                                    v-model="callOptions.gas"
-                                    label="Maximum Gas">
-                                </v-text-field>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                    <v-card-text v-else>
-                        <i>Upload an artifact to call this contract's methods.</i>
-                    </v-card-text>
+                    <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
+                    <div v-else>
+                        <v-card-text v-if="contract.artifact">
+                            <v-row>
+                                <v-col cols="5">
+                                    <v-select
+                                        outlined
+                                        dense
+                                        label="Select from address"
+                                        v-model="callOptions.from"
+                                        :item-text="'id'"
+                                        :items="accounts">
+                                        <template v-slot:item="{ item }">
+                                            <v-icon small class="mr-1" v-if="item.pkey">mdi-lock-open-outline</v-icon>
+                                            {{ item.id }}
+                                        </template>
+                                        <template v-slot:selection="{ item }">
+                                            <v-icon small class="mr-1" v-if="item.pkey">mdi-lock-open-outline</v-icon>
+                                            {{ item.id }}
+                                        </template>
+                                    </v-select>
+                                    <v-text-field
+                                        outlined
+                                        dense
+                                        type="number"
+                                        v-model="callOptions.gasPrice"
+                                        label="Gas Price (wei)">
+                                    </v-text-field>
+                                    <v-text-field
+                                        outlined
+                                        dense
+                                        type="number"
+                                        hide-details="auto"
+                                        v-model="callOptions.gasLimit"
+                                        label="Maximum Gas">
+                                    </v-text-field>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                        <v-card-text v-else>
+                            <i>Upload an artifact to call this contract's methods.</i>
+                        </v-card-text>
+                    </div>
                 </v-card>
 
                 <h4>Read Methods</h4>
                 <v-card outlined class="mb-4">
-                    <v-card-text v-if="contract.artifact">
-                        <v-row v-for="(method, methodIdx) in contractReadMethods" :key="methodIdx" class="pb-4">
-                            <v-col cols="5">
-                                <Contract-Read-Method :contract="contractInstance" :method="method" :options="{...callOptions}" />
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                    <v-card-text v-else>
-                        <i>Upload an artifact to call this contract's methods.</i>
-                    </v-card-text>
+                    <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
+                    <div v-else>
+                        <v-card-text v-if="contract.artifact">
+                            <v-row v-for="(method, methodIdx) in contractReadMethods" :key="methodIdx" class="pb-4">
+                                <v-col cols="5">
+                                    <Contract-Read-Method :contract="contract" :method="method" :options="{...callOptions}" />
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                        <v-card-text v-else>
+                            <i>Upload an artifact to call this contract's methods.</i>
+                        </v-card-text>
+                    </div>
                 </v-card>
 
                 <h4>Write Methods</h4>
                 <v-card outlined class="mb-4">
-                    <v-card-text v-if="contract.artifact">
-                        <v-row v-for="(method, methodIdx) in contractWriteMethods" :key="methodIdx" class="pb-4">
-                            <v-col cols="5">
-                                <Contract-Write-Method :contract="contractInstance" :method="method" :options="{...callOptions}" />
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                    <v-card-text v-else>
-                        <i>Upload an artifact to call this contract's methods.</i>
-                    </v-card-text>
+                    <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
+                    <div v-else>
+                        <v-card-text v-if="contract.artifact">
+                            <v-row v-for="(method, methodIdx) in contractWriteMethods" :key="methodIdx" class="pb-4">
+                                <v-col cols="5">
+                                    <Contract-Write-Method :contract="contract" :method="method" :options="{...callOptions}" />
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                        <v-card-text v-else>
+                            <i>Upload an artifact to call this contract's methods.</i>
+                        </v-card-text>
+                    </div>
                 </v-card>
             </v-tab-item>
 
             <v-tab-item value="storage" v-if="contract">
                 <h4>Structure</h4>
                 <v-card outlined class="mb-4">
-                    <v-card-text v-if="storage.structure">
+                    <v-skeleton-loader class="col-4" type="list-item-three-line" v-if="storageLoader"></v-skeleton-loader>
+                    <v-card-text v-if="storage.structure && !storageLoader && !storageError">
                         <Storage-Structure :storage="node" @addStorageStructureChild="addStorageStructureChild" v-for="(node, key, idx) in storage.structure.nodes" :key="idx" />
                     </v-card-text>
-                    <v-card-text v-else>
-                        <i>Upload contract artifact <router-link :to="`/address/${this.contract.address}?tab=contract`">here</router-link> to see variables of this contract.</i>
+                    <v-card-text v-if="!storage.structure && !storageLoader || storageError">
+                        <span v-if="storageError">
+                            Error while loading storage. You might have loaded an invalid key (maybe a badly formatted address?).<br>
+                            <span v-if="storageErrorMessage">
+                                Error message was: <b>{{ storageErrorMessage }}</b>
+                            </span><br>
+                            <a href="#" @click.prevent="resetStorage()">Click here</a> to reset storage.
+                        </span>
+                        <i v-else>Upload contract artifact <router-link :to="`/address/${this.contract.address}?tab=contract`">here</router-link> to see variables of this contract.</i>
                     </v-card-text>
                 </v-card>
                 <v-row>
@@ -127,7 +155,10 @@
                     </v-col>
                     <v-col cols="9">
                         <h4>Data</h4>
-                        <Transaction-Data :transactionHash="selectedTransaction.hash" :abi="contract.abi" :key="selectedTransaction.hash" />
+                        <v-card outlined v-if="dataLoader">
+                            <v-skeleton-loader class="col-5" type="list-item-three-line"></v-skeleton-loader>
+                        </v-card>
+                        <Transaction-Data v-if="!dataLoader" @decodeTx="decodeTx" :transactionHash="selectedTransaction.hash" :abi="contract.abi" :key="selectedTransaction.hash" />
                     </v-col>
                 </v-row>
             </v-tab-item>
@@ -136,12 +167,9 @@
 </template>
 
 <script>
-const Web3 = require('web3');
-const Decoder = require("@truffle/decoder");
+const ethers = require('ethers');
 
 import { mapGetters } from 'vuex';
-import { Storage } from '../lib/storage';
-import { getProvider } from '../lib/utils';
 
 import TransactionsList from './TransactionsList';
 import StorageStructure from './StorageStructure';
@@ -176,26 +204,24 @@ export default {
             }
         },
         accounts: [],
-        web3: null,
-        contractInstance: null,
         callOptions: {
             from: null,
-            gas: null,
+            gasLimit: null,
             gasPrice: null
         },
         storage: {},
         transactionsFrom: [],
         transactionsTo: [],
+        storageLoader: true,
+        dataLoader: false,
+        contractLoader: false,
+        storageError: false
     }),
     created: function() {
-        var provider = getProvider(this.currentWorkspace.rpcServer);
-        if (provider) {
-            this.web3 = new Web3(provider);
-            this.web3.eth.getBalance(this.hash).then(balance => this.balance = balance);
-            this.callOptions.from = this.currentWorkspace.settings.defaultAccount;
-            this.callOptions.gas = this.currentWorkspace.settings.gas;
-            this.callOptions.gasPrice = this.currentWorkspace.settings.gasPrice;
-        }
+        this.server.getAccountBalance(this.hash).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
+        this.callOptions.from = this.currentWorkspace.settings.defaultAccount;
+        this.callOptions.gasLimit = this.currentWorkspace.settings.gasLimit;
+        this.callOptions.gasPrice = this.currentWorkspace.settings.gasPrice;
         if (!this.tab) {
             this.tab = 'transactions';
         }
@@ -211,39 +237,43 @@ export default {
         },
         selectedTransactionChanged: function(transaction) {
             this.selectedTransaction = transaction;
-            if (!this.selectedTransaction.storage && this.storage != {} ) {
-                this.storage.decodeData(transaction.blockNumber).then((data) => {
-                    this.db.collection('transactions')
-                        .doc(transaction.hash)
-                        .update({
-                            storage: data
-                        });
-                })
+            if (this.selectedTransaction.hash && !this.selectedTransaction.storage) {
+                this.decodeTx(this.selectedTransaction);
             }
         },
-        addStorageStructureChild: function(struct, idx, newKey) {
-            this.storage.watchNewKey(struct, newKey).then(() => this.rebuildStorage());
-        },
-        rebuildStorage: function() {
-            this.storage.buildStructure().then(() => {
-                this.db.collection('contracts')
-                    .doc(this.hash)
+        decodeTx: function(transaction) {
+            this.dataLoader = true;
+            this.server.decodeData(this.contract, this.currentWorkspace.rpcServer, transaction.blockNumber).then((data) => {
+                this.db.collection('transactions')
+                    .doc(transaction.hash)
                     .update({
-                        watchedPaths: JSON.stringify(this.storage.watchedPaths)
-                    });
-            });
+                        storage: data
+                    })
+                    .finally(() => this.dataLoader = false);
+            })
+        },
+        addStorageStructureChild: function(struct, idx, newKey) {
+            this.storageLoader = true;
+            this.contract.watchedPaths.push([...struct.path, newKey]);
+            this.db.collection('contracts')
+                .doc(this.hash)
+                .update({ watchedPaths: JSON.stringify(this.contract.watchedPaths) })
+                .then(this.decodeContract);
         },
         decodeContract: function() {
+            this.storageError = false;
+            this.storageErrorMessage = '';
+            if (this.dependenciesNeded()) {
+                return this.storageLoader = false;
+            }
+            this.server.getStructure(this.contract, this.currentWorkspace.rpcServer)
+                .then(storage => this.storage = storage)
+                .catch((message) => {
+                    this.storageError = true;
+                    this.storageErrorMessage = message;
+                })
+                .finally(() => this.storageLoader = false)
 
-            if (this.dependenciesNeded()) return;
-
-            var dependenciesArtifacts = Object.entries(this.contract.dependencies).map(dep => JSON.parse(dep[1].artifact));
-            Decoder.forArtifactAt(JSON.parse(this.contract.artifact), this.web3, this.contract.address, dependenciesArtifacts)
-                .then(instanceDecoder => {
-                    this.contractInstance = new this.web3.eth.Contract(this.contract.abi, this.hash);
-                    this.storage = new Storage(instanceDecoder);
-                    this.storage.buildStructure().then(() => this.storage.watch(this.contract.watchedPaths));
-                });
         },
         dependenciesNeded: function() {
             for (const key in this.contract.dependencies) {
@@ -251,6 +281,15 @@ export default {
                     return true;
             }
             return false;
+        },
+        resetStorage: function() {
+            this.db.collection('contracts')
+                .doc(this.hash)
+                .update({ watchedPaths: JSON.stringify([]) })
+                .then(() => {
+                    this.contract.watchedPaths = [];
+                    this.decodeContract();
+                });
         }
     },
     watch: {
@@ -260,6 +299,7 @@ export default {
                 this.$bind('accounts', this.db.collection('accounts'));
                 this.$bind('transactionsFrom', this.db.collection('transactions').where('from', '==', hash));
                 this.$bind('transactionsTo', this.db.collection('transactions').where('to', '==', hash).orderBy('blockNumber', 'desc'));
+                this.contractLoader = true;
                 this.db.collection('contracts').doc(hash).withConverter({ fromFirestore: this.db.contractSerializer }).get().then((doc) => {
                     if (!doc.exists) {
                         return;
@@ -278,7 +318,11 @@ export default {
                             }
                             this.decodeContract();
                         }
-                    });
+                        else {
+                            this.storageLoader = false;
+                        }
+                    })
+                    .finally(() => this.contractLoader = false);
                 })
             }
         }

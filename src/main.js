@@ -6,6 +6,7 @@ import Vuex from 'vuex';
 
 import vuetify from './plugins/vuetify';
 import { dbPlugin, auth } from './plugins/firebase';
+import { serverPlugin } from './plugins/server';
 import { firestorePlugin } from 'vuefire';
 
 import App from './App.vue';
@@ -117,6 +118,7 @@ const store = new Vuex.Store({
 });
 
 Vue.use(dbPlugin, { store: store });
+Vue.use(serverPlugin, { store: store });
 
 new Vue({
     vuetify,

@@ -9,6 +9,6 @@ export const getProvider = function(rpcServer) {
         return new Web3.providers.WebsocketProvider(rpcServer);
     }
     if (rpcServer.startsWith('http://') || rpcServer.startsWith('https://')) {
-        return new Web3.providers.HttpProvider(rpcServer);
+        return new Web3.providers.HttpProvider(rpcServer, { keepAlive: true, withCredentials: true });
     }
 }
