@@ -1,6 +1,8 @@
 <template>
     <v-toolbar dense flat class="grey lighten-3">
         Workspace: {{ currentWorkspace.name }}
+        <v-divider vertical inset class="mx-2"></v-divider>
+        {{ currentWorkspace.rpcServer }}
         <v-spacer></v-spacer>
         <a href="https://doc.tryethernal.com" target="_blank">Documentation</a>
         <v-divider vertical inset class="mx-2"></v-divider>
@@ -9,29 +11,26 @@
 </template>
 
 <script>
+const ethers = require('ethers');
 import Vue from 'vue';
-import Web3 from 'web3';
 import { mapGetters } from 'vuex';
 
 import { auth } from '../plugins/firebase.js';
 import { bus } from '../bus.js';
-import { getProvider } from '../lib/utils.js';
 
 export default Vue.extend({
     name: 'RpcConnector',
-    data: () => ({
-        web3: null,
-    }),
     created: function() {
         if (auth().currentUser) {
-            this.web3 = new Web3(getProvider(this.currentWorkspace.rpcServer));
             bus.$on('syncAccount', this.syncAccount);
-            this.web3.eth.getAccounts().then(accounts => accounts.forEach(this.syncAccount));
         }
+        this.server.getAccounts()
+            .then((data) => data.forEach(this.syncAccount));
     },
     methods: {
         syncAccount: function(account) {
-            this.web3.eth.getBalance(account).then(balance => this.db.collection('accounts').doc(account).set({ balance: balance }));
+            this.server.getAccountBalance(account)
+                .then((data) => this.db.collection('accounts').doc(account).set({ balance: ethers.BigNumber.from(data).toString() }, { merge: true }))
         }
     },
     computed: {

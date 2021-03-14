@@ -1,5 +1,4 @@
 const Web3 = require('web3');
-const Web3HttpProvider = require('web3-providers-http');
 
 export const sanitize = function(obj) {
     return Object.fromEntries(Object.entries(obj).filter(([, v]) => v != null));

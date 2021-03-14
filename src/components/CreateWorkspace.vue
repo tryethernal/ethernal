@@ -8,13 +8,11 @@
 
     <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" :disabled="!name || !rpcServer || loading" @click="createWorkspace(name, rpcServer)">Create</v-btn>
+        <v-btn :loading="loading" color="primary" :disabled="!name || !rpcServer" @click="createWorkspace(name, rpcServer)">Create</v-btn>
     </v-card-actions>
 </v-card>
 </template>
 <script>
-import { functions } from '../plugins/firebase';
-
 export default {
     name: 'CreateWorkspace',
     data: () => ({
@@ -27,22 +25,23 @@ export default {
     methods: {
         createWorkspace: async function(name, rpcServer) {
             try {
+                this.loading = true;
                 if (this.existingWorkspaces.indexOf(name) > -1) {
                     return this.errorMessage = 'A workspace with this name already exists.';
                 }
 
-                var workspace = await functions.httpsCallable('initRpcServer')({ rpcServer: rpcServer })
+                var workspace = await this.server.initRpcServer(rpcServer);
 
-                console.log(workspace);
-                var res = this.db.currentUser()
+                await this.db.currentUser()
                     .collection('workspaces')
-                    .doc(name).set(workspace);
+                    .doc(name)
+                    .set(workspace);
 
-                if (res) {
-                    this.$emit('workspaceCreated', workspace);
-                }
+                this.$emit('workspaceCreated', { workspace: workspace, name: name });
+                this.loading = false;
             } catch(error) {
                 console.log(error);
+                this.loading = false;
                 if (error.code && error.code == 1006) {
                     return this.errorMessage = "Can't connect to the server";
                 }

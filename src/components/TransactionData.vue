@@ -1,6 +1,15 @@
 <template>
     <v-card outlined>
         <v-card-text v-if="transactionHash">
+            <div class="text-right">
+                <Hash-Link :type="'address'" :hash="transactionHash" />
+                <v-divider vertical class="mx-2"></v-divider>
+                <router-link :to="`/block/${transaction.blockNumber}`">{{ transaction.blockNumber }}</router-link>
+                <v-divider vertical class="ml-2"></v-divider>
+                <v-btn @click="reload" icon text class="primary--text">
+                    <v-icon small class="link">mdi-reload</v-icon>
+                </v-btn>
+            </div>
             <pre>{{ transaction.storage }}</pre>
             <Transaction-Function-Call class="my-1" :jsonInterface="jsonInterface" :transaction="transaction"  />
             <Transaction-Event v-for="(log, idx) in transaction.receipt.logs" :jsonInterface="jsonInterface" :log="log" :key="idx" />
@@ -15,13 +24,15 @@ import { ethers } from 'ethers';
 
 import TransactionFunctionCall from './TransactionFunctionCall';
 import TransactionEvent from './TransactionEvent';
+import HashLink from './HashLink';
 
 export default {
     name: 'TransactionData',
     props: ['transactionHash', 'abi'],
     components: {
         TransactionFunctionCall,
-        TransactionEvent
+        TransactionEvent,
+        HashLink
     },
     data: () => ({
         keyStorage: 0,
@@ -36,6 +47,12 @@ export default {
                 this.jsonInterface = new ethers.utils.Interface(this.abi);
             }
         })
+    },
+    methods: {
+        reload: function() {
+            if (this.transaction.blockNumber)
+                this.$emit('decodeTx', this.transaction);
+        }
     }
 }
 </script>

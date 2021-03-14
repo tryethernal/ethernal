@@ -1,0 +1,327 @@
+const ethers = require('ethers');
+const Web3 = require('web3');
+const Decoder = require("@truffle/decoder");
+
+import { Storage } from '../lib/storage';
+import { functions } from './firebase';
+
+const serverFunctions = {
+    // Private
+    _getDependenciesArtifact: function(contract) {
+        return contract.dependencies ? Object.entries(contract.dependencies).map(dep => JSON.parse(dep[1].artifact)) : [];
+    },
+    _buildStructure: async function(contract, rpcServer) {
+        var web3 = new Web3(serverFunctions._getWeb3Provider(rpcServer));
+        var parsedArtifact = JSON.parse(contract.artifact);
+        var contractAddress = contract.address;
+        var dependenciesArtifacts = serverFunctions._getDependenciesArtifact(contract);
+        var instanceDecoder = await Decoder.forArtifactAt(parsedArtifact, web3, contractAddress, dependenciesArtifacts);
+        var storage = new Storage(instanceDecoder);
+        await storage.buildStructure();
+        return storage;
+    },
+    _getWeb3Provider: function(url) {
+        const rpcServer = new URL(url);
+        var provider;
+        if (rpcServer.protocol == 'http:' || rpcServer.protocol == 'https:') {
+            provider = Web3.providers.HttpProvider;
+        }
+        else if (rpcServer.protocol == 'ws:' || rpcServer.protocol == 'wss:') {
+            provider = Web3.providers.WebsocketProvider;
+        }
+
+        return new provider(url);
+    },
+    _getProvider: function(url) {
+        const rpcServer = new URL(url);
+        var urlInfo;
+        var provider = ethers.providers.WebSocketProvider;
+
+        if (rpcServer.username != '' && rpcServer.password != '') {
+            urlInfo = {
+                url: `${rpcServer.origin}${rpcServer.pathName ? rpcServer.pathName : ''}`,
+                user: rpcServer.username,
+                password: rpcServer.password
+            };
+        }
+        else {
+            urlInfo = rpcServer.href;
+        }
+
+        if (rpcServer.protocol == 'http:' || rpcServer.protocol == 'https:') {
+            provider = ethers.providers.JsonRpcProvider;
+        }
+        else if (rpcServer.protocol == 'ws:' || rpcServer.protocol == 'wss:') {
+            provider = ethers.providers.WebSocketProvider;
+        }
+
+        return new provider(urlInfo);
+    },
+
+
+    // Public
+    getStructure: async function(data) {
+        try {
+            var structure = await serverFunctions._buildStructure(data.contract, data.rpcServer, data.dependenciesArtifact);
+            await structure.watch(data.contract.watchedPaths);
+            return structure.toJSON();
+        } catch(error) {
+            console.log(error);
+            var reason = error.reason || error.message || "Can't connect to the server";
+            throw reason;
+        }
+    },
+    getAccounts: async function(data) {
+        try {
+            const rpcProvider = new serverFunctions._getProvider(data.rpcServer);
+            return await rpcProvider.listAccounts();
+        } catch(error) {
+            console.log(error);
+            var reason = error.reason || error.message || "Can't connect to the server";
+            throw reason;
+        }
+    },
+    getAccountBalance: async function(data) {
+        try {
+            const rpcProvider = new serverFunctions._getProvider(data.rpcServer);
+            var balance = await rpcProvider.getBalance(data.account);
+        return balance;
+        } catch(error) {
+            console.log(error);
+            var reason = error.reason || error.message || "Can't connect to the server";
+            throw reason;
+        }
+    },
+    decodeData: async function(data) {
+        try {
+            var structure = await serverFunctions._buildStructure(data.contract, data.rpcServer);
+            await structure.watch(data.contract.watchedPaths);
+            var decoded = await structure.decodeData(data.blockNumber);
+            return decoded;
+        } catch(error) {
+            console.log(error);
+            var reason = error.reason || error.message || "Can't connect to the server";
+            throw reason;
+        }
+    },
+    initRpcServer: async function(data) {
+        try {
+            const rpcProvider = new serverFunctions._getProvider(data.rpcServer);
+            var networkId = (await rpcProvider.getNetwork()).chainId;
+            var latestBlockNumber = await rpcProvider.getBlockNumber();
+            var latestBlock = await rpcProvider.getBlock(latestBlockNumber);
+            var accounts = await rpcProvider.listAccounts();
+            var gasLimit = latestBlock.gasLimit.toString();
+
+            var workspace = {
+                rpcServer: data.rpcServer,
+                networkId: networkId,
+                settings: {
+                    defaultAccount: accounts[0],
+                    gasLimit: gasLimit
+                }
+            };
+            return workspace;
+        } catch(error) {
+            console.log(error);
+            var reason = error.reason || error.message || "Can't connect to the server";
+            throw reason;
+        }
+    },
+    callContractReadMethod: async function(data) {
+        try {
+            var provider = serverFunctions._getProvider(data.rpcServer);
+            var signer;
+            var options = {
+                gasLimit: data.options.gasLimit,
+                gasPrice: data.options.gasPrice
+            };
+            if (data.options.pkey) {
+                signer = new ethers.Wallet(data.options.pkey, provider);
+            }
+            else {
+                signer = provider.getSigner(data.options.from);
+            }
+            var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
+            return await contract.functions[data.method](...Object.values(data.params), options);
+        } catch(error) {
+            console.log(error);
+            var reason = error.reason || error.message || "Can't connect to the server";
+            throw reason;
+        }
+    },
+    callContractWriteMethod: async function(data) {
+        try {
+            var provider = serverFunctions._getProvider(data.rpcServer);
+            var signer;
+            var options = {
+                gasLimit: data.options.gasLimit,
+                gasPrice: data.options.gasPrice
+            };
+            if (data.options.pkey) {
+                signer = new ethers.Wallet(data.options.pkey, provider);
+            }
+            else {
+                signer = provider.getSigner(data.options.from);
+                signer.unlock()
+            }
+            var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
+            return await contract[data.method](...Object.values(data.params), options);
+        } catch(error) {
+            console.log(error);
+            var reason = error.reason || error.message || "Can't connect to the server";
+            throw reason;
+        }
+    }
+};
+
+export const serverPlugin = {
+    install(Vue, options) {
+        var store = options.store;
+
+        var _isLocalhost = function(rpcServer) {
+            var host = rpcServer || _rpcServer();
+            return new URL(host).hostname === 'localhost' || new URL(host).hostname === '127.0.01';
+        };
+
+        var _rpcServer = function() {
+            return store.getters.currentWorkspace.rpcServer;
+        }
+
+        Vue.prototype.server = {
+            getAccounts: function() {
+                console.log(`Localhost: ${_isLocalhost()}`)
+                if (_isLocalhost()) {
+                    return new Promise((resolve, reject) => {
+                        serverFunctions
+                            .getAccounts({ rpcServer: _rpcServer() })
+                            .then(resolve)
+                            .catch(reject)
+                    });
+                }
+                else {
+                    return new Promise((resolve, reject) => {
+                        functions
+                            .httpsCallable('getAccounts')({ rpcServer: _rpcServer() })
+                            .then((res) => resolve(res.data))
+                            .catch(reject)
+                    });
+                }
+            },
+            getAccountBalance: function(account) {
+                console.log(`Localhost: ${_isLocalhost()}`)
+                if (_isLocalhost()) {
+                    return new Promise((resolve, reject) => {
+                        serverFunctions
+                            .getAccountBalance({ rpcServer: _rpcServer(), account: account })
+                            .then(resolve)
+                            .catch(reject)
+                    });
+                }
+                else {
+                    return new Promise((resolve, reject) => {
+                        functions
+                            .httpsCallable('getAccountBalance')({ rpcServer: _rpcServer(), account: account })
+                            .then((res) => resolve(res.data))
+                            .catch(reject)
+                    });
+                }
+            },
+            initRpcServer: function(rpcServer) {
+                console.log(`Localhost: ${_isLocalhost(rpcServer)}`)
+                if (_isLocalhost(rpcServer)) {
+                    return new Promise((resolve, reject) => {
+                        serverFunctions
+                            .initRpcServer({ rpcServer: rpcServer })
+                            .then(resolve)
+                            .catch(reject)
+                    });
+                }
+                else {
+                    return new Promise((resolve, reject) => {
+                        functions
+                            .httpsCallable('initRpcServer')({ rpcServer: rpcServer })
+                            .then((res) => resolve(res.data))
+                            .catch(reject)
+                    });
+                }
+            },
+            callContractReadMethod: function(contract, method, options, params, rpcServer) {
+                console.log(`Localhost: ${_isLocalhost()}`);
+                if (_isLocalhost()) {
+                    return new Promise((resolve, reject) => {
+                        serverFunctions
+                            .callContractReadMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer })
+                            .then(resolve)
+                            .catch(reject)
+                    });
+                }
+                else {
+                    return new Promise((resolve, reject) => {
+                        functions
+                            .httpsCallable('callContractReadMethod')({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer })
+                            .then((res) => resolve(res.data))
+                            .catch(reject)
+                    });
+                }
+            },
+            callContractWriteMethod: function(contract, method, options, params, rpcServer) {
+                console.log(`Localhost: ${_isLocalhost()}`);
+                if (_isLocalhost()) {
+                    return new Promise((resolve, reject) => {
+                        serverFunctions
+                            .callContractWriteMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer })
+                            .then(resolve)
+                            .catch(reject)
+                    });
+                }
+                else {
+                    return new Promise((resolve, reject) => {
+                        functions
+                            .httpsCallable('callContractWriteMethod')({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer })
+                            .then((res) => resolve(res.data))
+                            .catch(reject)
+                    });
+                }
+            },
+            getStructure: function(contract, rpcServer, dependenciesArtifact) {
+                console.log(`Localhost: ${_isLocalhost()}`);
+                if (_isLocalhost()) {
+                    return new Promise((resolve, reject) => {
+                        serverFunctions
+                            .getStructure({ contract: contract, rpcServer: rpcServer, dependenciesArtifact: dependenciesArtifact })
+                            .then(resolve)
+                            .catch(reject)
+                    });
+                }
+                else {
+                    return new Promise((resolve, reject) => {
+                        functions
+                            .httpsCallable('getStructure')({ contract: contract, rpcServer: rpcServer, dependenciesArtifact: dependenciesArtifact })
+                            .then((res) => resolve(res.data))
+                            .catch(reject)
+                    });
+                }
+            },
+            decodeData: function(contract, rpcServer, blockNumber) {
+                console.log(`Localhost: ${_isLocalhost()}`);
+                if (_isLocalhost()) {
+                    return new Promise((resolve, reject) => {
+                        serverFunctions
+                            .decodeData({ contract: contract, rpcServer: rpcServer, blockNumber: blockNumber })
+                            .then(resolve)
+                            .catch(reject)
+                    });
+                }
+                else {
+                    return new Promise((resolve, reject) => {
+                        functions
+                            .httpsCallable('decodeData')({ contract: contract, rpcServer: rpcServer, blockNumber: blockNumber })
+                            .then((res) => resolve(res.data))
+                            .catch(reject)
+                    });
+                }
+            }
+        };
+    }
+};

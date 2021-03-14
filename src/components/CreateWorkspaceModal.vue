@@ -12,14 +12,12 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="close()">Close</v-btn>
-            <v-btn color="primary" :disabled="!name || !rpcServer || loading" text @click.stop="createWorkspace(name, rpcServer)">Create</v-btn>
+            <v-btn :loading="loading" color="primary" :disabled="!name || !rpcServer" text @click.stop="createWorkspace(name, rpcServer)">Create</v-btn>
         </v-card-actions>
     </v-card>
 </v-dialog>
 </template>
 <script>
-import { functions } from '../plugins/firebase';
-
 export default {
     name: 'CreateWorkspaceModal',
     data: () => ({
@@ -47,17 +45,21 @@ export default {
         },
         createWorkspace: async function(name, rpcServer) {
             try {
-                var workspace = await functions.httpsCallable('initRpcServer')({ rpcServer: rpcServer })
-
-                var res = this.db.currentUser()
+                this.loading = true;
+                var workspace = await this.server.initRpcServer(rpcServer);
+                await this.db.currentUser()
                     .collection('workspaces')
-                    .doc(name).set(workspace.data);
+                    .doc(name)
+                    .set(workspace);
 
-                if (res) {
-                    this.resolve({ name: name });
-                    this.reset();
-                }
+                var wsRef = await this.db.getWorkspace(name);
+
+                this.db.currentUser().update({ currentWorkspace: wsRef });
+                this.$store.dispatch('updateCurrentWorkspace', { ...workspace, name: name })
+                this.resolve(name);
+                this.reset();
             } catch(error) {
+                this.loading = false;
                 if (error.code && error.code == 1006) {
                     return this.errorMessage = "Can't connect to the server";
                 }
@@ -65,6 +67,7 @@ export default {
             }
         },
         reset: function() {
+            this.loading = false;
             this.dialog = false;
             this.resolve = null;
             this.reject = null;

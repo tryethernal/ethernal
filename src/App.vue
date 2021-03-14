@@ -118,7 +118,8 @@ export default {
                     else {
                         this.db.workspaces().get().then(workspacesQuery => {
                             if (workspacesQuery.docs.length) {
-                                this.loadWorkspace(workspacesQuery.docs[0].id);
+                                this.db.currentUser().update({ currentWorkspace: workspacesQuery.docs[0].ref });
+                                this.loadWorkspace(workspacesQuery.docs[0].ref);
                             }
                             else {
                                 this.launchOnboarding();
@@ -147,8 +148,8 @@ export default {
                 })
         },
         loadWorkspace: function(currentWorkspace) {
-            this.db.getWorkspace(currentWorkspace).get().then((workspace) => {
-                this.$store.dispatch('updateCurrentWorkspace', workspace.data());
+            currentWorkspace.get().then((workspace) => {
+                this.$store.dispatch('updateCurrentWorkspace', { ...workspace.data(), name: workspace.id });
                 this.appBarComponent = 'rpc-connector';
                 this.routerComponent = 'router-view';
             });

@@ -199,6 +199,13 @@ var _Storage = class Storage {
         this.data = {};
     }
 
+    toJSON() {
+        return {
+            data: this.data,
+            structure: this.structure
+        }
+    }
+
     get watchedPaths() {
         var paths = []
         this.structure.nodes.forEach((node) => paths.push(node.getWatchedPaths()));
@@ -240,9 +247,10 @@ var _Storage = class Storage {
     }
 
     watch(paths = []) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             Promise.all(paths.map((path) => this.watchPath(path)))
-                .then(() => this.buildStructure().then(resolve));
+                .then(() => this.buildStructure().then(resolve))
+                .catch(reject);
         });
     }
 };

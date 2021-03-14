@@ -32,6 +32,7 @@
 </template>
 <script>
 const Web3 = require('web3');
+import { mapGetters } from 'vuex';
 import { sanitize } from '../lib/utils';
 
 export default {
@@ -48,20 +49,23 @@ export default {
         loading: false
     }),
     methods: {
-        sendMethod: function(method) {
+        sendMethod: async function(method) {
             try {
                 this.loading = true;
                 this.result = {
                     txHash: null,
                     message: null
                 };
-                var options = sanitize({...this.options, value: this.value});
-                if (!this.options.gas || parseInt(this.options.gas) < 1) {
+                var account = await this.db.collection('accounts').doc(this.options.from).get();
+                var options = sanitize({...this.options, value: this.value, pkey: account.data().pkey });
+                console.log(options)
+                if (!this.options.gasLimit || parseInt(this.options.gasLimit) < 1) {
                     throw { reason: 'You must set a gas limit' }
                 }
-                this.contract.methods[method.name](...Object.values(this.params)).send(options)
+                this.server.callContractWriteMethod(this.contract, method.name, options, this.params, this.currentWorkspace.rpcServer)
                     .then(res => {
-                        this.result.txHash = res.transactionHash;
+                        console.log(res)
+                        this.result.txHash = res.hash;
                     })
                     .catch(error => {
                         if (error.data) {
@@ -91,6 +95,7 @@ export default {
                     this.result.message = `Error: ${error.reason.split('(')[0]}`;
                 }
                 else {
+                    console.log(error)
                     this.result.message = 'Error while sending the transaction.'
                 }
                 this.loading = false;
@@ -98,6 +103,9 @@ export default {
         }
     },
     computed: {
+        ...mapGetters([
+            'currentWorkspace'
+        ]),
         value: function() {
             return this.web3.utils.toWei(this.valueInEth.toString(), 'ether');
         }
