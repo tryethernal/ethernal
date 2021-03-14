@@ -66,10 +66,12 @@ export default {
         transactions: []
     }),
     methods: {
-        onWorkspaceCreated: function(workspace) {
-            this.$store.dispatch('updateCurrentWorkspace', workspace);
+        onWorkspaceCreated: async function(workspaceData) {
             this.stepperIndex = 2;
-            this.$bind('transactions', this.db.collection('transactions'))
+            var wsRef = await this.db.getWorkspace(workspaceData.name);
+            this.db.currentUser().update({ currentWorkspace: wsRef });
+            this.$store.dispatch('updateCurrentWorkspace', { ...workspaceData.workspace, name: workspaceData.name })
+                .then(() => this.$bind('transactions', this.db.collection('transactions')))
         },
         goToDashboard: function() {
             document.location.href = '/transactions';

@@ -16,6 +16,9 @@
     </div>
 </template>
 <script>
+const ethers = require('ethers');
+import { mapGetters } from 'vuex';
+
 export default {
     name: 'ContractReadMethod',
     props: ['method', 'contract', 'options'],
@@ -28,9 +31,9 @@ export default {
         callMethod: function(method) {
             try {
                 this.loading = true;
-                this.contract.methods[method.name](...(Object.values(this.params) || [])).call(this.options)
+                this.server.callContractReadMethod(this.contract, method.name, this.options, this.params, this.currentWorkspace.rpcServer)
                     .then(res => {
-                        this.result = res;
+                        this.result = res.map(val => ethers.BigNumber.from(val).toString()).join(' | ');
                     })
                     .catch(error => {
                         this.result = error;
@@ -39,6 +42,7 @@ export default {
                         this.loading = false;
                     })
             } catch(error) {
+                console.log(error)
                 if (error.reason)
                     this.result = `Error: ${error.reason.split('(')[0]}`;
                 else
@@ -46,6 +50,11 @@ export default {
                 this.loading = false;
             }
         }
+    },
+    computed: {
+        ...mapGetters([
+            'currentWorkspace'
+        ])
     }
 }
 </script>

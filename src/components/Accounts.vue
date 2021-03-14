@@ -1,6 +1,7 @@
 <template>
     <v-container fluid>
         <Add-Account-Modal ref="addAccountModalRef" />
+        <Unlock-Account-Modal ref="openUnlockAccountModalRef" />
         <v-data-table
             loading="true"
             :items="accounts"
@@ -17,6 +18,9 @@
             <template v-slot:item.balance="{ item }">
                 {{ item.balance | fromWei  }}
             </template>
+            <template v-slot:item.actions="{ item }">
+                <a href="#" @click.prevent="openUnlockAccountModal(item)">Set Private Key</a>
+            </template>
         </v-data-table>
     </v-container>
 </template>
@@ -25,6 +29,7 @@
 import { bus } from '../bus';
 
 import AddAccountModal from './AddAccountModal';
+import UnlockAccountModal from './UnlockAccountModal';
 import HashLink from './HashLink';
 import FromWei from '../filters/FromWei';
 
@@ -32,7 +37,8 @@ export default {
     name: 'Accounts',
     components: {
         HashLink,
-        AddAccountModal
+        AddAccountModal,
+        UnlockAccountModal
     },
     filters: {
         FromWei
@@ -47,6 +53,10 @@ export default {
             {
                 text: 'Balance',
                 value: 'balance'
+            },
+            {
+                text: 'Actions',
+                value: 'actions'
             }
         ]
     }),
@@ -60,6 +70,9 @@ export default {
     methods: {
         openAddAccountModal: function() {
             this.$refs.addAccountModalRef.open()
+        },
+        openUnlockAccountModal: function(account) {
+          this.$refs.openUnlockAccountModalRef.open({ address: account.address })
         }
     }
 }

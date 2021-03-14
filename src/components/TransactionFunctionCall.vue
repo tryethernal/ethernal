@@ -27,7 +27,7 @@ export default {
     }),
     watch: {
         jsonInterface: function(jsonInterface) {
-            this.parsedTransactionData = jsonInterface.parseTransaction({ data: this.transaction.input, value: this.transaction.value });
+            this.parsedTransactionData = jsonInterface.parseTransaction({ data: this.transaction.data, value: this.transaction.value });
         }
     },
     methods: {
