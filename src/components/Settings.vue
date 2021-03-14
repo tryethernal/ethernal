@@ -20,7 +20,8 @@
 
                 <h4>Default Contracts Call Options</h4>
                 <v-card outlined class="mb-4">
-                    <v-card-text>
+                    <v-skeleton-loader type="list-item-three-line" v-if="optionsLoader"></v-skeleton-loader>
+                    <v-card-text v-else>
                        <v-select
                             outlined
                             label="Default From Account"
@@ -38,15 +39,14 @@
                         </v-text-field>
                         <v-text-field
                             outlined
-                            v-model="settings.gas"
+                            v-model="settings.gasLimit"
                             class="mt-4"
                             hide-details="auto"
                             label="Default Maximum Gas">
                         </v-text-field>
 
                         <div justify="end">
-                            <v-btn v-show="!updating" depressed color="primary" class="mt-1" @click="update()">Update</v-btn>
-                            <v-btn v-show="updating" disabled depressed color="primary" class="mt-1" @click="update()"><v-icon>mdi-cached</v-icon>Updating...</v-btn>
+                            <v-btn :loading="loading" depressed color="primary" class="mt-1" @click="update()">Update</v-btn>
                         </div>
                     </v-card-text>
                 </v-card>
@@ -66,7 +66,7 @@
                                 </v-toolbar>
                             </template>
                             <template v-slot:item.actions="{ item }">
-                                <v-icon @click="switchWorkspace(item)">mdi-swap-horizontal</v-icon>
+                                <v-icon @click="switchWorkspace(item.id)">mdi-swap-horizontal</v-icon>
                             </template>
                         </v-data-table>
                     </v-card-text>
@@ -102,18 +102,20 @@ export default {
         settings: {},
         workspaces: [],
         accounts: [],
-        updating: false,
+        loading: false,
         updateSuccess: false,
         updateError: false,
+        optionsLoader: false
     }),
     mounted: function() {
         this.$bind('workspaces', this.db.workspaces());
-        this.$bind('settings', this.db.settings());
+        this.optionsLoader = true;
+        this.$bind('settings', this.db.settings()).finally(() => this.optionsLoader = false);
         this.$bind('accounts', this.db.collection('accounts'));
     },
     methods: {
         update: function() {
-            this.updating = true;
+            this.loading = true;
             this.updateSuccess = false;
             this.updateError = false;
             this.db.settings().update({settings: Object.fromEntries(Object.entries(this.settings).filter(([, v]) => v != null))})
@@ -123,14 +125,18 @@ export default {
                     this.$store.dispatch('updateCurrentWorkspace', this.currentWorkspace);
                 })
                 .catch(() => this.updateError = true)
-                .finally(() => this.updating = false)
+                .finally(() => this.loading = false)
 
         },
         openCreateWorkspaceModal: function() {
-            this.$refs.createWorkspaceModal.open({ workspaces: this.workspaces.map(ws => ws.id) })
+            this.$refs.createWorkspaceModal
+                .open({ workspaces: this.workspaces.map(ws => ws.id) })
+                .then((name) => this.switchWorkspace(name));
         },
-        switchWorkspace: function(workspace) {
-            this.db.currentUser().update({ currentWorkspace: workspace.id }).then(() => document.location.reload() )
+        switchWorkspace: async function(name) {
+            var wsRef = await this.db.getWorkspace(name);
+            await this.db.currentUser().update({ currentWorkspace: wsRef });
+            document.location.reload();
         }
     },
     computed: {

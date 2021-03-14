@@ -32,7 +32,7 @@
             {{ item.value | fromWei }}
         </template>
         <template v-slot:item.fee="{ item }">
-            {{ item.gasPrice * item.gas | fromWei }}
+            {{ item.gasPrice * (item.gas || item.receipt.gasUsed)  | fromWei }}
         </template>
     </v-data-table>
 </template>
