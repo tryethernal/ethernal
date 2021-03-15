@@ -5,6 +5,20 @@
 
         <v-card-text>
             <v-alert v-show="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
+            <div class="my-2">
+                <span class="primary--text">Tips for Ganache</span>
+                <v-btn color="primary" small icon @click="showTips = !showTips">
+                    <v-icon>{{ showTips ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+                </v-btn>
+                <v-expand-transition>
+                    <div v-show="showTips">
+                        <ul>
+                            <li>If you are trying to connect to a Ganache UI instance, make sure to go to "Settings" > "Server", and set "Hostname" to "All interfaces"</li>
+                            <li>If you are trying to connect to ganache-cli over your local network, use the <code>-h 0.0.0.0</code> option on ganache-cli to allow connection (more info <a href="https://github.com/trufflesuite/ganache-cli" target="_blank">here</a>.</li>
+                        </ul>
+                    </div>
+                </v-expand-transition>
+            </div>
             <v-text-field outlined v-model="name" label="Name*" hide-details="auto" class="mb-2" required></v-text-field>
             <v-text-field outlined v-model="rpcServer" label="RPC Server*" hide-details="auto" required></v-text-field>
         </v-card-text>
@@ -29,6 +43,7 @@ export default {
         dialog: false,
         resolve: null,
         reject: null,
+        showTips: false
     }),
     methods: {
         open: function(options) {
