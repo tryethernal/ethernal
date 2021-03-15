@@ -14,7 +14,7 @@
                     <div v-show="showTips">
                         <ul>
                             <li>If you are trying to connect to a Ganache UI instance, make sure to go to "Settings" > "Server", and set "Hostname" to "All interfaces"</li>
-                            <li>If you are trying to connect to ganache-cli over your local network, use the <code>-h 0.0.0.0</code> option on ganache-cli to allow connection (more info <a href="https://github.com/trufflesuite/ganache-cli" target="_blank">here</a>.</li>
+                            <li>If you are trying to connect to ganache-cli over your local network, use the <code>-h 0.0.0.0</code> option on ganache-cli to allow connection (more info <a href="https://github.com/trufflesuite/ganache-cli" target="_blank">here</a>).</li>
                         </ul>
                     </div>
                 </v-expand-transition>
@@ -22,7 +22,7 @@
             <v-alert type="warning" class="my-2" v-show="localNetwork">
                 It looks like you are trying to connect to a server running on your local network.<br>
                 If it is not accessible through https, you will need to <a href="https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html" target="_blank">allow mixed content</a> for this domain (app.tryethernal.com) in order for Ethernal to be able to send request to it.<br>
-                Another option is to setup a public URL such as <a href="https://ngrok.com/" target="_blank">ngrok</a>
+                Another option is to setup a public URL such as <a href="https://ngrok.com/" target="_blank">ngrok</a>.
             </v-alert>
             <v-text-field outlined v-model="name" label="Name*" hide-details="auto" class="mb-2" required></v-text-field>
             <v-text-field outlined v-model="rpcServer" label="RPC Server*" hide-details="auto" required></v-text-field>
@@ -81,6 +81,9 @@ export default {
                 this.reset();
             } catch(error) {
                 this.loading = false;
+                if (error.reason) {
+                    return this.errorMessage = error.reason;
+                }
                 if (error.code && error.code == 1006) {
                     return this.errorMessage = "Can't connect to the server";
                 }

@@ -63,6 +63,9 @@ export default {
             } catch(error) {
                 console.log(error);
                 this.loading = false;
+                if (error.reason) {
+                    return this.errorMessage = error.reason;
+                }
                 if (error.code && error.code == 1006) {
                     return this.errorMessage = "Can't connect to the server";
                 }
