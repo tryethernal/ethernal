@@ -2,7 +2,7 @@
     <v-card outlined>
         <v-card-text v-if="transactionHash">
             <div class="text-right">
-                <Hash-Link :type="'address'" :hash="transactionHash" />
+                <router-link :to="`/transaction/${transactionHash}`">{{ transactionHash.slice(0, 15) }}...</router-link>
                 <v-divider vertical class="mx-2"></v-divider>
                 <router-link :to="`/block/${transaction.blockNumber}`">{{ transaction.blockNumber }}</router-link>
                 <v-divider vertical class="ml-2"></v-divider>
@@ -24,15 +24,13 @@ import { ethers } from 'ethers';
 
 import TransactionFunctionCall from './TransactionFunctionCall';
 import TransactionEvent from './TransactionEvent';
-import HashLink from './HashLink';
 
 export default {
     name: 'TransactionData',
     props: ['transactionHash', 'abi'],
     components: {
         TransactionFunctionCall,
-        TransactionEvent,
-        HashLink
+        TransactionEvent
     },
     data: () => ({
         keyStorage: 0,
