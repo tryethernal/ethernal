@@ -181,7 +181,7 @@ export const serverPlugin = {
 
         var _isLocalhost = function(rpcServer) {
             var host = rpcServer || _rpcServer();
-            return new URL(host).hostname === 'localhost' || new URL(host).hostname === '127.0.01' || new URL(host).hostname.startsWith('192.168');
+            return new URL(host).hostname === 'localhost' || new URL(host).hostname === '127.0.0.1' || new URL(host).hostname.startsWith('192.168');
         };
 
         var _rpcServer = function() {
