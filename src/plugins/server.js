@@ -68,7 +68,7 @@ const serverFunctions = {
         } catch(error) {
             console.log(error);
             var reason = error.reason || error.message || "Can't connect to the server";
-            throw reason;
+            throw { reason: reason };
         }
     },
     getAccounts: async function(data) {
@@ -78,7 +78,7 @@ const serverFunctions = {
         } catch(error) {
             console.log(error);
             var reason = error.reason || error.message || "Can't connect to the server";
-            throw reason;
+            throw { reason: reason };
         }
     },
     getAccountBalance: async function(data) {
@@ -89,7 +89,7 @@ const serverFunctions = {
         } catch(error) {
             console.log(error);
             var reason = error.reason || error.message || "Can't connect to the server";
-            throw reason;
+            throw { reason: reason };
         }
     },
     decodeData: async function(data) {
@@ -101,7 +101,7 @@ const serverFunctions = {
         } catch(error) {
             console.log(error);
             var reason = error.reason || error.message || "Can't connect to the server";
-            throw reason;
+            throw { reason: reason };
         }
     },
     initRpcServer: async function(data) {
@@ -125,7 +125,7 @@ const serverFunctions = {
         } catch(error) {
             console.log(error);
             var reason = error.reason || error.message || "Can't connect to the server";
-            throw reason;
+            throw { reason: reason };
         }
     },
     callContractReadMethod: async function(data) {
@@ -147,7 +147,7 @@ const serverFunctions = {
         } catch(error) {
             console.log(error);
             var reason = error.reason || error.message || "Can't connect to the server";
-            throw reason;
+            throw { reason: reason };
         }
     },
     callContractWriteMethod: async function(data) {
@@ -170,7 +170,7 @@ const serverFunctions = {
         } catch(error) {
             console.log(error);
             var reason = error.reason || error.message || "Can't connect to the server";
-            throw reason;
+            throw { reason: reason };
         }
     }
 };
