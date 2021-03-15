@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col cols="5">
+            <v-col lg="5">
                 <v-alert v-show="updateSuccess" dense text type="success">Settings updated</v-alert>
                 <v-alert v-show="updateError" dense text type="error">Error while updating settings</v-alert>
                 <h4>Server</h4>
