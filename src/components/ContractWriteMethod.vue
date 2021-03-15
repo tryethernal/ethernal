@@ -64,7 +64,6 @@ export default {
                 }
                 this.server.callContractWriteMethod(this.contract, method.name, options, this.params, this.currentWorkspace.rpcServer)
                     .then(res => {
-                        console.log(res)
                         this.result.txHash = res.hash;
                     })
                     .catch(error => {
@@ -80,8 +79,8 @@ export default {
                                 };
                             }
                         }
-                        else if (error.message) {
-                            this.result.message = error.message;
+                        else if (error.message || error.reason) {
+                            this.result.message = error.message || error.reason;
                         }
                         else {
                             this.result.message = 'Error while sending the transaction';
