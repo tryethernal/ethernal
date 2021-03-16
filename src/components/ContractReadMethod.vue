@@ -33,7 +33,7 @@ export default {
                 this.loading = true;
                 this.server.callContractReadMethod(this.contract, method.name, this.options, this.params, this.currentWorkspace.rpcServer)
                     .then(res => {
-                        this.result = res.map(val => ethers.BigNumber.from(val).toString()).join(' | ');
+                        this.result = res.map(val => ethers.BigNumber.isBigNumber(val) ? ethers.BigNumber.from(val).toString() : val).join(' | ');
                     })
                     .catch(error => {
                         this.result = error;
