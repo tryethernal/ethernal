@@ -56,7 +56,8 @@
                 <v-card outlined class="mb-4">
                     <v-card-text>
                         <v-data-table
-                            loading="true"
+                            :loading="loadingWorkspaces"
+                            :no-data-text="'No workspaces'"
                             :items="workspaces"
                             :headers="workspacesDataTableHeaders">
                             <template v-slot:top>
@@ -105,10 +106,11 @@ export default {
         loading: false,
         updateSuccess: false,
         updateError: false,
-        optionsLoader: false
+        optionsLoader: false,
+        loadingWorkspaces: true
     }),
     mounted: function() {
-        this.$bind('workspaces', this.db.workspaces());
+        this.$bind('workspaces', this.db.workspaces()).then(() => this.loadingWorkspaces = false);
         this.optionsLoader = true;
         this.$bind('settings', this.db.settings()).finally(() => this.optionsLoader = false);
         this.$bind('accounts', this.db.collection('accounts'));

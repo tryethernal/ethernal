@@ -1,9 +1,12 @@
 <template>
     <v-container fluid>
         <v-data-table
-            loading="true"
+            :loading="loading"
             :items="contracts"
             :headers="headers">
+            <template v-slot:no-data>
+                No contracts found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a>
+            </template>
             <template v-slot:item.address="{ item }">
                 <Hash-Link :type="'address'" :hash="item.address" />
             </template>
@@ -23,6 +26,7 @@ export default {
         FromWei
     },
     data: () => ({
+        loading: true,
         contracts: [],
         headers: [
             {
@@ -36,7 +40,7 @@ export default {
         ]
     }),
     mounted: function() {
-        this.$bind('contracts', this.db.collection('contracts'), { serialize: snapshot => Object.defineProperty(snapshot.data(), 'address', { value: snapshot.id })});
+        this.$bind('contracts', this.db.collection('contracts'), { serialize: snapshot => Object.defineProperty(snapshot.data(), 'address', { value: snapshot.id })}).then(() => this.loading = false);
     }
 }
 </script>
