@@ -15,7 +15,7 @@
             <v-tab href="#storage" v-if="contract && contract.address != null">Storage</v-tab>
 
             <v-tab-item value="transactions">
-                <Transactions-List :transactions="allTransactions" :currentAddress="hash" />
+                <Transactions-List :transactions="allTransactions" :currentAddress="hash" :loading="loadingTx" />
             </v-tab-item>
         </v-tabs>
 
@@ -215,7 +215,8 @@ export default {
         storageLoader: true,
         dataLoader: false,
         contractLoader: false,
-        storageError: false
+        storageError: false,
+        loadingTx: true
     }),
     created: function() {
         this.server.getAccountBalance(this.hash).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
@@ -297,8 +298,9 @@ export default {
             immediate: true,
             handler(hash) {
                 this.$bind('accounts', this.db.collection('accounts'));
-                this.$bind('transactionsFrom', this.db.collection('transactions').where('from', '==', hash));
-                this.$bind('transactionsTo', this.db.collection('transactions').where('to', '==', hash).orderBy('blockNumber', 'desc'));
+                var bindingTxFrom = this.$bind('transactionsFrom', this.db.collection('transactions').where('from', '==', hash));
+                var bindingTxTo = this.$bind('transactionsTo', this.db.collection('transactions').where('to', '==', hash).orderBy('blockNumber', 'desc'));
+                Promise.all([bindingTxFrom, bindingTxTo]).then(() => this.loadingTx = false);
                 this.contractLoader = true;
                 this.db.collection('contracts').doc(hash).withConverter({ fromFirestore: this.db.contractSerializer }).get().then((doc) => {
                     if (!doc.exists) {

@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <Transactions-List :transactions="transactions" />
+        <Transactions-List :transactions="transactions" :loading="loading" />
     </v-container>
 </template>
 
@@ -13,10 +13,11 @@ export default {
         TransactionsList
     },
     data: () => ({
-        transactions: []
+        transactions: [],
+        loading: true
     }),
     mounted: function() {
-        this.$bind('transactions', this.db.collection('transactions'));
+        this.$bind('transactions', this.db.collection('transactions')).then(() => this.loading = false);
     }
 }
 </script>

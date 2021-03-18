@@ -3,9 +3,13 @@
         <Add-Account-Modal ref="addAccountModalRef" />
         <Unlock-Account-Modal ref="openUnlockAccountModalRef" />
         <v-data-table
-            loading="true"
+            :loading="loading"
+            no-data-text="No Accounts"
             :items="accounts"
             :headers="headers">
+            <template v-slot:no-data>
+                No Accounts Available
+            </template>
             <template v-slot:top>
                 <v-toolbar flat dense class="py-0">
                     <v-spacer></v-spacer>
@@ -58,11 +62,13 @@ export default {
                 text: 'Actions',
                 value: 'actions'
             }
-        ]
+        ],
+        loading: true
     }),
     mounted: function() {
         this.$bind('accounts', this.db.collection('accounts'), { serialize: snapshot => Object.defineProperty(snapshot.data(), 'address', { value: snapshot.id })})
             .then(accounts => {
+                this.loading = false;
                 accounts.forEach(account => bus.$emit('syncAccount', account.address), this);
             })
 
