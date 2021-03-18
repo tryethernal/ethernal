@@ -23,7 +23,7 @@
         </v-row>
         <h4>Transactions</h4>
         <v-card outlined>
-            <Transactions-List :transactions="transactions" />
+            <Transactions-List :transactions="transactions" :loading="loadingTx" />
         </v-card>
     </v-container>
 </template>
@@ -49,7 +49,8 @@ export default {
         selectedTransaction: {},
         contract: {
             abi: {}
-        }
+        },
+        loadingTx: true
     }),
     methods: {
         selectedTransactionChanged: function(transaction) {
@@ -65,7 +66,7 @@ export default {
             immediate: true,
             handler(number) {
                 this.$bind('block', this.db.collection('blocks').doc(number));
-                this.$bind('transactions', this.db.collection('transactions').where('blockNumber', '==', parseInt(number)));
+                this.$bind('transactions', this.db.collection('transactions').where('blockNumber', '==', parseInt(number))).then(() => this.loadingTx = false);
             }
         }
     }
