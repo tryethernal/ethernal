@@ -1,11 +1,14 @@
 <template>
     <v-data-table
-        loading="true"
+        :loading="loading"
         :items="transactions"
         :sort-by="'blockNumber'"
         :sort-desc="true"
         :headers="headers"
         item-key="hash">
+        <template v-slot:no-data>
+            No transactions found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a>
+        </template>
         <template v-slot:item.hash="{ item }">
             <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
@@ -43,7 +46,7 @@ import HashLink from './HashLink.vue';
 
 export default {
     name: 'TransactionsList',
-    props: ['transactions', 'currentAddress'],
+    props: ['transactions', 'currentAddress', 'loading'],
     components: {
         HashLink
     },
