@@ -5,6 +5,9 @@ var DataNode = class DataNode {
         this.name = this.getVariableName()
 
         switch(variable.value.type.typeClass) {
+            case 'address':
+                tree[this.name] = variable.value.value.asAddress.toString();
+                break;
             case 'uint':
                 tree[this.name] = variable.value.value.asBN.toString();
                 break;
