@@ -5,12 +5,10 @@ import 'firebase/database';
 import 'firebase/functions';
 
 import { FIREBASE_CONFIG } from '../config/firebase.js';
-firebase.initializeApp(FIREBASE_CONFIG);
 
-const _db = firebase.firestore();
+const app = firebase.initializeApp(FIREBASE_CONFIG);
+const _db = app.firestore();
 const _rtdb = firebase.database();
-const _functions = firebase.functions();
-const _auth = firebase.auth;
 
 export const dbPlugin = {
     install(Vue, options) {
@@ -89,32 +87,23 @@ export const dbPlugin = {
             contractSerializer: snapshot => {
                 var res = snapshot.data();
 
-                var paths = snapshot.data().watchedPaths ? JSON.parse(snapshot.data().watchedPaths) : [];
-                Object.defineProperty(res, 'watchedPaths', { value: paths })
+                if (snapshot.data().watchedPaths)
+                    Object.defineProperty(res, 'watchedPaths', { value: JSON.parse(snapshot.data().watchedPaths) })
 
                 Object.defineProperty(res, 'dependencies', { value: {} })
 
                 return res;
-            },
-
-            functions: _functions
+            }
         };
     }
 };
 
+export const auth = firebase.auth;
+var _functions = firebase.functions();
+
 if (process.env.NODE_ENV == 'development') {
-    _functions.useFunctionsEmulator(process.env.VUE_APP_FUNCTIONS_HOST);
-    _auth().useEmulator(process.env.VUE_APP_AUTH_HOST);
-
-    const rtdbSplit = process.env.VUE_APP_RTDB_HOST.split(':');
-    _rtdb.useEmulator(rtdbSplit[0], rtdbSplit[1]);
-
-    const firestoreSplit = process.env.VUE_APP_FIRESTORE_HOST.split(':');
-    _db.useEmulator(firestoreSplit[0], firestoreSplit[1]);
+    _functions.useFunctionsEmulator('http://localhost:5001');
 }
 
-export const auth = _auth;
-export const db = _db;
-export const rtdb = _rtdb;
 export const functions = _functions;
 export const FieldValue = firebase.firestore.FieldValue;

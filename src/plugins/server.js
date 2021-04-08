@@ -29,7 +29,6 @@ const serverFunctions = {
         else if (rpcServer.protocol == 'ws:' || rpcServer.protocol == 'wss:') {
             provider = Web3.providers.WebsocketProvider;
         }
-
         return new provider(url);
     },
     _getProvider: function(url) {
@@ -107,7 +106,8 @@ const serverFunctions = {
     initRpcServer: async function(data) {
         try {
             const rpcProvider = new serverFunctions._getProvider(data.rpcServer);
-            var networkId = (await rpcProvider.getNetwork()).chainId;
+            const web3Rpc = new Web3(serverFunctions._getWeb3Provider(data.rpcServer));
+            var networkId = await web3Rpc.eth.net.getId();
             var latestBlockNumber = await rpcProvider.getBlockNumber();
             var latestBlock = await rpcProvider.getBlock(latestBlockNumber);
             var accounts = await rpcProvider.listAccounts();
