@@ -3,6 +3,7 @@ node_modules
 /dist
 screens/
 tests_output/
+firebase-emulator/
 
 # local env files
 .env.development

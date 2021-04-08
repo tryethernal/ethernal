@@ -58,7 +58,7 @@ export default {
                 };
                 var account = await this.db.collection('accounts').doc(this.options.from).get();
                 var options = sanitize({...this.options, value: this.value, pkey: account.data().pkey });
-                console.log(options)
+
                 if (!this.options.gasLimit || parseInt(this.options.gasLimit) < 1) {
                     throw { reason: 'You must set a gas limit' }
                 }
