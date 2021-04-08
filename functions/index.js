@@ -206,8 +206,6 @@ exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' 
 
     const rootPath = `users/${context.auth.uid}/workspaces/${data.workspace}`;
     const paths = ['accounts', 'blocks', 'contracts', 'transactions'].map(collection => `${rootPath}/${collection}`);
-    console.log(paths);
-    console.log(functions.config());
 
     for (var i = 0; i < paths.length; i++) {
         await firebaseTools.firestore.delete(paths[i], {
@@ -217,6 +215,13 @@ exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' 
             token: functions.config().fb.token
         });
     }
+
+    await firebaseTools.database.remove(`users/${context.auth.uid}/workspaces/${data.workspace}`, {
+        project: process.env.GCLOUD_PROJECT,
+        recursive: true,
+        yes: true,
+        token: functions.config().fb.token
+    });
 
     return { success: true };
 });
