@@ -2,6 +2,7 @@ const functions = require("firebase-functions");
 const ethers = require('ethers');
 const Web3 = require('web3');
 const Decoder = require("@truffle/decoder");
+const firebaseTools = require('firebase-tools');
 
 const Storage = require('./lib/storage');
 
@@ -197,4 +198,30 @@ exports.initRpcServer = functions.https.onCall(async (data, context) => {
         var reason = error.reason || error.message || "Can't connect to the server";
         throw new functions.https.HttpsError('unknown', reason);
     }
+});
+
+exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    const rootPath = `users/${context.auth.uid}/workspaces/${data.workspace}`;
+    const paths = ['accounts', 'blocks', 'contracts', 'transactions'].map(collection => `${rootPath}/${collection}`);
+
+    for (var i = 0; i < paths.length; i++) {
+        await firebaseTools.firestore.delete(paths[i], {
+            project: process.env.GCLOUD_PROJECT,
+            recursive: true,
+            yes: true,
+            token: functions.config().fb.token
+        });
+    }
+
+    await firebaseTools.database.remove(`users/${context.auth.uid}/workspaces/${data.workspace}`, {
+        project: process.env.GCLOUD_PROJECT,
+        recursive: true,
+        yes: true,
+        token: functions.config().fb.token
+    });
+
+    return { success: true };
 });

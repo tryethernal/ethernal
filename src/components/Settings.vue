@@ -72,6 +72,18 @@
                         </v-data-table>
                     </v-card-text>
                 </v-card>
+
+                <h4 class="error--text">Danger Zone</h4>
+                <v-sheet outlined class="pa-0 error" rounded>
+                    <v-card class="elevation-0">
+                        <v-card-text class="font-weight-medium error--text">
+                            Resetting this workspace will remove all accounts/transactions/blocks/contracts from your dashboard.
+                            You will need to resync them.
+                            This cannot be undone.
+                            <v-btn :loading="resetWorkspaceLoading" depressed color="error" class="mt-2" @click="resetWorkspace()"><v-icon>mdi-sync</v-icon>Reset Workspace</v-btn>
+                        </v-card-text>
+                    </v-card>
+                </v-sheet>
             </v-col>
         </v-row>
     </v-container>
@@ -107,7 +119,8 @@ export default {
         updateSuccess: false,
         updateError: false,
         optionsLoader: false,
-        loadingWorkspaces: true
+        loadingWorkspaces: true,
+        resetWorkspaceLoading: false
     }),
     mounted: function() {
         this.$bind('workspaces', this.db.workspaces()).then(() => this.loadingWorkspaces = false);
@@ -139,6 +152,21 @@ export default {
             var wsRef = await this.db.getWorkspace(name);
             await this.db.currentUser().update({ currentWorkspace: wsRef });
             document.location.reload();
+        },
+        resetWorkspace: function() {
+            if (confirm(`Are you sure you want to reset the workspace ${this.currentWorkspace.name}? This action is definitive.`)) {
+                this.resetWorkspaceLoading = true;
+                this.db.functions
+                    .httpsCallable('resetWorkspace')({ workspace: this.currentWorkspace.name })
+                    .then(() => {
+                        alert('Workspace reset finished!');
+                    })
+                    .catch((error) => {
+                        alert('Error while resetting the workspace, please retry');
+                        console.log(error);
+                    })
+                    .finally(() => this.resetWorkspaceLoading = false)
+            }
         }
     },
     computed: {
