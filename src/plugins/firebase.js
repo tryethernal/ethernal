@@ -95,7 +95,9 @@ export const dbPlugin = {
                 Object.defineProperty(res, 'dependencies', { value: {} })
 
                 return res;
-            }
+            },
+
+            functions: _functions
         };
     }
 };
@@ -104,7 +106,7 @@ if (process.env.NODE_ENV == 'development') {
     _functions.useFunctionsEmulator(process.env.VUE_APP_FUNCTIONS_HOST);
     _auth().useEmulator(process.env.VUE_APP_AUTH_HOST);
 
-    const rtdbSplit = process.env.VUE_APP_FIREBASE_DATABASE_URL.split(':');
+    const rtdbSplit = process.env.VUE_APP_RTDB_HOST.split(':');
     _rtdb.useEmulator(rtdbSplit[0], rtdbSplit[1]);
 
     const firestoreSplit = process.env.VUE_APP_FIRESTORE_HOST.split(':');
