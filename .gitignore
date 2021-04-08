@@ -8,6 +8,7 @@ firebase-emulator/
 # local env files
 .env.development
 .env.*.local
+functions/.runtimeconfig.json
 
 # Log files
 npm-debug.log*
