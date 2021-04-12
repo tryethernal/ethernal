@@ -216,10 +216,10 @@ exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' 
         });
     }
 
-    await firebaseTools.database.remove(`users/${context.auth.uid}/workspaces/${data.workspace}`, {
+    await firebaseTools.database.remove(`/users/${context.auth.uid}/workspaces/${data.workspace}`, {
         project: process.env.GCLOUD_PROJECT,
         recursive: true,
-        yes: true,
+        confirm: true,
         token: functions.config().fb.token
     });
 
