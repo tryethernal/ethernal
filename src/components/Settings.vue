@@ -77,9 +77,11 @@
                 <v-sheet outlined class="pa-0 error" rounded>
                     <v-card class="elevation-0">
                         <v-card-text class="font-weight-medium error--text">
-                            Resetting this workspace will remove all accounts/transactions/blocks/contracts from your dashboard.
-                            You will need to resync them.
-                            This cannot be undone.
+                            <div>
+                                Resetting this workspace will remove all accounts/transactions/blocks/contracts from your dashboard.
+                                You will need to resync them.
+                                This cannot be undone.
+                            </div>
                             <v-btn :loading="resetWorkspaceLoading" depressed color="error" class="mt-2" @click="resetWorkspace()"><v-icon>mdi-sync</v-icon>Reset Workspace</v-btn>
                         </v-card-text>
                     </v-card>
