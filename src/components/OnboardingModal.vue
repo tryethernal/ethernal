@@ -7,7 +7,7 @@
                 <small v-show="stepperIndex > 1">{{ currentWorkspace.name }} - {{ currentWorkspace.rpcServer }}</small>
             </v-stepper-step>
             <v-stepper-content step="1">
-                <span class="text-body-2">Workspaces allow you to separate your different projects/blockchains. You'll be able to add more and switch between them in the "Settings" tab.</span>
+                <span class="text-body-2">Workspaces allow you to separate your different projects/server. You'll be able to add more and switch between them later.</span>
                 <Create-Workspace @workspaceCreated="onWorkspaceCreated" />
             </v-stepper-content>
 
