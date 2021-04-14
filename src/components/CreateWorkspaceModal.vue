@@ -2,23 +2,32 @@
 <v-dialog v-model="dialog" max-width="700">
     <v-card>
         <v-card-title class="headline">New Workspace</v-card-title>
-
         <v-card-text>
-            <v-alert v-show="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
-            <div class="my-2">
-                <span class="primary--text">Tips for Ganache</span>
-                <v-btn color="primary" small icon @click="showTips = !showTips">
-                    <v-icon>{{ showTips ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-                </v-btn>
-                <v-expand-transition>
-                    <div v-show="showTips">
-                        <ul>
-                            <li>If you are trying to connect to a Ganache UI instance, make sure to go to "Settings" > "Server", and set "Hostname" to "All interfaces"</li>
-                            <li>If you are trying to connect to ganache-cli over your local network, use the <code>-h 0.0.0.0</code> option on ganache-cli to allow connection (more info <a href="https://github.com/trufflesuite/ganache-cli" target="_blank">here</a>).</li>
-                        </ul>
+            <div class="mb-2">
+                <v-alert type="warning" class="my-2" v-if="isUsingBrave">
+                    By default, Brave is preventing websites from making requests to localhost. This will prevent you from connecting to a local blockchain. If you want to do so, you'll need to <a href="https://support.brave.com/hc/en-us/articles/360023646212-How-do-I-configure-global-and-site-specific-Shields-settings-" target="_blank">disable Shields</a> for this website (app.tryethernal.com).<br>
+                    If you want to connect to a remote chain, or are not using Brave, you can ignore this message.
+                    <div class="text-right">
+                        <a href="#" @click.prevent="isUsingBrave = false">Dismiss</a>
                     </div>
-                </v-expand-transition>
+                </v-alert>
+                <a href="#" @click.prevent="detectNetwork()">Detect Networks</a>&nbsp;
+                <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                        <v-icon small v-on="on">mdi-help-circle-outline</v-icon>
+                    </template>
+                    This will send a RPC request asking for a network ID to 127.0.0.1 on http and ws protocols on commonly used ports (7545, 8545 and 9545).<br>The address will be displayed below if the request is successful.
+                </v-tooltip>
+                <ul v-show="detectedNetworks.length">
+                    <li v-for="(address, idx) in detectedNetworks" :key="idx">
+                        {{ address }}&nbsp;<a href="#" @click.prevent="rpcServer = address">Use</a>
+                    </li>
+                </ul>
+                <div v-show="noNetworks">
+                    No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave 👀!).
+                </div>
             </div>
+            <v-alert v-show="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
             <v-alert type="warning" class="my-2" v-show="localNetwork">
                 It looks like you are trying to connect to a server running on your local network.<br>
                 If it is not accessible through https, you will need to <a href="https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html" target="_blank">allow mixed content</a> for this domain (app.tryethernal.com) in order for Ethernal to be able to send request to it.<br>
@@ -48,9 +57,14 @@ export default {
         dialog: false,
         resolve: null,
         reject: null,
-        showTips: false,
-        localNetwork: false
+        localNetwork: false,
+        detectedNetworks: [],
+        noNetworks: false,
+        isUsingBrave: false
     }),
+    mounted: function() {
+        this.isBrave().then(res => this.isUsingBrave = res);
+    },
     methods: {
         open: function(options) {
             this.existingWorkspaces = options.workspaces;
@@ -96,10 +110,19 @@ export default {
             this.resolve = null;
             this.reject = null;
             this.address = null;
+        },
+        detectNetwork: function() {
+            this.noNetworks = false;
+            this.server.searchForLocalChains().then((res) => {
+                this.detectedNetworks = res;
+                if (!res.length) {
+                    this.noNetworks = true;
+                }
+            });
         }
     },
     watch: {
-        'rpcServer': function() {
+        rpcServer: function() {
             this.localNetwork = this.rpcServer.startsWith('http://192.168') || this.rpcServer.startsWith('192.168')
         }
     }
