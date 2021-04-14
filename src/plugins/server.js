@@ -189,6 +189,31 @@ export const serverPlugin = {
         }
 
         Vue.prototype.server = {
+            searchForLocalChains: async function() {
+                try {
+                    const endpoints = [
+                        'http://127.0.0.1:7545',
+                        'http://127.0.0.1:8545',
+                        'http://127.0.0.1:9545',
+                        'ws://127.0.0.1:7545',
+                        'ws://127.0.0.1:8545',
+                        'ws://127.0.0.1:9545'
+                    ];
+
+                    var res = [];
+                    for (var i = 0; i < endpoints.length; i++) {
+                        const web3Rpc = new Web3(serverFunctions._getWeb3Provider(endpoints[i]));
+                        var networkId = await web3Rpc.eth.net.getId().catch(() => {});
+                        if (networkId) {
+                            res.push(endpoints[i])
+                        }
+                    }
+
+                    return res;
+                } catch(error) {
+                    console.log(error)
+                }
+            },
             getAccounts: function() {
                 console.log(`Localhost: ${_isLocalhost()}`)
                 if (_isLocalhost()) {
