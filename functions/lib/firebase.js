@@ -1,109 +1,54 @@
-import firebase from 'firebase/app';
-import 'firebase/firestore';
-import 'firebase/auth';
-import 'firebase/database';
-import 'firebase/functions';
+require('firebase/app');
+require('firebase/firestore');
+require('firebase/database');
+const admin = require('firebase-admin');
 
-import { FIREBASE_CONFIG } from '../config/firebase.js';
-
-const app = firebase.initializeApp(FIREBASE_CONFIG);
+const app = admin.initializeApp();
 const _db = app.firestore();
-const _rtdb = firebase.database();
+const _rtdb = app.database();
 
-export const dbPlugin = {
-    install(Vue, options) {
-        var store = options.store;
+const _getWorkspace = (userId, workspace) => _db.collection('users').doc(userId).collection('workspaces').doc(workspace);
 
-        var currentUser = function() {
-            return firebase.auth().currentUser;
-        };
-
-        Vue.prototype.db = {
-            contractStorage(contractAddress) {
-                var currentWorkspace = store.getters.currentWorkspace.name;
-                if (!currentUser() || !currentWorkspace) return;
-                return _rtdb.ref(`/users/${currentUser().uid}/workspaces/${currentWorkspace}/contracts/${contractAddress}`);
-            },
-            collection: function(path) {
-                var currentWorkspace = store.getters.currentWorkspace.name;
-                if (!currentUser() || !currentWorkspace) return;
-                return _db.collection('users')
-                    .doc(currentUser().uid)
-                    .collection('workspaces')
-                    .doc(currentWorkspace)
-                    .collection(path);
-            },
-            settings: function() {
-                var currentWorkspace = store.getters.currentWorkspace.name;
-                if (!currentUser() || !currentWorkspace) return;
-                return _db.collection('users')
-                    .doc(currentUser().uid)
-                    .collection('workspaces')
-                    .doc(currentWorkspace)
-                    .withConverter({
-                        fromFirestore: function(snapshot, options) {
-                            const data = snapshot.data(options);
-                            return data.settings ? data.settings : {};
-                        }
-                    })
-            },
-            currentUser: function() {
-                if (!currentUser()) return;
-                return _db.collection('users')
-                    .doc(currentUser().uid);
-            },
-            workspaces: function() {
-                if (!currentUser()) return;
-                return _db.collection('users')
-                    .doc(currentUser().uid)
-                    .collection('workspaces')
-                    .withConverter({
-                        fromFirestore: function(snapshot, options) {
-                            return {
-                                id: snapshot.id,
-                                rpcServer: snapshot.data(options).rpcServer
-                            };
-                        }
-                    })
-            },
-            getWorkspace: function(workspace) {
-                if (!currentUser() || !workspace) return;
-                return _db.collection('users')
-                    .doc(currentUser().uid)
-                    .collection('workspaces')
-                    .doc(workspace)
-                    .withConverter({
-                        fromFirestore: function(snapshot, options) {
-                            return Object.defineProperty(snapshot.data(options), 'name', { value: workspace })
-                        }
-                    })
-            },
-            createUser: function(id) {
-                if (!id) return false;
-                return _db.collection('users')
-                    .doc(id)
-                    .set({ currentWorkspace: '' });
-            },
-            contractSerializer: snapshot => {
-                var res = snapshot.data();
-
-                if (snapshot.data().watchedPaths)
-                    Object.defineProperty(res, 'watchedPaths', { value: JSON.parse(snapshot.data().watchedPaths) })
-
-                Object.defineProperty(res, 'dependencies', { value: {} })
-
-                return res;
-            }
-        };
-    }
+const storeBlock = (userId, workspace, block) => {
+    if (!userId || !workspace || !block) throw 'Missing parameter';
+    return _getWorkspace(userId, workspace)
+        .collection('blocks')
+        .doc(String(block.number))
+        .set(block, { merge: true });
 };
 
-export const auth = firebase.auth;
-var _functions = firebase.functions();
+const storeTransaction = (userId, workspace, transaction) => {
+    if (!userId || !workspace || !transaction) throw 'Missing parameter';
+    return _getWorkspace(userId, workspace)
+        .collection('transactions')
+        .doc(transaction.hash)
+        .set(transaction, { merge: true }); 
+};
 
-if (process.env.NODE_ENV == 'development') {
-    _functions.useFunctionsEmulator('http://localhost:5001');
-}
+const storeContractData = (userId, workspace, data) => {
+    if (!userId || !workspace || !contractAddress) throw 'Missing parameter';
+    return _getWorkspace(userId, workspace)
+        .collection('contracts')
+        .doc(contractAddress)
+        .set(data, { merge: true }); 
+};
 
-export const functions = _functions;
-export const FieldValue = firebase.firestore.FieldValue;
+const storeContractArtifact = (userId, wokspace, contractAddress, artifact) => {
+    if (!userId || !workspace || !contractAddress) throw 'Missing parameter';
+
+    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${contractAddress}/artifact`).set(artifact);
+};
+
+const storeContractDependencies = (userId, wokspace, contractAddress, dependencies) => {
+    if (!userId || !workspace || !contractAddress) throw 'Missing parameter';
+
+    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${contractAddress}/dependencies`).set(dependencies);
+};
+
+const store
+
+module.exports = {
+    storeBlock: storeBlock,
+    storeTransaction: storeTransaction,
+    storeContractAddress: storeContractAddress
+};
