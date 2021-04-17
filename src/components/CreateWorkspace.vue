@@ -3,6 +3,13 @@
     <v-card-text>
         <v-alert v-show="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
         <div class="mb-2">
+            <v-alert type="warning" class="my-2" v-if="isUsingBrave">
+                By default, Brave is preventing websites from making requests to localhost. This will prevent you from connecting to a local blockchain. If you want to do so, you'll need to <a href="https://support.brave.com/hc/en-us/articles/360023646212-How-do-I-configure-global-and-site-specific-Shields-settings-" target="_blank">disable Shields</a> for this website (app.tryethernal.com).<br>
+                If you want to connect to a remote chain, or are not using Brave, you can ignore this message.
+                <div class="text-right">
+                    <a href="#" @click.prevent="isUsingBrave = false">Dismiss</a>
+                </div>
+            </v-alert>
             <a href="#" @click.prevent="detectNetwork()">Detect Networks</a>&nbsp;
             <v-tooltip top>
                 <template v-slot:activator="{ on }">
@@ -45,9 +52,16 @@ export default {
         rpcServer: null,
         showTips: false,
         localNetwork: false,
-        detectedNetworks: []
+        detectedNetworks: [],
+        isUsingBrave: false
     }),
+    mounted: function() {
+        this.isBrave().then(res => this.isUsingBrave = res);
+    },
     methods: {
+        isBrave: async function() {
+            return navigator.brave && await navigator.brave.isBrave() || false;
+        },
         createWorkspace: async function(name, rpcServer) {
             try {
                 this.loading = true;

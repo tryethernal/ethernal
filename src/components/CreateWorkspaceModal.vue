@@ -66,6 +66,9 @@ export default {
         this.isBrave().then(res => this.isUsingBrave = res);
     },
     methods: {
+        isBrave: async function() {
+            return navigator.brave && await navigator.brave.isBrave() || false;
+        },
         open: function(options) {
             this.existingWorkspaces = options.workspaces;
             this.dialog = true;
