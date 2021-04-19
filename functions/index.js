@@ -5,9 +5,9 @@ const Decoder = require("@truffle/decoder");
 const firebaseTools = require('firebase-tools');
 
 const Storage = require('./lib/storage');
-const { sanitize, stringifyBns, getFunctionSignature } = require('./lib/utils');
+const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('./lib/utils');
 
-const { storeBlock, storeTransaction, storeContractData, storeContractArtifact } = require('./lib/firebase');
+const { storeBlock, storeTransaction, storeContractData, storeContractArtifact, getContractData, storeContractDependencies } = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
     _functions.useFunctionsEmulator('http://localhost:5001');
@@ -241,23 +241,11 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
         if (!block)
             throw new functions.https.HttpsError('invalid-argument', 'Missing block parameter.');
 
-        var sBlock = sanitize(block);
-        var syncedBlock = {
-            hash: sBlock.hash,
-            parentHash: sBlock.parentHash,
-            number: sBlock.number,
-            timestamp: sBlock.timestamp,
-            nonce: sBlock.nonce,
-            difficulty: sBlock.difficulty,
-            gasLimit: sBlock.gasLimit.toString(),
-            gasUsed: sBlock.gasUsed.toString(),
-            miner: sBlock.miner,
-            extraData: sBlock.extraData
-        };
+        var syncedBlock = stringifyBns(sanitize(block));
 
         storeBlock(context.auth.uid, data.workspace, syncedBlock);
         
-        return { blockNumber: sBlock.number }
+        return { blockNumber: syncedBlock.number }
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
@@ -271,7 +259,7 @@ exports.syncContractArtifact = functions.https.onCall(async (data, context) => {
 
     try {
         if (!data.workspace || !data.contractAddress || !data.artifact)
-            throw new functions.https.HttpsError('invalid-argument', 'Missing parameter.');
+            throw new functions.https.HttpsError('invalid-argument', '[syncContractArtifact] Missing parameter.');
 
             await storeContractArtifact(context.auth.uid, data.workspace, data.contractAddress, data.artifact);
 
@@ -289,7 +277,7 @@ exports.syncContractDependencies = functions.https.onCall(async (data, context) 
 
     try {
         if (!data.workspace || !data.contractAddress || !data.dependencies)
-            throw new functions.https.HttpsError('invalid-argument', 'Missing parameter.');
+            throw new functions.https.HttpsError('invalid-argument', '[syncContractDependencies] Missing parameter.');
 
             await storeContractDependencies(context.auth.uid, data.workspace, data.contractAddress, data.dependencies);
 
@@ -306,10 +294,10 @@ exports.syncContractData = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
 
     try {
-        if (!data.workspace || !data.contractAddress || !data.data)
-            throw new functions.https.HttpsError('invalid-argument', 'Missing parameter.');
+        if (!data.workspace || !data.contractAddress)
+            throw new functions.https.HttpsError('invalid-argument', '[syncContractData] Missing parameter.');
 
-            storeContractData(context.auth.uid, data.workspace, data.contractAddress, data.data);
+            storeContractData(context.auth.uid, data.workspace, data.contractAddress, data);
 
             return { contractAddress: data.contractAddress };
     } catch(error) {
@@ -325,29 +313,26 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
 
     try {
         if (!data.transaction || !data.block || !data.workspace || !data.transactionReceipt)
-            throw new functions.https.HttpsError('invalid-argument', 'Missing parameter.');
+            throw new functions.https.HttpsError('invalid-argument', '[syncTransaction] Missing parameter.');
 
         const transaction = data.transaction;
         const receipt = data.transactionReceipt;
         
         const sTransactionReceipt = stringifyBns(sanitize(receipt));
         const sTransaction = stringifyBns(sanitize(transaction));
-
-        if (transaction.to && transaction.input && transaction.value) {
-            const functionSignature = getFunctionSignatureForTransaction(transaction.input, transaction.value, abi);
-        }
+        const contractAbi = sTransactionReceipt.contractAddress ? getContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress) : null;
 
         const txSynced = sanitize({
            ...sTransaction,
             receipt: sTransactionReceipt,
             timestamp: data.block.timestamp,
-            functionSignature: functionSignature
+            functionSignature: getFunctionSignatureForTransaction(transaction.input, transaction.value, contractAbi)
         });
     
         storeTransaction(context.auth.uid, data.workspace, txSynced);
-        
+
         if (!txSynced.to)
-            storeContractData(context.auth.uid, data.workspace, { address: sTransactionReceipt.contractAddress });
+            storeContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress, { address: sTransactionReceipt.contractAddress });
        
        return { txHash: txSynced.hash };
     } catch(error) {

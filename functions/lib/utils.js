@@ -1,7 +1,7 @@
 const ethers = require('ethers');
 
 module.exports = {
-    sanitize: () => {
+    sanitize: (obj) => {
         return Object.fromEntries(
             Object.entries(obj)
                 .filter(([_, v]) => v != null)
@@ -11,7 +11,7 @@ module.exports = {
         var res = {}
         for (const key in obj) {
             if (ethers.BigNumber.isBigNumber(obj[key])) {
-                res[key] = obj[key].toString();
+                res[key] = ethers.BigNumber.from(obj[key]).toString();
             }
             else {
                 res[key] = obj[key];
@@ -19,7 +19,7 @@ module.exports = {
         }
         return res;
     },
-    getFunctionSignature(input, value, abi) {
+    getFunctionSignatureForTransaction(input, value, abi) {
         if (!input || !value || !abi)
             return null;
 
