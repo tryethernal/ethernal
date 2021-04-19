@@ -22,6 +22,9 @@
                     {{ address }}&nbsp;<a href="#" @click.prevent="rpcServer = address">Use</a>
                 </li>
             </ul>
+            <div v-show="noNetworks">
+                No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave 👀!).
+            </div>
         </div>
         <v-alert type="warning" class="my-2" v-show="localNetwork">
             It looks like you are trying to connect to a server running on your local network. Please read the instructions below if you have any issues.<br>
@@ -53,7 +56,8 @@ export default {
         showTips: false,
         localNetwork: false,
         detectedNetworks: [],
-        isUsingBrave: false
+        isUsingBrave: false,
+        noNetworks: false
     }),
     mounted: function() {
         this.isBrave().then(res => this.isUsingBrave = res);
@@ -91,7 +95,13 @@ export default {
             }
         },
         detectNetwork: function() {
-            this.server.searchForLocalChains().then((res) => this.detectedNetworks = res);
+            this.noNetworks = false;
+            this.server.searchForLocalChains().then((res) => {
+                this.detectedNetworks = res;
+                if (!res.length) {
+                    this.noNetworks = true;
+                }
+            });
         }
     },
     watch: {
