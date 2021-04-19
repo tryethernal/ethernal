@@ -5,7 +5,7 @@ const Decoder = require("@truffle/decoder");
 const firebaseTools = require('firebase-tools');
 
 const Storage = require('./lib/storage');
-const { sanitize, stringifyBns } = require('./lib/utils');
+const { sanitize, stringifyBns, getFunctionSignature } = require('./lib/utils');
 
 const { storeBlock, storeTransaction, storeContractData, storeContractArtifact } = require('./lib/firebase');
 
@@ -265,27 +265,6 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
     }
 });
 
-// async function getFunctionSignatureForTransaction(transaction) {
-//     var doc = await db.collection('contracts').doc(transaction.to).get();
-
-//     if (!doc || !doc.exists) {
-//         return null;
-//     }
-
-//     var abi = doc.data().abi;
-
-//     if (!abi) {
-//         return null;
-//     }
-
-//     var jsonInterface = new ethers.utils.Interface(abi);
-
-//     var parsedTransactionData = jsonInterface.parseTransaction({ data: transaction.input, value: transaction.value });
-//     var fragment = parsedTransactionData.functionFragment;
-
-//     return `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')'
-// }
-
 exports.syncContractArtifact = functions.https.onCall(async (data, context) => {
     if (!context.auth)
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
@@ -353,15 +332,17 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
         
         const sTransactionReceipt = stringifyBns(sanitize(receipt));
         const sTransaction = stringifyBns(sanitize(transaction));
-        const txSynced = {
+
+        if (transaction.to && transaction.input && transaction.value) {
+            const functionSignature = getFunctionSignatureForTransaction(transaction.input, transaction.value, abi);
+        }
+
+        const txSynced = sanitize({
            ...sTransaction,
             receipt: sTransactionReceipt,
-            timestamp: data.block.timestamp
-        };
-
-        // if (transaction.to && transaction.input && transaction.value) {
-        //     txSynced.functionSignature = await getFunctionSignatureForTransaction(sTransaction);    
-        // }
+            timestamp: data.block.timestamp,
+            functionSignature: functionSignature
+        });
     
         storeTransaction(context.auth.uid, data.workspace, txSynced);
         

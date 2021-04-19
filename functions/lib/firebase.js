@@ -45,10 +45,18 @@ const storeContractDependencies = (userId, wokspace, contractAddress, dependenci
     return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${contractAddress}/dependencies`).set(dependencies);
 };
 
-const store
+const getContractData = (userId, workspace, contractAddress) => {
+        if (!userId || !workspace || !contractAddress) throw 'Missing parameter';
+        return _getWorkspace(userId, workspace)
+            .collection('contracts')
+            .doc(contractAddress);
+};
 
 module.exports = {
     storeBlock: storeBlock,
     storeTransaction: storeTransaction,
-    storeContractAddress: storeContractAddress
+    storeContractData: storeContractData,
+    storeContractArtifact: storeContractArtifact,
+    storeContractDependencies: storeContractDependencies,
+    getContractData: getContractData
 };
