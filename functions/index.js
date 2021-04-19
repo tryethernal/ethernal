@@ -5,6 +5,13 @@ const Decoder = require("@truffle/decoder");
 const firebaseTools = require('firebase-tools');
 
 const Storage = require('./lib/storage');
+const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('./lib/utils');
+
+const { storeBlock, storeTransaction, storeContractData, storeContractArtifact, getContractData, storeContractDependencies } = require('./lib/firebase');
+
+if (process.env.NODE_ENV == 'development') {
+    _functions.useFunctionsEmulator('http://localhost:5001');
+}
 
 var _getDependenciesArtifact = function(contract) {
     return contract.dependencies ? Object.entries(contract.dependencies).map(dep => JSON.parse(dep[1].artifact)) : [];
@@ -224,4 +231,113 @@ exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' 
     });
 
     return { success: true };
+});
+
+exports.syncBlock = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+    try {
+        const block = data.block;
+        if (!block)
+            throw new functions.https.HttpsError('invalid-argument', 'Missing block parameter.');
+
+        var syncedBlock = stringifyBns(sanitize(block));
+
+        storeBlock(context.auth.uid, data.workspace, syncedBlock);
+        
+        return { blockNumber: syncedBlock.number }
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
+exports.syncContractArtifact = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspace || !data.contractAddress || !data.artifact)
+            throw new functions.https.HttpsError('invalid-argument', '[syncContractArtifact] Missing parameter.');
+
+            await storeContractArtifact(context.auth.uid, data.workspace, data.contractAddress, data.artifact);
+
+            return { contractAddress: data.contractAddress };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
+exports.syncContractDependencies = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspace || !data.contractAddress || !data.dependencies)
+            throw new functions.https.HttpsError('invalid-argument', '[syncContractDependencies] Missing parameter.');
+
+            await storeContractDependencies(context.auth.uid, data.workspace, data.contractAddress, data.dependencies);
+
+            return { contractAddress: data.contractAddress };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
+exports.syncContractData = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspace || !data.contractAddress)
+            throw new functions.https.HttpsError('invalid-argument', '[syncContractData] Missing parameter.');
+
+            storeContractData(context.auth.uid, data.workspace, data.contractAddress, data);
+
+            return { contractAddress: data.contractAddress };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
+exports.syncTransaction = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.transaction || !data.block || !data.workspace || !data.transactionReceipt)
+            throw new functions.https.HttpsError('invalid-argument', '[syncTransaction] Missing parameter.');
+
+        const transaction = data.transaction;
+        const receipt = data.transactionReceipt;
+        
+        const sTransactionReceipt = stringifyBns(sanitize(receipt));
+        const sTransaction = stringifyBns(sanitize(transaction));
+        const contractAbi = sTransactionReceipt.contractAddress ? getContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress) : null;
+
+        const txSynced = sanitize({
+           ...sTransaction,
+            receipt: sTransactionReceipt,
+            timestamp: data.block.timestamp,
+            functionSignature: getFunctionSignatureForTransaction(transaction.input, transaction.value, contractAbi)
+        });
+    
+        storeTransaction(context.auth.uid, data.workspace, txSynced);
+
+        if (!txSynced.to)
+            storeContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress, { address: sTransactionReceipt.contractAddress });
+       
+       return { txHash: txSynced.hash };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
 });
