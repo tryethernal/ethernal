@@ -124,7 +124,7 @@ const serverFunctions = {
             return workspace;
         } catch(error) {
             console.log(error);
-            var reason = error.reason || error.message || "Can't connect to the server";
+            const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
             throw { reason: reason };
         }
     },
@@ -146,7 +146,7 @@ const serverFunctions = {
             return await contract.functions[data.method](...Object.values(data.params), options);
         } catch(error) {
             console.log(error);
-            var reason = error.reason || error.message || "Can't connect to the server";
+            const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
             throw { reason: reason };
         }
     },
@@ -156,20 +156,20 @@ const serverFunctions = {
             var signer;
             var options = {
                 gasLimit: data.options.gasLimit,
-                gasPrice: data.options.gasPrice
+                gasPrice: data.options.gasPrice,
+                value: data.options.value
             };
             if (data.options.pkey) {
                 signer = new ethers.Wallet(data.options.pkey, provider);
             }
             else {
                 signer = provider.getSigner(data.options.from);
-                signer.unlock()
             }
             var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
             return await contract[data.method](...Object.values(data.params), options);
         } catch(error) {
             console.log(error);
-            var reason = error.reason || error.message || "Can't connect to the server";
+            const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
             throw { reason: reason };
         }
     }
@@ -181,7 +181,10 @@ export const serverPlugin = {
 
         var _isLocalhost = function(rpcServer) {
             var host = rpcServer || _rpcServer();
-            return new URL(host).hostname === 'localhost' || new URL(host).hostname === '127.0.0.1' || new URL(host).hostname.startsWith('192.168');
+            return new URL(host).hostname === 'localhost' ||
+                new URL(host).hostname === '127.0.0.1' ||
+                new URL(host).hostname.startsWith('192.168') ||
+                new URL(host).hostname.startsWith('10.');
         };
 
         var _rpcServer = function() {
