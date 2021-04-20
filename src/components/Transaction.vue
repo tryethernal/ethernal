@@ -59,11 +59,11 @@
         <v-row class="my-2">
             <v-col>
                 <h3>Data</h3>
-                <div v-if="contract.abi">
+                <div v-if="contract && contract.abi">
                     <Transaction-Data :abi="contract.abi" :transactionHash="hash" />
                 </div>
                 <div v-else class="pa-2 grey lighten-3">
-                    <i>No data for this transaction.</i>
+                    <i>Couldn't decode data for this transaction. This probably means that you haven't <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/contracts/interacting-with-the-contract">synchronized contract metadata</a>. </i>
                 </div>
             </v-col>
         </v-row>
@@ -86,7 +86,7 @@ export default {
         FromWei
     },
     data: () => ({
-        contract: {},
+        contract: null,
         transaction: {
             value: 0,
             gasPrice: 0,
