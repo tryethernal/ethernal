@@ -13,7 +13,7 @@
                 <router-link :to="'/block/' + item.number">{{item.number}}</router-link>
             </template>
             <template v-slot:item.timestamp="{ item }">
-                {{ item.timestamp | moment('YYYY-MM-DD hh:mm:ss') }}
+                {{ parseInt(item.timestamp) | moment('YYYY-MM-DD h:mm:ss A') }}
             </template>
             <template v-slot:item.gasUsed="{ item }">
                 {{ item.gasUsed.toLocaleString()  }}

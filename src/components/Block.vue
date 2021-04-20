@@ -13,7 +13,7 @@
             <v-divider vertical></v-divider>
             <v-col cols="2">
                 <v-subheader class="text-overline">Mined On</v-subheader>
-                {{ block.timestamp | moment('YYYY-MM-DD hh:mm:ss') }}
+                {{ parseInt(block.timestamp) | moment('YYYY-MM-DD h:mm:ss A') }}
             </v-col>
             <v-divider vertical></v-divider>
             <v-col cols="2">

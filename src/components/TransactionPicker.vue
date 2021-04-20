@@ -8,7 +8,7 @@
                             <v-list-item-content>
                                 <v-list-item-title v-text="`${transaction.hash.slice(0, 15)}...`"></v-list-item-title>
                                 <v-list-item-subtitle>
-                                    {{ transaction.timestamp | moment('MM/DD hh:mm:ss') }} |
+                                    {{ parseInt(transaction.timestamp) | moment('MM/DD hh:mm:ss') }} |
                                     {{ transaction.blockNumber }}
                                 </v-list-item-subtitle>
                                 <v-list-item-subtitle>
