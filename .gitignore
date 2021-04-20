@@ -9,6 +9,7 @@ firebase-emulator/
 .env.development
 .env.*.local
 functions/.runtimeconfig.json
+/ganache-db
 
 # Log files
 npm-debug.log*
