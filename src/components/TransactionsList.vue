@@ -21,7 +21,7 @@
             <Hash-Link :type="'transaction'" :hash="item.hash" />
         </template>
         <template v-slot:item.timestamp="{ item }">
-            {{ item.timestamp | moment('from') }}
+            {{ parseInt(item.timestamp) | moment('from') }}
         </template>
         <template v-slot:item.from="{ item }">
             <v-chip x-small class="mr-2" v-if="item.from && item.from === currentAddress">self</v-chip>

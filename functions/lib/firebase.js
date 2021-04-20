@@ -25,31 +25,31 @@ const storeTransaction = (userId, workspace, transaction) => {
         .set(transaction, { merge: true }); 
 };
 
-const storeContractData = (userId, workspace, contractAddress, data) => {
-    if (!userId || !workspace || !contractAddress || !data) throw '[storeContractData] Missing parameter';
+const storeContractData = (userId, workspace, address, data) => {
+    if (!userId || !workspace || !address || !data) throw '[storeContractData] Missing parameter';
     return _getWorkspace(userId, workspace)
         .collection('contracts')
-        .doc(contractAddress)
+        .doc(address)
         .set(data, { merge: true });
 };
 
-const storeContractArtifact = (userId, workspace, contractAddress, artifact) => {
-    if (!userId || !workspace || !contractAddress || !artifact) throw '[storeContractArtifact] Missing parameter';
+const storeContractArtifact = (userId, workspace, address, artifact) => {
+    if (!userId || !workspace || !address || !artifact) throw '[storeContractArtifact] Missing parameter';
 
-    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${contractAddress}/artifact`).set(artifact);
+    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address}/artifact`).set(artifact);
 };
 
-const storeContractDependencies = (userId, workspace, contractAddress, dependencies) => {
-    if (!userId || !workspace || !contractAddress || !dependencies) throw '[storeContractDependencies] Missing parameter';
+const storeContractDependencies = (userId, workspace, address, dependencies) => {
+    if (!userId || !workspace || !address || !dependencies) throw '[storeContractDependencies] Missing parameter';
 
-    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${contractAddress}/dependencies`).set(dependencies);
+    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address}/dependencies`).set(dependencies);
 };
 
-const getContractData = (userId, workspace, contractAddress) => {
-        if (!userId || !workspace || !contractAddress) throw '[getContractData] Missing parameter';
+const getContractData = (userId, workspace, address) => {
+        if (!userId || !workspace || !address) throw '[getContractData] Missing parameter';
         return _getWorkspace(userId, workspace)
             .collection('contracts')
-            .doc(contractAddress);
+            .doc(address);
 };
 
 module.exports = {
