@@ -16,6 +16,7 @@
   "dependencies": {
     "@truffle/decoder": "^4.5.4",
     "ethers": "^5.0.31",
+    "firebase": "^8.2.4",
     "firebase-admin": "^9.2.0",
     "firebase-functions": "^3.11.0",
     "firebase-tools": "^9.9.0",
