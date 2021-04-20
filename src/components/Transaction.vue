@@ -30,7 +30,7 @@
         <v-row class="mb-4">
             <v-col cols="2">
                 <div class="text-overline">Gas Used</div>
-                {{ transaction.receipt.gasUsed.toLocaleString() }}
+                {{ parseInt(transaction.receipt.gasUsed).toLocaleString() }}
             </v-col>
             <v-col cols="2">
                 <div class="text-overline">Gas Price</div>
@@ -52,7 +52,7 @@
             </v-col>
             <v-col cols="2">
                 <div class="text-overline">Gas Limit</div>
-                {{ block.gasLimit.toLocaleString() }}
+                {{ parseInt(block.gasLimit).toLocaleString() }}
             </v-col>
         </v-row>
 
