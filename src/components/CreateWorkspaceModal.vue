@@ -27,7 +27,7 @@
                     No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave 👀!).
                 </div>
             </div>
-            <v-alert v-show="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
+            <v-alert v-show="errorMessage" dense text type="error" v-html="errorMessage"></v-alert>
             <v-alert type="warning" class="my-2" v-show="localNetwork">
                 It looks like you are trying to connect to a server running on your local network.<br>
                 If it is not accessible through https, you will need to <a href="https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html" target="_blank">allow mixed content</a> for this domain (app.tryethernal.com) in order for Ethernal to be able to send request to it.<br>
@@ -99,6 +99,9 @@ export default {
             } catch(error) {
                 this.loading = false;
                 if (error.reason) {
+                    if (error.reason.indexOf('Invalid JSON RPC response') > -1 || error.reason.indexOf('connection not open on send()') > -1) {
+                        return this.errorMessage = `Can't connect to <b>${rpcServer}</b>. Please make sure hostname and ports are correct, and that a server is listening on those. If you still can't connect to a local server, check that your browser is not blocking requests to localhost (for Brave, you need to disable Shields).`;
+                    }
                     return this.errorMessage = error.reason;
                 }
                 if (error.code && error.code == 1006) {

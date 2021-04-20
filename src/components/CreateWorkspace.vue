@@ -1,7 +1,7 @@
 <template>
 <v-card elevation="0">
     <v-card-text>
-        <v-alert v-show="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
+        <v-alert v-show="errorMessage" dense text type="error" v-html="errorMessage"></v-alert>
         <div class="mb-2">
             <v-alert type="warning" class="my-2" v-if="isUsingBrave">
                 By default, Brave is preventing websites from making requests to localhost. This will prevent you from connecting to a local blockchain. If you want to do so, you'll need to <a href="https://support.brave.com/hc/en-us/articles/360023646212-How-do-I-configure-global-and-site-specific-Shields-settings-" target="_blank">disable Shields</a> for this website (app.tryethernal.com).<br>
@@ -86,6 +86,9 @@ export default {
                 console.log(error);
                 this.loading = false;
                 if (error.reason) {
+                    if (error.reason.indexOf('Invalid JSON RPC response') > -1 || error.reason.indexOf('connection not open on send()') > -1) {
+                        return this.errorMessage = `Can't connect to <b>${rpcServer}</b>. Please make sure hostname and ports are correct, and that a server is listening on those. If you still can't connect to a local server, check that your browser is not blocking requests to localhost (for Brave, you need to disable Shields).`;
+                    }
                     return this.errorMessage = error.reason;
                 }
                 if (error.code && error.code == 1006) {
