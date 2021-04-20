@@ -12,7 +12,17 @@
         </v-text-field>
         <div class="grey lighten-3 pa-2 mt-1" v-show="result.txHash || result.message">
             <div v-show="result.message">{{ result.message }}</div>
-            <a v-show="result.txHash" :href="`/transaction/${result.txHash}`" target="_blank">See Transaction</a>
+            <div v-show="result.txHash">
+                Tx: <a :href="`/transaction/${result.txHash}`" target="_blank">{{ result.txHash }}</a>
+            </div>
+            <div v-show="result.txHash && !receipt.status">
+                <v-progress-circular class="mr-2" size="16" width="2" indeterminate color="primary"></v-progress-circular>Waiting for receipt...
+            </div>
+            <div v-show="receipt.status" class="mt-1">
+                Status: {{ receipt.status ? 'Succeeded' : 'Failed' }}
+                <v-icon small v-show="receipt.status" color="success lighten-1" class="mr-2 align-with-text">mdi-check-circle</v-icon>
+                <v-icon small v-show="!receipt.status" color="error lighten-1" class="mr-2 align-with-text">mdi-alert-circle</v-icon>
+            </div>
         </div>
         <v-divider class="my-2"></v-divider>
         Eth to send:
@@ -41,6 +51,7 @@ export default {
     data: () => ({
         valueInEth: 0,
         params: {},
+        receipt: {},
         result: {
             txHash: null,
             message: null
@@ -52,6 +63,7 @@ export default {
         sendMethod: async function(method) {
             try {
                 this.loading = true;
+                this.receipt = {};
                 this.result = {
                     txHash: null,
                     message: null
@@ -64,6 +76,7 @@ export default {
                 }
                 this.server.callContractWriteMethod(this.contract, method.name, options, this.params, this.currentWorkspace.rpcServer)
                     .then(res => {
+                        res.wait().then(receipt => this.receipt = receipt);
                         this.result.txHash = res.hash;
                     })
                     .catch(error => {
