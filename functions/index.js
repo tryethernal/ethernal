@@ -87,7 +87,7 @@ exports.callContractReadMethod = functions.https.onCall(async (data, context) =>
         return await contract.functions[data.method](...Object.values(data.params), options)
     } catch(error) {
         console.log(error);
-        var reason = error.reason || error.message || "Can't connect to the server";
+        const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
         throw new functions.https.HttpsError('unknown', reason);
     }
 });
@@ -100,7 +100,8 @@ exports.callContractWriteMethod = functions.https.onCall(async (data, context) =
         var signer;
         var options = {
             gasLimit: data.options.gasLimit,
-            gasPrice: data.options.gasPrice
+            gasPrice: data.options.gasPrice,
+            value: data.options.value
         };
         if (data.options.pkey) {
             signer = new ethers.Wallet(data.options.pkey, provider);
@@ -113,7 +114,7 @@ exports.callContractWriteMethod = functions.https.onCall(async (data, context) =
         return await contract[data.method](...Object.values(data.params), options);
     } catch(error) {
         console.log(error);
-        var reason = error.reason || error.message || "Can't connect to the server";
+        const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
         throw new functions.https.HttpsError('unknown', reason);
     }
 });
