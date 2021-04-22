@@ -12,11 +12,19 @@
         <template v-slot:item.hash="{ item }">
             <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
-                    <v-icon v-bind="attrs" v-on="on" small v-if="!item.receipt.status" color="error lighten-1" class="mr-2">mdi-alert-circle</v-icon>
-                    <v-icon v-bind="attrs" v-on="on" small v-else color="success lighten-1" class="mr-2">mdi-check-circle</v-icon>
+                    <span v-if="item.receipt">
+                        <v-icon v-bind="attrs" v-on="on" small v-if="!item.receipt.status" color="error lighten-1" class="mr-2">mdi-alert-circle</v-icon>
+                        <v-icon v-bind="attrs" v-on="on" small v-else color="success lighten-1" class="mr-2">mdi-check-circle</v-icon>
+                    </span>
+                    <span v-else>
+                        <v-icon v-bind="attrs" v-on="on" small color="grey lighten-1" class="mr-2">mdi-help-circle</v-icon>
+                    </span>
                 </template>
-                <span v-if="!item.receipt.status">Failed Transaction</span>
-                <span v-else>Succeeded Transaction</span>
+                <div v-if="item.receipt">
+                    <span v-if="!item.receipt.status">Failed Transaction</span>
+                    <span v-else>Succeeded Transaction</span>
+                </div>
+                <span v-else>Couldn't retrieve receipt, some info is not available.</span>
             </v-tooltip>
             <Hash-Link :type="'transaction'" :hash="item.hash" />
         </template>
@@ -35,7 +43,7 @@
             {{ item.value | fromWei }}
         </template>
         <template v-slot:item.fee="{ item }">
-            {{ item.gasPrice * (item.gas || item.receipt.gasUsed)  | fromWei }}
+            <span v-if="item.receipt">{{ item.gasPrice * (item.gas || item.receipt.gasUsed)  | fromWei }}</span>
         </template>
     </v-data-table>
 </template>
