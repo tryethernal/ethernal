@@ -117,10 +117,13 @@ const serverFunctions = {
                 rpcServer: data.rpcServer,
                 networkId: networkId,
                 settings: {
-                    defaultAccount: accounts[0],
                     gasLimit: gasLimit
                 }
             };
+
+            if (accounts.length)
+                workspace.settings.defaultAccount = accounts[0];
+
             return workspace;
         } catch(error) {
             console.log(error);

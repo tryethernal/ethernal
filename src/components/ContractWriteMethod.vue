@@ -15,13 +15,16 @@
             <div v-show="result.txHash">
                 Tx: <a :href="`/transaction/${result.txHash}`" target="_blank">{{ result.txHash }}</a>
             </div>
-            <div v-show="result.txHash && !receipt.status">
+            <div v-show="result.txHash && !receipt.status && !noReceipt">
                 <v-progress-circular class="mr-2" size="16" width="2" indeterminate color="primary"></v-progress-circular>Waiting for receipt...
             </div>
             <div v-show="receipt.status" class="mt-1">
                 Status: {{ receipt.status ? 'Succeeded' : 'Failed' }}
                 <v-icon small v-show="receipt.status" color="success lighten-1" class="mr-2 align-with-text">mdi-check-circle</v-icon>
                 <v-icon small v-show="!receipt.status" color="error lighten-1" class="mr-2 align-with-text">mdi-alert-circle</v-icon>
+            </div>
+            <div v-show="noReceipt">
+                Couldn't get receipt.
             </div>
         </div>
         <v-divider class="my-2"></v-divider>
@@ -51,6 +54,7 @@ export default {
     data: () => ({
         valueInEth: 0,
         params: {},
+        noReceipt: false,
         receipt: {},
         result: {
             txHash: null,
@@ -64,6 +68,7 @@ export default {
             try {
                 this.loading = true;
                 this.receipt = {};
+                this.noReceipt = false;
                 this.result = {
                     txHash: null,
                     message: null
@@ -76,7 +81,12 @@ export default {
                 }
                 this.server.callContractWriteMethod(this.contract, method.name, options, this.params, this.currentWorkspace.rpcServer)
                     .then(res => {
-                        res.wait().then(receipt => this.receipt = receipt);
+                        res.wait().then((receipt) => {
+                            if (receipt)
+                                this.receipt = receipt;
+                            else
+                                this.noReceipt = true;
+                        });
                         this.result.txHash = res.hash;
                     })
                     .catch(error => {
