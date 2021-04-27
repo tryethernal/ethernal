@@ -4,6 +4,7 @@ const Decoder = require("@truffle/decoder");
 
 import { Storage } from '../lib/storage';
 import { functions } from './firebase';
+import { sanitize } from '../lib/utils';
 
 const serverFunctions = {
     // Private
@@ -135,10 +136,11 @@ const serverFunctions = {
         try {
             var provider = serverFunctions._getProvider(data.rpcServer);
             var signer;
-            var options = {
+            var options = sanitize({
                 gasLimit: data.options.gasLimit,
-                gasPrice: data.options.gasPrice
-            };
+                gasPrice: data.options.gasPrice,
+            });
+
             if (data.options.pkey) {
                 signer = new ethers.Wallet(data.options.pkey, provider);
             }
@@ -146,7 +148,7 @@ const serverFunctions = {
                 signer = provider.getSigner(data.options.from);
             }
             var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
-            return await contract.functions[data.method](...Object.values(data.params), options);
+            return (await contract.functions[data.method](...Object.values(data.params), options));
         } catch(error) {
             console.log(error);
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
@@ -157,11 +159,12 @@ const serverFunctions = {
         try {
             var provider = serverFunctions._getProvider(data.rpcServer);
             var signer;
-            var options = {
+            var options = sanitize({
                 gasLimit: data.options.gasLimit,
                 gasPrice: data.options.gasPrice,
                 value: data.options.value
-            };
+            });
+
             if (data.options.pkey) {
                 signer = new ethers.Wallet(data.options.pkey, provider);
             }
@@ -169,7 +172,7 @@ const serverFunctions = {
                 signer = provider.getSigner(data.options.from);
             }
             var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
-            return await contract[data.method](...Object.values(data.params), options);
+            return (await contract[data.method](...Object.values(data.params), options));
         } catch(error) {
             console.log(error);
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
