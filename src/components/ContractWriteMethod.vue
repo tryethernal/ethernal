@@ -23,7 +23,7 @@
                 <v-icon small v-show="receipt.status" color="success lighten-1" class="mr-2 align-with-text">mdi-check-circle</v-icon>
                 <v-icon small v-show="!receipt.status" color="error lighten-1" class="mr-2 align-with-text">mdi-alert-circle</v-icon>
             </div>
-            <div v-show="noReceipt">
+            <div v-show="noReceipt && !noWaitFunction">
                 Couldn't get receipt.
             </div>
         </div>
@@ -56,6 +56,7 @@ export default {
         params: {},
         noReceipt: false,
         receipt: {},
+        noWaitFunction: false,
         result: {
             txHash: null,
             message: null
@@ -81,13 +82,17 @@ export default {
                 }
                 this.server.callContractWriteMethod(this.contract, method.name, options, this.params, this.currentWorkspace.rpcServer)
                     .then(res => {
-                        console.log(res)
-                        res.wait().then((receipt) => {
-                            if (receipt)
-                                this.receipt = receipt;
-                            else
-                                this.noReceipt = true;
-                        });
+                        if (typeof res.wait === 'function')
+                            res.wait().then((receipt) => {
+                                if (receipt)
+                                    this.receipt = receipt;
+                                else
+                                    this.noReceipt = true;
+                            });
+                        else {
+                            this.noReceipt = true;
+                            this.noWaitFunction = true;
+                        }
                         this.result.txHash = res.hash;
                     })
                     .catch(error => {
