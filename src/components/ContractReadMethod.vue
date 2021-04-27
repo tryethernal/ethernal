@@ -36,7 +36,7 @@ export default {
                         this.result = res.map(val => ethers.BigNumber.isBigNumber(val) ? ethers.BigNumber.from(val).toString() : val).join(' | ');
                     })
                     .catch(error => {
-                        this.result = error;
+                        this.result = error.reason || error;
                     })
                     .finally(() => {
                         this.loading = false;
