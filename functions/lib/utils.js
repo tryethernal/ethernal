@@ -1,4 +1,5 @@
 const ethers = require('ethers');
+const { getContractData } = require('./firebase');
 
 const _sanitize = (obj) => {
     return Object.fromEntries(

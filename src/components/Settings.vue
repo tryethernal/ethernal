@@ -57,7 +57,6 @@
                 <v-card outlined class="mb-4">
                     <v-card-text>
                         <v-data-table
-                            v-if="settings.integrations"
                             :hide-default-header="true"
                             :hide-default-footer="true"
                             :items="integrations.items"
@@ -204,7 +203,9 @@ export default {
             this[name]();
         },
         openAlchemyIntegrationModal: function() {
-            this.$refs.alchemyIntegrationModal.open({ enabled: this.isIntegrationEnabled('alchemy') });
+            this.$refs.alchemyIntegrationModal.open({
+                enabled: this.isIntegrationEnabled('alchemy')
+            });
         },
         switchWorkspace: async function(name) {
             var wsRef = await this.db.getWorkspace(name);
@@ -212,7 +213,7 @@ export default {
             document.location.reload();
         },
         isIntegrationEnabled: function(slug) {
-            return this.settings.integrations.indexOf(slug) > -1;
+            return this.currentWorkspace.settings.integrations ? this.currentWorkspace.settings.integrations.indexOf(slug) > -1 : false;
         },
         resetWorkspace: function() {
             if (confirm(`Are you sure you want to reset the workspace ${this.currentWorkspace.name}? This action is definitive.`)) {

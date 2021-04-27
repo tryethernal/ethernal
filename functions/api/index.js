@@ -57,6 +57,7 @@ app.post('/webhooks/alchemy', alchemyAuthMiddleware, async (req, res) => {
 
         const provider = new ethers.providers.JsonRpcProvider(res.locals.workspace.rpcServer);
         const transaction = await provider.getTransaction(req.body.fullTransaction.hash);
+
         const block = await provider.getBlock(transaction.blockHash);
 
         const blockData = stringifyBns(sanitize({

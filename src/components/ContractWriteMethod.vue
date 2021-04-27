@@ -81,6 +81,7 @@ export default {
                 }
                 this.server.callContractWriteMethod(this.contract, method.name, options, this.params, this.currentWorkspace.rpcServer)
                     .then(res => {
+                        console.log(res)
                         res.wait().then((receipt) => {
                             if (receipt)
                                 this.receipt = receipt;

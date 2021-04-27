@@ -5,9 +5,14 @@
         <v-card-text>
             When enabled, this integration will give you a webhook that you should add in your Alchemy dashboard, in the Notify section, under "Mined Transactions Notifications". Once this is done, all transactions going through the selected Alchemy app will be synchronized with Ethernal, letting you used all of the features on your dapp!
             <v-divider></v-divider>
-            <v-switch :disabled="loading" :loading="loading" v-model="enabled" :label="token ? 'Enabled' : 'Disabled'" @change="toggleSwitch"></v-switch>
-            <v-text-field append-icon="mdi-content-copy" readonly @click:append="copyWebhook()" outlined dense hide-details="auto" :value="formattedWebhook" v-show="token"></v-text-field>
-            <input type="hidden" id="copyElement" :value="formattedWebhook">
+            <div v-if="canUseIntegration()">
+                <v-switch :disabled="loading" :loading="loading" v-model="enabled" :label="token ? 'Enabled' : 'Disabled'" @change="toggleSwitch"></v-switch>
+                <v-text-field append-icon="mdi-content-copy" readonly @click:append="copyWebhook()" outlined dense hide-details="auto" :value="formattedWebhook" v-show="token"></v-text-field>
+                <input type="hidden" id="copyElement" :value="formattedWebhook">
+            </div>
+            <div v-else class="mt-1">
+                <v-alert type="warning">This integration can only be used with a workspace connected to an Alchemy endpoint. Create a new workspace connected to your Alchemy app to use it</v-alert>
+            </div>
         </v-card-text>
 
         <v-card-actions>
@@ -33,6 +38,10 @@ export default {
         options: {}
     }),
     methods: {
+        canUseIntegration: function() {
+            const server = new URL(this.currentWorkspace.rpcServer);
+            return server.host.indexOf('alchemyapi.io') > -1;
+        },
         copyWebhook: function() {
             const webhookField = document.querySelector('#copyElement');
             webhookField.setAttribute('type', 'text');
