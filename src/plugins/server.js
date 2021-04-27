@@ -195,6 +195,15 @@ export const serverPlugin = {
         }
 
         Vue.prototype.server = {
+            getWebhookToken: function(workspace) {
+                return functions.httpsCallable('getWebhookToken')({ workspace: workspace });
+            },
+            enableAlchemyWebhook: function(workspace) {
+                return functions.httpsCallable('enableAlchemyWebhook')({ workspace: workspace });
+            },
+            disableAlchemyWebhook: function(workspace) {
+                return functions.httpsCallable('disableAlchemyWebhook')({ workspace: workspace });
+            },
             searchForLocalChains: async function() {
                 try {
                     const endpoints = [

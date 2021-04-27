@@ -45,14 +45,36 @@
                             label="Default Maximum Gas">
                         </v-text-field>
 
-                        <div justify="end">
+                        <v-row class="mt-2 pb-1 mr-2">
+                            <v-spacer></v-spacer>
                             <v-btn :loading="loading" depressed color="primary" class="mt-1" @click="update()">Update</v-btn>
-                        </div>
+                        </v-row>
                     </v-card-text>
                 </v-card>
 
-                <h4>Workspaces</h4>
+                <Alchemy-Integration-Modal ref="alchemyIntegrationModal" />
+                <h4>Integrations</h4>
+                <v-card outlined class="mb-4">
+                    <v-card-text>
+                        <v-data-table
+                            v-if="settings.integrations"
+                            :hide-default-header="true"
+                            :hide-default-footer="true"
+                            :items="integrations.items"
+                            :headers="integrations.headers">
+                            <template v-slot:item.status="{ item }">
+                                {{ isIntegrationEnabled(item.slug) ? 'Enabled' : 'Disabled' }}
+                            </template>
+                            <template v-slot:item.actions="{ item }">
+                                <v-btn color="primary" @click="callFunction(item.action)">Manage</v-btn>
+                            </template>
+                        </v-data-table>
+                        <h4>Each workspace has separate integration settings.</h4>
+                    </v-card-text>
+                </v-card>
+
                 <Create-Workspace-Modal ref="createWorkspaceModal" />
+                <h4>Workspaces</h4>
                 <v-card outlined class="mb-4">
                     <v-card-text>
                         <v-data-table
@@ -77,12 +99,15 @@
                 <v-sheet outlined class="pa-0 error" rounded>
                     <v-card class="elevation-0">
                         <v-card-text class="font-weight-medium error--text">
-                            <div>
+                            <v-row>
                                 Resetting this workspace will remove all accounts/transactions/blocks/contracts from your dashboard.
                                 You will need to resync them.
                                 This cannot be undone.
-                            </div>
-                            <v-btn :loading="resetWorkspaceLoading" depressed color="error" class="mt-2" @click="resetWorkspace()"><v-icon>mdi-sync</v-icon>Reset Workspace</v-btn>
+                            </v-row>
+                            <v-row class="mt-2 pb-1">
+                                <v-spacer></v-spacer>
+                                <v-btn :loading="resetWorkspaceLoading" depressed color="error" class="mt-2" @click="resetWorkspace()"><v-icon>mdi-sync</v-icon>Reset Workspace</v-btn>
+                            </v-row>
                         </v-card-text>
                     </v-card>
                 </v-sheet>
@@ -93,13 +118,39 @@
 <script>
 import { mapGetters } from 'vuex';
 import CreateWorkspaceModal from './CreateWorkspaceModal';
+import AlchemyIntegrationModal from './AlchemyIntegrationModal';
 
 export default {
     name: 'Settings',
     components: {
-        CreateWorkspaceModal
+        CreateWorkspaceModal,
+        AlchemyIntegrationModal
     },
     data: () => ({
+        integrations: {
+            headers: [
+                {
+                    text: '',
+                    value: 'name'
+                },
+                {
+                    text: '',
+                    value: 'status'
+                },
+                {
+                    text: '',
+                    value: 'actions',
+                    align: 'right'
+                }
+            ],
+            items: [
+                {
+                    name: 'Alchemy API',
+                    slug: 'alchemy',
+                    action:  'openAlchemyIntegrationModal'
+                }
+            ]
+        },
         workspacesDataTableHeaders: [
             {
                 text: 'Name',
@@ -142,18 +193,26 @@ export default {
                     this.$store.dispatch('updateCurrentWorkspace', this.currentWorkspace);
                 })
                 .catch(() => this.updateError = true)
-                .finally(() => this.loading = false)
-
+                .finally(() => this.loading = false);
         },
         openCreateWorkspaceModal: function() {
             this.$refs.createWorkspaceModal
                 .open({ workspaces: this.workspaces.map(ws => ws.id) })
                 .then((name) => this.switchWorkspace(name));
         },
+        callFunction: function(name) {
+            this[name]();
+        },
+        openAlchemyIntegrationModal: function() {
+            this.$refs.alchemyIntegrationModal.open({ enabled: this.isIntegrationEnabled('alchemy') });
+        },
         switchWorkspace: async function(name) {
             var wsRef = await this.db.getWorkspace(name);
             await this.db.currentUser().update({ currentWorkspace: wsRef });
             document.location.reload();
+        },
+        isIntegrationEnabled: function(slug) {
+            return this.settings.integrations.indexOf(slug) > -1;
         },
         resetWorkspace: function() {
             if (confirm(`Are you sure you want to reset the workspace ${this.currentWorkspace.name}? This action is definitive.`)) {
