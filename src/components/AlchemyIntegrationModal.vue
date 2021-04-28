@@ -25,7 +25,7 @@
 <script>
 import { mapGetters } from 'vuex';
 
-const ROOT_URL = process.env.VUE_APP_ROOT_URL;
+const API_ROOT_URL = process.env.VUE_APP_API_ROOT_URL;
 export default {
     name: 'AlchemyIntegrationModal',
     data: () => ({
@@ -103,7 +103,7 @@ export default {
             'currentWorkspace'
         ]),
         formattedWebhook: function() {
-            return `${ROOT_URL}/api/webhooks/alchemy?token=${this.token}`;
+            return `${API_ROOT_URL}/api/webhooks/alchemy?token=${this.token}`;
         }
     }
 }

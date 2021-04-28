@@ -1,8 +1,7 @@
 const functions = require("firebase-functions");
 const express = require('express');
 const ethers = require('ethers');
-const moment = require('moment');
-const { getUserByKey, getWorkspaceByName, storeTransaction, storeBlock, getUser } = require('../lib/firebase');
+const { getUserByKey, getWorkspaceByName, storeTransaction, storeBlock, getUser, storeContractData } = require('../lib/firebase');
 const { sanitize, stringifyBns, getTxSynced } = require('../lib/utils')
 const { decrypt, decode } = require('../lib/crypto');
 
@@ -35,7 +34,7 @@ const alchemyAuthMiddleware = async function(req, res, next) {
 
         const workspace = await getWorkspaceByName(user.id, data.workspace);
 
-        res.locals.uid = user.id;
+        res.locals.uid = data.uid;
         res.locals.workspace = { rpcServer: workspace.rpcServer, name: workspace.name };
 
         next();
@@ -55,6 +54,7 @@ app.post('/webhooks/alchemy', alchemyAuthMiddleware, async (req, res) => {
             throw 'Missing transaction.';
         }
 
+        const promises = [];
         const provider = new ethers.providers.JsonRpcProvider(res.locals.workspace.rpcServer);
         const transaction = await provider.getTransaction(req.body.fullTransaction.hash);
 
@@ -73,15 +73,18 @@ app.post('/webhooks/alchemy', alchemyAuthMiddleware, async (req, res) => {
             extraData: block.extraData
         }));
 
-        const storeBlockPromise = storeBlock(res.locals.uid, res.locals.workspace.name, blockData);
+        promises.push(storeBlock(res.locals.uid, res.locals.workspace.name, blockData));
         
         const transactionReceipt = await provider.getTransactionReceipt(transaction.hash);
 
-        const txSynced = getTxSynced(res.uid, res.locals.workspace.name, transaction, transactionReceipt, moment(req.body.timestamp).unix());
+        const txSynced = getTxSynced(res.locals.uid, res.locals.workspace.name, transaction, transactionReceipt, block.timestamp);
 
-        const storeTransactionPromise = storeTransaction(res.locals.uid, res.locals.workspace.name, txSynced);
+        promises.push(storeTransaction(res.locals.uid, res.locals.workspace.name, txSynced));
 
-        await Promise.all([storeBlockPromise, storeTransactionPromise]);
+        if (!txSynced.to && transactionReceipt)
+            promises.push(storeContractData(res.locals.uid, res.locals.workspace.name, transactionReceipt.contractAddress, { address: transactionReceipt.contractAddress }));
+
+        await Promise.all(promises);
 
         res.send({
             success: true

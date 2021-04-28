@@ -250,7 +250,7 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
 
         var syncedBlock = stringifyBns(sanitize(block));
 
-        storeBlock(context.auth.uid, data.workspace, syncedBlock);
+        await storeBlock(context.auth.uid, data.workspace, syncedBlock);
         
         return { blockNumber: syncedBlock.number }
     } catch(error) {
@@ -310,7 +310,7 @@ exports.syncContractData = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[syncContractData] Missing parameter.');
         }
 
-        storeContractData(context.auth.uid, data.workspace, data.address, data);
+        await storeContractData(context.auth.uid, data.workspace, data.address, { address: data.address, name: data.name, abi: data.abi });
 
         return { address: data.address };
     } catch(error) {
@@ -329,7 +329,7 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[syncTransaction] Missing parameter.');
         }
-
+        const promises = [];
         const transaction = data.transaction;
         const receipt = data.transactionReceipt;
         
@@ -344,10 +344,12 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
             functionSignature: contractAbi ? getFunctionSignatureForTransaction(transaction.input, transaction.value, contractAbi) : null
         });
     
-        storeTransaction(context.auth.uid, data.workspace, txSynced);
+        promises.push(storeTransaction(context.auth.uid, data.workspace, txSynced));
 
         if (!txSynced.to && sTransactionReceipt)
-            storeContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress, { address: sTransactionReceipt.contractAddress });
+            promises.push(storeContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress, { address: sTransactionReceipt.contractAddress }));
+
+        await Promise.all(promises);
        
        return { txHash: txSynced.hash };
     } catch(error) {
