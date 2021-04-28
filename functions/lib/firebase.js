@@ -9,6 +9,67 @@ const _rtdb = app.database();
 
 const _getWorkspace = (userId, workspace) => _db.collection('users').doc(userId).collection('workspaces').doc(workspace);
 
+const getUser = (id) => _db.collection('users').doc(id).get();
+
+const addIntegration = (userId, workspace, integration) => {
+    _db.collection('users')
+        .doc(userId)
+        .collection('workspaces')
+        .doc(workspace)
+        .update({
+            'settings.integrations': admin.firestore.FieldValue.arrayUnion(integration)
+        });
+};
+
+const removeIntegration = (userId, workspace, integration) => {
+    _db.collection('users')
+        .doc(userId)
+        .collection('workspaces')
+        .doc(workspace)
+        .update({
+            'settings.integrations': admin.firestore.FieldValue.arrayRemove(integration)
+        });
+};
+
+const getUserByKey = async (key) => {
+    if (!key) throw 'Missing API key.';
+    const userDoc = await _db.collection('users').where('apiKey', '==', key).get();
+    console.log(key)
+    if (userDoc.empty) {
+        return null;
+    }
+    else {
+        const results = []
+        userDoc.forEach(doc => {
+            results.push({
+                uid: doc.id,
+                ...doc.data()
+            });
+        });
+        return results[0];
+    }
+};
+
+const storeApiKey = (userId, key) => {
+    if (!key) throw 'Missing key';
+    if (!userId) throw 'Missing userId';
+
+    return _db.collection('users').doc(userId).update({ apiKey: key });
+};
+
+const getAllUsers = () => {
+    return _db.collection('users').get();
+};
+
+const getWorkspaceByName = async (userId, workspaceName) => {
+    const workspace = await _getWorkspace(userId, workspaceName).get();
+    
+    return {
+        name: workspace.id,
+        ...workspace.data()
+    };
+};
+
 const storeBlock = (userId, workspace, block) => {
     if (!userId || !workspace || !block) throw '[storeBlock] Missing parameter';
     return _getWorkspace(userId, workspace)
@@ -58,5 +119,12 @@ module.exports = {
     storeContractData: storeContractData,
     storeContractArtifact: storeContractArtifact,
     storeContractDependencies: storeContractDependencies,
-    getContractData: getContractData
+    getContractData: getContractData,
+    getUserByKey: getUserByKey,
+    getWorkspaceByName: getWorkspaceByName,
+    storeApiKey: storeApiKey,
+    getAllUsers: getAllUsers,
+    getUser: getUser,
+    addIntegration: addIntegration,
+    removeIntegration: removeIntegration
 };
