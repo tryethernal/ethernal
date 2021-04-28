@@ -7,13 +7,6 @@ const { decrypt, decode } = require('../lib/crypto');
 
 const app = express();
 
-const rewriterMiddleware = function(req, res, next) {
-    if (req.url.indexOf('/api/') === 0) {
-        req.url = req.url.substring(4);
-    }
-    next();
-};
-
 const alchemyAuthMiddleware = async function(req, res, next) {
     try {
         if (!req.query.token) {
@@ -45,8 +38,6 @@ const alchemyAuthMiddleware = async function(req, res, next) {
         });
     }
 }
-
-app.use(rewriterMiddleware);
 
 app.post('/webhooks/alchemy', alchemyAuthMiddleware, async (req, res) => {
     try {

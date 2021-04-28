@@ -32,7 +32,7 @@
     ],
     "rewrites": [
       {
-        "source": "/api/**",
+        "source": "**",
         "function": "api"
       }
     ]
