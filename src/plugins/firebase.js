@@ -93,7 +93,6 @@ export const dbPlugin = {
                 Object.defineProperty(res, 'watchedPaths', { value: paths })
 
                 Object.defineProperty(res, 'dependencies', { value: {} })
-
                 return res;
             },
 
