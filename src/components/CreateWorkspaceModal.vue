@@ -11,6 +11,10 @@
                         <a href="#" @click.prevent="isUsingBrave = false">Dismiss</a>
                     </div>
                 </v-alert>
+                <v-alert type="warning" class="my-2" v-if="isUsingSafari">
+                    Safari is preventing websites from making CORS requests to localhost. This will prevent you from connecting to a local blockchain. If you want to do so, you'll need to use another browser.
+                    If you want to connect to a remote chain, or are not using Safari, you can ignore this message.
+                </v-alert>
                 <a href="#" @click.prevent="detectNetwork()">Detect Networks</a>&nbsp;
                 <v-tooltip top>
                     <template v-slot:activator="{ on }">
@@ -24,7 +28,7 @@
                     </li>
                 </ul>
                 <div v-show="noNetworks">
-                    No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave 👀!).
+                    No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave & Safari 👀!).
                 </div>
             </div>
             <v-alert v-show="errorMessage" dense text type="error" v-html="errorMessage"></v-alert>
@@ -125,6 +129,11 @@ export default {
                     this.noNetworks = true;
                 }
             });
+        }
+    },
+    computed: {
+        isUsingSafari: function() {
+            return navigator.vendor.match(/apple/i) && !navigator.userAgent.match(/crios/i) && !navigator.userAgent.match(/fxios/i);
         }
     },
     watch: {

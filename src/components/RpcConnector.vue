@@ -8,7 +8,7 @@
         <v-divider vertical inset class="mx-2"></v-divider>
         <a href="https://github.com/tryethernal/support/discussions" target="_blank">Support</a>
         <v-divider vertical inset class="mx-2"></v-divider>
-        <a href="https://discord.gg/Ad7qt7jQ" target="_blank">Discord</a>
+        <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a>
     </v-toolbar>
 </template>
 
