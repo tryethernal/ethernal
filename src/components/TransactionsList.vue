@@ -29,11 +29,14 @@
             <Hash-Link :type="'transaction'" :hash="item.hash" />
         </template>
         <template v-slot:item.timestamp="{ item }">
-            {{ parseInt(item.timestamp) | moment('from') }}
+            {{ parseInt(item.timestamp) | moment('YYYY-MM-DD h:mm:ss A') }}
         </template>
         <template v-slot:item.from="{ item }">
             <v-chip x-small class="mr-2" v-if="item.from && item.from === currentAddress">self</v-chip>
             <Hash-Link :type="'address'" :hash="item.from" />
+        </template>
+        <template v-slot:item.blockNumber="{ item }">
+            <router-link :to="'/block/' + item.blockNumber">{{item.blockNumber}}</router-link>
         </template>
         <template v-slot:item.to="{ item }">
             <v-chip x-small class="mr-2" v-if="item.to && item.to === currentAddress">self</v-chip>
@@ -73,7 +76,7 @@ export default {
                 value: 'blockNumber'
             },
             {
-                text: 'Age',
+                text: 'Mined On',
                 value: 'timestamp'
             },
             {

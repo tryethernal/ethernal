@@ -40,13 +40,14 @@ module.exports = {
     getTxSynced: (uid, workspace, transaction, receipt, timestamp) => {
         const sTransactionReceipt = receipt ? _stringifyBns(_sanitize(receipt)) : null;
         const sTransaction = _stringifyBns(_sanitize(transaction));
+
         const contractAbi = sTransactionReceipt && sTransactionReceipt.contractAddress ? getContractData(uid, workspace, sTransactionReceipt.contractAddress) : null;
 
         return _sanitize({
            ...sTransaction,
             receipt: sTransactionReceipt,
             timestamp: timestamp,
-            functionSignature: contractAbi ? getFunctionSignatureForTransaction(transaction.input, transaction.value, contractAbi) : null
+            functionSignature: contractAbi ? _getFunctionSignatureForTransaction(transaction.input, transaction.value, contractAbi) : null
         });
     }
 }
