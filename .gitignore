@@ -26,3 +26,4 @@ pnpm-debug.log*
 *.sln
 *.sw?
 *.log
+.firebase/*.cache
