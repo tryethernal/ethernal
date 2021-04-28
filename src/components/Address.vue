@@ -274,7 +274,6 @@ export default {
                     this.storageErrorMessage = message;
                 })
                 .finally(() => this.storageLoader = false)
-
         },
         dependenciesNeded: function() {
             for (const key in this.contract.dependencies) {
@@ -311,13 +310,15 @@ export default {
                         if (snapshot.val()) {
                             this.contract.artifact = snapshot.val().artifact;
                             var dependencies = snapshot.val().dependencies;
+                            var formattedDependencies = {};
                             if (dependencies) {
                                 Object.entries(dependencies).map((dep) => {
-                                    this.contract.dependencies[dep[0]] = {
+                                    formattedDependencies[dep[0]] = {
                                         artifact: dep[1]
                                     }
                                 });
                             }
+                            this.contract = { ...this.contract, dependencies: formattedDependencies, watchedPaths: this.contract.watchedPaths };
                             this.decodeContract();
                         }
                         else {

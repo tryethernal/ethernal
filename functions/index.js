@@ -6,8 +6,11 @@ const firebaseTools = require('firebase-tools');
 
 const Storage = require('./lib/storage');
 const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('./lib/utils');
+const { decrypt, encode } = require('./lib/crypto');
+const { generateKeyForNewUser } = require('./triggers/users');
 
-const { storeBlock, storeTransaction, storeContractData, storeContractArtifact, getContractData, storeContractDependencies } = require('./lib/firebase');
+const api = require('./api/index');
+const { storeBlock, storeTransaction, storeContractData, storeContractArtifact, getContractData, storeContractDependencies, getUser, addIntegration, removeIntegration } = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
     _functions.useFunctionsEmulator('http://localhost:5001');
@@ -52,7 +55,7 @@ var _getProvider = function(url) {
     }
 
     return new provider(urlInfo);
-}
+};
 
 var _getWeb3Provider = function(url) {
     const rpcServer = new URL(url);
@@ -353,3 +356,83 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError('unknown', reason);
     }
 });
+
+exports.enableAlchemyWebhook = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspace) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[activateAlchemyWebhook] Missing parameter.');
+        }
+
+        const user = await getUser(context.auth.uid);
+        await addIntegration(context.auth.uid, data.workspace, 'alchemy');
+
+        const apiKey = decrypt(user.data().apiKey);
+
+        const token = encode({
+            uid: context.auth.uid,
+            workspace: data.workspace,
+            apiKey: apiKey
+        });
+
+       return { token: token };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
+exports.getWebhookToken = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspace) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[activateAlchemyWebhook] Missing parameter.');
+        }
+
+        const user = await getUser(context.auth.uid);
+
+        const apiKey = decrypt(user.data().apiKey);
+
+        const token = encode({
+            uid: context.auth.uid,
+            workspace: data.workspace,
+            apiKey: apiKey
+        });
+
+       return { token: token };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
+exports.disableAlchemyWebhook = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspace) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[activateAlchemyWebhook] Missing parameter.');
+        }
+
+        await removeIntegration(context.auth.uid, data.workspace, 'alchemy');
+
+       return { success: true };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
+exports.api = functions.https.onRequest(api);
+exports.generateKeyForNewUser = functions.firestore.document('users/{userId}').onCreate(generateKeyForNewUser);
