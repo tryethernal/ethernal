@@ -34,7 +34,7 @@ const removeIntegration = (userId, workspace, integration) => {
 const getUserByKey = async (key) => {
     if (!key) throw 'Missing API key.';
     const userDoc = await _db.collection('users').where('apiKey', '==', key).get();
-    console.log(key)
+
     if (userDoc.empty) {
         return null;
     }

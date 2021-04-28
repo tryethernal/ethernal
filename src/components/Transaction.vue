@@ -71,7 +71,7 @@
                 </v-col>
             </v-row>
 
-            <v-row class="my-2">
+            <v-row class="my-2" v-if="transaction.to">
                 <v-col>
                     <h3>Data</h3>
                     <div v-if="contract && contract.abi">
