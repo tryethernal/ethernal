@@ -103,7 +103,7 @@ export default {
             'currentWorkspace'
         ]),
         formattedWebhook: function() {
-            return `${API_ROOT_URL}/api/webhooks/alchemy?token=${this.token}`;
+            return `${API_ROOT_URL}/webhooks/alchemy?token=${this.token}`;
         }
     }
 }
