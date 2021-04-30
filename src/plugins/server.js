@@ -58,7 +58,6 @@ const serverFunctions = {
         return new provider(urlInfo);
     },
 
-
     // Public
     getStructure: async function(data) {
         try {
