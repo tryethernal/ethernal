@@ -139,10 +139,14 @@
                     </v-card-text>
                     <v-card-text v-if="!storage.structure && !storageLoader || storageError">
                         <span v-if="storageError">
-                            Error while loading storage. You might have loaded an invalid key (maybe a badly formatted address?).<br>
+                            Error while loading storage:
                             <span v-if="storageErrorMessage">
-                                Error message was: <b>{{ storageErrorMessage }}</b>
-                            </span><br>
+                                <b>{{ storageErrorMessage }}</b>
+                            </span>
+                            <span v-else>
+                                <b>You might have loaded an invalid key (maybe a badly formatted address?).</b>
+                            </span>
+                            <br>
                             <a href="#" @click.prevent="resetStorage()">Click here</a> to reset storage.
                         </span>
                         <i v-else>Upload contract artifact <router-link :to="`/address/${this.contract.address}?tab=contract`">here</router-link> to see variables of this contract.</i>
@@ -271,7 +275,7 @@ export default {
                 .then(storage => this.storage = storage)
                 .catch((message) => {
                     this.storageError = true;
-                    this.storageErrorMessage = message;
+                    this.storageErrorMessage = message.reason || message;
                 })
                 .finally(() => this.storageLoader = false)
         },
