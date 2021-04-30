@@ -213,11 +213,21 @@ var _Storage = class Storage {
     }
 
     buildStructure() {
-        return new Promise((resolve) => {
-            this.instanceDecoder.variables().then((variables) => {
-                this.structure = new _Structure(variables);
-                resolve();
-            })
+        return new Promise((resolve, reject) => {
+            this.instanceDecoder.variables()
+                .then((variables) => {
+                    this.structure = new _Structure(variables);
+                    resolve();
+                })
+                .catch((error) => {
+                    console.log(error)
+                    if (error.name == 'ContractAllocationFailedError') {
+                        reject({ message: "In order to use this feature, you need to compile all your contracts, including dependencies, at the same time. For Truffle you can pass the --all flag, for Hardhat pass the --force flag. Then, redeploy the newly compiled contract, and try accessing the storage again at the new address." });
+                    }
+                    else {
+                        console.log(error.message);
+                    }
+                });
         });
     }
 
