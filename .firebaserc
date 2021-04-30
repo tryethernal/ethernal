@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "ethernal-95a14"
+  },
+  "targets": {
+    "ethernal-95a14": {
+      "hosting": {
+        "api": [
+          "ethernal-95a14"
+        ],
+        "blog": [
+          "ethernal-blog"
+        ]
+      }
+    }
   }
 }
