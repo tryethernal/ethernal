@@ -9,7 +9,7 @@
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn text @click.stop="close()">Close</v-btn>
+            <v-btn color="primary" text @click.stop="close()">Close</v-btn>
             <v-btn color="primary" :disabled="!newKeyToTrack" text @click.stop="addNewKeyToTrack()">Add</v-btn>
         </v-card-actions>
     </v-card>
