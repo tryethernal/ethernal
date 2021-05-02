@@ -24,7 +24,7 @@
                 <h4>Artifact</h4>
                 <v-card outlined class="mb-4">
                     <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
-                    <div v-else>
+                    <div v-if="!contractLoader && !contract.imported">
                         <v-card-text v-if="contract.artifact">
                             Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded.
                             <div v-if="Object.keys(contract.dependencies).length" class="mb-1 mt-2">
@@ -46,13 +46,18 @@
                             For Hardhat project, use our <a href="https://github.com/antoinedc/hardhat-ethernal" target="_blank">plugin</a>.<br />
                         </v-card-text>
                     </div>
+                    <div v-if="!contractLoader && contract.imported">
+                        <v-card-text>
+                            Contract <b>{{ contract.name }}</b> has been loaded.
+                        </v-card-text>
+                    </div>
                 </v-card>
 
                 <h4>Call Options</h4>
                 <v-card outlined class="mb-4">
                     <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
                     <div v-else>
-                        <v-card-text v-if="contract.artifact">
+                        <v-card-text v-if="contract.artifact || contract.imported">
                             <v-row>
                                 <v-col cols="5">
                                     <v-select
@@ -99,7 +104,7 @@
                 <v-card outlined class="mb-4">
                     <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
                     <div v-else>
-                        <v-card-text v-if="contract.artifact">
+                        <v-card-text v-if="contract.artifact || contract.imported">
                             <v-row v-for="(method, methodIdx) in contractReadMethods" :key="methodIdx" class="pb-4">
                                 <v-col cols="5">
                                     <Contract-Read-Method :contract="contract" :method="method" :options="{...callOptions}" />
@@ -116,7 +121,7 @@
                 <v-card outlined class="mb-4">
                     <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
                     <div v-else>
-                        <v-card-text v-if="contract.artifact">
+                        <v-card-text v-if="contract.artifact || contract.imported">
                             <v-row v-for="(method, methodIdx) in contractWriteMethods" :key="methodIdx" class="pb-4">
                                 <v-col cols="5">
                                     <Contract-Write-Method :contract="contract" :method="method" :options="{...callOptions}" />

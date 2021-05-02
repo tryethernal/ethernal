@@ -5,6 +5,7 @@
             outlined
             dense
             hide-details="auto"
+            class="py-1"
             v-model="params[inputIdx]"
             v-for="(input, inputIdx) in method.inputs"
             :key="inputIdx"
