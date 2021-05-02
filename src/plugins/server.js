@@ -197,6 +197,9 @@ export const serverPlugin = {
         }
 
         Vue.prototype.server = {
+            importContract: function(workspace, abi, address, name) {
+                return functions.httpsCallable('importContract')({ workspace: workspace, abi: abi, address: address, name: name });
+            },
             getWebhookToken: function(workspace) {
                 return functions.httpsCallable('getWebhookToken')({ workspace: workspace });
             },
@@ -232,7 +235,6 @@ export const serverPlugin = {
                 }
             },
             getAccounts: function() {
-                console.log(`Localhost: ${_isLocalhost()}`)
                 if (_isLocalhost()) {
                     return new Promise((resolve, reject) => {
                         serverFunctions
@@ -251,7 +253,6 @@ export const serverPlugin = {
                 }
             },
             getAccountBalance: function(account) {
-                console.log(`Localhost: ${_isLocalhost()}`)
                 if (_isLocalhost()) {
                     return new Promise((resolve, reject) => {
                         serverFunctions
@@ -270,7 +271,6 @@ export const serverPlugin = {
                 }
             },
             initRpcServer: function(rpcServer) {
-                console.log(`Localhost: ${_isLocalhost(rpcServer)}`)
                 if (_isLocalhost(rpcServer)) {
                     return new Promise((resolve, reject) => {
                         serverFunctions
@@ -289,7 +289,6 @@ export const serverPlugin = {
                 }
             },
             callContractReadMethod: function(contract, method, options, params, rpcServer) {
-                console.log(`Localhost: ${_isLocalhost()}`);
                 if (_isLocalhost()) {
                     return new Promise((resolve, reject) => {
                         serverFunctions
@@ -308,7 +307,6 @@ export const serverPlugin = {
                 }
             },
             callContractWriteMethod: function(contract, method, options, params, rpcServer) {
-                console.log(`Localhost: ${_isLocalhost()}`);
                 if (_isLocalhost()) {
                     return new Promise((resolve, reject) => {
                         serverFunctions
@@ -327,7 +325,6 @@ export const serverPlugin = {
                 }
             },
             getStructure: function(contract, rpcServer, dependenciesArtifact) {
-                console.log(`Localhost: ${_isLocalhost()}`);
                 if (_isLocalhost()) {
                     return new Promise((resolve, reject) => {
                         serverFunctions
@@ -346,7 +343,6 @@ export const serverPlugin = {
                 }
             },
             decodeData: function(contract, rpcServer, blockNumber) {
-                console.log(`Localhost: ${_isLocalhost()}`);
                 if (_isLocalhost()) {
                     return new Promise((resolve, reject) => {
                         serverFunctions
