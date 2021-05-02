@@ -1,0 +1,89 @@
+<template>
+<v-dialog v-model="dialog" max-width="600">
+    <v-card>
+        <v-card-title class="headline">Import a third-party contract</v-card-title>
+
+        <v-card-text>
+            <v-alert type="success" v-if="successMessage" v-html="successMessage"></v-alert>
+            <v-alert type="error" v-if="errorMessage"> {{ errorMessage }}</v-alert>
+            <div>
+                Enter an address of a contract deployed on the Ethereum mainnet <b>and</b> verified on Etherscan.<br>
+                Then, contract details will be pulled using the Etherscan API, and it will be added to this page.<br>
+                To be able to use it, your workspace needs to be connected to a mainnet fork.<br>
+                If it is not, the contract will still be imported but calls will fail.<br>
+                If you'd like support for other chains, please contact @antoinedc on Discord.<br>
+            </div>
+            <v-text-field v-model="contractAddress" label="Address*" required></v-text-field>
+        </v-card-text>
+
+        <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" text @click.stop="close()">Close</v-btn>
+            <v-btn color="primary" :loading="loading" :disabled="!contractAddress" text @click.stop="importContract()">Import</v-btn>
+        </v-card-actions>
+    </v-card>
+</v-dialog>
+</template>
+<script>
+import { mapGetters } from 'vuex';
+
+const axios = require('axios');
+const ETHERSCAN_API_KEY = process.env.VUE_APP_ETHERSCAN_API_KEY;
+const ETHERSCAN_API_URL = 'https://api.etherscan.io/api?module=contract&action=getsourcecode';
+
+export default {
+    name: 'ImportContractModal',
+    data: () => ({
+        dialog: false,
+        resolve: null,
+        reject: null,
+        contractAddress: null,
+        contract: null,
+        successMessage: null,
+        errorMessage: null,
+        loading: false
+    }),
+    methods: {
+        open: function() {
+            this.dialog = true;
+            return new Promise((resolve, reject) => {
+                this.resolve = resolve;
+                this.reject = reject;
+            });
+        },
+        close: function() {
+            this.resolve(false);
+            this.reset();
+        },
+        importContract: function() {
+            this.successMessage = null;
+            this.errorMessage = null;
+            this.loading = true;
+            const endpoint = `${ETHERSCAN_API_URL}&address=${this.contractAddress}&apikey=${ETHERSCAN_API_KEY}`;
+            axios.get(endpoint)
+                .then(({data}) => {
+                    if (data.message == "NOTOK") {
+                        return this.errorMessage = data.result;
+                    }
+
+                    this.server.importContract(this.currentWorkspace.name, data.result[0].ABI, this.contractAddress, data.result[0].ContractName)
+                        .then(() => this.successMessage = `Contact imported successfully at address <a class="white--text" href="/address/${this.contractAddress}">${this.contractAddress}</a>`)
+                        .catch(error => this.errorMessage = error.message)
+                        .finally(() => this.loading = false);
+                })
+                .catch(console.log)
+                .finally(() => this.loading = false);
+        },
+        reset: function() {
+            this.dialog = false;
+            this.resolve = null;
+            this.reject = null;
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'currentWorkspace'
+        ])
+    }
+}
+</script>

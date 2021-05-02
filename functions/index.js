@@ -436,5 +436,30 @@ exports.disableAlchemyWebhook = functions.https.onCall(async (data, context) => 
     }
 });
 
+exports.importContract = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.abi || !data.address || !data.name) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[importContract] Missing parameter.');
+        }
+
+        await storeContractData(context.auth.uid, data.workspace, data.address, {
+            abi: JSON.parse(data.abi),
+            address: data.address,
+            name: data.name,
+            imported: true
+        });
+
+       return { success: true };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
 exports.api = functions.https.onRequest(api);
 exports.generateKeyForNewUser = functions.firestore.document('users/{userId}').onCreate(generateKeyForNewUser);
