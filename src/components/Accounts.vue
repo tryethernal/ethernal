@@ -13,7 +13,9 @@
             <template v-slot:top>
                 <v-toolbar flat dense class="py-0">
                     <v-spacer></v-spacer>
-                    <v-btn depressed color="primary" class="mr-2" @click="openAddAccountModal()"><v-icon>mdi-plus</v-icon>Add Account</v-btn>
+                    <v-btn small depressed color="primary" class="mr-2" @click="openAddAccountModal()">
+                        <v-icon small class="mr-1">mdi-plus</v-icon>Add Account
+                    </v-btn>
                 </v-toolbar>
             </template>
             <template v-slot:item.address="{ item }">
