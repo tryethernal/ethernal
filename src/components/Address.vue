@@ -12,7 +12,7 @@
         <v-tabs optional v-model="tab">
             <v-tab href="#transactions">Transactions</v-tab>
             <v-tab href="#contract" v-if="contract && contract.address != null">Contract</v-tab>
-            <v-tab href="#storage" v-if="contract && contract.address != null">Storage</v-tab>
+            <v-tab href="#storage" v-if="contract && contract.address != null && !contract.imported">Storage</v-tab>
 
             <v-tab-item value="transactions">
                 <Transactions-List :transactions="allTransactions" :currentAddress="hash" :loading="loadingTx" />
@@ -135,7 +135,7 @@
                 </v-card>
             </v-tab-item>
 
-            <v-tab-item value="storage" v-if="contract">
+            <v-tab-item value="storage" v-if="contract && !contract.imported">
                 <h4>Structure</h4>
                 <v-card outlined class="mb-4">
                     <v-skeleton-loader class="col-4" type="list-item-three-line" v-if="storageLoader"></v-skeleton-loader>
