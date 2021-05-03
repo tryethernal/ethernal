@@ -69,7 +69,6 @@ export default {
                     this.server.importContract(this.currentWorkspace.name, data.result[0].ABI, this.contractAddress, data.result[0].ContractName)
                         .then(() => this.successMessage = `Contact imported successfully at address <a class="white--text" href="/address/${this.contractAddress}">${this.contractAddress}</a>`)
                         .catch(error => this.errorMessage = error.message)
-                        .finally(() => this.loading = false);
                 })
                 .catch(console.log)
                 .finally(() => this.loading = false);
