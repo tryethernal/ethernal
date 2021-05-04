@@ -189,6 +189,7 @@ export const serverPlugin = {
             return new URL(host).hostname === 'localhost' ||
                 new URL(host).hostname === '127.0.0.1' ||
                 new URL(host).hostname.startsWith('192.168') ||
+                new URL(host).hostname.startsWith('172') ||
                 new URL(host).hostname.startsWith('10.');
         };
 
