@@ -141,7 +141,8 @@ const serverFunctions = {
             });
 
             if (data.options.pkey) {
-                signer = new ethers.Wallet(data.options.pkey, provider);
+                const decryptedKey = await functions.httpsCallable('getPrivateKey')({ workspace: workspace, account: account });
+                signer = new ethers.Wallet(decryptedKey, provider);
             }
             else {
                 signer = provider.getSigner(data.options.from);
@@ -163,9 +164,11 @@ const serverFunctions = {
                 gasPrice: data.options.gasPrice,
                 value: data.options.value
             });
-
+            console.log(data.options)
             if (data.options.pkey) {
-                signer = new ethers.Wallet(data.options.pkey, provider);
+                const decryptedKey = await functions.httpsCallable('getPrivateKey')({ workspace: workspace, account: account });
+                console.log(decryptedKey)
+                signer = new ethers.Wallet(decryptedKey, provider);
             }
             else {
                 signer = provider.getSigner(data.options.from);
@@ -197,6 +200,9 @@ export const serverPlugin = {
         }
 
         Vue.prototype.server = {
+            storeAccountPrivateKey: function(workspace, account, privateKey) {
+                return functions.httpsCallable('setPrivateKey')({ workspace: workspace, account: account, privateKey });
+            },
             importContract: function(workspace, abi, address, name) {
                 return functions.httpsCallable('importContract')({ workspace: workspace, abi: abi, address: address, name: name });
             },

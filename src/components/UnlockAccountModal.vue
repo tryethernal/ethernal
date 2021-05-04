@@ -4,19 +4,21 @@
         <v-card-title class="headline">Unlock Account</v-card-title>
 
         <v-card-text>
-            <div>Set private key for <b>{{ options.address }}</b> in order to use it for methods call. If you've already set one in the past, it will overwrite it.</div>
+            <div>Set private key for <b>{{ options.address }}</b> in order to use it for methods call. If you've already set one in the past, it will override it.</div>
             <v-text-field outlined class="mt-2" v-model="pkey" label="Key*" required></v-text-field>
         </v-card-text>
 
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="close()">Close</v-btn>
-            <v-btn color="primary" :disabled="!pkey" @click.stop="unlockAccount(options.address, pkey)">Add</v-btn>
+            <v-btn color="primary" :loading="loading" :disabled="!pkey" @click.stop="unlockAccount(options.address, pkey)">Unlock</v-btn>
         </v-card-actions>
     </v-card>
 </v-dialog>
 </template>
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
     name: 'UnlockAccountModal',
     data: () => ({
@@ -24,7 +26,8 @@ export default {
         resolve: null,
         reject: null,
         options: {},
-        pkey: null
+        pkey: null,
+        loading: false
     }),
     methods: {
         open: function(options) {
@@ -40,9 +43,14 @@ export default {
             this.reset();
         },
         unlockAccount: function(address, pkey) {
-            this.db.collection('accounts').doc(address).set({ pkey: pkey }, { merge: true })
-            this.resolve(true);
-            this.reset();
+            this.loading = true;
+            this.server.storeAccountPrivateKey(this.currentWorkspace.name, address, pkey)
+                .then(() => {
+                    this.resolve(true);
+                    this.reset();
+                })
+                .catch(console.log)
+                .finally(() => this.loading = false);
         },
         reset: function() {
             this.dialog = false;
@@ -51,6 +59,11 @@ export default {
             this.options = {};
             this.pkey = null;
         }
+    },
+    computed: {
+        ...mapGetters([
+            'currentWorkspace'
+        ])
     }
 }
 </script>
