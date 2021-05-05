@@ -122,22 +122,8 @@ const storeAccountPrivateKey = (userId, workspace, address, privateKey) => {
         .set({ privateKey: privateKey }, { merge: true });
 };
 
-const getAccountPrivateKey = async (userId, workspace, address) => {
-    if (!userId || !workspace || !address) throw '[getAccountPrivateKey] Missing parameter';
-    const doc = await _getWorkspace(userId, workspace)
-        .collection('accounts')
-        .doc(address)
-        .get();
-    if (doc.empty) {
-        return null;
-    }
-    else {
-        return doc.data().privateKey;
-    }
-};
-
 const getAccount = async (userId, workspace, address) => {
-    if (!userId || !workspace || !address) throw '[getAccountPrivateKey] Missing parameter';
+    if (!userId || !workspace || !address) throw '[getAccount] Missing parameter';
     const doc = await _getWorkspace(userId, workspace)
         .collection('accounts')
         .doc(address)
@@ -165,6 +151,5 @@ module.exports = {
     addIntegration: addIntegration,
     removeIntegration: removeIntegration,
     storeAccountPrivateKey: storeAccountPrivateKey,
-    getAccountPrivateKey: getAccountPrivateKey,
     getAccount: getAccount
 };

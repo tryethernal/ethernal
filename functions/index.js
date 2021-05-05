@@ -21,7 +21,6 @@ const {
     addIntegration,
     removeIntegration,
     storeAccountPrivateKey,
-    getAccountPrivateKey,
     getAccount
 } = require('./lib/firebase');
 
@@ -499,27 +498,6 @@ exports.setPrivateKey = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError('unknown', reason);
     }
 })
-
-exports.getPrivateKey = functions.https.onCall(async (data, context) => {
-    if (!context.auth)
-        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
-
-    try {
-        if (!data.workspace || !data.account || !data.privateKey) {
-            console.log(data);
-            throw new functions.https.HttpsError('invalid-argument', '[setPrivateKey] Missing parameter.');
-        }
-
-        const encryptedPk = await getAccountPrivateKey(context.auth.uid, data.workspace, data.account);
-        const decryptedPk = decrypt(encryptedPk);
-
-        return { privateKey: decryptedPk };
-    } catch(error) {
-        console.log(error);
-        var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
-    }    
-});
 
 exports.getAccount = functions.https.onCall(async (data, context) => {
     if (!context.auth)
