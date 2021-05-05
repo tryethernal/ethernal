@@ -74,8 +74,8 @@ export default {
                     txHash: null,
                     message: null
                 };
-                var account = await this.db.collection('accounts').doc(this.options.from).get();
-                var options = sanitize({...this.options, value: this.value, pkey: account.data().pkey });
+                var account = (await this.server.getAccount(this.currentWorkspace.name, this.options.from)).data;
+                var options = sanitize({...this.options, value: this.value, privateKey: account.privateKey });
 
                 if (!this.options.gasLimit || parseInt(this.options.gasLimit) < 1) {
                     throw { reason: 'You must set a gas limit' }
