@@ -6,11 +6,23 @@ const firebaseTools = require('firebase-tools');
 
 const Storage = require('./lib/storage');
 const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('./lib/utils');
-const { decrypt, encode } = require('./lib/crypto');
+const { encrypt, decrypt, encode } = require('./lib/crypto');
 const { generateKeyForNewUser } = require('./triggers/users');
 
 const api = require('./api/index');
-const { storeBlock, storeTransaction, storeContractData, storeContractArtifact, getContractData, storeContractDependencies, getUser, addIntegration, removeIntegration } = require('./lib/firebase');
+const {
+    storeBlock,
+    storeTransaction,
+    storeContractData,
+    storeContractArtifact,
+    getContractData,
+    storeContractDependencies,
+    getUser,
+    addIntegration,
+    removeIntegration,
+    storeAccountPrivateKey,
+    getAccount
+} = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
     _functions.useFunctionsEmulator('http://localhost:5001');
@@ -76,10 +88,11 @@ exports.callContractReadMethod = functions.https.onCall(async (data, context) =>
     try {
         var provider = _getProvider(data.rpcServer);
         var signer;
-        var options = {
+        var options = sanitize({
             gasLimit: data.options.gasLimit,
-            gasPrice: data.options.gasPrice
-        };
+            gasPrice: data.options.gasPrice,
+        });
+
         if (data.options.pkey) {
             signer = new ethers.Wallet(data.options.pkey, provider);
         }
@@ -87,11 +100,11 @@ exports.callContractReadMethod = functions.https.onCall(async (data, context) =>
             signer = provider.getSigner(data.options.from);
         }
         var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
-        return await contract.functions[data.method](...Object.values(data.params), options)
+        return (await contract.functions[data.method](...Object.values(data.params), options));
     } catch(error) {
         console.log(error);
         const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
-        throw new functions.https.HttpsError('unknown', reason);
+        throw { reason: reason };
     }
 });
 
@@ -101,24 +114,27 @@ exports.callContractWriteMethod = functions.https.onCall(async (data, context) =
     try {
         var provider = _getProvider(data.rpcServer);
         var signer;
-        var options = {
+        var options = sanitize({
             gasLimit: data.options.gasLimit,
             gasPrice: data.options.gasPrice,
-            value: data.options.value
-        };
-        if (data.options.pkey) {
-            signer = new ethers.Wallet(data.options.pkey, provider);
+            value: data.options.value,
+        });
+
+        if (data.options.privateKey) {
+            signer = new ethers.Wallet(data.options.privateKey, provider);
         }
         else {
             signer = provider.getSigner(data.options.from);
-            signer.unlock();
         }
         var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
-        return await contract[data.method](...Object.values(data.params), options);
+        return (await contract[data.method](...Object.values(data.params), options));
     } catch(error) {
         console.log(error);
         const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
-        throw new functions.https.HttpsError('unknown', reason);
+        if (reason == 'invalid hexlify value')
+            throw { reason: `Invalid private key format for ${data.options.from}. Please correct it in the "Accounts" page` };
+        else
+            throw { reason: reason };
     }
 });
 
@@ -459,6 +475,53 @@ exports.importContract = functions.https.onCall(async (data, context) => {
         var reason = error.reason || error.message || 'Server error. Please retry.';
         throw new functions.https.HttpsError('unknown', reason);
     }
+});
+
+exports.setPrivateKey = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspace || !data.account || !data.privateKey) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[setPrivateKey] Missing parameter.');
+        }
+
+        const encryptedPk = encrypt(data.privateKey);
+
+        await storeAccountPrivateKey(context.auth.uid, data.workspace, data.account, encryptedPk)
+
+        return { success: true };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+})
+
+exports.getAccount = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspace || !data.account) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[getAccount] Missing parameter.');
+        }
+
+        const account = await getAccount(context.auth.uid, data.workspace, data.account);
+        const accountWithKey = sanitize({
+            address: account.id,
+            balance: account.balance,
+            privateKey: account.privateKey ? decrypt(account.privateKey) : null
+        });
+
+        return accountWithKey;
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }    
 });
 
 exports.api = functions.https.onRequest(api);

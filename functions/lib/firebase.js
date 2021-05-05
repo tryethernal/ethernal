@@ -113,6 +113,29 @@ const getContractData = (userId, workspace, address) => {
             .doc(address);
 };
 
+const storeAccountPrivateKey = (userId, workspace, address, privateKey) => {
+    if (!userId || !workspace || !address || !privateKey) throw '[storeAccountPrivateKey] Missing parameter';
+
+    return _getWorkspace(userId, workspace)
+        .collection('accounts')
+        .doc(address)
+        .set({ privateKey: privateKey }, { merge: true });
+};
+
+const getAccount = async (userId, workspace, address) => {
+    if (!userId || !workspace || !address) throw '[getAccount] Missing parameter';
+    const doc = await _getWorkspace(userId, workspace)
+        .collection('accounts')
+        .doc(address)
+        .get();
+    if (doc.empty) {
+        return null;
+    }
+    else {
+        return { ...doc.data(), id: doc.id };
+    }
+};
+
 module.exports = {
     storeBlock: storeBlock,
     storeTransaction: storeTransaction,
@@ -126,5 +149,7 @@ module.exports = {
     getAllUsers: getAllUsers,
     getUser: getUser,
     addIntegration: addIntegration,
-    removeIntegration: removeIntegration
+    removeIntegration: removeIntegration,
+    storeAccountPrivateKey: storeAccountPrivateKey,
+    getAccount: getAccount
 };
