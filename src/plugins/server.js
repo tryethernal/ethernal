@@ -141,8 +141,7 @@ const serverFunctions = {
             });
 
             if (data.options.pkey) {
-                const decryptedKey = await functions.httpsCallable('getPrivateKey')({ workspace: workspace, account: account });
-                signer = new ethers.Wallet(decryptedKey, provider);
+                signer = new ethers.Wallet(data.options.pkey, provider);
             }
             else {
                 signer = provider.getSigner(data.options.from);
@@ -162,13 +161,11 @@ const serverFunctions = {
             var options = sanitize({
                 gasLimit: data.options.gasLimit,
                 gasPrice: data.options.gasPrice,
-                value: data.options.value
+                value: data.options.value,
             });
-            console.log(data.options)
-            if (data.options.pkey) {
-                const decryptedKey = await functions.httpsCallable('getPrivateKey')({ workspace: workspace, account: account });
-                console.log(decryptedKey)
-                signer = new ethers.Wallet(decryptedKey, provider);
+
+            if (data.options.privateKey) {
+                signer = new ethers.Wallet(data.options.privateKey, provider);
             }
             else {
                 signer = provider.getSigner(data.options.from);
@@ -178,7 +175,10 @@ const serverFunctions = {
         } catch(error) {
             console.log(error);
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
-            throw { reason: reason };
+            if (reason == 'invalid hexlify value')
+                throw { reason: `Invalid private key format for ${data.options.from}. Please correct it in the "Accounts" page` };
+            else
+                throw { reason: reason };
         }
     }
 };
@@ -200,6 +200,9 @@ export const serverPlugin = {
         }
 
         Vue.prototype.server = {
+            getAccount: function(workspace, account) {
+                return functions.httpsCallable('getAccount')({ workspace: workspace, account: account });
+            },
             storeAccountPrivateKey: function(workspace, account, privateKey) {
                 return functions.httpsCallable('setPrivateKey')({ workspace: workspace, account: account, privateKey });
             },
@@ -214,6 +217,9 @@ export const serverPlugin = {
             },
             disableAlchemyWebhook: function(workspace) {
                 return functions.httpsCallable('disableAlchemyWebhook')({ workspace: workspace });
+            },
+            getProvider: function(url) {
+                return serverFunctions._getProvider(url);
             },
             searchForLocalChains: async function() {
                 try {

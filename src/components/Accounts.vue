@@ -8,7 +8,24 @@
             :items="accounts"
             :headers="headers">
             <template v-slot:no-data>
-                No Accounts Available
+                No Accounts Available -
+                <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                        <a v-bind="attrs" v-on="on" href="#" @click.stop="sync()">Resync</a>
+                    </template>
+                    This will send a request with the method 'eth_accounts' to the RPC server, and display returned addresses.
+                </v-tooltip>
+            </template>
+            <template v-slot:item.address="{ item }">
+                <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                        <span v-if="item.unlocked">
+                            <v-icon v-bind="attrs" v-on="on" small class="mr-2">mdi-lock-open-outline</v-icon>
+                        </span>
+                    </template>
+                    <span>Account has been unlocked with private key.</span>
+                </v-tooltip>
+                <Hash-Link :type="'address'" :hash="item.address" />
             </template>
             <template v-slot:top>
                 <v-toolbar flat dense class="py-0">
@@ -17,9 +34,6 @@
                         <v-icon small class="mr-1">mdi-plus</v-icon>Add Account
                     </v-btn>
                 </v-toolbar>
-            </template>
-            <template v-slot:item.address="{ item }">
-                <Hash-Link :type="'address'" :hash="item.address" />
             </template>
             <template v-slot:item.balance="{ item }">
                 {{ item.balance | fromWei  }}
@@ -65,19 +79,32 @@ export default {
                 value: 'actions'
             }
         ],
-        loading: true
+        loading: false
     }),
     mounted: function() {
-        this.$bind('accounts', this.db.collection('accounts'), { serialize: snapshot => Object.defineProperty(snapshot.data(), 'address', { value: snapshot.id })})
-            .then(accounts => {
-                this.loading = false;
-                accounts.forEach(account => bus.$emit('syncAccount', account.address), this);
-            })
-
+        this.loading = true;
+        this.$bind('accounts', this.db.collection('accounts'), { serialize: (snapshot) => {
+            return {
+                address: snapshot.id,
+                balance: snapshot.data().balance,
+                unlocked: snapshot.data().privateKey ? true : false
+            };
+        }})
+        .then(accounts => {
+            this.loading = false;
+            accounts.forEach(account => bus.$emit('syncAccount', account.address), this);
+        })
     },
     methods: {
+        sync: function() {
+            this.loading = true;
+            this.server.getAccounts().then(accounts => {
+                accounts.forEach(account => bus.$emit('syncAccount', account), this)
+                this.loading = false;
+            });
+        },
         openAddAccountModal: function() {
-            this.$refs.addAccountModalRef.open()
+            this.$refs.addAccountModalRef.open();
         },
         openUnlockAccountModal: function(account) {
           this.$refs.openUnlockAccountModalRef.open({ address: account.address })

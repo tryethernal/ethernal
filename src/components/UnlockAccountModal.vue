@@ -4,19 +4,27 @@
         <v-card-title class="headline">Unlock Account</v-card-title>
 
         <v-card-text>
-            <div>Set private key for <b>{{ options.address }}</b> in order to use it for methods call. If you've already set one in the past, it will override it.</div>
-            <v-text-field outlined class="mt-2" v-model="pkey" label="Key*" required></v-text-field>
+            <v-alert type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
+            <v-alert type="success" v-if="successMessage">{{ successMessage }}</v-alert>
+            <div>
+                Set private key for <b>{{ options.address }}</b> in order to use it for methods call. If you've already set one in the past, it will override it.
+            </div>
+            <div>
+                Private keys are encrypted server side with AES 256 CBC, and stored encrypted. We strongly recommend to not use accounts with any value.
+            </div>
+            <v-text-field outlined class="mt-2" v-model="privateKey" label="Key*" required></v-text-field>
         </v-card-text>
 
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="close()">Close</v-btn>
-            <v-btn color="primary" :loading="loading" :disabled="!pkey" @click.stop="unlockAccount(options.address, pkey)">Unlock</v-btn>
+            <v-btn color="primary" :loading="loading" :disabled="!privateKey" @click="unlockAccount(options.address, privateKey)">Unlock</v-btn>
         </v-card-actions>
     </v-card>
 </v-dialog>
 </template>
 <script>
+const ethers = require('ethers');
 import { mapGetters } from 'vuex';
 
 export default {
@@ -26,8 +34,10 @@ export default {
         resolve: null,
         reject: null,
         options: {},
-        pkey: null,
-        loading: false
+        privateKey: null,
+        loading: false,
+        errorMessage: null,
+        successMessage: null
     }),
     methods: {
         open: function(options) {
@@ -42,15 +52,35 @@ export default {
             this.resolve(false);
             this.reset();
         },
-        unlockAccount: function(address, pkey) {
-            this.loading = true;
-            this.server.storeAccountPrivateKey(this.currentWorkspace.name, address, pkey)
-                .then(() => {
-                    this.resolve(true);
-                    this.reset();
-                })
-                .catch(console.log)
-                .finally(() => this.loading = false);
+        unlockAccount: function(address, privateKey) {
+            try {
+                this.loading = true;
+                this.errorMessage = null;
+                this.successMessage = null;
+
+                const wallet = new ethers.Wallet(privateKey);
+
+                if (wallet.address != address)
+                    throw { code: 'WALLET_MISMATCH'};
+
+                this.server.storeAccountPrivateKey(this.currentWorkspace.name, address, privateKey)
+                    .then(() => {
+                        this.successMessage = 'Account unlocked.';
+                    })
+                    .catch(console.log)
+                } catch(error) {
+                    switch (error.code) {
+                        case 'WALLET_MISMATCH':
+                            this.errorMessage = `Private key doesn't match the address.`;
+                            break;
+                        case 'INVALID_ARGUMENT':
+                        default:
+                            this.errorMessage = 'Invalid private key.'
+
+                    }
+                } finally {
+                    this.loading = false;
+                }
         },
         reset: function() {
             this.dialog = false;
