@@ -63,15 +63,25 @@ export default {
             axios.get(endpoint)
                 .then(({data}) => {
                     if (data.message == "NOTOK") {
+                        this.loading = false
                         return this.errorMessage = data.result;
+                    }
+
+                    if (data.result[0].ContractName == '') {
+                        this.errorMessage = `Couldn't find contract on Etherscan, make sure the address is correct and that the contract has been verified.`;
+                        this.loading = false;
+                        return;
                     }
 
                     this.server.importContract(this.currentWorkspace.name, data.result[0].ABI, this.contractAddress, data.result[0].ContractName)
                         .then(() => this.successMessage = `Contact imported successfully at address <a class="white--text" href="/address/${this.contractAddress}">${this.contractAddress}</a>`)
                         .catch(error => this.errorMessage = error.message)
+                        .finally(() => this.loading = false);
                 })
-                .catch(console.log)
-                .finally(() => this.loading = false);
+                .catch((error) => {
+                    console.log(error);
+                    this.loading = false;
+                });
         },
         reset: function() {
             this.dialog = false;
