@@ -89,10 +89,11 @@ exports.callContractReadMethod = functions.https.onCall(async (data, context) =>
     try {
         var provider = _getProvider(data.rpcServer);
         var signer;
-        var options = {
+        var options = sanitize({
             gasLimit: data.options.gasLimit,
-            gasPrice: data.options.gasPrice
-        };
+            gasPrice: data.options.gasPrice,
+        });
+
         if (data.options.pkey) {
             signer = new ethers.Wallet(data.options.pkey, provider);
         }
@@ -100,11 +101,11 @@ exports.callContractReadMethod = functions.https.onCall(async (data, context) =>
             signer = provider.getSigner(data.options.from);
         }
         var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
-        return await contract.functions[data.method](...Object.values(data.params), options)
+        return (await contract.functions[data.method](...Object.values(data.params), options));
     } catch(error) {
         console.log(error);
         const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
-        throw new functions.https.HttpsError('unknown', reason);
+        throw { reason: reason };
     }
 });
 
@@ -114,24 +115,27 @@ exports.callContractWriteMethod = functions.https.onCall(async (data, context) =
     try {
         var provider = _getProvider(data.rpcServer);
         var signer;
-        var options = {
+        var options = sanitize({
             gasLimit: data.options.gasLimit,
             gasPrice: data.options.gasPrice,
-            value: data.options.value
-        };
-        if (data.options.pkey) {
-            signer = new ethers.Wallet(data.options.pkey, provider);
+            value: data.options.value,
+        });
+
+        if (data.options.privateKey) {
+            signer = new ethers.Wallet(data.options.privateKey, provider);
         }
         else {
             signer = provider.getSigner(data.options.from);
-            signer.unlock();
         }
         var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
-        return await contract[data.method](...Object.values(data.params), options);
+        return (await contract[data.method](...Object.values(data.params), options));
     } catch(error) {
         console.log(error);
         const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
-        throw new functions.https.HttpsError('unknown', reason);
+        if (reason == 'invalid hexlify value')
+            throw { reason: `Invalid private key format for ${data.options.from}. Please correct it in the "Accounts" page` };
+        else
+            throw { reason: reason };
     }
 });
 
@@ -528,11 +532,11 @@ exports.getAccount = functions.https.onCall(async (data, context) => {
         }
 
         const account = await getAccount(context.auth.uid, data.workspace, data.account);
-        const accountWithKey = {
+        const accountWithKey = sanitize({
             address: account.id,
             balance: account.balance,
-            privateKey: decrypt(account.privateKey)
-        }
+            privateKey: account.privateKey ? decrypt(account.privateKey) : null
+        });
 
         return accountWithKey;
     } catch(error) {

@@ -63,13 +63,13 @@ export default {
                         this.successMessage = 'Account added.';
                     })
                     .catch(console.log)
+                    .finally(() => this.loading = false);
                 } catch(error) {
+                    this.loading = false;
                     if (error.code == 'INVALID_ARGUMENT')
                         this.errorMessage = 'Invalid private key.'
                     else
                         console.log(error);
-                } finally {
-                    this.loading = false;
                 }
         },
         reset: function() {

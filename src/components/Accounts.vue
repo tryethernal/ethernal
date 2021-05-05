@@ -8,13 +8,7 @@
             :items="accounts"
             :headers="headers">
             <template v-slot:no-data>
-                No Accounts Available -
-                <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                        <a v-bind="attrs" v-on="on" href="#" @click.stop="sync()">Resync</a>
-                    </template>
-                    This will send a request with the method 'eth_accounts' to the RPC server, and display returned addresses.
-                </v-tooltip>
+                No Accounts Available - Try to resync them.
             </template>
             <template v-slot:item.address="{ item }">
                 <v-tooltip top>
@@ -30,6 +24,14 @@
             <template v-slot:top>
                 <v-toolbar flat dense class="py-0">
                     <v-spacer></v-spacer>
+                    <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn :disabled="loading" v-bind="attrs" v-on="on" small depressed color="primary" class="mr-2" @click="sync()">
+                                <v-icon small class="mr-1">mdi-sync</v-icon>Resync
+                            </v-btn>
+                        </template>
+                        This will send a request with the 'eth_accounts' method to the RPC server, and add returned addresses to your accounts list.
+                    </v-tooltip>
                     <v-btn small depressed color="primary" class="mr-2" @click="openAddAccountModal()">
                         <v-icon small class="mr-1">mdi-plus</v-icon>Add Account
                     </v-btn>

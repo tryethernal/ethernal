@@ -68,7 +68,9 @@ export default {
                         this.successMessage = 'Account unlocked.';
                     })
                     .catch(console.log)
+                    .finally(() => this.loading = false);
                 } catch(error) {
+                    this.loading = false;
                     switch (error.code) {
                         case 'WALLET_MISMATCH':
                             this.errorMessage = `Private key doesn't match the address.`;
@@ -78,8 +80,6 @@ export default {
                             this.errorMessage = 'Invalid private key.'
 
                     }
-                } finally {
-                    this.loading = false;
                 }
         },
         reset: function() {
