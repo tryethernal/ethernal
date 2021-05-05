@@ -29,6 +29,14 @@
                             v-model="settings.defaultAccount"
                             :item-text="'id'"
                             :items="accounts">
+                            <template v-slot:item="{ item }">
+                                <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
+                                {{ item.id }}
+                            </template>
+                            <template v-slot:selection="{ item }">
+                                <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
+                                {{ item.id }}
+                            </template>
                         </v-select>
                         <v-text-field
                             outlined
