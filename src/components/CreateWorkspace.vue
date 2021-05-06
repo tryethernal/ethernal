@@ -134,7 +134,7 @@ export default {
         rpcServer: function() {
             try {
                 if (!this.isUrlValid(this.rpcServer)) {
-                    return this.localNetwork = false;
+                    return;
                 }
                 const hostname = new URL(this.rpcServer).hostname;
                 const localStrings = ['private', 'linkLocal', 'loopback', 'carrierGradeNat', 'localhost'];
