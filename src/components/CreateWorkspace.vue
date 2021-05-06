@@ -30,7 +30,7 @@
                 No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave & Safari 👀!).
             </div>
         </div>
-        <v-alert type="warning" class="my-2" v-show="localNetwork && !dismissedLocalWarning">
+        <v-alert type="warning" class="my-2" v-show="displayLocalNetworkWarning">
             It looks like you are trying to connect to a server running on your local network.<br>
             If it is not accessible through https, you will need to <a href="https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html" target="_blank">allow mixed content</a> for this domain (app.tryethernal.com) in order for Ethernal to be able to send request to it.<br>
             Another option is to setup a public URL such as <a href="https://ngrok.com/" target="_blank">ngrok</a>.
@@ -125,6 +125,9 @@ export default {
     computed: {
         isUsingSafari: function() {
             return navigator.vendor.match(/apple/i) && !navigator.userAgent.match(/crios/i) && !navigator.userAgent.match(/fxios/i);
+        },
+        displayLocalNetworkWarning: function() {
+            return this.localNetwork && this.isUrlValid(this.rpcServer) && new URL(this.rpcServer).hostname != 'localhost' && !this.dismissedLocalWarning
         }
     },
     watch: {
