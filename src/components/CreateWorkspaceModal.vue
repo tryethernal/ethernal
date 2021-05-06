@@ -88,7 +88,7 @@ export default {
             })
         },
         close: function() {
-            this.resolve(false);
+            this.resolve();
             this.reset();
         },
         createWorkspace: async function(name, rpcServer) {
