@@ -21,7 +21,8 @@ const {
     addIntegration,
     removeIntegration,
     storeAccountPrivateKey,
-    getAccount
+    getAccount,
+    getAllWorkspaces
 } = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
@@ -521,7 +522,7 @@ exports.getAccount = functions.https.onCall(async (data, context) => {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
         throw new functions.https.HttpsError('unknown', reason);
-    }    
+    }
 });
 
 exports.api = functions.https.onRequest(api);

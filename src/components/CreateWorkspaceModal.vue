@@ -32,13 +32,17 @@
                 </div>
             </div>
             <v-alert v-show="errorMessage" dense text type="error" v-html="errorMessage"></v-alert>
-            <v-alert type="warning" class="my-2" v-show="localNetwork">
+            <v-alert type="warning" class="my-2" v-show="localNetwork && !dismissedLocalWarning">
                 It looks like you are trying to connect to a server running on your local network.<br>
                 If it is not accessible through https, you will need to <a href="https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html" target="_blank">allow mixed content</a> for this domain (app.tryethernal.com) in order for Ethernal to be able to send request to it.<br>
                 Another option is to setup a public URL such as <a href="https://ngrok.com/" target="_blank">ngrok</a>.
+                <div class="text-right">
+                    <a href="#" @click.prevent="dismissedLocalWarning = true">Dismiss</a>
+                </div>
             </v-alert>
             <v-text-field outlined v-model="name" label="Name*" hide-details="auto" class="mb-2" required></v-text-field>
             <v-text-field outlined v-model="rpcServer" label="RPC Server*" hide-details="auto" required></v-text-field>
+            <v-switch hide-details="auto" :disabled="loading" v-model="localNetwork" label="Local Network"></v-switch>
         </v-card-text>
 
         <v-card-actions>
@@ -64,7 +68,8 @@ export default {
         localNetwork: false,
         detectedNetworks: [],
         noNetworks: false,
-        isUsingBrave: false
+        isUsingBrave: false,
+        dismissedLocalWarning: false
     }),
     mounted: function() {
         this.isBrave().then(res => this.isUsingBrave = res);
@@ -88,16 +93,16 @@ export default {
         createWorkspace: async function(name, rpcServer) {
             try {
                 this.loading = true;
-                var workspace = await this.server.initRpcServer(rpcServer);
+                var workspace = await this.server.initRpcServer(rpcServer, this.localNetwork);
                 await this.db.currentUser()
                     .collection('workspaces')
                     .doc(name)
-                    .set(workspace);
+                    .set({ ...workspace, localNetwork: this.localNetwork });
 
                 var wsRef = await this.db.getWorkspace(name);
 
                 this.db.currentUser().update({ currentWorkspace: wsRef });
-                this.$store.dispatch('updateCurrentWorkspace', { ...workspace, name: name })
+                this.$store.dispatch('updateCurrentWorkspace', { ...workspace, name: name, localNetwork: this.localNetwork });
                 this.resolve(name);
                 this.reset();
             } catch(error) {
@@ -120,6 +125,9 @@ export default {
             this.resolve = null;
             this.reject = null;
             this.address = null;
+            this.localNetwork = false;
+            this.noNetworks = false;
+            this.dismissedLocalWarning = false;
         },
         detectNetwork: function() {
             this.noNetworks = false;
@@ -138,7 +146,7 @@ export default {
     },
     watch: {
         rpcServer: function() {
-            this.localNetwork = this.rpcServer.startsWith('http://192.168') || this.rpcServer.startsWith('192.168')
+            this.localNetwork = this.rpcServer.startsWith('http://192.168') || this.rpcServer.startsWith('192.168');
         }
     }
 }

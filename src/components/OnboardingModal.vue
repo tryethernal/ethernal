@@ -70,7 +70,7 @@ export default {
             this.stepperIndex = 2;
             var wsRef = await this.db.getWorkspace(workspaceData.name);
             this.db.currentUser().update({ currentWorkspace: wsRef });
-            this.$store.dispatch('updateCurrentWorkspace', { ...workspaceData.workspace, name: workspaceData.name })
+            this.$store.dispatch('updateCurrentWorkspace', { ...workspaceData.workspace, name: workspaceData.name, localNetwork: workspaceData.localNetwork })
                 .then(() => this.$bind('transactions', this.db.collection('transactions')))
         },
         goToDashboard: function() {
