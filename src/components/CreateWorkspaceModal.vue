@@ -95,18 +95,17 @@ export default {
             try {
                 this.loading = true;
 
-                const isLocalNetwork = this.localNetwork || new URL(this.rpcServer).hostname == 'localhost';
-                var workspace = await this.server.initRpcServer(rpcServer, isLocalNetwork);
-
+                var workspace = await this.server.initRpcServer(rpcServer, this.localNetwork);
                 await this.db.currentUser()
                     .collection('workspaces')
                     .doc(name)
-                    .set({ ...workspace, localNetwork: isLocalNetwork });
+                    .set({ ...workspace, localNetwork: this.localNetwork });
 
                 var wsRef = await this.db.getWorkspace(name);
 
                 this.db.currentUser().update({ currentWorkspace: wsRef });
-                this.$store.dispatch('updateCurrentWorkspace', { ...workspace, name: name, localNetwork: isLocalNetwork });
+                this.$store.dispatch('updateCurrentWorkspace', { ...workspace, name: name, localNetwork: this.localNetwork });
+
                 this.resolve(name);
                 this.reset();
             } catch(error) {
