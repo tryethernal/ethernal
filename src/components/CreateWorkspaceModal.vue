@@ -32,7 +32,7 @@
                 </div>
             </div>
             <v-alert v-show="errorMessage" dense text type="error" v-html="errorMessage"></v-alert>
-            <v-alert type="warning" class="my-2" v-show="localNetwork && !dismissedLocalWarning">
+            <v-alert type="warning" class="my-2" v-show="displayLocalNetworkWarning">
                 It looks like you are trying to connect to a server running on your local network.<br>
                 If it is not accessible through https, you will need to <a href="https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html" target="_blank">allow mixed content</a> for this domain (app.tryethernal.com) in order for Ethernal to be able to send request to it.<br>
                 Another option is to setup a public URL such as <a href="https://ngrok.com/" target="_blank">ngrok</a>.
@@ -54,6 +54,7 @@
 </v-dialog>
 </template>
 <script>
+const ipaddr = require('ipaddr.js')
 export default {
     name: 'CreateWorkspaceModal',
     data: () => ({
@@ -94,6 +95,7 @@ export default {
             try {
                 this.loading = true;
                 var workspace = await this.server.initRpcServer(rpcServer, this.localNetwork);
+
                 await this.db.currentUser()
                     .collection('workspaces')
                     .doc(name)
@@ -103,6 +105,7 @@ export default {
 
                 this.db.currentUser().update({ currentWorkspace: wsRef });
                 this.$store.dispatch('updateCurrentWorkspace', { ...workspace, name: name, localNetwork: this.localNetwork });
+
                 this.resolve(name);
                 this.reset();
             } catch(error) {
@@ -137,16 +140,41 @@ export default {
                     this.noNetworks = true;
                 }
             });
+        },
+        isUrlValid: function(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch(error) {
+                return false;
+            }
         }
     },
     computed: {
         isUsingSafari: function() {
             return navigator.vendor.match(/apple/i) && !navigator.userAgent.match(/crios/i) && !navigator.userAgent.match(/fxios/i);
+        },
+        displayLocalNetworkWarning: function() {
+            return this.localNetwork && this.isUrlValid(this.rpcServer) && new URL(this.rpcServer).hostname != 'localhost' && !this.dismissedLocalWarning
         }
     },
     watch: {
         rpcServer: function() {
-            this.localNetwork = this.rpcServer.startsWith('http://192.168') || this.rpcServer.startsWith('192.168');
+            try {
+                if (!this.isUrlValid(this.rpcServer)) {
+                    return;
+                }
+                const hostname = new URL(this.rpcServer).hostname;
+                const localStrings = ['private', 'linkLocal', 'loopback', 'carrierGradeNat', 'localhost'];
+                if (hostname == 'localhost') {
+                    this.localNetwork = true;
+                }
+                else {
+                    this.localNetwork = ipaddr.isValid(hostname) && localStrings.indexOf(ipaddr.parse(hostname).range()) > -1;
+                }
+            } catch(error) {
+                console.log(error);
+            }
         }
     }
 }
