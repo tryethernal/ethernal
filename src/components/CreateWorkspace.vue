@@ -50,6 +50,7 @@
 </v-card>
 </template>
 <script>
+const ipaddr = require('ipaddr.js');
 export default {
     name: 'CreateWorkspace',
     data: () => ({
@@ -111,6 +112,14 @@ export default {
                     this.noNetworks = true;
                 }
             });
+        },
+        isUrlValid: function(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch(error) {
+                return false;
+            }
         }
     },
     computed: {
@@ -120,7 +129,21 @@ export default {
     },
     watch: {
         rpcServer: function() {
-            this.localNetwork = this.rpcServer.startsWith('http://192.168') || this.rpcServer.startsWith('192.168')
+            try {
+                if (!this.isUrlValid(this.rpcServer)) {
+                    return this.localNetwork = false;
+                }
+                const hostname = new URL(this.rpcServer).hostname;
+                const localStrings = ['private', 'linkLocal', 'loopback', 'carrierGradeNat', 'localhost'];
+                if (hostname == 'localhost') {
+                    this.localNetwork = true;
+                }
+                else {
+                    this.localNetwork = ipaddr.isValid(hostname) && localStrings.indexOf(ipaddr.parse(hostname).range()) > -1;
+                }
+            } catch(error) {
+                console.log(error);
+            }
         }
     }
 }
