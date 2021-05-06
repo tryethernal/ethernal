@@ -94,8 +94,8 @@ export default {
         createWorkspace: async function(name, rpcServer) {
             try {
                 this.loading = true;
-
                 var workspace = await this.server.initRpcServer(rpcServer, this.localNetwork);
+
                 await this.db.currentUser()
                     .collection('workspaces')
                     .doc(name)
