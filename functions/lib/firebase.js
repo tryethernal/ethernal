@@ -11,8 +11,6 @@ const _getWorkspace = (userId, workspace) => _db.collection('users').doc(userId)
 
 const getUser = (id) => _db.collection('users').doc(id).get();
 
-const getAllWorkspaces = () => _db.collectionGroup('workspaces').get();
-
 const addIntegration = (userId, workspace, integration) => {
     _db.collection('users')
         .doc(userId)
@@ -57,10 +55,6 @@ const storeApiKey = (userId, key) => {
     if (!userId) throw 'Missing userId';
 
     return _db.collection('users').doc(userId).update({ apiKey: key });
-};
-
-const getAllUsers = () => {
-    return _db.collection('users').get();
 };
 
 const getWorkspaceByName = async (userId, workspaceName) => {
@@ -148,12 +142,9 @@ module.exports = {
     getUserByKey: getUserByKey,
     getWorkspaceByName: getWorkspaceByName,
     storeApiKey: storeApiKey,
-    getAllUsers: getAllUsers,
     getUser: getUser,
     addIntegration: addIntegration,
     removeIntegration: removeIntegration,
     storeAccountPrivateKey: storeAccountPrivateKey,
-    getAccount: getAccount,
-    getAllUsers, getAllUsers,
-    getAllWorkspaces: getAllWorkspaces
+    getAccount: getAccount
 };
