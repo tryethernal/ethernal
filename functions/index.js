@@ -3,7 +3,6 @@ const ethers = require('ethers');
 const Web3 = require('web3');
 const Decoder = require("@truffle/decoder");
 const firebaseTools = require('firebase-tools');
-const ipaddr = require('ipaddr.js');
 
 const Storage = require('./lib/storage');
 const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('./lib/utils');

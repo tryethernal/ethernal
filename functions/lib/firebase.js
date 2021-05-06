@@ -11,8 +11,6 @@ const _getWorkspace = (userId, workspace) => _db.collection('users').doc(userId)
 
 const getUser = (id) => _db.collection('users').doc(id).get();
 
-const getAllWorkspaces = () => _db.collectionGroup('workspaces').get();
-
 const addIntegration = (userId, workspace, integration) => {
     _db.collection('users')
         .doc(userId)
@@ -148,7 +146,5 @@ module.exports = {
     addIntegration: addIntegration,
     removeIntegration: removeIntegration,
     storeAccountPrivateKey: storeAccountPrivateKey,
-    getAccount: getAccount,
-    getAllUsers, getAllUsers,
-    getAllWorkspaces: getAllWorkspaces
+    getAccount: getAccount
 };
