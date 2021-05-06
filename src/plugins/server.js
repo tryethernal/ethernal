@@ -187,18 +187,13 @@ export const serverPlugin = {
     install(Vue, options) {
         var store = options.store;
 
-        var _isLocalhost = function(rpcServer) {
-            var host = rpcServer || _rpcServer();
-            return new URL(host).hostname === 'localhost' ||
-                new URL(host).hostname === '127.0.0.1' ||
-                new URL(host).hostname.startsWith('192.168') ||
-                new URL(host).hostname.startsWith('172') ||
-                new URL(host).hostname.startsWith('10.');
+        var _isLocalNetwork = function() {
+            return store.getters.currentWorkspace.localNetwork;
         };
 
         var _rpcServer = function() {
             return store.getters.currentWorkspace.rpcServer;
-        }
+        };
 
         Vue.prototype.server = {
             getAccount: function(workspace, account) {
@@ -248,7 +243,7 @@ export const serverPlugin = {
                 }
             },
             getAccounts: function() {
-                if (_isLocalhost()) {
+                if (_isLocalNetwork()) {
                     return new Promise((resolve, reject) => {
                         serverFunctions
                             .getAccounts({ rpcServer: _rpcServer() })
@@ -266,7 +261,7 @@ export const serverPlugin = {
                 }
             },
             getAccountBalance: function(account) {
-                if (_isLocalhost()) {
+                if (_isLocalNetwork()) {
                     return new Promise((resolve, reject) => {
                         serverFunctions
                             .getAccountBalance({ rpcServer: _rpcServer(), account: account })
@@ -283,8 +278,8 @@ export const serverPlugin = {
                     });
                 }
             },
-            initRpcServer: function(rpcServer) {
-                if (_isLocalhost(rpcServer)) {
+            initRpcServer: function(rpcServer, localNetwork) {
+                if (localNetwork) {
                     return new Promise((resolve, reject) => {
                         serverFunctions
                             .initRpcServer({ rpcServer: rpcServer })
@@ -302,7 +297,7 @@ export const serverPlugin = {
                 }
             },
             callContractReadMethod: function(contract, method, options, params, rpcServer) {
-                if (_isLocalhost()) {
+                if (_isLocalNetwork()) {
                     return new Promise((resolve, reject) => {
                         serverFunctions
                             .callContractReadMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer })
@@ -320,7 +315,7 @@ export const serverPlugin = {
                 }
             },
             callContractWriteMethod: function(contract, method, options, params, rpcServer) {
-                if (_isLocalhost()) {
+                if (_isLocalNetwork()) {
                     return new Promise((resolve, reject) => {
                         serverFunctions
                             .callContractWriteMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer })
@@ -338,7 +333,7 @@ export const serverPlugin = {
                 }
             },
             getStructure: function(contract, rpcServer, dependenciesArtifact) {
-                if (_isLocalhost()) {
+                if (_isLocalNetwork()) {
                     return new Promise((resolve, reject) => {
                         serverFunctions
                             .getStructure({ contract: contract, rpcServer: rpcServer, dependenciesArtifact: dependenciesArtifact })
@@ -356,7 +351,7 @@ export const serverPlugin = {
                 }
             },
             decodeData: function(contract, rpcServer, blockNumber) {
-                if (_isLocalhost()) {
+                if (_isLocalNetwork()) {
                     return new Promise((resolve, reject) => {
                         serverFunctions
                             .decodeData({ contract: contract, rpcServer: rpcServer, blockNumber: blockNumber })

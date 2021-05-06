@@ -3,6 +3,7 @@ const ethers = require('ethers');
 const Web3 = require('web3');
 const Decoder = require("@truffle/decoder");
 const firebaseTools = require('firebase-tools');
+const ipaddr = require('ipaddr.js');
 
 const Storage = require('./lib/storage');
 const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('./lib/utils');
@@ -21,7 +22,8 @@ const {
     addIntegration,
     removeIntegration,
     storeAccountPrivateKey,
-    getAccount
+    getAccount,
+    getAllWorkspaces
 } = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
@@ -517,6 +519,37 @@ exports.getAccount = functions.https.onCall(async (data, context) => {
         });
 
         return accountWithKey;
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
+exports.setLocalRemoteNetworks = functions.https.onCall(async (data, context) => {
+    try {
+        const workspaces = await getAllWorkspaces();
+        const localStrings = ['private', 'linkLocal', 'loopback', 'carrierGradeNat', 'localhost'];
+        for (const workspace of workspaces.docs) {
+            if (workspace.data().rpcServer) {
+                const rpcServer = new URL(workspace.data().rpcServer).hostname;
+                console.log(`${rpcServer}: ${ipaddr.isValid(rpcServer) && localStrings.indexOf(ipaddr.parse(rpcServer).range()) > -1}`);
+                if (ipaddr.isValid(rpcServer)) {
+                    const res = await workspace._ref.set({ localNetwork: localStrings.indexOf(ipaddr.parse(rpcServer).range()) > -1 }, { merge: true });
+                    console.log(res);
+                }
+                else if (rpcServer == 'localhost') {
+                    const res = await workspace._ref.set({ localNetwork: true }, { merge: true });
+                    console.log(res);
+                }
+                else {
+                    const res = await workspace._ref.set({ localNetwork: false }, { merge: true });
+                    console.log(res);
+                }
+            }
+        }
+
+        return { success: true };
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
