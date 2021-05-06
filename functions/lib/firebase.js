@@ -57,10 +57,6 @@ const storeApiKey = (userId, key) => {
     return _db.collection('users').doc(userId).update({ apiKey: key });
 };
 
-const getAllUsers = () => {
-    return _db.collection('users').get();
-};
-
 const getWorkspaceByName = async (userId, workspaceName) => {
     const workspace = await _getWorkspace(userId, workspaceName).get();
     
@@ -146,7 +142,6 @@ module.exports = {
     getUserByKey: getUserByKey,
     getWorkspaceByName: getWorkspaceByName,
     storeApiKey: storeApiKey,
-    getAllUsers: getAllUsers,
     getUser: getUser,
     addIntegration: addIntegration,
     removeIntegration: removeIntegration,

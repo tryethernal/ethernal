@@ -6,6 +6,9 @@ module.exports = {
         "vuetify"
     ],
     configureWebpack: {
+        devServer: {
+            public: 'antoine.local'
+        },
         plugins: [
             new CopyPlugin({
                 patterns: [
