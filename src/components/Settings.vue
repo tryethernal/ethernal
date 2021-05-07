@@ -205,7 +205,11 @@ export default {
         openCreateWorkspaceModal: function() {
             this.$refs.createWorkspaceModal
                 .open({ workspaces: this.workspaces.map(ws => ws.id) })
-                .then((name) => this.switchWorkspace(name));
+                .then((name) => {
+                    if (name) {
+                        this.switchWorkspace(name);
+                    }
+                });
         },
         callFunction: function(name) {
             this[name]();
