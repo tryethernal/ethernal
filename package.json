@@ -23,6 +23,7 @@
     "ethers": "^5.0.24",
     "firebase": "^8.2.4",
     "firebaseui": "^4.8.0",
+    "ipaddr.js": "^2.0.0",
     "logrocket": "^1.0.14",
     "vue": "^2.6.11",
     "vue-moment": "^4.1.0",
