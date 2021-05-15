@@ -6,7 +6,7 @@ exports.matchWithContract = async (snap, context) => {
     try {
         const newContract = snap.data();
 
-        if (!newContract.hashedBytecode) {
+        if (!newContract.hashedBytecode || newContract.abi) {
             return true;
         }
         
