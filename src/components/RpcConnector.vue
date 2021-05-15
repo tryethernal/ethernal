@@ -6,8 +6,6 @@
         <v-spacer></v-spacer>
         <a href="https://doc.tryethernal.com" target="_blank">Documentation</a>
         <v-divider vertical inset class="mx-2"></v-divider>
-        <a href="https://github.com/tryethernal/support/discussions" target="_blank">Support</a>
-        <v-divider vertical inset class="mx-2"></v-divider>
         <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a>
     </v-toolbar>
 </template>

@@ -41,9 +41,11 @@
                             </div>
                         </v-card-text>
                         <v-card-text v-else>
+                            <Import-Artifact-Modal ref="importArtifactModal" />
                             <i>Upload an artifact to read contract storage and interact with it.</i><br />
                             For Truffle projects, use our <a href="https://www.npmjs.com/package/ethernal" target="_blank">CLI</a>.<br />
                             For Hardhat project, use our <a href="https://github.com/antoinedc/hardhat-ethernal" target="_blank">plugin</a>.<br />
+                            Or you can manually edit contract metadata (name & ABI) <a href="#" @click.stop="openImportArtifactModal()">here</a>.
                         </v-card-text>
                     </div>
                     <div v-if="!contractLoader && contract.imported">
@@ -57,7 +59,7 @@
                 <v-card outlined class="mb-4">
                     <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
                     <div v-else>
-                        <v-card-text v-if="contract.artifact || contract.imported">
+                        <v-card-text v-if="contract.abi">
                             <v-row>
                                 <v-col cols="5">
                                     <v-select
@@ -104,7 +106,7 @@
                 <v-card outlined class="mb-4">
                     <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
                     <div v-else>
-                        <v-card-text v-if="contract.artifact || contract.imported">
+                        <v-card-text v-if="contract.abi">
                             <v-row v-for="(method, methodIdx) in contractReadMethods" :key="methodIdx" class="pb-4">
                                 <v-col cols="5">
                                     <Contract-Read-Method :contract="contract" :method="method" :options="{...callOptions}" />
@@ -121,7 +123,7 @@
                 <v-card outlined class="mb-4">
                     <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
                     <div v-else>
-                        <v-card-text v-if="contract.artifact || contract.imported">
+                        <v-card-text v-if="contract.abi">
                             <v-row v-for="(method, methodIdx) in contractWriteMethods" :key="methodIdx" class="pb-4">
                                 <v-col cols="5">
                                     <Contract-Write-Method :contract="contract" :method="method" :options="{...callOptions}" />
@@ -186,6 +188,7 @@ import TransactionPicker from './TransactionPicker';
 import TransactionData from './TransactionData';
 import ContractReadMethod from './ContractReadMethod';
 import ContractWriteMethod from './ContractWriteMethod';
+import ImportArtifactModal from './ImportArtifactModal';
 
 import FromWei from '../filters/FromWei';
 
@@ -199,6 +202,7 @@ export default {
         TransactionData,
         ContractReadMethod,
         ContractWriteMethod,
+        ImportArtifactModal
     },
     filters: {
         FromWei
@@ -237,7 +241,12 @@ export default {
         }
     },
     methods: {
-        getTransactionDirection(trx) {
+        openImportArtifactModal: function() {
+            this.$refs.importArtifactModal
+                .open({ address: this.hash, name: this.contract.name, abi: JSON.stringify(this.contract.abi) })
+                .then((reload) => reload ? this.bindTheStuff(this.hash) : '');
+        },
+        getTransactionDirection: function(trx) {
             if (this.transactionsFrom.indexOf(trx) > -1) {
                 return 'OUT';
             }
@@ -299,43 +308,46 @@ export default {
                     this.contract.watchedPaths = [];
                     this.decodeContract();
                 });
+        },
+        bindTheStuff: function(hash) {
+            this.$bind('accounts', this.db.collection('accounts'));
+            var bindingTxFrom = this.$bind('transactionsFrom', this.db.collection('transactions').where('from', '==', hash));
+            var bindingTxTo = this.$bind('transactionsTo', this.db.collection('transactions').where('to', '==', hash).orderBy('blockNumber', 'desc'));
+            Promise.all([bindingTxFrom, bindingTxTo]).then(() => this.loadingTx = false);
+            this.contractLoader = true;
+            this.db.collection('contracts').doc(hash.toLowerCase()).withConverter({ fromFirestore: this.db.contractSerializer }).get().then((doc) => {
+                if (!doc.exists) {
+                    return;
+                }
+                this.contract = doc.data();
+                this.db.contractStorage(hash).once('value', (snapshot) => {
+                    if (snapshot.val()) {
+                        this.contract.artifact = snapshot.val().artifact;
+                        var dependencies = snapshot.val().dependencies;
+                        var formattedDependencies = {};
+                        if (dependencies) {
+                            Object.entries(dependencies).map((dep) => {
+                                formattedDependencies[dep[0]] = {
+                                    artifact: dep[1]
+                                }
+                            });
+                        }
+                        this.contract = { ...this.contract, dependencies: formattedDependencies, watchedPaths: this.contract.watchedPaths };
+                        this.decodeContract();
+                    }
+                    else {
+                        this.storageLoader = false;
+                    }
+                })
+                .finally(() => this.contractLoader = false);
+            })
         }
     },
     watch: {
         hash: {
             immediate: true,
             handler(hash) {
-                this.$bind('accounts', this.db.collection('accounts'));
-                var bindingTxFrom = this.$bind('transactionsFrom', this.db.collection('transactions').where('from', '==', hash));
-                var bindingTxTo = this.$bind('transactionsTo', this.db.collection('transactions').where('to', '==', hash).orderBy('blockNumber', 'desc'));
-                Promise.all([bindingTxFrom, bindingTxTo]).then(() => this.loadingTx = false);
-                this.contractLoader = true;
-                this.db.collection('contracts').doc(hash).withConverter({ fromFirestore: this.db.contractSerializer }).get().then((doc) => {
-                    if (!doc.exists) {
-                        return;
-                    }
-                    this.contract = doc.data();
-                    this.db.contractStorage(hash).once('value', (snapshot) => {
-                        if (snapshot.val()) {
-                            this.contract.artifact = snapshot.val().artifact;
-                            var dependencies = snapshot.val().dependencies;
-                            var formattedDependencies = {};
-                            if (dependencies) {
-                                Object.entries(dependencies).map((dep) => {
-                                    formattedDependencies[dep[0]] = {
-                                        artifact: dep[1]
-                                    }
-                                });
-                            }
-                            this.contract = { ...this.contract, dependencies: formattedDependencies, watchedPaths: this.contract.watchedPaths };
-                            this.decodeContract();
-                        }
-                        else {
-                            this.storageLoader = false;
-                        }
-                    })
-                    .finally(() => this.contractLoader = false);
-                })
+                this.bindTheStuff(hash);
             }
         }
     },
