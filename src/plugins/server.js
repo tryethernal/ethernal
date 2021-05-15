@@ -5,6 +5,7 @@ const Decoder = require("@truffle/decoder");
 import { Storage } from '../lib/storage';
 import { functions } from './firebase';
 import { sanitize } from '../lib/utils';
+import { parseTrace } from '../lib/trace';
 
 const serverFunctions = {
     // Private
@@ -173,8 +174,12 @@ const serverFunctions = {
             var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
 
             const pendingTx = await contract[data.method](...Object.values(data.params), options);
-            serverFunctions.traceTransaction(data.rpcServer, pendingTx.hash);
-            return pendingTx;
+            const trace = await serverFunctions.traceTransaction(data.rpcServer, pendingTx.hash);
+
+            return sanitize({
+                pendingTx: pendingTx,
+                trace: trace
+            });
         } catch(error) {
             console.log(error);
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
@@ -188,58 +193,14 @@ const serverFunctions = {
         try {
             const rpcProvider = new serverFunctions._getProvider(rpcServer);
             const transaction = await rpcProvider.getTransaction(hash);
-            const debugData = await rpcProvider.send('debug_traceTransaction', [hash, {}]);
+            const trace = await rpcProvider.send('debug_traceTransaction', [hash, {}]).catch(() => {
+                return null;
+            });
 
-            const opCodes = ['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2'];
-            const filteredData = debugData.structLogs.filter(log => opCodes.indexOf(log.op) > -1 || log.pc == 1507);
-            const parsedOps = [];
-
-            for (const log of filteredData) {
-                switch(log.op) {
-                    case 'CALL':
-                    case 'CALLCODE':
-                    case 'DELEGATECALL':
-                    case 'STATICCALL': {
-                        parsedOps.push({
-                            op: log.op,
-                            address: log.stack.pop()
-                        })
-                        break;
-                    }
-                    case 'CREATE':
-                    case 'CREATE2': {
-                        const stackCopy = [...log.stack];
-                        stackCopy.pop();
-                        const p = parseInt(stackCopy.pop().valueOf(), 16) * 2;
-                        const n = parseInt(stackCopy.pop().valueOf(), 16) * 2;
-                        const s = `0x${stackCopy.pop()}`;
-                        const byteCode = `0x${log.memory.join('').slice(p, p + n)}`;
-                        const address = ethers.utils.getCreate2Address(transaction.to, s, ethers.utils.keccak256(byteCode));
-                        parsedOps.push({
-                            op: log.op,
-                            address: address
-                        });
-                        break;
-                    }
-                    default:
-                        console.log(`Op code not handled: ${log.op}`);
-                }
-                console.log(parsedOps);
-                // if (log.op == 'CREATE2') {
-                //     const stackCopy = [...log.stack];
-                //     stackCopy.pop();
-                //     const p = parseInt(stackCopy.pop().valueOf(), 16) * 2;
-                //     const n = parseInt(stackCopy.pop().valueOf(), 16) * 2;
-                //     const s = '0x' + stackCopy.pop();
-                //     const byteCode = `0x${log.memory.join('').slice(p, p + n)}`;
-                //     console.log(p, n, s, byteCode);
-                //     // const address = keccak256(`0xff0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f${s}${keccak256(byteCode)}`).toString('hex');
-                //     const creatorAddress = '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f';
-                //     const address = ethers.utils.getCreate2Address(creatorAddress, s, keccak256(byteCode));
-                //     // const address = `0x${ethers.utils.keccak256(`0x${["ff", creatorAddress, s, ethers.utils.keccak256(byteCode)].map(x => x.replace(/0x/, "")).join("")}`).slice(-40)}`.toLowerCase();
-                //     console.log(address);
-                // }
-            }
+            if (trace)
+                return await parseTrace(transaction.to, trace);
+            else
+                return null;
         } catch(error) {
             console.log(error);
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
@@ -261,6 +222,12 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            syncContractData: function(workspace, address, name, abi) {
+                return functions.httpsCallable('syncContractData')({ workspace: workspace, address: address, name: name, abi: abi });
+            },
+            syncTrace: function(workspace, txHash, trace) {
+                return functions.httpsCallable('syncTrace')({ workspace: workspace, txHash: txHash, steps: trace });
+            },
             getAccount: function(workspace, account) {
                 return functions.httpsCallable('getAccount')({ workspace: workspace, account: account });
             },

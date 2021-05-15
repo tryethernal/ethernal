@@ -90,9 +90,9 @@ export const dbPlugin = {
                 var res = snapshot.data();
 
                 var paths = snapshot.data().watchedPaths ? JSON.parse(snapshot.data().watchedPaths) : [];
-                Object.defineProperty(res, 'watchedPaths', { value: paths })
+                Object.defineProperty(res, 'watchedPaths', { value: paths });
 
-                Object.defineProperty(res, 'dependencies', { value: {} })
+                Object.defineProperty(res, 'dependencies', { value: {} });
                 return res;
             },
 
