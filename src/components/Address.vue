@@ -244,7 +244,7 @@ export default {
         openImportArtifactModal: function() {
             this.$refs.importArtifactModal
                 .open({ address: this.hash, name: this.contract.name, abi: JSON.stringify(this.contract.abi) })
-                .then((reload) => reload ? this.bindTheStuff(this.hash) : '');
+                .then((reload) => reload ? this.bindTheStuff(this.hash) : null);
         },
         getTransactionDirection: function(trx) {
             if (this.transactionsFrom.indexOf(trx) > -1) {
