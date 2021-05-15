@@ -86,7 +86,26 @@ var _getWeb3Provider = function(url) {
     }
 
     return new provider(url);
-}
+};
+
+var _traceTransaction = async function(rpcServer, hash) {
+    try {
+        const rpcProvider = new serverFunctions._getProvider(rpcServer);
+        const transaction = await rpcProvider.getTransaction(hash);
+        const trace = await rpcProvider.send('debug_traceTransaction', [hash, {}]).catch(() => {
+            return null;
+        });
+
+        if (trace)
+            return await parseTrace(transaction.to, trace);
+        else
+            return null;
+    } catch(error) {
+        console.log(error);
+        const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
+        throw { reason: reason };
+    }
+};
 
 exports.callContractReadMethod = functions.https.onCall(async (data, context) => {
     if (!context.auth)
@@ -133,7 +152,14 @@ exports.callContractWriteMethod = functions.https.onCall(async (data, context) =
             signer = provider.getSigner(data.options.from);
         }
         var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
-        return (await contract[data.method](...Object.values(data.params), options));
+        
+        const pendingTx = await contract[data.method](...Object.values(data.params), options);
+        const trace = await _traceTransaction(data.rpcServer, pendingTx.hash);
+
+        return sanitize({
+            pendingTx: pendingTx,
+            trace: trace
+        });
     } catch(error) {
         console.log(error);
         const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
