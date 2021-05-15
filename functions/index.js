@@ -350,8 +350,8 @@ exports.syncTrace = functions.https.onCall(async (data, context) => {
                         const etherscanData = (await axios.get(endpoint)).data;
 
                         const contractData = etherscanData.message != 'NOTOK' && etherscanData.result[0].ContractName != '' ?
-                            { address: step.address, name: etherscanData.result[0].ContractName, abi: etherscanData.result[0].ABI } :
-                            { address: step.address };
+                            { address: step.address, hashedBytecode: step.contractHashedBytecode, name: etherscanData.result[0].ContractName, abi: etherscanData.result[0].ABI } :
+                            { address: step.address, hashedBytecode: step.contractHashedBytecode };
 
                         await storeContractData(
                             context.auth.uid,
