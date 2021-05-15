@@ -15,6 +15,7 @@
   "main": "index.js",
   "dependencies": {
     "@truffle/decoder": "^4.5.4",
+    "axios": "^0.21.1",
     "crypto": "^1.0.1",
     "ethers": "^5.0.31",
     "express": "^4.17.1",
