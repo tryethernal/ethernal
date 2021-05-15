@@ -81,9 +81,14 @@ export default {
                     throw { reason: 'You must set a gas limit' }
                 }
                 this.server.callContractWriteMethod(this.contract, method.name, options, this.params, this.currentWorkspace.rpcServer)
-                    .then(res => {
-                        if (typeof res.wait === 'function')
-                            res.wait().then((receipt) => {
+                    .then(({ pendingTx, trace }) => {
+
+                        if (trace) {
+                            this.server.syncTrace(this.currentWorkspace.name, pendingTx.hash, trace);
+                        }
+
+                        if (typeof pendingTx.wait === 'function')
+                            pendingTx.wait().then((receipt) => {
                                 if (receipt)
                                     this.receipt = receipt;
                                 else
@@ -93,7 +98,7 @@ export default {
                             this.noReceipt = true;
                             this.noWaitFunction = true;
                         }
-                        this.result.txHash = res.hash;
+                        this.result.txHash = pendingTx.hash;
                     })
                     .catch(error => {
                         if (error.data) {

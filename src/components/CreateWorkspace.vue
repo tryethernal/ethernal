@@ -127,7 +127,7 @@ export default {
             return navigator.vendor.match(/apple/i) && !navigator.userAgent.match(/crios/i) && !navigator.userAgent.match(/fxios/i);
         },
         displayLocalNetworkWarning: function() {
-            return this.localNetwork && this.isUrlValid(this.rpcServer) && new URL(this.rpcServer).hostname != 'localhost' && !this.dismissedLocalWarning
+            return this.localNetwork && this.isUrlValid(this.rpcServer) && ['localhost', '127.0.0.1'].indexOf(new URL(this.rpcServer).hostname) == -1 && !this.dismissedLocalWarning
         }
     },
     watch: {
