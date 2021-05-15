@@ -3,11 +3,13 @@ const ethers = require('ethers');
 const Web3 = require('web3');
 const Decoder = require("@truffle/decoder");
 const firebaseTools = require('firebase-tools');
+const axios = require('axios');
 
 const Storage = require('./lib/storage');
 const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('./lib/utils');
 const { encrypt, decrypt, encode } = require('./lib/crypto');
 const { generateKeyForNewUser } = require('./triggers/users');
+const { matchWithContract } = require('./triggers/contracts');
 
 const api = require('./api/index');
 const {
@@ -22,8 +24,12 @@ const {
     removeIntegration,
     storeAccountPrivateKey,
     getAccount,
-    getAllWorkspaces
+    getAllWorkspaces,
+    storeTrace
 } = require('./lib/firebase');
+
+const ETHERSCAN_API_KEY = process.env.VUE_APP_ETHERSCAN_API_KEY;
+const ETHERSCAN_API_URL = 'https://api.etherscan.io/api?module=contract&action=getsourcecode';
 
 if (process.env.NODE_ENV == 'development') {
     _functions.useFunctionsEmulator('http://localhost:5001');
@@ -317,6 +323,73 @@ exports.syncContractDependencies = functions.https.onCall(async (data, context) 
     }
 });
 
+exports.syncTrace = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspace || !data.txHash || !data.steps) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[syncTrace] Missing parameter.')
+        }
+
+        const trace = [];
+
+        for (const step of data.steps) {
+            switch (step.op) {
+                case 'CALL':
+                case 'CALLCODE':
+                case 'DELEGATECALL':
+                case 'STATICCALL': {
+                    const contractRef = await getContractData(context.auth.uid, data.workspace, step.address);
+                    if (contractRef.exists) {
+                        trace.push(sanitize({ ...step, contract: contractRef }));
+                    }
+                    else {
+                        const endpoint = `${ETHERSCAN_API_URL}&address=${step.address}&apikey=${ETHERSCAN_API_KEY}`;
+                        const etherscanData = (await axios.get(endpoint)).data;
+
+                        const contractData = etherscanData.message != 'NOTOK' && etherscanData.result[0].ContractName != '' ?
+                            { address: step.address, name: etherscanData.result[0].ContractName, abi: etherscanData.result[0].ABI } :
+                            { address: step.address };
+
+                        await storeContractData(
+                            context.auth.uid,
+                            data.workspace,
+                            step.address,
+                            contractData
+                        );
+
+                        trace.push(sanitize({ ...step, contract: getContractData(context.auth.uid, data.workspace, step.address) }));
+                    }
+                    break;
+                }
+                case 'CREATE2': {
+                    await storeContractData(
+                        context.auth.uid,
+                        data.workspace,
+                        step.address,
+                        { address: step.address, hashedBytecode: step.contractHashedBytecode }
+                    );
+                    trace.push(sanitize({ ...step, contract: getContractData(context.auth.uid, data.workspace, step.address) }));
+                    break;
+                }
+                default: {
+                    trace.push(sanitize(step));
+                }
+            }
+        }
+
+        await storeTrace(context.auth.uid, data.workspace, data.txHash, trace);
+
+        return { success: true };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
 exports.syncContractData = functions.https.onCall(async (data, context) => {
     if (!context.auth)
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
@@ -327,7 +400,7 @@ exports.syncContractData = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[syncContractData] Missing parameter.');
         }
 
-        await storeContractData(context.auth.uid, data.workspace, data.address, { address: data.address, name: data.name, abi: data.abi });
+        await storeContractData(context.auth.uid, data.workspace, data.address, sanitize({ address: data.address, name: data.name, abi: data.abi }));
 
         return { address: data.address };
     } catch(error) {
@@ -355,7 +428,8 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
         const contractAbi = sTransactionReceipt && sTransactionReceipt.contractAddress ? getContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress) : null;
 
         const txSynced = sanitize({
-           ...sTransaction,
+            ...sTransaction,
+            trace: [],
             receipt: sTransactionReceipt,
             timestamp: data.block.timestamp,
             functionSignature: contractAbi ? getFunctionSignatureForTransaction(transaction.input, transaction.value, contractAbi) : null
@@ -527,3 +601,4 @@ exports.getAccount = functions.https.onCall(async (data, context) => {
 
 exports.api = functions.https.onRequest(api);
 exports.generateKeyForNewUser = functions.firestore.document('users/{userId}').onCreate(generateKeyForNewUser);
+exports.matchWithContract = functions.firestore.document('users/{userId}/workspaces/{workspaceName}/contracts/{contractName}').onCreate(matchWithContract);

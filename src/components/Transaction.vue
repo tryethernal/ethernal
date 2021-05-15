@@ -82,6 +82,17 @@
                     </div>
                 </v-col>
             </v-row>
+
+            <v-row class="my-2" v-if="transaction.trace">
+                <v-col v-if="transaction.trace.length">
+                    <h3 class="mb-2">Trace</h3>
+                    <Trace-Step v-for="(step, idx) in transaction.trace" :step="step" :key="idx" />
+                </v-col>
+                <v-col v-else>
+                    <h3 class="mb-2">Trace</h3>
+                    Empty trace (only CREATE(2) and CALLs are shown).
+                </v-col>
+            </v-row>
         </div>
         <div v-else>
             <h2 class="text-truncate mb-2">Tx {{ hash }}</h2>
@@ -97,6 +108,7 @@
 <script>
 import HashLink from './HashLink';
 import TransactionData from './TransactionData';
+import TraceStep from './TraceStep';
 import FromWei from '../filters/FromWei';
 
 export default {
@@ -105,6 +117,7 @@ export default {
     components: {
         HashLink,
         TransactionData,
+        TraceStep
     },
     filters: {
         FromWei
@@ -114,6 +127,7 @@ export default {
         transaction: {
             value: 0,
             gasPrice: 0,
+            trace: null,
             receipt: {
                 gasUsed: 0,
                 logs: []
@@ -136,7 +150,7 @@ export default {
             if (this.transaction && this.transaction.hash) {
                 this.$bind('block', this.db.collection('blocks').doc(this.transaction.blockNumber.toString()), { wait: true });
                 if (this.transaction.to) {
-                    this.$bind('contract', this.db.collection('contracts').doc(this.transaction.to.toString()), this.db.contractSerializer);
+                    this.$bind('contract', this.db.collection('contracts').doc(this.transaction.to.toLowerCase()), this.db.contractSerializer);
                 }
             }
         }
