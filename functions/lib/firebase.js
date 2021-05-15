@@ -86,27 +86,49 @@ const storeContractData = (userId, workspace, address, data) => {
     if (!userId || !workspace || !address || !data) throw '[storeContractData] Missing parameter';
     return _getWorkspace(userId, workspace)
         .collection('contracts')
-        .doc(address)
+        .doc(address.toLowerCase())
         .set(data, { merge: true });
 };
 
 const storeContractArtifact = (userId, workspace, address, artifact) => {
     if (!userId || !workspace || !address || !artifact) throw '[storeContractArtifact] Missing parameter';
 
-    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address}/artifact`).set(artifact);
+    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}/artifact`).set(artifact);
 };
 
 const storeContractDependencies = (userId, workspace, address, dependencies) => {
     if (!userId || !workspace || !address || !dependencies) throw '[storeContractDependencies] Missing parameter';
 
-    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address}/dependencies`).set(dependencies);
+    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}/dependencies`).set(dependencies);
 };
 
 const getContractData = (userId, workspace, address) => {
         if (!userId || !workspace || !address) throw '[getContractData] Missing parameter';
         return _getWorkspace(userId, workspace)
             .collection('contracts')
-            .doc(address);
+            .doc(address.toLowerCase());
+};
+
+const getContractByHashedBytecode = async (userId, workspace, hashedBytecode) => {
+    if (!userId || !workspace || !hashedBytecode) throw '[getContractByHashedBytecode] Missing parameter';
+    const contracts = await _getWorkspace(userId, workspace)
+        .collection('contracts')
+        .where('hashedBytecode', '==', hashedBytecode)
+        .get();
+
+    if (contracts.empty) {
+        return null;
+    }
+    else {
+        const results = []
+        contracts.forEach(doc => {
+            results.push({
+                uid: doc.id,
+                ...doc.data()
+            });
+        });
+        return results[0];
+    }
 };
 
 const storeAccountPrivateKey = (userId, workspace, address, privateKey) => {
@@ -114,7 +136,7 @@ const storeAccountPrivateKey = (userId, workspace, address, privateKey) => {
 
     return _getWorkspace(userId, workspace)
         .collection('accounts')
-        .doc(address)
+        .doc(address.toLowerCase())
         .set({ privateKey: privateKey }, { merge: true });
 };
 
@@ -122,7 +144,7 @@ const getAccount = async (userId, workspace, address) => {
     if (!userId || !workspace || !address) throw '[getAccount] Missing parameter';
     const doc = await _getWorkspace(userId, workspace)
         .collection('accounts')
-        .doc(address)
+        .doc(address.toLowerCase())
         .get();
     if (doc.empty) {
         return null;
@@ -130,6 +152,14 @@ const getAccount = async (userId, workspace, address) => {
     else {
         return { ...doc.data(), id: doc.id };
     }
+};
+
+const storeTrace = async (userId, workspace, txHash, trace) => {
+    if (!userId || !workspace || !txHash || !trace) throw '[storeTrace] Missing parameter';
+    return _getWorkspace(userId, workspace)
+        .collection('transactions')
+        .doc(txHash)
+        .set({ trace: trace }, { merge: true });
 };
 
 module.exports = {
@@ -146,5 +176,7 @@ module.exports = {
     addIntegration: addIntegration,
     removeIntegration: removeIntegration,
     storeAccountPrivateKey: storeAccountPrivateKey,
-    getAccount: getAccount
+    getAccount: getAccount,
+    storeTrace: storeTrace,
+    getContractByHashedBytecode: getContractByHashedBytecode
 };

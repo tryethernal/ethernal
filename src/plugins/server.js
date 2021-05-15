@@ -5,6 +5,7 @@ const Decoder = require("@truffle/decoder");
 import { Storage } from '../lib/storage';
 import { functions } from './firebase';
 import { sanitize } from '../lib/utils';
+import { parseTrace } from '../lib/trace';
 
 const serverFunctions = {
     // Private
@@ -171,7 +172,14 @@ const serverFunctions = {
                 signer = provider.getSigner(data.options.from);
             }
             var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
-            return (await contract[data.method](...Object.values(data.params), options));
+
+            const pendingTx = await contract[data.method](...Object.values(data.params), options);
+            const trace = await serverFunctions.traceTransaction(data.rpcServer, pendingTx.hash);
+
+            return sanitize({
+                pendingTx: pendingTx,
+                trace: trace
+            });
         } catch(error) {
             console.log(error);
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
@@ -179,6 +187,24 @@ const serverFunctions = {
                 throw { reason: `Invalid private key format for ${data.options.from}. Please correct it in the "Accounts" page` };
             else
                 throw { reason: reason };
+        }
+    },
+    traceTransaction: async function(rpcServer, hash) {
+        try {
+            const rpcProvider = new serverFunctions._getProvider(rpcServer);
+            const transaction = await rpcProvider.getTransaction(hash);
+            const trace = await rpcProvider.send('debug_traceTransaction', [hash, {}]).catch(() => {
+                return null;
+            });
+
+            if (trace)
+                return await parseTrace(transaction.to, trace);
+            else
+                return null;
+        } catch(error) {
+            console.log(error);
+            const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
+            throw { reason: reason };
         }
     }
 };
@@ -196,6 +222,12 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            syncContractData: function(workspace, address, name, abi) {
+                return functions.httpsCallable('syncContractData')({ workspace: workspace, address: address, name: name, abi: abi });
+            },
+            syncTrace: function(workspace, txHash, trace) {
+                return functions.httpsCallable('syncTrace')({ workspace: workspace, txHash: txHash, steps: trace });
+            },
             getAccount: function(workspace, account) {
                 return functions.httpsCallable('getAccount')({ workspace: workspace, account: account });
             },
