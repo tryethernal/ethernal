@@ -28,7 +28,6 @@ const {
     storeTrace
 } = require('./lib/firebase');
 
-const ETHERSCAN_API_KEY = process.env.VUE_APP_ETHERSCAN_API_KEY;
 const ETHERSCAN_API_URL = 'https://api.etherscan.io/api?module=contract&action=getsourcecode';
 
 if (process.env.NODE_ENV == 'development') {
@@ -346,6 +345,7 @@ exports.syncTrace = functions.https.onCall(async (data, context) => {
                         trace.push(sanitize({ ...step, contract: contractRef }));
                     }
                     else {
+                        const ETHERSCAN_API_KEY = functions.config().etherscan.token;
                         const endpoint = `${ETHERSCAN_API_URL}&address=${step.address}&apikey=${ETHERSCAN_API_KEY}`;
                         const etherscanData = (await axios.get(endpoint)).data;
 
