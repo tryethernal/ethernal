@@ -322,7 +322,7 @@ exports.syncContractDependencies = functions.https.onCall(async (data, context) 
     }
 });
 
-exports.syncTrace = functions.https.onCall(async (data, context) => {
+exports.syncTrace = functions.runWith({ timeoutSeconds: 300 }).https.onCall(async (data, context) => {
     if (!context.auth)
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
 
@@ -340,7 +340,8 @@ exports.syncTrace = functions.https.onCall(async (data, context) => {
                 case 'CALLCODE':
                 case 'DELEGATECALL':
                 case 'STATICCALL': {
-                    const contractRef = await getContractData(context.auth.uid, data.workspace, step.address);
+                    const contractRef = getContractData(context.auth.uid, data.workspace, step.address);
+
                     if (contractRef.exists) {
                         trace.push(sanitize({ ...step, contract: contractRef }));
                     }
@@ -350,7 +351,7 @@ exports.syncTrace = functions.https.onCall(async (data, context) => {
                         const etherscanData = (await axios.get(endpoint)).data;
 
                         const contractData = etherscanData.message != 'NOTOK' && etherscanData.result[0].ContractName != '' ?
-                            { address: step.address, name: etherscanData.result[0].ContractName, abi: etherscanData.result[0].ABI } :
+                            { address: step.address, name: etherscanData.result[0].ContractName, abi: JSON.parse(etherscanData.result[0].ABI || []) } :
                             { address: step.address };
 
                         await storeContractData(
@@ -364,6 +365,7 @@ exports.syncTrace = functions.https.onCall(async (data, context) => {
                     }
                     break;
                 }
+                case 'CREATE':
                 case 'CREATE2': {
                     await storeContractData(
                         context.auth.uid,
@@ -429,7 +431,6 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
 
         const txSynced = sanitize({
             ...sTransaction,
-            trace: [],
             receipt: sTransactionReceipt,
             timestamp: data.block.timestamp,
             functionSignature: contractAbi ? getFunctionSignatureForTransaction(transaction.input, transaction.value, contractAbi) : null
@@ -592,6 +593,31 @@ exports.getAccount = functions.https.onCall(async (data, context) => {
         });
 
         return accountWithKey;
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
+exports.impersonateAccount = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.accountAddress || !data.rpcServer) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[impersonateAccount] Missing parameter.');
+        }
+
+        const rpcProvider = new _getProvider(data.rpcServer)
+        const hardhatResult = await rpcProvider.send('hardhat_impersonateAccount', [data.accountAddress]).catch(console.log);
+        if (hardhatResult) {
+            return true;
+        }
+        const ganacheResult = await rpcProvider.send('evm_unlockUnknownAccount', [data.accountAddress]).catch(console.log);
+        return ganacheResult;
+
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';

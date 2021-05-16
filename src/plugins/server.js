@@ -193,14 +193,28 @@ const serverFunctions = {
         try {
             const rpcProvider = new serverFunctions._getProvider(rpcServer);
             const transaction = await rpcProvider.getTransaction(hash);
-            const trace = await rpcProvider.send('debug_traceTransaction', [hash, {}]).catch(() => {
-                return null;
-            });
+            const trace = await rpcProvider.send('debug_traceTransaction', [hash, {}]).catch(() => null);
 
             if (trace)
                 return await parseTrace(transaction.to, trace);
             else
                 return null;
+        } catch(error) {
+            console.log(error);
+            const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
+            throw { reason: reason };
+        }
+    },
+    impersonateAccount: async function(data) {
+        try {
+            const rpcProvider = new serverFunctions._getProvider(data.rpcServer)
+            const hardhatResult = await rpcProvider.send('hardhat_impersonateAccount', [data.accountAddress]).catch(console.log);
+            if (hardhatResult) {
+                return true;
+            }
+            const ganacheResult = await rpcProvider.send('evm_unlockUnknownAccount', [data.accountAddress]).catch(console.log);
+            return ganacheResult;
+
         } catch(error) {
             console.log(error);
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
@@ -272,6 +286,24 @@ export const serverPlugin = {
                     return res;
                 } catch(error) {
                     console.log(error)
+                }
+            },
+            impersonateAccount: function(rpcServer, accountAddress) {
+                if (_isLocalNetwork()) {
+                    return new Promise((resolve, reject) => {
+                        serverFunctions
+                            .impersonateAccount({ rpcServer: rpcServer, accountAddress: accountAddress })
+                            .then(resolve)
+                            .catch(reject)
+                    });
+                }
+                else {
+                    return new Promise((resolve, reject) => {
+                        functions
+                            .httpsCallable('impersonateAccount')({ accountAddress: accountAddress })
+                            .then((res) => resolve(res.data))
+                            .catch(reject)
+                    });
                 }
             },
             getAccounts: function() {
