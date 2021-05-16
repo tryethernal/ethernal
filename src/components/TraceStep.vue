@@ -31,11 +31,6 @@ export default {
     data: () => ({
         transactionDescription: null
     }),
-    methods: {
-        getClass: function() {
-            return `ml-${1 * this.step.depth}`;
-        }
-    },
     watch: {
         'step.contract.abi': {
             handler() {
