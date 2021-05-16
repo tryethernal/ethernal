@@ -28,7 +28,6 @@ export default {
     watch: {
         jsonInterface: function(jsonInterface) {
             this.parsedLog = jsonInterface.parseLog(this.log);
-            console.log(this.parsedLog)
         }
     },
     methods: {
