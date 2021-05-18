@@ -3,10 +3,10 @@ const ethers = require('ethers');
 const Web3 = require('web3');
 const Decoder = require("@truffle/decoder");
 const firebaseTools = require('firebase-tools');
-const axios = require('axios');
 
 const Storage = require('./lib/storage');
 const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('./lib/utils');
+const { parseTrace } = require('./lib/utils');
 const { encrypt, decrypt, encode } = require('./lib/crypto');
 const { generateKeyForNewUser } = require('./triggers/users');
 const { matchWithContract } = require('./triggers/contracts');
@@ -27,8 +27,6 @@ const {
     getAllWorkspaces,
     storeTrace
 } = require('./lib/firebase');
-
-const ETHERSCAN_API_URL = 'https://api.etherscan.io/api?module=contract&action=getsourcecode';
 
 if (process.env.NODE_ENV == 'development') {
     _functions.useFunctionsEmulator('http://localhost:5001');
@@ -90,14 +88,12 @@ var _getWeb3Provider = function(url) {
 
 var _traceTransaction = async function(rpcServer, hash) {
     try {
-        const rpcProvider = new serverFunctions._getProvider(rpcServer);
+        const rpcProvider = new _getProvider(rpcServer);
         const transaction = await rpcProvider.getTransaction(hash);
-        const trace = await rpcProvider.send('debug_traceTransaction', [hash, {}]).catch(() => {
-            return null;
-        });
+        const trace = await rpcProvider.send('debug_traceTransaction', [hash, {}]).catch(() => null);
 
         if (trace)
-            return await parseTrace(transaction.to, trace);
+            return await parseTrace(transaction.to, trace, rpcProvider);
         else
             return null;
     } catch(error) {
@@ -157,7 +153,7 @@ exports.callContractWriteMethod = functions.https.onCall(async (data, context) =
 
         let trace = null;
         if (data.shouldTrace)
-            trace = await serverFunctions.traceTransaction(data.rpcServer, pendingTx.hash);
+            trace = await _traceTransaction(data.rpcServer, pendingTx.hash);
 
         return sanitize({
             pendingTx: pendingTx,
@@ -375,13 +371,10 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '1GB' }).ht
                         trace.push(sanitize({ ...step, contract: contractRef }));
                     }
                     else {
-                        const ETHERSCAN_API_KEY = functions.config().etherscan.token;
-                        const endpoint = `${ETHERSCAN_API_URL}&address=${step.address}&apikey=${ETHERSCAN_API_KEY}`;
-                        const etherscanData = (await axios.get(endpoint)).data;
-
-                        const contractData = etherscanData.message != 'NOTOK' && etherscanData.result[0].ContractName != '' ?
-                            { address: step.address, hashedBytecode: step.contractHashedBytecode, name: etherscanData.result[0].ContractName, abi: JSON.parse(etherscanData.result[0].ABI || []) } :
-                            { address: step.address, hashedBytecode: step.contractHashedBytecode };
+                        const contractData = {
+                            address: step.address.toLowerCase(),
+                            hashedBytecode: step.contractHashedBytecode
+                        };
 
                         await storeContractData(
                             context.auth.uid,
@@ -400,7 +393,7 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '1GB' }).ht
                         context.auth.uid,
                         data.workspace,
                         step.address,
-                        { address: step.address, hashedBytecode: step.contractHashedBytecode }
+                        { address: step.address.toLowerCase(), hashedBytecode: step.contractHashedBytecode }
                     );
                     trace.push(sanitize({ ...step, contract: getContractData(context.auth.uid, data.workspace, step.address) }));
                     break;

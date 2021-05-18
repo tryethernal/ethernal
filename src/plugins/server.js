@@ -199,7 +199,7 @@ const serverFunctions = {
             const trace = await rpcProvider.send('debug_traceTransaction', [hash, {}]).catch(() => null);
 
             if (trace)
-                return await parseTrace(transaction.to, trace);
+                return await parseTrace(transaction.to, trace, rpcProvider);
             else
                 return null;
         } catch(error) {
