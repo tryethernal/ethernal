@@ -31,12 +31,15 @@ export default {
     data: () => ({
         transactionDescription: null
     }),
+    methods: {
+        zeroXify: function(input) { return input.startsWith('0x') ? input : `0x${input}` }
+    },
     watch: {
         'step.contract.abi': {
             handler() {
                 if (this.step.input) {
                     const jsonInterface = new ethers.utils.Interface(this.step.contract.abi);
-                    this.transactionDescription = jsonInterface.parseTransaction({ data: `0x${this.step.input}` });
+                    this.transactionDescription = jsonInterface.parseTransaction({ data: this.zeroXify(this.step.input) });
                 }
             }
         }

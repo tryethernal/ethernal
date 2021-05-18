@@ -2,6 +2,9 @@ const functions = require('firebase-functions');
 
 const { getContractByHashedBytecode } = require('../lib/firebase');
 const { sanitize } = require('../lib/utils');
+const axios = require('axios');
+
+const ETHERSCAN_API_URL = 'https://api.etherscan.io/api?module=contract&action=getsourcecode';
 
 exports.matchWithContract = async (snap, context) => {
     try {
@@ -15,6 +18,16 @@ exports.matchWithContract = async (snap, context) => {
 
         if (contract && (contract.name || contract.abi)) {
             return snap._ref.set(sanitize({ name: contract.name, abi: contract.abi }), { merge: true });
+        }
+        else {
+            const ETHERSCAN_API_KEY = functions.config().etherscan.token;
+            const endpoint = `${ETHERSCAN_API_URL}&address=${newContract.address}&apikey=${ETHERSCAN_API_KEY}`;
+            const etherscanData = (await axios.get(endpoint)).data;
+            contractData = etherscanData.message != 'NOTOK' && etherscanData.result[0].ContractName != '' ?
+                { address: newContract.address.toLowerCase(), hashedBytecode: newContract.contractHashedBytecode, name: etherscanData.result[0].ContractName, abi: JSON.parse(etherscanData.result[0].ABI || []) } :
+                { address: newContract.address.toLowerCase(), hashedBytecode: newContract.contractHashedBytecode };
+
+            return snap._ref.set(sanitize(contractData), { merge: true });
         }
 
         return null;
