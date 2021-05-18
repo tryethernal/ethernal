@@ -49,6 +49,20 @@ export const dbPlugin = {
                         }
                     })
             },
+            advancedOptions: function() {
+                var currentWorkspace = store.getters.currentWorkspace.name;
+                if (!currentUser() || !currentWorkspace) return;
+                return _db.collection('users')
+                    .doc(currentUser().uid)
+                    .collection('workspaces')
+                    .doc(currentWorkspace)
+                    .withConverter({
+                        fromFirestore: function(snapshot, options) {
+                            const data = snapshot.data(options);
+                            return data.advancedOptions ? data.advancedOptions : { tracing: 'disabled' };
+                        }
+                    })
+            },
             currentUser: function() {
                 if (!currentUser()) return;
                 return _db.collection('users')

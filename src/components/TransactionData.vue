@@ -12,7 +12,7 @@
             </div>
             <pre>{{ transaction.storage }}</pre>
             <Transaction-Function-Call class="my-1" :jsonInterface="jsonInterface" :transaction="transaction"  />
-            <Transaction-Event v-for="(log, idx) in transaction.receipt.logs" :jsonInterface="jsonInterface" :log="log" :key="idx" />
+            <Transaction-Event v-for="(log, idx) in filteredLogs" :jsonInterface="jsonInterface" :log="log" :key="idx" />
         </v-card-text>
         <v-card-text v-else>
             <i>Select a transaction.</i>
@@ -50,6 +50,12 @@ export default {
         reload: function() {
             if (this.transaction.blockNumber)
                 this.$emit('decodeTx', this.transaction);
+        }
+    },
+    computed: {
+        filteredLogs: function() {
+            if (!this.transaction.receipt.logs) return [];
+            return this.transaction.receipt.logs.filter(log => log.address == this.transaction.to);
         }
     }
 }
