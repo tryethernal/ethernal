@@ -163,8 +163,8 @@ export default {
                 slug: 'tracing',
                 choices: [
                     { label: 'Disabled', slug: 'disabled' },
-                    { label: 'Activated for Hardhat', slug: 'hardhat' },
-                    { label: 'Activated for non-Hardhat network', slug: 'other' }
+                    { label: 'Trace on a Hardhat network', slug: 'hardhat' },
+                    { label: 'Trace on a non-Hardhat network', slug: 'other' }
                 ]
             }
         ],
