@@ -174,7 +174,10 @@ const serverFunctions = {
             var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
 
             const pendingTx = await contract[data.method](...Object.values(data.params), options);
-            const trace = await serverFunctions.traceTransaction(data.rpcServer, pendingTx.hash);
+
+            let trace = null;
+            if (data.shouldTrace)
+                trace = await serverFunctions.traceTransaction(data.rpcServer, pendingTx.hash);
 
             return sanitize({
                 pendingTx: pendingTx,
@@ -378,11 +381,11 @@ export const serverPlugin = {
                     });
                 }
             },
-            callContractWriteMethod: function(contract, method, options, params, rpcServer) {
+            callContractWriteMethod: function(contract, method, options, params, rpcServer, shouldTrace) {
                 if (_isLocalNetwork()) {
                     return new Promise((resolve, reject) => {
                         serverFunctions
-                            .callContractWriteMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer })
+                            .callContractWriteMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer, shouldTrace: shouldTrace })
                             .then(resolve)
                             .catch(reject)
                     });
@@ -390,7 +393,7 @@ export const serverPlugin = {
                 else {
                     return new Promise((resolve, reject) => {
                         functions
-                            .httpsCallable('callContractWriteMethod')({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer })
+                            .httpsCallable('callContractWriteMethod')({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer, shouldTrace: shouldTrace })
                             .then((res) => resolve(res.data))
                             .catch(reject)
                     });

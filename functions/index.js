@@ -152,9 +152,12 @@ exports.callContractWriteMethod = functions.https.onCall(async (data, context) =
             signer = provider.getSigner(data.options.from);
         }
         var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
-        
+
         const pendingTx = await contract[data.method](...Object.values(data.params), options);
-        const trace = await _traceTransaction(data.rpcServer, pendingTx.hash);
+
+        let trace = null;
+        if (data.shouldTrace)
+            trace = await serverFunctions.traceTransaction(data.rpcServer, pendingTx.hash);
 
         return sanitize({
             pendingTx: pendingTx,
@@ -348,7 +351,7 @@ exports.syncContractDependencies = functions.https.onCall(async (data, context) 
     }
 });
 
-exports.syncTrace = functions.runWith({ timeoutSeconds: 300 }).https.onCall(async (data, context) => {
+exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '1GB' }).https.onCall(async (data, context) => {
     if (!context.auth)
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
 
