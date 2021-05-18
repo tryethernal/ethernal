@@ -10,13 +10,16 @@
             <div>
                 Private keys are encrypted server side with AES 256 CBC, and stored encrypted. We strongly recommend to not use accounts with any value.
             </div>
-            <v-text-field outlined class="mt-2" v-model="privateKey" label="Private Key*" required></v-text-field>
+            <v-text-field hide-details="auto" outlined class="mt-2" v-model="privateKey" label="Private Key*" required></v-text-field>
+            <v-divider class="my-3"></v-divider>
+            <div>Or impersonate an account.</div>
+            <v-text-field outlined v-model="accountAddress" label="Account Address*" required></v-text-field>
         </v-card-text>
 
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="close()">Close</v-btn>
-            <v-btn color="primary" :loading="loading" :disabled="!privateKey" @click.stop="unlockAccount(privateKey)">Add</v-btn>
+            <v-btn color="primary" :loading="loading" :disabled="!privateKey && !accountAddress" @click.stop="unlockAccount(privateKey, accountAddress)">Add</v-btn>
         </v-card-actions>
     </v-card>
 </v-dialog>
@@ -33,6 +36,7 @@ export default {
         resolve: null,
         reject: null,
         privateKey: null,
+        accountAddress: null,
         errorMessage: null,
         successMessage: null,
         loading: false
@@ -49,28 +53,42 @@ export default {
             this.resolve();
             this.reset();
         },
-        unlockAccount: function(privateKey) {
+        unlockAccount: function(privateKey, accountAddress) {
             try {
                 this.loading = true;
                 this.errorMessage = null;
                 this.successMessage = null;
+                const promises = [];
+                let walletAddress;
 
-                const wallet = new ethers.Wallet(privateKey);
-
-                this.server.storeAccountPrivateKey(this.currentWorkspace.name, wallet.address, privateKey)
-                    .then(() => {
-                        bus.$emit('syncAccount', wallet.address);
-                        this.successMessage = 'Account added.';
-                    })
-                    .catch(console.log)
-                    .finally(() => this.loading = false);
-                } catch(error) {
-                    this.loading = false;
-                    if (error.code == 'INVALID_ARGUMENT')
-                        this.errorMessage = 'Invalid private key.'
-                    else
-                        console.log(error);
+                if (privateKey) {
+                    const wallet = new ethers.Wallet(privateKey);
+                    walletAddress = wallet.address;
+                    promises.push(this.server.storeAccountPrivateKey(this.currentWorkspace.name, wallet.address, privateKey));
                 }
+
+                if (accountAddress) {
+                    promises.push(this.server.impersonateAccount(this.currentWorkspace.rpcServer, accountAddress));
+                }
+
+                Promise.all(promises).then((data) => {
+                    console.log(data)
+                    if (walletAddress)
+                        bus.$emit('syncAccount', walletAddress);
+                    if (this.accountAddress)
+                        bus.$emit('syncAccount', this.accountAddress);
+                    this.successMessage = 'Account added.';
+                })
+                .catch(console.log)
+                .finally(() => this.loading = false);
+
+            } catch(error) {
+                this.loading = false;
+                if (error.code == 'INVALID_ARGUMENT')
+                    this.errorMessage = 'Invalid private key.'
+                else
+                    console.log(error);
+            }
         },
         reset: function() {
             this.privateKey = null;

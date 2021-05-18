@@ -102,6 +102,30 @@
                     </v-card-text>
                 </v-card>
 
+                <h4>Advanced Options</h4>
+                <v-card outlined class="mb-4">
+                    <v-skeleton-loader type="list-item-three-line" v-if="advancedOptionsLoading"></v-skeleton-loader>
+                    <v-card-text v-else>
+                        <v-row>
+                            <v-col align-self="center">
+                                Transactions Tracing <a style="text-decoration: none" target="_blank" href="https://doc.tryethernal.com/dashboard-pages/transactions#trace"><v-icon small>mdi-help-circle-outline</v-icon></a>
+                            </v-col>
+                            <v-col>
+                                <v-select dense outlined hide-details="auto" label="Status"
+                                    :items="advancedOptionsDesc[0].choices"
+                                    item-text="label"
+                                    item-value="slug"
+                                    v-model="advancedOptions.tracing">
+                                </v-select>
+                            </v-col>
+                        </v-row>
+                        <v-row class="mt-2 pb-1 mr-1">
+                            <v-spacer></v-spacer>
+                            <v-btn :loading="advancedOptionsLoading" depressed color="primary" class="mt-2" @click="updateAdvancedOptions()">Update</v-btn>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+
                 <h4 class="error--text">Danger Zone</h4>
                 <v-sheet outlined class="pa-0 error" rounded>
                     <v-card class="elevation-0">
@@ -134,6 +158,16 @@ export default {
         AlchemyIntegrationModal
     },
     data: () => ({
+        advancedOptionsDesc: [
+            {
+                slug: 'tracing',
+                choices: [
+                    { label: 'Disabled', slug: 'disabled' },
+                    { label: 'Trace on a Hardhat network', slug: 'hardhat' },
+                    { label: 'Trace on a non-Hardhat network', slug: 'other' }
+                ]
+            }
+        ],
         integrations: {
             headers: [
                 {
@@ -173,22 +207,37 @@ export default {
             }
         ],
         settings: {},
+        advancedOptions: {},
         workspaces: [],
         accounts: [],
         loading: false,
         updateSuccess: false,
         updateError: false,
-        optionsLoader: false,
+        optionsLoader: true,
         loadingWorkspaces: true,
-        resetWorkspaceLoading: false
+        resetWorkspaceLoading: false,
+        advancedOptionsLoading: true
     }),
     mounted: function() {
         this.$bind('workspaces', this.db.workspaces()).then(() => this.loadingWorkspaces = false);
-        this.optionsLoader = true;
         this.$bind('settings', this.db.settings()).finally(() => this.optionsLoader = false);
+        this.$bind('advancedOptions', this.db.advancedOptions()).finally(() => this.advancedOptionsLoading = false);
         this.$bind('accounts', this.db.collection('accounts'));
     },
     methods: {
+        updateAdvancedOptions: function() {
+            this.advancedOptionsLoading = true;
+            this.updateSuccess = false;
+            this.updateError = false;
+            this.db.settings().update({advancedOptions: Object.fromEntries(Object.entries(this.advancedOptions).filter(([, v]) => v != null))})
+                .then(() => {
+                    this.updateSuccess = true;
+                    this.currentWorkspace.advancedOptions = this.advancedOptions;
+                    this.$store.dispatch('updateCurrentWorkspace', this.currentWorkspace);
+                })
+                .catch(() => this.updateError = true)
+                .finally(() => this.advancedOptionsLoading = false);
+        },
         update: function() {
             this.loading = true;
             this.updateSuccess = false;

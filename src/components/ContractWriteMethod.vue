@@ -76,11 +76,12 @@ export default {
                 };
                 var account = (await this.server.getAccount(this.currentWorkspace.name, this.options.from)).data;
                 var options = sanitize({...this.options, value: this.value, privateKey: account.privateKey });
+                const shouldTrace = this.currentWorkspace.advancedOptions && this.currentWorkspace.advancedOptions.tracing == 'other';
 
                 if (!this.options.gasLimit || parseInt(this.options.gasLimit) < 1) {
                     throw { reason: 'You must set a gas limit' }
                 }
-                this.server.callContractWriteMethod(this.contract, method.name, options, this.params, this.currentWorkspace.rpcServer)
+                this.server.callContractWriteMethod(this.contract, method.name, options, this.params, this.currentWorkspace.rpcServer, shouldTrace)
                     .then(({ pendingTx, trace }) => {
 
                         if (trace) {
