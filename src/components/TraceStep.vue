@@ -4,7 +4,7 @@
             <v-col v-for="(n, idx) in new Array(step.depth)" :key="idx" cols="1">
             </v-col>
         </template>
-        <v-col class="pb-0" :key="step.depth">
+        <v-col class="pb-0" style="overflow-y: auto;" :key="step.depth">
             |<br>
             |-->
             <v-chip small class="primary mr-2">
