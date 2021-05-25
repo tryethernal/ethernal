@@ -26,7 +26,7 @@ jobs:
         run: |
           git config --local user.email "adechevigne@gmail.com"
           git config --local user.name "antoinedc"
-          git remote add github https://antoinedc:${{ secrets.GITHUB_TOKEN }}@github.com/tryethernal/ethernal-sh.git
+          git remote add github https://antoinedc:${{ secrets.GITHUB_PWD }}@github.com/tryethernal/ethernal-sh.git
           git add dist/ -f
           git add functions/ -f
           git commit -m "Update" -a
