@@ -22,18 +22,12 @@ jobs:
       - name: Build
         run: yarn build
       
-      - name: Commit
+      - name: Push
         run: |
           git config --local user.email "adechevigne@gmail.com"
           git config --local user.name "Antoine"
+          git remote add origin https://antoinedc:{{ secrets.SH_PUSH_TOKEN }}@github.com/tryethernal/ethernal-sh.git
           git add dist/ -f
           git add functions/ -f
           git commit -m "Update" -a
-
-      - name: Push
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          branch: master
-          github_token: ${{ secrets.SH_PUSH_TOKEN }}
-          repository: 'tryethernal/ethernal-sh'
-          
+          git push origin master -f
