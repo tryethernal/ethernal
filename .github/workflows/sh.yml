@@ -14,6 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
+          persist-credentials: false
           fetch-depth: 0
       
       - name: Install deps
@@ -22,13 +23,18 @@ jobs:
       - name: Build
         run: yarn build
       
-      - name: Push
+      - name: Commit
         run: |
           git config --local user.email "adechevigne@gmail.com"
           git config --local user.name "antoinedc"
-          git remote add github https://antoinedc:${{ secrets.GITHUB_TOKEN }}@github.com/tryethernal/ethernal-sh.git
-          git pull github master --rebase
           git add dist/ -f
           git add functions/ -f
           git commit -m "Update" -a
-          git push github HEAD:master -f
+      
+      - name: Push
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PUSH_TO_SH_TOKEN }}
+          repository: tryethernal/ethernal-sh
+          branch: master
+     
