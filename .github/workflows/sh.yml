@@ -24,7 +24,7 @@ jobs:
       
       - name: Commit
         run: |
-          git config --local user.email "antoine@tryethernal.com"
+          git config --local user.email "adechevigne@gmail.com"
           git config --local user.name "Antoine"
           git add dist/ -f
           git add functions/ -f
