@@ -33,6 +33,6 @@ jobs:
       - name: Push
         uses: ad-m/github-push-action@v0.6.0
         with:
-          github_token: ${{ secrets.SH_GITHUB_TOKEN }}
+          github_token: ${{ secrets.SH_PUSH_TOKEN }}
           repository: 'tryethernal/ethernal-sh'
           
