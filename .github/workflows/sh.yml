@@ -27,7 +27,6 @@ jobs:
         run: |
           git config --local user.email "adechevigne@gmail.com"
           git config --local user.name "antoinedc"
-          git pull origin master --ff
           git add dist/ -f
           git add functions/ -f
           git commit -m "Update" -a
@@ -38,4 +37,5 @@ jobs:
           github_token: ${{ secrets.PUSH_TO_SH_TOKEN }}
           repository: tryethernal/ethernal-sh
           branch: master
+          force: true
      
