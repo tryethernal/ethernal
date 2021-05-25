@@ -26,8 +26,8 @@ jobs:
         run: |
           git config --local user.email "antoine@tryethernal.com"
           git config --local user.name "Antoine"
-          git add dist/
-          git add functions/
+          git add dist/ -f
+          git add functions/ -f
           git commit -m "Update" -a
 
       - name: Push
