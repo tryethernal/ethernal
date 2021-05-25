@@ -26,7 +26,6 @@ jobs:
         run: |
           git config --local user.email "adechevigne@gmail.com"
           git config --local user.name "Antoine"
-          git branch -m main master
           git fetch origin
           git branch -u origin/master master
           git remote set-head origin -a
