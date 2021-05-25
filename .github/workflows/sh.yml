@@ -29,7 +29,7 @@ jobs:
           git config --local user.name "antoinedc"
           git add dist/ -f
           git add functions/ -f
-          git commit -m "Update" -a
+          git commit -m "Update"
       
       - name: Push
         uses: ad-m/github-push-action@master
