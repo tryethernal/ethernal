@@ -25,9 +25,11 @@ jobs:
       
       - name: Commit
         run: |
+          git reset
+          rm -rf .git/
+          git init
           git config --local user.email "adechevigne@gmail.com"
           git config --local user.name "antoinedc"
-          git reset
           git add dist/ -f
           git add functions/ -f
           git commit -m "Update"
