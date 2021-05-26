@@ -52,7 +52,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.PUSH_TO_SH_TOKEN }}
-          repository: tryethernal/ethernal-sh-test
+          repository: tryethernal/ethernal-sh
           branch: master
           force: true
           directory: sh-files/
