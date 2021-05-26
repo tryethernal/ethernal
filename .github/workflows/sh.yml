@@ -31,7 +31,7 @@ jobs:
           VUE_APP_FIREBASE_STORAGE_BUCKET: firebase_storage_bucket
           VUE_APP_MESSAGING_SENDER_ID: firebase_messaging_sender
           VUE_APP_FIREBASE_APP_ID: firebase_app_id
-      
+
       - name: Commit
         run: |
           git clone https://antoinedc:${{ secrets.PUSH_TO_SH_TOKEN }}@github.com/tryethernal/ethernal-sh sh-files
