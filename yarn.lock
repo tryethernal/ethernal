@@ -5895,6 +5895,11 @@ flatted@^2.0.0:
   version "2.0.2"
   resolved "https://registry.npm.taobao.org/flatted/download/flatted-2.0.2.tgz?cache=0&sync_timestamp=1601444397688&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fflatted%2Fdownload%2Fflatted-2.0.2.tgz#4575b21e2bcee7434aa9be662f4b7b5f9c2b5138"
 
+flush-promises@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/flush-promises/-/flush-promises-1.0.2.tgz#4948fd58f15281fed79cbafc86293d5bb09b2ced"
+  integrity sha512-G0sYfLQERwKz4+4iOZYQEZVpOt9zQrlItIxQAAYAWpfby3gbHrx0osCHz5RLl/XoXevXk0xoN4hDFky/VV9TrA==
+
 flush-write-stream@^1.0.0:
   version "1.1.1"
   resolved "https://registry.npm.taobao.org/flush-write-stream/download/flush-write-stream-1.1.1.tgz#8dd7d873a1babc207d94ead0c2e0e44276ebf2e8"

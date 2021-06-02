@@ -1,54 +1,41 @@
-import { mount, createLocalVue } from '@vue/test-utils'
-import Vuex from 'vuex';
-import Vuetify from 'vuetify';
+import MockHelper from './MockHelper';
 
 import OnboardingModal from '@/components/OnboardingModal.vue';
-import CreateWorkspace from '@/components/CreateWorkspace.vue'
 
 describe('OnboardingModal.vue', () => {
-    let store;
-    let getters;
-    let vuetify;
-
-    const localVue = createLocalVue();
-    localVue.use(Vuex);
-
-    let currentWorkspace = {
-        networkId: null,
-        rpcServer: null,
-        localNetwork: true,
-        name: null,
-        settings: {}
-    };
+    let helper;
 
     beforeEach(() => {
-
-        getters = {
-            currentWorkspace: () => currentWorkspace
-        }
-
-        vuetify = new Vuetify();
-
-        store = new Vuex.Store({
-            getters
-        });
+        helper = new MockHelper();
     });
 
-    it('Should let the user create a new workspace', async () => {
+    it('Should let the user create a new workspace', async (done) => {
+        const name = 'Hardhat';
+        const rpcServer = 'https://127.0.0.1';
+        const localNetwork = true;
 
-        const wrapper = mount(OnboardingModal, {
-            store,
-            localVue,
-            vuetify
-        });
+        const wrapper = helper.mountFn(OnboardingModal);
 
         await wrapper.setData({ dialog: true });
 
-        expect(wrapper.text()).toContain('Create a new workspace');
-
-        await wrapper.find('input[label=Name*]').setValue('Hardhat');
-        await wrapper.find('input[label=RPC Server*]').setValue('http://127.0.0.1:8545');
+        await wrapper.find('#workspaceName').setValue(name);
+        await wrapper.find('#workspaceServer').setValue(rpcServer);
 
         await wrapper.find('button').trigger('click');
+
+        await wrapper.vm.$nextTick();
+        
+        expect(helper.actions.updateCurrentWorkspace).toHaveBeenCalledWith(expect.anything(), {
+            rpcServer: rpcServer,
+            networkId: 1,
+            settings: {
+                gasLimit: 1234567
+            },
+            defaultAccount: '0x2D481eeb2bA97955CD081Cf218f453A817259AB1',
+            localNetwork: localNetwork,
+            name: name
+        });
+        
+        done();
     })
 });

@@ -109,9 +109,13 @@ const serverFunctions = {
             const rpcProvider = new serverFunctions._getProvider(data.rpcServer);
             const web3Rpc = new Web3(serverFunctions._getWeb3Provider(data.rpcServer));
             var networkId = await web3Rpc.eth.net.getId();
+            console.log('coucou')
             var latestBlockNumber = await rpcProvider.getBlockNumber();
+            console.log('coucou')
             var latestBlock = await rpcProvider.getBlock(latestBlockNumber);
+            console.log('coucou')
             var accounts = await rpcProvider.listAccounts();
+            console.log('coucou')
             var gasLimit = latestBlock.gasLimit.toString();
 
             var workspace = {
@@ -124,9 +128,10 @@ const serverFunctions = {
 
             if (accounts.length)
                 workspace.settings.defaultAccount = accounts[0];
-
+            console.log(workspace)
             return workspace;
         } catch(error) {
+            console.log('ok')
             console.log(error);
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
             throw { reason: reason };
@@ -239,6 +244,9 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            createWorkspace: function(name, data) {
+                return functions.httpsCallable('createWorkspace')({ name: name, workspaceData: data });
+            },
             syncContractData: function(workspace, address, name, abi) {
                 return functions.httpsCallable('syncContractData')({ workspace: workspace, address: address, name: name, abi: abi });
             },

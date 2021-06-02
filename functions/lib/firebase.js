@@ -50,6 +50,16 @@ const getUserByKey = async (key) => {
     }
 };
 
+const createWorkspace = (userId, name, data) => {
+    if (!userId || !name || !data) throw '[createWorkspace] Missing parameter';
+
+    return _db.collection('users')
+        .doc(userId)
+        .collection('workspaces')
+        .doc(name)
+        .set(data);
+}
+
 const storeApiKey = (userId, key) => {
     if (!key) throw 'Missing key';
     if (!userId) throw 'Missing userId';
@@ -98,7 +108,6 @@ const storeContractArtifact = (userId, workspace, address, artifact) => {
 
 const storeContractDependencies = (userId, workspace, address, dependencies) => {
     if (!userId || !workspace || !address || !dependencies) throw '[storeContractDependencies] Missing parameter';
-
     return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}/dependencies`).set(dependencies);
 };
 
@@ -178,5 +187,6 @@ module.exports = {
     storeAccountPrivateKey: storeAccountPrivateKey,
     getAccount: getAccount,
     storeTrace: storeTrace,
-    getContractByHashedBytecode: getContractByHashedBytecode
+    getContractByHashedBytecode: getContractByHashedBytecode,
+    createWorkspace
 };

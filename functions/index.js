@@ -25,7 +25,8 @@ const {
     storeAccountPrivateKey,
     getAccount,
     getAllWorkspaces,
-    storeTrace
+    storeTrace,
+    createWorkspace
 } = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
@@ -640,6 +641,26 @@ exports.impersonateAccount = functions.https.onCall(async (data, context) => {
         const ganacheResult = await rpcProvider.send('evm_unlockUnknownAccount', [data.accountAddress]).catch(console.log);
         return ganacheResult;
 
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
+exports.createWorkspace = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspaceData || !data.name) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[impersonateAccount] Missing parameter.');
+        }
+
+        await createWorkspace(context.auth.uid, data.name, data.workspaceData);
+
+        return { success: true }
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';

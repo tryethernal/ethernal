@@ -38,8 +38,8 @@
                 <a href="#" @click.prevent="dismissedLocalWarning = true">Dismiss</a>
             </div>
         </v-alert>
-        <v-text-field outlined v-model="name" label="Name*" placeholder="My Ethereum Project" hide-details="auto" class="mb-2" required></v-text-field>
-        <v-text-field outlined v-model="rpcServer" label="RPC Server*" placeholder="ws://localhost:8545" hide-details="auto" required></v-text-field>
+        <v-text-field outlined v-model="name" id="workspaceName" label="Name*" placeholder="My Ethereum Project" hide-details="auto" class="mb-2" required></v-text-field>
+        <v-text-field outlined v-model="rpcServer" id="workspaceServer" label="RPC Server*" placeholder="ws://localhost:8545" hide-details="auto" required></v-text-field>
         <v-switch :disabled="loading" v-model="localNetwork" label="Internal/Local Network"></v-switch>
     </v-card-text>
 
@@ -75,19 +75,21 @@ export default {
         },
         createWorkspace: async function(name, rpcServer) {
             try {
-                this.loading = true;
+                this.$emit('test')
                 if (this.existingWorkspaces.indexOf(name) > -1) {
                     return this.errorMessage = 'A workspace with this name already exists.';
                 }
 
                 var workspace = await this.server.initRpcServer(rpcServer, this.localNetwork);
 
-                await this.db.currentUser()
-                    .collection('workspaces')
-                    .doc(name)
-                    .set({ ...workspace, localNetwork: this.localNetwork });
+                const result = await this.server.createWorkspace(name, { ...workspace, localNetwork: this.localNetwork });
+
+                if (!result.success) {
+                    throw 'Error while creating workspace';
+                }
 
                 this.$emit('workspaceCreated', { workspace: workspace, name: name, localNetwork: this.localNetwork });
+
                 this.loading = false;
             } catch(error) {
                 console.log(error);

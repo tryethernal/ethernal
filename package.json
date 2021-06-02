@@ -46,6 +46,7 @@
     "deepmerge": "^4.2.2",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "flush-promises": "^1.0.2",
     "sass": "^1.30.0",
     "sass-loader": "^10.1.0",
     "vue-cli-plugin-vuetify": "~2.0.8",

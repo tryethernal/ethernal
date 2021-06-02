@@ -66,9 +66,9 @@ export default {
         transactions: []
     }),
     methods: {
-        onWorkspaceCreated: async function(workspaceData) {
+        onWorkspaceCreated: function(workspaceData) {
             this.stepperIndex = 2;
-            var wsRef = await this.db.getWorkspace(workspaceData.name);
+            var wsRef = this.db.getWorkspace(workspaceData.name);
             this.db.currentUser().update({ currentWorkspace: wsRef });
             this.$store.dispatch('updateCurrentWorkspace', { ...workspaceData.workspace, name: workspaceData.name, localNetwork: workspaceData.localNetwork })
                 .then(() => this.$bind('transactions', this.db.collection('transactions')))
