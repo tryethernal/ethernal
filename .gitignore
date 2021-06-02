@@ -6,8 +6,7 @@ tests_output/
 firebase-emulator/
 
 # local env files
-.env.development
-.env.*.local
+.env.*
 functions/.runtimeconfig.json
 /ganache-db
 
