@@ -80,4 +80,3 @@ jobs:
           repo: ethernal-sh
           tag: ${{ steps.get_changelog.outputs.version }}
           token: ${{ secrets.PUSH_TO_SH_TOKEN }}
-     
