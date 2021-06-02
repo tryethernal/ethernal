@@ -99,7 +99,7 @@ const storeContractArtifact = (userId, workspace, address, artifact) => {
 const storeContractDependencies = (userId, workspace, address, dependencies) => {
     if (!userId || !workspace || !address || !dependencies) throw '[storeContractDependencies] Missing parameter';
 
-    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}/dependencies`).set(dependencies);
+    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}/dependencies`).update(dependencies);
 };
 
 const getContractData = (userId, workspace, address) => {
