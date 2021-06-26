@@ -35,3 +35,10 @@ jobs:
           args: functions:config:set encryption.jwt_secret=${{ secrets.ENCRYPTION__JWT_SECRET }} encryption.key=${{ secrets.ENCRYPTION__KEY }} fb.token=${{ secrets.FIREBASE_TOKEN }} etherscan.token=${{ secrets.ETHERSCAN__TOKEN }}
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }} 
+
+      - name: Run tests
+        uses: w9jds/firebase-action@master
+        with:
+          args: emulators:exec "yarn test:unit"
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
