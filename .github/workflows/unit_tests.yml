@@ -18,5 +18,5 @@ jobs:
 
       - name: Run Tests
         run: |
-          npm install -g firebase-tools
+          sudo npm install -g firebase-tools
           firebase emulators:exec "yarn test:unit"
