@@ -18,7 +18,9 @@ jobs:
           node-version: 10.x
 
       - name: Install deps
-        run: yarn
+        run: |
+          yarn
+          cd functions && npm install
 
       - name: Run Tests
         run: |
