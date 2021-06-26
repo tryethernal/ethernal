@@ -32,7 +32,8 @@ jobs:
       - name: Setup environment
         uses: w9jds/firebase-action@master
         with:
-          args: functions:config:set encryption.jwt_secret=${{ secrets.ENCRYPTION__JWT_SECRET }} encryption.key=${{ secrets.ENCRYPTION__KEY }} fb.token=${{ secrets.FIREBASE_TOKEN }} etherscan.token=${{ secrets.ETHERSCAN__TOKEN }}
+          args: functions:config:get > .runtimeconfig.json
+          # args: functions:config:set encryption.jwt_secret=${{ secrets.ENCRYPTION__JWT_SECRET }} encryption.key=${{ secrets.ENCRYPTION__KEY }} fb.token=${{ secrets.FIREBASE_TOKEN }} etherscan.token=${{ secrets.ETHERSCAN__TOKEN }}
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }} 
 
