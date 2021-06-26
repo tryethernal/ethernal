@@ -15,14 +15,12 @@ jobs:
 
       - uses: actions/setup-node@v1
         with:
-          node-version: '12'
-      
+          node-version: 10.x
+
       - name: Install deps
         run: yarn
 
       - name: Run Tests
-        env:
-          NPM_CONFIG_PREFIX: "~/.npm-global"
         run: |
           npm install -g firebase-tools firebase-functions
           firebase emulators:exec "yarn test:unit"
