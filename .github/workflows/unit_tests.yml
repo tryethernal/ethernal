@@ -26,9 +26,12 @@ jobs:
       - name: Install deps
         run: |
           yarn
+          npm install -g firebase-tools firebase-functions
           cd functions && npm install
+          firebase functions:config:set encryption.jwt_secret=${{ secrets.ENCRYPTION__JWT_SECRET }} encryption.key=${{ secrets.ENCRYPTION__KEY }} fb.token=${{ secrets.FIREBASE_TOKEN }} etherscan.token=${{ secrets.ETHERSCAN__TOKEN }}
+
+      - name: Setup environment
+        run: firebase 
 
       - name: Run Tests
-        run: |
-          npm install -g firebase-tools firebase-functions
-          firebase emulators:exec "yarn test:unit"
+        run: firebase emulators:exec "yarn test:unit"
