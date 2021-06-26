@@ -17,6 +17,8 @@ jobs:
         run: yarn
 
       - name: Run Tests
+        env:
+          NPM_CONFIG_PREFIX: "~/.npm-global"
         run: |
-          sudo npm install -g firebase-tools firebase-functions
+          npm install -g firebase-tools firebase-functions
           firebase emulators:exec "yarn test:unit"
