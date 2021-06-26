@@ -38,7 +38,6 @@ jobs:
         uses: w9jds/firebase-action@master
         with:
           args: functions:config:get > .runtimeconfig.json
-          # args: functions:config:set encryption.jwt_secret=${{ secrets.ENCRYPTION__JWT_SECRET }} encryption.key=${{ secrets.ENCRYPTION__KEY }} fb.token=${{ secrets.FIREBASE_TOKEN }} etherscan.token=${{ secrets.ETHERSCAN__TOKEN }}
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }} 
 
@@ -57,3 +56,9 @@ jobs:
           VUE_APP_ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN__TOKEN }}
           FIRESTORE_EMULATOR_HOST: localhost:8080
 
+  deploy:
+    if: ${{ github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Netlify deploy
+        run: curl -X POST -d {} https://api.netlify.com/build_hooks/${{ secrets.NETLIFY_BUILD_HOOK_ID }}
