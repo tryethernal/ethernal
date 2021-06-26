@@ -39,3 +39,16 @@ jobs:
 
       - name: Run tests
         run: firebase emulators:exec --token ${{ secrets.FIREBASE_TOKEN }} "yarn test:unit"
+        env:
+          VUE_APP_FIREBASE_API_KEY: 123
+          VUE_APP_FIREBASE_PROJECT_ID: ethernal-test
+          VUE_APP_AUTH_HOST: http://localhost:9099
+          VUE_APP_FIRESTORE_HOST: localhost:8080
+          VUE_APP_RTDB_HOST: localhost:9000
+          VUE_APP_FIREBASE_DATABASE_URL: http://localhost:9000/?ns=ethernal-test-default-rtdb
+          VUE_APP_FUNCTIONS_HOST: http://localhost:5001
+          VUE_APP_API_ROOT_URL: http://localhost:8081
+          VUE_APP_ROOT_URL: http://localhost:8081
+          VUE_APP_ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN__TOKEN }}
+          FIRESTORE_EMULATOR_HOST: localhost:8080
+
