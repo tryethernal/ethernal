@@ -37,8 +37,4 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }} 
 
       - name: Run tests
-        uses: w9jds/firebase-action@master
-        with:
-          args: emulators:exec "yarn test:unit"
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: firebase emulators:exec --token ${{ secrets.FIREBASE_TOKEN }} "yarn test:unit"
