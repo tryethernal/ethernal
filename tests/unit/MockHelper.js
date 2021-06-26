@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils'
+const firebase = require("@firebase/rules-unit-testing");
 import Vuex from 'vuex';
 import Vuetify from 'vuetify';
-import firebase from 'firebase/app';
 import { firestorePlugin } from 'vuefire';
 
 import { dbPlugin } from '@/plugins/firebase';
@@ -11,12 +11,13 @@ import serverMocks from './mocks/server';
 
 class MockHelper {
 
-    constructor(localVue) {
+    constructor(initialStoreState = {}) {
+        this.projectId = `ethernal-${Math.floor(Math.random() * 10000000)}`;
         this.localVue = createLocalVue();
         this.localVue.use(Vuex);
 
         this.mockFirebase();
-        this.initMockStore();
+        this.initMockStore(initialStoreState);
         this.initPlugins();
         this.initMocks();
     }
@@ -33,7 +34,7 @@ class MockHelper {
 
     initMocks() {
         this.mocks = {
-            db: dbMocks,
+            db: dbMocks.init(this.db),
             server: serverMocks
         }
     }
@@ -45,17 +46,22 @@ class MockHelper {
         this.localVue.use(firestorePlugin);
     }
 
-    initMockStore() {
+    updateStoreState(key, value) {
+        this.storeState[key] = value;
+    }
+
+    initMockStore(initialState) {
+        this.storeState = {
+            networkId: null,
+            rpcServer: null,
+            localNetwork: true,
+            name: null,
+            settings: {},
+            ...initialState
+        };
+
         this.getters = {
-            currentWorkspace: () => {
-                return {
-                    networkId: null,
-                    rpcServer: null,
-                    localNetwork: true,
-                    name: null,
-                    settings: {}
-                };
-            }
+            currentWorkspace: () => this.storeState
         };
 
         this.actions = {
@@ -66,7 +72,22 @@ class MockHelper {
     }
 
     mockFirebase() {
-        firebase.auth = jest.fn(() => { currentUser: { uid: '123' }});
+        this.db = firebase.initializeTestApp({
+            projectId: this.projectId,
+            auth: { uid: '123' }
+        }).firestore();
+
+        this.db.auth = jest.fn(() => { currentUser: { uid: '123' }});
+    }
+
+    clearFirebase() {
+        const promises = [];
+        promises.push(firebase.clearFirestoreData({ projectId: this.projectId }));
+        firebase.apps().map((app) => {
+            if (app.options_.projectId == this.projectId)
+                promises.push(app.delete());
+        });
+        return Promise.all(promises);
     }
 }
 

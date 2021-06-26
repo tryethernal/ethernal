@@ -36,6 +36,7 @@ export default {
     },
     watch: {
         'step.contract.abi': {
+            immediate: true,
             handler() {
                 if (this.step.input) {
                     const jsonInterface = new ethers.utils.Interface(this.step.contract.abi);

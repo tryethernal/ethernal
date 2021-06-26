@@ -75,7 +75,7 @@
                 <v-col>
                     <h3>Data</h3>
                     <div v-if="contract && contract.abi">
-                        <Transaction-Data :abi="contract.abi" :transactionHash="hash" />
+                        <Transaction-Data :abi="contract.abi" :transaction="transaction" />
                     </div>
                     <div v-else class="pa-2 grey lighten-3">
                         <i>Couldn't decode data for this transaction. This probably means that you haven't <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/contracts/interacting-with-the-contract">synchronized contract metadata</a>. </i>

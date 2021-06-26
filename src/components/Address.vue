@@ -315,7 +315,7 @@ export default {
             var bindingTxTo = this.$bind('transactionsTo', this.db.collection('transactions').where('to', '==', hash).orderBy('blockNumber', 'desc'));
             Promise.all([bindingTxFrom, bindingTxTo]).then(() => this.loadingTx = false);
             this.contractLoader = true;
-            this.db.collection('contracts').doc(hash.toLowerCase()).withConverter({ fromFirestore: this.db.contractSerializer }).get().then((doc) => {
+            this.db.collection('contracts').doc(hash).withConverter({ fromFirestore: this.db.contractSerializer }).get().then((doc) => {
                 if (!doc.exists) {
                     return;
                 }
@@ -347,7 +347,7 @@ export default {
         hash: {
             immediate: true,
             handler(hash) {
-                this.bindTheStuff(hash);
+                this.bindTheStuff(hash.toLowerCase());
             }
         }
     },

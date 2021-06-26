@@ -5,6 +5,7 @@ const _sanitize = (obj) => {
     return Object.fromEntries(
         Object.entries(obj)
             .filter(([_, v]) => v != null)
+            .map(([_, v]) => typeof v == 'string' ? [_, v.toLowerCase()] : [_, v])
     );
 };
 
@@ -21,13 +22,13 @@ const _stringifyBns = (obj) => {
     return res;
 };
 
-const _getFunctionSignatureForTransaction = (input, value, abi) => {
-    if (!input || !value || !abi)
+const _getFunctionSignatureForTransaction = (transaction, abi) => {
+    if (!transaction || !abi)
         return null;
 
     var jsonInterface = new ethers.utils.Interface(abi);
 
-    var parsedTransactionData = jsonInterface.parseTransaction({ data: input, value: value });
+    var parsedTransactionData = jsonInterface.parseTransaction(transaction);
     var fragment = parsedTransactionData.functionFragment;
 
     return `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')'
@@ -47,7 +48,7 @@ module.exports = {
            ...sTransaction,
             receipt: sTransactionReceipt,
             timestamp: timestamp,
-            functionSignature: contractAbi ? _getFunctionSignatureForTransaction(transaction.input, transaction.value, contractAbi) : null
+            functionSignature: contractAbi ? _getFunctionSignatureForTransaction(transaction, contractAbi) : null
         });
     }
 }

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RpcConnector.vue Should display the correct info 1`] = `
+<header class="grey lighten-3 v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px;">
+  <div class="v-toolbar__content" style="height: 48px;">
+    Workspace:
+    <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--inset v-divider--vertical theme--light">
+
+    <div class="spacer"></div> <a href="https://doc.tryethernal.com" target="_blank">Documentation</a>
+    <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--inset v-divider--vertical theme--light"> <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a>
+  </div>
+</header>
+`;

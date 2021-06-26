@@ -1,0 +1,22 @@
+name: Unit Tests
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      
+      - name: Install deps
+        run: yarn
+
+      - name: Run Tests
+        run: |
+          npm install -g firebase-tools
+          firebase emulators:exec "yarn test:unit"

@@ -14,7 +14,7 @@
                 Safari is preventing websites from making CORS requests to localhost. This will prevent you from connecting to a local blockchain. If you want to do so, you'll need to use another browser.
                 If you want to connect to a remote chain, or are not using Safari, you can ignore this message.
             </v-alert>
-            <a href="#" @click.prevent="detectNetwork()">Detect Networks</a>&nbsp;
+            <a id="detectServers" href="#" @click.prevent="detectNetwork()">Detect Networks</a>&nbsp;
             <v-tooltip top>
                 <template v-slot:activator="{ on }">
                     <v-icon small v-on="on">mdi-help-circle-outline</v-icon>
@@ -23,7 +23,7 @@
             </v-tooltip>
             <ul v-show="detectedNetworks.length">
                 <li v-for="(address, idx) in detectedNetworks" :key="idx">
-                    {{ address }}&nbsp;<a href="#" @click.prevent="rpcServer = address">Use</a>
+                    {{ address }}&nbsp;<a href="#" :id="`serverDetected-${idx}`" @click.prevent="rpcServer = address">Use</a>
                 </li>
             </ul>
             <div v-show="noNetworks">
@@ -45,7 +45,7 @@
 
     <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn :loading="loading" color="primary" :disabled="!name || !rpcServer" @click="createWorkspace(name, rpcServer)">Create</v-btn>
+        <v-btn id="createWorkspace" :loading="loading" color="primary" :disabled="!name || !rpcServer" @click="createWorkspace(name, rpcServer)">Create</v-btn>
     </v-card-actions>
 </v-card>
 </template>
@@ -53,8 +53,8 @@
 const ipaddr = require('ipaddr.js');
 export default {
     name: 'CreateWorkspace',
+    props: ['existingWorkspaces'],
     data: () => ({
-        existingWorkspaces: [],
         errorMessage: null,
         loading: false,
         name: null,
@@ -75,22 +75,22 @@ export default {
         },
         createWorkspace: async function(name, rpcServer) {
             try {
-                this.$emit('test')
+                this.loading = true;
                 if (this.existingWorkspaces.indexOf(name) > -1) {
-                    return this.errorMessage = 'A workspace with this name already exists.';
+                    throw { reason: 'A workspace with this name already exists.' };
                 }
 
-                var workspace = await this.server.initRpcServer(rpcServer, this.localNetwork);
-
+                const workspace = await this.server.initRpcServer(rpcServer, this.localNetwork);
                 const result = await this.server.createWorkspace(name, { ...workspace, localNetwork: this.localNetwork });
 
-                if (!result.success) {
+                if (!result.data.success) {
                     throw 'Error while creating workspace';
                 }
 
-                this.$emit('workspaceCreated', { workspace: workspace, name: name, localNetwork: this.localNetwork });
+                await this.server.setCurrentWorkspace(name);
 
-                this.loading = false;
+                this.$store.dispatch('updateCurrentWorkspace', { ...workspace, name: name, localNetwork: this.localNetwork })
+                this.$emit('workspaceCreated', { workspace: workspace, name: name, localNetwork: this.localNetwork });
             } catch(error) {
                 console.log(error);
                 this.loading = false;
@@ -104,6 +104,8 @@ export default {
                     return this.errorMessage = "Can't connect to the server";
                 }
                 this.errorMessage = error.message ? error.message : error;
+            } finally {
+                this.loading = false;
             }
         },
         detectNetwork: function() {

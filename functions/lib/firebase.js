@@ -108,10 +108,25 @@ const storeContractArtifact = (userId, workspace, address, artifact) => {
 
 const storeContractDependencies = (userId, workspace, address, dependencies) => {
     if (!userId || !workspace || !address || !dependencies) throw '[storeContractDependencies] Missing parameter';
-    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}/dependencies`).set(dependencies);
+    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}/dependencies`).update(dependencies);
 };
 
-const getContractData = (userId, workspace, address) => {
+const getContractData = async (userId, workspace, address) => {
+    if (!userId || !workspace || !address) throw '[getContractData] Missing parameter';
+    const doc = await _getWorkspace(userId, workspace)
+        .collection('contracts')
+        .doc(address.toLowerCase())
+        .get();
+
+    if (doc.empty) {
+        return null;
+    }
+    else {
+        return { ...doc.data(), id: doc.id };
+    }
+};
+
+const getContractRef = (userId, workspace, address) => {
         if (!userId || !workspace || !address) throw '[getContractData] Missing parameter';
         return _getWorkspace(userId, workspace)
             .collection('contracts')
@@ -171,6 +186,31 @@ const storeTrace = async (userId, workspace, txHash, trace) => {
         .set({ trace: trace }, { merge: true });
 };
 
+const updateAccountBalance = async (userId, workspace, account, balance) => {
+    if (!userId || !workspace || !account || !balance) throw '[updateAccountBalance] Missing parameter';
+
+    return _getWorkspace(userId, workspace)
+        .collection('accounts')
+        .doc(account)
+        .set({ balance: balance }, { merge: true });
+};
+
+const setCurrentWorkspace = async (userId, name) => {
+    if (!userId || !name) throw '[setCurrentWorkspace] Missing parameter';
+
+    const workspaceRef = _getWorkspace(userId, name);
+    return _db.collection('users')
+        .doc(userId)
+        .set({ currentWorkspace: workspaceRef }, { merge: true });
+};
+
+const updateWorkspaceSettings = async (userId, workspace, settings) => {
+    if (!userId || !workspace || !settings) throw '[updateWorkspaceSettings] Missing parameter';
+
+    return _getWorkspace(userId, workspace)
+        .update(settings);
+}
+
 module.exports = {
     storeBlock: storeBlock,
     storeTransaction: storeTransaction,
@@ -188,5 +228,9 @@ module.exports = {
     getAccount: getAccount,
     storeTrace: storeTrace,
     getContractByHashedBytecode: getContractByHashedBytecode,
-    createWorkspace
+    createWorkspace: createWorkspace,
+    updateAccountBalance: updateAccountBalance,
+    setCurrentWorkspace: setCurrentWorkspace,
+    updateWorkspaceSettings: updateWorkspaceSettings,
+    getContractRef: getContractRef
 };

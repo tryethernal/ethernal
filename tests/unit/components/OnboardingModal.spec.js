@@ -1,4 +1,4 @@
-import MockHelper from './MockHelper';
+import MockHelper from '../MockHelper';
 
 import OnboardingModal from '@/components/OnboardingModal.vue';
 
@@ -21,7 +21,7 @@ describe('OnboardingModal.vue', () => {
         await wrapper.find('#workspaceName').setValue(name);
         await wrapper.find('#workspaceServer').setValue(rpcServer);
 
-        await wrapper.find('button').trigger('click');
+        await wrapper.find('#createWorkspace').trigger('click');
 
         await wrapper.vm.$nextTick();
         
@@ -37,5 +37,9 @@ describe('OnboardingModal.vue', () => {
         });
         
         done();
-    })
+    });
+
+    afterEach(async () => {
+        await helper.clearFirebase();
+    });
 });

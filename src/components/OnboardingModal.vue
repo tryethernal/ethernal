@@ -8,7 +8,7 @@
             </v-stepper-step>
             <v-stepper-content step="1">
                 <span class="text-body-2">Workspaces allow you to separate your different projects/server. You'll be able to add more and switch between them later.</span>
-                <Create-Workspace @workspaceCreated="onWorkspaceCreated" />
+                <Create-Workspace :existingWorkspaces="[]" @workspaceCreated="onWorkspaceCreated" />
             </v-stepper-content>
 
             <v-stepper-step step="2" :complete="stepperIndex > 2">Set up the CLI</v-stepper-step>

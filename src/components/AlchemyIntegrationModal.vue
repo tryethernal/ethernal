@@ -6,8 +6,8 @@
             When enabled, this integration will give you a webhook that you should add in your Alchemy dashboard, in the Notify section, under "Mined Transactions Notifications". Once this is done, all transactions going through the selected Alchemy app will be synchronized with Ethernal, letting you used all of the features on your dapp!
             <v-divider></v-divider>
             <div v-if="canUseIntegration()">
-                <v-switch :disabled="loading" :loading="loading" v-model="enabled" :label="token ? 'Enabled' : 'Disabled'" @change="toggleSwitch"></v-switch>
-                <v-text-field append-icon="mdi-content-copy" readonly @click:append="copyWebhook()" outlined dense hide-details="auto" :value="formattedWebhook" v-show="token"></v-text-field>
+                <v-switch id="webhookSwitch" :disabled="loading" :loading="loading" v-model="enabled" :label="token ? 'Enabled' : 'Disabled'" @change="toggleSwitch"></v-switch>
+                <v-text-field id="webhook" append-icon="mdi-content-copy" readonly @click:append="copyWebhook()" outlined dense hide-details="auto" :value="formattedWebhook" v-show="token"></v-text-field>
                 <input type="hidden" id="copyElement" :value="formattedWebhook">
             </div>
             <div v-else class="mt-1">
@@ -58,7 +58,7 @@ export default {
                 window.getSelection().removeAllRanges();
             }
         },
-        open: function(options) {
+        open: function(options = {}) {
             this.options = options || {};
             this.enabled = !!options.enabled;
             if (this.enabled) {
@@ -84,7 +84,7 @@ export default {
             this.resolve = null;
             this.reject = null;
         },
-        toggleSwitch: async function(value) {
+        toggleSwitch: function(value) {
             this.loading = true;
             if (value) {
                 this.server.enableAlchemyWebhook(this.currentWorkspace.name)

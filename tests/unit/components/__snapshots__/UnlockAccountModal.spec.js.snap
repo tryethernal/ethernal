@@ -1,0 +1,139 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UnlockAccountModal.vue Should display a warning if address mismatch 1`] = `
+<div role="dialog" class="v-dialog__container">
+  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 430px;">
+        <div class="v-card v-sheet theme--light">
+          <div class="v-card__title headline">Unlock Account</div>
+          <div class="v-card__text">
+            <div role="alert" class="v-alert v-sheet theme--dark error">
+              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark"></i>
+                <div class="v-alert__content">Private key doesn't match the address.</div>
+              </div>
+            </div>
+            <!---->
+            <div>
+              Set private key for <b>0x123</b> in order to use it for methods call. If you've already set one in the past, it will override it.
+            </div>
+            <div>
+              Private keys are encrypted server side with AES 256 CBC, and stored encrypted. We strongly recommend to not use accounts with any value.
+            </div>
+            <div class="v-input mt-2 v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: -24px;"><span>​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="privateKey" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Key*</label><input required="required" id="privateKey" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-card__actions">
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="unlockAccount"><span class="v-btn__content">Unlock</span></button>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`UnlockAccountModal.vue Should display a warning if private key format is incorrect 1`] = `
+<div role="dialog" class="v-dialog__container">
+  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 430px;">
+        <div class="v-card v-sheet theme--light">
+          <div class="v-card__title headline">Unlock Account</div>
+          <div class="v-card__text">
+            <div role="alert" class="v-alert v-sheet theme--dark error">
+              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark"></i>
+                <div class="v-alert__content">Invalid private key.</div>
+              </div>
+            </div>
+            <!---->
+            <div>
+              Set private key for <b>0x123</b> in order to use it for methods call. If you've already set one in the past, it will override it.
+            </div>
+            <div>
+              Private keys are encrypted server side with AES 256 CBC, and stored encrypted. We strongly recommend to not use accounts with any value.
+            </div>
+            <div class="v-input mt-2 v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: -24px;"><span>​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="privateKey" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Key*</label><input required="required" id="privateKey" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-card__actions">
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="unlockAccount"><span class="v-btn__content">Unlock</span></button>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`UnlockAccountModal.vue Should let you unlock with a private key 1`] = `
+<div role="dialog" class="v-dialog__container">
+  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 430px;">
+        <div class="v-card v-sheet theme--light">
+          <div class="v-card__title headline">Unlock Account</div>
+          <div class="v-card__text">
+            <!---->
+            <div role="alert" class="v-alert v-sheet theme--dark success">
+              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-check-circle theme--dark"></i>
+                <div class="v-alert__content">Account unlocked.</div>
+              </div>
+            </div>
+            <div>
+              Set private key for <b>0x123</b> in order to use it for methods call. If you've already set one in the past, it will override it.
+            </div>
+            <div>
+              Private keys are encrypted server side with AES 256 CBC, and stored encrypted. We strongly recommend to not use accounts with any value.
+            </div>
+            <div class="v-input mt-2 v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: -24px;"><span>​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="privateKey" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Key*</label><input required="required" id="privateKey" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-card__actions">
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg v-btn--loading theme--light v-size--default primary" id="unlockAccount"><span class="v-btn__content">Unlock</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;

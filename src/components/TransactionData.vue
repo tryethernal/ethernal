@@ -1,8 +1,8 @@
 <template>
     <v-card outlined>
-        <v-card-text v-if="transactionHash">
+        <v-card-text v-if="transaction">
             <div class="text-right">
-                <router-link :to="`/transaction/${transactionHash}`">{{ transactionHash.slice(0, 15) }}...</router-link>
+                <router-link :to="`/transaction/${transaction.hash}`">{{ transaction.hash.slice(0, 15) }}...</router-link>
                 <v-divider vertical class="mx-2"></v-divider>
                 <router-link :to="`/block/${transaction.blockNumber}`">{{ transaction.blockNumber }}</router-link>
                 <v-divider vertical class="ml-2"></v-divider>
@@ -11,8 +11,8 @@
                 </v-btn>
             </div>
             <pre>{{ transaction.storage }}</pre>
-            <Transaction-Function-Call class="my-1" :jsonInterface="jsonInterface" :transaction="transaction"  />
-            <Transaction-Event v-for="(log, idx) in filteredLogs" :jsonInterface="jsonInterface" :log="log" :key="idx" />
+            <Transaction-Function-Call class="my-1" :data="transaction.data" :value="transaction.value" :abi="abi" :to="transaction.to" />
+            <Transaction-Event v-for="(log, idx) in filteredLogs" :abi="abi" :log="log" :key="idx" />
         </v-card-text>
         <v-card-text v-else>
             <i>Select a transaction.</i>
@@ -27,24 +27,19 @@ import TransactionEvent from './TransactionEvent';
 
 export default {
     name: 'TransactionData',
-    props: ['transactionHash', 'abi'],
+    props: ['transaction', 'abi'],
     components: {
         TransactionFunctionCall,
         TransactionEvent
     },
     data: () => ({
         keyStorage: 0,
-        jsonInterface: null,
-        transaction: {
-            receipt: {}
-        }
+        jsonInterface: null
     }),
     mounted: function() {
-        this.$bind('transaction', this.db.collection('transactions').doc(this.transactionHash)).then(() => {
-            if (this.abi) {
-                this.jsonInterface = new ethers.utils.Interface(this.abi);
-            }
-        })
+        if (this.abi) {
+            this.jsonInterface = new ethers.utils.Interface(this.abi);
+        }
     },
     methods: {
         reload: function() {
@@ -54,8 +49,8 @@ export default {
     },
     computed: {
         filteredLogs: function() {
-            if (!this.transaction.receipt.logs) return [];
-            return this.transaction.receipt.logs.filter(log => log.address == this.transaction.to);
+            if (!this.transaction || !this.transaction.receipt.logs) return [];
+            return this.transaction.receipt.logs.filter(log => log.address.toLowerCase() == this.transaction.to.toLowerCase());
         }
     }
 }

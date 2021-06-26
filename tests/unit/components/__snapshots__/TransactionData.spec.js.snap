@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TransactionData.vue Should display instructions if there is no ABI 1`] = `
+<div class="v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__text">
+    <div class="text-right">
+      <router-link to="/transaction/0xb750fb9dd193bb4a46ea5426837c469815d2494abd68a94b1c2c190f3569c5b8">0xb750fb9dd193b...</router-link>
+      <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--vertical theme--light">
+      <router-link to="/block/12695880">12695880</router-link>
+      <hr role="separator" aria-orientation="vertical" class="ml-2 v-divider v-divider--vertical theme--light"> <button type="button" class="primary--text v-btn v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate link mdi mdi-reload theme--light" style="font-size: 16px;"></i></span></button>
+    </div> <pre></pre>
+    <div class="pa-2 grey lighten-3 my-1">
+      <div><i>Upload contract artifact <router-link to="/address/0xc00e94cb662c3520282e6f5717214004a7f26888?tab=contract">here</router-link> to decode function parameters.</i></div>
+    </div>
+    <div class="pa-2 grey lighten-3">
+      <div><i>Upload contract artifact <router-link to="/address/0xc00e94Cb662C3520282E6f5717214004A7f26888?tab=contract">here</router-link> to decode events data.</i></div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TransactionData.vue Should display transaction data 1`] = `
+<div class="v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__text">
+    <div class="text-right">
+      <router-link to="/transaction/0xb750fb9dd193bb4a46ea5426837c469815d2494abd68a94b1c2c190f3569c5b8">0xb750fb9dd193b...</router-link>
+      <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--vertical theme--light">
+      <router-link to="/block/12695880">12695880</router-link>
+      <hr role="separator" aria-orientation="vertical" class="ml-2 v-divider v-divider--vertical theme--light"> <button type="button" class="primary--text v-btn v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate link mdi mdi-reload theme--light" style="font-size: 16px;"></i></span></button>
+    </div> <pre></pre>
+    <div class="pa-2 grey lighten-3 my-1">
+      <div>
+        <div class="mb-2">
+          Function: transfer(address dst, uint256 rawAmount)
+        </div>
+        Params:
+        <div>
+          dst: 0xc00e94Cb662C3520282E6f5717214004A7f26888
+        </div>
+        <div>
+          rawAmount: 1
+        </div>
+      </div>
+    </div>
+    <div class="pa-2 grey lighten-3">
+      <div>
+        <div class="mb-2">
+          Event: Transfer(address from, address to, uint256 amount)
+        </div>
+        Data:
+        <div>
+          from: 0xE93381fB4c4F14bDa253907b18faD305D799241a
+        </div>
+        <div>
+          to: 0xc00e94Cb662C3520282E6f5717214004A7f26888
+        </div>
+        <div>
+          amount: 1
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
