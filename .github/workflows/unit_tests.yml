@@ -12,6 +12,10 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12'
       
       - name: Install deps
         run: yarn
