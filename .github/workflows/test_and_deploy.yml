@@ -1,0 +1,148 @@
+name: Test & Deploy
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Cache firebase emulators
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/firebase/emulators
+          key: ${{ runner.os }}-firebase-emulators-${{ hashFiles('~/.cache/firebase/emulators/**') }}
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.9.1
+
+      - name: Setup timezone
+        uses: zcong1993/setup-timezone@master
+        with:
+          timezone: Europe/Paris
+
+      - name: Install deps
+        run: |
+          yarn
+          npm install -g firebase-tools firebase-functions
+          cd functions && npm install
+
+      - name: Setup environment
+        uses: w9jds/firebase-action@master
+        with:
+          args: functions:config:get > .runtimeconfig.json
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }} 
+
+      - name: Run tests
+        run: firebase emulators:exec --token ${{ secrets.FIREBASE_TOKEN }} "yarn test:unit"
+        env:
+          VUE_APP_FIREBASE_API_KEY: 123
+          VUE_APP_FIREBASE_PROJECT_ID: ethernal-test
+          VUE_APP_AUTH_HOST: http://localhost:9099
+          VUE_APP_FIRESTORE_HOST: localhost:8080
+          VUE_APP_RTDB_HOST: localhost:9000
+          VUE_APP_FIREBASE_DATABASE_URL: http://localhost:9000/?ns=ethernal-test-default-rtdb
+          VUE_APP_FUNCTIONS_HOST: http://localhost:5001
+          VUE_APP_API_ROOT_URL: http://localhost:8081
+          VUE_APP_ROOT_URL: http://localhost:8081
+          VUE_APP_ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN__TOKEN }}
+          FIRESTORE_EMULATOR_HOST: localhost:8080
+
+  deploy_saas:
+    # We only deploy on master, if tests passed and if it is tagged
+    needs: test
+    if: ${{ github.ref == 'refs/heads/master' }} && startsWith(github.ref, 'refs/tags/v')
+
+    - name: Get tag
+      id: get_tag
+      run: |
+        echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
+      shell: bash
+
+    - name: Get Changelog Entry
+      id: get_changelog
+      uses: mindsers/changelog-reader-action@v2
+      with:
+        validation_depth: 10
+        version: ${{ steps.get_tag.outputs.current_version }}
+        path: ./CHANGELOG.md
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          body: ${{ steps.get_changelog.outputs.changes }}
+          tag: ${{ steps.get_changelog.outputs.version }}
+
+    steps:
+      - name: Trigger Netlify deploy
+        run: curl -X POST -d {} https://api.netlify.com/build_hooks/${{ secrets.NETLIFY_BUILD_HOOK_ID }}
+
+  deploy_sh:
+    # We only deploy on master, if tests passed and if it is tagged
+    needs: test
+    if: ${{ github.ref == 'refs/heads/master' }} && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      
+      - name: Install deps
+        run: yarn
+        
+      - name: Build
+        run: yarn build
+        env:
+          VUE_APP_FIREBASE_PROJECT_ID: firebase_project_id
+          VUE_APP_FIREBASE_API_KEY: firebase_api_key
+          VUE_APP_FIREBASE_AUTH_DOMAIN: firebase_auth_domain
+          VUE_APP_FIREBASE_DATABASE_URL: firebase_database_url
+          VUE_APP_FIREBASE_STORAGE_BUCKET: firebase_storage_bucket
+          VUE_APP_MESSAGING_SENDER_ID: firebase_messaging_sender
+          VUE_APP_FIREBASE_APP_ID: firebase_app_id
+
+      - name: Commit
+        run: |
+          git clone https://antoinedc:${{ secrets.PUSH_TO_SH_TOKEN }}@github.com/tryethernal/ethernal-sh sh-files
+          rm -rf sh-files/dist/
+          mkdir sh-files/dist
+          cp -r dist/ sh-files/
+          cp -r functions/ sh-files/
+          cp CHANGELOG.md sh-files/
+          cd sh-files
+          git config --local user.email "adechevigne@gmail.com"
+          git config --local user.name "antoinedc"
+          git add dist/ -f
+          git add functions/ -f
+          git add CHANGELOG.md
+          git commit -m "Update"
+
+      - name: Push
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PUSH_TO_SH_TOKEN }}
+          repository: tryethernal/ethernal-sh
+          branch: master
+          force: true
+          directory: sh-files/
+
+      - name: Create Release on SH repo
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          body: ${{ steps.get_changelog.outputs.changes }}
+          owner: tryethernal
+          repo: ethernal-sh
+          tag: ${{ steps.get_changelog.outputs.version }}
+          token: ${{ secrets.PUSH_TO_SH_TOKEN }}

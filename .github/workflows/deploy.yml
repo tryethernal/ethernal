@@ -1,4 +1,4 @@
-name: SH
+name: Deploy
 
 on:
   push:
@@ -9,6 +9,7 @@ on:
 
 jobs:
   build:
+    if: ${{ github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -86,3 +87,11 @@ jobs:
           repo: ethernal-sh
           tag: ${{ steps.get_changelog.outputs.version }}
           token: ${{ secrets.PUSH_TO_SH_TOKEN }}
+
+  deploy_saas:
+    if: ${{ github.ref == 'refs/heads/master' }}
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Netlify deploy
+        run: curl -X POST -d {} https://api.netlify.com/build_hooks/${{ secrets.NETLIFY_BUILD_HOOK_ID }}
