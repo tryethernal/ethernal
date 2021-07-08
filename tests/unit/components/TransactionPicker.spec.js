@@ -9,7 +9,7 @@ describe('TransactionPicker.vue', () => {
 
     beforeEach(async () => {
         helper = new MockHelper();
-        await helper.db.collection('contracts').doc(Transaction.to).set({ abi: ABI });
+        await helper.mocks.db.collection('contracts').doc(Transaction.to).set({ abi: ABI });
     });
 
     it('Should display the picker', async (done) => {

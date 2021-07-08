@@ -11,8 +11,8 @@
         </v-row>
         <v-tabs optional v-model="tab">
             <v-tab href="#transactions">Transactions</v-tab>
-            <v-tab href="#contract" v-if="contract && contract.address != null">Contract</v-tab>
-            <v-tab href="#storage" v-if="contract && contract.address != null && !contract.imported">Storage</v-tab>
+            <v-tab id="contractTab" href="#contract" v-if="contract && contract.address != null">Contract</v-tab>
+            <v-tab id="storageTab" href="#storage" v-if="contract && contract.address != null && !contract.imported">Storage</v-tab>
 
             <v-tab-item value="transactions">
                 <Transactions-List :transactions="allTransactions" :currentAddress="hash" :loading="loadingTx" />
@@ -169,7 +169,7 @@
                         <v-card outlined v-if="dataLoader">
                             <v-skeleton-loader class="col-5" type="list-item-three-line"></v-skeleton-loader>
                         </v-card>
-                        <Transaction-Data v-if="!dataLoader" @decodeTx="decodeTx" :transactionHash="selectedTransaction.hash" :abi="contract.abi" :key="selectedTransaction.hash" />
+                        <Transaction-Data v-if="!dataLoader" @decodeTx="decodeTx" :transaction="selectedTransaction" :abi="contract.abi" :key="selectedTransaction.hash" />
                     </v-col>
                 </v-row>
             </v-tab-item>
@@ -269,7 +269,7 @@ export default {
                         storage: data
                     })
                     .finally(() => this.dataLoader = false);
-            })
+            });
         },
         addStorageStructureChild: function(struct, idx, newKey) {
             this.storageLoader = true;
@@ -315,11 +315,14 @@ export default {
             var bindingTxTo = this.$bind('transactionsTo', this.db.collection('transactions').where('to', '==', hash).orderBy('blockNumber', 'desc'));
             Promise.all([bindingTxFrom, bindingTxTo]).then(() => this.loadingTx = false);
             this.contractLoader = true;
+
             this.db.collection('contracts').doc(hash).withConverter({ fromFirestore: this.db.contractSerializer }).get().then((doc) => {
                 if (!doc.exists) {
                     return;
                 }
+
                 this.contract = doc.data();
+
                 this.db.contractStorage(hash).once('value', (snapshot) => {
                     if (snapshot.val()) {
                         this.contract.artifact = snapshot.val().artifact;

@@ -1,7 +1,8 @@
-import { mount, createLocalVue } from '@vue/test-utils'
+import { mount, createLocalVue } from '@vue/test-utils';
 const firebase = require("@firebase/rules-unit-testing");
 import Vuex from 'vuex';
 import Vuetify from 'vuetify';
+import VueRouter from 'vue-router';
 import { firestorePlugin } from 'vuefire';
 
 import { dbPlugin } from '@/plugins/firebase';
@@ -11,15 +12,15 @@ import serverMocks from './mocks/server';
 
 class MockHelper {
 
-    constructor(initialStoreState = {}) {
+    constructor(initialStoreState = {}, mockDb = true, mockServer = true) {
         this.projectId = `ethernal-${Math.floor(Math.random() * 10000000)}`;
+
         this.localVue = createLocalVue();
-        this.localVue.use(Vuex);
 
         this.mockFirebase();
         this.initMockStore(initialStoreState);
         this.initPlugins();
-        this.initMocks();
+        this.initMocks(mockDb, mockServer);
     }
 
     mountFn(component, options = {}) {
@@ -28,19 +29,21 @@ class MockHelper {
             localVue: this.localVue,
             vuetify: this.vuetify,
             mocks: this.mocks,
+            router: this.router,
             ...options
         });
     }
 
-    initMocks() {
-        this.mocks = {
-            db: dbMocks.init(this.db),
-            server: serverMocks
-        }
+    initMocks(mockDb, mockServer) {
+        this.mocks = {}
+        if (mockDb) this.mocks['db'] = dbMocks.init(this.firebase);
+        if (mockServer) this.mocks['server'] = serverMocks;
     }
 
     initPlugins() {
         this.vuetify = new Vuetify();
+        this.router = new VueRouter();
+        this.localVue.use(VueRouter);
         this.localVue.use(dbPlugin, { store: this.store });
         this.localVue.use(serverPlugin, { store: this.store });
         this.localVue.use(firestorePlugin);
@@ -51,6 +54,7 @@ class MockHelper {
     }
 
     initMockStore(initialState) {
+        this.localVue.use(Vuex);
         this.storeState = {
             networkId: null,
             rpcServer: null,
@@ -72,12 +76,13 @@ class MockHelper {
     }
 
     mockFirebase() {
-        this.db = firebase.initializeTestApp({
+        this.firebase = firebase.initializeTestApp({
             projectId: this.projectId,
+            databaseName: `rtdb-${this.projectId}`,
             auth: { uid: '123' }
-        }).firestore();
+        });
 
-        this.db.auth = jest.fn(() => { currentUser: { uid: '123' }});
+        this.firebase.auth = jest.fn(() => { currentUser: { uid: '123' }});
     }
 
     clearFirebase() {

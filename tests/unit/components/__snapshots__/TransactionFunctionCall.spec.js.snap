@@ -19,6 +19,6 @@ exports[`TransactionFunctionCall.vue Should display transaction call 1`] = `
 
 exports[`TransactionFunctionCall.vue Should display warning if no ABI 1`] = `
 <div class="pa-2 grey lighten-3">
-  <div><i>Upload contract artifact <router-link to="/address/0xc00e94cb662c3520282e6f5717214004a7f26888?tab=contract">here</router-link> to decode function parameters.</i></div>
+  <div><i>Upload contract artifact <a href="#/address/0xc00e94cb662c3520282e6f5717214004a7f26888?tab=contract" class="">here</a> to decode function parameters.</i></div>
 </div>
 `;

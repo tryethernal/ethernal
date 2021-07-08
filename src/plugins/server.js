@@ -124,7 +124,7 @@ const serverFunctions = {
 
             if (accounts.length)
                 workspace.settings.defaultAccount = accounts[0];
-            console.log(workspace)
+
             return workspace;
         } catch(error) {
             console.log(error);
@@ -217,7 +217,6 @@ const serverFunctions = {
             }
             const ganacheResult = await rpcProvider.send('evm_unlockUnknownAccount', [data.accountAddress]).catch(console.log);
             return ganacheResult;
-
         } catch(error) {
             console.log(error);
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";

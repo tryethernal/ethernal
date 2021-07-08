@@ -1,6 +1,6 @@
 <template>
     <v-card outlined>
-        <v-card-text v-if="transaction">
+        <v-card-text v-if="transaction && transaction.hash">
             <div class="text-right">
                 <router-link :to="`/transaction/${transaction.hash}`">{{ transaction.hash.slice(0, 15) }}...</router-link>
                 <v-divider vertical class="mx-2"></v-divider>
@@ -33,7 +33,6 @@ export default {
         TransactionEvent
     },
     data: () => ({
-        keyStorage: 0,
         jsonInterface: null
     }),
     mounted: function() {

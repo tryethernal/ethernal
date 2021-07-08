@@ -1,12 +1,17 @@
 export default {
 
-    init: (db) => {
+    init: (firebase) => {
 
-        const _db = db;
+        const _firestore = firebase.firestore();
+        const _database = firebase.database();
 
         return {
+            contractStorage: (contractAddress) => {
+                return _database.ref(`/users/123/workspaces/Hardhat/contracts/${contractAddress}`);
+            },
+
             advancedOptions: () => {
-                return _db.collection('users')
+                return _firestore.collection('users')
                     .doc('123')
                     .collection('workspaces')
                     .doc('Hardhat')
@@ -19,7 +24,7 @@ export default {
             },
 
             settings: () => {
-                return _db.collection('users')
+                return _firestore.collection('users')
                     .doc('123')
                     .collection('workspaces')
                     .doc('Hardhat')
@@ -32,29 +37,39 @@ export default {
             },
 
             workspaces: () => {
-                return _db.collection('users')
+                return _firestore.collection('users')
                     .doc('123')
                     .collection('workspaces');
             },
 
             currentUser: () => {
-                return _db.collection('users').doc('123');
+                return _firestore.collection('users').doc('123');
             },
 
             getWorkspace: (name) => {
-                return _db.collection('users')
+                return _firestore.collection('users')
                     .doc('123')
                     .collection('workspaces')
                     .doc(name);
             },
 
             collection: (name) => {
-                return _db.collection('users')
+                return _firestore.collection('users')
                     .doc('123')
                     .collection('workspaces')
-                    .doc('ws')
+                    .doc('Hardhat')
                     .collection(name);
-            }
+            },
+
+            contractSerializer: (snapshot) => {
+                var res = snapshot.data();
+
+                var paths = snapshot.data().watchedPaths ? JSON.parse(snapshot.data().watchedPaths) : [];
+                Object.defineProperty(res, 'watchedPaths', { value: paths });
+
+                Object.defineProperty(res, 'dependencies', { value: {} });
+                return res;
+            },
 
         };
     }

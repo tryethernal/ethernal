@@ -392,7 +392,7 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '1GB' }).ht
                             contractData
                         );
 
-                        trace.push(sanitize({ ...step, contract: getContractData(context.auth.uid, data.workspace, step.address) }));
+                        trace.push(sanitize({ ...step, contract: await getContractData(context.auth.uid, data.workspace, step.address) }));
                     }
                     break;
                 }
@@ -404,7 +404,7 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '1GB' }).ht
                         step.address,
                         { address: step.address.toLowerCase(), hashedBytecode: step.contractHashedBytecode }
                     );
-                    trace.push(sanitize({ ...step, contract: getContractData(context.auth.uid, data.workspace, step.address) }));
+                    trace.push(sanitize({ ...step, contract: await getContractData(context.auth.uid, data.workspace, step.address) }));
                     break;
                 }
                 default: {

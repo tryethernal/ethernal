@@ -9,12 +9,10 @@ exports[`Transaction.vue Should display the transaction 1`] = `
     <!---->
     <div class="row my-2">
       <div class="text-truncate col col-5">
-        <div class="text-overline">From</div>
-        <router-link to="/address/0x0">0x0</router-link>
+        <div class="text-overline">From</div> <a href="#/address/0x0" class="">0x0</a>
       </div>
       <div class="text-truncate col col-5">
-        <div class="text-overline">To</div>
-        <router-link to="/address/Ox1">Ox1</router-link>
+        <div class="text-overline">To</div> <a href="#/address/Ox1" class="">Ox1</a>
       </div>
     </div>
     <div class="row mb-4">
@@ -35,8 +33,7 @@ exports[`Transaction.vue Should display the transaction 1`] = `
     </div>
     <div class="row mb-4">
       <div class="col col-2">
-        <div class="text-overline">Block</div>
-        <router-link to="/block/1">1</router-link>
+        <div class="text-overline">Block</div> <a href="#/block/1" class="">1</a>
       </div>
       <div class="col col-2">
         <div class="text-overline">Gas Limit</div>

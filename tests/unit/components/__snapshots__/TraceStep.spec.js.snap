@@ -8,8 +8,7 @@ exports[`TraceStep.vue Should display the formatted step 1`] = `
     |--&gt;
     <span class="primary mr-2 v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content">
             call
-        </span></span>
-    <router-link to="/address/0xab8e74017a8cc7c15ffccd726603790d26d7deca">0xab8e74017a8cc...</router-link> (stakingpools)
+        </span></span> <a href="#/address/0xab8e74017a8cc7c15ffccd726603790d26d7deca" class="">0xab8e74017a8cc...</a> (stakingpools)
     <div class="ml-2"><small style="white-space: pre;">claim(uint256 _poolId: 2)</small></div>
   </div>
 </div>

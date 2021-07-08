@@ -1,4 +1,15 @@
+import Storage from '../fixtures/Storage.json';
+import DecodedStorageData from '../fixtures/DecodedStorageData.json';
+
 export default {
+
+    decodeData: function() {
+        return new Promise((resolve) => resolve(DecodedStorageData));
+    },
+
+    getStructure: function() {
+        return new Promise((resolve) => resolve(Storage));
+    },
 
     resetWorkspace: function() {
         return new Promise((resolve) => resolve(true));
