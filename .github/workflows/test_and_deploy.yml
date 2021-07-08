@@ -59,7 +59,9 @@ jobs:
   deploy_saas:
     # We only deploy on master, if tests passed and if it is tagged
     needs: test
-    if: ${{ github.ref == 'refs/heads/master' }} && ${{ startsWith(github.ref, 'refs/tags/v') }}
+    if: |
+      github.ref == 'refs/heads/master'
+      startsWith(github.ref, 'refs/tags/v')
 
     - name: Get tag
       id: get_tag
@@ -88,7 +90,9 @@ jobs:
   deploy_sh:
     # We only deploy on master, if tests passed and if it is tagged
     needs: test
-    if: ${{ github.ref == 'refs/heads/master' }} && ${{ startsWith(github.ref, 'refs/tags/v') }}
+    if: |
+      github.ref == 'refs/heads/master'
+      startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
 
     steps:
