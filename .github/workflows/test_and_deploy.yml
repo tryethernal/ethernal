@@ -63,19 +63,20 @@ jobs:
       github.ref == 'refs/heads/master' &&
       startsWith(github.ref, 'refs/tags/v')
 
-    - name: Get tag
-      id: get_tag
-      run: |
-        echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
-      shell: bash
+    steps:
+      - name: Get tag
+        id: get_tag
+        run: |
+          echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
+        shell: bash
 
-    - name: Get Changelog Entry
-      id: get_changelog
-      uses: mindsers/changelog-reader-action@v2
-      with:
-        validation_depth: 10
-        version: ${{ steps.get_tag.outputs.current_version }}
-        path: ./CHANGELOG.md
+      - name: Get Changelog Entry
+        id: get_changelog
+        uses: mindsers/changelog-reader-action@v2
+        with:
+          validation_depth: 10
+          version: ${{ steps.get_tag.outputs.current_version }}
+          path: ./CHANGELOG.md
 
       - name: Create Release
         uses: ncipollo/release-action@v1
@@ -83,7 +84,6 @@ jobs:
           body: ${{ steps.get_changelog.outputs.changes }}
           tag: ${{ steps.get_changelog.outputs.version }}
 
-    steps:
       - name: Trigger Netlify deploy
         run: curl -X POST -d {} https://api.netlify.com/build_hooks/${{ secrets.NETLIFY_BUILD_HOOK_ID }}
 
@@ -93,7 +93,6 @@ jobs:
       needs.test.result == 'success' &&
       github.ref == 'refs/heads/master' &&
       startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
