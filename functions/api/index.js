@@ -1,11 +1,13 @@
 const functions = require("firebase-functions");
 const express = require('express');
+const bodyParser = require('body-parser')
 const ethers = require('ethers');
 const { getUserByKey, getWorkspaceByName, storeTransaction, storeBlock, getUser, storeContractData } = require('../lib/firebase');
 const { sanitize, stringifyBns, getTxSynced } = require('../lib/utils')
-const { decrypt, decode } = require('../lib/crypto');
+const { decrypt, decode, encrypt } = require('../lib/crypto');
 
 const app = express();
+app.use(bodyParser.json());
 
 const alchemyAuthMiddleware = async function(req, res, next) {
     try {
@@ -68,7 +70,7 @@ app.post('/webhooks/alchemy', alchemyAuthMiddleware, async (req, res) => {
         
         const transactionReceipt = await provider.getTransactionReceipt(transaction.hash);
 
-        const txSynced = getTxSynced(res.locals.uid, res.locals.workspace.name, transaction, transactionReceipt, block.timestamp);
+        const txSynced = await getTxSynced(res.locals.uid, res.locals.workspace.name, transaction, transactionReceipt, block.timestamp);
 
         promises.push(storeTransaction(res.locals.uid, res.locals.workspace.name, txSynced));
 

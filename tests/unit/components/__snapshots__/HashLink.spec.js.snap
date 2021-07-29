@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HashLink.vue Should display a full link to the address 1`] = `<a href="#/address/0x2D481eeb2bA97955CD081Cf218f453A817259AB1" class="">0x2D481eeb2bA97955CD081Cf218f453A817259AB1</a>`;
+
+exports[`HashLink.vue Should display a shortened link to the address 1`] = `<a href="#/address/0x2D481eeb2bA97955CD081Cf218f453A817259AB1" class="">0x2D481eeb2bA97...</a>`;
+
+exports[`HashLink.vue Should not display anything if no hash provided 1`] = `""`;

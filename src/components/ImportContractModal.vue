@@ -13,23 +13,19 @@
                 If it is not, the contract will still be imported but calls will fail.<br>
                 If you'd like support for other chains, please contact @antoinedc on Discord.<br>
             </div>
-            <v-text-field v-model="contractAddress" label="Address*" required></v-text-field>
+            <v-text-field id="contractAddress" v-model="contractAddress" label="Address*" required></v-text-field>
         </v-card-text>
 
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click.stop="close()">Close</v-btn>
-            <v-btn color="primary" :loading="loading" :disabled="!contractAddress" text @click.stop="importContract()">Import</v-btn>
+            <v-btn id="importContract" color="primary" :loading="loading" :disabled="!contractAddress" text @click.stop="importContract()">Import</v-btn>
         </v-card-actions>
     </v-card>
 </v-dialog>
 </template>
 <script>
 import { mapGetters } from 'vuex';
-
-const axios = require('axios');
-const ETHERSCAN_API_KEY = process.env.VUE_APP_ETHERSCAN_API_KEY;
-const ETHERSCAN_API_URL = 'https://api.etherscan.io/api?module=contract&action=getsourcecode';
 
 export default {
     name: 'ImportContractModal',
@@ -59,29 +55,10 @@ export default {
             this.successMessage = null;
             this.errorMessage = null;
             this.loading = true;
-            const endpoint = `${ETHERSCAN_API_URL}&address=${this.contractAddress}&apikey=${ETHERSCAN_API_KEY}`;
-            axios.get(endpoint)
-                .then(({data}) => {
-                    if (data.message == "NOTOK") {
-                        this.loading = false
-                        return this.errorMessage = data.result;
-                    }
-
-                    if (data.result[0].ContractName == '') {
-                        this.errorMessage = `Couldn't find contract on Etherscan, make sure the address is correct and that the contract has been verified.`;
-                        this.loading = false;
-                        return;
-                    }
-
-                    this.server.importContract(this.currentWorkspace.name, data.result[0].ABI, this.contractAddress, data.result[0].ContractName)
-                        .then(() => this.successMessage = `Contact imported successfully at address <a class="white--text" href="/address/${this.contractAddress}">${this.contractAddress}</a>`)
-                        .catch(error => this.errorMessage = error.message)
-                        .finally(() => this.loading = false);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    this.loading = false;
-                });
+            this.server.importContract(this.currentWorkspace.name, this.contractAddress)
+                .then(() => this.successMessage = `Contact imported successfully at address <a class="white--text" href="/address/${this.contractAddress}">${this.contractAddress}</a>`)
+                .catch(error => this.errorMessage = error.message)
+                .finally(() => this.loading = false);
         },
         reset: function() {
             this.dialog = false;

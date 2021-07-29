@@ -1,0 +1,19 @@
+{
+   "path":[
+      "_deposits"
+   ],
+   "label":"mapping(address => uint256) _deposits:",
+   "key":"_deposits",
+   "children":[
+      {
+         "path":[
+            "_deposits",
+            "0x56713b5deeb3438c5fcd203a134d01609bD5463C"
+         ],
+         "children":null,
+         "label":"0x56713b5deeb3438c5fcd203a134d01609bD5463C;",
+         "key":"0x56713b5deeb3438c5fcd203a134d01609bD5463C"
+      }
+   ],
+   "index":1
+}

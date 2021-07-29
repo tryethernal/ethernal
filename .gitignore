@@ -5,6 +5,8 @@ screens/
 tests_output/
 firebase-emulator/
 
+functions/report*
+
 # local env files
 .env.*
 functions/.runtimeconfig.json
