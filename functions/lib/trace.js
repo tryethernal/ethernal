@@ -1,6 +1,6 @@
 const ethers = require('ethers');
 
-export const parseTrace = async (from, trace, provider) => {
+exports.parseTrace = async (from, trace, provider) => {
     const opCodes = ['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2'];
     const filteredData = trace.structLogs.filter(log => opCodes.indexOf(log.op) > -1 || log.pc == 1507);
     const parsedOps = [];

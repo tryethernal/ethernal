@@ -1,0 +1,98 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Block.vue Should show the block component 1`] = `
+<div class="container">
+  <div class="row">
+    <div class="col col-12">
+      <h2>Block 1</h2>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col col-2">
+      <div class="v-subheader text-overline theme--light">Gas Limit</div>
+      1000000000
+    </div>
+    <hr role="separator" aria-orientation="vertical" class="v-divider v-divider--vertical theme--light">
+    <div class="col col-2">
+      <div class="v-subheader text-overline theme--light">Mined On</div>
+      2021-05-21 12:07:42 AM
+    </div>
+    <hr role="separator" aria-orientation="vertical" class="v-divider v-divider--vertical theme--light">
+    <div class="col col-2">
+      <div class="v-subheader text-overline theme--light">Hash</div>
+      0x98c6edb3bb1124680a97661c1f5794d60617abb57bd1e611d81fc5b941f36d30
+    </div>
+  </div>
+  <h4>Transactions</h4>
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-data-table v-data-table--has-bottom theme--light">
+      <div class="v-data-table__wrapper">
+        <table>
+          <colgroup>
+            <col class="">
+            <col class="">
+            <col class="">
+            <col class="">
+            <col class="">
+            <col class="">
+            <col class="">
+          </colgroup>
+          <thead class="v-data-table-header">
+            <tr>
+              <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to remove sorting." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="Fee: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Fee</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="">
+              <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <a href="#/transaction/0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" class="">0x060034486a819...</a></td>
+              <td class="text-start"><a href="#/block/1" class="">1</a></td>
+              <td class="text-start">
+                2021-05-21 12:07:42 AM
+              </td>
+              <td class="text-start">
+                <!----> <a href="#/address/0x0" class="">0x0...</a>
+              </td>
+              <td class="text-start">
+                <!----> <a href="#/address/Ox1" class="">Ox1...</a>
+              </td>
+              <td class="text-start">
+                0 ether
+              </td>
+              <td class="text-start"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="v-data-footer">
+        <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
+            <div class="v-input__control">
+              <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-25" class="v-input__slot">
+                <div class="v-select__slot">
+                  <div class="v-select__selections">
+                    <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-25" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  </div>
+                  <div class="v-input__append-inner">
+                    <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                  </div><input type="hidden" value="10">
+                </div>
+                <div class="v-menu">
+                  <!---->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="v-data-footer__pagination">1-1 of 1</div>
+        <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
+        <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

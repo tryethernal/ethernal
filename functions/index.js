@@ -1,7 +1,8 @@
-const functions = require("firebase-functions");
+const functions = require('firebase-functions');
 const ethers = require('ethers');
 const Web3 = require('web3');
-const Decoder = require("@truffle/decoder");
+const axios = require('axios');
+const Decoder = require('@truffle/decoder');
 const firebaseTools = require('firebase-tools');
 
 const Storage = require('./lib/storage');
@@ -13,6 +14,7 @@ const { matchWithContract } = require('./triggers/contracts');
 
 const api = require('./api/index');
 const {
+    resetDatabaseWorkspace,
     storeBlock,
     storeTransaction,
     storeContractData,
@@ -25,12 +27,21 @@ const {
     storeAccountPrivateKey,
     getAccount,
     getAllWorkspaces,
-    storeTrace
+    storeTrace,
+    createWorkspace,
+    updateAccountBalance,
+    setCurrentWorkspace,
+    updateWorkspaceSettings,
+    getContractRef,
+    Firebase
 } = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
     _functions.useFunctionsEmulator('http://localhost:5001');
 }
+
+const ETHERSCAN_API_KEY = functions.config().etherscan.token;
+const ETHERSCAN_API_URL = 'https://api.etherscan.io/api?module=contract&action=getsourcecode';
 
 var _getDependenciesArtifact = function(contract) {
     return contract.dependencies ? Object.entries(contract.dependencies).map(dep => JSON.parse(dep[1].artifact)) : [];
@@ -206,7 +217,7 @@ exports.getAccounts = functions.https.onCall(async (data, context) => {
 
         var accounts = await rpcProvider.listAccounts();
 
-        return accounts;
+        return accounts.map(acc => acc.toLowerCase());
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || "Can't connect to the server";
@@ -276,13 +287,8 @@ exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' 
             token: functions.config().fb.token
         });
     }
-
-    await firebaseTools.database.remove(`/users/${context.auth.uid}/workspaces/${data.workspace}`, {
-        project: process.env.GCLOUD_PROJECT,
-        recursive: true,
-        confirm: true,
-        token: functions.config().fb.token
-    });
+    
+    await resetDatabaseWorkspace(context.auth.uid, data.workspace);
 
     return { success: true };
 });
@@ -293,7 +299,7 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
     try {
         const block = data.block;
         if (!block)
-            throw new functions.https.HttpsError('invalid-argument', 'Missing block parameter.');
+            throw new functions.https.HttpsError('invalid-argument', '[syncBlock] Missing block parameter.');
 
         var syncedBlock = stringifyBns(sanitize(block));
 
@@ -358,49 +364,22 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '1GB' }).ht
         }
 
         const trace = [];
-
         for (const step of data.steps) {
-            switch (step.op) {
-                case 'CALL':
-                case 'CALLCODE':
-                case 'DELEGATECALL':
-                case 'STATICCALL': {
-                    const contractRef = getContractData(context.auth.uid, data.workspace, step.address);
+            if (step.op.toUpperCase().indexOf(['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2'])) {
+                const contractData = sanitize({
+                    address: step.address.toLowerCase(),
+                    hashedBytecode: step.contractHashedBytecode
+                });
 
-                    if (contractRef.exists) {
-                        trace.push(sanitize({ ...step, contract: contractRef }));
-                    }
-                    else {
-                        const contractData = {
-                            address: step.address.toLowerCase(),
-                            hashedBytecode: step.contractHashedBytecode
-                        };
+                await storeContractData(
+                    context.auth.uid,
+                    data.workspace,
+                    step.address,
+                    contractData
+                );
 
-                        await storeContractData(
-                            context.auth.uid,
-                            data.workspace,
-                            step.address,
-                            contractData
-                        );
-
-                        trace.push(sanitize({ ...step, contract: getContractData(context.auth.uid, data.workspace, step.address) }));
-                    }
-                    break;
-                }
-                case 'CREATE':
-                case 'CREATE2': {
-                    await storeContractData(
-                        context.auth.uid,
-                        data.workspace,
-                        step.address,
-                        { address: step.address.toLowerCase(), hashedBytecode: step.contractHashedBytecode }
-                    );
-                    trace.push(sanitize({ ...step, contract: getContractData(context.auth.uid, data.workspace, step.address) }));
-                    break;
-                }
-                default: {
-                    trace.push(sanitize(step));
-                }
+                const contractRef = getContractRef(context.auth.uid, data.workspace, step.address);
+                trace.push(sanitize({ ...step, contract: contractRef }));
             }
         }
 
@@ -443,19 +422,26 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[syncTransaction] Missing parameter.');
         }
+
         const promises = [];
         const transaction = data.transaction;
         const receipt = data.transactionReceipt;
-        
+
         const sTransactionReceipt = receipt ? stringifyBns(sanitize(receipt)) : null;
         const sTransaction = stringifyBns(sanitize(transaction));
-        const contractAbi = sTransactionReceipt && sTransactionReceipt.contractAddress ? getContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress) : null;
+
+        let contractAbi = null;
+
+        if (sTransactionReceipt && transaction.to && transaction.data != '0x') {
+            const contractData = await getContractData(context.auth.uid, data.workspace, transaction.to);
+            contractAbi = contractData ? contractData.abi : null
+        }
 
         const txSynced = sanitize({
             ...sTransaction,
             receipt: sTransactionReceipt,
             timestamp: data.block.timestamp,
-            functionSignature: contractAbi ? getFunctionSignatureForTransaction(transaction.input, transaction.value, contractAbi) : null
+            functionSignature: contractAbi ? getFunctionSignatureForTransaction(transaction, contractAbi) : null
         });
     
         promises.push(storeTransaction(context.auth.uid, data.workspace, txSynced));
@@ -480,7 +466,7 @@ exports.enableAlchemyWebhook = functions.https.onCall(async (data, context) => {
     try {
         if (!data.workspace) {
             console.log(data);
-            throw new functions.https.HttpsError('invalid-argument', '[activateAlchemyWebhook] Missing parameter.');
+            throw new functions.https.HttpsError('invalid-argument', '[enableAlchemyWebhook] Missing parameter.');
         }
 
         const user = await getUser(context.auth.uid);
@@ -509,7 +495,7 @@ exports.getWebhookToken = functions.https.onCall(async (data, context) => {
     try {
         if (!data.workspace) {
             console.log(data);
-            throw new functions.https.HttpsError('invalid-argument', '[activateAlchemyWebhook] Missing parameter.');
+            throw new functions.https.HttpsError('invalid-argument', '[getWebhookToken] Missing parameter.');
         }
 
         const user = await getUser(context.auth.uid);
@@ -537,7 +523,7 @@ exports.disableAlchemyWebhook = functions.https.onCall(async (data, context) => 
     try {
         if (!data.workspace) {
             console.log(data);
-            throw new functions.https.HttpsError('invalid-argument', '[activateAlchemyWebhook] Missing parameter.');
+            throw new functions.https.HttpsError('invalid-argument', '[disableAlchemyWebhook] Missing parameter.');
         }
 
         await removeIntegration(context.auth.uid, data.workspace, 'alchemy');
@@ -555,22 +541,33 @@ exports.importContract = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
 
     try {
-        if (!data.abi || !data.address || !data.name) {
+        if (!data.workspace || !data.contractAddress) {
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[importContract] Missing parameter.');
         }
 
-        await storeContractData(context.auth.uid, data.workspace, data.address, {
-            abi: JSON.parse(data.abi),
-            address: data.address,
-            name: data.name,
+        const endpoint = `${ETHERSCAN_API_URL}&address=${data.contractAddress}&apikey=${ETHERSCAN_API_KEY}`;
+        const response = await axios.get(endpoint);
+
+        if (response.data.message == 'NOTOK') {
+            throw { message: response.data.result };
+        }
+
+        if (response.data.result[0].ContractName == '') {
+            throw { message: `Couldn't find contract on Etherscan, make sure the address is correct and that the contract has been verified.` };
+        }
+
+        await storeContractData(context.auth.uid, data.workspace, data.contractAddress, {
+            abi: JSON.parse(response.data.result[0].ABI),
+            address: data.contractAddress,
+            name: response.data.result[0].ContractName,
             imported: true
         });
 
        return { success: true };
     } catch(error) {
         console.log(error);
-        var reason = error.reason || error.message || 'Server error. Please retry.';
+        var reason = error.message || 'Server error. Please retry.';
         throw new functions.https.HttpsError('unknown', reason);
     }
 });
@@ -608,6 +605,10 @@ exports.getAccount = functions.https.onCall(async (data, context) => {
         }
 
         const account = await getAccount(context.auth.uid, data.workspace, data.account);
+
+        if (!account)
+            throw { message: 'Could not find account' };
+
         const accountWithKey = sanitize({
             address: account.id,
             balance: account.balance,
@@ -634,12 +635,119 @@ exports.impersonateAccount = functions.https.onCall(async (data, context) => {
 
         const rpcProvider = new _getProvider(data.rpcServer)
         const hardhatResult = await rpcProvider.send('hardhat_impersonateAccount', [data.accountAddress]).catch(console.log);
+
         if (hardhatResult) {
             return true;
         }
+
         const ganacheResult = await rpcProvider.send('evm_unlockUnknownAccount', [data.accountAddress]).catch(console.log);
         return ganacheResult;
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
 
+exports.createWorkspace = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspaceData || !data.name) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[createWorkspace] Missing parameter.');
+        }
+
+        await createWorkspace(context.auth.uid, data.name, data.workspaceData);
+
+        return { success: true };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
+exports.setCurrentWorkspace = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.name) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[setCurrentWorkspace] Missing parameter.');
+        }
+
+        await setCurrentWorkspace(context.auth.uid, data.name);
+
+        return { success: true };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
+exports.syncBalance = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspace || !data.account || !data.balance) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[syncBalance] Missing parameter.');
+        }
+
+        await updateAccountBalance(context.auth.uid, data.workspace, data.account, data.balance);
+
+        return { success: true };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
+exports.updateWorkspaceSettings = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspace || !data.settings) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[updateWorkspaceSettings] Missing parameter.');
+        }
+
+        const ALLOWED_ADVANCED_OPTIONS = ['tracing'];
+        const ALLOWED_SETTINGS = ['defaultAccount', 'gasLimit', 'gasPrice'];
+        const sanitizedParams = {};
+
+        if (data.settings.advancedOptions) {
+            ALLOWED_ADVANCED_OPTIONS.forEach((key) => {
+                if (!!data.settings.advancedOptions[key]) {
+                    if (!sanitizedParams['advancedOptions'])
+                        sanitizedParams['advancedOptions'] = {};
+                    sanitizedParams.advancedOptions[key] = data.settings.advancedOptions[key];
+                }
+            });
+        }
+        
+        if (data.settings.settings) {
+            ALLOWED_SETTINGS.forEach((key) => {
+                if (!!data.settings.settings[key]) {
+                    if (!sanitizedParams['settings'])
+                        sanitizedParams['settings'] = {};
+                    sanitizedParams.settings[key] = data.settings.settings[key];
+                }
+            });
+        }
+
+        if (Object.keys(sanitizedParams).length !== 0) {
+            await updateWorkspaceSettings(context.auth.uid, data.workspace, sanitizedParams);
+        }
+
+        return { success: true };
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';

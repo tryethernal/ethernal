@@ -18,12 +18,12 @@
             <div v-show="result.txHash && !receipt.status && !noReceipt">
                 <v-progress-circular class="mr-2" size="16" width="2" indeterminate color="primary"></v-progress-circular>Waiting for receipt...
             </div>
-            <div v-show="receipt.status" class="mt-1">
+            <div v-show="receipt.status != undefined" class="mt-1">
                 Status: {{ receipt.status ? 'Succeeded' : 'Failed' }}
                 <v-icon small v-show="receipt.status" color="success lighten-1" class="mr-2 align-with-text">mdi-check-circle</v-icon>
                 <v-icon small v-show="!receipt.status" color="error lighten-1" class="mr-2 align-with-text">mdi-alert-circle</v-icon>
             </div>
-            <div v-show="noReceipt && !noWaitFunction">
+            <div v-show="noReceipt && noWaitFunction">
                 Couldn't get receipt.
             </div>
         </div>
@@ -88,13 +88,14 @@ export default {
                             this.server.syncTrace(this.currentWorkspace.name, pendingTx.hash, trace);
                         }
 
-                        if (typeof pendingTx.wait === 'function')
+                        if (typeof pendingTx.wait === 'function') {
                             pendingTx.wait().then((receipt) => {
                                 if (receipt)
                                     this.receipt = receipt;
                                 else
                                     this.noReceipt = true;
                             });
+                        }
                         else {
                             this.noReceipt = true;
                             this.noWaitFunction = true;
@@ -126,7 +127,7 @@ export default {
                     });
             } catch(error) {
                 if (error.reason) {
-                    this.result.message = `Error: ${error.reason.split('(')[0]}`;
+                    this.result.message = `Error: ${error.reason.split('(')[0].trim()}`;
                 }
                 else {
                     console.log(error)

@@ -4,13 +4,13 @@
         <v-card-title class="headline">Add key to track</v-card-title>
 
         <v-card-text>
-            <v-text-field v-model="newKeyToTrack" label="Key*" required></v-text-field>
+            <v-text-field id="newKey" v-model="newKeyToTrack" label="Key*" required></v-text-field>
         </v-card-text>
 
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click.stop="close()">Close</v-btn>
-            <v-btn color="primary" :disabled="!newKeyToTrack" text @click.stop="addNewKeyToTrack()">Add</v-btn>
+            <v-btn id="addKey" color="primary" :disabled="!newKeyToTrack" text @click.stop="addNewKeyToTrack()">Add</v-btn>
         </v-card-actions>
     </v-card>
 </v-dialog>

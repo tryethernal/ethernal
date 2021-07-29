@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TransactionEvent.vue Should display transaction event 1`] = `
+<div class="pa-2 grey lighten-3">
+  <div>
+    <div class="mb-2">
+      Event: Transfer(address from, address to, uint256 amount)
+    </div>
+    Data:
+    <div>
+      from: 0xE93381fB4c4F14bDa253907b18faD305D799241a
+    </div>
+    <div>
+      to: 0xc00e94Cb662C3520282E6f5717214004A7f26888
+    </div>
+    <div>
+      amount: 1
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TransactionEvent.vue Should display warning if no ABI 1`] = `
+<div class="pa-2 grey lighten-3">
+  <div><i>Upload contract artifact <a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888?tab=contract" class="">here</a> to decode events data.</i></div>
+</div>
+`;

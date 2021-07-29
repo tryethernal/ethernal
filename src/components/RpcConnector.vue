@@ -24,13 +24,17 @@ export default Vue.extend({
         if (auth().currentUser) {
             bus.$on('syncAccount', this.syncAccount);
         }
+
         this.server.getAccounts()
             .then((data) => data.forEach(this.syncAccount));
     },
     methods: {
         syncAccount: function(account) {
-            this.server.getAccountBalance(account)
-                .then((data) => this.db.collection('accounts').doc(account).set({ balance: ethers.BigNumber.from(data).toString() }, { merge: true }))
+            this.server
+                .getAccountBalance(account)
+                .then((data) => {
+                    this.server.syncBalance(this.currentWorkspace.name, account, ethers.BigNumber.from(data).toString());
+                });
         }
     },
     computed: {

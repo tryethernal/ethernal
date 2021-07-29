@@ -12,13 +12,13 @@
             <div>
                 Private keys are encrypted server side with AES 256 CBC, and stored encrypted. We strongly recommend to not use accounts with any value.
             </div>
-            <v-text-field outlined class="mt-2" v-model="privateKey" label="Key*" required></v-text-field>
+            <v-text-field id="privateKey" outlined class="mt-2" v-model="privateKey" label="Key*" required></v-text-field>
         </v-card-text>
 
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="close()">Close</v-btn>
-            <v-btn color="primary" :loading="loading" :disabled="!privateKey" @click="unlockAccount(options.address, privateKey)">Unlock</v-btn>
+            <v-btn id="unlockAccount" color="primary" :loading="loading" :disabled="!privateKey" @click="unlockAccount(options.address, privateKey)">Unlock</v-btn>
         </v-card-actions>
     </v-card>
 </v-dialog>

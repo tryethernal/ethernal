@@ -74,7 +74,8 @@ const serverFunctions = {
     getAccounts: async function(data) {
         try {
             const rpcProvider = new serverFunctions._getProvider(data.rpcServer);
-            return await rpcProvider.listAccounts();
+            const accounts = await rpcProvider.listAccounts();
+            return accounts.map((acc) => acc.toLowerCase());
         } catch(error) {
             console.log(error);
             var reason = error.reason || error.message || "Can't connect to the server";
@@ -217,7 +218,6 @@ const serverFunctions = {
             }
             const ganacheResult = await rpcProvider.send('evm_unlockUnknownAccount', [data.accountAddress]).catch(console.log);
             return ganacheResult;
-
         } catch(error) {
             console.log(error);
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
@@ -239,6 +239,21 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            resetWorkspace: function(name) {
+                return functions.httpsCallable('resetWorkspace')({ workspace: name })
+            },
+            updateWorkspaceSettings: function(workspace, settings) {
+                return functions.httpsCallable('updateWorkspaceSettings')({ workspace: workspace, settings: settings });
+            },
+            setCurrentWorkspace: function(name) {
+                return functions.httpsCallable('setCurrentWorkspace')({ name: name });
+            },
+            syncBalance: function(workspace, account, balance) {
+                return functions.httpsCallable('syncBalance')({ workspace: workspace, account: account, balance: balance });
+            },
+            createWorkspace: function(name, data) {
+                return functions.httpsCallable('createWorkspace')({ name: name, workspaceData: data });
+            },
             syncContractData: function(workspace, address, name, abi) {
                 return functions.httpsCallable('syncContractData')({ workspace: workspace, address: address, name: name, abi: abi });
             },
@@ -251,8 +266,8 @@ export const serverPlugin = {
             storeAccountPrivateKey: function(workspace, account, privateKey) {
                 return functions.httpsCallable('setPrivateKey')({ workspace: workspace, account: account, privateKey });
             },
-            importContract: function(workspace, abi, address, name) {
-                return functions.httpsCallable('importContract')({ workspace: workspace, abi: abi, address: address, name: name });
+            importContract: function(workspace, contractAddress) {
+                return functions.httpsCallable('importContract')({ workspace: workspace, contractAddress: contractAddress });
             },
             getWebhookToken: function(workspace) {
                 return functions.httpsCallable('getWebhookToken')({ workspace: workspace });

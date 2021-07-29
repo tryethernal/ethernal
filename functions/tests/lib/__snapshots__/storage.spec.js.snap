@@ -1,0 +1,720 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Storage Should build the structure 1`] = `
+Structure {
+  "index": 0,
+  "nodes": Array [
+    StructureNode {
+      "children": null,
+      "index": 1,
+      "key": "_owner",
+      "label": "",
+      "path": Array [
+        "_owner",
+      ],
+    },
+    StructureNode {
+      "children": Array [
+        StructureChild {
+          "children": null,
+          "key": "0x63606C22157476Da3B26Ad1c2EAE573D0387D733",
+          "label": "0x63606C22157476Da3B26Ad1c2EAE573D0387D733;",
+          "path": Array [
+            "_deposits",
+            "0x63606C22157476Da3B26Ad1c2EAE573D0387D733",
+          ],
+        },
+      ],
+      "index": 1,
+      "key": "_deposits",
+      "label": "mapping(address => uint256) _deposits:",
+      "path": Array [
+        "_deposits",
+      ],
+    },
+    StructureNode {
+      "children": Array [],
+      "index": 1,
+      "key": "_maturities",
+      "label": "mapping(address => uint256) _maturities:",
+      "path": Array [
+        "_maturities",
+      ],
+    },
+    StructureNode {
+      "children": Array [],
+      "index": 1,
+      "key": "stuff",
+      "label": "mapping(address => string) stuff:",
+      "path": Array [
+        "stuff",
+      ],
+    },
+    StructureNode {
+      "children": null,
+      "index": 1,
+      "key": "_feeBasisPoints",
+      "label": "uint256 _feeBasisPoints;",
+      "path": Array [
+        "_feeBasisPoints",
+      ],
+    },
+  ],
+  "variables": Array [
+    Object {
+      "class": Object {
+        "contractKind": "contract",
+        "id": "shimmedcompilation:408",
+        "kind": "native",
+        "payable": false,
+        "typeClass": "contract",
+        "typeName": "Ownable",
+      },
+      "name": "_owner",
+      "value": Object {
+        "kind": "value",
+        "type": Object {
+          "kind": "general",
+          "typeClass": "address",
+          "typeHint": "address",
+        },
+        "value": Object {
+          "asAddress": "0x2D481eeb2bA97955CD081Cf218f453A817259AB1",
+          "rawAsHex": "0x2d481eeb2ba97955cd081cf218f453a817259ab1",
+        },
+      },
+    },
+    Object {
+      "class": Object {
+        "contractKind": "contract",
+        "id": "shimmedcompilation:281",
+        "kind": "native",
+        "payable": false,
+        "typeClass": "contract",
+        "typeName": "Amalfi",
+      },
+      "name": "_deposits",
+      "value": Object {
+        "kind": "value",
+        "type": Object {
+          "keyType": Object {
+            "kind": "general",
+            "typeClass": "address",
+            "typeHint": "address",
+          },
+          "location": "storage",
+          "typeClass": "mapping",
+          "valueType": Object {
+            "bits": 256,
+            "typeClass": "uint",
+            "typeHint": "uint256",
+          },
+        },
+        "value": Array [
+          Object {
+            "key": Object {
+              "kind": "value",
+              "type": Object {
+                "kind": "general",
+                "typeClass": "address",
+                "typeHint": "address",
+              },
+              "value": Object {
+                "asAddress": "0x63606C22157476Da3B26Ad1c2EAE573D0387D733",
+              },
+            },
+            "value": Object {
+              "kind": "value",
+              "type": Object {
+                "bits": 256,
+                "typeClass": "uint",
+                "typeHint": "uint256",
+              },
+              "value": Object {
+                "asBN": "0",
+                "rawAsBN": "0",
+              },
+            },
+          },
+        ],
+      },
+    },
+    Object {
+      "class": Object {
+        "contractKind": "contract",
+        "id": "shimmedcompilation:281",
+        "kind": "native",
+        "payable": false,
+        "typeClass": "contract",
+        "typeName": "Amalfi",
+      },
+      "name": "_maturities",
+      "value": Object {
+        "kind": "value",
+        "type": Object {
+          "keyType": Object {
+            "kind": "general",
+            "typeClass": "address",
+            "typeHint": "address",
+          },
+          "location": "storage",
+          "typeClass": "mapping",
+          "valueType": Object {
+            "bits": 256,
+            "typeClass": "uint",
+            "typeHint": "uint256",
+          },
+        },
+        "value": Array [],
+      },
+    },
+    Object {
+      "class": Object {
+        "contractKind": "contract",
+        "id": "shimmedcompilation:281",
+        "kind": "native",
+        "payable": false,
+        "typeClass": "contract",
+        "typeName": "Amalfi",
+      },
+      "name": "stuff",
+      "value": Object {
+        "kind": "value",
+        "type": Object {
+          "keyType": Object {
+            "kind": "general",
+            "typeClass": "address",
+            "typeHint": "address",
+          },
+          "location": "storage",
+          "typeClass": "mapping",
+          "valueType": Object {
+            "location": "storage",
+            "typeClass": "string",
+            "typeHint": "string",
+          },
+        },
+        "value": Array [],
+      },
+    },
+    Object {
+      "class": Object {
+        "contractKind": "contract",
+        "id": "shimmedcompilation:281",
+        "kind": "native",
+        "payable": false,
+        "typeClass": "contract",
+        "typeName": "Amalfi",
+      },
+      "name": "_feeBasisPoints",
+      "value": Object {
+        "kind": "value",
+        "type": Object {
+          "bits": 256,
+          "typeClass": "uint",
+          "typeHint": "uint256",
+        },
+        "value": Object {
+          "asBN": "a",
+          "rawAsBN": "a",
+        },
+      },
+    },
+  ],
+}
+`;
+
+exports[`Storage Should decode the data 1`] = `
+Object {
+  "_deposits": Object {
+    "0x63606C22157476Da3B26Ad1c2EAE573D0387D733": "0",
+  },
+  "_feeBasisPoints": "a",
+  "_maturities": Object {},
+  "stuff": Object {},
+}
+`;
+
+exports[`Storage Should decode the data 2`] = `
+Object {
+  "data": Object {
+    "_deposits": Object {
+      "0x63606C22157476Da3B26Ad1c2EAE573D0387D733": "0",
+    },
+    "_feeBasisPoints": "a",
+    "_maturities": Object {},
+    "stuff": Object {},
+  },
+  "structure": Structure {
+    "index": 0,
+    "nodes": Array [
+      StructureNode {
+        "children": null,
+        "index": 1,
+        "key": "_owner",
+        "label": "",
+        "path": Array [
+          "_owner",
+        ],
+      },
+      StructureNode {
+        "children": Array [
+          StructureChild {
+            "children": null,
+            "key": "0x63606C22157476Da3B26Ad1c2EAE573D0387D733",
+            "label": "0x63606C22157476Da3B26Ad1c2EAE573D0387D733;",
+            "path": Array [
+              "_deposits",
+              "0x63606C22157476Da3B26Ad1c2EAE573D0387D733",
+            ],
+          },
+        ],
+        "index": 1,
+        "key": "_deposits",
+        "label": "mapping(address => uint256) _deposits:",
+        "path": Array [
+          "_deposits",
+        ],
+      },
+      StructureNode {
+        "children": Array [],
+        "index": 1,
+        "key": "_maturities",
+        "label": "mapping(address => uint256) _maturities:",
+        "path": Array [
+          "_maturities",
+        ],
+      },
+      StructureNode {
+        "children": Array [],
+        "index": 1,
+        "key": "stuff",
+        "label": "mapping(address => string) stuff:",
+        "path": Array [
+          "stuff",
+        ],
+      },
+      StructureNode {
+        "children": null,
+        "index": 1,
+        "key": "_feeBasisPoints",
+        "label": "uint256 _feeBasisPoints;",
+        "path": Array [
+          "_feeBasisPoints",
+        ],
+      },
+    ],
+    "variables": Array [
+      Object {
+        "class": Object {
+          "contractKind": "contract",
+          "id": "shimmedcompilation:408",
+          "kind": "native",
+          "payable": false,
+          "typeClass": "contract",
+          "typeName": "Ownable",
+        },
+        "name": "_owner",
+        "value": Object {
+          "kind": "value",
+          "type": Object {
+            "kind": "general",
+            "typeClass": "address",
+            "typeHint": "address",
+          },
+          "value": Object {
+            "asAddress": "0x2D481eeb2bA97955CD081Cf218f453A817259AB1",
+            "rawAsHex": "0x2d481eeb2ba97955cd081cf218f453a817259ab1",
+          },
+        },
+      },
+      Object {
+        "class": Object {
+          "contractKind": "contract",
+          "id": "shimmedcompilation:281",
+          "kind": "native",
+          "payable": false,
+          "typeClass": "contract",
+          "typeName": "Amalfi",
+        },
+        "name": "_deposits",
+        "value": Object {
+          "kind": "value",
+          "type": Object {
+            "keyType": Object {
+              "kind": "general",
+              "typeClass": "address",
+              "typeHint": "address",
+            },
+            "location": "storage",
+            "typeClass": "mapping",
+            "valueType": Object {
+              "bits": 256,
+              "typeClass": "uint",
+              "typeHint": "uint256",
+            },
+          },
+          "value": Array [
+            Object {
+              "key": Object {
+                "kind": "value",
+                "type": Object {
+                  "kind": "general",
+                  "typeClass": "address",
+                  "typeHint": "address",
+                },
+                "value": Object {
+                  "asAddress": "0x63606C22157476Da3B26Ad1c2EAE573D0387D733",
+                },
+              },
+              "value": Object {
+                "kind": "value",
+                "type": Object {
+                  "bits": 256,
+                  "typeClass": "uint",
+                  "typeHint": "uint256",
+                },
+                "value": Object {
+                  "asBN": "0",
+                  "rawAsBN": "0",
+                },
+              },
+            },
+          ],
+        },
+      },
+      Object {
+        "class": Object {
+          "contractKind": "contract",
+          "id": "shimmedcompilation:281",
+          "kind": "native",
+          "payable": false,
+          "typeClass": "contract",
+          "typeName": "Amalfi",
+        },
+        "name": "_maturities",
+        "value": Object {
+          "kind": "value",
+          "type": Object {
+            "keyType": Object {
+              "kind": "general",
+              "typeClass": "address",
+              "typeHint": "address",
+            },
+            "location": "storage",
+            "typeClass": "mapping",
+            "valueType": Object {
+              "bits": 256,
+              "typeClass": "uint",
+              "typeHint": "uint256",
+            },
+          },
+          "value": Array [],
+        },
+      },
+      Object {
+        "class": Object {
+          "contractKind": "contract",
+          "id": "shimmedcompilation:281",
+          "kind": "native",
+          "payable": false,
+          "typeClass": "contract",
+          "typeName": "Amalfi",
+        },
+        "name": "stuff",
+        "value": Object {
+          "kind": "value",
+          "type": Object {
+            "keyType": Object {
+              "kind": "general",
+              "typeClass": "address",
+              "typeHint": "address",
+            },
+            "location": "storage",
+            "typeClass": "mapping",
+            "valueType": Object {
+              "location": "storage",
+              "typeClass": "string",
+              "typeHint": "string",
+            },
+          },
+          "value": Array [],
+        },
+      },
+      Object {
+        "class": Object {
+          "contractKind": "contract",
+          "id": "shimmedcompilation:281",
+          "kind": "native",
+          "payable": false,
+          "typeClass": "contract",
+          "typeName": "Amalfi",
+        },
+        "name": "_feeBasisPoints",
+        "value": Object {
+          "kind": "value",
+          "type": Object {
+            "bits": 256,
+            "typeClass": "uint",
+            "typeHint": "uint256",
+          },
+          "value": Object {
+            "asBN": "a",
+            "rawAsBN": "a",
+          },
+        },
+      },
+    ],
+  },
+}
+`;
+
+exports[`Storage Should return watched paths 1`] = `
+Array [
+  Array [
+    "_owner",
+  ],
+  Array [
+    Array [
+      "_deposits",
+      "0x63606C22157476Da3B26Ad1c2EAE573D0387D733",
+    ],
+  ],
+  Array [
+    "_maturities",
+  ],
+  Array [
+    "stuff",
+  ],
+  Array [
+    "_feeBasisPoints",
+  ],
+]
+`;
+
+exports[`Storage Should serialize to json 1`] = `
+Object {
+  "data": Object {},
+  "structure": Structure {
+    "index": 0,
+    "nodes": Array [
+      StructureNode {
+        "children": null,
+        "index": 1,
+        "key": "_owner",
+        "label": "",
+        "path": Array [
+          "_owner",
+        ],
+      },
+      StructureNode {
+        "children": Array [
+          StructureChild {
+            "children": null,
+            "key": "0x63606C22157476Da3B26Ad1c2EAE573D0387D733",
+            "label": "0x63606C22157476Da3B26Ad1c2EAE573D0387D733;",
+            "path": Array [
+              "_deposits",
+              "0x63606C22157476Da3B26Ad1c2EAE573D0387D733",
+            ],
+          },
+        ],
+        "index": 1,
+        "key": "_deposits",
+        "label": "mapping(address => uint256) _deposits:",
+        "path": Array [
+          "_deposits",
+        ],
+      },
+      StructureNode {
+        "children": Array [],
+        "index": 1,
+        "key": "_maturities",
+        "label": "mapping(address => uint256) _maturities:",
+        "path": Array [
+          "_maturities",
+        ],
+      },
+      StructureNode {
+        "children": Array [],
+        "index": 1,
+        "key": "stuff",
+        "label": "mapping(address => string) stuff:",
+        "path": Array [
+          "stuff",
+        ],
+      },
+      StructureNode {
+        "children": null,
+        "index": 1,
+        "key": "_feeBasisPoints",
+        "label": "uint256 _feeBasisPoints;",
+        "path": Array [
+          "_feeBasisPoints",
+        ],
+      },
+    ],
+    "variables": Array [
+      Object {
+        "class": Object {
+          "contractKind": "contract",
+          "id": "shimmedcompilation:408",
+          "kind": "native",
+          "payable": false,
+          "typeClass": "contract",
+          "typeName": "Ownable",
+        },
+        "name": "_owner",
+        "value": Object {
+          "kind": "value",
+          "type": Object {
+            "kind": "general",
+            "typeClass": "address",
+            "typeHint": "address",
+          },
+          "value": Object {
+            "asAddress": "0x2D481eeb2bA97955CD081Cf218f453A817259AB1",
+            "rawAsHex": "0x2d481eeb2ba97955cd081cf218f453a817259ab1",
+          },
+        },
+      },
+      Object {
+        "class": Object {
+          "contractKind": "contract",
+          "id": "shimmedcompilation:281",
+          "kind": "native",
+          "payable": false,
+          "typeClass": "contract",
+          "typeName": "Amalfi",
+        },
+        "name": "_deposits",
+        "value": Object {
+          "kind": "value",
+          "type": Object {
+            "keyType": Object {
+              "kind": "general",
+              "typeClass": "address",
+              "typeHint": "address",
+            },
+            "location": "storage",
+            "typeClass": "mapping",
+            "valueType": Object {
+              "bits": 256,
+              "typeClass": "uint",
+              "typeHint": "uint256",
+            },
+          },
+          "value": Array [
+            Object {
+              "key": Object {
+                "kind": "value",
+                "type": Object {
+                  "kind": "general",
+                  "typeClass": "address",
+                  "typeHint": "address",
+                },
+                "value": Object {
+                  "asAddress": "0x63606C22157476Da3B26Ad1c2EAE573D0387D733",
+                },
+              },
+              "value": Object {
+                "kind": "value",
+                "type": Object {
+                  "bits": 256,
+                  "typeClass": "uint",
+                  "typeHint": "uint256",
+                },
+                "value": Object {
+                  "asBN": "0",
+                  "rawAsBN": "0",
+                },
+              },
+            },
+          ],
+        },
+      },
+      Object {
+        "class": Object {
+          "contractKind": "contract",
+          "id": "shimmedcompilation:281",
+          "kind": "native",
+          "payable": false,
+          "typeClass": "contract",
+          "typeName": "Amalfi",
+        },
+        "name": "_maturities",
+        "value": Object {
+          "kind": "value",
+          "type": Object {
+            "keyType": Object {
+              "kind": "general",
+              "typeClass": "address",
+              "typeHint": "address",
+            },
+            "location": "storage",
+            "typeClass": "mapping",
+            "valueType": Object {
+              "bits": 256,
+              "typeClass": "uint",
+              "typeHint": "uint256",
+            },
+          },
+          "value": Array [],
+        },
+      },
+      Object {
+        "class": Object {
+          "contractKind": "contract",
+          "id": "shimmedcompilation:281",
+          "kind": "native",
+          "payable": false,
+          "typeClass": "contract",
+          "typeName": "Amalfi",
+        },
+        "name": "stuff",
+        "value": Object {
+          "kind": "value",
+          "type": Object {
+            "keyType": Object {
+              "kind": "general",
+              "typeClass": "address",
+              "typeHint": "address",
+            },
+            "location": "storage",
+            "typeClass": "mapping",
+            "valueType": Object {
+              "location": "storage",
+              "typeClass": "string",
+              "typeHint": "string",
+            },
+          },
+          "value": Array [],
+        },
+      },
+      Object {
+        "class": Object {
+          "contractKind": "contract",
+          "id": "shimmedcompilation:281",
+          "kind": "native",
+          "payable": false,
+          "typeClass": "contract",
+          "typeName": "Amalfi",
+        },
+        "name": "_feeBasisPoints",
+        "value": Object {
+          "kind": "value",
+          "type": Object {
+            "bits": 256,
+            "typeClass": "uint",
+            "typeHint": "uint256",
+          },
+          "value": Object {
+            "asBN": "a",
+            "rawAsBN": "a",
+          },
+        },
+      },
+    ],
+  },
+}
+`;

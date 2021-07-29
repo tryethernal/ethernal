@@ -26,7 +26,7 @@
                     <v-spacer></v-spacer>
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-btn :disabled="loading" v-bind="attrs" v-on="on" small depressed color="primary" class="mr-2" @click="sync()">
+                            <v-btn id="resyncAllAccounts" :disabled="loading" v-bind="attrs" v-on="on" small depressed color="primary" class="mr-2" @click="syncAll()">
                                 <v-icon small class="mr-1">mdi-sync</v-icon>Resync
                             </v-btn>
                         </template>
@@ -48,7 +48,8 @@
 </template>
 
 <script>
-import { bus } from '../bus';
+const ethers = require('ethers');
+import { mapGetters } from 'vuex';
 
 import AddAccountModal from './AddAccountModal';
 import UnlockAccountModal from './UnlockAccountModal';
@@ -94,14 +95,21 @@ export default {
         }})
         .then(accounts => {
             this.loading = false;
-            accounts.forEach(account => bus.$emit('syncAccount', account.address), this);
+            accounts.forEach(this.syncAccount);
         })
     },
     methods: {
-        sync: function() {
+        syncAccount: function(account) {
+            this.server
+                .getAccountBalance(account)
+                .then((data) => {
+                    this.server.syncBalance(this.currentWorkspace.name, account, ethers.BigNumber.from(data).toString());
+                });
+        },
+        syncAll: function() {
             this.loading = true;
             this.server.getAccounts().then(accounts => {
-                accounts.forEach(account => bus.$emit('syncAccount', account), this)
+                accounts.forEach(this.syncAccount, this);
                 this.loading = false;
             });
         },
@@ -111,6 +119,11 @@ export default {
         openUnlockAccountModal: function(account) {
           this.$refs.openUnlockAccountModalRef.open({ address: account.address })
         }
+    },
+    computed: {
+        ...mapGetters([
+            'currentWorkspace'
+        ])
     }
 }
 </script>

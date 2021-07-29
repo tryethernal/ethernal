@@ -1,6 +1,6 @@
 <template>
     <div class="pa-2 grey lighten-3">
-        <div v-if="jsonInterface">
+        <div v-if="parsedLog">
             <div class="mb-2">
                 Event: {{ getSignatureFromFragment(parsedLog.eventFragment) }}
             </div>
@@ -15,18 +15,17 @@
     </div>
 </template>
 <script>
+import { ethers } from 'ethers';
+
 export default {
     name: 'TransactionEvent',
-    props: ['jsonInterface', 'log'],
+    props: ['log', 'abi'],
     data: () => ({
-        parsedLog: {
-            eventFragment: {
-                inputs: []
-            },
-        }
+        parsedLog: null
     }),
-    watch: {
-        jsonInterface: function(jsonInterface) {
+    mounted: function() {
+        if (this.abi) {
+            const jsonInterface = new ethers.utils.Interface(this.abi);
             this.parsedLog = jsonInterface.parseLog(this.log);
         }
     },

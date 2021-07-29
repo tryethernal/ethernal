@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StorageStructure.vue Should display the correct info 1`] = `
+<div>
+  <div role="dialog" class="v-dialog__container">
+    <!---->
+  </div>
+  mapping(address =&gt; uint256) _deposits:
+  <button type="button" class="v-btn v-btn--depressed v-btn--flat v-btn--icon v-btn--outlined v-btn--round theme--light v-size--x-small primary--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-plus theme--light"></i></span></button>
+  <div class="ml-4">
+    <div role="dialog" class="v-dialog__container">
+      <!---->
+    </div>
+    0x56713b5deeb3438c5fcd203a134d01609bD5463C;
+    <!---->
+  </div>
+</div>
+`;

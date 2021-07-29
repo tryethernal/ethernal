@@ -1,0 +1,98 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`storeBlock Should add the block in the db if it does not exist 1`] = `
+Object {
+  "gasLimit": "1000000000",
+  "hash": "0xb750fb9dd193bb4a46ea5426837c469815d2494abd68a94b1c2c190f3569c5b8",
+  "number": "1",
+  "timestamp": "1621548462",
+}
+`;
+
+exports[`storeBlock Should merge the block if it already exists 1`] = `
+Object {
+  "gasLimit": "1000000000",
+  "hash": "0x123",
+  "number": "1",
+  "timestamp": "1621548462",
+}
+`;
+
+exports[`storeTrace Should store the trace without overriding the tx 1`] = `
+Object {
+  "blockHash": "0x02cfea90863e2b298f07b8981cfb0ae04c66ebbfa895338030dde272cb3ddc32",
+  "blockNumber": 12695880,
+  "chainId": 1,
+  "confirmations": 1,
+  "data": "0xa9059cbb000000000000000000000000c00e94cb662c3520282e6f5717214004a7f268880000000000000000000000000000000000000000000000000000000000000001",
+  "from": "0xe93381fb4c4f14bda253907b18fad305d799241a",
+  "gasLimit": "123455",
+  "gasPrice": "23",
+  "hash": "0xb750fb9dd193bb4a46ea5426837c469815d2494abd68a94b1c2c190f3569c5b8",
+  "nonce": 2196963,
+  "r": "0x4ba8b20554c3997fcc63e94d68f15ff88e7b8f62828677cfe16dc376df65e8b8",
+  "s": "0x766f5cd25f9e0acc31f0ef296eda16f3439c663b9866ef891d58636b46c794a7",
+  "timestamp": 1624524964,
+  "to": "0xc00e94cb662c3520282e6f5717214004a7f26888",
+  "trace": Array [
+    Object {
+      "address": "0x9ca4da328f8f337ffba3ebf39ef40f77df74e9c8",
+      "contractHashedBytecode": "0x5b83bdbcc56b2e630f2807bbadd2b0c21619108066b92a58de081261089e9ce5",
+      "op": "create2",
+    },
+    Object {
+      "address": "0x9ca4da328f8f337ffba3ebf39ef40f77df74e9c8",
+      "contractHashedBytecode": "0x5b83bdbcc56b2e630f2807bbadd2b0c21619108066b92a58de081261089e9ce5",
+      "input": "0x485cc9550000000000000000000000004d787c7d124721cd22a5f124bbb06d965fde04ef0000000000000000000000008f2157684351ff3610ebbc5483bb856d7072b34c",
+      "op": "call",
+    },
+  ],
+  "transactionIndex": 0,
+  "v": 38,
+  "value": "0",
+}
+`;
+
+exports[`storeTransaction Should add the tx in the db if it does not exist 1`] = `
+Object {
+  "blockHash": "0x02cfea90863e2b298f07b8981cfb0ae04c66ebbfa895338030dde272cb3ddc32",
+  "blockNumber": 12695880,
+  "chainId": 1,
+  "confirmations": 1,
+  "data": "0xa9059cbb000000000000000000000000c00e94cb662c3520282e6f5717214004a7f268880000000000000000000000000000000000000000000000000000000000000001",
+  "from": "0xe93381fb4c4f14bda253907b18fad305d799241a",
+  "gasLimit": "123455",
+  "gasPrice": "23",
+  "hash": "0xb750fb9dd193bb4a46ea5426837c469815d2494abd68a94b1c2c190f3569c5b8",
+  "nonce": 2196963,
+  "r": "0x4ba8b20554c3997fcc63e94d68f15ff88e7b8f62828677cfe16dc376df65e8b8",
+  "s": "0x766f5cd25f9e0acc31f0ef296eda16f3439c663b9866ef891d58636b46c794a7",
+  "timestamp": 1624524964,
+  "to": "0xc00e94cb662c3520282e6f5717214004a7f26888",
+  "transactionIndex": 0,
+  "v": 38,
+  "value": "0",
+}
+`;
+
+exports[`storeTransaction Should merge the tx if it already exists 1`] = `
+Object {
+  "blockHash": "0x02cfea90863e2b298f07b8981cfb0ae04c66ebbfa895338030dde272cb3ddc32",
+  "blockNumber": 12695880,
+  "chainId": 1,
+  "confirmations": 1,
+  "data": "0xa9059cbb000000000000000000000000c00e94cb662c3520282e6f5717214004a7f268880000000000000000000000000000000000000000000000000000000000000001",
+  "from": "0x123",
+  "gasLimit": "123455",
+  "gasPrice": "23",
+  "hash": "0xb750fb9dd193bb4a46ea5426837c469815d2494abd68a94b1c2c190f3569c5b8",
+  "nonce": 2196963,
+  "r": "0x4ba8b20554c3997fcc63e94d68f15ff88e7b8f62828677cfe16dc376df65e8b8",
+  "s": "0x766f5cd25f9e0acc31f0ef296eda16f3439c663b9866ef891d58636b46c794a7",
+  "timestamp": 1624524964,
+  "to": "0xc00e94cb662c3520282e6f5717214004a7f26888",
+  "transactionIndex": 0,
+  "v": 38,
+  "value": "0",
+}
+`;
