@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.0] - 2021-07-29
 ### Changed
-- Various internals (moved some stuff from frontend to backend)
+- Various internals (moved some stuff from frontend to backend).
+- All account addresses are lowercased.
 
 ### Added
 - Unit tests for all Vue components, frontend libraries, backend libraries and cloud functions.
@@ -16,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Addresses should all be lowercased now.
 - When a write tx fails, the receipt will stop loading and it will show on the UI.
-
+- When selecting a tx for the first time on the storage page, storage is automatically displayed after being decoded.
 
 ## [0.1.3] - 2021-06-27
 ### Changed
