@@ -46,21 +46,11 @@ export default {
             gasLimit: 0
         },
         transactions: [],
-        selectedTransaction: {},
         contract: {
             abi: {}
         },
         loadingTx: true
     }),
-    methods: {
-        selectedTransactionChanged: function(transaction) {
-            if (transaction.to) {
-                this.$bind('contract', this.db.collection('contracts').doc(transaction.to), this.db.contractSerializer).then(() => {
-                    this.selectedTransaction = transaction;
-                })
-            }
-        },
-    },
     watch: {
         number: {
             immediate: true,

@@ -12,7 +12,7 @@
             :label="`${input.name || '<input>'}  (${input.type})`">
         </v-text-field>
         <div>=> {{ method.outputs.map(output => output.type).join(', ') }}</div>
-        <div class="grey lighten-3 pa-2" v-show="result">{{ result }}</div>
+        <div id="call" class="grey lighten-3 pa-2" v-show="result">{{ result }}</div>
         <v-btn :loading="loading" class="mt-1" depressed color="primary" @click="callMethod(method)">Query</v-btn>
     </div>
 </template>
@@ -43,7 +43,6 @@ export default {
                         this.loading = false;
                     })
             } catch(error) {
-                console.log(error)
                 if (error.reason)
                     this.result = `Error: ${error.reason.split('(')[0]}`;
                 else

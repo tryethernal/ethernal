@@ -23,6 +23,7 @@
                     <v-skeleton-loader type="list-item-three-line" v-if="optionsLoader"></v-skeleton-loader>
                     <v-card-text v-else>
                        <v-select
+                            id="defaultAccount"
                             outlined
                             label="Default From Account"
                             hide-details="auto"
@@ -39,6 +40,7 @@
                             </template>
                         </v-select>
                         <v-text-field
+                            id="gasPrice"
                             outlined
                             v-model="settings.gasPrice"
                             class="mt-4"
@@ -46,6 +48,7 @@
                             label="Default Gas Price (wei)">
                         </v-text-field>
                         <v-text-field
+                            id="gasLimit"
                             outlined
                             v-model="settings.gasLimit"
                             class="mt-4"
@@ -55,7 +58,7 @@
 
                         <v-row class="mt-2 pb-1 mr-2">
                             <v-spacer></v-spacer>
-                            <v-btn :loading="loading" depressed color="primary" class="mt-1" @click="update()">Update</v-btn>
+                            <v-btn id="updateCallOptions" :loading="loading" depressed color="primary" class="mt-1" @click="update()">Update</v-btn>
                         </v-row>
                     </v-card-text>
                 </v-card>
@@ -96,7 +99,7 @@
                                 </v-toolbar>
                             </template>
                             <template v-slot:item.actions="{ item }">
-                                <v-icon @click="switchWorkspace(item.id)">mdi-swap-horizontal</v-icon>
+                                <v-icon :id="`switchTo-${item.id}`" @click="switchWorkspace(item.id)">mdi-swap-horizontal</v-icon>
                             </template>
                         </v-data-table>
                     </v-card-text>
@@ -137,7 +140,7 @@
                             </v-row>
                             <v-row class="mt-2 pb-1">
                                 <v-spacer></v-spacer>
-                                <v-btn :loading="resetWorkspaceLoading" depressed color="error" class="mt-2" @click="resetWorkspace()"><v-icon>mdi-sync</v-icon>Reset Workspace</v-btn>
+                                <v-btn id="resetWorkspace" :loading="resetWorkspaceLoading" depressed color="error" class="mt-2" @click="resetWorkspace()"><v-icon>mdi-sync</v-icon>Reset Workspace</v-btn>
                             </v-row>
                         </v-card-text>
                     </v-card>
@@ -229,7 +232,8 @@ export default {
             this.advancedOptionsLoading = true;
             this.updateSuccess = false;
             this.updateError = false;
-            this.db.settings().update({advancedOptions: Object.fromEntries(Object.entries(this.advancedOptions).filter(([, v]) => v != null))})
+
+            this.server.updateWorkspaceSettings(this.currentWorkspace.name, { advancedOptions: this.advancedOptions })
                 .then(() => {
                     this.updateSuccess = true;
                     this.currentWorkspace.advancedOptions = this.advancedOptions;
@@ -242,7 +246,8 @@ export default {
             this.loading = true;
             this.updateSuccess = false;
             this.updateError = false;
-            this.db.settings().update({settings: Object.fromEntries(Object.entries(this.settings).filter(([, v]) => v != null))})
+
+            this.server.updateWorkspaceSettings(this.currentWorkspace.name, { settings: this.settings })
                 .then(() => {
                     this.updateSuccess = true;
                     this.currentWorkspace.settings = this.settings;
@@ -254,24 +259,22 @@ export default {
         openCreateWorkspaceModal: function() {
             this.$refs.createWorkspaceModal
                 .open({ workspaces: this.workspaces.map(ws => ws.id) })
-                .then((name) => {
-                    if (name) {
-                        this.switchWorkspace(name);
+                .then((workspaceCreated) => {
+                    if (workspaceCreated) {
+                        document.location.reload();
                     }
                 });
         },
         callFunction: function(name) {
             this[name]();
         },
+        switchWorkspace: function(name) {
+            this.server.setCurrentWorkspace(name).then(() => document.location.reload());
+        },
         openAlchemyIntegrationModal: function() {
             this.$refs.alchemyIntegrationModal.open({
                 enabled: this.isIntegrationEnabled('alchemy')
             });
-        },
-        switchWorkspace: async function(name) {
-            var wsRef = await this.db.getWorkspace(name);
-            await this.db.currentUser().update({ currentWorkspace: wsRef });
-            document.location.reload();
         },
         isIntegrationEnabled: function(slug) {
             return this.currentWorkspace.settings.integrations ? this.currentWorkspace.settings.integrations.indexOf(slug) > -1 : false;
@@ -279,8 +282,7 @@ export default {
         resetWorkspace: function() {
             if (confirm(`Are you sure you want to reset the workspace ${this.currentWorkspace.name}? This action is definitive.`)) {
                 this.resetWorkspaceLoading = true;
-                this.db.functions
-                    .httpsCallable('resetWorkspace')({ workspace: this.currentWorkspace.name })
+                this.server.resetWorkspace(this.currentWorkspace.name)
                     .then(() => {
                         alert('Workspace reset finished!');
                     })
