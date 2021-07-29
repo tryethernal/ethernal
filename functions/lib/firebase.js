@@ -3,32 +3,6 @@ require('firebase/firestore');
 require('firebase/database');
 const admin = require('firebase-admin');
 
-class Firebase {
-
-    constructor(projectId) {
-        this.projectId = projectId;
-        this.admin = admin.initializeApp();
-        this.firestore = this.admin.firestore();
-        this.database = this.admin.database();
-    }
-
-    _getWorkspace(userId, workspace) {
-        return _db.collection('users')
-            .doc(userId)
-            .collection('workspaces')
-            .doc(workspace);
-    }
-
-    storeTransaction(userId, workspace, transaction) {
-        if (!userId || !workspace || !transaction)
-            throw '[storeTransaction] Missing parameter';
-
-        return this._getWorkspace(userId, workspace)
-            .collection('transactions')
-            .doc(transaction.hash)
-            .set(transaction, { merge: true }); 
-    }
-}
 const app = admin.initializeApp();
 const _db = app.firestore();
 const _rtdb = app.database();
@@ -207,9 +181,10 @@ const storeAccountPrivateKey = (userId, workspace, address, privateKey) => {
 
 const getAccount = async (userId, workspace, address) => {
     if (!userId || !workspace || !address) throw '[getAccount] Missing parameter';
+
     const doc = await _getWorkspace(userId, workspace)
         .collection('accounts')
-        .doc(address.toLowerCase())
+        .doc(address)
         .get();
 
     if (!doc.exists) {
@@ -282,5 +257,4 @@ module.exports = {
     updateWorkspaceSettings: updateWorkspaceSettings,
     getContractRef: getContractRef,
     resetDatabaseWorkspace: resetDatabaseWorkspace,
-    Firebase: Firebase
 };

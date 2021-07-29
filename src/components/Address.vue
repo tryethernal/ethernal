@@ -256,6 +256,7 @@ export default {
         },
         selectedTransactionChanged: function(transaction) {
             this.selectedTransaction = transaction;
+
             if (this.selectedTransaction.hash && !this.selectedTransaction.storage) {
                 this.decodeTx(this.selectedTransaction);
             }
@@ -265,9 +266,8 @@ export default {
             this.server.decodeData(this.contract, this.currentWorkspace.rpcServer, transaction.blockNumber).then((data) => {
                 this.db.collection('transactions')
                     .doc(transaction.hash)
-                    .update({
-                        storage: data
-                    })
+                    .update({ storage: data })
+                    .then(() => this.selectedTransaction.storage = data)
                     .finally(() => this.dataLoader = false);
             });
         },

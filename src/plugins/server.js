@@ -74,7 +74,8 @@ const serverFunctions = {
     getAccounts: async function(data) {
         try {
             const rpcProvider = new serverFunctions._getProvider(data.rpcServer);
-            return await rpcProvider.listAccounts();
+            const accounts = await rpcProvider.listAccounts();
+            return accounts.map((acc) => acc.toLowerCase());
         } catch(error) {
             console.log(error);
             var reason = error.reason || error.message || "Can't connect to the server";

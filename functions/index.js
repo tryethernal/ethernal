@@ -217,7 +217,7 @@ exports.getAccounts = functions.https.onCall(async (data, context) => {
 
         var accounts = await rpcProvider.listAccounts();
 
-        return accounts;
+        return accounts.map(acc => acc.toLowerCase());
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || "Can't connect to the server";
@@ -429,7 +429,13 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
 
         const sTransactionReceipt = receipt ? stringifyBns(sanitize(receipt)) : null;
         const sTransaction = stringifyBns(sanitize(transaction));
-        const contractAbi = sTransactionReceipt && transaction.to && transaction.data != '0x' ? (await getContractData(context.auth.uid, data.workspace, transaction.to)).abi : null;
+
+        let contractAbi = null;
+
+        if (sTransactionReceipt && transaction.to && transaction.data != '0x') {
+            const contractData = await getContractData(context.auth.uid, data.workspace, transaction.to);
+            contractAbi = contractData ? contractData.abi : null
+        }
 
         const txSynced = sanitize({
             ...sTransaction,
@@ -599,6 +605,10 @@ exports.getAccount = functions.https.onCall(async (data, context) => {
         }
 
         const account = await getAccount(context.auth.uid, data.workspace, data.account);
+
+        if (!account)
+            throw { message: 'Could not find account' };
+
         const accountWithKey = sanitize({
             address: account.id,
             balance: account.balance,
