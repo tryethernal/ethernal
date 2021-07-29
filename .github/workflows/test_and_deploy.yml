@@ -140,7 +140,8 @@ jobs:
   deploy_sh:
     # We only deploy on master, if tests passed and if it is tagged
     if: |
-      needs.test.result == 'success' &&
+      needs.test_back.result == 'success' &&
+      needs.test_front.result == 'success' &&
       github.ref == 'refs/heads/master' &&
       startsWith(github.ref, 'refs/tags/v')
 
