@@ -110,6 +110,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
       - name: Get tag
         id: get_tag
         run: |
@@ -122,7 +128,6 @@ jobs:
         with:
           validation_depth: 10
           version: ${{ steps.get_tag.outputs.current_version }}
-          path: ./CHANGELOG.md
 
       - name: Create Release
         uses: ncipollo/release-action@v1
@@ -184,6 +189,19 @@ jobs:
           branch: master
           force: true
           directory: sh-files/
+
+      - name: Get tag
+        id: get_tag
+        run: |
+          echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
+        shell: bash
+
+      - name: Get Changelog Entry
+        id: get_changelog
+        uses: mindsers/changelog-reader-action@v2
+        with:
+          validation_depth: 10
+          version: ${{ steps.get_tag.outputs.current_version }}
 
       - name: Create Release on SH repo
         uses: ncipollo/release-action@v1
