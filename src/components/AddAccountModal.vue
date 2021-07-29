@@ -10,16 +10,16 @@
             <div>
                 Private keys are encrypted server side with AES 256 CBC, and stored encrypted. We strongly recommend to not use accounts with any value.
             </div>
-            <v-text-field hide-details="auto" outlined class="mt-2" v-model="privateKey" label="Private Key*" required></v-text-field>
+            <v-text-field id="privateKey" hide-details="auto" outlined class="mt-2" v-model="privateKey" label="Private Key*" required></v-text-field>
             <v-divider class="my-3"></v-divider>
             <div>Or impersonate an account.</div>
-            <v-text-field outlined v-model="accountAddress" label="Account Address*" required></v-text-field>
+            <v-text-field id="accountAddress" outlined v-model="accountAddress" label="Account Address*" required></v-text-field>
         </v-card-text>
 
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="close()">Close</v-btn>
-            <v-btn color="primary" :loading="loading" :disabled="!privateKey && !accountAddress" @click.stop="unlockAccount(privateKey, accountAddress)">Add</v-btn>
+            <v-btn id="submitAccount" color="primary" :loading="loading" :disabled="!privateKey && !accountAddress" @click.stop="unlockAccount(privateKey, accountAddress)">Add</v-btn>
         </v-card-actions>
     </v-card>
 </v-dialog>
@@ -71,8 +71,7 @@ export default {
                     promises.push(this.server.impersonateAccount(this.currentWorkspace.rpcServer, accountAddress));
                 }
 
-                Promise.all(promises).then((data) => {
-                    console.log(data)
+                Promise.all(promises).then(() => {
                     if (walletAddress)
                         bus.$emit('syncAccount', walletAddress);
                     if (this.accountAddress)

@@ -1,6 +1,6 @@
 <template>
     <div class="pa-2 grey lighten-3">
-        <div v-if="jsonInterface">
+        <div v-if="parsedTransactionData">
             <div class="mb-2">
                 Function: {{ getSignatureFromFragment(parsedTransactionData.functionFragment) }}
             </div>
@@ -10,24 +10,23 @@
             </div>
         </div>
          <div v-else>
-            <i>Upload contract artifact <router-link :to="`/address/${this.transaction.to}?tab=contract`">here</router-link> to decode function parameters.</i>
+            <i>Upload contract artifact <router-link :to="`/address/${this.to}?tab=contract`">here</router-link> to decode function parameters.</i>
         </div>
     </div>
 </template>
 <script>
+import { ethers } from 'ethers';
+
 export default {
     name: 'TransactionFunctionCall',
-    props: ['jsonInterface', 'transaction'],
+    props: ['data', 'value', 'abi', 'to'],
     data: () => ({
-        parsedTransactionData: {
-            functionFragment: {
-                inputs: []
-            }
-        }
+        parsedTransactionData: null
     }),
-    watch: {
-        jsonInterface: function(jsonInterface) {
-            this.parsedTransactionData = jsonInterface.parseTransaction({ data: this.transaction.data, value: this.transaction.value });
+    mounted: function() {
+        if (this.abi) {
+            const jsonInterface = new ethers.utils.Interface(this.abi);
+            this.parsedTransactionData = jsonInterface.parseTransaction({ data: this.data, value: this.value });
         }
     },
     methods: {

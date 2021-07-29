@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Transaction.vue Should display the transaction 1`] = `
+<div class="container">
+  <div>
+    <h2 class="text-truncate mb-2">Tx 0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0</h2> <span><span class="error v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-alert-circle theme--light" style="font-size: 16px;"></i>
+                Transaction Failed
+            </span></span></span>
+    <!---->
+    <div class="row my-2">
+      <div class="text-truncate col col-5">
+        <div class="text-overline">From</div> <a href="#/address/0x0" class="">0x0</a>
+      </div>
+      <div class="text-truncate col col-5">
+        <div class="text-overline">To</div> <a href="#/address/Ox1" class="">Ox1</a>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col col-2">
+        <div class="text-overline">Gas Used</div> <span>10,000,000</span>
+      </div>
+      <div class="col col-2">
+        <div class="text-overline">Gas Price</div>
+        0.000000123 gwei
+      </div>
+      <div class="col col-2">
+        <div class="text-overline">Cost</div> <span>0.00000000123 ether</span>
+      </div>
+      <div class="col col-2">
+        <div class="text-overline">Value</div>
+        0 ether
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col col-2">
+        <div class="text-overline">Block</div> <a href="#/block/1" class="">1</a>
+      </div>
+      <div class="col col-2">
+        <div class="text-overline">Gas Limit</div>
+        1,000,000,000
+      </div>
+    </div>
+    <div class="row my-2">
+      <div class="col">
+        <h3>Data</h3>
+        <div class="pa-2 grey lighten-3"><i>Couldn't decode data for this transaction. This probably means that you haven't <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/contracts/interacting-with-the-contract">synchronized contract metadata</a>. </i></div>
+      </div>
+    </div>
+    <div class="row my-2">
+      <div class="col">
+        <h3 class="mb-2">Trace</h3>
+        Empty trace (only CREATE(2) and CALLs are shown).
+      </div>
+    </div>
+  </div>
+</div>
+`;
