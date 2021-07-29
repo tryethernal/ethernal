@@ -10,7 +10,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          persist-credentials: false
           fetch-depth: 0
 
       - name: Cache firebase emulators
@@ -57,7 +56,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          persist-credentials: false
           fetch-depth: 0
 
       - name: Cache firebase emulators
@@ -113,7 +111,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          persist-credentials: false
           fetch-depth: 0
 
       - name: Get tag
