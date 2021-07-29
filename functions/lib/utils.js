@@ -5,7 +5,12 @@ const _sanitize = (obj) => {
     return Object.fromEntries(
         Object.entries(obj)
             .filter(([_, v]) => v != null)
-            .map(([_, v]) => typeof v == 'string' ? [_, v.toLowerCase()] : [_, v])
+            .map(([_, v]) => {
+                if (typeof v == 'string' && v.length == 42 && v.startsWith('0x'))
+                    return [_, v.toLowerCase()];
+                else
+                    return [_, v];
+            })
     );
 };
 
@@ -23,26 +28,36 @@ const _stringifyBns = (obj) => {
 };
 
 const _getFunctionSignatureForTransaction = (transaction, abi) => {
-    if (!transaction || !abi)
-        return null;
+    try {
+        if (!transaction || !abi)
+            return null;
 
-    var jsonInterface = new ethers.utils.Interface(abi);
+        var jsonInterface = new ethers.utils.Interface(abi);
 
-    var parsedTransactionData = jsonInterface.parseTransaction(transaction);
-    var fragment = parsedTransactionData.functionFragment;
+        var parsedTransactionData = jsonInterface.parseTransaction(transaction);
+        var fragment = parsedTransactionData.functionFragment;
 
-    return `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')'
+        return `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')'
+    } catch(error) {
+        if (error.code == 'INVALID_ARGUMENT')
+            return '';
+    }
 };
 
 module.exports = {
     sanitize: _sanitize,
     stringifyBns: _stringifyBns,
     getFunctionSignatureForTransaction: _getFunctionSignatureForTransaction,
-    getTxSynced: (uid, workspace, transaction, receipt, timestamp) => {
+    getTxSynced: async (uid, workspace, transaction, receipt, timestamp) => {
         const sTransactionReceipt = receipt ? _stringifyBns(_sanitize(receipt)) : null;
         const sTransaction = _stringifyBns(_sanitize(transaction));
 
-        const contractAbi = sTransactionReceipt && sTransactionReceipt.contractAddress ? getContractData(uid, workspace, sTransactionReceipt.contractAddress) : null;
+        let contractAbi = null;
+        
+        if (sTransactionReceipt && transaction.to && transaction.data != '0x') {
+            const contractData = await getContractData(uid, workspace, transaction.to);
+            contractAbi = contractData ? contractData.abi : null
+        }
 
         return _sanitize({
            ...sTransaction,

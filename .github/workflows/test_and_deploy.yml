@@ -3,7 +3,52 @@ name: Test & Deploy
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
-  test:
+  test_back:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Cache firebase emulators
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/firebase/emulators
+          key: ${{ runner.os }}-firebase-emulators-${{ hashFiles('~/.cache/firebase/emulators/**') }}
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.9.1
+
+      - name: Setup timezone
+        uses: zcong1993/setup-timezone@master
+        with:
+          timezone: Europe/Paris
+
+      - name: Install deps
+        run: |
+          cd functions && npm install
+
+      - name: Setup environment
+        uses: w9jds/firebase-action@master
+        with:
+          args: functions:config:get > .runtimeconfig.json
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Run tests
+        run: |
+          firebase emulators:exec \
+            'FIREBASE_CONFIG="{\"projectId\": \"ethernal-test\",\"databaseURL\": \"http://localhost:9000/?ns=ethernal-test\"}" \
+            FIRESTORE_EMULATOR_HOST="localhost:8080" \
+            FIREBASE_DATABASE_EMULATOR_HOST="localhost:9000" \
+            GCLOUD_PROJECT=ethernal-test \
+            npm test tests/'
+
+  test_front:
     runs-on: ubuntu-latest
 
     steps:
@@ -59,7 +104,8 @@ jobs:
   deploy_saas:
     # We only deploy on master, if tests passed and if it is tagged
     if: |
-      needs.test.result == 'success' &&
+      needs.test_back.result == 'success' &&
+      needs.test_front.result == 'success' &&
       github.ref == 'refs/heads/master' &&
       startsWith(github.ref, 'refs/tags/v')
 

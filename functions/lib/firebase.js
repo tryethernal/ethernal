@@ -3,6 +3,32 @@ require('firebase/firestore');
 require('firebase/database');
 const admin = require('firebase-admin');
 
+class Firebase {
+
+    constructor(projectId) {
+        this.projectId = projectId;
+        this.admin = admin.initializeApp();
+        this.firestore = this.admin.firestore();
+        this.database = this.admin.database();
+    }
+
+    _getWorkspace(userId, workspace) {
+        return _db.collection('users')
+            .doc(userId)
+            .collection('workspaces')
+            .doc(workspace);
+    }
+
+    storeTransaction(userId, workspace, transaction) {
+        if (!userId || !workspace || !transaction)
+            throw '[storeTransaction] Missing parameter';
+
+        return this._getWorkspace(userId, workspace)
+            .collection('transactions')
+            .doc(transaction.hash)
+            .set(transaction, { merge: true }); 
+    }
+}
 const app = admin.initializeApp();
 const _db = app.firestore();
 const _rtdb = app.database();
@@ -12,7 +38,9 @@ const _getWorkspace = (userId, workspace) => _db.collection('users').doc(userId)
 const getUser = (id) => _db.collection('users').doc(id).get();
 
 const addIntegration = (userId, workspace, integration) => {
-    _db.collection('users')
+    if (!userId || !workspace || !integration) throw '[addIntegration] Missing parameter';
+
+    return _db.collection('users')
         .doc(userId)
         .collection('workspaces')
         .doc(workspace)
@@ -22,7 +50,9 @@ const addIntegration = (userId, workspace, integration) => {
 };
 
 const removeIntegration = (userId, workspace, integration) => {
-    _db.collection('users')
+    if (!userId || !workspace || !integration) throw '[removeIntegration] Missing parameter';
+
+    return _db.collection('users')
         .doc(userId)
         .collection('workspaces')
         .doc(workspace)
@@ -94,10 +124,11 @@ const storeTransaction = (userId, workspace, transaction) => {
 
 const storeContractData = (userId, workspace, address, data) => {
     if (!userId || !workspace || !address || !data) throw '[storeContractData] Missing parameter';
+
     return _getWorkspace(userId, workspace)
         .collection('contracts')
         .doc(address.toLowerCase())
-        .set(data, { merge: true });
+        .set(data, { merge: true })
 };
 
 const storeContractArtifact = (userId, workspace, address, artifact) => {
@@ -111,6 +142,11 @@ const storeContractDependencies = (userId, workspace, address, dependencies) => 
     return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}/dependencies`).update(dependencies);
 };
 
+const resetDatabaseWorkspace = (userId, workspace) => {
+    if (!userId || !workspace) throw '[resetDatabaseWorkspace] Missing parameter';
+    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}`).set(null);
+}
+
 const getContractData = async (userId, workspace, address) => {
     if (!userId || !workspace || !address) throw '[getContractData] Missing parameter';
     const doc = await _getWorkspace(userId, workspace)
@@ -118,7 +154,7 @@ const getContractData = async (userId, workspace, address) => {
         .doc(address.toLowerCase())
         .get();
 
-    if (doc.empty) {
+    if (!doc.exists) {
         return null;
     }
     else {
@@ -133,18 +169,23 @@ const getContractRef = (userId, workspace, address) => {
             .doc(address.toLowerCase());
 };
 
-const getContractByHashedBytecode = async (userId, workspace, hashedBytecode) => {
-    if (!userId || !workspace || !hashedBytecode) throw '[getContractByHashedBytecode] Missing parameter';
+const getContractByHashedBytecode = async (userId, workspace, hashedBytecode, exclude = []) => {
+    if (!userId || !workspace || !hashedBytecode) {
+        console.log(userId, workspace, hashedBytecode);
+        throw '[getContractByHashedBytecode] Missing parameter';
+    }
+
     const contracts = await _getWorkspace(userId, workspace)
         .collection('contracts')
         .where('hashedBytecode', '==', hashedBytecode)
+        .where('address', 'not-in', exclude)
         .get();
 
     if (contracts.empty) {
         return null;
     }
     else {
-        const results = []
+        const results = [];
         contracts.forEach(doc => {
             results.push({
                 uid: doc.id,
@@ -170,7 +211,8 @@ const getAccount = async (userId, workspace, address) => {
         .collection('accounts')
         .doc(address.toLowerCase())
         .get();
-    if (doc.empty) {
+
+    if (!doc.exists) {
         return null;
     }
     else {
@@ -178,7 +220,7 @@ const getAccount = async (userId, workspace, address) => {
     }
 };
 
-const storeTrace = async (userId, workspace, txHash, trace) => {
+const storeTrace = (userId, workspace, txHash, trace) => {
     if (!userId || !workspace || !txHash || !trace) throw '[storeTrace] Missing parameter';
     return _getWorkspace(userId, workspace)
         .collection('transactions')
@@ -186,7 +228,7 @@ const storeTrace = async (userId, workspace, txHash, trace) => {
         .set({ trace: trace }, { merge: true });
 };
 
-const updateAccountBalance = async (userId, workspace, account, balance) => {
+const updateAccountBalance = (userId, workspace, account, balance) => {
     if (!userId || !workspace || !account || !balance) throw '[updateAccountBalance] Missing parameter';
 
     return _getWorkspace(userId, workspace)
@@ -199,12 +241,18 @@ const setCurrentWorkspace = async (userId, name) => {
     if (!userId || !name) throw '[setCurrentWorkspace] Missing parameter';
 
     const workspaceRef = _getWorkspace(userId, name);
+
+    const ws = await workspaceRef.get();
+
+    if (!ws.exists)
+        throw 'This workspace does not exist.';
+
     return _db.collection('users')
         .doc(userId)
         .set({ currentWorkspace: workspaceRef }, { merge: true });
 };
 
-const updateWorkspaceSettings = async (userId, workspace, settings) => {
+const updateWorkspaceSettings = (userId, workspace, settings) => {
     if (!userId || !workspace || !settings) throw '[updateWorkspaceSettings] Missing parameter';
 
     return _getWorkspace(userId, workspace)
@@ -232,5 +280,7 @@ module.exports = {
     updateAccountBalance: updateAccountBalance,
     setCurrentWorkspace: setCurrentWorkspace,
     updateWorkspaceSettings: updateWorkspaceSettings,
-    getContractRef: getContractRef
+    getContractRef: getContractRef,
+    resetDatabaseWorkspace: resetDatabaseWorkspace,
+    Firebase: Firebase
 };

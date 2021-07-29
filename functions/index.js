@@ -14,6 +14,7 @@ const { matchWithContract } = require('./triggers/contracts');
 
 const api = require('./api/index');
 const {
+    resetDatabaseWorkspace,
     storeBlock,
     storeTransaction,
     storeContractData,
@@ -31,14 +32,15 @@ const {
     updateAccountBalance,
     setCurrentWorkspace,
     updateWorkspaceSettings,
-    getContractRef
+    getContractRef,
+    Firebase
 } = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
     _functions.useFunctionsEmulator('http://localhost:5001');
 }
 
-const ETHERSCAN_API_KEY = process.env.VUE_APP_ETHERSCAN_API_KEY;
+const ETHERSCAN_API_KEY = functions.config().etherscan.token;
 const ETHERSCAN_API_URL = 'https://api.etherscan.io/api?module=contract&action=getsourcecode';
 
 var _getDependenciesArtifact = function(contract) {
@@ -285,13 +287,8 @@ exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' 
             token: functions.config().fb.token
         });
     }
-
-    await firebaseTools.database.remove(`/users/${context.auth.uid}/workspaces/${data.workspace}`, {
-        project: process.env.GCLOUD_PROJECT,
-        recursive: true,
-        confirm: true,
-        token: functions.config().fb.token
-    });
+    
+    await resetDatabaseWorkspace(context.auth.uid, data.workspace);
 
     return { success: true };
 });
@@ -367,49 +364,22 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '1GB' }).ht
         }
 
         const trace = [];
-
         for (const step of data.steps) {
-            switch (step.op) {
-                case 'CALL':
-                case 'CALLCODE':
-                case 'DELEGATECALL':
-                case 'STATICCALL': {
-                    const contractRef = getContractRef(context.auth.uid, data.workspace, step.address);
+            if (step.op.toUpperCase().indexOf(['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2'])) {
+                const contractData = sanitize({
+                    address: step.address.toLowerCase(),
+                    hashedBytecode: step.contractHashedBytecode
+                });
 
-                    if (contractRef.exists) {
-                        trace.push(sanitize({ ...step, contract: contractRef }));
-                    }
-                    else {
-                        const contractData = {
-                            address: step.address.toLowerCase(),
-                            hashedBytecode: step.contractHashedBytecode
-                        };
+                await storeContractData(
+                    context.auth.uid,
+                    data.workspace,
+                    step.address,
+                    contractData
+                );
 
-                        await storeContractData(
-                            context.auth.uid,
-                            data.workspace,
-                            step.address,
-                            contractData
-                        );
-
-                        trace.push(sanitize({ ...step, contract: await getContractData(context.auth.uid, data.workspace, step.address) }));
-                    }
-                    break;
-                }
-                case 'CREATE':
-                case 'CREATE2': {
-                    await storeContractData(
-                        context.auth.uid,
-                        data.workspace,
-                        step.address,
-                        { address: step.address.toLowerCase(), hashedBytecode: step.contractHashedBytecode }
-                    );
-                    trace.push(sanitize({ ...step, contract: await getContractData(context.auth.uid, data.workspace, step.address) }));
-                    break;
-                }
-                default: {
-                    trace.push(sanitize(step));
-                }
+                const contractRef = getContractRef(context.auth.uid, data.workspace, step.address);
+                trace.push(sanitize({ ...step, contract: contractRef }));
             }
         }
 
@@ -452,10 +422,11 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[syncTransaction] Missing parameter.');
         }
+
         const promises = [];
         const transaction = data.transaction;
         const receipt = data.transactionReceipt;
-        
+
         const sTransactionReceipt = receipt ? stringifyBns(sanitize(receipt)) : null;
         const sTransaction = stringifyBns(sanitize(transaction));
         const contractAbi = sTransactionReceipt && transaction.to && transaction.data != '0x' ? (await getContractData(context.auth.uid, data.workspace, transaction.to)).abi : null;
@@ -573,11 +544,11 @@ exports.importContract = functions.https.onCall(async (data, context) => {
         const response = await axios.get(endpoint);
 
         if (response.data.message == 'NOTOK') {
-            throw { reason: response.data.result };
+            throw { message: response.data.result };
         }
 
         if (response.data.result[0].ContractName == '') {
-            throw { reason: `Couldn't find contract on Etherscan, make sure the address is correct and that the contract has been verified.` };
+            throw { message: `Couldn't find contract on Etherscan, make sure the address is correct and that the contract has been verified.` };
         }
 
         await storeContractData(context.auth.uid, data.workspace, data.contractAddress, {
@@ -590,7 +561,7 @@ exports.importContract = functions.https.onCall(async (data, context) => {
        return { success: true };
     } catch(error) {
         console.log(error);
-        var reason = error.reason || error.message || 'Server error. Please retry.';
+        var reason = error.message || 'Server error. Please retry.';
         throw new functions.https.HttpsError('unknown', reason);
     }
 });
@@ -654,12 +625,13 @@ exports.impersonateAccount = functions.https.onCall(async (data, context) => {
 
         const rpcProvider = new _getProvider(data.rpcServer)
         const hardhatResult = await rpcProvider.send('hardhat_impersonateAccount', [data.accountAddress]).catch(console.log);
+
         if (hardhatResult) {
             return true;
         }
+
         const ganacheResult = await rpcProvider.send('evm_unlockUnknownAccount', [data.accountAddress]).catch(console.log);
         return ganacheResult;
-
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
@@ -712,7 +684,7 @@ exports.syncBalance = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
 
     try {
-        if (!data.account || !data.workspace || !data.balance) {
+        if (!data.workspace || !data.account || !data.balance) {
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[syncBalance] Missing parameter.');
         }
@@ -742,24 +714,28 @@ exports.updateWorkspaceSettings = functions.https.onCall(async (data, context) =
         const sanitizedParams = {};
 
         if (data.settings.advancedOptions) {
-            sanitizedParams['advancedOptions'] = {};
             ALLOWED_ADVANCED_OPTIONS.forEach((key) => {
                 if (!!data.settings.advancedOptions[key]) {
+                    if (!sanitizedParams['advancedOptions'])
+                        sanitizedParams['advancedOptions'] = {};
                     sanitizedParams.advancedOptions[key] = data.settings.advancedOptions[key];
                 }
             });
         }
         
         if (data.settings.settings) {
-            sanitizedParams['settings'] = {};
             ALLOWED_SETTINGS.forEach((key) => {
                 if (!!data.settings.settings[key]) {
+                    if (!sanitizedParams['settings'])
+                        sanitizedParams['settings'] = {};
                     sanitizedParams.settings[key] = data.settings.settings[key];
                 }
             });
         }
 
-        await updateWorkspaceSettings(context.auth.uid, data.workspace, sanitizedParams);
+        if (Object.keys(sanitizedParams).length !== 0) {
+            await updateWorkspaceSettings(context.auth.uid, data.workspace, sanitizedParams);
+        }
 
         return { success: true };
     } catch(error) {
