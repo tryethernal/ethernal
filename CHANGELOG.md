@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2021-07-29
+### Changed
+- Various internals (moved some stuff from frontend to backend)
+
+### Added
+- Unit tests for all Vue components, frontend libraries, backend libraries and cloud functions.
+
+### Fixed
+- Addresses should all be lowercased now.
+- When a write tx fails, the receipt will stop loading and it will show on the UI.
+
+
 ## [0.1.3] - 2021-06-27
 ### Changed
 - Etherscan contract import is now done server side.
