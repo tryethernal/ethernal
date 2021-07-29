@@ -131,8 +131,7 @@ jobs:
         with:
           body: ${{ steps.get_changelog.outputs.changes }}
           tag: ${{ steps.get_changelog.outputs.version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Trigger Netlify deploy
         run: curl -X POST -d {} https://api.netlify.com/build_hooks/${{ secrets.NETLIFY_BUILD_HOOK_ID }}
