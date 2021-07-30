@@ -9,10 +9,14 @@ exports[`Transaction.vue Should display the transaction 1`] = `
     <!---->
     <div class="row my-2">
       <div class="text-truncate col col-5">
-        <div class="text-overline">From</div> <a href="#/address/0x0" class="">0x0</a>
+        <div class="text-overline">From</div> <span><a href="#/address/0x0" class="">0x0</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
+        <!----></span>
       </div>
       <div class="text-truncate col col-5">
-        <div class="text-overline">To</div> <a href="#/address/Ox1" class="">Ox1</a>
+        <div class="text-overline">To</div> <span><a href="#/address/Ox1" class="">Ox1</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox1" value="Ox1"></span>
+        <!----></span>
       </div>
     </div>
     <div class="row mb-4">
