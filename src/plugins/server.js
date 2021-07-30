@@ -269,8 +269,14 @@ export const serverPlugin = {
             importContract: function(workspace, contractAddress) {
                 return functions.httpsCallable('importContract')({ workspace: workspace, contractAddress: contractAddress });
             },
-            getWebhookToken: function(workspace) {
-                return functions.httpsCallable('getWebhookToken')({ workspace: workspace });
+            getWorkspaceApiToken: function(workspace) {
+                return functions.httpsCallable('getWorkspaceApiToken')({ workspace: workspace });
+            },
+            enableWorkspaceApi: function(workspace) {
+                return functions.httpsCallable('enableWorkspaceApi')({ workspace: workspace });
+            },
+            disableWorkspaceApi: function(workspace) {
+                return functions.httpsCallable('disableWorkspaceApi')({ workspace: workspace });
             },
             enableAlchemyWebhook: function(workspace) {
                 return functions.httpsCallable('enableAlchemyWebhook')({ workspace: workspace });
