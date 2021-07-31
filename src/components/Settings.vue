@@ -64,6 +64,7 @@
                 </v-card>
 
                 <Alchemy-Integration-Modal ref="alchemyIntegrationModal" />
+                <Api-Integration-Modal ref="apiIntegrationModal" />
                 <h4>Integrations</h4>
                 <v-card outlined class="mb-4">
                     <v-card-text>
@@ -153,12 +154,14 @@
 import { mapGetters } from 'vuex';
 import CreateWorkspaceModal from './CreateWorkspaceModal';
 import AlchemyIntegrationModal from './AlchemyIntegrationModal';
+import ApiIntegrationModal from './ApiIntegrationModal';
 
 export default {
     name: 'Settings',
     components: {
         CreateWorkspaceModal,
-        AlchemyIntegrationModal
+        AlchemyIntegrationModal,
+        ApiIntegrationModal
     },
     data: () => ({
         advancedOptionsDesc: [
@@ -189,9 +192,14 @@ export default {
             ],
             items: [
                 {
-                    name: 'Alchemy API',
+                    name: 'Alchemy',
                     slug: 'alchemy',
                     action:  'openAlchemyIntegrationModal'
+                },
+                {
+                    name: 'API',
+                    slug: 'api',
+                    action: 'openApiIntegrationModal'
                 }
             ]
         },
@@ -274,10 +282,25 @@ export default {
         openAlchemyIntegrationModal: function() {
             this.$refs.alchemyIntegrationModal.open({
                 enabled: this.isIntegrationEnabled('alchemy')
+            })
+            .then(() => {
+                this.currentWorkspace.settings = this.settings;
+                this.$store.dispatch('updateCurrentWorkspace', this.currentWorkspace);
+            })
+        },
+        openApiIntegrationModal: function() {
+            this.$refs.apiIntegrationModal.open({
+                enabled: this.isIntegrationEnabled('api')
+            })
+            .then(() => {
+                this.currentWorkspace.settings = this.settings;
+                this.$store.dispatch('updateCurrentWorkspace', this.currentWorkspace);
             });
         },
         isIntegrationEnabled: function(slug) {
-            return this.currentWorkspace.settings.integrations ? this.currentWorkspace.settings.integrations.indexOf(slug) > -1 : false;
+            return this.currentWorkspace.settings.integrations ?
+                this.currentWorkspace.settings.integrations.indexOf(slug) > -1 :
+                false;
         },
         resetWorkspace: function() {
             if (confirm(`Are you sure you want to reset the workspace ${this.currentWorkspace.name}? This action is definitive.`)) {

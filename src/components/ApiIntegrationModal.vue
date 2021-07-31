@@ -1,18 +1,13 @@
 <template>
 <v-dialog v-model="dialog" max-width="700" persistent>
     <v-card>
-        <v-card-title class="headline">Manage Alchemy Integration</v-card-title>
+        <v-card-title class="headline">Manage API</v-card-title>
         <v-card-text>
-            When enabled, this integration will give you a webhook that you should add in your Alchemy dashboard, in the Notify section, under "Mined Transactions Notifications". Once this is done, all transactions going through the selected Alchemy app will be synchronized with Ethernal, letting you used all of the features on your dapp!
+            Enabling this will allow you to use the Ethernal API. Send the token displayed below (once activated) in a <code>token</code> GET parameter to the endpoint to authenticate yourself.
             <v-divider></v-divider>
-            <div v-if="canUseIntegration()">
-                <v-switch id="webhookSwitch" :disabled="loading" :loading="loading" v-model="enabled" :label="enabled ? 'Enabled' : 'Disabled'" @change="toggleSwitch"></v-switch>
-                <v-text-field id="webhook" append-icon="mdi-content-copy" readonly @click:append="copyWebhook()" outlined dense hide-details="auto" :value="formattedWebhook" v-show="token"></v-text-field>
-                <input type="hidden" id="copyElement" :value="formattedWebhook">
-            </div>
-            <div v-else class="mt-1">
-                <v-alert type="warning">This integration can only be used with a workspace connected to an Alchemy endpoint. Create a new workspace connected to your Alchemy app to use it</v-alert>
-            </div>
+            <v-switch id="apiSwitch" :disabled="loading" :loading="loading" v-model="enabled" :label="enabled ? 'Enabled' : 'Disabled'" @change="toggleSwitch"></v-switch>
+            <v-text-field id="token" append-icon="mdi-content-copy" readonly @click:append="copyToken()" outlined dense hide-details="auto" :value="token" v-show="token"></v-text-field>
+            <input type="hidden" id="copyElement" :value="token">
         </v-card-text>
 
         <v-card-actions>
@@ -25,9 +20,8 @@
 <script>
 import { mapGetters } from 'vuex';
 
-const API_ROOT_URL = process.env.VUE_APP_API_ROOT_URL;
 export default {
-    name: 'AlchemyIntegrationModal',
+    name: 'ApiIntegrationModal',
     data: () => ({
         dialog: false,
         resolve: null,
@@ -38,21 +32,17 @@ export default {
         options: {}
     }),
     methods: {
-        canUseIntegration: function() {
-            const server = new URL(this.currentWorkspace.rpcServer);
-            return server.host.indexOf('alchemyapi.io') > -1;
-        },
-        copyWebhook: function() {
+        copyToken: function() {
             const webhookField = document.querySelector('#copyElement');
             webhookField.setAttribute('type', 'text');
             webhookField.select();
 
             try {
                 const copied = document.execCommand('copy');
-                const message = copied ? 'Webhook copied!' : `Couldn't copy webhook`;
+                const message = copied ? 'Token copied!' : `Couldn't copy token`;
                 alert(message);
             } catch(error) {
-                alert(`Couldn't copy webhook`);
+                alert(`Couldn't copy token`);
             } finally {
                 webhookField.setAttribute('type', 'hidden');
                 window.getSelection().removeAllRanges();
@@ -87,12 +77,15 @@ export default {
         toggleSwitch: function(value) {
             this.loading = true;
             if (value) {
-                this.server.enableAlchemyWebhook(this.currentWorkspace.name)
-                    .then(({data}) => this.token = data.token)
+                this.server.enableWorkspaceApi(this.currentWorkspace.name)
+                    .then(({ data }) => {
+                        this.token = data.token;
+                        this.currentWorkspace
+                    })
                     .finally(() => this.loading = false);
             }
             else {
-                this.server.disableAlchemyWebhook(this.currentWorkspace.name)
+                this.server.disableWorkspaceApi(this.currentWorkspace.name)
                     .then(() => this.token = null)
                     .finally(() => this.loading = false);
             }
@@ -101,10 +94,7 @@ export default {
     computed: {
         ...mapGetters([
             'currentWorkspace'
-        ]),
-        formattedWebhook: function() {
-            return `${API_ROOT_URL}/webhooks/alchemy?token=${this.token}`;
-        }
+        ])
     }
 }
 </script>

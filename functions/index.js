@@ -488,14 +488,43 @@ exports.enableAlchemyWebhook = functions.https.onCall(async (data, context) => {
     }
 });
 
-exports.getWebhookToken = functions.https.onCall(async (data, context) => {
+exports.enableWorkspaceApi = functions.https.onCall(async (data, context) => {
     if (!context.auth)
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
 
     try {
         if (!data.workspace) {
             console.log(data);
-            throw new functions.https.HttpsError('invalid-argument', '[getWebhookToken] Missing parameter.');
+            throw new functions.https.HttpsError('invalid-argument', '[enableWorkspaceApi] Missing parameter.');
+        }
+
+        const user = await getUser(context.auth.uid);
+        await addIntegration(context.auth.uid, data.workspace, 'api');
+
+        const apiKey = decrypt(user.data().apiKey);
+
+        const token = encode({
+            uid: context.auth.uid,
+            workspace: data.workspace,
+            apiKey: apiKey
+        });
+
+       return { token: token };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
+exports.getWorkspaceApiToken = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspace) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[getWorkspaceApiToken] Missing parameter.');
         }
 
         const user = await getUser(context.auth.uid);
@@ -527,6 +556,26 @@ exports.disableAlchemyWebhook = functions.https.onCall(async (data, context) => 
         }
 
         await removeIntegration(context.auth.uid, data.workspace, 'alchemy');
+
+       return { success: true };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
+exports.disableWorkspaceApi = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspace) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[disableWorkspaceApi] Missing parameter.');
+        }
+
+        await removeIntegration(context.auth.uid, data.workspace, 'api');
 
        return { success: true };
     } catch(error) {

@@ -222,7 +222,7 @@ var _Storage = class Storage {
                 .catch((error) => {
                     console.log(error)
                     if (error.name == 'ContractAllocationFailedError') {
-                        reject({ message: "In order to use this feature, you need to compile all your contracts, including dependencies, at the same time. For Truffle you can pass the --all flag, for Hardhat pass the --force flag. Then, redeploy the newly compiled contract, and try accessing the storage again at the new address." });
+                        reject({ message: "Some dependencies artifacts are missing, you need to compile all your contracts, including dependencies, at the same time. For Truffle you can pass the --all flag, for Hardhat pass the --force flag. Then, redeploy the newly compiled contract, and try accessing the storage again at the new address." });
                     }
                     else {
                         console.log(error.message);
