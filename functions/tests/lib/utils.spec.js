@@ -3,7 +3,8 @@ const {
     sanitize,
     stringifyBns,
     getFunctionSignatureForTransaction,
-    getTxSynced
+    getTxSynced,
+    isJson
 } = require('../../lib/utils');
 const Helper = require('../helper');
 const Transaction = require('../fixtures/Transaction.json');
@@ -77,5 +78,15 @@ describe('getTxSynced', () => {
         const result = await getTxSynced('123', 'hardhat', Transaction, TransactionReceipt, '1627491540328');
 
         expect(result).toMatchSnapshot();
+    });
+});
+
+describe('isJson', () => {
+    it('Should return true for a parsable json string', () => {
+        expect(isJson('{ "a": 1 }')).toBe(true);
+    });
+
+    it('Should return false for an non parsable json string', () => {
+        expect(isJson('not a json')).toBe(false);
     });
 });
