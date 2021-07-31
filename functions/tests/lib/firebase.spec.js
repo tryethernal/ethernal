@@ -22,7 +22,9 @@ const {
     setCurrentWorkspace,
     updateWorkspaceSettings,
     getContractRef,
-    resetDatabaseWorkspace
+    resetDatabaseWorkspace,
+    getContractArtifact,
+    getContractArtifactDependencies
 } = require('../../lib/firebase');
 
 const Block = require('../fixtures/Block');
@@ -261,11 +263,34 @@ describe('storeContractData', () => {
 describe('storeContractArtifact', () => {
     it('Should store the contract artifact', async () => {
         const contractArtifact = JSON.stringify(AmalfiContract.artifact);
+        
         await storeContractArtifact('123', 'hardhat', '0x123', contractArtifact);
 
         const artifactRef = await helper.database.ref('/users/123/workspaces/hardhat/contracts/0x123/artifact').once('value');
 
         expect(artifactRef.val()).toEqual(contractArtifact);
+    });
+});
+
+describe('getContractArtifact', () => {
+    it('Should retrieve the contract artifact', async () => {
+        const contractArtifact = JSON.stringify(AmalfiContract.artifact);
+        await helper.database.ref('/users/123/workspaces/hardhat/contracts/0x123/artifact').set(contractArtifact);
+
+        const artifactRef = await getContractArtifact('123', 'hardhat', '0x123');
+
+        expect(artifactRef.val()).toEqual(contractArtifact);
+    });
+});
+
+describe('getContractArtifactDependencies', () => {
+    it('Should retrieve the contract artifact', async () => {
+        const contractDependency = JSON.stringify(AmalfiContract.dependencies['Address']);
+        await helper.database.ref('/users/123/workspaces/hardhat/contracts/0x123/dependencies').update({ Address: contractDependency });
+
+        const artifactDependenciesRef = await getContractArtifactDependencies('123', 'hardhat', '0x123');
+
+        expect(artifactDependenciesRef.val()).toEqual({ Address: contractDependency });
     });
 });
 

@@ -1,6 +1,15 @@
 const ethers = require('ethers');
 const { getContractData } = require('./firebase');
 
+const _isJson = function(obj) {
+    try {
+        JSON.parse(obj);
+        return true;
+    } catch(e) {
+        return false;
+    }
+};
+
 const _sanitize = (obj) => {
     return Object.fromEntries(
         Object.entries(obj)
@@ -65,5 +74,6 @@ module.exports = {
             timestamp: timestamp,
             functionSignature: contractAbi ? _getFunctionSignatureForTransaction(transaction, contractAbi) : null
         });
-    }
+    },
+    isJson: _isJson
 }

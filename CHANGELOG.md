@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2021-07)31
+### Fixed
+- UI bug with the display of Alchemy integration enabled/disabled status.
+
+### Added
+- Storage API, see: https://doc.tryethernal.com/integrations/api.
+- Copy to clipboard shortcut on hashes & addresses.
+
 ## [0.2.0] - 2021-07-29
 ### Changed
 - Various internals (moved some stuff from frontend to backend).

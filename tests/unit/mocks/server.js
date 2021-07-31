@@ -60,7 +60,15 @@ export default {
         });
     },
 
-    getWebhookToken: () => {
+    enableWorkspaceApi: () => {
+        return new Promise((resolve) => resolve({ data: { token: '123456abcdef' }}));
+    },
+
+    disableWorkspaceApi: () => {
+        return new Promise((resolve) => resolve({ success: true }));
+    },
+
+    getWorkspaceApiToken: () => {
         return new Promise((resolve) => resolve({ data: { token: '123456abcdef' }}));
     },
 
@@ -69,7 +77,7 @@ export default {
     },
 
     disableAlchemyWebhook: () => {
-        return new Promise((resolve) => resolve());
+        return new Promise((resolve) => resolve({ success: true }));
     },
 
     getAccounts: () => {
@@ -77,7 +85,7 @@ export default {
     },
 
     syncBalance: () => {
-        return new Promise((resolve) => resolve());
+        return new Promise((resolve) => resolve({ success: true }));
     },
 
     getAccountBalance: () => {
@@ -85,11 +93,11 @@ export default {
     },
 
     storeAccountPrivateKey: () => {
-        return new Promise((resolve) => resolve());
+        return new Promise((resolve) => resolve({ success: true }));
     },
 
     impersonateAccount: () => {
-        return new Promise((resolve) => resolve());
+        return new Promise((resolve) => resolve(true));
     },
     
     initRpcServer: (rpcServer, localNetwork) => {

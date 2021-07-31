@@ -1,7 +1,6 @@
 import MockHelper from '../MockHelper';
 
 import AlchemyIntegrationModal from '@/components/AlchemyIntegrationModal.vue';
-import flushPromises from 'flush-promises';
 
 describe('AlchemyIntegrationModal.vue', () => {
     let helper;
