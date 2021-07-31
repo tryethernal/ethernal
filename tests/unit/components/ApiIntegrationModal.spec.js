@@ -4,7 +4,7 @@ import ApiIntegrationModal from '@/components/ApiIntegrationModal.vue';
 
 describe('ApiIntegrationModal.vue', () => {
     let helper;
-    
+
     it('Should let you enable the API', async (done) => {
         helper = new MockHelper({ rpcServer: 'http://localhost:8545' });
         const enableWorkspaceApiMock = jest.spyOn(helper.mocks.server, 'enableWorkspaceApi');
@@ -40,7 +40,7 @@ describe('ApiIntegrationModal.vue', () => {
 
         expect(wrapper.vm.token).toBeTruthy();
         expect(wrapper.find('#token').isVisible()).toBe(true);
-        
+
         await wrapper.find('#apiSwitch').trigger('click');
         await wrapper.vm.$nextTick();
 
