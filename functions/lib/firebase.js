@@ -116,16 +116,27 @@ const storeContractDependencies = (userId, workspace, address, dependencies) => 
     return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}/dependencies`).update(dependencies);
 };
 
+const getContractArtifact = (userId, workspace, address) => {
+    if (!userId || !workspace || !address) throw '[getContractArtifact] Missing parameter';
+    console.log(`/users/${userId}/workspaces/${workspace}/contracts/${address}/artifact`)
+    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address}/artifact`).once('value');
+};
+
+const getContractArtifactDependencies = (userId, workspace, address) => {
+    if (!userId || !workspace || !address) throw '[getContractArtifactDependencies] Missing parameter';
+    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address}/dependencies`).once('value');
+};
+
 const resetDatabaseWorkspace = (userId, workspace) => {
     if (!userId || !workspace) throw '[resetDatabaseWorkspace] Missing parameter';
     return _rtdb.ref(`/users/${userId}/workspaces/${workspace}`).set(null);
-}
+};
 
 const getContractData = async (userId, workspace, address) => {
     if (!userId || !workspace || !address) throw '[getContractData] Missing parameter';
     const doc = await _getWorkspace(userId, workspace)
         .collection('contracts')
-        .doc(address.toLowerCase())
+        .doc(address)
         .get();
 
     if (!doc.exists) {
@@ -257,4 +268,6 @@ module.exports = {
     updateWorkspaceSettings: updateWorkspaceSettings,
     getContractRef: getContractRef,
     resetDatabaseWorkspace: resetDatabaseWorkspace,
+    getContractArtifact: getContractArtifact,
+    getContractArtifactDependencies: getContractArtifactDependencies
 };
