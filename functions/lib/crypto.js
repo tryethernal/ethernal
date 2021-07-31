@@ -32,7 +32,11 @@ module.exports = {
         return jwt.sign(data, jwtSecret);
     },
     decode: (token) => {
-        const jwtSecret = functions.config().encryption.jwt_secret;
-        return jwt.verify(token, jwtSecret);
+        try {
+            const jwtSecret = functions.config().encryption.jwt_secret;
+            return jwt.verify(token, jwtSecret);
+        } catch (error) {
+            throw 'Invalid auth token';
+        }
     }
 };

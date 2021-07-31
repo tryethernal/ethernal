@@ -15,13 +15,13 @@ app.use(bodyParser.json());
 const authMiddleware = async function(req, res, next) {
     try {
         if (!req.query.token) {
-            throw 'Missing JWT token.';
+            throw 'Missing auth token.';
         }
 
         const data = decode(req.query.token);
 
         if (!data.apiKey || !data.workspace || !data.uid) {
-            throw 'Invalid JWT token';
+            throw 'Invalid auth token';
         }
 
         const user = await getUser(data.uid);
@@ -52,7 +52,7 @@ app.get('/contracts/:address/storage', authMiddleware, async (req, res) => {
         const workspace = res.locals.workspace;
 
         if (res.locals.integrations.indexOf('api') == -1)
-            throw `API integration for workspace ${workspace.name} is disabled.`;
+            throw { status: 400, message: `API integration for workspace ${workspace.name} is disabled` };
 
         const uid = res.locals.uid;
         const rpcServer = new URL(workspace.rpcServer);
@@ -62,13 +62,13 @@ app.get('/contracts/:address/storage', authMiddleware, async (req, res) => {
         const contractData = await getContractData(uid, workspace.name, contractAddress);
 
         if (!contractData)
-            throw `No contract at ${contractAddress} in workspace ${workspace.name}`;
+            throw { status: 400, message: `No contract at ${contractAddress} in workspace ${workspace.name}` };
 
         const contractArtifact = (await getContractArtifact(uid, workspace.name, contractAddress)).val();
         const contractDependencies = (await getContractArtifactDependencies(uid, workspace.name, contractAddress)).val();
 
         if (!contractArtifact) {
-            throw `No artifact for contract at ${contractAddress} in ${workspace.name}`;
+            throw { status: 400, message: `No artifact for contract at ${contractAddress} in ${workspace.name}` };
         }
 
         let provider;
@@ -112,7 +112,7 @@ app.get('/contracts/:address/storage', authMiddleware, async (req, res) => {
             `Could not find variable ${error.nameOrId}` :
             error);
 
-        res.status(401).json({ message: message });
+        res.status(error.status || 401).json({ message: message });
     }
 });
 
