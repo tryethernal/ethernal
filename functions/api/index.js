@@ -34,7 +34,9 @@ const authMiddleware = async function(req, res, next) {
 
         res.locals.uid = data.uid;
         res.locals.workspace = { rpcServer: workspace.rpcServer, name: workspace.name };
-        res.locals.integrations = workspace.settings.integrations;
+        res.locals.integrations = workspace.settings && workspace.settings.integrations ?
+            workspace.settings.integrations :
+            [];
 
         next();
     } catch(error) {

@@ -392,7 +392,49 @@ describe('enableAlchemyWebhook', () => {
     });
 });
 
-describe('getWebhookToken', () => {
+describe('enableWorkspaceApi', () => {
+    beforeEach(async () => {
+        helper = new Helper(process.env.GCLOUD_PROJECT);
+        await helper.firestore
+            .collection('users')
+            .doc('123')
+            .set({ apiKey: 'c51be5b4afd6f008f536611b2c1bf47d:8e167c103709c4238995cefae6975a366e150583cdf9c963de44913aa3f84438' }, { merge: true });
+
+        await helper.workspace.set({ localNetwork: true }, { merge: true });
+    });
+
+    it('Should enable the api and return the token', async () => {
+        const wrapped = helper.test.wrap(index.enableWorkspaceApi);
+
+        const data = {
+            workspace: 'hardhat'
+        };
+
+        const result = await wrapped(data, auth);
+
+        expect(result.token).toBeTruthy();
+    });
+
+    it('Should update the workspace', async () => {
+        const wrapped = helper.test.wrap(index.enableWorkspaceApi);
+
+        const data = {
+            workspace: 'hardhat'
+        };
+
+        await wrapped(data, auth);
+
+        const wsRef = await helper.workspace.get();
+
+        expect(wsRef.data()).toEqual({ localNetwork: true, settings: { integrations: ['api'] } });
+    });
+
+    afterEach(async () => {
+        await helper.clean();
+    });
+});
+
+describe('getWorkspaceApiToken', () => {
     beforeEach(async () => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
         await helper.firestore
@@ -404,7 +446,7 @@ describe('getWebhookToken', () => {
     });
 
     it('Should return the token', async () => {
-         const wrapped = helper.test.wrap(index.getWebhookToken);
+         const wrapped = helper.test.wrap(index.getWorkspaceApiToken);
 
         const data = {
             workspace: 'hardhat'
@@ -433,6 +475,36 @@ describe('disableAlchemyWebhook', () => {
 
     it('Should update the workspace', async () => {
         const wrapped = helper.test.wrap(index.disableAlchemyWebhook);
+
+        const data = {
+            workspace: 'hardhat'
+        };
+
+        await wrapped(data, auth);
+
+        const userRef = await helper.workspace.get();
+
+        expect(userRef.data()).toEqual({ localNetwork: true, settings: { integrations: [] } });
+    });
+
+    afterEach(async () => {
+        await helper.clean();
+    });
+});
+
+describe('disableWorkspaceApi', () => {
+    beforeEach(async () => {
+        helper = new Helper(process.env.GCLOUD_PROJECT);
+        await helper.firestore
+            .collection('users')
+            .doc('123')
+            .set({ apiKey: 'c51be5b4afd6f008f536611b2c1bf47d:8e167c103709c4238995cefae6975a366e150583cdf9c963de44913aa3f84438' }, { merge: true });
+
+        await helper.workspace.set({ localNetwork: true }, { merge: true });
+    });
+
+    it('Should update the workspace', async () => {
+        const wrapped = helper.test.wrap(index.disableWorkspaceApi);
 
         const data = {
             workspace: 'hardhat'
