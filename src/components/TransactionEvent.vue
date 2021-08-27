@@ -15,19 +15,20 @@
     </div>
 </template>
 <script>
-import { ethers } from 'ethers';
+import { decodeLog } from '../lib/abi';
 
 export default {
     name: 'TransactionEvent',
-    props: ['log', 'abi'],
+    props: ['log'],
     data: () => ({
-        parsedLog: null
+        parsedLog: null,
+        contract: null
     }),
     mounted: function() {
-        if (this.abi) {
-            const jsonInterface = new ethers.utils.Interface(this.abi);
-            this.parsedLog = jsonInterface.parseLog(this.log);
-        }
+        this.$bind('contract', this.db.collection('contracts').doc(this.log.address.toLowerCase()))
+            .then(() => {
+                this.parsedLog = decodeLog(this.log, this.contract.abi);
+            })
     },
     methods: {
         getSignatureFromFragment: function(fragment) {

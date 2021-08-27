@@ -4,6 +4,7 @@
             <v-col v-for="(n, idx) in new Array(step.depth)" :key="idx" cols="1">
             </v-col>
         </template>
+        <div id="tree"></div>
         <v-col class="pb-0" style="overflow-y: auto;" :key="step.depth">
             |<br>
             |-->
@@ -29,7 +30,8 @@ export default {
     },
     props: ['step'],
     data: () => ({
-        transactionDescription: null
+        transactionDescription: null,
+        jsonInterface: null
     }),
     methods: {
         zeroXify: function(input) { return input.startsWith('0x') ? input : `0x${input}` }
@@ -38,9 +40,14 @@ export default {
         'step.contract.abi': {
             immediate: true,
             handler() {
-                if (this.step.input) {
-                    const jsonInterface = new ethers.utils.Interface(this.step.contract.abi);
-                    this.transactionDescription = jsonInterface.parseTransaction({ data: this.zeroXify(this.step.input) });
+                if (this.step.input && this.step.contract.abi) {
+                    try {
+                        this.jsonInterface = new ethers.utils.Interface(this.step.contract.abi);
+                        this.transactionDescription = this.jsonInterface.parseTransaction({ data: this.zeroXify(this.step.input) });
+                    } catch(_error) {
+                        console.log(_error)
+                        console.log(this.step);
+                    }
                 }
             }
         }
@@ -52,24 +59,47 @@ export default {
             const label = [];
             label.push(`${this.transactionDescription.functionFragment.name}(`);
 
-            const params = []
-            for (const input of this.transactionDescription.functionFragment.inputs) {
+            const inputsLabel = []
+            for (let i = 0; i < this.transactionDescription.functionFragment.inputs.length; i++) {
+                const input = this.transactionDescription.functionFragment.inputs[i];
                 const param = [];
                 param.push(input.type)
                 if (input.name)
                     param.push(` ${input.name}`);
-                if (this.transactionDescription.args[input.name])
-                    param.push(`: ${this.transactionDescription.args[input.name]}`)
-                params.push(param.join(''));
+                if (this.transactionDescription.args[i])
+                    param.push(`: ${this.transactionDescription.args[i]}`)
+                inputsLabel.push(param.join(''));
             }
-            if (params.length > 1)
+
+            if (inputsLabel.length > 1)
                 label.push('\n\t');
 
-            label.push(params.join('\n\t'));
+            label.push(inputsLabel.join('\n\t'));
 
-            if (params.length > 1)
+            if (inputsLabel.length > 1)
                 label.push('\n');
             label.push(')');
+
+            const outputsLabel = [];
+            if (this.transactionDescription.functionFragment.outputs.length > 0 && this.step.returnData) {
+                const result = this.jsonInterface.decodeFunctionResult(this.transactionDescription.functionFragment, this.zeroXify(this.step.returnData));
+
+                label.push(' => (');
+                for (let i = 0; i < this.transactionDescription.functionFragment.outputs.length; i++) {
+                    const output = this.transactionDescription.functionFragment.outputs[i];
+                    const param = [];
+                    param.push(output.type)
+                    if (output.name)
+                        param.push(` ${output.name}`);
+                    if (result[i]) {
+                        param.push(`: ${result[i]}`)
+                    }
+                    outputsLabel.push(param.join(''));
+                }
+
+                label.push(outputsLabel.join(', '));
+                label.push(')');
+            }
             return label.join('');
         },
         contractName: function() {

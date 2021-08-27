@@ -40,7 +40,7 @@
                 label="Value (in eth)">
             </v-text-field>
         </div>
-        <v-btn :loading="loading" depressed class="mt-1" color="primary" @click="sendMethod(method)">Query</v-btn>
+        <v-btn :loading="loading" depressed class="mt-1" color="primary" @click="sendMethod()">Query</v-btn>
     </div>
 </template>
 <script>
@@ -65,7 +65,7 @@ export default {
         loading: false
     }),
     methods: {
-        sendMethod: async function(method) {
+        sendMethod: async function() {
             try {
                 this.loading = true;
                 this.receipt = {};
@@ -81,7 +81,7 @@ export default {
                 if (!this.options.gasLimit || parseInt(this.options.gasLimit) < 1) {
                     throw { reason: 'You must set a gas limit' }
                 }
-                this.server.callContractWriteMethod(this.contract, method.name, options, this.params, this.currentWorkspace.rpcServer, shouldTrace)
+                this.server.callContractWriteMethod(this.contract, this.methodSignature, options, this.params, this.currentWorkspace.rpcServer, shouldTrace)
                     .then(({ pendingTx, trace }) => {
 
                         if (trace) {
@@ -143,6 +143,10 @@ export default {
         ]),
         value: function() {
             return this.web3.utils.toWei(this.valueInEth.toString(), 'ether');
+        },
+        methodSignature: function() {
+            const params = this.method.inputs.map(input => input.type);
+            return `${this.method.name}(${params.join(',')})`;
         }
     }
 }
