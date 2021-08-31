@@ -84,7 +84,7 @@ export default {
             if (this.transactionDescription.functionFragment.outputs.length > 0 && this.step.returnData) {
                 const result = this.jsonInterface.decodeFunctionResult(this.transactionDescription.functionFragment, this.zeroXify(this.step.returnData));
 
-                label.push(' => (');
+                label.push('\n\t => (');
                 for (let i = 0; i < this.transactionDescription.functionFragment.outputs.length; i++) {
                     const output = this.transactionDescription.functionFragment.outputs[i];
                     const param = [];
@@ -97,7 +97,14 @@ export default {
                     outputsLabel.push(param.join(''));
                 }
 
-                label.push(outputsLabel.join(', '));
+                if (outputsLabel.length > 1)
+                    label.push('\n\t\t');
+
+                label.push(outputsLabel.join('\n\t\t'));
+
+                if (outputsLabel.length > 1)
+                    label.push('\n\t');
+
                 label.push(')');
             }
             return label.join('');
