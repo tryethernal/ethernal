@@ -134,7 +134,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Trigger Netlify deploy
-        run: curl -X POST -d {} https://api.netlify.com/build_hooks/${{ secrets.NETLIFY_BUILD_HOOK_ID }}
+        run: curl -X POST -d {} https://api.netlify.com/build_hooks/${{ secrets.NETLIFY_BUILD_HOOK_ID }}?trigger_branch=master&trigger_title=Triggered+by+Github+Actions
 
   deploy_sh:
     if: startsWith(github.ref, 'refs/tags/v')

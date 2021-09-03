@@ -2,7 +2,6 @@ import MockHelper from '../MockHelper';
 
 import Address from '@/components/Address.vue';
 import AmalfiContract from '../fixtures/AmalfiContract.json';
-import TransactionProp from '../fixtures/TransactionProp.json';
 
 describe('Address.vue', () => {
     let helper, $route;

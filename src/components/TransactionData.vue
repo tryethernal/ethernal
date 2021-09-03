@@ -12,7 +12,7 @@
             </div>
             <pre>{{ transaction.storage }}</pre>
             <Transaction-Function-Call class="my-1" :data="transaction.data" :value="transaction.value" :abi="abi" :to="transaction.to" />
-            <Transaction-Event v-for="(log, idx) in filteredLogs" :abi="abi" :log="log" :key="idx" />
+            <Transaction-Event v-for="(log, idx) in transaction.receipt.logs" :log="log" :key="idx" />
         </v-card-text>
         <v-card-text v-else>
             <i>Select a transaction.</i>
@@ -20,8 +20,6 @@
     </v-card>
 </template>
 <script>
-import { ethers } from 'ethers';
-
 import TransactionFunctionCall from './TransactionFunctionCall';
 import TransactionEvent from './TransactionEvent';
 
@@ -32,24 +30,10 @@ export default {
         TransactionFunctionCall,
         TransactionEvent
     },
-    data: () => ({
-        jsonInterface: null
-    }),
-    mounted: function() {
-        if (this.abi) {
-            this.jsonInterface = new ethers.utils.Interface(this.abi);
-        }
-    },
     methods: {
         reload: function() {
             if (this.transaction.blockNumber)
                 this.$emit('decodeTx', this.transaction);
-        }
-    },
-    computed: {
-        filteredLogs: function() {
-            if (!this.transaction || !this.transaction.receipt.logs) return [];
-            return this.transaction.receipt.logs.filter(log => log.address.toLowerCase() == this.transaction.to.toLowerCase());
         }
     }
 }
