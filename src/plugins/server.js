@@ -177,6 +177,7 @@ const serverFunctions = {
             const pendingTx = await contract[data.method](...Object.values(data.params), options);
 
             let trace = null;
+
             if (data.shouldTrace)
                 trace = await serverFunctions.traceTransaction(data.rpcServer, pendingTx.hash);
 

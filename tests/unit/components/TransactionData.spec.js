@@ -12,15 +12,17 @@ describe('TransactionData.vue', () => {
     });
 
     it('Should display transaction data', async (done) => {
+        await helper.mocks.db.collection('contracts').doc(TransactionProp.to).set({ address: TransactionProp.to, abi: ABIProp });
         const wrapper = helper.mountFn(TransactionData, {
             propsData: {
                 transaction: TransactionProp,
                 abi: ABIProp
             }
         });
-        await wrapper.vm.$nextTick();
-        expect(wrapper.html()).toMatchSnapshot();
-        done();
+        setTimeout(() => {
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1000);
     });
 
     it('Should display instructions if there is no ABI', async (done) => {
