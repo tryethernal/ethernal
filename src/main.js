@@ -5,58 +5,18 @@ import VueRouter from 'vue-router';
 import Vuex from 'vuex';
 
 import vuetify from './plugins/vuetify';
+import router from './plugins/router';
 import { dbPlugin, auth } from './plugins/firebase';
 import { serverPlugin } from './plugins/server';
 import { firestorePlugin } from 'vuefire';
 
 import App from './App.vue';
-import Blocks from './components/Blocks.vue';
-import Block from './components/Block.vue';
-import Transactions from './components/Transactions.vue';
-import Accounts from './components/Accounts.vue';
-import Transaction from './components/Transaction.vue';
-import Address from './components/Address.vue';
-import Auth from './components/Auth.vue';
-import Contracts from './components/Contracts.vue';
-import Settings from './components/Settings.vue';
 
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
 Vue.use(Vuex);
 Vue.use(firestorePlugin);
 Vue.use(require('vue-moment'));
-
-var redirectIfLoggedIn = function (to, from, next) {
-    if (auth().currentUser) {
-        next({ path: '/transactions' });
-    }
-    else next();
-}
-
-var redirectIfLoggedOut = function (to, from, next) {
-    if (!auth().currentUser) {
-        next({ path: '/auth', query: { next: document.location.pathname, ...to.query }});
-    }
-    else next();
-}
-
-const routes = [
-    { path: '/auth', component: Auth, beforeEnter: redirectIfLoggedIn },
-    { path: '/blocks', component: Blocks, beforeEnter: redirectIfLoggedOut },
-    { path: '/block/:number', component: Block, props: true, beforeEnter: redirectIfLoggedOut },
-    { path: '/transactions', component: Transactions, beforeEnter: redirectIfLoggedOut },
-    { path: '/accounts', component: Accounts, beforeEnter: redirectIfLoggedOut },
-    { path: '/transaction/:hash', component: Transaction, props: true, beforeEnter: redirectIfLoggedOut },
-    { path: '/address/:hash', component: Address, props: true, beforeEnter: redirectIfLoggedOut },
-    { path: '/contracts', component: Contracts, props: true, beforeEnter: redirectIfLoggedOut },
-    { path: '/settings', component: Settings, props: true, beforeEnter: redirectIfLoggedOut },
-    { path: '*', redirect: '/transactions' }
-];
-
-const router = new VueRouter({
-    mode: 'history',
-    routes: routes
-});
 
 const store = new Vuex.Store({
     state: {

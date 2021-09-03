@@ -1,7 +1,16 @@
 const Web3 = require('web3');
 
 export const sanitize = function(obj) {
-    return Object.fromEntries(Object.entries(obj).filter(([, v]) => v != null));
+    return Object.fromEntries(
+        Object.entries(obj)
+            .filter(([, v]) => v != null)
+            .map(([_, v]) => {
+                if (typeof v == 'string' && v.length == 42 && v.startsWith('0x'))
+                    return [_, v.toLowerCase()];
+                else
+                    return [_, v];
+            })
+    );
 };
 
 export const getProvider = function(rpcServer) {
