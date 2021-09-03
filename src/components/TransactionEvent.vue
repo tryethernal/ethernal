@@ -26,9 +26,7 @@ export default {
     }),
     mounted: function() {
         this.$bind('contract', this.db.collection('contracts').doc(this.log.address.toLowerCase()))
-            .then(() => {
-                this.parsedLog = decodeLog(this.log, this.contract.abi);
-            })
+            .then(() => this.parsedLog = decodeLog(this.log, this.contract.abi));
     },
     methods: {
         getSignatureFromFragment: function(fragment) {

@@ -8070,16 +8070,6 @@ jose@^2.0.5:
   dependencies:
     "@panva/asn1.js" "^1.0.0"
 
-jquery.fancytree@^2.38.0:
-  version "2.38.0"
-  resolved "https://registry.yarnpkg.com/jquery.fancytree/-/jquery.fancytree-2.38.0.tgz#488520be39f0597de6c934614e17f35d0b4e248b"
-  integrity sha512-7H7Lnf6n2m1UyXNJtPXayi9ZTdfl1ouerViQS7ISrBvusklgWfOTzbRFxs/RuHLxsEgxHpny/vbiKiTNe3IhhA==
-
-jquery@^3.6.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.0.tgz#c72a09f15c1bdce142f49dbf1170bdf8adac2470"
-  integrity sha512-JVzAR/AjBvVt2BmYhxRCSYysDsPcssdmTFnzyLEts9qNwmjmu4JTAMYubEfwVOSwpQ1I1sKKFcxhZCI2buerfw==
-
 js-beautify@^1.6.12, js-beautify@^1.6.14:
   version "1.13.13"
   resolved "https://registry.npm.taobao.org/js-beautify/download/js-beautify-1.13.13.tgz?cache=0&sync_timestamp=1618610187862&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fjs-beautify%2Fdownload%2Fjs-beautify-1.13.13.tgz#756907d1728f329f2b84c42efd56ad17514620bf"

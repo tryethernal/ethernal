@@ -4,7 +4,6 @@
             <v-col v-for="(n, idx) in new Array(step.depth)" :key="idx" cols="1">
             </v-col>
         </template>
-        <div id="tree"></div>
         <v-col class="pb-0" style="overflow-y: auto;" :key="step.depth">
             |<br>
             |-->
