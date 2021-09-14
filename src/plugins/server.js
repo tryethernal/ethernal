@@ -177,7 +177,7 @@ const serverFunctions = {
             const pendingTx = await contract[data.method](...Object.values(data.params), options);
 
             let trace = null;
-
+            console.log(pendingTx);
             if (data.shouldTrace)
                 trace = await serverFunctions.traceTransaction(data.rpcServer, pendingTx.hash);
 
@@ -186,12 +186,14 @@ const serverFunctions = {
                 trace: trace
             });
         } catch(error) {
-            console.log(error);
+            const parsedError = JSON.parse(JSON.stringify(error));
+            console.log(parsedError)
+            const errorData = parsedError.error.data ? parsedError.error.data : parsedError.error.error.data;
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
             if (reason == 'invalid hexlify value')
                 throw { reason: `Invalid private key format for ${data.options.from}. Please correct it in the "Accounts" page` };
             else
-                throw { reason: reason };
+                throw { reason: reason, data: errorData };
         }
     },
     traceTransaction: async function(rpcServer, hash) {

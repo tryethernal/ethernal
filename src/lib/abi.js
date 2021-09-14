@@ -26,3 +26,16 @@ export const decodeLog = (log, abi) => {
 
     return decodedLog;
 };
+
+export const formatErrorFragment = (jsonInterface) => {
+    const label = [];
+    label.push(`${jsonInterface.errorFragment.name}(`)
+
+    const args = [];
+    for (let i = 0; i < jsonInterface.errorFragment.inputs.length; i++) {
+        const input = jsonInterface.errorFragment.inputs[i];
+        args.push(`${input.type} ${input.name}: ${jsonInterface.args[i]}`);
+    }
+    label.push(`${args.join(', ')})`);
+    return label.join('');
+};

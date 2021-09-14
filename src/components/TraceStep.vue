@@ -50,7 +50,6 @@ export default {
                 }
             }
         }
-
     },
     computed: {
         formattedTransactionDescription: function() {
