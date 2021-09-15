@@ -115,7 +115,6 @@ export default {
                                     message: `Error: ${formatErrorFragment(result)}`
                                 };
                             } catch (parsingError) {
-                                console.log(parsingError)
                                 this.result = {
                                     txHash: txHash,
                                     message: error.data[txHash].reason ? `Error: ${error.data[txHash].reason}` : 'Unknown error'
