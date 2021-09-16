@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2021-09-16
+### Fixed
+- Ethernal now decodes & displays custom Solidity exceptions when thrown
+
+### Added
+- Unit tests that were missing for a frontend library
+
 ## [0.3.0] - 2021-09-03
 ### Changed
 - Events emitted by contracts called internally in a transaction are now properly decoded
