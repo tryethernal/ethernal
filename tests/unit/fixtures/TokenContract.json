@@ -1,0 +1,40 @@
+{
+    "name": "Token",
+    "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "available",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "required",
+              "type": "uint256"
+            }
+          ],
+          "name": "InsufficientBalance",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "transfer",
+          "outputs": [],
+          "stateMutability": "pure",
+          "type": "function",
+          "constant": true
+        }
+    ]
+}

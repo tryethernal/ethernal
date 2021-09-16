@@ -45,8 +45,10 @@
 </template>
 <script>
 const Web3 = require('web3');
+import { ethers } from 'ethers';
 import { mapGetters } from 'vuex';
 import { sanitize } from '../lib/utils';
+import { formatErrorFragment } from '../lib/abi';
 
 export default {
     name: 'ContractWriteMethod',
@@ -104,15 +106,21 @@ export default {
                     })
                     .catch(error => {
                         if (error.data) {
-                            if (error.data.stack) {
-                                this.result.message = error.data.stack.split('\n')[0];
-                            }
-                            else {
-                                var txHash = Object.keys(error.data)[0];
+                            const jsonInterface = new ethers.utils.Interface(this.contract.abi);
+                            var txHash = Object.keys(error.data)[0];
+                            try {
+                                const result = jsonInterface.parseError(error.data[txHash].return);
                                 this.result = {
                                     txHash: txHash,
-                                    message: `Error: ${error.data[txHash].error} (${error.data[txHash].reason})`
+                                    message: `Error: ${formatErrorFragment(result)}`
                                 };
+                            } catch (parsingError) {
+                                this.result = {
+                                    txHash: txHash,
+                                    message: error.data[txHash].reason ? `Error: ${error.data[txHash].reason}` : 'Unknown error'
+                                }
+                            } finally {
+                                this.noReceipt = true;
                             }
                         }
                         else if (error.message || error.reason) {
