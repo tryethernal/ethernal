@@ -1,0 +1,148 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`decodeLog Should decode the event if it is anonymous 1`] = `
+LogDescription {
+  "args": Array [
+    "0x1cff79cd",
+    "0xf75fcD9849d3365d436D0CD889Ed500150C9482A",
+    "0x00000000000000000000000082ecd135dce65fbc6dbdd0e4237e0af93ffd5038",
+    "0x0000000000000000000000000000000000000000000000000000000000000040",
+    Object {
+      "hex": "0x00",
+      "type": "BigNumber",
+    },
+    "0x1cff79cd00000000000000000000000082ecd135dce65fbc6dbdd0e4237e0af93ffd5038000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a49f6f3d5b0000000000000000000000005ef30b9986345249bc32d8928b7ee64de9435e3900000000000000000000000019c0976f590d67707e62397c87829d896dc0f1f10000000000000000000000009759a6ac90977b93b58547b4a71c78317f391a280000000000000000000000000000000000000000000000000000000000000743000000000000000000000000000000000000000000000cb49b44ba602d80000000000000000000000000000000000000000000000000000000000000",
+  ],
+  "eventFragment": EventFragment {
+    "_isFragment": true,
+    "anonymous": true,
+    "constructor": [Function],
+    "format": [Function],
+    "inputs": Array [
+      ParamType {
+        "_isParamType": true,
+        "arrayChildren": null,
+        "arrayLength": null,
+        "baseType": "bytes4",
+        "components": null,
+        "indexed": true,
+        "name": "sig",
+        "type": "bytes4",
+      },
+      ParamType {
+        "_isParamType": true,
+        "arrayChildren": null,
+        "arrayLength": null,
+        "baseType": "address",
+        "components": null,
+        "indexed": true,
+        "name": "guy",
+        "type": "address",
+      },
+      ParamType {
+        "_isParamType": true,
+        "arrayChildren": null,
+        "arrayLength": null,
+        "baseType": "bytes32",
+        "components": null,
+        "indexed": true,
+        "name": "foo",
+        "type": "bytes32",
+      },
+      ParamType {
+        "_isParamType": true,
+        "arrayChildren": null,
+        "arrayLength": null,
+        "baseType": "bytes32",
+        "components": null,
+        "indexed": true,
+        "name": "bar",
+        "type": "bytes32",
+      },
+      ParamType {
+        "_isParamType": true,
+        "arrayChildren": null,
+        "arrayLength": null,
+        "baseType": "uint256",
+        "components": null,
+        "indexed": false,
+        "name": "wad",
+        "type": "uint256",
+      },
+      ParamType {
+        "_isParamType": true,
+        "arrayChildren": null,
+        "arrayLength": null,
+        "baseType": "bytes",
+        "components": null,
+        "indexed": false,
+        "name": "fax",
+        "type": "bytes",
+      },
+    ],
+    "name": "LogNote",
+    "type": "event",
+  },
+  "name": "LogNote",
+  "signature": "LogNote(bytes4,address,bytes32,bytes32,uint256,bytes)",
+  "topic": "0x644843f351d3fba4abcd60109eaff9f54bac8fb8ccf0bab941009c21df21cf31",
+}
+`;
+
+exports[`decodeLog Should decode the event if it is not anonymous 1`] = `
+LogDescription {
+  "args": Array [
+    "0xE93381fB4c4F14bDa253907b18faD305D799241a",
+    "0xc00e94Cb662C3520282E6f5717214004A7f26888",
+    Object {
+      "hex": "0x01",
+      "type": "BigNumber",
+    },
+  ],
+  "eventFragment": EventFragment {
+    "_isFragment": true,
+    "anonymous": false,
+    "constructor": [Function],
+    "format": [Function],
+    "inputs": Array [
+      ParamType {
+        "_isParamType": true,
+        "arrayChildren": null,
+        "arrayLength": null,
+        "baseType": "address",
+        "components": null,
+        "indexed": true,
+        "name": "from",
+        "type": "address",
+      },
+      ParamType {
+        "_isParamType": true,
+        "arrayChildren": null,
+        "arrayLength": null,
+        "baseType": "address",
+        "components": null,
+        "indexed": true,
+        "name": "to",
+        "type": "address",
+      },
+      ParamType {
+        "_isParamType": true,
+        "arrayChildren": null,
+        "arrayLength": null,
+        "baseType": "uint256",
+        "components": null,
+        "indexed": false,
+        "name": "amount",
+        "type": "uint256",
+      },
+    ],
+    "name": "Transfer",
+    "type": "event",
+  },
+  "name": "Transfer",
+  "signature": "Transfer(address,address,uint256)",
+  "topic": "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+}
+`;
+
+exports[`formatErrorFragment Should format custom solidity exceptions 1`] = `"InsufficientBalance(uint256 available: 0, uint256 required: 123)"`;

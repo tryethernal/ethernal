@@ -2,6 +2,7 @@ import MockHelper from '../MockHelper';
 
 import ContractWriteMethod from '@/components/ContractWriteMethod.vue';
 import DSProxyFactoryContract from '../fixtures/DSProxyFactoryContract.json';
+import TokenContract from '../fixtures/TokenContract.json';
 
 describe('ContractWriteMethod.vue', () => {
     let helper, props;
@@ -25,10 +26,6 @@ describe('ContractWriteMethod.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
 
         done();
-    });
-
-    afterEach(async () => {
-        await helper.clearFirebase();
     });
 
     it('Should display the tx hash and status when it succeeds with a receipt', async (done) => {
@@ -88,7 +85,51 @@ describe('ContractWriteMethod.vue', () => {
         await wrapper.vm.$nextTick();
 
         setTimeout(() => {
-            expect(wrapper.vm.result).toStrictEqual({ txHash: '0xabcd', message: 'Error: Failed tx. (Wrong param.)' });
+            expect(wrapper.vm.result).toStrictEqual({ txHash: '0xabcd', message: 'Error: Wrong param.' });
+            expect(wrapper.vm.receipt).toStrictEqual({});
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1500);
+    });
+
+    it('Should display the formatted error message with the failed tx hash', async (done) => {
+        helper.mocks.server.callContractWriteMethod = () => {
+            const pendingTx = {
+                hash: '0xabcd'
+            };
+            const error = {
+                data: {
+                    '0xabcd': {
+                        error: 'revert',
+                        return: '0xcf4791810000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007b'
+                    }
+                }
+            };
+            return new Promise((resolve, reject) => reject(error));
+        };
+
+        const props = {
+            method: TokenContract.abi[1],
+            contract: TokenContract,
+            options: {
+                from: '0x0',
+                gasLimit: '6721975',
+                gasPrice: undefined
+            }
+        };
+
+        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+        const to = wrapper.findAll('input').at(0);
+        await to.setValue('0xabcd');
+
+        const amount = wrapper.findAll('input').at(1);
+        await amount.setValue('1234');
+
+        await wrapper.find('button').trigger('click');
+        await wrapper.vm.$nextTick();
+
+        setTimeout(() => {
+            expect(wrapper.vm.result).toStrictEqual({ txHash: '0xabcd', message: 'Error: InsufficientBalance(uint256 available: 0, uint256 required: 123)' });
             expect(wrapper.vm.receipt).toStrictEqual({});
             expect(wrapper.html()).toMatchSnapshot();
             done();
@@ -97,9 +138,6 @@ describe('ContractWriteMethod.vue', () => {
 
     it('Should display only the error message if there is no tx hash', async (done) => {
         helper.mocks.server.callContractWriteMethod = () => {
-            const pendingTx = {
-                hash: '0xabcd'
-            };
             const error = {
                 message: 'Failed tx'
             };
