@@ -149,7 +149,7 @@ describe('ContractWriteMethod.vue', () => {
         await wrapper.vm.$nextTick();
 
         setTimeout(() => {
-            expect(wrapper.vm.result).toStrictEqual({ txHash: null, message: 'Failed tx' });
+            expect(wrapper.vm.result).toStrictEqual({ txHash: null, message: 'Error: Failed tx' });
             expect(wrapper.vm.receipt).toStrictEqual({});
             expect(wrapper.html()).toMatchSnapshot();
             done();
