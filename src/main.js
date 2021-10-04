@@ -47,8 +47,13 @@ const store = new Vuex.Store({
         },
         SET_CONNECTED(state, connected) {
             state.connected = connected;
+        },
+        SET_USER_PLAN(state, plan) {
+            state.user.plan = plan;
+        },
+        SET_ONBOARDED_STATUS(state, status) {
+            state.user.onboarded = status;
         }
-
     },
     actions: {
         updateUser({ commit }, user) {
@@ -68,7 +73,12 @@ const store = new Vuex.Store({
         updateConnected({ commit }, connected) {
             commit('SET_CONNECTED', connected);
         },
-
+        updateUserPlan({ commit }, plan) {
+            commit('SET_USER_PLAN', plan);
+        },
+        updateOnboardedStatus({ commit }, status) {
+            commit('SET_ONBOARDED_STATUS', status);
+        }
     },
     getters: {
         user: state => state.user,

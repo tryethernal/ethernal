@@ -11,6 +11,18 @@ const _getWorkspace = (userId, workspace) => _db.collection('users').doc(userId)
 
 const getUser = (id) => _db.collection('users').doc(id).get();
 
+const getCollectionRef = (userId, workspace, collectionName) => {
+    console.log(userId, workspace)
+    return _getWorkspace(userId, workspace).collection(collectionName)
+}
+
+const getUserWorkspaces = (userId) => {
+    return _db.collection('users')
+        .doc(userId)
+        .collection('workspaces')
+        .get();
+}
+
 const addIntegration = (userId, workspace, integration) => {
     if (!userId || !workspace || !integration) throw '[addIntegration] Missing parameter';
 
@@ -245,6 +257,25 @@ const updateWorkspaceSettings = (userId, workspace, settings) => {
         .update(settings);
 }
 
+const getUserbyStripeCustomerId = async (stripeCustomerId) => {
+    if (!stripeCustomerId) throw '[getUserbyStripeCustomerId] Missing parameter';
+
+    const userDoc = await _db.collection('users').where('stripeCustomerId', '==', stripeCustomerId).get();
+
+    if (userDoc.empty) {
+        return null;
+    }
+    else {
+        return userDoc.docs[0].ref;
+    }
+}
+
+const setUserData = async (userId, data) => {
+    if (!userId || !data) throw '[setUserData] Missing parameter';
+
+    return _db.collection('users').doc(userId).set(data, { merge: true });
+}
+
 module.exports = {
     storeBlock: storeBlock,
     storeTransaction: storeTransaction,
@@ -269,5 +300,9 @@ module.exports = {
     getContractRef: getContractRef,
     resetDatabaseWorkspace: resetDatabaseWorkspace,
     getContractArtifact: getContractArtifact,
-    getContractArtifactDependencies: getContractArtifactDependencies
+    getContractArtifactDependencies: getContractArtifactDependencies,
+    getUserbyStripeCustomerId: getUserbyStripeCustomerId,
+    setUserData: setUserData,
+    getCollectionRef: getCollectionRef,
+    getUserWorkspaces: getUserWorkspaces
 };

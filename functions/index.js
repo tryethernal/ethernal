@@ -4,12 +4,13 @@ const Web3 = require('web3');
 const axios = require('axios');
 const Decoder = require('@truffle/decoder');
 const firebaseTools = require('firebase-tools');
+const stripe = require('stripe')(functions.config().stripe.secret_key);
 
 const Storage = require('./lib/storage');
 const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('./lib/utils');
 const { parseTrace } = require('./lib/utils');
 const { encrypt, decrypt, encode } = require('./lib/crypto');
-const { generateKeyForNewUser } = require('./triggers/users');
+const { generateKeyForNewUser, onCreateUser } = require('./triggers/users');
 const { matchWithContract } = require('./triggers/contracts');
 
 const api = require('./api/index');
@@ -33,7 +34,9 @@ const {
     setCurrentWorkspace,
     updateWorkspaceSettings,
     getContractRef,
-    Firebase
+    Firebase,
+    getCollectionRef,
+    getUserWorkspaces
 } = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
@@ -163,8 +166,11 @@ exports.callContractWriteMethod = functions.https.onCall(async (data, context) =
         const pendingTx = await contract[data.method](...Object.values(data.params), options);
 
         let trace = null;
-        if (data.shouldTrace)
-            trace = await _traceTransaction(data.rpcServer, pendingTx.hash);
+        if (data.shouldTrace) {
+            const user = (await getUser(context.auth.uid)).data();
+            if (user.plan == 'premium')
+                trace = await _traceTransaction(data.rpcServer, pendingTx.hash);
+        }
 
         return sanitize({
             pendingTx: pendingTx,
@@ -323,7 +329,12 @@ exports.syncContractArtifact = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[syncContractArtifact] Missing parameter.');
         }
 
-        await storeContractArtifact(context.auth.uid, data.workspace, data.address, data.artifact);
+        const user = (await getUser(context.auth.uid)).data();
+        const storedContracts = await getCollectionRef(context.auth.uid, data.workspace, 'contracts').limit(10).get();
+        if (storedContracts._size < 10 || user.plan == 'premium')
+            await storeContractArtifact(context.auth.uid, data.workspace, data.address, data.artifact);
+        else
+            throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
 
         return { address: data.address };
     } catch(error) {
@@ -343,7 +354,12 @@ exports.syncContractDependencies = functions.https.onCall(async (data, context) 
             throw new functions.https.HttpsError('invalid-argument', '[syncContractDependencies] Missing parameter.');
         }
 
-        await storeContractDependencies(context.auth.uid, data.workspace, data.address, data.dependencies);
+        const user = (await getUser(context.auth.uid)).data();
+        const storedContracts = await getCollectionRef(context.auth.uid, data.workspace, 'contracts').limit(10).get();
+        if (storedContracts._size < 10 || user.plan == 'premium')
+            await storeContractDependencies(context.auth.uid, data.workspace, data.address, data.dependencies);
+        else
+            throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
 
         return { address: data.address };
     } catch(error) {
@@ -362,6 +378,11 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '1GB' }).ht
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[syncTrace] Missing parameter.')
         }
+
+        const user = (await getUser(context.auth.uid)).data();
+
+        if (user.plan == 'free')
+            throw new functions.https.HttpsError('permission-denied', 'Transaction tracing is only available to Premium plan user. Please upgrade to use it.');
 
         const trace = [];
         for (const step of data.steps) {
@@ -403,7 +424,14 @@ exports.syncContractData = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[syncContractData] Missing parameter.');
         }
 
-        await storeContractData(context.auth.uid, data.workspace, data.address, sanitize({ address: data.address, name: data.name, abi: data.abi }));
+        const user = (await getUser(context.auth.uid)).data();
+        const storedContracts = await getCollectionRef(context.auth.uid, data.workspace, 'contracts').limit(10).get();
+
+        if (storedContracts._size < 10 || user.plan == 'premium') {
+            await storeContractData(context.auth.uid, data.workspace, data.address, sanitize({ address: data.address, name: data.name, abi: data.abi }));
+        }
+        else
+            throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
 
         return { address: data.address };
     } catch(error) {
@@ -446,8 +474,15 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
     
         promises.push(storeTransaction(context.auth.uid, data.workspace, txSynced));
 
-        if (!txSynced.to && sTransactionReceipt)
-            promises.push(storeContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress, { address: sTransactionReceipt.contractAddress }));
+        if (!txSynced.to && sTransactionReceipt) {
+            const user = (await getUser(context.auth.uid)).data();
+            const storedContracts = await getCollectionRef(context.auth.uid, data.workspace, 'contracts').limit(10).get();
+            if (storedContracts._size < 10 || user.plan == 'premium')
+                promises.push(storeContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress, {
+                    address: sTransactionReceipt.contractAddress,
+                    timestamp: data.block.timestamp
+                }));
+        }
 
         await Promise.all(promises);
        
@@ -708,6 +743,12 @@ exports.createWorkspace = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[createWorkspace] Missing parameter.');
         }
 
+        const user = (await getUser(context.auth.uid)).data();
+        const workspaces = await getUserWorkspaces(context.auth.uid);
+
+        if (!user.plan || user.plan == 'free' && workspaces._size > 0)
+            throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to one workspace. Upgrade to our Premium plan to create more.');
+
         await createWorkspace(context.auth.uid, data.name, data.workspaceData);
 
         return { success: true };
@@ -804,6 +845,60 @@ exports.updateWorkspaceSettings = functions.https.onCall(async (data, context) =
     }
 });
 
+exports.createStripeCheckoutSession = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        const user = (await getUser(context.auth.uid)).data();
+        const selectedPlan = functions.config().ethernal.plans[data.plan];
+        const rootUrl = functions.config().ethernal.root_url;
+
+        const session = await stripe.checkout.sessions.create({
+            mode: 'subscription',
+            client_reference_id: user.uid,
+            customer: user.stripeCustomerId,
+            customer_email: user.email,
+            payment_method_types: ['card'],
+            line_items: [
+                {
+                    price: selectedPlan,
+                    quantity: 1
+                }
+            ],
+            success_url: `${rootUrl}/settings?tab=billing&status=upgraded`,
+            cancel_url: `${rootUrl}/settings?tab=billing`
+        });
+        console.log(session)
+        return { url: session.url };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
+exports.createStripePortalSession = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+    
+    try {
+        const user = (await getUser(context.auth.uid)).data();
+        const rootUrl = functions.config().ethernal.root_url;
+        const session = await stripe.billingPortal.sessions.create({
+            customer: user.stripeCustomerId,
+            return_url: `${rootUrl}/settings?tab=billing`
+        });
+
+        return { url: session.url };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError('unknown', reason);
+    }
+});
+
 exports.api = functions.https.onRequest(api);
 exports.generateKeyForNewUser = functions.firestore.document('users/{userId}').onCreate(generateKeyForNewUser);
+exports.onCreateUser = functions.auth.user().onCreate(onCreateUser);
 exports.matchWithContract = functions.firestore.document('users/{userId}/workspaces/{workspaceName}/contracts/{contractName}').onCreate(matchWithContract);

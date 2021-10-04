@@ -45,7 +45,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link :to="'/settings'">
+                <v-list-item link :to="'/settings?tab=workspace'">
                     <v-list-item-icon>
                         <v-icon>mdi-cog</v-icon>
                     </v-list-item-icon>
@@ -109,6 +109,8 @@ export default {
                 this.userLoggedIn = true;
                 this.db.currentUser().get().then(currentUserQuery => {
                     var currentUser = currentUserQuery.data();
+                    this.$store.dispatch('updateUserPlan', currentUser.plan);
+                    this.$store.dispatch('updateOnboardedStatus', true);
                     if (!currentUser) {
                         this.db.createUser(auth().currentUser.uid).then(this.launchOnboarding);
                     }
@@ -140,9 +142,11 @@ export default {
             auth().signOut();
         },
         launchOnboarding: function() {
+            this.$store.dispatch('updateOnboardedStatus', false);
             this.$refs.onboardingModal.open()
                 .then((res) => {
                     if (res) {
+                        this.$store.dispatch('updateOnboardedStatus', true);
                         this.loadWorkspace(res.name);
                     }
                 })

@@ -187,7 +187,7 @@ const serverFunctions = {
             });
         } catch(error) {
             const parsedError = JSON.parse(JSON.stringify(error));
-
+            console.log(parsedError)
             const errorData = parsedError.error.data ? parsedError.error.data : parsedError.error.error.data;
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
             if (reason == 'invalid hexlify value')
@@ -242,6 +242,12 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            createStripePortalSession: function() {
+                return functions.httpsCallable('createStripePortalSession')();
+            },
+            createStripeCheckoutSession: function(plan) {
+                return functions.httpsCallable('createStripeCheckoutSession')({ plan: plan });
+            },
             resetWorkspace: function(name) {
                 return functions.httpsCallable('resetWorkspace')({ workspace: name })
             },

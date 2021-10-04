@@ -6,7 +6,7 @@
             <v-spacer></v-spacer>
             <v-btn icon @click="close(false)"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
-        <Create-Workspace :existingWorkspaces="existingWorkspaces" @workspaceCreated="onWorkspaceCreated" />
+        <Create-Workspace :existingWorkspaces="existingWorkspaces" @workspaceCreated="onWorkspaceCreated" @goToBilling="goToBilling" />
     </v-card>
 </v-dialog>
 </template>
@@ -40,6 +40,10 @@ export default {
         },
         onWorkspaceCreated: function() {
             this.close(true);
+        },
+        goToBilling: function() {
+            this.close(false);
+            this.$router.push({ path: '/settings', query: { tab: 'billing' }});
         },
         reset: function() {
             this.dialog = false;
