@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.2] - 2021-10-16
+### Fixed
+- Error handling on write functions
+
 ## [0.3.1] - 2021-09-16
 ### Fixed
 - Ethernal now decodes & displays custom Solidity exceptions when thrown
