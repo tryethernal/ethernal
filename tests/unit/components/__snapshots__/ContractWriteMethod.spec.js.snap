@@ -43,7 +43,7 @@ exports[`ContractWriteMethod.vue Should display only the error message if there 
 <div>
   <div class="font-weight-bold">build</div>
   <div class="grey lighten-3 pa-2 mt-1" style="">
-    <div style="">Failed tx</div>
+    <div style="">Error: Failed tx</div>
     <div style="display: none;">
       Tx: <a href="/transaction/null" target="_blank"></a></div>
     <div style="display: none;">
