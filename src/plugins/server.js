@@ -187,13 +187,16 @@ const serverFunctions = {
             });
         } catch(error) {
             const parsedError = JSON.parse(JSON.stringify(error));
-            console.log(parsedError)
-            const errorData = parsedError.error.data ? parsedError.error.data : parsedError.error.error.data;
+
+            let errorData;
+            if (parsedError.error)
+                errorData = parsedError.error.data ? parsedError.error.data : parsedError.error.error.data;
+
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
             if (reason == 'invalid hexlify value')
                 throw { reason: `Invalid private key format for ${data.options.from}. Please correct it in the "Accounts" page` };
             else
-                throw { reason: reason, data: errorData };
+                throw sanitize({ reason: reason, data: errorData });
         }
     },
     traceTransaction: async function(rpcServer, hash) {
