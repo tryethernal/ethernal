@@ -124,7 +124,7 @@ export default {
                             }
                         }
                         else if (error.message || error.reason) {
-                            this.result.message = error.message || error.reason;
+                            this.result.message = `Error: ${error.message || error.reason}`;
                         }
                         else {
                             this.result.message = 'Error while sending the transaction';
