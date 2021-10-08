@@ -242,6 +242,12 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            startTrial: function(plan) {
+                return functions.httpsCallable('startTrial')({ plan: plan });
+            },
+            removeContract: function(workspace, address) {
+                return functions.httpsCallable('removeContract')({ workspace: workspace, address: address });
+            },
             createStripePortalSession: function() {
                 return functions.httpsCallable('createStripePortalSession')();
             },

@@ -13,18 +13,24 @@ module.exports = {
     },
 
     handleStripePaymentSucceeded: async (data) => {
-        console.log(data.billing_reason)
         if (data.billing_reason == 'subscription_create') {
             const subscriptionId = data.subscription;
             const paymentIntentId = data.payment_intent;
+            let subscription;
 
-            const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+            if (paymentIntentId) {
+                const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
-            const subscription = await stripe.subscriptions.update(subscriptionId, {
-                default_payment_method: paymentIntent.payment_method
-            });
+                const subscription = await stripe.subscriptions.update(subscriptionId, {
+                    default_payment_method: paymentIntent.payment_method
+                });
+            }
+            else {
+                subscription = await stripe.subscriptions.retrieve(subscriptionId);
+            }
 
-            await updatePlan(subscription);
+            if (subscription)
+                await updatePlan(subscription);
         }
     }
 };

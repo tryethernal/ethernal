@@ -282,7 +282,7 @@ export default {
         this.$bind('settings', this.db.settings()).finally(() => this.optionsLoader = false);
         this.$bind('advancedOptions', this.db.advancedOptions()).finally(() => this.advancedOptionsLoading = false);
         this.$bind('accounts', this.db.collection('accounts'));
-        this.stripe = window.Stripe('pk_test_51Jbna3JG8RHJCKOzEQDFhRekSedePzOUrkuphXSlm2uYAP8Ugf9iBsrxkpZ01B1p8DS6Ye0r3BGsxJOJgiel7tnm005VDhPbCA');
+        this.stripe = window.Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
     },
     methods: {
         updateAdvancedOptions: function() {

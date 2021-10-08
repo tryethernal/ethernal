@@ -2,8 +2,10 @@ const functions = require('firebase-functions');
 const ethers = require('ethers');
 const Web3 = require('web3');
 const axios = require('axios');
+const moment = require('moment');
 const Decoder = require('@truffle/decoder');
 const firebaseTools = require('firebase-tools');
+const admin = require('firebase-admin');
 const stripe = require('stripe')(functions.config().stripe.secret_key);
 
 const Storage = require('./lib/storage');
@@ -36,7 +38,8 @@ const {
     getContractRef,
     Firebase,
     getCollectionRef,
-    getUserWorkspaces
+    getUserWorkspaces,
+    setUserData
 } = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
@@ -45,6 +48,7 @@ if (process.env.NODE_ENV == 'development') {
 
 const ETHERSCAN_API_KEY = functions.config().etherscan.token;
 const ETHERSCAN_API_URL = 'https://api.etherscan.io/api?module=contract&action=getsourcecode';
+const TRIAL_PERIOD_IN_DAYS = 14;
 
 var _getDependenciesArtifact = function(contract) {
     return contract.dependencies ? Object.entries(contract.dependencies).map(dep => JSON.parse(dep[1].artifact)) : [];
@@ -196,7 +200,7 @@ exports.getStructure = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || "Can't connect to the server";
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -211,7 +215,7 @@ exports.decodeData = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || "Can't connect to the server";
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -227,7 +231,7 @@ exports.getAccounts = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || "Can't connect to the server";
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -242,7 +246,7 @@ exports.getAccountBalance = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || "Can't connect to the server";
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -274,7 +278,7 @@ exports.initRpcServer = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error)
         var reason = error.reason || error.message || "Can't connect to the server";
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -315,7 +319,7 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -331,7 +335,9 @@ exports.syncContractArtifact = functions.https.onCall(async (data, context) => {
 
         const user = (await getUser(context.auth.uid)).data();
         const storedContracts = await getCollectionRef(context.auth.uid, data.workspace, 'contracts').limit(10).get();
-        if (storedContracts._size < 10 || user.plan == 'premium')
+        const existingContract = await getContractData(context.auth.uid, data.workspace, data.address);
+
+        if (existingContract || storedContracts._size < 10 || user.plan == 'premium')
             await storeContractArtifact(context.auth.uid, data.workspace, data.address, data.artifact);
         else
             throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
@@ -340,7 +346,7 @@ exports.syncContractArtifact = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -356,7 +362,9 @@ exports.syncContractDependencies = functions.https.onCall(async (data, context) 
 
         const user = (await getUser(context.auth.uid)).data();
         const storedContracts = await getCollectionRef(context.auth.uid, data.workspace, 'contracts').limit(10).get();
-        if (storedContracts._size < 10 || user.plan == 'premium')
+        const existingContract = await getContractData(context.auth.uid, data.workspace, data.address);
+
+        if (existingContract || storedContracts._size < 10 || user.plan == 'premium')
             await storeContractDependencies(context.auth.uid, data.workspace, data.address, data.dependencies);
         else
             throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
@@ -365,7 +373,7 @@ exports.syncContractDependencies = functions.https.onCall(async (data, context) 
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -410,7 +418,7 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '1GB' }).ht
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -426,8 +434,9 @@ exports.syncContractData = functions.https.onCall(async (data, context) => {
 
         const user = (await getUser(context.auth.uid)).data();
         const storedContracts = await getCollectionRef(context.auth.uid, data.workspace, 'contracts').limit(10).get();
+        const existingContract = await getContractData(context.auth.uid, data.workspace, data.address);
 
-        if (storedContracts._size < 10 || user.plan == 'premium') {
+        if (existingContract || storedContracts._size < 10 || user.plan == 'premium') {
             await storeContractData(context.auth.uid, data.workspace, data.address, sanitize({ address: data.address, name: data.name, abi: data.abi }));
         }
         else
@@ -437,7 +446,7 @@ exports.syncContractData = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -490,7 +499,7 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -519,7 +528,7 @@ exports.enableAlchemyWebhook = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -548,7 +557,7 @@ exports.enableWorkspaceApi = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -576,7 +585,7 @@ exports.getWorkspaceApiToken = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -596,7 +605,7 @@ exports.disableAlchemyWebhook = functions.https.onCall(async (data, context) => 
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -616,7 +625,7 @@ exports.disableWorkspaceApi = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -652,7 +661,7 @@ exports.importContract = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -674,7 +683,7 @@ exports.setPrivateKey = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 })
 
@@ -703,7 +712,7 @@ exports.getAccount = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -729,7 +738,7 @@ exports.impersonateAccount = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -755,7 +764,7 @@ exports.createWorkspace = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -775,7 +784,7 @@ exports.setCurrentWorkspace = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -795,7 +804,7 @@ exports.syncBalance = functions.https.onCall(async (data, context) => {
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -841,7 +850,7 @@ exports.updateWorkspaceSettings = functions.https.onCall(async (data, context) =
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -854,7 +863,7 @@ exports.createStripeCheckoutSession = functions.https.onCall(async (data, contex
         const selectedPlan = functions.config().ethernal.plans[data.plan];
         const rootUrl = functions.config().ethernal.root_url;
 
-        const session = await stripe.checkout.sessions.create({
+        const session = await stripe.checkout.sessions.create(sanitize({
             mode: 'subscription',
             client_reference_id: user.uid,
             customer: user.stripeCustomerId,
@@ -866,15 +875,18 @@ exports.createStripeCheckoutSession = functions.https.onCall(async (data, contex
                     quantity: 1
                 }
             ],
+            subscription_data: user.trialEndsAt ? null : {
+                trial_period_days: TRIAL_PERIOD_IN_DAYS
+            },
             success_url: `${rootUrl}/settings?tab=billing&status=upgraded`,
             cancel_url: `${rootUrl}/settings?tab=billing`
-        });
+        }));
         console.log(session)
         return { url: session.url };
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
@@ -894,7 +906,34 @@ exports.createStripePortalSession = functions.https.onCall(async (data, context)
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError('unknown', reason);
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
+    }
+});
+
+exports.removeContract = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+    
+    try {
+        if (!data.workspace || !data.address) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[removeContract] Missing parameter.');
+        }
+
+        const contractPath = `users/${context.auth.uid}/workspaces/${data.workspace}/contracts/${data.address}`;
+
+        await firebaseTools.firestore.delete(contractPath, {
+            project: process.env.GCLOUD_PROJECT,
+            recursive: true,
+            yes: true,
+            token: functions.config().fb.token
+        });
+
+        return { success: true };
+    } catch(error) {
+        console.log(error)
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 

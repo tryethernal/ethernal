@@ -109,24 +109,27 @@ export default {
                 this.userLoggedIn = true;
                 this.db.currentUser().get().then(currentUserQuery => {
                     var currentUser = currentUserQuery.data();
-                    this.$store.dispatch('updateUserPlan', currentUser.plan);
-                    this.$store.dispatch('updateOnboardedStatus', true);
                     if (!currentUser) {
                         this.db.createUser(auth().currentUser.uid).then(this.launchOnboarding);
                     }
-                    else if (currentUser.currentWorkspace) {
-                        this.loadWorkspace(currentUser.currentWorkspace);
-                    }
                     else {
-                        this.db.workspaces().get().then(workspacesQuery => {
-                            if (workspacesQuery.docs.length) {
-                                this.db.currentUser().update({ currentWorkspace: workspacesQuery.docs[0].ref });
-                                this.loadWorkspace(workspacesQuery.docs[0].ref);
-                            }
-                            else {
-                                this.launchOnboarding();
-                            }
-                        });
+                        this.$store.dispatch('updateUserPlan', currentUser.plan);
+                        this.$store.dispatch('updateTrialPeriod', currentUser.trialEndsAt);
+                        this.$store.dispatch('updateOnboardedStatus', true);
+                        if (currentUser.currentWorkspace) {
+                            this.loadWorkspace(currentUser.currentWorkspace);
+                        }
+                        else {
+                            this.db.workspaces().get().then(workspacesQuery => {
+                                if (workspacesQuery.docs.length) {
+                                    this.db.currentUser().update({ currentWorkspace: workspacesQuery.docs[0].ref });
+                                    this.loadWorkspace(workspacesQuery.docs[0].ref);
+                                }
+                                else {
+                                    this.launchOnboarding();
+                                }
+                            });
+                        }
                     }
                 });
             }

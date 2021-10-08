@@ -1,10 +1,8 @@
 <template>
     <div>
-        <v-row v-if="isPremium && justUpgraded" class="justify-center">
-            <v-col cols="6">
-                <v-alert dense text type="success">You've been successfully upgraded to the Premium plan. Thank you!</v-alert>
-            </v-col>
-        </v-row>
+        <v-alert v-if="isPremium && justUpgraded" dense text type="success">You've been successfully upgraded to the Premium plan. Thank you!</v-alert>
+        <v-alert v-if="isPremium && startedTrial && formattedTrialEndsAt" dense text type="success">Your trial is now active until <b>{{ formattedTrialEndsAt }}</b>!</v-alert>
+        <v-alert v-show="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
         <v-row>
             <v-col cols="6">
                 <v-card style="height: 100%" outlined class="mb-4">
@@ -43,6 +41,7 @@
                     <v-card-title>
                         Premium Plan - $20/month
                         <v-spacer></v-spacer>
+                        <small v-if="isTrialActive">Trial until {{ formattedTrialEndsAt }}</small>
                         <v-chip class="ml-2" color="primary" small v-if="isPremium">Current Plan</v-chip>
                     </v-card-title>
                     <v-divider></v-divider>
@@ -58,9 +57,12 @@
                             </v-tooltip>
                         </v-list-item>
                     </v-list>
-                    <v-card-actions class="justify-center">
+                    <v-card-actions class="justify-center d-flex flex-column">
                         <v-btn :loading="subscriptionButtonLoading" color="primary" v-if="isPremium" @click="openStripePortal()">Manage Subscription</v-btn>
-                        <v-btn :loading="subscriptionButtonLoading" color="primary" v-else @click="subscribeToPlan('premium')">Subscribe</v-btn>
+                        <v-btn :loading="subscriptionButtonLoading" color="primary" v-else @click="subscribeToPlan('premium')">
+                            <span v-if="!hasTrialed">Start 14 days free trial</span>
+                            <span v-else>Subscribe</span>
+                        </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
@@ -69,10 +71,15 @@
 </template>
 <script>
 import { mapGetters } from 'vuex';
+import moment from 'moment';
 export default {
     name: 'Billing',
     data: () => ({
+        errorMessage: null,
         subscriptionButtonLoading: false,
+        trialStartButtonLoading: false,
+        startedTrial: null,
+        source: null,
         plans: {
             free: {
                 includes: [
@@ -128,13 +135,18 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'user'
+            'user',
+            'isTrialActive',
+            'hasTrialed'
         ]),
         isPremium: function() {
             return this.user.plan == 'premium';
         },
         justUpgraded: function() {
             return this.$route.query.status == 'upgraded';
+        },
+        formattedTrialEndsAt: function() {
+            return this.user.trialEndsAt && moment(this.user.trialEndsAt).format('MMM. Do');
         }
     }
 }

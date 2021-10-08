@@ -12,7 +12,6 @@ const _getWorkspace = (userId, workspace) => _db.collection('users').doc(userId)
 const getUser = (id) => _db.collection('users').doc(id).get();
 
 const getCollectionRef = (userId, workspace, collectionName) => {
-    console.log(userId, workspace)
     return _getWorkspace(userId, workspace).collection(collectionName)
 }
 
@@ -130,7 +129,6 @@ const storeContractDependencies = (userId, workspace, address, dependencies) => 
 
 const getContractArtifact = (userId, workspace, address) => {
     if (!userId || !workspace || !address) throw '[getContractArtifact] Missing parameter';
-    console.log(`/users/${userId}/workspaces/${workspace}/contracts/${address}/artifact`)
     return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address}/artifact`).once('value');
 };
 
@@ -168,7 +166,6 @@ const getContractRef = (userId, workspace, address) => {
 
 const getContractByHashedBytecode = async (userId, workspace, hashedBytecode, exclude = []) => {
     if (!userId || !workspace || !hashedBytecode) {
-        console.log(userId, workspace, hashedBytecode);
         throw '[getContractByHashedBytecode] Missing parameter';
     }
 

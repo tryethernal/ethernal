@@ -171,7 +171,7 @@ app.post('/webhooks/stripe', async (req, res) => {
         } catch (err) {
             throw err.message;
         }
-        console.log(event.type)
+
         switch (event.type) {
             case 'invoice.payment_succeeded':
                 handleStripePaymentSucceeded(event.data.object)
