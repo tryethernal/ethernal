@@ -142,6 +142,11 @@ const resetDatabaseWorkspace = (userId, workspace) => {
     return _rtdb.ref(`/users/${userId}/workspaces/${workspace}`).set(null);
 };
 
+const removeDatabaseContractArtifacts = (userId, workspace, address) => {
+    if (!userId || !workspace) throw '[removeDatabaseContractArtifacts] Missing parameter';
+    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address}`).set(null);
+};
+
 const getContractData = async (userId, workspace, address) => {
     if (!userId || !workspace || !address) throw '[getContractData] Missing parameter';
     const doc = await _getWorkspace(userId, workspace)
@@ -301,5 +306,6 @@ module.exports = {
     getUserbyStripeCustomerId: getUserbyStripeCustomerId,
     setUserData: setUserData,
     getCollectionRef: getCollectionRef,
-    getUserWorkspaces: getUserWorkspaces
+    getUserWorkspaces: getUserWorkspaces,
+    removeDatabaseContractArtifacts: removeDatabaseContractArtifacts
 };

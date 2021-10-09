@@ -9,7 +9,8 @@
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
     "test:watch": "jest --watchAll",
-    "test": "jest --forceExit --runInBand"
+    "test": "jest --forceExit --runInBand",
+    "test:update": "jest --forceExit --runInBand -u"
   },
   "engines": {
     "node": "12"

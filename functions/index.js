@@ -39,7 +39,8 @@ const {
     Firebase,
     getCollectionRef,
     getUserWorkspaces,
-    setUserData
+    setUserData,
+    removeDatabaseContractArtifacts
 } = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
@@ -334,6 +335,7 @@ exports.syncContractArtifact = functions.https.onCall(async (data, context) => {
         }
 
         const user = (await getUser(context.auth.uid)).data();
+
         const storedContracts = await getCollectionRef(context.auth.uid, data.workspace, 'contracts').limit(10).get();
         const existingContract = await getContractData(context.auth.uid, data.workspace, data.address);
 
@@ -861,6 +863,10 @@ exports.createStripeCheckoutSession = functions.https.onCall(async (data, contex
     try {
         const user = (await getUser(context.auth.uid)).data();
         const selectedPlan = functions.config().ethernal.plans[data.plan];
+
+        if (!selectedPlan)
+            throw new functions.https.HttpsError('invalid-argument', '[createStripeCheckoutSession] Invalid plan.');
+
         const rootUrl = functions.config().ethernal.root_url;
 
         const session = await stripe.checkout.sessions.create(sanitize({
@@ -881,7 +887,7 @@ exports.createStripeCheckoutSession = functions.https.onCall(async (data, contex
             success_url: `${rootUrl}/settings?tab=billing&status=upgraded`,
             cancel_url: `${rootUrl}/settings?tab=billing`
         }));
-        console.log(session)
+
         return { url: session.url };
     } catch(error) {
         console.log(error);
@@ -928,6 +934,8 @@ exports.removeContract = functions.https.onCall(async (data, context) => {
             yes: true,
             token: functions.config().fb.token
         });
+
+        await removeDatabaseContractArtifacts(context.auth.uid, data.workspace, data.address);
 
         return { success: true };
     } catch(error) {

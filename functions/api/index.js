@@ -11,7 +11,14 @@ const { sanitize, stringifyBns, getTxSynced, isJson } = require('../lib/utils');
 const { decrypt, decode, encrypt } = require('../lib/crypto');
 const { handleStripeSubscriptionUpdate, handleStripeSubscriptionDeletion, handleStripePaymentSucceeded } = require('../lib/stripe');
 const app = express();
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+    verify: function(req,res,buf) {
+        var url = req.originalUrl;
+        if (url.startsWith('/webhooks/stripe')) {
+            req.rawBody = buf.toString()
+        }
+    }
+}));
 
 const authMiddleware = async function(req, res, next) {
     try {
@@ -160,7 +167,7 @@ app.post('/webhooks/alchemy', authMiddleware, async (req, res) => {
     }
 });
 
-app.post('/webhooks/stripe', async (req, res) => {
+app.post('/webhooks/stripe', async (req, res, buf) => {
     try {
         const sig = req.headers['stripe-signature'];
         const webhookSecret = functions.config().stripe.webhook_secret;
