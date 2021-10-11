@@ -8,7 +8,8 @@ module.exports = {
     updatePlan: async (stripeSubscription) => {
         const user = await getUserbyStripeCustomerId(stripeSubscription.customer);
 
-        if (!user) return false;
+        if (!user)
+            throw new Error("Couldn't find user.");
 
         let plan;
 
@@ -18,6 +19,9 @@ module.exports = {
                 break;
             case 'trialing':
                 plan = 'premium';
+                break;
+            case 'canceled':
+                plan = 'free';
                 break;
             default:
                 plan = 'free';
@@ -29,6 +33,6 @@ module.exports = {
             return true;
         }
         else
-            return false;
+            throw new Error("Couldn't update plan.");
     }
 };

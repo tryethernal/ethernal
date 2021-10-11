@@ -56,16 +56,24 @@ class MockHelper {
     initMockStore(initialState) {
         this.localVue.use(Vuex);
         this.storeState = {
-            networkId: null,
-            rpcServer: null,
-            localNetwork: true,
-            name: null,
-            settings: {},
+            user: {},
+            currentWorkspace: {
+                networkId: null,
+                rpcServer: null,
+                localNetwork: true,
+                name: null,
+                settings: {}
+            },
             ...initialState
         };
 
         this.getters = {
-            currentWorkspace: () => this.storeState
+            currentWorkspace: jest.fn(() => this.storeState.currentWorkspace),
+            user: jest.fn(() => {
+                return { ...this.storeState.user, plan: this.storeState.user.plan || 'free' }
+            }),
+            isTrialActive: jest.fn(() => false),
+            hasTrialed: jest.fn(() => false)
         };
 
         this.actions = {

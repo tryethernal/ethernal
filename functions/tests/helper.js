@@ -33,6 +33,7 @@ class Helper {
 
     async setUser(data = {}) {
         const userData = {
+            ...data,
             plan: data.plan || 'free'
         };
 

@@ -24,7 +24,11 @@ const {
     getContractRef,
     resetDatabaseWorkspace,
     getContractArtifact,
-    getContractArtifactDependencies
+    getContractArtifactDependencies,
+    getUserbyStripeCustomerId,
+    getCollectionRef,
+    getUserWorkspaces,
+    removeDatabaseContractArtifacts
 } = require('../../lib/firebase');
 
 const Block = require('../fixtures/Block');
@@ -521,5 +525,71 @@ describe('updateWorkspaceSettings', () => {
         const wsRef = await helper.workspace.get();
 
         expect(wsRef.data().advancedOptions).toEqual({ tracing: 'hardhat' });
+    });
+});
+
+describe('getCollectionRef', () => {
+    it('Should return a reference to the collection', async () => {
+        await helper.workspace
+            .collection('contracts')
+            .doc('0x123')
+            .set({ name: '123' });
+
+        const result = getCollectionRef('123', 'hardhat', 'contracts');
+        expect(result.constructor.name).toEqual('CollectionReference')
+    });
+});
+
+describe('getUserWorkspaces', () => {
+    it('Should return all workspaces of the given user', async () => {
+        for (let i = 0; i < 3; i++)
+            await helper.firestore
+                .collection('users')
+                .doc('123')
+                .collection('workspaces')
+                .doc(`workspace-${i}`)
+                .set({ name: `workspace-${i}` });
+
+        const result = await getUserWorkspaces('123');
+        const workspaces = [];
+        
+        result.forEach((ws) => workspaces.push(ws.data()));
+
+        expect(workspaces).toEqual([
+            { name: 'workspace-0' },
+            { name: 'workspace-1' },
+            { name: 'workspace-2' }
+        ]);
+    });
+});
+
+describe('removeDatabaseContractArtifacts', () => {
+    it('Should remove artifacts in rtdb at the given address', async () => {
+        const contractDependency = JSON.stringify(AmalfiContract.dependencies['Address']);
+        await helper.database.ref('/users/123/workspaces/hardhat/contracts/0x123/dependencies').update({ Address: contractDependency });
+    
+        await removeDatabaseContractArtifacts('123', 'hardhat', '0x123');
+
+        const artifactRef = await helper.database.ref('/users/123/workspaces/hardhat/contracts/0x123/artifact').once('value');
+
+        expect(artifactRef.val()).toBeNull();
+    });
+});
+
+describe('getUserbyStripeCustomerId', () => {
+    it('Should return a user ref if id is found', async () => {
+        await helper.firestore
+            .collection('users')
+            .doc('123')
+            .set({ stripeCustomerId: 'cus_exists' });
+
+        const result = await getUserbyStripeCustomerId('cus_exists');
+
+        expect(result.constructor.name).toEqual('DocumentReference');
+    });
+
+    it('Should return null if id is not found(', async () => {
+        const result = await getUserbyStripeCustomerId('cus_doesnotexist');
+        expect(result).toBeNull();
     });
 });

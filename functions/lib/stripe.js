@@ -29,8 +29,12 @@ module.exports = {
                 subscription = await stripe.subscriptions.retrieve(subscriptionId);
             }
 
-            if (subscription)
+            if (subscription) {
                 await updatePlan(subscription);
+                return true;
+            }
+
+            return false;
         }
     }
 };

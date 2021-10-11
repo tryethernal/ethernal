@@ -14,6 +14,7 @@ describe('Contracts.vue', () => {
         const contracts = [
             {
                 address: '0x0',
+                timestamp: 1633778007,
                 name: 'My Contract',
             },
             {
@@ -37,7 +38,38 @@ describe('Contracts.vue', () => {
         }, 1500);
     });
 
-    it('should show the loading message when empty contracts list', async (done) => {
+    it('Should show the loading message when empty contracts list', async (done) => {
+        const wrapper = helper.mountFn(Contracts);
+        await wrapper.vm.$nextTick();
+
+        setTimeout(() => {
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1500);
+    });
+
+    it('Should display a warning message for free users with 10 contracts', async (done) => {
+        for (let i = 0; i < 10; i++)
+            await db.collection('contracts')
+                .doc(`Ox${i}`)
+                .set({ address: `0x${i}`, name: `0x${i}`, timestamp: 1633778007 + i });
+
+        const wrapper = helper.mountFn(Contracts);
+        await wrapper.vm.$nextTick();
+
+        setTimeout(() => {
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1500);
+    });
+
+    it('Should not display a warning message for premium users with 10 contracts', async (done) => {
+        helper.getters.user.mockImplementation(() => { return { plan: 'premium', trialEndsAt: Date.now() - 24 * 3600 } });
+        for (let i = 0; i < 10; i++)
+            await db.collection('contracts')
+                .doc(`Ox${i}`)
+                .set({ address: `0x${i}`, name: `0x${i}`, timestamp: 1633778007 + i });
+
         const wrapper = helper.mountFn(Contracts);
         await wrapper.vm.$nextTick();
 

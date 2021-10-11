@@ -18,7 +18,7 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" text @click="close()">Close</v-btn>
-            <v-btn color="primary" :loading="loading" @click.stop="removeContract()">Remove</v-btn>
+            <v-btn id="removeContract" color="primary" :loading="loading" @click.stop="removeContract()">Remove</v-btn>
         </v-card-actions>
     </v-card>
 </v-dialog>
@@ -54,11 +54,14 @@ export default {
             this.loading = true;
             this.server.removeContract(this.workspace, this.address)
                 .then(() => {
+                    console.log(this.$router)
                     this.$router.push({ path: '/contracts', query: { removedContract: this.address }});
                     this.reset();
                 })
-                .catch((error) => this.errorMessage = error.message)
-                .finally(() => this.loading = false);
+                .catch((error) => {
+                    this.errorMessage = error.message;
+                    this.loading = false;
+                });
 
         },
         reset: function() {

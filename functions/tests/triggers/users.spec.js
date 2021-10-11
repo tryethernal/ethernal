@@ -2,6 +2,19 @@ const test = require('firebase-functions-test')();
 const admin = require('firebase-admin');
 const index = require('../../index');
 
+jest.mock('stripe', () => {
+    return () => {
+        return {
+            customers: {
+                create: () => {
+                    return new Promise((resolve) => resolve({ id: 'cus_123' }));
+                }
+            }
+        }
+    }
+});
+const stripe = require('stripe');
+
 describe('generateKeyForNewUser', () => {
     let firestore;
 
@@ -29,4 +42,13 @@ describe('generateKeyForNewUser', () => {
         test.cleanup();
         firestore.collection('users').doc('123').delete();
     })
+});
+
+describe('onCreateUser', () => {
+    it('Should return true when passing a user with an email', async () => {
+        const wrapped = test.wrap(index.onCreateUser);
+        const result = await wrapped({ uid: '123', email: 'antoine@tryethernal.com '});
+
+        expect(result).toBe(true);
+    });
 });

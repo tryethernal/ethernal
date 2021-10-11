@@ -72,7 +72,7 @@ let helper;
 
 describe('resetWorkspace', () => {
     beforeEach(() => {
-        helper = new Helper(process.env.GCLOUD_PROJECT)
+        helper = new Helper(process.env.GCLOUD_PROJECT);
     });
 
     it('Should remove accounts/blocks/contracts/transactions from firestore', async () => {
@@ -1418,7 +1418,7 @@ describe('createStripePortalSession', () => {
     });
 });
 
-describe.only('removeContract', () => {
+describe('removeContract', () => {
     beforeEach(() => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
     });
