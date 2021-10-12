@@ -757,7 +757,7 @@ exports.createWorkspace = functions.https.onCall(async (data, context) => {
         const user = (await getUser(context.auth.uid)).data();
         const workspaces = await getUserWorkspaces(context.auth.uid);
 
-        if (!user.plan || user.plan == 'free' && workspaces._size > 0)
+        if ((!user.plan || user.plan == 'free') && workspaces._size > 0)
             throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to one workspace. Upgrade to our Premium plan to create more.');
 
         await createWorkspace(context.auth.uid, data.name, data.workspaceData);

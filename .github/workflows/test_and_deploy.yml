@@ -80,11 +80,8 @@ jobs:
           cd functions && npm install
 
       - name: Setup environment
-        uses: w9jds/firebase-action@master
-        with:
-          args: functions:config:get > .runtimeconfig.json
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }} 
+        run: |
+          cp ../../functions/tests/fixtures/.runtimeconfig.json ../../
 
       - name: Run tests
         run: firebase emulators:exec --token ${{ secrets.FIREBASE_TOKEN }} "yarn test:unit"

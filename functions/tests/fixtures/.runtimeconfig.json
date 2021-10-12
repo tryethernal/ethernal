@@ -1,0 +1,23 @@
+{
+  "encryption": {
+    "jwt_secret": "thisisasecret",
+    "key": "thisisakey"
+  },
+  "fb": {
+    "token": "thisisafbtoken"
+  },
+  "etherscan": {
+    "token": "thisatoken"
+  },
+  "stripe": {
+    "public_key": "pk_test_stripe",
+    "secret_key": "sk_test_stripe",
+    "webhook_secret": "whsec_stripe"
+  },
+  "ethernal": {
+    "root_url": "http://localhost:8081",
+    "plans": {
+        "premium": "price_premium"
+    }
+  }
+}
