@@ -24,7 +24,7 @@ describe('Billing.vue', () => {
     });
 
     it('Should display the button to manage the subscription when the user is trialing', async (done) => {
-        helper.getters.user.mockImplementation(() => { return { plan: 'premium', trialEndsAt: Date.now() + 24 * 3600 }});
+        helper.getters.user.mockImplementation(() => { return { plan: 'premium', trialEndsAt: new Date('2021', '09', '11') }});
         helper.getters.hasTrialed.mockImplementation(() => true);
         helper.getters.isTrialActive.mockImplementation(() => true);
         const wrapper = helper.mountFn(Billing);
@@ -33,7 +33,7 @@ describe('Billing.vue', () => {
     });
 
     it('Should display the button to start the subscription when the user is on a free plan and has already trialed', async (done) => {
-        helper.getters.user.mockImplementation(() => { return { plan: 'free', trialEndsAt: Date.now() + 24 * 3600 }});
+        helper.getters.user.mockImplementation(() => { return { plan: 'free', trialEndsAt: new Date('2021', '09', '11') }});
         helper.getters.hasTrialed.mockImplementation(() => true);
         const wrapper = helper.mountFn(Billing);
         expect(wrapper.html()).toMatchSnapshot();
