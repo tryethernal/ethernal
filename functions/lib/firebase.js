@@ -11,7 +11,7 @@ const _getWorkspace = (userId, workspace) => _db.collection('users').doc(userId)
 
 const getUser = (id) => _db.collection('users').doc(id).get();
 
-const createUser = (uid) => _db.collection('users').doc(uid).set({ currentWorkspace: '' });
+const createUser = (uid, data) => _db.collection('users').doc(uid).set(data);
 
 const getCollectionRef = (userId, workspace, collectionName) => {
     return _getWorkspace(userId, workspace).collection(collectionName)

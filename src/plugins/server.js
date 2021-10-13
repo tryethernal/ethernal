@@ -246,7 +246,7 @@ export const serverPlugin = {
 
         Vue.prototype.server = {
             createUser: function(uid) {
-                return functions.httpsCallable('syncTransactionData')({ createUser: uid });
+                return functions.httpsCallable('createUser')({ uid: uid });
             },
             syncTransactionData: function(workspace, transactionHash, data) {
                 return functions.httpsCallable('syncTransactionData')({ workspace: workspace, transactionHash: transactionHash, data: data });

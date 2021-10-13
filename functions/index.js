@@ -1,4 +1,5 @@
 const functions = require('firebase-functions');
+const uuidAPIKey = require('uuid-apikey');
 const ethers = require('ethers');
 const Web3 = require('web3');
 const axios = require('axios');
@@ -41,7 +42,8 @@ const {
     getUserWorkspaces,
     setUserData,
     removeDatabaseContractArtifacts,
-    storeTransactionData
+    storeTransactionData,
+    storeApiKey
 } = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
@@ -976,7 +978,18 @@ exports.createUser = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
     
     try {
-        await createUser(context.auth.uid);
+        const apiKey = uuidAPIKey.create().apiKey;
+        const encryptedKey = encrypt(apiKey);
+
+        const customer = await stripe.customers.create({
+            email: user.email
+        });
+
+        await createUser(user.uid, {
+            apiKey: encryptedKey
+            stripeCustomerId: customer.id,
+            plan: 'free'
+        });
 
         return { success: true };
     } catch(error) {
@@ -987,6 +1000,4 @@ exports.createUser = functions.https.onCall(async (data, context) => {
 });
 
 exports.api = functions.https.onRequest(api);
-exports.generateKeyForNewUser = functions.firestore.document('users/{userId}').onCreate(generateKeyForNewUser);
-exports.onCreateUser = functions.auth.user().onCreate(onCreateUser);
 exports.matchWithContract = functions.firestore.document('users/{userId}/workspaces/{workspaceName}/contracts/{contractName}').onCreate(matchWithContract);
