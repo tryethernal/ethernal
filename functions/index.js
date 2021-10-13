@@ -13,7 +13,6 @@ const Storage = require('./lib/storage');
 const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('./lib/utils');
 const { parseTrace } = require('./lib/utils');
 const { encrypt, decrypt, encode } = require('./lib/crypto');
-const { generateKeyForNewUser, onCreateUser } = require('./triggers/users');
 const { matchWithContract } = require('./triggers/contracts');
 
 const api = require('./api/index');
@@ -43,7 +42,8 @@ const {
     setUserData,
     removeDatabaseContractArtifacts,
     storeTransactionData,
-    storeApiKey
+    storeApiKey,
+    createUser
 } = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
@@ -442,7 +442,7 @@ exports.syncContractData = functions.https.onCall(async (data, context) => {
         const existingContract = await getContractData(context.auth.uid, data.workspace, data.address);
 
         if (existingContract || storedContracts._size < 10 || user.plan == 'premium') {
-            await storeContractData(context.auth.uid, data.workspace, data.address, sanitize({ address: data.address, name: data.name, abi: data.abi, data.watchedPaths }));
+            await storeContractData(context.auth.uid, data.workspace, data.address, sanitize({ address: data.address, name: data.name, abi: data.abi, watchedPaths: data.watchedPaths }));
         }
         else
             throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
@@ -981,12 +981,14 @@ exports.createUser = functions.https.onCall(async (data, context) => {
         const apiKey = uuidAPIKey.create().apiKey;
         const encryptedKey = encrypt(apiKey);
 
+        const authUser = await admin.auth().getUser(context.auth.uid);
+
         const customer = await stripe.customers.create({
-            email: user.email
+            email: authUser.email
         });
 
-        await createUser(user.uid, {
-            apiKey: encryptedKey
+        await createUser(context.auth.uid, {
+            apiKey: encryptedKey,
             stripeCustomerId: customer.id,
             plan: 'free'
         });

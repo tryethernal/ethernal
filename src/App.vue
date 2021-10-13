@@ -107,23 +107,28 @@ export default {
         const unsubscribe = this.$store.subscribe((mutation, state) => {
             if (mutation.type == 'SET_USER' && state.user !== null) {
                 this.userLoggedIn = true;
-                this.db.currentUser().get().then(currentUserQuery => {
-                    var currentUser = currentUserQuery.data();
-                    if (!currentUser) {
+                this.db.currentUser().get().then(userQuery => {
+                    const user = userQuery.data();
+
+                    if (!user) {
                         this.server.createUser(auth().currentUser.uid).then(this.launchOnboarding);
                     }
                     else {
-                        this.$store.dispatch('updateUserPlan', currentUser.plan);
-                        this.$store.dispatch('updateTrialPeriod', currentUser.trialEndsAt);
+                        this.$store.dispatch('updateUserPlan', user.plan);
+                        this.$store.dispatch('updateTrialPeriod', user.trialEndsAt);
                         this.$store.dispatch('updateOnboardedStatus', true);
-                        if (currentUser.currentWorkspace) {
-                            this.loadWorkspace(currentUser.currentWorkspace);
+
+                        if (user.currentWorkspace) {
+                            this.loadWorkspace(user.currentWorkspace);
                         }
                         else {
-                            this.db.workspaces().get().then(workspacesQuery => {
-                                if (workspacesQuery.docs.length) {
-                                    this.server.setCurrentWorkspace(workspacesQuery.docs[0].data().name)
-                                        .then(() => this.loadWorkspace(workspacesQuery.docs[0].ref));
+                            this.db.workspaces().get().then(wsQuery => {
+                                const workspaces = []
+                                wsQuery.forEach((ws) => workspaces.push({ ...ws.data(), name: ws.id }));
+
+                                if (workspaces.length) {
+                                    this.server.setCurrentWorkspace(workspaces[0].name)
+                                        .then(() => this.loadWorkspace(workspaces[0]));
                                 }
                                 else {
                                     this.launchOnboarding();
@@ -154,9 +159,9 @@ export default {
                     }
                 })
         },
-        loadWorkspace: function(currentWorkspace) {
-            currentWorkspace.get().then((workspace) => {
-                this.$store.dispatch('updateCurrentWorkspace', { ...workspace.data(), name: workspace.id });
+        loadWorkspace: function(workspaceRef) {
+            workspaceRef.get().then((workspaceQuery) => {
+                this.$store.dispatch('updateCurrentWorkspace', { ...workspaceQuery.data(), name: workspaceQuery.id });
                 this.appBarComponent = 'rpc-connector';
                 this.routerComponent = 'router-view';
             });
