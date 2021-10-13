@@ -94,12 +94,6 @@ export const dbPlugin = {
                         }
                     })
             },
-            createUser: function(id) {
-                if (!id) return false;
-                return _db.collection('users')
-                    .doc(id)
-                    .set({ currentWorkspace: '' });
-            },
             contractSerializer: snapshot => {
                 var res = snapshot.data();
 

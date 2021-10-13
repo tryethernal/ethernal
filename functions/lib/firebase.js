@@ -11,16 +11,18 @@ const _getWorkspace = (userId, workspace) => _db.collection('users').doc(userId)
 
 const getUser = (id) => _db.collection('users').doc(id).get();
 
+const createUser = (uid) => _db.collection('users').doc(uid).set({ currentWorkspace: '' });
+
 const getCollectionRef = (userId, workspace, collectionName) => {
     return _getWorkspace(userId, workspace).collection(collectionName)
-}
+};
 
 const getUserWorkspaces = (userId) => {
     return _db.collection('users')
         .doc(userId)
         .collection('workspaces')
         .get();
-}
+};
 
 const addIntegration = (userId, workspace, integration) => {
     if (!userId || !workspace || !integration) throw '[addIntegration] Missing parameter';
@@ -228,6 +230,15 @@ const storeTrace = (userId, workspace, txHash, trace) => {
         .set({ trace: trace }, { merge: true });
 };
 
+const storeTransactionData = (userId, workspace, hash, data) => {
+    if (!userId || !workspace || !txHash || !trace) throw '[storeStorage] Missing parameter';
+
+    return _getWorkspace(userId, workspace)
+        .collection('transactions')
+        .doc(transactionHash)
+        .set({ storage: data }, { merge: true });
+};
+
 const updateAccountBalance = (userId, workspace, account, balance) => {
     if (!userId || !workspace || !account || !balance) throw '[updateAccountBalance] Missing parameter';
 
@@ -307,5 +318,7 @@ module.exports = {
     setUserData: setUserData,
     getCollectionRef: getCollectionRef,
     getUserWorkspaces: getUserWorkspaces,
-    removeDatabaseContractArtifacts: removeDatabaseContractArtifacts
+    removeDatabaseContractArtifacts: removeDatabaseContractArtifacts,
+    storeTransactionData: storeTransactionData,
+    createUser: createUser
 };

@@ -66,12 +66,13 @@ export default {
         transactions: []
     }),
     methods: {
-        onWorkspaceCreated: function(workspaceData) {
+        onWorkspaceCreated: async function(workspaceData) {
             this.stepperIndex = 2;
-            var wsRef = this.db.getWorkspace(workspaceData.name);
-            this.db.currentUser().update({ currentWorkspace: wsRef });
-            this.$store.dispatch('updateCurrentWorkspace', { ...workspaceData.workspace, name: workspaceData.name, localNetwork: workspaceData.localNetwork })
-                .then(() => this.$bind('transactions', this.db.collection('transactions')))
+            this.server.setCurrentWorkspace(workspaceData.name)
+                .then(() => {
+                    this.$store.dispatch('updateCurrentWorkspace', { ...workspaceData.workspace, name: workspaceData.name, localNetwork: workspaceData.localNetwork })
+                        .then(() => this.$bind('transactions', this.db.collection('transactions')));
+                });
         },
         goToDashboard: function() {
             document.location.href = '/transactions';

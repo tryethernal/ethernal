@@ -1,3 +1,4 @@
+const fs = require('fs');
 import { mount, createLocalVue } from '@vue/test-utils';
 const firebase = require("@firebase/rules-unit-testing");
 import Vuex from 'vuex';
@@ -38,6 +39,7 @@ class MockHelper {
         this.mocks = {}
         if (mockDb) this.mocks['db'] = dbMocks.init(this.firebase);
         if (mockServer) this.mocks['server'] = serverMocks;
+        this.mocks['admin'] = dbMocks.init(this.admin);
     }
 
     initPlugins() {
@@ -89,7 +91,14 @@ class MockHelper {
             databaseName: `rtdb-${this.projectId}`,
             auth: { uid: '123' }
         });
-
+        firebase.loadFirestoreRules({
+            projectId: this.projectId,
+            rules: fs.readFileSync('./firestore.rules.test', 'utf8')
+        })
+        this.admin = firebase.initializeAdminApp({
+            projectId: this.projectId,
+            databaseName: `rtdb-${this.projectId}`,
+        });
         this.firebase.auth = jest.fn(() => { currentUser: { uid: '123' }});
     }
 

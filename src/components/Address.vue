@@ -277,9 +277,7 @@ export default {
         decodeTx: function(transaction) {
             this.dataLoader = true;
             this.server.decodeData(this.contract, this.currentWorkspace.rpcServer, transaction.blockNumber).then((data) => {
-                this.db.collection('transactions')
-                    .doc(transaction.hash)
-                    .update({ storage: data })
+                this.server.syncTransactionData(this.currentWorkspace.name, transaction.hash, data)
                     .then(() => this.selectedTransaction.storage = data)
                     .finally(() => this.dataLoader = false);
             });
@@ -287,9 +285,7 @@ export default {
         addStorageStructureChild: function(struct, idx, newKey) {
             this.storageLoader = true;
             this.contract.watchedPaths.push([...struct.path, newKey]);
-            this.db.collection('contracts')
-                .doc(this.hash)
-                .update({ watchedPaths: JSON.stringify(this.contract.watchedPaths) })
+            this.server.syncContractData(this.currentWorkspace.name, this.hash, null, null, JSON.stringify(this.contract.watchedPaths))
                 .then(this.decodeContract);
         },
         decodeContract: function() {
@@ -314,9 +310,7 @@ export default {
             return false;
         },
         resetStorage: function() {
-            this.db.collection('contracts')
-                .doc(this.hash)
-                .update({ watchedPaths: JSON.stringify([]) })
+            this.server.syncContractData(this.currentWorkspace.name, this.hash, null, null, JSON.stringify([]))
                 .then(() => {
                     this.contract.watchedPaths = [];
                     this.decodeContract();

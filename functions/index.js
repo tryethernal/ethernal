@@ -40,7 +40,8 @@ const {
     getCollectionRef,
     getUserWorkspaces,
     setUserData,
-    removeDatabaseContractArtifacts
+    removeDatabaseContractArtifacts,
+    storeTransactionData
 } = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
@@ -439,7 +440,7 @@ exports.syncContractData = functions.https.onCall(async (data, context) => {
         const existingContract = await getContractData(context.auth.uid, data.workspace, data.address);
 
         if (existingContract || storedContracts._size < 10 || user.plan == 'premium') {
-            await storeContractData(context.auth.uid, data.workspace, data.address, sanitize({ address: data.address, name: data.name, abi: data.abi }));
+            await storeContractData(context.auth.uid, data.workspace, data.address, sanitize({ address: data.address, name: data.name, abi: data.abi, data.watchedPaths }));
         }
         else
             throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
@@ -936,6 +937,46 @@ exports.removeContract = functions.https.onCall(async (data, context) => {
         });
 
         await removeDatabaseContractArtifacts(context.auth.uid, data.workspace, data.address);
+
+        return { success: true };
+    } catch(error) {
+        console.log(error)
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
+    }
+});
+
+exports.syncTransactionData = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+    
+    try {
+        if (!data.workspace || !data.hash || !data.data) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[syncStorageData] Missing parameter.');
+        }
+
+        await storeTransactionData(
+            context.auth.uid,
+            data.workspace,
+            data.hash,
+            sanitize({ storage: data.data.storage })
+        );
+
+        return { success: true };
+    } catch(error) {
+        console.log(error)
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
+    }
+});
+
+exports.createUser = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+    
+    try {
+        await createUser(context.auth.uid);
 
         return { success: true };
     } catch(error) {

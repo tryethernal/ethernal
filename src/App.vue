@@ -110,7 +110,7 @@ export default {
                 this.db.currentUser().get().then(currentUserQuery => {
                     var currentUser = currentUserQuery.data();
                     if (!currentUser) {
-                        this.db.createUser(auth().currentUser.uid).then(this.launchOnboarding);
+                        this.server.createUser(auth().currentUser.uid).then(this.launchOnboarding);
                     }
                     else {
                         this.$store.dispatch('updateUserPlan', currentUser.plan);
@@ -122,8 +122,8 @@ export default {
                         else {
                             this.db.workspaces().get().then(workspacesQuery => {
                                 if (workspacesQuery.docs.length) {
-                                    this.db.currentUser().update({ currentWorkspace: workspacesQuery.docs[0].ref });
-                                    this.loadWorkspace(workspacesQuery.docs[0].ref);
+                                    this.server.setCurrentWorkspace(workspacesQuery.docs[0].data().name)
+                                        .then(() => this.loadWorkspace(workspacesQuery.docs[0].ref));
                                 }
                                 else {
                                     this.launchOnboarding();

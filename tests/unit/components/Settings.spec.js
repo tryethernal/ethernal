@@ -15,7 +15,7 @@ describe('Settings.vue', () => {
                 settings: {}
             }
         });
-        await helper.mocks.db.workspaces().doc('Hardhat').set({ settings: { defaultAccount: '', gasPrice: '', gasLimit: '12345678' }});
+        await helper.mocks.admin.workspaces().doc('Hardhat').set({ settings: { defaultAccount: '', gasPrice: '', gasLimit: '12345678' }});
     });
 
     it('Should load the settings page', async (done) => {
@@ -55,7 +55,7 @@ describe('Settings.vue', () => {
     });
 
     it('Should let the user switch workspaces', async (done) => {
-        await helper.mocks.db.workspaces().doc('Ganache').set({ rpcServer: 'http://localhost:9545', name: 'Ganache' });
+        await helper.mocks.admin.workspaces().doc('Ganache').set({ rpcServer: 'http://localhost:9545', name: 'Ganache' });
         const setCurrentWorkspaceMock = jest.spyOn(helper.mocks.server, 'setCurrentWorkspace');
         const wrapper = helper.mountFn(Settings);
 
@@ -70,7 +70,7 @@ describe('Settings.vue', () => {
 
     it('Should not display the tracing warning message for premium users', async (done) => {
         helper.getters.user.mockImplementation(() => { return { plan: 'premium' }});
-        await helper.mocks.db.workspaces().doc('Ganache').set({ rpcServer: 'http://localhost:9545', name: 'Ganache' });
+        await helper.mocks.admin.workspaces().doc('Ganache').set({ rpcServer: 'http://localhost:9545', name: 'Ganache' });
         const wrapper = helper.mountFn(Settings);
 
         setTimeout(async () => {

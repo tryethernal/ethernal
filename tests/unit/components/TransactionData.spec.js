@@ -12,7 +12,7 @@ describe('TransactionData.vue', () => {
     });
 
     it('Should display transaction data', async (done) => {
-        await helper.mocks.db.collection('contracts').doc(TransactionProp.to).set({ address: TransactionProp.to, abi: ABIProp });
+        await helper.mocks.admin.collection('contracts').doc(TransactionProp.to).set({ address: TransactionProp.to, abi: ABIProp });
         const wrapper = helper.mountFn(TransactionData, {
             propsData: {
                 transaction: TransactionProp,

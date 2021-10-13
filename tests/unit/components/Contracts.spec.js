@@ -7,7 +7,7 @@ describe('Contracts.vue', () => {
 
     beforeEach(async () => {
         helper = new MockHelper();
-        db = helper.mocks.db;
+        db = helper.mocks.admin;
     });
 
     it('Should show the contracts list', async (done) => {

@@ -11,7 +11,7 @@ describe('Address.vue', () => {
     });
 
     it('Should sync the balance when loaded', async (done) => {
-        const db = helper.mocks.db;
+        const db = helper.mocks.admin;
         const wrapper = helper.mountFn(Address, {
             propsData: {
                 hash: '123'
@@ -25,7 +25,7 @@ describe('Address.vue', () => {
     });
 
     it('Should show the transactions for this address', async (done) => {
-        const db = helper.mocks.db;
+        const db = helper.mocks.admin;
         const transaction1 = {
             hash: '0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0',
             timestamp: '1621548462',
@@ -66,7 +66,7 @@ describe('Address.vue', () => {
     });
 
     it('Should display extra tabs for contracts addresses', async (done) => {
-        const db = helper.mocks.db;
+        const db = helper.mocks.admin;
         await db.collection('contracts').doc('123').set({ address: '123' });
 
         const wrapper = helper.mountFn(Address, {
@@ -82,7 +82,7 @@ describe('Address.vue', () => {
     });
 
     it('Should display the contract interaction interface under the contract tab if there is an ABI', async (done) => {
-        const db = helper.mocks.db;
+        const db = helper.mocks.admin;
         await db.collection('contracts').doc('123').set({ name: 'Amalfi', address: '123', abi: AmalfiContract.artifact.abi });
         
         const wrapper = helper.mountFn(Address, {
@@ -101,7 +101,7 @@ describe('Address.vue', () => {
     });
 
     it('Should display the contract storage structure', async (done) => {
-        const db = helper.mocks.db;
+        const db = helper.mocks.admin;
         await db.collection('contracts').doc('123').set({ name: 'Amalfi', address: '123', abi: AmalfiContract.artifact.abi });
 
         await db.contractStorage('123/artifact').set(AmalfiContract.artifact);
