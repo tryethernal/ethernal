@@ -270,7 +270,7 @@ export default {
         selectedTransactionChanged: function(transaction) {
             this.selectedTransaction = transaction;
 
-            if (this.selectedTransaction.hash && !this.selectedTransaction.storage) {
+            if (this.selectedTransaction.hash && !Object.keys(this.selectedTransaction.storage).length) {
                 this.decodeTx(this.selectedTransaction);
             }
         },

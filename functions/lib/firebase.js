@@ -231,11 +231,11 @@ const storeTrace = (userId, workspace, txHash, trace) => {
 };
 
 const storeTransactionData = (userId, workspace, hash, data) => {
-    if (!userId || !workspace || !txHash || !trace) throw '[storeStorage] Missing parameter';
+    if (!userId || !workspace || !hash || !data) throw '[storeTransactionData] Missing parameter';
 
     return _getWorkspace(userId, workspace)
         .collection('transactions')
-        .doc(transactionHash)
+        .doc(hash)
         .set({ storage: data }, { merge: true });
 };
 

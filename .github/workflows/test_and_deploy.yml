@@ -5,6 +5,7 @@ on: [push, workflow_dispatch]
 jobs:
   test_back:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
 
     steps:
       - name: Checkout

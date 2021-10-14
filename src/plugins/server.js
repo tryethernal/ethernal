@@ -248,8 +248,8 @@ export const serverPlugin = {
             createUser: function(uid) {
                 return functions.httpsCallable('createUser')({ uid: uid });
             },
-            syncTransactionData: function(workspace, transactionHash, data) {
-                return functions.httpsCallable('syncTransactionData')({ workspace: workspace, transactionHash: transactionHash, data: data });
+            syncTransactionData: function(workspace, hash, data) {
+                return functions.httpsCallable('syncTransactionData')({ workspace: workspace, hash: hash, data: data });
             },
             removeContract: function(workspace, address) {
                 return functions.httpsCallable('removeContract')({ workspace: workspace, address: address });

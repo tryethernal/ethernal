@@ -955,7 +955,7 @@ exports.syncTransactionData = functions.https.onCall(async (data, context) => {
     try {
         if (!data.workspace || !data.hash || !data.data) {
             console.log(data);
-            throw new functions.https.HttpsError('invalid-argument', '[syncStorageData] Missing parameter.');
+            throw new functions.https.HttpsError('invalid-argument', '[syncTransactionData] Missing parameter.');
         }
 
         await storeTransactionData(

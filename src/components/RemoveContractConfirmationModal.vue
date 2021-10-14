@@ -54,7 +54,6 @@ export default {
             this.loading = true;
             this.server.removeContract(this.workspace, this.address)
                 .then(() => {
-                    console.log(this.$router)
                     this.$router.push({ path: '/contracts', query: { removedContract: this.address }});
                     this.reset();
                 })
