@@ -36,7 +36,7 @@ jobs:
 
       - name: Setup environment
         run: |
-          cp functions/tests/fixtures/.runtimeconfig.json ./
+          cp functions/tests/fixtures/.runtimeconfig.json ./functions
 
       - name: Run tests
         run: |
@@ -49,6 +49,7 @@ jobs:
 
   test_front:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
 
     steps:
       - name: Checkout
