@@ -170,6 +170,7 @@ app.post('/webhooks/alchemy', authMiddleware, async (req, res) => {
 app.post('/webhooks/stripe', async (req, res, buf) => {
     try {
         const sig = req.headers['stripe-signature'];
+
         const webhookSecret = functions.config().stripe.webhook_secret;
         let event;
 

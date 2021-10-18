@@ -1,3 +1,19 @@
+jest.mock('stripe', () => {
+    const original = jest.requireActual('stripe');
+    const stripe = () => ({
+        ...original,
+        paymentIntents: {
+            retrieve: jest.fn(() => { return new Promise((resolve) => { resolve({ payment_method: 'card' })})})
+        },
+        subscriptions: {
+            retrieve: jest.fn(() => { return new Promise((resolve) => { resolve({ customer: 'cus_KN6AD8pwBHd2sF', status: 'active' })})})
+        }
+    });
+
+    Object.defineProperty(stripe, 'webhooks', { value: original.webhooks });
+
+    return stripe;
+});
 jest.mock('ethers', () => {
     const original = jest.requireActual('ethers');
     const Block = require('../fixtures/Block.json');
@@ -24,8 +40,8 @@ const ethers = require('ethers');
 const express = require('express');
 const supertest = require('supertest');
 const stripe = require('stripe');
-const Helper = require('../helper');
 const routes = require('../../api/index');
+const Helper = require('../helper');
 
 const AlchemyPayload = require('../fixtures/AlchemyPayload.json');
 const StripePaymentSucceededWebhookBody = require('../fixtures/StripePaymentSucceededWebhookBody')
@@ -69,10 +85,6 @@ describe('/webhook/alchemy', () => {
         expect(blockRef.data()).toMatchSnapshot();
         expect(txRef.data()).toMatchSnapshot();
     });
-
-    afterEach(async () => {
-        await helper.clean();
-    });
 });
 
 describe('/webhooks/stripe', () => {
@@ -115,7 +127,7 @@ describe('/webhooks/stripe', () => {
             .set('Content-Type', 'application/json')
             .set('stripe-signature', header)
             .send(payloadString)
-            .expect(200);
+            .expect(200)
     });
 
     it('Should succeed on customer.subscription.deleted', async () => {
@@ -149,8 +161,4 @@ describe('/webhooks/stripe', () => {
             .send(payloadString)
             .expect(401);
     });
-
-    afterEach(async () => {
-        await helper.clean();
-    });    
 });
