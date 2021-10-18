@@ -36,7 +36,7 @@ jobs:
 
       - name: Setup environment
         run: |
-          cp functions/tests/fixtures/.runtimeconfig.json ./functions
+          cp functions/tests/fixtures/.runtimeconfig.json ./functions/
 
       - name: Run tests
         run: |

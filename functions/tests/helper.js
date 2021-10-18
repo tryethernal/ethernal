@@ -37,6 +37,14 @@ class Helper {
             plan: data.plan || 'free'
         };
 
+        try {
+            const user = await admin.auth().getUser('123');
+            await admin.auth().deleteUser('123');
+        }
+        catch(_) {}
+
+        await admin.auth().createUser({ uid: '123', email: 'test@test.com' });
+
         await this.firestore
             .collection('users')
             .doc('123')
@@ -56,7 +64,12 @@ class Helper {
     }
 
     async clean() {
-        this.test.cleanup();
+        try {
+            const user = await admin.auth().getUser('123');
+            await admin.auth().deleteUser('123');
+        }
+        catch(_) {}
+
         await firebaseTools.firestore.delete('users/123', {
             project: process.env.GCLOUD_PROJECT,
             recursive: true,

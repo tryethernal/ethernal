@@ -75,7 +75,7 @@ describe('/webhook/alchemy', () => {
     });
 });
 
-describe.only('/webhooks/stripe', () => {
+describe('/webhooks/stripe', () => {
     let header, payloadString;
 
     beforeEach(async () => {

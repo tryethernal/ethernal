@@ -1136,6 +1136,7 @@ describe('createWorkspace', () => {
 describe('setCurrentWorkspace', () => {
     beforeEach(async () => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
+        await helper.setUser();
     });
 
     it('Should update the default workspace', async () => {
@@ -1166,7 +1167,7 @@ describe('setCurrentWorkspace', () => {
             .withConverter({ fromFirestore: firestoreConverter })
             .get();
 
-        expect(await userRef.data()).toEqual({ currentWorkspace: { rpcServer: 'http://localhost:7545' }});
+        expect(await userRef.data()).toEqual({ currentWorkspace: { rpcServer: 'http://localhost:7545' }, plan: 'free' });
         expect(result).toEqual({ success: true });
     });
 
