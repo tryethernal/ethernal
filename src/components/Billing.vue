@@ -144,7 +144,7 @@ export default {
         trialLength: function() {
             const creationTime = auth().currentUser.metadata.creationTime;
 
-            return moment(creationTime).isBefore(moment('2021-10-20')) ? 30 : 14;
+            return moment(creationTime).isBefore(moment('2021-10-18')) ? 30 : 14;
         },
         isPremium: function() {
             return this.user.plan == 'premium';

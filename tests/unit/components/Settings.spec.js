@@ -23,7 +23,7 @@ describe('Settings.vue', () => {
         setTimeout(() => {
             expect(wrapper.html()).toMatchSnapshot();
             done();
-        }, 1500);
+        }, 2000);
     });
 
     it('Should let the user update call options', async (done) => {

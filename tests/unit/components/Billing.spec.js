@@ -1,5 +1,17 @@
+jest.mock('@/plugins/firebase', () => ({
+    ...jest.requireActual('@/plugins/firebase'),
+    auth: jest.fn(() => {
+        return {
+            currentUser: {
+                metadata: {
+                    creationTime: new Date()
+                }
+            }
+        };
+    })
+}));
+import { auth } from '@/plugins/firebase';
 import MockHelper from '../MockHelper';
-
 import Billing from '@/components/Billing.vue';
 
 describe('Billing.vue', () => {

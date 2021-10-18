@@ -41,7 +41,7 @@ describe('Transactions.vue', () => {
         setTimeout(() => {
             expect(wrapper.html()).toMatchSnapshot();
             done();
-        }, 1000);
+        }, 2000);
     });
 
     afterEach(async () => {

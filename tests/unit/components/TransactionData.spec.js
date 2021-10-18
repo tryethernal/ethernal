@@ -22,7 +22,7 @@ describe('TransactionData.vue', () => {
         setTimeout(() => {
             expect(wrapper.html()).toMatchSnapshot();
             done();
-        }, 1000);
+        }, 2000);
     });
 
     it('Should display instructions if there is no ABI', async (done) => {

@@ -99,7 +99,16 @@ class MockHelper {
             projectId: this.projectId,
             databaseName: `rtdb-${this.projectId}`,
         });
-        this.firebase.auth = jest.fn(() => { currentUser: { uid: '123' }});
+        this.firebase.auth = jest.fn(() => {
+            return {
+                currentUser: {
+                    uid: '123',
+                    metadata: {
+                        creationTime: new Date()
+                    }
+                }
+            }
+        });
     }
 
     clearFirebase() {
