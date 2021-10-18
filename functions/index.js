@@ -871,6 +871,9 @@ exports.createStripeCheckoutSession = functions.https.onCall(async (data, contex
             throw new functions.https.HttpsError('invalid-argument', '[createStripeCheckoutSession] Invalid plan.');
 
         const rootUrl = functions.config().ethernal.root_url;
+        const authUser = await admin.auth().getUser(context.auth.uid)
+
+        const trialPeriod = moment(authUser.metadata.creationTime).isBefore(moment('2021-11-20')) ? 30 : TRIAL_PERIOD_IN_DAYS;
 
         const session = await stripe.checkout.sessions.create(sanitize({
             mode: 'subscription',
@@ -885,7 +888,7 @@ exports.createStripeCheckoutSession = functions.https.onCall(async (data, contex
                 }
             ],
             subscription_data: user.trialEndsAt ? null : {
-                trial_period_days: TRIAL_PERIOD_IN_DAYS
+                trial_period_days: trialPeriod
             },
             success_url: `${rootUrl}/settings?tab=billing&status=upgraded`,
             cancel_url: `${rootUrl}/settings?tab=billing`

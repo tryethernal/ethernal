@@ -1,5 +1,6 @@
 <template>
     <v-app>
+        <v-alert style="z-index:1000;position: fixed;" type="success">Announcement</v-alert>
         <v-navigation-drawer app permanent v-if="userLoggedIn">
             <v-list-item>
                 <v-list-item-content>
@@ -70,7 +71,6 @@
         </v-navigation-drawer>
 
         <Onboarding-Modal ref="onboardingModal" />
-
         <v-app-bar app dense fixed flat v-if="userLoggedIn" color="grey lighten-3">
             <component :is="appBarComponent"></component>
         </v-app-bar>

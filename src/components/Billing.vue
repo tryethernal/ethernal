@@ -60,7 +60,7 @@
                     <v-card-actions class="justify-center d-flex flex-column">
                         <v-btn :loading="subscriptionButtonLoading" color="primary" v-if="isPremium" @click="openStripePortal()">Manage Subscription</v-btn>
                         <v-btn :loading="subscriptionButtonLoading" color="primary" v-else @click="subscribeToPlan('premium')">
-                            <span v-if="!hasTrialed">Start 14 days free trial</span>
+                            <span v-if="!hasTrialed">Start {{ trialLength }} days free trial</span>
                             <span v-else>Subscribe</span>
                         </v-btn>
                     </v-card-actions>
@@ -72,6 +72,8 @@
 <script>
 import { mapGetters } from 'vuex';
 import moment from 'moment';
+import { auth } from '@/plugins/firebase';
+
 export default {
     name: 'Billing',
     data: () => ({
@@ -139,6 +141,11 @@ export default {
             'isTrialActive',
             'hasTrialed'
         ]),
+        trialLength: function() {
+            const creationTime = auth().currentUser.metadata.creationTime;
+
+            return moment(creationTime).isBefore(moment('2021-10-20')) ? 30 : 14;
+        },
         isPremium: function() {
             return this.user.plan == 'premium';
         },

@@ -380,13 +380,13 @@ export default {
             if (!this.contract.abi) {
                 return [];
             }
-            return this.contract.abi.filter(member => member.type == 'function' && member.stateMutability == 'view');
+            return this.contract.abi.filter(member => member.type == 'function' && ['view', 'pure'].indexOf(member.stateMutability) > -1);
         },
         contractWriteMethods: function() {
             if (!this.contract.abi) {
                 return [];
             }
-            return this.contract.abi.filter(member => member.type == 'function' && member.stateMutability != 'view');
+            return this.contract.abi.filter(member => member.type == 'function' && ['view', 'pure'].indexOf(member.stateMutability) == -1);
         }
     }
 }
