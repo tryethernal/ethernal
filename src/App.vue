@@ -1,11 +1,13 @@
 <template>
     <v-app>
-        <v-alert style="z-index:1000;position: fixed;" type="success">Announcement</v-alert>
+        <v-system-bar class="white--text text-center font-weight-bold" color="primary" app window>
+            Ethernal is evolving! It is now open source and offers a paid premium plan on the hosted version. Check out this announcement for more details: <a style="margin-left:5px;color: white; text-decoration: underline;" href="https://blog.tryethernal.com/ethernal-is-going-open-source/" target="_blank">https://blog.tryethernal.com/ethernal-is-going-open-source/</a>
+        </v-system-bar>
         <v-navigation-drawer app permanent v-if="userLoggedIn">
             <v-list-item>
                 <v-list-item-content>
                     <v-list-item-title class="logo">Ethernal</v-list-item-title>
-                    <v-list-item-subtitle>Beta - {{ version }}</v-list-item-subtitle>
+                    <v-list-item-subtitle>{{ version }}</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
 
@@ -71,6 +73,7 @@
         </v-navigation-drawer>
 
         <Onboarding-Modal ref="onboardingModal" />
+
         <v-app-bar app dense fixed flat v-if="userLoggedIn" color="grey lighten-3">
             <component :is="appBarComponent"></component>
         </v-app-bar>
