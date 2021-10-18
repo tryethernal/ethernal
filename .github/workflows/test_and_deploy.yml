@@ -45,7 +45,7 @@ jobs:
             FIRESTORE_EMULATOR_HOST="localhost:8080" \
             FIREBASE_DATABASE_EMULATOR_HOST="localhost:9000" \
             GCLOUD_PROJECT=ethernal-test \
-            npm test tests/'
+            npm run test tests/'
 
   test_front:
     runs-on: ubuntu-latest
