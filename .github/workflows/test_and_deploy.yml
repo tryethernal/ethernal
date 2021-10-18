@@ -80,7 +80,7 @@ jobs:
 
       - name: Setup environment
         run: |
-          cp functions/tests/fixtures/.runtimeconfig.json ./
+          cp functions/tests/fixtures/.runtimeconfig.json ./functions/
 
       - name: Run tests
         run: firebase emulators:exec --token ${{ secrets.FIREBASE_TOKEN }} "yarn test:unit"
