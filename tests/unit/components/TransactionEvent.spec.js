@@ -13,7 +13,7 @@ describe('TransactionEvent.vue', () => {
     });
 
     it('Should display transaction event', async (done) => {
-        await helper.mocks.db.collection('contracts').doc(TransactionProp.to).set({ abi: ABIProp });
+        await helper.mocks.admin.collection('contracts').doc(TransactionProp.to).set({ abi: ABIProp });
         const wrapper = helper.mountFn(TransactionEvent, {
             propsData: {
                 log: LogProp

@@ -77,28 +77,11 @@ export const dbPlugin = {
                         fromFirestore: function(snapshot, options) {
                             return {
                                 id: snapshot.id,
+                                name: snapshot.id,
                                 rpcServer: snapshot.data(options).rpcServer
                             };
                         }
                     })
-            },
-            getWorkspace: function(workspace) {
-                if (!currentUser() || !workspace) return;
-                return _db.collection('users')
-                    .doc(currentUser().uid)
-                    .collection('workspaces')
-                    .doc(workspace)
-                    .withConverter({
-                        fromFirestore: function(snapshot, options) {
-                            return Object.defineProperty(snapshot.data(options), 'name', { value: workspace })
-                        }
-                    })
-            },
-            createUser: function(id) {
-                if (!id) return false;
-                return _db.collection('users')
-                    .doc(id)
-                    .set({ currentWorkspace: '' });
             },
             contractSerializer: snapshot => {
                 var res = snapshot.data();
@@ -130,4 +113,3 @@ export const auth = _auth;
 export const db = _db;
 export const rtdb = _rtdb;
 export const functions = _functions;
-export const FieldValue = firebase.firestore.FieldValue;

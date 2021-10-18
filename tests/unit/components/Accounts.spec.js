@@ -7,7 +7,7 @@ describe('Account.vue', () => {
 
     beforeEach(async () => {
         helper = new MockHelper();
-        db = helper.mocks.db;
+        db = helper.mocks.admin;
         await db.collection('accounts').doc('0x1234').set({ address: '0x1234', balance: 1234 });
         await db.collection('accounts').doc('0x1235').set({ address: '0x1235', balance: 1234, privateKey: '1234' });
     });

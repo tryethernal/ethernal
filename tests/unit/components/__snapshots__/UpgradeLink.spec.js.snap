@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UpgradeLink.vue Should display a link to the billing page 1`] = `<a>Upgrade</a>`;

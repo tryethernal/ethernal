@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RemoveContractConfirmationModal.vue Should display an error message if something is wrong 1`] = `
+<div role="dialog" class="v-dialog__container">
+  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+        <div class="v-card v-sheet theme--light">
+          <div class="v-card__title headline">Remove contract</div>
+          <div class="v-card__text">
+            <div role="alert" class="v-alert v-sheet theme--dark error">
+              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark"></i>
+                <div class="v-alert__content"> There is an error</div>
+              </div>
+            </div>
+            <div>
+              Removing this contract will remove metadata (name, ABI, AST, hashed bytecode) associated to this address and prevent you from:
+              <ul>
+                <li>Interacting with it through Ethernal.</li>
+                <li>Decoding events, function calls, internal calls (past decoded events &amp; calls will be lost).</li>
+                <li>Decoding storage variables (past decoded variables will be lost).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="v-card__actions">
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="removeContract"><span class="v-btn__content">Remove</span></button>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`RemoveContractConfirmationModal.vue Should display the modal 1`] = `
+<div role="dialog" class="v-dialog__container">
+  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+        <div class="v-card v-sheet theme--light">
+          <div class="v-card__title headline">Remove contract</div>
+          <div class="v-card__text">
+            <!---->
+            <div>
+              Removing this contract will remove metadata (name, ABI, AST, hashed bytecode) associated to this address and prevent you from:
+              <ul>
+                <li>Interacting with it through Ethernal.</li>
+                <li>Decoding events, function calls, internal calls (past decoded events &amp; calls will be lost).</li>
+                <li>Decoding storage variables (past decoded variables will be lost).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="v-card__actions">
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="removeContract"><span class="v-btn__content">Remove</span></button>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;

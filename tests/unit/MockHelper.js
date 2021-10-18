@@ -1,3 +1,4 @@
+const fs = require('fs');
 import { mount, createLocalVue } from '@vue/test-utils';
 const firebase = require("@firebase/rules-unit-testing");
 import Vuex from 'vuex';
@@ -38,6 +39,7 @@ class MockHelper {
         this.mocks = {}
         if (mockDb) this.mocks['db'] = dbMocks.init(this.firebase);
         if (mockServer) this.mocks['server'] = serverMocks;
+        this.mocks['admin'] = dbMocks.init(this.admin);
     }
 
     initPlugins() {
@@ -56,16 +58,24 @@ class MockHelper {
     initMockStore(initialState) {
         this.localVue.use(Vuex);
         this.storeState = {
-            networkId: null,
-            rpcServer: null,
-            localNetwork: true,
-            name: null,
-            settings: {},
+            user: {},
+            currentWorkspace: {
+                networkId: null,
+                rpcServer: null,
+                localNetwork: true,
+                name: null,
+                settings: {}
+            },
             ...initialState
         };
 
         this.getters = {
-            currentWorkspace: () => this.storeState
+            currentWorkspace: jest.fn(() => this.storeState.currentWorkspace),
+            user: jest.fn(() => {
+                return { ...this.storeState.user, plan: this.storeState.user.plan || 'free' }
+            }),
+            isTrialActive: jest.fn(() => false),
+            hasTrialed: jest.fn(() => false)
         };
 
         this.actions = {
@@ -81,8 +91,24 @@ class MockHelper {
             databaseName: `rtdb-${this.projectId}`,
             auth: { uid: '123' }
         });
-
-        this.firebase.auth = jest.fn(() => { currentUser: { uid: '123' }});
+        firebase.loadFirestoreRules({
+            projectId: this.projectId,
+            rules: fs.readFileSync('./firestore.rules.test', 'utf8')
+        })
+        this.admin = firebase.initializeAdminApp({
+            projectId: this.projectId,
+            databaseName: `rtdb-${this.projectId}`,
+        });
+        this.firebase.auth = jest.fn(() => {
+            return {
+                currentUser: {
+                    uid: '123',
+                    metadata: {
+                        creationTime: new Date()
+                    }
+                }
+            }
+        });
     }
 
     clearFirebase() {

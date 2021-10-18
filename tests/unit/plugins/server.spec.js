@@ -114,7 +114,7 @@ describe('server', () => {
     let helper, server;
 
     beforeEach(() => {
-        helper = new MockHelper({ rpcServer: 'http://localhost:8545' }, true, false);
+        helper = new MockHelper({ currentWorkspace: { rpcServer: 'http://localhost:8545', localNetwork: true }}, true, false);
         const wrapper = helper.mountFn({});
         server = wrapper.vm.server;
     });

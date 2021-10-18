@@ -5,12 +5,20 @@ const bodyParser = require('body-parser')
 const ethers = require('ethers');
 const Decoder = require('@truffle/decoder');
 const Storage = require('../lib/storage');
+const stripe = require('stripe')(functions.config().stripe.secret_key);
 const { getContractArtifact, getContractArtifactDependencies, getContractData, getUserByKey, getWorkspaceByName, storeTransaction, storeBlock, getUser, storeContractData } = require('../lib/firebase');
-const { sanitize, stringifyBns, getTxSynced, isJson } = require('../lib/utils')
+const { sanitize, stringifyBns, getTxSynced, isJson } = require('../lib/utils');
 const { decrypt, decode, encrypt } = require('../lib/crypto');
-
+const { handleStripeSubscriptionUpdate, handleStripeSubscriptionDeletion, handleStripePaymentSucceeded } = require('../lib/stripe');
 const app = express();
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+    verify: function(req,res,buf) {
+        var url = req.originalUrl;
+        if (url.startsWith('/webhooks/stripe')) {
+            req.rawBody = buf.toString()
+        }
+    }
+}));
 
 const authMiddleware = async function(req, res, next) {
     try {
@@ -41,9 +49,7 @@ const authMiddleware = async function(req, res, next) {
         next();
     } catch(error) {
         console.log(error);
-        res.status(401).json({
-            message: error
-        });
+        res.status(401).json({ message: error });
     }
 };
 
@@ -154,14 +160,44 @@ app.post('/webhooks/alchemy', authMiddleware, async (req, res) => {
 
         await Promise.all(promises);
 
-        res.send({
-            success: true
-        });
+        res.send({ success: true });
     } catch(error) {
         console.log(error);
-        res.status(401).json({
-            message: error
-        });
+        res.status(401).json({ message: error });
+    }
+});
+
+app.post('/webhooks/stripe', async (req, res, buf) => {
+    try {
+        const sig = req.headers['stripe-signature'];
+
+        const webhookSecret = functions.config().stripe.webhook_secret;
+        let event;
+
+        try {
+            event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecret);
+        } catch (err) {
+            throw err.message;
+        }
+
+        switch (event.type) {
+            case 'invoice.payment_succeeded':
+                handleStripePaymentSucceeded(event.data.object)
+                break;
+
+            case 'customer.subscription.updated':
+                handleStripeSubscriptionUpdate(event.data.object);
+                break;
+
+            case 'customer.subscription.deleted':
+                handleStripeSubscriptionDeletion(event.data.object);
+                break;
+        }
+
+        res.send({ success: true });
+    } catch(error) {
+        console.log(error);
+        res.status(401).json({ message: error });
     }
 });
 
