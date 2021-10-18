@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Solidity 'pure' functions are now properly showing under "Read Methods" in the contract's UI page.
 
+>>>>>>> develop
 ## [0.3.2] - 2021-10-16
 ### Fixed
 - Error handling on write functions

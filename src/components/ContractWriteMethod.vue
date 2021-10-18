@@ -105,6 +105,7 @@ export default {
                         this.result.txHash = pendingTx.hash;
                     })
                     .catch(error => {
+                        console.log(error)
                         if (error.data) {
                             const jsonInterface = new ethers.utils.Interface(this.contract.abi);
                             var txHash = Object.keys(error.data)[0];

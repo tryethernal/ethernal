@@ -1,0 +1,516 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Billing.vue Should display the button to manage the subscription when the user has an active premium plan w/o trial 1`] = `
+<div>
+  <!---->
+  <!---->
+  <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
+    <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
+      <div class="v-alert__content"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-6">
+      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+        <div class="v-card__title">
+          Free Plan
+          <div class="spacer"></div>
+          <!---->
+        </div>
+        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+        <div role="list" class="v-list v-sheet theme--light v-list--dense">
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited accounts / Blocks / Transactions sync
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Hardhat / Ganache integration
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Contract UI for read/write functions
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Contract storage reading
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            10 decoded contracts
+            <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            1 workspace
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Community support
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+            Transaction tracing
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+            API access
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col col-6">
+      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+        <div class="v-card__title">
+          Premium Plan - $20/month
+          <div class="spacer"></div>
+          <!----> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current Plan</span></span>
+        </div>
+        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+        <div role="list" class="v-list v-sheet theme--light v-list--dense">
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited accounts / Blocks / Transactions sync
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Hardhat / Ganache integration
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Contract UI for read/write functions
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Contract storage reading
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited decoded contracts
+            <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited workspaces
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Advanced support
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Transaction tracing
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            API access
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+        </div>
+        <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Manage Subscription</span></button></div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Billing.vue Should display the button to manage the subscription when the user is trialing 1`] = `
+<div>
+  <!---->
+  <!---->
+  <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
+    <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
+      <div class="v-alert__content"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-6">
+      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+        <div class="v-card__title">
+          Free Plan
+          <div class="spacer"></div>
+          <!---->
+        </div>
+        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+        <div role="list" class="v-list v-sheet theme--light v-list--dense">
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited accounts / Blocks / Transactions sync
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Hardhat / Ganache integration
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Contract UI for read/write functions
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Contract storage reading
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            10 decoded contracts
+            <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            1 workspace
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Community support
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+            Transaction tracing
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+            API access
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col col-6">
+      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+        <div class="v-card__title">
+          Premium Plan - $20/month
+          <div class="spacer"></div> <small>Trial until Oct. 11th</small> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current Plan</span></span>
+        </div>
+        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+        <div role="list" class="v-list v-sheet theme--light v-list--dense">
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited accounts / Blocks / Transactions sync
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Hardhat / Ganache integration
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Contract UI for read/write functions
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Contract storage reading
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited decoded contracts
+            <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited workspaces
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Advanced support
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Transaction tracing
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            API access
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+        </div>
+        <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Manage Subscription</span></button></div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Billing.vue Should display the button to start the subscription when the user is on a free plan and has already trialed 1`] = `
+<div>
+  <!---->
+  <!---->
+  <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
+    <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
+      <div class="v-alert__content"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-6">
+      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+        <div class="v-card__title">
+          Free Plan
+          <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current Plan</span></span>
+        </div>
+        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+        <div role="list" class="v-list v-sheet theme--light v-list--dense">
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited accounts / Blocks / Transactions sync
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Hardhat / Ganache integration
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Contract UI for read/write functions
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Contract storage reading
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            10 decoded contracts
+            <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            1 workspace
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Community support
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+            Transaction tracing
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+            API access
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col col-6">
+      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+        <div class="v-card__title">
+          Premium Plan - $20/month
+          <div class="spacer"></div>
+          <!---->
+          <!---->
+        </div>
+        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+        <div role="list" class="v-list v-sheet theme--light v-list--dense">
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited accounts / Blocks / Transactions sync
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Hardhat / Ganache integration
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Contract UI for read/write functions
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Contract storage reading
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited decoded contracts
+            <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited workspaces
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Advanced support
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Transaction tracing
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            API access
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+        </div>
+        <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content"><span>Subscribe</span></span></button></div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Billing.vue Should display the button to start the trial when user has no plan & did not trial already 1`] = `
+<div>
+  <!---->
+  <!---->
+  <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
+    <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
+      <div class="v-alert__content"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-6">
+      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+        <div class="v-card__title">
+          Free Plan
+          <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current Plan</span></span>
+        </div>
+        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+        <div role="list" class="v-list v-sheet theme--light v-list--dense">
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited accounts / Blocks / Transactions sync
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Hardhat / Ganache integration
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Contract UI for read/write functions
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Contract storage reading
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            10 decoded contracts
+            <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            1 workspace
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Community support
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+            Transaction tracing
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+            API access
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col col-6">
+      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+        <div class="v-card__title">
+          Premium Plan - $20/month
+          <div class="spacer"></div>
+          <!---->
+          <!---->
+        </div>
+        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+        <div role="list" class="v-list v-sheet theme--light v-list--dense">
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited accounts / Blocks / Transactions sync
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Hardhat / Ganache integration
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Contract UI for read/write functions
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Contract storage reading
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited decoded contracts
+            <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited workspaces
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Advanced support
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Transaction tracing
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            API access
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+        </div>
+        <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content"><span>Start 14 days free trial</span></span></button></div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

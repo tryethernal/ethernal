@@ -50,7 +50,6 @@ export default {
             this.dialog = true;
             this.address = options.address;
             this.name = options.name;
-            console.log(options.abi.trim().length)
             this.abi = options.abi && options.abi.trim().length ? options.abi : '';
             return new Promise((resolve, reject) => {
                 this.resolve = resolve;

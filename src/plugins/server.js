@@ -245,6 +245,21 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            createUser: function(uid) {
+                return functions.httpsCallable('createUser')({ uid: uid });
+            },
+            syncTransactionData: function(workspace, hash, data) {
+                return functions.httpsCallable('syncTransactionData')({ workspace: workspace, hash: hash, data: data });
+            },
+            removeContract: function(workspace, address) {
+                return functions.httpsCallable('removeContract')({ workspace: workspace, address: address });
+            },
+            createStripePortalSession: function() {
+                return functions.httpsCallable('createStripePortalSession')();
+            },
+            createStripeCheckoutSession: function(plan) {
+                return functions.httpsCallable('createStripeCheckoutSession')({ plan: plan });
+            },
             resetWorkspace: function(name) {
                 return functions.httpsCallable('resetWorkspace')({ workspace: name })
             },
@@ -260,8 +275,8 @@ export const serverPlugin = {
             createWorkspace: function(name, data) {
                 return functions.httpsCallable('createWorkspace')({ name: name, workspaceData: data });
             },
-            syncContractData: function(workspace, address, name, abi) {
-                return functions.httpsCallable('syncContractData')({ workspace: workspace, address: address, name: name, abi: abi });
+            syncContractData: function(workspace, address, name, abi, watchedPaths) {
+                return functions.httpsCallable('syncContractData')({ workspace: workspace, address: address, name: name, abi: abi, watchedPaths: watchedPaths });
             },
             syncTrace: function(workspace, txHash, trace) {
                 return functions.httpsCallable('syncTrace')({ workspace: workspace, txHash: txHash, steps: trace });

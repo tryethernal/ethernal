@@ -1,10 +1,13 @@
 <template>
     <v-app>
+        <v-system-bar class="white--text text-center font-weight-bold" color="primary" app window>
+            Ethernal is evolving! It is now open source and offers a paid premium plan on the hosted version. Check out this announcement for more details: <a style="margin-left:5px;color: white; text-decoration: underline;" href="https://blog.tryethernal.com/ethernal-is-going-open-source/" target="_blank">https://blog.tryethernal.com/ethernal-is-going-open-source/</a>
+        </v-system-bar>
         <v-navigation-drawer app permanent v-if="userLoggedIn">
             <v-list-item>
                 <v-list-item-content>
                     <v-list-item-title class="logo">Ethernal</v-list-item-title>
-                    <v-list-item-subtitle>Beta - {{ version }}</v-list-item-subtitle>
+                    <v-list-item-subtitle>{{ version }}</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
 
@@ -45,7 +48,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link :to="'/settings'">
+                <v-list-item link :to="'/settings?tab=workspace'">
                     <v-list-item-icon>
                         <v-icon>mdi-cog</v-icon>
                     </v-list-item-icon>
@@ -107,24 +110,34 @@ export default {
         const unsubscribe = this.$store.subscribe((mutation, state) => {
             if (mutation.type == 'SET_USER' && state.user !== null) {
                 this.userLoggedIn = true;
-                this.db.currentUser().get().then(currentUserQuery => {
-                    var currentUser = currentUserQuery.data();
-                    if (!currentUser) {
-                        this.db.createUser(auth().currentUser.uid).then(this.launchOnboarding);
-                    }
-                    else if (currentUser.currentWorkspace) {
-                        this.loadWorkspace(currentUser.currentWorkspace);
+                this.db.currentUser().get().then(userQuery => {
+                    const user = userQuery.data();
+
+                    if (!user) {
+                        this.server.createUser(auth().currentUser.uid).then(this.launchOnboarding);
                     }
                     else {
-                        this.db.workspaces().get().then(workspacesQuery => {
-                            if (workspacesQuery.docs.length) {
-                                this.db.currentUser().update({ currentWorkspace: workspacesQuery.docs[0].ref });
-                                this.loadWorkspace(workspacesQuery.docs[0].ref);
-                            }
-                            else {
-                                this.launchOnboarding();
-                            }
-                        });
+                        this.$store.dispatch('updateUserPlan', user.plan);
+                        this.$store.dispatch('updateTrialPeriod', user.trialEndsAt);
+                        this.$store.dispatch('updateOnboardedStatus', true);
+
+                        if (user.currentWorkspace) {
+                            this.loadWorkspace(user.currentWorkspace);
+                        }
+                        else {
+                            this.db.workspaces().get().then(wsQuery => {
+                                const workspaces = []
+                                wsQuery.forEach((ws) => workspaces.push({ ...ws.data(), name: ws.id }));
+
+                                if (workspaces.length) {
+                                    this.server.setCurrentWorkspace(workspaces[0].name)
+                                        .then(() => this.loadWorkspace(workspaces[0]));
+                                }
+                                else {
+                                    this.launchOnboarding();
+                                }
+                            });
+                        }
                     }
                 });
             }
@@ -140,16 +153,18 @@ export default {
             auth().signOut();
         },
         launchOnboarding: function() {
+            this.$store.dispatch('updateOnboardedStatus', false);
             this.$refs.onboardingModal.open()
                 .then((res) => {
                     if (res) {
+                        this.$store.dispatch('updateOnboardedStatus', true);
                         this.loadWorkspace(res.name);
                     }
                 })
         },
-        loadWorkspace: function(currentWorkspace) {
-            currentWorkspace.get().then((workspace) => {
-                this.$store.dispatch('updateCurrentWorkspace', { ...workspace.data(), name: workspace.id });
+        loadWorkspace: function(workspaceRef) {
+            workspaceRef.get().then((workspaceQuery) => {
+                this.$store.dispatch('updateCurrentWorkspace', { ...workspaceQuery.data(), name: workspaceQuery.id });
                 this.appBarComponent = 'rpc-connector';
                 this.routerComponent = 'router-view';
             });

@@ -7,7 +7,7 @@ describe('Blocks.vue', () => {
 
     beforeEach(() => {
         helper = new MockHelper();
-        db = helper.mocks.db;
+        db = helper.mocks.admin;
     });
 
     it('Should show the blocks list', async (done) => {

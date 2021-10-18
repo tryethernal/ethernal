@@ -3,6 +3,7 @@ import LogRocket from 'logrocket';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Vuex from 'vuex';
+import moment from 'moment';
 
 import vuetify from './plugins/vuetify';
 import router from './plugins/router';
@@ -47,8 +48,16 @@ const store = new Vuex.Store({
         },
         SET_CONNECTED(state, connected) {
             state.connected = connected;
+        },
+        SET_USER_PLAN(state, plan) {
+            state.user.plan = plan;
+        },
+        SET_ONBOARDED_STATUS(state, status) {
+            state.user.onboarded = status;
+        },
+        SET_TRIAL_ENDS_AT(state, trialEndsAt) {
+            state.user.trialEndsAt = trialEndsAt;
         }
-
     },
     actions: {
         updateUser({ commit }, user) {
@@ -68,10 +77,22 @@ const store = new Vuex.Store({
         updateConnected({ commit }, connected) {
             commit('SET_CONNECTED', connected);
         },
-
+        updateUserPlan({ commit }, plan) {
+            commit('SET_USER_PLAN', plan);
+        },
+        updateTrialPeriod({ commit }, trialEndsAt) {
+            commit('SET_TRIAL_ENDS_AT', trialEndsAt);
+        },
+        updateOnboardedStatus({ commit }, status) {
+            commit('SET_ONBOARDED_STATUS', status);
+        }
     },
     getters: {
-        user: state => state.user,
+        hasTrialed: state => !!state.user.trialEndsAt,
+        isTrialActive: state => !!state.user.trialEndsAt && moment(state.user.trialEndsAt).isAfter(moment()),
+        user: state => {
+            return {...state.user, plan: state.user.plan || 'free' };
+        },
         currentBlock: state => state.currentBlock,
         currentWorkspace: state => state.currentWorkspace,
         connected: state => state.connected
