@@ -1,12 +1,19 @@
 <template>
     <v-container fluid>
-        <v-row>
+        <v-row class="mb-2">
             <v-col cols="3">
-                <v-card outlined class="my-4">
+                <v-card outlined>
                     <v-card-text>
                         Balance: {{ balance | fromWei('ether') }}
                     </v-card-text>
                 </v-card>
+            </v-col>
+            <v-spacer></v-spacer>
+            <v-col align-self="end" cols="2">
+                <Remove-Contract-Confirmation-Modal ref="removeContractConfirmationModal" />
+                <v-btn small outlined color="error" @click.stop="openRemoveContractConfirmationModal()">
+                    Remove contract
+                </v-btn>
             </v-col>
         </v-row>
         <v-tabs optional v-model="tab">
@@ -189,6 +196,7 @@ import TransactionData from './TransactionData';
 import ContractReadMethod from './ContractReadMethod';
 import ContractWriteMethod from './ContractWriteMethod';
 import ImportArtifactModal from './ImportArtifactModal';
+import RemoveContractConfirmationModal from './RemoveContractConfirmationModal';
 
 import FromWei from '../filters/FromWei';
 
@@ -202,7 +210,8 @@ export default {
         TransactionData,
         ContractReadMethod,
         ContractWriteMethod,
-        ImportArtifactModal
+        ImportArtifactModal,
+        RemoveContractConfirmationModal
     },
     filters: {
         FromWei
@@ -241,6 +250,10 @@ export default {
         }
     },
     methods: {
+        openRemoveContractConfirmationModal: function() {
+            this.$refs.removeContractConfirmationModal
+                .open({ address: this.hash, workspace: this.currentWorkspace.name });
+        },
         openImportArtifactModal: function() {
             this.$refs.importArtifactModal
                 .open({ address: this.hash, name: this.contract.name, abi: JSON.stringify(this.contract.abi) })
@@ -257,16 +270,14 @@ export default {
         selectedTransactionChanged: function(transaction) {
             this.selectedTransaction = transaction;
 
-            if (this.selectedTransaction.hash && !this.selectedTransaction.storage) {
+            if (this.selectedTransaction.hash && !Object.keys(this.selectedTransaction.storage).length) {
                 this.decodeTx(this.selectedTransaction);
             }
         },
         decodeTx: function(transaction) {
             this.dataLoader = true;
             this.server.decodeData(this.contract, this.currentWorkspace.rpcServer, transaction.blockNumber).then((data) => {
-                this.db.collection('transactions')
-                    .doc(transaction.hash)
-                    .update({ storage: data })
+                this.server.syncTransactionData(this.currentWorkspace.name, transaction.hash, data)
                     .then(() => this.selectedTransaction.storage = data)
                     .finally(() => this.dataLoader = false);
             });
@@ -274,9 +285,7 @@ export default {
         addStorageStructureChild: function(struct, idx, newKey) {
             this.storageLoader = true;
             this.contract.watchedPaths.push([...struct.path, newKey]);
-            this.db.collection('contracts')
-                .doc(this.hash)
-                .update({ watchedPaths: JSON.stringify(this.contract.watchedPaths) })
+            this.server.syncContractData(this.currentWorkspace.name, this.hash, null, null, JSON.stringify(this.contract.watchedPaths))
                 .then(this.decodeContract);
         },
         decodeContract: function() {
@@ -301,9 +310,7 @@ export default {
             return false;
         },
         resetStorage: function() {
-            this.db.collection('contracts')
-                .doc(this.hash)
-                .update({ watchedPaths: JSON.stringify([]) })
+            this.server.syncContractData(this.currentWorkspace.name, this.hash, null, null, JSON.stringify([]))
                 .then(() => {
                     this.contract.watchedPaths = [];
                     this.decodeContract();

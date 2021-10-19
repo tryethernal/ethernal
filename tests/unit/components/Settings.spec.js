@@ -6,19 +6,24 @@ describe('Settings.vue', () => {
     let helper;
 
     beforeEach(async () => {
+        window.Stripe = jest.fn();
         helper = new MockHelper({
-            name: 'Hardhat',
-            rpcServer: 'http://localhost:8545',
-            networkId: 1
+            currentWorkspace: {
+                name: 'Hardhat',
+                rpcServer: 'http://localhost:8545',
+                networkId: 1,
+                settings: {}
+            }
         });
-        await helper.mocks.db.workspaces().doc('Hardhat').set({ settings: { defaultAccount: '', gasPrice: '', gasLimit: '12345678' }});
+        await helper.mocks.admin.workspaces().doc('Hardhat').set({ settings: { defaultAccount: '', gasPrice: '', gasLimit: '12345678' }});
     });
 
     it('Should load the settings page', async (done) => {
         const wrapper = helper.mountFn(Settings);
-
-        expect(wrapper.html()).toMatchSnapshot();
-        done();
+        setTimeout(() => {
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 2000);
     });
 
     it('Should let the user update call options', async (done) => {
@@ -42,7 +47,6 @@ describe('Settings.vue', () => {
                     gasPrice: '1234',
                     gasLimit: '12345'
                 },
-                localNetwork: true,
                 name: 'Hardhat'
             });
             expect(wrapper.html()).toMatchSnapshot();
@@ -51,16 +55,26 @@ describe('Settings.vue', () => {
     });
 
     it('Should let the user switch workspaces', async (done) => {
-        await helper.mocks.db.workspaces().doc('Ganache').set({ rpcServer: 'http://localhost:9545', name: 'Ganache' });
+        await helper.mocks.admin.workspaces().doc('Ganache').set({ rpcServer: 'http://localhost:9545', name: 'Ganache' });
         const setCurrentWorkspaceMock = jest.spyOn(helper.mocks.server, 'setCurrentWorkspace');
         const wrapper = helper.mountFn(Settings);
 
         setTimeout(async () => {
             await wrapper.find('#switchTo-Ganache').trigger('click');
-
             expect(setCurrentWorkspaceMock).toHaveBeenCalledWith('Ganache');
             expect(wrapper.html()).toMatchSnapshot();
 
+            done();
+        }, 1000);
+    });
+
+    it('Should not display the tracing warning message for premium users', async (done) => {
+        helper.getters.user.mockImplementation(() => { return { plan: 'premium' }});
+        await helper.mocks.admin.workspaces().doc('Ganache').set({ rpcServer: 'http://localhost:9545', name: 'Ganache' });
+        const wrapper = helper.mountFn(Settings);
+
+        setTimeout(async () => {
+            expect(wrapper.html()).toMatchSnapshot();
             done();
         }, 1000);
     });

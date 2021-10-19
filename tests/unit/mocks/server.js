@@ -3,6 +3,10 @@ import DecodedStorageData from '../fixtures/DecodedStorageData.json';
 
 export default {
 
+    removeContract: function() {
+        return new Promise((resolve) => resolve(true));
+    },
+
     decodeData: function() {
         return new Promise((resolve) => resolve(DecodedStorageData));
     },

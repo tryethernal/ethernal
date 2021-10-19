@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2021-10-18
+### Changed
+- Ethernal is now open source 🥳 (see [https://blog.tryethernal.com/ethernal-is-going-open-source/](https://blog.tryethernal.com/ethernal-is-going-open-source/))
+- Contracts list is now ordered by deploy time, which is displayed
+- All writes action are now done on the backend, firestore/rtdb rules are now forbidding any direct write
+
+### Added
+- Premium plan 🤑
+- Possiblity to remove contracts
+- BSL license for Ethernal
+
+### Fixed
+- Github Action for backend tests (it wasn't running)
+
 ## [0.3.3] - 2021-10-18
 ### Fixed
 - Solidity 'pure' functions are now properly showing under "Read Methods" in the contract's UI page.

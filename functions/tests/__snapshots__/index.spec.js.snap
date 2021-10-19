@@ -56,6 +56,7 @@ Object {
 exports[`syncTransaction Should create the contract locally if there no to field 1`] = `
 Object {
   "address": "0xc00e94cb662c3520282e6f5717214004a7f26888",
+  "timestamp": "1621548462",
 }
 `;
 

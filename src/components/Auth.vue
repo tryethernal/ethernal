@@ -6,7 +6,7 @@
                     <v-col class="text-center">
                         <h1 class="logo">Ethernal</h1>
                         <p>
-                            Ethernal is a block explorer for private Ethereum blockchains, currently in open Beta.
+                            Ethernal is an open source block explorer for private EVM-based chains.
                         </p>
                         <p>
                             If you are new to Ethernal, you should keep the <a href="https://doc.tryethernal.com" target="_blank">doc</a> in a tab nearby!
