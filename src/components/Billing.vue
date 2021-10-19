@@ -15,7 +15,8 @@
                     <v-list dense>
                         <v-list-item v-for="(feature, idx) in plans.free.includes" :key="`free-${idx}`">
                             <v-list-item-icon class="mx-0 mr-1"><v-icon color="success">mdi-check</v-icon></v-list-item-icon>
-                            {{ feature.message || feature }}
+                            <a v-if="feature.href" :href="feature.href" target="_blank">{{ feature.message || feature }}</a>
+                            <span v-else>{{ feature.message || feature }}</span>
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-icon v-bind="attrs" v-on="on" class="ml-1" small v-if="feature.help">mdi-help-circle-outline</v-icon>
@@ -25,7 +26,8 @@
                         </v-list-item>
                         <v-list-item v-for="(feature, idx) in plans.free.excludes" :key="`premium-${idx}`">
                             <v-list-item-icon class="mx-0 mr-1"><v-icon color="error">mdi-close</v-icon></v-list-item-icon>
-                            {{ feature.message || feature }}
+                            <a v-if="feature.href" :href="feature.href" target="_blank">{{ feature.message || feature }}</a>
+                            <span v-else>{{ feature.message || feature }}</span>
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-icon v-bind="attrs" v-on="on" class="ml-1" small v-if="feature.help">mdi-help-circle-outline</v-icon>
@@ -48,7 +50,8 @@
                     <v-list dense>
                         <v-list-item v-for="(feature, idx) in plans.premium.includes" :key="idx">
                             <v-list-item-icon class="mx-0 mr-1"><v-icon color="success">mdi-check</v-icon></v-list-item-icon>
-                            {{ feature.message || feature }}
+                            <a v-if="feature.href" :href="feature.href" target="_blank">{{ feature.message || feature }}</a>
+                            <span v-else>{{ feature.message || feature }}</span>
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-icon v-bind="attrs" v-on="on" class="ml-1" small v-if="feature.help">mdi-help-circle-outline</v-icon>
@@ -64,6 +67,16 @@
                             <span v-else>Subscribe</span>
                         </v-btn>
                     </v-card-actions>
+                </v-card>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-card outlined>
+                    <v-card-text>
+                        We also offer payments in crypto, and custom on-premise deployment support. If you are interested in that or have any other
+                        questions, you can reach out to <a href="mailto:contact@tryethernal.com">contact@tryethernal.com</a> or ping @antoinedc on <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a>.
+                    </v-card-text>
                 </v-card>
             </v-col>
         </v-row>
@@ -89,13 +102,13 @@ export default {
                     'Hardhat / Ganache integration',
                     'Contract UI for read/write functions',
                     'Contract storage reading',
-                    { message: '10 decoded contracts', help: 'You will able to sync artifacts (abi, name, ...) for up to 10 different contracts.' },
+                    { message: '10 synced contracts', help: 'You will able to sync artifacts (abi, name, ...) for up to 10 different contracts.' },
                     '1 workspace',
                     'Community support'
                 ],
                 excludes: [
-                    'Transaction tracing',
-                    'API access'
+                    { message: 'Transaction tracing', href: 'https://www.tryethernal.com/transaction-tracing' },
+                    { message: 'API access', href: 'https://doc.tryethernal.com/integrations/api' }
                 ]
             },
             premium: {
@@ -104,11 +117,11 @@ export default {
                     'Hardhat / Ganache integration',
                     'Contract UI for read/write functions',
                     'Contract storage reading',
-                    { message: 'Unlimited decoded contracts', help: 'You will able to sync artifacts for all your contracts.' },
+                    { message: 'Unlimited synced contracts', help: 'You will able to sync artifacts for all your contracts.' },
                     'Unlimited workspaces',
                     'Advanced support',
-                    'Transaction tracing',
-                    'API access'
+                    { message: 'Transaction tracing', href: 'https://www.tryethernal.com/transaction-tracing' },
+                    { message: 'API access', href: 'https://doc.tryethernal.com/integrations/api' }
                 ],
                 excludes: []
             }
