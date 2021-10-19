@@ -7,7 +7,7 @@ describe('Transaction.vue', () => {
 
     beforeEach(async () => {
         helper = new MockHelper();
-        const db = helper.mocks.db;
+        const db = helper.mocks.admin;
         const blockData = {
             number: '1',
             gasLimit: '1000000000',

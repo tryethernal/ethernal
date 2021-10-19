@@ -4,6 +4,7 @@
         <v-card-title class="headline">Import a third-party contract</v-card-title>
 
         <v-card-text>
+            <v-alert text v-if="!canImport" type="error">Free plan users are limited to 10 synced contracts. Remove some contracts or <Upgrade-Link @goToBilling="goToBilling" :emit="true">upgrade</Upgrade-Link> to the Premium plan for more.</v-alert>
             <v-alert type="success" v-if="successMessage" v-html="successMessage"></v-alert>
             <v-alert type="error" v-if="errorMessage"> {{ errorMessage }}</v-alert>
             <div>
@@ -13,7 +14,7 @@
                 If it is not, the contract will still be imported but calls will fail.<br>
                 If you'd like support for other chains, please contact @antoinedc on Discord.<br>
             </div>
-            <v-text-field id="contractAddress" v-model="contractAddress" label="Address*" required></v-text-field>
+            <v-text-field :disabled="!canImport" id="contractAddress" v-model="contractAddress" label="Address*" required></v-text-field>
         </v-card-text>
 
         <v-card-actions>
@@ -26,9 +27,13 @@
 </template>
 <script>
 import { mapGetters } from 'vuex';
+import UpgradeLink from './UpgradeLink';
 
 export default {
     name: 'ImportContractModal',
+    components: {
+        UpgradeLink
+    },
     data: () => ({
         dialog: false,
         resolve: null,
@@ -37,11 +42,13 @@ export default {
         contract: null,
         successMessage: null,
         errorMessage: null,
-        loading: false
+        loading: false,
+        options: {}
     }),
     methods: {
-        open: function() {
+        open: function(options) {
             this.dialog = true;
+            this.options = options || {};
             return new Promise((resolve, reject) => {
                 this.resolve = resolve;
                 this.reject = reject;
@@ -50,6 +57,10 @@ export default {
         close: function() {
             this.resolve(false);
             this.reset();
+        },
+        goToBilling: function() {
+            this.close();
+            this.$router.push({ path: '/settings', query: { tab: 'billing' }});
         },
         importContract: function() {
             this.successMessage = null;
@@ -68,8 +79,12 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'currentWorkspace'
-        ])
+            'currentWorkspace',
+            'user'
+        ]),
+        canImport: function() {
+            return this.user.plan == 'premium' || this.options.contractsCount < 10;
+        }
     }
 }
 </script>

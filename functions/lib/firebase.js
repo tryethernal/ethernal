@@ -11,6 +11,19 @@ const _getWorkspace = (userId, workspace) => _db.collection('users').doc(userId)
 
 const getUser = (id) => _db.collection('users').doc(id).get();
 
+const createUser = (uid, data) => _db.collection('users').doc(uid).set(data);
+
+const getCollectionRef = (userId, workspace, collectionName) => {
+    return _getWorkspace(userId, workspace).collection(collectionName)
+};
+
+const getUserWorkspaces = (userId) => {
+    return _db.collection('users')
+        .doc(userId)
+        .collection('workspaces')
+        .get();
+};
+
 const addIntegration = (userId, workspace, integration) => {
     if (!userId || !workspace || !integration) throw '[addIntegration] Missing parameter';
 
@@ -118,7 +131,6 @@ const storeContractDependencies = (userId, workspace, address, dependencies) => 
 
 const getContractArtifact = (userId, workspace, address) => {
     if (!userId || !workspace || !address) throw '[getContractArtifact] Missing parameter';
-    console.log(`/users/${userId}/workspaces/${workspace}/contracts/${address}/artifact`)
     return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address}/artifact`).once('value');
 };
 
@@ -130,6 +142,11 @@ const getContractArtifactDependencies = (userId, workspace, address) => {
 const resetDatabaseWorkspace = (userId, workspace) => {
     if (!userId || !workspace) throw '[resetDatabaseWorkspace] Missing parameter';
     return _rtdb.ref(`/users/${userId}/workspaces/${workspace}`).set(null);
+};
+
+const removeDatabaseContractArtifacts = (userId, workspace, address) => {
+    if (!userId || !workspace) throw '[removeDatabaseContractArtifacts] Missing parameter';
+    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address}`).set(null);
 };
 
 const getContractData = async (userId, workspace, address) => {
@@ -156,7 +173,6 @@ const getContractRef = (userId, workspace, address) => {
 
 const getContractByHashedBytecode = async (userId, workspace, hashedBytecode, exclude = []) => {
     if (!userId || !workspace || !hashedBytecode) {
-        console.log(userId, workspace, hashedBytecode);
         throw '[getContractByHashedBytecode] Missing parameter';
     }
 
@@ -214,6 +230,15 @@ const storeTrace = (userId, workspace, txHash, trace) => {
         .set({ trace: trace }, { merge: true });
 };
 
+const storeTransactionData = (userId, workspace, hash, data) => {
+    if (!userId || !workspace || !hash || !data) throw '[storeTransactionData] Missing parameter';
+
+    return _getWorkspace(userId, workspace)
+        .collection('transactions')
+        .doc(hash)
+        .set({ storage: data }, { merge: true });
+};
+
 const updateAccountBalance = (userId, workspace, account, balance) => {
     if (!userId || !workspace || !account || !balance) throw '[updateAccountBalance] Missing parameter';
 
@@ -245,6 +270,25 @@ const updateWorkspaceSettings = (userId, workspace, settings) => {
         .update(settings);
 }
 
+const getUserbyStripeCustomerId = async (stripeCustomerId) => {
+    if (!stripeCustomerId) throw '[getUserbyStripeCustomerId] Missing parameter';
+
+    const userDoc = await _db.collection('users').where('stripeCustomerId', '==', stripeCustomerId).get();
+
+    if (userDoc.empty) {
+        return null;
+    }
+    else {
+        return userDoc.docs[0].ref;
+    }
+}
+
+const setUserData = async (userId, data) => {
+    if (!userId || !data) throw '[setUserData] Missing parameter';
+
+    return _db.collection('users').doc(userId).set(data, { merge: true });
+}
+
 module.exports = {
     storeBlock: storeBlock,
     storeTransaction: storeTransaction,
@@ -269,5 +313,12 @@ module.exports = {
     getContractRef: getContractRef,
     resetDatabaseWorkspace: resetDatabaseWorkspace,
     getContractArtifact: getContractArtifact,
-    getContractArtifactDependencies: getContractArtifactDependencies
+    getContractArtifactDependencies: getContractArtifactDependencies,
+    getUserbyStripeCustomerId: getUserbyStripeCustomerId,
+    setUserData: setUserData,
+    getCollectionRef: getCollectionRef,
+    getUserWorkspaces: getUserWorkspaces,
+    removeDatabaseContractArtifacts: removeDatabaseContractArtifacts,
+    storeTransactionData: storeTransactionData,
+    createUser: createUser
 };

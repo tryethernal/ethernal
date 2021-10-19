@@ -32,10 +32,34 @@ jest.mock('ethers', () => {
     return ethers;
 });
 const ethers = require('ethers');
+
 jest.mock('axios', () => ({
     get: jest.fn()
 }));
 const axios = require('axios');
+
+jest.mock('stripe', () => {
+    return () => {
+        return {
+            billingPortal: {
+                sessions: {
+                    create: () => {
+                        return new Promise((resolve) => resolve({ url: 'https://billing.stripe.com/session/ses_123' }));
+                    }
+                }
+            },
+            checkout: {
+                sessions: {
+                    create: () => {
+                        return new Promise((resolve) => resolve({ url: 'https://checkout.stripe.com/pay/cs_test_a1iLHyCoBSlctiheACjbxq' }));
+                    }
+                }
+            }
+        }
+    }
+});
+const stripe = require('stripe');
+
 const index = require('../index');
 const Helper = require('./helper');
 const Trace = require('./fixtures/ProcessedTrace.json');
@@ -48,7 +72,7 @@ let helper;
 
 describe('resetWorkspace', () => {
     beforeEach(() => {
-        helper = new Helper(process.env.GCLOUD_PROJECT)
+        helper = new Helper(process.env.GCLOUD_PROJECT);
     });
 
     it('Should remove accounts/blocks/contracts/transactions from firestore', async () => {
@@ -107,8 +131,9 @@ describe('syncBlock', () => {
 describe('syncContractArtifact', () => {
     let contractArtifact;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
+        await helper.setUser();
         const AmalfiContract = require('./fixtures/AmalfiContract.json');
         contractArtifact = JSON.stringify(AmalfiContract.artifact);
     });
@@ -129,6 +154,78 @@ describe('syncContractArtifact', () => {
         expect(result).toEqual({ address: '0x123' });
     });
 
+    it('Should not store more than 10 contracts on a free plan', async () => {
+        for (let i = 0; i < 10; i++) {
+            await helper.firestore
+                .collection('users')
+                .doc('123')
+                .collection('workspaces')
+                .doc('hardhat')
+                .collection('contracts')
+                .doc(`0x12${i}`)
+                .set({ artifact: 'artifact' });
+        }
+
+        const wrapped = helper.test.wrap(index.syncContractArtifact);
+        const data = {
+            workspace: 'hardhat',
+            address: '0x222',
+            artifact: contractArtifact
+        };
+
+        await expect(async () => {
+            await wrapped(data, auth);
+        }).rejects.toThrow({ message: 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.' });
+    });
+
+    it('Should store more than 10 contracts on a premium plan', async () => {
+        await helper.setUser({ plan: 'premium' });
+
+        for (let i = 0; i < 10; i++) {
+            await helper.firestore
+                .collection('users')
+                .doc('123')
+                .collection('workspaces')
+                .doc('hardhat')
+                .collection('contracts')
+                .doc(`0x12${i}`)
+                .set({ artifact: 'artifact' });
+        }
+
+        const wrapped = helper.test.wrap(index.syncContractArtifact);
+        const data = {
+            workspace: 'hardhat',
+            address: '0x222',
+            artifact: contractArtifact
+        };
+
+        const result = await wrapped(data, auth);
+        expect(result).toEqual({ address: '0x222' });
+    });
+
+    it('Should allow updating an artifact of a contract that already exists even with more than 10 contracts on a free plan', async () => {
+        for (let i = 0; i < 10; i++) {
+            await helper.firestore
+                .collection('users')
+                .doc('123')
+                .collection('workspaces')
+                .doc('hardhat')
+                .collection('contracts')
+                .doc(`0x12${i}`)
+                .set({ artifact: 'artifact' });
+        }
+
+        const wrapped = helper.test.wrap(index.syncContractArtifact);
+        const data = {
+            workspace: 'hardhat',
+            address: '0x120',
+            artifact: contractArtifact
+        };
+
+        const result = await wrapped(data, auth);
+        expect(result).toEqual({ address: '0x120' });
+    });
+
     afterEach(async () => {
         await helper.clean();
     });
@@ -137,8 +234,9 @@ describe('syncContractArtifact', () => {
 describe('syncContractDependencies', () => {
     let contractArtifact;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
+        await helper.setUser();
         const AmalfiContract = require('./fixtures/AmalfiContract.json');
         contractDependency = JSON.stringify(AmalfiContract.dependencies['Address']);
     });
@@ -157,6 +255,80 @@ describe('syncContractDependencies', () => {
 
         expect(artifactRef.val()).toEqual({ Address: contractDependency });
         expect(result).toEqual({ address: '0x123' });
+    });
+
+    it('Should not store more than 10 contracts on a free plan', async () => {
+        for (let i = 0; i < 10; i++) {
+            await helper.firestore
+                .collection('users')
+                .doc('123')
+                .collection('workspaces')
+                .doc('hardhat')
+                .collection('contracts')
+                .doc(`0x12${i}`)
+                .set({ dep: 'dep' });
+        }
+
+        const wrapped = helper.test.wrap(index.syncContractDependencies);
+        const data = {
+            workspace: 'hardhat',
+            address: '0x222',
+            dependencies: { Address: contractDependency }
+        };
+
+        await expect(async () => {
+            await wrapped(data, auth);
+        }).rejects.toThrow({ message: 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.' });
+    });
+
+    it('Should store more than 10 contracts on a premium plan', async () => {
+        await helper.setUser({ plan: 'premium' });
+
+        for (let i = 0; i < 10; i++) {
+            await helper.firestore
+                .collection('users')
+                .doc('123')
+                .collection('workspaces')
+                .doc('hardhat')
+                .collection('contracts')
+                .doc(`0x12${i}`)
+                .set({ dep: 'dep' });
+        }
+
+        const wrapped = helper.test.wrap(index.syncContractDependencies);
+        const data = {
+            workspace: 'hardhat',
+            address: '0x222',
+            dependencies: { Address: contractDependency }
+        };
+
+        const result = await wrapped(data, auth);
+        expect(result).toEqual({ address: '0x222' });
+    });
+
+    it('Should allow updating a dependency of a contract that already exists even with more than 10 contracts on a free plan', async () => {
+        await helper.setUser({ plan: 'premium' });
+
+        for (let i = 0; i < 10; i++) {
+            await helper.firestore
+                .collection('users')
+                .doc('123')
+                .collection('workspaces')
+                .doc('hardhat')
+                .collection('contracts')
+                .doc(`0x12${i}`)
+                .set({ dep: 'dep' });
+        }
+
+        const wrapped = helper.test.wrap(index.syncContractDependencies);
+        const data = {
+            workspace: 'hardhat',
+            address: '0x120',
+            dependencies: { Address: contractDependency }
+        };
+
+        const result = await wrapped(data, auth);
+        expect(result).toEqual({ address: '0x120' });
     });
 
     afterEach(async () => {
@@ -184,6 +356,7 @@ describe('syncTrace', () => {
 
     beforeEach(async () => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
+        await helper.setUser({ plan: 'premium' });
     });
 
     it('Should store a filtered trace', async () => {
@@ -236,6 +409,22 @@ describe('syncTrace', () => {
         expect(result).toEqual({ success: true });
     });
 
+    it('Should fail on a free plan', async () => {
+        await helper.setUser({ plan: 'free' }, { merge: true })
+
+        const wrapped = helper.test.wrap(index.syncTrace);
+
+        const data = {
+            workspace: 'hardhat',
+            txHash: '0x123',
+            steps: Trace
+        };
+
+        await expect(async () => {
+            await wrapped(data, auth);
+        }).rejects.toThrow({ message: 'Transaction tracing is only available to Premium plan user. Please upgrade to use it.' });
+    })
+
     afterEach(async () => {
         await helper.clean();
     });
@@ -244,6 +433,7 @@ describe('syncTrace', () => {
 describe('syncContractData', () => {
     beforeEach(async () => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
+        await helper.setUser();
     });
 
     it('Should store contract data', async () => {
@@ -268,6 +458,81 @@ describe('syncContractData', () => {
         expect(result).toEqual({ address: '0x123' });
     });
 
+   it('Should not store more than 10 contracts on a free plan', async () => {
+        for (let i = 0; i < 10; i++) {
+            await helper.firestore
+                .collection('users')
+                .doc('123')
+                .collection('workspaces')
+                .doc('hardhat')
+                .collection('contracts')
+                .doc(`0x12${i}`)
+                .set({ abi: 'abi' });
+        }
+
+        const wrapped = helper.test.wrap(index.syncContractData);
+        const data = {
+            workspace: 'hardhat',
+            address: '0x222',
+            name: 'test',
+            abi: { abi: 'abi' }
+        };
+
+        await expect(async () => {
+            await wrapped(data, auth);
+        }).rejects.toThrow({ message: 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.' });
+    });
+
+    it('Should store more than 10 contracts on a premium plan', async () => {
+        await helper.setUser({ plan: 'premium' });
+
+        for (let i = 0; i < 10; i++) {
+            await helper.firestore
+                .collection('users')
+                .doc('123')
+                .collection('workspaces')
+                .doc('hardhat')
+                .collection('contracts')
+                .doc(`0x12${i}`)
+                .set({ abi: 'abi' });
+        }
+
+        const wrapped = helper.test.wrap(index.syncContractData);
+        const data = {
+            workspace: 'hardhat',
+            address: '0x222',
+            name: 'test',
+            abi: { abi: 'abi' }
+        };
+
+        const result = await wrapped(data, auth);
+        expect(result).toEqual({ address: '0x222' });
+    });
+
+    it('Should allow updating a contract that already exists even with more than 10 contracts on a free plan', async () => {
+        for (let i = 0; i < 10; i++) {
+            await helper.firestore
+                .collection('users')
+                .doc('123')
+                .collection('workspaces')
+                .doc('hardhat')
+                .collection('contracts')
+                .doc(`0x12${i}`)
+                .set({ artifact: 'artifact' });
+        }
+
+        const wrapped = helper.test.wrap(index.syncContractData);
+        const data = {
+            workspace: 'hardhat',
+            address: '0x120',
+            name: 'test',
+            abi: { abi: 'abi' }
+        };
+
+        const result = await wrapped(data, auth);
+        expect(result).toEqual({ address: '0x120' });
+    });
+
     afterEach(async () => {
         await helper.clean();
     });
@@ -276,6 +541,7 @@ describe('syncContractData', () => {
 describe('syncTransaction', () => {
     beforeEach(async () => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
+        await helper.setUser();
     });
 
     it('Should store the transaction and return the hash', async () => {
@@ -342,6 +608,67 @@ describe('syncTransaction', () => {
             .get();
         const contract = await contractRef.data();
         expect(contract).toMatchSnapshot();
+        expect(result).toEqual({ txHash: Transaction.hash });
+    });
+
+    it('Should not store more than 10 contracts on a free plan', async () => {
+        for (let i = 0; i < 10; i++) {
+            await helper.firestore
+                .collection('users')
+                .doc('123')
+                .collection('workspaces')
+                .doc('hardhat')
+                .collection('contracts')
+                .doc(`0x12${i}`)
+                .set({ abi: 'abi' });
+        }
+
+        const wrapped = helper.test.wrap(index.syncTransaction);
+        const { to, ...creationTransaction } = Transaction;
+
+        const data = {
+            workspace: 'hardhat',
+            transaction: creationTransaction,
+            transactionReceipt: { ...TransactionReceipt, contractAddress: to },
+            block: Block
+        };
+
+        const contracts = await helper.firestore
+            .collection('users')
+            .doc('123')
+            .collection('workspaces')
+            .doc('hardhat')
+            .collection('contracts')
+            .get();
+
+        expect(contracts._size).toEqual(10);
+    });
+
+    it('Should store more than 10 contracts on a premium plan', async () => {
+        await helper.setUser({ plan: 'premium' });
+
+        for (let i = 0; i < 10; i++) {
+            await helper.firestore
+                .collection('users')
+                .doc('123')
+                .collection('workspaces')
+                .doc('hardhat')
+                .collection('contracts')
+                .doc(`0x12${i}`)
+                .set({ abi: 'abi' });
+        }
+
+        const wrapped = helper.test.wrap(index.syncTransaction);
+        const { to, ...creationTransaction } = Transaction;
+
+        const data = {
+            workspace: 'hardhat',
+            transaction: creationTransaction,
+            transactionReceipt: { ...TransactionReceipt, contractAddress: to },
+            block: Block
+        };
+
+        const result = await wrapped(data, auth);
         expect(result).toEqual({ txHash: Transaction.hash });
     });
 
@@ -746,9 +1073,11 @@ describe('impersonateAccount', () => {
 describe('createWorkspace', () => {
     beforeEach(async () => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
+        await helper.setUser();
     });
 
     it('Should create a new workspace', async () => {
+        await helper.setUser({ plan: 'premium' });
         const wrapped = helper.test.wrap(index.createWorkspace);
 
         const data = {
@@ -775,11 +1104,39 @@ describe('createWorkspace', () => {
         expect(wsRef.data()).toEqual(data.workspaceData);
         expect(result).toEqual({ success: true });
     });
+
+    it('Should not create a second workspace for free plan users', async() => {
+        await helper.firestore
+            .collection('users')
+            .doc('123')
+            .collection('workspaces')
+            .doc('hardhat')
+            .set({ name: 'Hardhat' });
+
+        const wrapped = helper.test.wrap(index.createWorkspace);
+
+        const data = {
+            name: 'Ganache',
+            workspaceData: {
+                rpcServer: 'http://localhost:8545',
+                networkId: 1,
+                settings: {
+                    gasLimit: 1000,
+                    defaultAccount: '0x123'
+                }
+            }
+        };
+
+        await expect(async () => {
+            await wrapped(data, auth);
+        }).rejects.toThrow({ message: 'Free plan users are limited to one workspace. Upgrade to our Premium plan to create more.' });
+    })
 });
 
 describe('setCurrentWorkspace', () => {
     beforeEach(async () => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
+        await helper.setUser();
     });
 
     it('Should update the default workspace', async () => {
@@ -810,7 +1167,7 @@ describe('setCurrentWorkspace', () => {
             .withConverter({ fromFirestore: firestoreConverter })
             .get();
 
-        expect(await userRef.data()).toEqual({ currentWorkspace: { rpcServer: 'http://localhost:7545' }});
+        expect(await userRef.data()).toEqual({ currentWorkspace: { rpcServer: 'http://localhost:7545' }, plan: 'free' });
         expect(result).toEqual({ success: true });
     });
 
@@ -986,6 +1343,136 @@ describe('updateWorkspaceSettings', () => {
                 tracing: 'disabled'
             }
         });
+    });
+
+    afterEach(async () => {
+        await helper.clean();
+    });
+});
+
+describe('createStripeCheckoutSession', () => {
+    beforeEach(async () => {
+        helper = new Helper(process.env.GCLOUD_PROJECT);
+        await helper.setUser();
+    });
+
+    it('Should return a Stripe Checkout url when the user didnt have a trial', async () => {
+        const wrapped = helper.test.wrap(index.createStripeCheckoutSession);
+
+        const data = {
+            plan: 'premium'
+        };
+
+        const result = await wrapped(data, auth);
+
+        expect(result).toEqual({ url: expect.stringContaining('https://checkout.stripe.com/pay') })
+    });
+
+    it('Should return a Stripe Checkout url when the user already had a trial', async () => {
+        await helper.setUser({ trialEndsAt: 1234 });
+
+        const wrapped = helper.test.wrap(index.createStripeCheckoutSession);
+
+        const data = {
+            plan: 'premium'
+        };
+
+        const result = await wrapped(data, auth);
+
+        expect(result).toEqual({ url: expect.stringContaining('https://checkout.stripe.com/pay') })
+    });
+
+    it('Should fail if an invalid plan is requested', async () => {
+        const wrapped = helper.test.wrap(index.createStripeCheckoutSession);
+
+        const data = {
+            plan: 'megapremium'
+        };
+
+        await expect(async () => {
+            await wrapped(data, auth);
+        }).rejects.toThrow({ message: '[createStripeCheckoutSession] Invalid plan.' });
+    });
+
+    afterEach(async () => {
+        await helper.clean();
+    });
+});
+
+describe('createStripePortalSession', () => {
+    beforeEach(() => {
+        helper = new Helper(process.env.GCLOUD_PROJECT);
+    });
+
+    it('Should return a Stripe portal url', async () => {
+        await helper.setUser({ plan: 'premium', stripeCustomerId: 'cus_1234' });
+
+        const wrapped = helper.test.wrap(index.createStripePortalSession);
+
+        const result = await wrapped({}, auth);
+
+        expect(result).toEqual({ url: expect.stringContaining('https://billing.stripe.com/session') });
+    });
+
+    afterEach(async () => {
+        await helper.clean();
+    });
+});
+
+describe('removeContract', () => {
+    beforeEach(() => {
+        helper = new Helper(process.env.GCLOUD_PROJECT);
+    });
+
+    it('Should remove the contract & its metadata if it exists', async () => {
+        await helper.workspace
+            .collection('contracts')
+            .doc('0x123')
+            .set({ name:' contract' });
+        await helper.database.ref('/users/123/workspaces/hardhat/contracts/0x123').set({ a: 3});
+
+        const wrapped = helper.test.wrap(index.removeContract);
+        
+        const data = {
+            workspace: 'hardhat',
+            address: '0x123'
+        };
+
+        const result = await wrapped(data, auth);
+
+        expect(result).toEqual({ success: true });
+
+        const contractRef = await helper.workspace
+            .collection('contracts')
+            .doc('0x123')
+            .get();
+        expect(contractRef.exists).toBe(false);
+
+        const contractDbSnap = await helper.database.ref('/users/123/workspaces/hardhat/contracts/0x123').once('value');
+        expect(contractDbSnap.val()).toBe(null);
+    });
+
+    it('Should do not fail if the contract does not exist', async () => {
+        const wrapped = helper.test.wrap(index.removeContract);
+        
+        const data = {
+            workspace: 'hardhat',
+            address: '0x123'
+        };
+
+        const result = await wrapped(data, auth);
+
+        expect(result).toEqual({ success: true });
+
+        const contractRef = await helper.workspace
+            .collection('contracts')
+            .doc('0x123')
+            .get();
+
+        expect(contractRef.exists).toBe(false);
+
+        const contractDbSnap = await helper.database.ref('/users/123/workspaces/hardhat/contracts/0x123').once('value');
+        expect(contractDbSnap.val()).toBe(null);
     });
 
     afterEach(async () => {

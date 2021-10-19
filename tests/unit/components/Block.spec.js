@@ -10,7 +10,7 @@ describe('Block.vue', () => {
     });
 
     it('Should show the block component', async (done) => {
-        const db = helper.mocks.db;
+        const db = helper.mocks.admin;
         const blockData = {
             number: '1',
             gasLimit: '1000000000',

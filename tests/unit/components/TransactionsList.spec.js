@@ -10,7 +10,7 @@ describe('TransactionsList.vue', () => {
     });
 
     it('Should display the list', async (done) => {
-        const db = helper.mocks.db;
+        const db = helper.mocks.admin;
         const transaction1 = {
             hash: '0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0',
             timestamp: '1621548462',

@@ -9,6 +9,20 @@ describe('CreateWorkspace.vue', () => {
         helper = new MockHelper();
     });
 
+    it('Should display a warning message if user has already been onboarded & on a free plan', async (done) => {
+        helper.getters.user.mockImplementation(() => { return { plan: 'free', onboarded: true }});
+        const wrapper = helper.mountFn(CreateWorkspace);
+        expect(wrapper.html()).toMatchSnapshot();
+        done();
+    });
+
+    it('Should not display a warning message if user has already been onboarded & on a premium plan', async (done) => {
+        helper.getters.user.mockImplementation(() => { return { plan: 'premium', onboarded: true }});
+        const wrapper = helper.mountFn(CreateWorkspace);
+        expect(wrapper.html()).toMatchSnapshot();
+        done();
+    });
+
     it('Should let the user create a new workspace', async (done) => {
         const name = 'Hardhat';
         const rpcServer = 'http://127.0.0.1:8545';
