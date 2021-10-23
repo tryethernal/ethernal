@@ -873,7 +873,7 @@ exports.createStripeCheckoutSession = functions.https.onCall(async (data, contex
         const rootUrl = functions.config().ethernal.root_url;
         const authUser = await admin.auth().getUser(context.auth.uid)
 
-        const trialPeriod = moment(authUser.metadata.creationTime).isBefore(moment('2021-11-20')) ? 30 : TRIAL_PERIOD_IN_DAYS;
+        const trialPeriod = moment(authUser.metadata.creationTime).isBefore(moment('2021-10-18')) ? 30 : TRIAL_PERIOD_IN_DAYS;
 
         const session = await stripe.checkout.sessions.create(sanitize({
             mode: 'subscription',
