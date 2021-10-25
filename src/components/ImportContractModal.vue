@@ -8,11 +8,10 @@
             <v-alert type="success" v-if="successMessage" v-html="successMessage"></v-alert>
             <v-alert type="error" v-if="errorMessage"> {{ errorMessage }}</v-alert>
             <div>
-                Enter an address of a contract deployed on the Ethereum mainnet <b>and</b> verified on Etherscan.<br>
-                Then, contract details will be pulled using the Etherscan API, and it will be added to this page.<br>
+                Enter an address of a contract deployed on {{ chainName }} mainnet <b>and</b> verified on {{ chainScanner }}.<br>
+                Then, contract details will be pulled using the {{ chainScanner }} API, and it will be added to this page.<br>
                 To be able to use it, your workspace needs to be connected to a mainnet fork.<br>
                 If it is not, the contract will still be imported but calls will fail.<br>
-                If you'd like support for other chains, please contact @antoinedc on Discord.<br>
             </div>
             <v-text-field :disabled="!canImport" id="contractAddress" v-model="contractAddress" label="Address*" required></v-text-field>
         </v-card-text>
@@ -84,6 +83,28 @@ export default {
         ]),
         canImport: function() {
             return this.user.plan == 'premium' || this.options.contractsCount < 10;
+        },
+        chainName: function() {
+            switch(this.currentWorkspace.chain) {
+                case 'bsc':
+                    return 'BSC';
+                case 'matic':
+                    return 'Matic';
+                case 'ethereum':
+                default:
+                    return 'Ethereum';
+            }
+        },
+        chainScanner: function() {
+            switch(this.currentWorkspace.chain) {
+                case 'bsc':
+                    return 'BSCscan';
+                case 'matic':
+                    return 'Polygonscan';
+                case 'ethereum':
+                default:
+                    return 'Etherscan';
+            }
         }
     }
 }

@@ -22,6 +22,11 @@
                                     label="RPC Server">
                                 </v-text-field>
                                 To use another server, create another workspace.
+                                <v-select class="mt-3" outlined required label="Chain" v-model="currentWorkspace.chain" :items="chains" hide-details="auto"></v-select>
+                                <v-row class="mt-2 pb-1 mr-2">
+                                    <v-spacer></v-spacer>
+                                    <v-btn id="updateOptions" :loading="loading" depressed color="primary" class="mt-1" @click="update()">Update</v-btn>
+                                </v-row>
                             </v-card-text>
                         </v-card>
 
@@ -261,6 +266,7 @@ export default {
                 value: 'actions'
             }
         ],
+        chains: [{ text: 'Ethereum', value: 'ethereum' }, { text: 'BSC', value: 'bsc' }, { text: 'Matic', value: 'matic' }],
         settings: {},
         advancedOptions: {},
         workspaces: [],
@@ -304,7 +310,7 @@ export default {
             this.updateSuccess = false;
             this.updateError = false;
 
-            this.server.updateWorkspaceSettings(this.currentWorkspace.name, { settings: this.settings })
+            this.server.updateWorkspaceSettings(this.currentWorkspace.name, { chain: this.currentWorkspace.chain, settings: this.settings })
                 .then(() => {
                     this.updateSuccess = true;
                     this.currentWorkspace.settings = this.settings;

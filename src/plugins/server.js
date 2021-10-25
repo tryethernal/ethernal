@@ -149,7 +149,8 @@ const serverFunctions = {
                 signer = provider.getSigner(data.options.from);
             }
             var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
-            return (await contract.functions[data.method](...Object.values(data.params), options));
+            console.log(data.params)
+            return (await contract[data.method](...Object.values(data.params), options));
         } catch(error) {
             console.log(error);
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";

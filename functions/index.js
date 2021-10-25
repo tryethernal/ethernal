@@ -43,7 +43,8 @@ const {
     removeDatabaseContractArtifacts,
     storeTransactionData,
     storeApiKey,
-    createUser
+    createUser,
+    getWorkspaceByName
 } = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
@@ -643,14 +644,30 @@ exports.importContract = functions.https.onCall(async (data, context) => {
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[importContract] Missing parameter.');
         }
+        const workspace = await getWorkspaceByName(context.auth.uid, data.workspace);
+        let scannerHost = 'etherscan.io';
+        let apiKey = functions.config().etherscan.token;
 
-        const endpoint = `${ETHERSCAN_API_URL}&address=${data.contractAddress}&apikey=${ETHERSCAN_API_KEY}`;
+        switch (workspace.chain) {
+            case 'bsc':
+                scannerHost = 'bscscan.com';
+                apiKey = functions.config().bscscan.token;
+                break;
+            case 'matic':
+                scannerHost = 'polygonscan.com';
+                apiKey = functions.config().polygonscan.token;
+                break;
+            default:
+            break;
+        }
+        const endpoint = `https://api.${scannerHost}/api?module=contract&action=getsourcecode&address=${data.contractAddress}&apikey=${apiKey}`;
+        console.log(endpoint)
         const response = await axios.get(endpoint);
 
         if (response.data.message == 'NOTOK') {
             throw { message: response.data.result };
         }
-
+        console.log(response.data)
         if (response.data.result[0].ContractName == '') {
             throw { message: `Couldn't find contract on Etherscan, make sure the address is correct and that the contract has been verified.` };
         }
@@ -757,13 +774,21 @@ exports.createWorkspace = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[createWorkspace] Missing parameter.');
         }
 
+        const filteredWorkspaceData = sanitize({
+            chain: data.workspaceData.chain,
+            localNetwork: data.workspaceData.localNetwork,
+            networkId: data.workspaceData.networkId,
+            rpcServer: data.workspaceData.rpcServer,
+            settings: data.workspaceData.settings
+        });
+
         const user = (await getUser(context.auth.uid)).data();
         const workspaces = await getUserWorkspaces(context.auth.uid);
 
         if ((!user.plan || user.plan == 'free') && workspaces._size > 0)
             throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to one workspace. Upgrade to our Premium plan to create more.');
 
-        await createWorkspace(context.auth.uid, data.name, data.workspaceData);
+        await createWorkspace(context.auth.uid, data.name, filteredWorkspaceData);
 
         return { success: true };
     } catch(error) {
@@ -823,9 +848,15 @@ exports.updateWorkspaceSettings = functions.https.onCall(async (data, context) =
             throw new functions.https.HttpsError('invalid-argument', '[updateWorkspaceSettings] Missing parameter.');
         }
 
+        const ALLOWED_OPTIONS = ['chain'];
         const ALLOWED_ADVANCED_OPTIONS = ['tracing'];
         const ALLOWED_SETTINGS = ['defaultAccount', 'gasLimit', 'gasPrice'];
         const sanitizedParams = {};
+
+        ALLOWED_OPTIONS.forEach((key) => {
+            if (!!data.settings[key])
+                sanitizedParams[key] = data.settings[key];
+        });
 
         if (data.settings.advancedOptions) {
             ALLOWED_ADVANCED_OPTIONS.forEach((key) => {
