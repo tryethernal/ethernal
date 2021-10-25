@@ -28,7 +28,7 @@ describe('ContractWriteMethod.vue', () => {
         done();
     });
 
-    it.only('Should handle array input properly', async (done) => {
+    it('Should handle array input properly', async (done) => {
         props.method = {
             "inputs": [
                 {

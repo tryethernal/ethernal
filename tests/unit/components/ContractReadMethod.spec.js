@@ -64,6 +64,9 @@ describe('ContractReadMethod.vue', () => {
     })
 
     it('Should return the result when interacting with the method', async (done) => {
+        helper.mocks.server.callContractReadMethod = () => {
+            return new Promise(resolve => resolve(['true']));
+        };
         const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
 
         await wrapper.find('button').trigger('click');
