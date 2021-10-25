@@ -48,7 +48,7 @@ export default {
                         this.loading = false;
                     })
             } catch(error) {
-                console.log(JSON.parse(JSON.stringify(error));
+                console.log(JSON.parse(JSON.stringify(error)));
                 if (error.reason)
                     this.result = `Error: ${error.reason.split('(')[0]}`;
                 else
