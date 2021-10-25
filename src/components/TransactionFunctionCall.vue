@@ -6,7 +6,7 @@
             </div>
             Params:
             <div v-for="(input, index) in parsedTransactionData.functionFragment.inputs" :key="index">
-                {{ input.name }}: {{ parsedTransactionData.args[index] }}
+                {{ input.name }}: {{ formatResponse(parsedTransactionData.args[index]) }}
             </div>
         </div>
          <div v-else>
@@ -16,6 +16,7 @@
 </template>
 <script>
 import { ethers } from 'ethers';
+import { formatSolidityObject } from '@/lib/utils';
 
 export default {
     name: 'TransactionFunctionCall',
@@ -33,6 +34,20 @@ export default {
         getSignatureFromFragment: function(fragment) {
             if (!fragment.inputs.length) return;
             return `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')'
+        },
+        formatResponse: function(response) {
+            if (Array.isArray(response)) {
+                let formattedResponse = [];
+                response.forEach((el) => {
+                    formattedResponse.push(formatSolidityObject(el));
+                })
+                return `[${formattedResponse.join(', ')}]`;
+            }
+            else if (response !== null && typeof response === 'object') {
+                return formatSolidityObject(response);
+            }
+            else
+                return response;
         }
     }
 }
