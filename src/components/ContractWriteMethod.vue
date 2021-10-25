@@ -15,7 +15,7 @@
             <div v-show="result.txHash">
                 Tx: <a :href="`/transaction/${result.txHash}`" target="_blank">{{ result.txHash }}</a>
             </div>
-            <div v-show="result.txHash && !receipt.status && !noReceipt">
+            <div v-show="result.txHash && receipt.status == undefined && !noReceipt">
                 <v-progress-circular class="mr-2" size="16" width="2" indeterminate color="primary"></v-progress-circular>Waiting for receipt...
             </div>
             <div v-show="receipt.status != undefined" class="mt-1">
@@ -47,7 +47,7 @@
 const Web3 = require('web3');
 import { ethers } from 'ethers';
 import { mapGetters } from 'vuex';
-import { sanitize } from '../lib/utils';
+import { sanitize, processMethodCallParam } from '../lib/utils';
 import { formatErrorFragment } from '../lib/abi';
 
 export default {
@@ -83,30 +83,43 @@ export default {
                 if (!this.options.gasLimit || parseInt(this.options.gasLimit) < 1) {
                     throw { reason: 'You must set a gas limit' }
                 }
-                this.server.callContractWriteMethod(this.contract, this.methodSignature, options, this.params, this.currentWorkspace.rpcServer, shouldTrace)
-                    .then(({ pendingTx, trace }) => {
 
+                const processedParams = {};
+                for (let i = 0; i < this.method.inputs.length; i++) {
+                    processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
+                }
+
+                this.server.callContractWriteMethod(this.contract, this.methodSignature, options, processedParams, this.currentWorkspace.rpcServer, shouldTrace)
+                    .then(({ pendingTx, trace }) => {
                         if (trace) {
                             this.server.syncTrace(this.currentWorkspace.name, pendingTx.hash, trace);
                         }
-
+                        this.result.txHash = pendingTx.hash;
                         if (typeof pendingTx.wait === 'function') {
-                            pendingTx.wait().then((receipt) => {
-                                if (receipt)
-                                    this.receipt = receipt;
-                                else
-                                    this.noReceipt = true;
-                            });
+                            pendingTx.wait()
+                                .then((receipt) => {
+                                    if (receipt)
+                                        this.receipt = receipt;
+                                    else
+                                        this.noReceipt = true;
+                                })
+                                .catch((error) => {
+                                    this.receipt = error.receipt;
+
+                                    this.result = {
+                                        txHash: error.transaction.hash,
+                                        message: `Error: ${error.reason} `
+                                    };
+                                });
                         }
                         else {
                             this.noReceipt = true;
                             this.noWaitFunction = true;
                         }
-                        this.result.txHash = pendingTx.hash;
                     })
                     .catch(error => {
                         console.log(error)
-                        if (error.data) {
+                        if (error.data && !error.data.stack) {
                             const jsonInterface = new ethers.utils.Interface(this.contract.abi);
                             var txHash = Object.keys(error.data)[0];
                             try {
