@@ -19,6 +19,7 @@
 <script>
 const ethers = require('ethers');
 import { mapGetters } from 'vuex';
+import { processMethodCallParam } from '@/lib/utils';
 
 export default {
     name: 'ContractReadMethod',
@@ -32,7 +33,11 @@ export default {
         callMethod: function(method) {
             try {
                 this.loading = true;
-                this.server.callContractReadMethod(this.contract, method.name, this.options, this.params, this.currentWorkspace.rpcServer)
+                const processedParams = {};
+                for (let i = 0; i < this.method.inputs.length; i++) {
+                    processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
+                }
+                this.server.callContractReadMethod(this.contract, method.name, this.options, processedParams, this.currentWorkspace.rpcServer)
                     .then(res => {
                         this.result = res.map(val => ethers.BigNumber.isBigNumber(val) ? ethers.BigNumber.from(val).toString() : val).join(' | ');
                     })
@@ -43,6 +48,7 @@ export default {
                         this.loading = false;
                     })
             } catch(error) {
+                console.log(JSON.parse(JSON.stringify(error)));
                 if (error.reason)
                     this.result = `Error: ${error.reason.split('(')[0]}`;
                 else

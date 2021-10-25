@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2021-10-25
+### Fixed
+- Handling of array parameters for contract methods
+- Error message was not properly handled and not displayed in some scenario when interacting with contract methods (when gas limit was wrong for example)
+
 ## [1.0.0] - 2021-10-18
 ### Changed
 - Ethernal is now open source 🥳 (see [https://blog.tryethernal.com/ethernal-is-going-open-source/](https://blog.tryethernal.com/ethernal-is-going-open-source/))

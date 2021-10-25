@@ -11,6 +11,33 @@ describe('TransactionFunctionCall.vue', () => {
         helper = new MockHelper();
     });
 
+    it.only('Should handle arrays as parameters', async (done) => {
+        const wrapper = helper.mountFn(TransactionFunctionCall, {
+            propsData: {
+                data: '0xe10497e00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000003',
+                value: '0',
+                abi: [{
+                    "inputs": [
+                        {
+                            "internalType": "uint256[]",
+                            "name": "values",
+                            "type": "uint256[]"
+                        }
+                    ],
+                    "name": "reproWriteBug",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                }],
+                to: '0x1234'
+            }
+        });
+
+        await wrapper.vm.$nextTick();
+        expect(wrapper.html()).toMatchSnapshot();
+        done();
+    });
+
     it('Should display transaction call', async (done) => {
         const wrapper = helper.mountFn(TransactionFunctionCall, {
             propsData: {
