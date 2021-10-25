@@ -107,3 +107,21 @@ exports[`ContractReadMethod.vue Should return the result when interacting with t
   <div id="call" class="grey lighten-3 pa-2" style="">true</div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg v-btn--loading theme--light v-size--default primary"><span class="v-btn__content">Query</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
 </div>
 `;
+
+exports[`ContractReadMethod.vue Should work when input is any array 1`] = `
+<div>
+  <div class="pb-1 font-weight-bold">reproBug</div>
+  <div class="v-input py-1 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input__control">
+      <div class="v-input__slot">
+        <fieldset aria-hidden="true">
+          <legend style="width: -24px;"><span>​</span></legend>
+        </fieldset>
+        <div class="v-text-field__slot"><label for="input-4" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">values (uint256[])</label><input id="input-4" type="text"></div>
+      </div>
+    </div>
+  </div>
+  <div>=&gt; uint256[]</div>
+  <div id="call" class="grey lighten-3 pa-2" style="">1 | 2</div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg v-btn--loading theme--light v-size--default primary"><span class="v-btn__content">Query</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+</div>
+`;

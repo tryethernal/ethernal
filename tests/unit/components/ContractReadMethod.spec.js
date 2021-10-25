@@ -27,6 +27,42 @@ describe('ContractReadMethod.vue', () => {
         done();
     });
 
+    it('Should work when input is any array', async (done) => {
+        helper.mocks.server.callContractReadMethod = () => {
+            return new Promise(resolve => resolve([1, 2]));
+        };
+        props.method = {
+            "inputs": [
+                {
+                "internalType": "uint256[]",
+                "name": "values",
+                "type": "uint256[]"
+                }
+            ],
+            "name": "reproBug",
+            "outputs": [
+                {
+                    "internalType": "uint256[]",
+                    "name": "",
+                    "type": "uint256[]"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function",
+            "constant": true
+        };
+
+        const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
+
+        await wrapper.find('input').setValue('[1,2]');
+        await wrapper.find('button').trigger('click');
+        await wrapper.vm.$nextTick();
+        
+        expect(wrapper.vm.result).toBe('1 | 2');
+        expect(wrapper.html()).toMatchSnapshot();
+        done();
+    })
+
     it('Should return the result when interacting with the method', async (done) => {
         const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
 

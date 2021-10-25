@@ -28,6 +28,35 @@ describe('ContractWriteMethod.vue', () => {
         done();
     });
 
+    it.only('Should handle array input properly', async (done) => {
+        props.method = {
+            "inputs": [
+                {
+                    "internalType": "uint256[]",
+                    "name": "values",
+                    "type": "uint256[]"
+                }
+            ],
+            "name": "reproWriteBug",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        };
+
+        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+
+        await wrapper.find('input').setValue('[1,2]');
+        await wrapper.find('button').trigger('click');
+        await wrapper.vm.$nextTick();
+
+        setTimeout(() => {
+            expect(wrapper.vm.result).toStrictEqual({ txHash: '0xabcd', message: null });
+            expect(wrapper.vm.receipt).toStrictEqual({ status: true });
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1500);
+    })
+
     it('Should display the tx hash and status when it succeeds with a receipt', async (done) => {
         const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
 
