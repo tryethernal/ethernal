@@ -1,4 +1,5 @@
 const Web3 = require('web3');
+const ethers = require('ethers');
 
 export const sanitize = function(obj) {
     return Object.fromEntries(
@@ -20,4 +21,25 @@ export const getProvider = function(rpcServer) {
     if (rpcServer.startsWith('http://') || rpcServer.startsWith('https://')) {
         return new Web3.providers.HttpProvider(rpcServer, { keepAlive: true, withCredentials: true });
     }
-}
+};
+
+export const processMethodCallParam = function(param, inputType) {
+    const regexArray = new RegExp("^(.*)\\[([0-9]*)\\]$");
+
+    if (inputType.match(regexArray))
+        return JSON.parse(param);
+
+    return param;
+};
+
+export const formatSolidityObject = function(obj) {
+    if (!obj.type)
+        return obj;
+
+    switch(obj.type) {
+        case 'BigNumber':
+            return ethers.BigNumber.from(obj.hex).toString();
+        default:
+            return obj;
+    }
+};
