@@ -18,7 +18,7 @@ exports.matchWithContract = async (snap, context) => {
             return snap._ref.set(sanitize({ name: contract.name, abi: contract.abi }), { merge: true });
         }
         else {
-            const workspace = await getWorkspaceByName(context.params.workspaceName);
+            const workspace = await getWorkspaceByName(context.params.userId, context.params.workspaceName);
             let scannerHost = 'etherscan.io';
             let apiKey = functions.config().etherscan.token;
 

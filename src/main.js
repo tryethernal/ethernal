@@ -95,7 +95,19 @@ const store = new Vuex.Store({
         },
         currentBlock: state => state.currentBlock,
         currentWorkspace: state => state.currentWorkspace,
-        connected: state => state.connected
+        connected: state => state.connected,
+        nativeToken: state => {
+            switch(state.currentWorkspace.chain) {
+                case 'ethereum':
+                    return 'Ether';
+                case 'bsc':
+                    return 'BNB';
+                case 'matic':
+                    return 'Matic';
+                default:
+                    return 'Ether';
+            }
+        }
     }
 });
 

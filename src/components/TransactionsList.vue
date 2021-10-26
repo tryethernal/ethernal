@@ -43,15 +43,16 @@
             <Hash-Link :type="'address'" :hash="item.to" />
         </template>
         <template v-slot:item.value="{ item }">
-            {{ item.value | fromWei }}
+            {{ item.value | fromWei('ether', nativeToken) }}
         </template>
         <template v-slot:item.fee="{ item }">
-            <span v-if="item.receipt">{{ item.gasPrice * (item.gas || item.receipt.gasUsed)  | fromWei }}</span>
+            <span v-if="item.receipt">{{ item.gasPrice * (item.gas || item.receipt.gasUsed)  | fromWei('ether', nativeToken) }}</span>
         </template>
     </v-data-table>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import FromWei from '../filters/FromWei.js';
 import HashLink from './HashLink.vue';
 
@@ -96,6 +97,11 @@ export default {
                 value: 'fee'
             }
         ]
-    })
+    }),
+    computed: {
+        ...mapGetters([
+            'nativeToken'
+        ])
+    }
 }
 </script>

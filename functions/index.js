@@ -645,31 +645,33 @@ exports.importContract = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[importContract] Missing parameter.');
         }
         const workspace = await getWorkspaceByName(context.auth.uid, data.workspace);
-        let scannerHost = 'etherscan.io';
+        let scannerHost = 'etherscan.io', scannerName = 'Etherscan';
         let apiKey = functions.config().etherscan.token;
 
         switch (workspace.chain) {
             case 'bsc':
                 scannerHost = 'bscscan.com';
+                scannerName = 'BSCscan';
                 apiKey = functions.config().bscscan.token;
                 break;
             case 'matic':
                 scannerHost = 'polygonscan.com';
+                scannerName = 'Polygonscan';
                 apiKey = functions.config().polygonscan.token;
                 break;
             default:
             break;
         }
         const endpoint = `https://api.${scannerHost}/api?module=contract&action=getsourcecode&address=${data.contractAddress}&apikey=${apiKey}`;
-        console.log(endpoint)
+
         const response = await axios.get(endpoint);
 
         if (response.data.message == 'NOTOK') {
             throw { message: response.data.result };
         }
-        console.log(response.data)
+
         if (response.data.result[0].ContractName == '') {
-            throw { message: `Couldn't find contract on Etherscan, make sure the address is correct and that the contract has been verified.` };
+            throw { message: `Couldn't find contract on ${scannerName}, make sure the address is correct and that the contract has been verified.` };
         }
 
         await storeContractData(context.auth.uid, data.workspace, data.contractAddress, {
