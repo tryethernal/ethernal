@@ -39,7 +39,10 @@ export default {
                 }
                 this.server.callContractReadMethod(this.contract, method.name, this.options, processedParams, this.currentWorkspace.rpcServer)
                     .then(res => {
-                        this.result = res.map(val => ethers.BigNumber.isBigNumber(val) ? ethers.BigNumber.from(val).toString() : val).join(' | ');
+                        if (Array.isArray(res))
+                            this.result = res.map(val => ethers.BigNumber.isBigNumber(val) ? ethers.BigNumber.from(val).toString() : val).join(' | ');
+                        else
+                            this.result = res;
                     })
                     .catch(error => {
                         this.result = error.reason || error;

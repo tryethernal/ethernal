@@ -380,7 +380,6 @@ exports[`Address.vue Should display the contract interaction interface under the
                         </div>
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      Eth to send:
                       <div class="col-4 px-0 py-1">
                         <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
@@ -388,7 +387,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-236" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in eth)</label><input small="" id="input-236" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-236" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" id="input-236" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -430,7 +429,6 @@ exports[`Address.vue Should display the contract interaction interface under the
                         </div>
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      Eth to send:
                       <div class="col-4 px-0 py-1">
                         <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
@@ -438,7 +436,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-244" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in eth)</label><input small="" id="input-244" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-244" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" id="input-244" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -490,7 +488,6 @@ exports[`Address.vue Should display the contract interaction interface under the
                         </div>
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      Eth to send:
                       <div class="col-4 px-0 py-1">
                         <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
@@ -498,7 +495,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-253" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in eth)</label><input small="" id="input-253" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-253" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" id="input-253" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -540,7 +537,6 @@ exports[`Address.vue Should display the contract interaction interface under the
                         </div>
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      Eth to send:
                       <div class="col-4 px-0 py-1">
                         <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
@@ -548,7 +544,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-261" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in eth)</label><input small="" id="input-261" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-261" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" id="input-261" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -580,7 +576,6 @@ exports[`Address.vue Should display the contract interaction interface under the
                         </div>
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      Eth to send:
                       <div class="col-4 px-0 py-1">
                         <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
@@ -588,7 +583,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-268" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in eth)</label><input small="" id="input-268" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-268" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" id="input-268" type="number"></div>
                             </div>
                           </div>
                         </div>

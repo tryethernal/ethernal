@@ -15,8 +15,7 @@ exports[`ImportContractModal.vue Should let the user import a verified mainnet c
               Enter an address of a contract deployed on the Ethereum mainnet <b>and</b> verified on Etherscan.<br>
               Then, contract details will be pulled using the Etherscan API, and it will be added to this page.<br>
               To be able to use it, your workspace needs to be connected to a mainnet fork.<br>
-              If it is not, the contract will still be imported but calls will fail.<br>
-              If you'd like support for other chains, please contact @antoinedc on Discord.<br></div>
+              If it is not, the contract will still be imported but calls will fail.<br></div>
             <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field">
               <div class="v-input__control">
                 <div class="v-input__slot">
@@ -59,8 +58,7 @@ exports[`ImportContractModal.vue Should not warn the user if he is on a premium 
               Enter an address of a contract deployed on the Ethereum mainnet <b>and</b> verified on Etherscan.<br>
               Then, contract details will be pulled using the Etherscan API, and it will be added to this page.<br>
               To be able to use it, your workspace needs to be connected to a mainnet fork.<br>
-              If it is not, the contract will still be imported but calls will fail.<br>
-              If you'd like support for other chains, please contact @antoinedc on Discord.<br></div>
+              If it is not, the contract will still be imported but calls will fail.<br></div>
             <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field">
               <div class="v-input__control">
                 <div class="v-input__slot">
@@ -103,8 +101,7 @@ exports[`ImportContractModal.vue Should warn the user if he is on a free plan an
               Enter an address of a contract deployed on the Ethereum mainnet <b>and</b> verified on Etherscan.<br>
               Then, contract details will be pulled using the Etherscan API, and it will be added to this page.<br>
               To be able to use it, your workspace needs to be connected to a mainnet fork.<br>
-              If it is not, the contract will still be imported but calls will fail.<br>
-              If you'd like support for other chains, please contact @antoinedc on Discord.<br></div>
+              If it is not, the contract will still be imported but calls will fail.<br></div>
             <div class="v-input v-input--is-disabled theme--light v-text-field">
               <div class="v-input__control">
                 <div class="v-input__slot">
@@ -147,8 +144,7 @@ exports[`ImportContractModal.vue Should warn the user if the contract has not be
               Enter an address of a contract deployed on the Ethereum mainnet <b>and</b> verified on Etherscan.<br>
               Then, contract details will be pulled using the Etherscan API, and it will be added to this page.<br>
               To be able to use it, your workspace needs to be connected to a mainnet fork.<br>
-              If it is not, the contract will still be imported but calls will fail.<br>
-              If you'd like support for other chains, please contact @antoinedc on Discord.<br></div>
+              If it is not, the contract will still be imported but calls will fail.<br></div>
             <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field">
               <div class="v-input__control">
                 <div class="v-input__slot">

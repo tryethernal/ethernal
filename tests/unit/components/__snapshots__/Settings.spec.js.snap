@@ -44,11 +44,33 @@ exports[`Settings.vue Should let the user switch workspaces 1`] = `
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span>​</span></legend>
                         </fieldset>
-                        <div class="v-text-field__slot"><label for="input-176" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">RPC Server</label><input disabled="disabled" id="input-176" type="text"></div>
+                        <div class="v-text-field__slot"><label for="input-185" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">RPC Server</label><input disabled="disabled" id="input-185" type="text"></div>
                       </div>
                     </div>
                   </div>
                   To use another server, create another workspace.
+                  <div class="v-input mt-3 v-input--hide-details theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
+                    <div class="v-input__control">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-186" class="v-input__slot">
+                        <fieldset aria-hidden="true">
+                          <legend style="width: 0px;"><span>​</span></legend>
+                        </fieldset>
+                        <div class="v-select__slot"><label for="input-186" class="v-label theme--light" style="left: 0px; position: absolute;">Chain</label>
+                          <div class="v-select__selections"><input required="required" id="input-186" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                          <div class="v-input__append-inner">
+                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                          </div><input type="hidden">
+                        </div>
+                        <div class="v-menu">
+                          <!---->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  If you'd like support for other chains, please contact @antoinedc on Discord.
+                  <div class="row mt-2 pb-1 mr-2">
+                    <div class="spacer"></div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary" id="updateOptions"><span class="v-btn__content">Update</span></button>
+                  </div>
                 </div>
               </div>
               <h4>Default Contracts Call Options</h4>
@@ -56,7 +78,7 @@ exports[`Settings.vue Should let the user switch workspaces 1`] = `
                 <div class="v-card__text">
                   <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-222" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-235" class="v-input__slot">
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span>​</span></legend>
                         </fieldset>
@@ -179,10 +201,10 @@ exports[`Settings.vue Should let the user switch workspaces 1`] = `
                     <div class="v-data-footer">
                       <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
                           <div class="v-input__control">
-                            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-205" class="v-input__slot">
+                            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-218" class="v-input__slot">
                               <div class="v-select__slot">
                                 <div class="v-select__selections">
-                                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-205" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-218" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                                 </div>
                                 <div class="v-input__append-inner">
                                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -220,13 +242,13 @@ exports[`Settings.vue Should let the user switch workspaces 1`] = `
                     <div class="col">
                       <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
                         <div class="v-input__control">
-                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-232" class="v-input__slot">
+                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-245" class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-select__slot"><label for="input-232" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Status</label>
+                            <div class="v-select__slot"><label for="input-245" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Status</label>
                               <div class="v-select__selections">
-                                <div class="v-select__selection v-select__selection--comma v-select__selection--disabled">Disabled</div><input disabled="disabled" id="input-232" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                                <div class="v-select__selection v-select__selection--comma v-select__selection--disabled">Disabled</div><input disabled="disabled" id="input-245" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                               </div>
                               <div class="v-input__append-inner">
                                 <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate v-icon--disabled mdi mdi-menu-down theme--light"></i></div>
@@ -316,19 +338,41 @@ exports[`Settings.vue Should let the user update call options 1`] = `
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span>​</span></legend>
                         </fieldset>
-                        <div class="v-text-field__slot"><label for="input-97" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">RPC Server</label><input disabled="disabled" id="input-97" type="text"></div>
+                        <div class="v-text-field__slot"><label for="input-101" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">RPC Server</label><input disabled="disabled" id="input-101" type="text"></div>
                       </div>
                     </div>
                   </div>
                   To use another server, create another workspace.
+                  <div class="v-input mt-3 v-input--hide-details theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
+                    <div class="v-input__control">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-102" class="v-input__slot">
+                        <fieldset aria-hidden="true">
+                          <legend style="width: 0px;"><span>​</span></legend>
+                        </fieldset>
+                        <div class="v-select__slot"><label for="input-102" class="v-label theme--light" style="left: 0px; position: absolute;">Chain</label>
+                          <div class="v-select__selections"><input required="required" id="input-102" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                          <div class="v-input__append-inner">
+                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                          </div><input type="hidden">
+                        </div>
+                        <div class="v-menu">
+                          <!---->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  If you'd like support for other chains, please contact @antoinedc on Discord.
+                  <div class="row mt-2 pb-1 mr-2">
+                    <div class="spacer"></div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg v-btn--loading theme--light v-size--default primary" id="updateOptions"><span class="v-btn__content">Update</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+                  </div>
                 </div>
               </div>
               <h4>Default Contracts Call Options</h4>
               <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
                 <div class="v-card__text">
-                  <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+                  <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-142" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-150" class="v-input__slot">
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span>​</span></legend>
                         </fieldset>
@@ -344,7 +388,7 @@ exports[`Settings.vue Should let the user update call options 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div class="v-input mt-4 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                  <div class="v-input mt-4 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                     <div class="v-input__control">
                       <div class="v-input__slot">
                         <fieldset aria-hidden="true">
@@ -354,7 +398,7 @@ exports[`Settings.vue Should let the user update call options 1`] = `
                       </div>
                     </div>
                   </div>
-                  <div class="v-input mt-4 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                  <div class="v-input mt-4 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                     <div class="v-input__control">
                       <div class="v-input__slot">
                         <fieldset aria-hidden="true">
@@ -446,10 +490,10 @@ exports[`Settings.vue Should let the user update call options 1`] = `
                     <div class="v-data-footer">
                       <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
                           <div class="v-input__control">
-                            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-126" class="v-input__slot">
+                            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-134" class="v-input__slot">
                               <div class="v-select__slot">
                                 <div class="v-select__selections">
-                                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-126" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-134" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                                 </div>
                                 <div class="v-input__append-inner">
                                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -485,15 +529,15 @@ exports[`Settings.vue Should let the user update call options 1`] = `
                     <div class="col align-self-center">
                       Transactions Tracing <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/transactions#trace" style="text-decoration: none;"><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></a></div>
                     <div class="col">
-                      <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+                      <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
                         <div class="v-input__control">
-                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-152" class="v-input__slot">
+                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-160" class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-select__slot"><label for="input-152" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Status</label>
+                            <div class="v-select__slot"><label for="input-160" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Status</label>
                               <div class="v-select__selections">
-                                <div class="v-select__selection v-select__selection--comma v-select__selection--disabled">Disabled</div><input disabled="disabled" id="input-152" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                                <div class="v-select__selection v-select__selection--comma v-select__selection--disabled">Disabled</div><input disabled="disabled" id="input-160" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                               </div>
                               <div class="v-input__append-inner">
                                 <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate v-icon--disabled mdi mdi-menu-down theme--light"></i></div>
@@ -588,6 +632,28 @@ exports[`Settings.vue Should load the settings page 1`] = `
                     </div>
                   </div>
                   To use another server, create another workspace.
+                  <div class="v-input mt-3 v-input--hide-details theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
+                    <div class="v-input__control">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-22" class="v-input__slot">
+                        <fieldset aria-hidden="true">
+                          <legend style="width: 0px;"><span>​</span></legend>
+                        </fieldset>
+                        <div class="v-select__slot"><label for="input-22" class="v-label theme--light" style="left: 0px; position: absolute;">Chain</label>
+                          <div class="v-select__selections"><input required="required" id="input-22" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                          <div class="v-input__append-inner">
+                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                          </div><input type="hidden">
+                        </div>
+                        <div class="v-menu">
+                          <!---->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  If you'd like support for other chains, please contact @antoinedc on Discord.
+                  <div class="row mt-2 pb-1 mr-2">
+                    <div class="spacer"></div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary" id="updateOptions"><span class="v-btn__content">Update</span></button>
+                  </div>
                 </div>
               </div>
               <h4>Default Contracts Call Options</h4>
@@ -595,7 +661,7 @@ exports[`Settings.vue Should load the settings page 1`] = `
                 <div class="v-card__text">
                   <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-64" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-68" class="v-input__slot">
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span>​</span></legend>
                         </fieldset>
@@ -713,10 +779,10 @@ exports[`Settings.vue Should load the settings page 1`] = `
                     <div class="v-data-footer">
                       <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
                           <div class="v-input__control">
-                            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-50" class="v-input__slot">
+                            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-54" class="v-input__slot">
                               <div class="v-select__slot">
                                 <div class="v-select__selections">
-                                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-50" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-54" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                                 </div>
                                 <div class="v-input__append-inner">
                                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -754,13 +820,13 @@ exports[`Settings.vue Should load the settings page 1`] = `
                     <div class="col">
                       <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
                         <div class="v-input__control">
-                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-74" class="v-input__slot">
+                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-78" class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-select__slot"><label for="input-74" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Status</label>
+                            <div class="v-select__slot"><label for="input-78" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Status</label>
                               <div class="v-select__selections">
-                                <div class="v-select__selection v-select__selection--comma v-select__selection--disabled">Disabled</div><input disabled="disabled" id="input-74" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                                <div class="v-select__selection v-select__selection--comma v-select__selection--disabled">Disabled</div><input disabled="disabled" id="input-78" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                               </div>
                               <div class="v-input__append-inner">
                                 <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate v-icon--disabled mdi mdi-menu-down theme--light"></i></div>
@@ -850,11 +916,33 @@ exports[`Settings.vue Should not display the tracing warning message for premium
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span>​</span></legend>
                         </fieldset>
-                        <div class="v-text-field__slot"><label for="input-255" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">RPC Server</label><input disabled="disabled" id="input-255" type="text"></div>
+                        <div class="v-text-field__slot"><label for="input-268" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">RPC Server</label><input disabled="disabled" id="input-268" type="text"></div>
                       </div>
                     </div>
                   </div>
                   To use another server, create another workspace.
+                  <div class="v-input mt-3 v-input--hide-details theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
+                    <div class="v-input__control">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-269" class="v-input__slot">
+                        <fieldset aria-hidden="true">
+                          <legend style="width: 0px;"><span>​</span></legend>
+                        </fieldset>
+                        <div class="v-select__slot"><label for="input-269" class="v-label theme--light" style="left: 0px; position: absolute;">Chain</label>
+                          <div class="v-select__selections"><input required="required" id="input-269" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                          <div class="v-input__append-inner">
+                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                          </div><input type="hidden">
+                        </div>
+                        <div class="v-menu">
+                          <!---->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  If you'd like support for other chains, please contact @antoinedc on Discord.
+                  <div class="row mt-2 pb-1 mr-2">
+                    <div class="spacer"></div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary" id="updateOptions"><span class="v-btn__content">Update</span></button>
+                  </div>
                 </div>
               </div>
               <h4>Default Contracts Call Options</h4>
@@ -862,7 +950,7 @@ exports[`Settings.vue Should not display the tracing warning message for premium
                 <div class="v-card__text">
                   <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-301" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-318" class="v-input__slot">
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span>​</span></legend>
                         </fieldset>
@@ -985,10 +1073,10 @@ exports[`Settings.vue Should not display the tracing warning message for premium
                     <div class="v-data-footer">
                       <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
                           <div class="v-input__control">
-                            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-284" class="v-input__slot">
+                            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-301" class="v-input__slot">
                               <div class="v-select__slot">
                                 <div class="v-select__selections">
-                                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-284" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-301" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                                 </div>
                                 <div class="v-input__append-inner">
                                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -1016,15 +1104,15 @@ exports[`Settings.vue Should not display the tracing warning message for premium
                     <div class="col align-self-center">
                       Transactions Tracing <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/transactions#trace" style="text-decoration: none;"><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></a></div>
                     <div class="col">
-                      <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
+                      <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
                         <div class="v-input__control">
-                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-308" class="v-input__slot">
+                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-325" class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-select__slot"><label for="input-308" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Status</label>
+                            <div class="v-select__slot"><label for="input-325" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Status</label>
                               <div class="v-select__selections">
-                                <div class="v-select__selection v-select__selection--comma">Disabled</div><input id="input-308" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                                <div class="v-select__selection v-select__selection--comma">Disabled</div><input id="input-325" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                               </div>
                               <div class="v-input__append-inner">
                                 <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
