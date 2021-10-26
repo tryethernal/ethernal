@@ -12,7 +12,7 @@ exports[`ImportContractModal.vue Should let the user import a verified mainnet c
             <div role="alert" class="v-alert v-sheet theme--dark success">Contact imported successfully at address <a class="white--text" href="/address/0x123">0x123</a></div>
             <!---->
             <div>
-              Enter an address of a contract deployed on the Ethereum mainnet <b>and</b> verified on Etherscan.<br>
+              Enter an address of a contract deployed on Ethereum mainnet <b>and</b> verified on Etherscan.<br>
               Then, contract details will be pulled using the Etherscan API, and it will be added to this page.<br>
               To be able to use it, your workspace needs to be connected to a mainnet fork.<br>
               If it is not, the contract will still be imported but calls will fail.<br></div>
@@ -55,7 +55,7 @@ exports[`ImportContractModal.vue Should not warn the user if he is on a premium 
               </div>
             </div>
             <div>
-              Enter an address of a contract deployed on the Ethereum mainnet <b>and</b> verified on Etherscan.<br>
+              Enter an address of a contract deployed on Ethereum mainnet <b>and</b> verified on Etherscan.<br>
               Then, contract details will be pulled using the Etherscan API, and it will be added to this page.<br>
               To be able to use it, your workspace needs to be connected to a mainnet fork.<br>
               If it is not, the contract will still be imported but calls will fail.<br></div>
@@ -98,7 +98,7 @@ exports[`ImportContractModal.vue Should warn the user if he is on a free plan an
             <!---->
             <!---->
             <div>
-              Enter an address of a contract deployed on the Ethereum mainnet <b>and</b> verified on Etherscan.<br>
+              Enter an address of a contract deployed on Ethereum mainnet <b>and</b> verified on Etherscan.<br>
               Then, contract details will be pulled using the Etherscan API, and it will be added to this page.<br>
               To be able to use it, your workspace needs to be connected to a mainnet fork.<br>
               If it is not, the contract will still be imported but calls will fail.<br></div>
@@ -141,7 +141,7 @@ exports[`ImportContractModal.vue Should warn the user if the contract has not be
               </div>
             </div>
             <div>
-              Enter an address of a contract deployed on the Ethereum mainnet <b>and</b> verified on Etherscan.<br>
+              Enter an address of a contract deployed on Ethereum mainnet <b>and</b> verified on Etherscan.<br>
               Then, contract details will be pulled using the Etherscan API, and it will be added to this page.<br>
               To be able to use it, your workspace needs to be connected to a mainnet fork.<br>
               If it is not, the contract will still be imported but calls will fail.<br></div>
