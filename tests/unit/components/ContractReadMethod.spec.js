@@ -78,6 +78,21 @@ describe('ContractReadMethod.vue', () => {
         done();
     });
 
+    it('Should display the result even if it is not an array', async (done) => {
+        helper.mocks.server.callContractReadMethod = () => {
+            return new Promise(resolve => resolve('1234'));
+        };
+        const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
+
+        await wrapper.find('button').trigger('click');
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.result).toBe('1234');
+        expect(wrapper.html()).toMatchSnapshot();
+
+        done();
+    });
+
     it('Should handle big number results', async (done) => {
         helper.mocks.server.callContractReadMethod = () => {
             return new Promise(resolve => resolve(['50000000000000000000']));

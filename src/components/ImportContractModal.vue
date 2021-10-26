@@ -12,7 +12,6 @@
                 Then, contract details will be pulled using the Etherscan API, and it will be added to this page.<br>
                 To be able to use it, your workspace needs to be connected to a mainnet fork.<br>
                 If it is not, the contract will still be imported but calls will fail.<br>
-                If you'd like support for other chains, please contact @antoinedc on Discord.<br>
             </div>
             <v-text-field :disabled="!canImport" id="contractAddress" v-model="contractAddress" label="Address*" required></v-text-field>
         </v-card-text>

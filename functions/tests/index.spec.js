@@ -855,6 +855,7 @@ describe('importContract', () => {
     });
 
     it('Should import the name & ABI if the contract is verified on Etherscan', async () => {
+        await helper.workspace.set({ chain: 'ethereum' });
         axios.get.mockImplementation(() => ({
             data: {
                 message: 'OK',
@@ -1083,6 +1084,7 @@ describe('createWorkspace', () => {
         const data = {
             name: 'Ganache',
             workspaceData: {
+                chain: 'ethereum',
                 rpcServer: 'http://localhost:8545',
                 networkId: 1,
                 settings: {
@@ -1216,6 +1218,7 @@ describe('updateWorkspaceSettings', () => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
         await helper.workspace
             .set({
+                chain: 'ethereum',
                 settings: {
                     defaultAccount: '0x123',
                     gasLimit: '1000',
@@ -1245,6 +1248,7 @@ describe('updateWorkspaceSettings', () => {
 
         expect(result).toEqual({ success: true });
         expect(wsRef.data()).toEqual({
+            chain: 'ethereum',
             settings: {
                 defaultAccount: '0x123',
                 gasLimit: '1000',
@@ -1252,6 +1256,34 @@ describe('updateWorkspaceSettings', () => {
             },
             advancedOptions: {
                 tracing: 'hardhat'
+            }
+        });
+    });
+
+    it('Should allow chain update', async () => {
+        const wrapped = helper.test.wrap(index.updateWorkspaceSettings);
+
+        const data = {
+            workspace: 'hardhat',
+            settings: {
+                chain: 'matic'
+            }
+        };
+
+        const result = await wrapped(data, auth);
+
+        const wsRef = await helper.workspace.get();
+
+        expect(result).toEqual({ success: true });
+        expect(wsRef.data()).toEqual({
+            chain: 'matic',
+            settings: {
+                defaultAccount: '0x123',
+                gasLimit: '1000',
+                gasPrice: '1'
+            },
+            advancedOptions: {
+                tracing: 'disabled'
             }
         });
     });
@@ -1276,6 +1308,7 @@ describe('updateWorkspaceSettings', () => {
 
         expect(result).toEqual({ success: true });
         expect(wsRef.data()).toEqual({
+            chain: 'ethereum',
             settings: {
                 defaultAccount: '0x124',
                 gasLimit: '2000',
@@ -1305,6 +1338,7 @@ describe('updateWorkspaceSettings', () => {
 
         expect(result).toEqual({ success: true });
         expect(wsRef.data()).toEqual({
+            chain: 'ethereum',
             settings : {
                 defaultAccount: '0x123',
                 gasLimit: '1000',
@@ -1334,6 +1368,7 @@ describe('updateWorkspaceSettings', () => {
 
         expect(result).toEqual({ success: true });
         expect(wsRef.data()).toEqual({
+            chain: 'ethereum',
             settings: {
                 defaultAccount: '0x123',
                 gasLimit: '1000',

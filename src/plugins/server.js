@@ -124,7 +124,7 @@ const serverFunctions = {
             };
 
             if (accounts.length)
-                workspace.settings.defaultAccount = accounts[0];
+                workspace.settings.defaultAccount = accounts[0].toLowerCase();
 
             return workspace;
         } catch(error) {
@@ -149,6 +149,7 @@ const serverFunctions = {
                 signer = provider.getSigner(data.options.from);
             }
             var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
+
             return (await contract.functions[data.method](...Object.values(data.params), options));
         } catch(error) {
             console.log(error);

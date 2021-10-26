@@ -41,7 +41,7 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Brave 1`] = 
         </div>
       </div>
     </div>
-    <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+    <div class="v-input mb-2 v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
@@ -51,16 +51,36 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Brave 1`] = 
         </div>
       </div>
     </div>
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+      <div class="v-input__control">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-91" class="v-input__slot">
+          <fieldset aria-hidden="true">
+            <legend style="width: 0px;"><span>​</span></legend>
+          </fieldset>
+          <div class="v-select__slot"><label for="input-91" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
+            <div class="v-select__selections">
+              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-91" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+            </div>
+            <div class="v-input__append-inner">
+              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+            </div><input type="hidden" value="ethereum">
+          </div>
+          <div class="v-menu">
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="v-input theme--light v-input--selection-controls v-input--switch">
       <div class="v-input__control">
         <div class="v-input__slot">
-          <div class="v-input--selection-controls__input"><input aria-checked="false" id="input-82" role="switch" type="checkbox" aria-disabled="false" value="">
+          <div class="v-input--selection-controls__input"><input aria-checked="false" id="input-94" role="switch" type="checkbox" aria-disabled="false" value="">
             <div class="v-input--selection-controls__ripple"></div>
             <div class="v-input--switch__track theme--light"></div>
             <div class="v-input--switch__thumb theme--light">
               <transition-stub name="fab-transition" mode="out-in"></transition-stub>
             </div>
-          </div><label for="input-82" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
+          </div><label for="input-94" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
         </div>
         <div class="v-messages theme--light">
           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
@@ -114,7 +134,7 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Safari 1`] =
         </div>
       </div>
     </div>
-    <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+    <div class="v-input mb-2 v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
@@ -124,16 +144,36 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Safari 1`] =
         </div>
       </div>
     </div>
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+      <div class="v-input__control">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-116" class="v-input__slot">
+          <fieldset aria-hidden="true">
+            <legend style="width: 0px;"><span>​</span></legend>
+          </fieldset>
+          <div class="v-select__slot"><label for="input-116" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
+            <div class="v-select__selections">
+              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-116" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+            </div>
+            <div class="v-input__append-inner">
+              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+            </div><input type="hidden" value="ethereum">
+          </div>
+          <div class="v-menu">
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="v-input theme--light v-input--selection-controls v-input--switch">
       <div class="v-input__control">
         <div class="v-input__slot">
-          <div class="v-input--selection-controls__input"><input aria-checked="false" id="input-104" role="switch" type="checkbox" aria-disabled="false" value="">
+          <div class="v-input--selection-controls__input"><input aria-checked="false" id="input-119" role="switch" type="checkbox" aria-disabled="false" value="">
             <div class="v-input--selection-controls__ripple"></div>
             <div class="v-input--switch__track theme--light"></div>
             <div class="v-input--switch__thumb theme--light">
               <transition-stub name="fab-transition" mode="out-in"></transition-stub>
             </div>
-          </div><label for="input-104" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
+          </div><label for="input-119" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
         </div>
         <div class="v-messages theme--light">
           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
@@ -187,7 +227,7 @@ exports[`CreateWorkspace.vue Should display a warning if trying to connect to an
         </div>
       </div>
     </div>
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+    <div class="v-input mb-2 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
@@ -197,16 +237,36 @@ exports[`CreateWorkspace.vue Should display a warning if trying to connect to an
         </div>
       </div>
     </div>
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+      <div class="v-input__control">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-139" class="v-input__slot">
+          <fieldset aria-hidden="true">
+            <legend style="width: 0px;"><span>​</span></legend>
+          </fieldset>
+          <div class="v-select__slot"><label for="input-139" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
+            <div class="v-select__selections">
+              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-139" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+            </div>
+            <div class="v-input__append-inner">
+              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+            </div><input type="hidden" value="ethereum">
+          </div>
+          <div class="v-menu">
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-input--selection-controls v-input--switch primary--text">
       <div class="v-input__control">
         <div class="v-input__slot">
-          <div class="v-input--selection-controls__input"><input aria-checked="true" id="input-124" role="switch" type="checkbox" aria-disabled="false" value="">
+          <div class="v-input--selection-controls__input"><input aria-checked="true" id="input-142" role="switch" type="checkbox" aria-disabled="false" value="">
             <div class="v-input--selection-controls__ripple primary--text"></div>
             <div class="v-input--switch__track theme--light primary--text"></div>
             <div class="v-input--switch__thumb theme--light primary--text">
               <transition-stub name="fab-transition" mode="out-in"></transition-stub>
             </div>
-          </div><label for="input-124" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
+          </div><label for="input-142" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
         </div>
         <div class="v-messages theme--light primary--text">
           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
@@ -260,7 +320,7 @@ exports[`CreateWorkspace.vue Should display a warning if trying to connect to an
         </div>
       </div>
     </div>
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+    <div class="v-input mb-2 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
@@ -270,16 +330,36 @@ exports[`CreateWorkspace.vue Should display a warning if trying to connect to an
         </div>
       </div>
     </div>
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+      <div class="v-input__control">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-162" class="v-input__slot">
+          <fieldset aria-hidden="true">
+            <legend style="width: 0px;"><span>​</span></legend>
+          </fieldset>
+          <div class="v-select__slot"><label for="input-162" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
+            <div class="v-select__selections">
+              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-162" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+            </div>
+            <div class="v-input__append-inner">
+              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+            </div><input type="hidden" value="ethereum">
+          </div>
+          <div class="v-menu">
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-input--selection-controls v-input--switch primary--text">
       <div class="v-input__control">
         <div class="v-input__slot">
-          <div class="v-input--selection-controls__input"><input aria-checked="true" id="input-144" role="switch" type="checkbox" aria-disabled="false" value="">
+          <div class="v-input--selection-controls__input"><input aria-checked="true" id="input-165" role="switch" type="checkbox" aria-disabled="false" value="">
             <div class="v-input--selection-controls__ripple primary--text"></div>
             <div class="v-input--switch__track theme--light primary--text"></div>
             <div class="v-input--switch__thumb theme--light primary--text">
               <transition-stub name="fab-transition" mode="out-in"></transition-stub>
             </div>
-          </div><label for="input-144" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
+          </div><label for="input-165" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
         </div>
         <div class="v-messages theme--light primary--text">
           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
@@ -348,7 +428,7 @@ exports[`CreateWorkspace.vue Should display an error if it cannot connect to the
         </div>
       </div>
     </div>
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+    <div class="v-input mb-2 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
@@ -358,16 +438,36 @@ exports[`CreateWorkspace.vue Should display an error if it cannot connect to the
         </div>
       </div>
     </div>
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+      <div class="v-input__control">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-70" class="v-input__slot">
+          <fieldset aria-hidden="true">
+            <legend style="width: 0px;"><span>​</span></legend>
+          </fieldset>
+          <div class="v-select__slot"><label for="input-70" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
+            <div class="v-select__selections">
+              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-70" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+            </div>
+            <div class="v-input__append-inner">
+              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+            </div><input type="hidden" value="ethereum">
+          </div>
+          <div class="v-menu">
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-input--selection-controls v-input--switch primary--text">
       <div class="v-input__control">
         <div class="v-input__slot">
-          <div class="v-input--selection-controls__input"><input aria-checked="true" id="input-64" role="switch" type="checkbox" aria-disabled="false" value="">
+          <div class="v-input--selection-controls__input"><input aria-checked="true" id="input-73" role="switch" type="checkbox" aria-disabled="false" value="">
             <div class="v-input--selection-controls__ripple primary--text"></div>
             <div class="v-input--switch__track theme--light primary--text"></div>
             <div class="v-input--switch__thumb theme--light primary--text">
               <transition-stub name="fab-transition" mode="out-in"></transition-stub>
             </div>
-          </div><label for="input-64" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
+          </div><label for="input-73" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
         </div>
         <div class="v-messages theme--light primary--text">
           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
@@ -424,7 +524,7 @@ exports[`CreateWorkspace.vue Should display locally running networks 1`] = `
         </div>
       </div>
     </div>
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+    <div class="v-input mb-2 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
@@ -434,16 +534,36 @@ exports[`CreateWorkspace.vue Should display locally running networks 1`] = `
         </div>
       </div>
     </div>
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+      <div class="v-input__control">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-208" class="v-input__slot">
+          <fieldset aria-hidden="true">
+            <legend style="width: 0px;"><span>​</span></legend>
+          </fieldset>
+          <div class="v-select__slot"><label for="input-208" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
+            <div class="v-select__selections">
+              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-208" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+            </div>
+            <div class="v-input__append-inner">
+              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+            </div><input type="hidden" value="ethereum">
+          </div>
+          <div class="v-menu">
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-input--selection-controls v-input--switch primary--text">
       <div class="v-input__control">
         <div class="v-input__slot">
-          <div class="v-input--selection-controls__input"><input aria-checked="true" id="input-184" role="switch" type="checkbox" aria-disabled="false" value="">
+          <div class="v-input--selection-controls__input"><input aria-checked="true" id="input-211" role="switch" type="checkbox" aria-disabled="false" value="">
             <div class="v-input--selection-controls__ripple primary--text"></div>
             <div class="v-input--switch__track theme--light primary--text"></div>
             <div class="v-input--switch__thumb theme--light primary--text">
               <transition-stub name="fab-transition" mode="out-in"></transition-stub>
             </div>
-          </div><label for="input-184" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
+          </div><label for="input-211" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
         </div>
         <div class="v-messages theme--light primary--text">
           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
@@ -497,7 +617,7 @@ exports[`CreateWorkspace.vue Should not allow multiple workspaces with the same 
         </div>
       </div>
     </div>
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+    <div class="v-input mb-2 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
@@ -507,16 +627,36 @@ exports[`CreateWorkspace.vue Should not allow multiple workspaces with the same 
         </div>
       </div>
     </div>
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+      <div class="v-input__control">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-231" class="v-input__slot">
+          <fieldset aria-hidden="true">
+            <legend style="width: 0px;"><span>​</span></legend>
+          </fieldset>
+          <div class="v-select__slot"><label for="input-231" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
+            <div class="v-select__selections">
+              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-231" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+            </div>
+            <div class="v-input__append-inner">
+              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+            </div><input type="hidden" value="ethereum">
+          </div>
+          <div class="v-menu">
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-input--selection-controls v-input--switch primary--text">
       <div class="v-input__control">
         <div class="v-input__slot">
-          <div class="v-input--selection-controls__input"><input aria-checked="true" id="input-204" role="switch" type="checkbox" aria-disabled="false" value="">
+          <div class="v-input--selection-controls__input"><input aria-checked="true" id="input-234" role="switch" type="checkbox" aria-disabled="false" value="">
             <div class="v-input--selection-controls__ripple primary--text"></div>
             <div class="v-input--switch__track theme--light primary--text"></div>
             <div class="v-input--switch__thumb theme--light primary--text">
               <transition-stub name="fab-transition" mode="out-in"></transition-stub>
             </div>
-          </div><label for="input-204" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
+          </div><label for="input-234" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
         </div>
         <div class="v-messages theme--light primary--text">
           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
@@ -570,7 +710,7 @@ exports[`CreateWorkspace.vue Should not display a warning if trying to connect t
         </div>
       </div>
     </div>
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+    <div class="v-input mb-2 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
@@ -580,16 +720,36 @@ exports[`CreateWorkspace.vue Should not display a warning if trying to connect t
         </div>
       </div>
     </div>
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+      <div class="v-input__control">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-185" class="v-input__slot">
+          <fieldset aria-hidden="true">
+            <legend style="width: 0px;"><span>​</span></legend>
+          </fieldset>
+          <div class="v-select__slot"><label for="input-185" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
+            <div class="v-select__selections">
+              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-185" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+            </div>
+            <div class="v-input__append-inner">
+              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+            </div><input type="hidden" value="ethereum">
+          </div>
+          <div class="v-menu">
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-input--selection-controls v-input--switch primary--text">
       <div class="v-input__control">
         <div class="v-input__slot">
-          <div class="v-input--selection-controls__input"><input aria-checked="true" id="input-164" role="switch" type="checkbox" aria-disabled="false" value="">
+          <div class="v-input--selection-controls__input"><input aria-checked="true" id="input-188" role="switch" type="checkbox" aria-disabled="false" value="">
             <div class="v-input--selection-controls__ripple primary--text"></div>
             <div class="v-input--switch__track theme--light primary--text"></div>
             <div class="v-input--switch__thumb theme--light primary--text">
               <transition-stub name="fab-transition" mode="out-in"></transition-stub>
             </div>
-          </div><label for="input-164" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
+          </div><label for="input-188" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
         </div>
         <div class="v-messages theme--light primary--text">
           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
@@ -643,7 +803,7 @@ exports[`CreateWorkspace.vue Should not display a warning message if user has al
         </div>
       </div>
     </div>
-    <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+    <div class="v-input mb-2 v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
@@ -653,16 +813,36 @@ exports[`CreateWorkspace.vue Should not display a warning message if user has al
         </div>
       </div>
     </div>
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+      <div class="v-input__control">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-23" class="v-input__slot">
+          <fieldset aria-hidden="true">
+            <legend style="width: 0px;"><span>​</span></legend>
+          </fieldset>
+          <div class="v-select__slot"><label for="input-23" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
+            <div class="v-select__selections">
+              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-23" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+            </div>
+            <div class="v-input__append-inner">
+              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+            </div><input type="hidden" value="ethereum">
+          </div>
+          <div class="v-menu">
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="v-input theme--light v-input--selection-controls v-input--switch">
       <div class="v-input__control">
         <div class="v-input__slot">
-          <div class="v-input--selection-controls__input"><input aria-checked="false" id="input-23" role="switch" type="checkbox" aria-disabled="false" value="">
+          <div class="v-input--selection-controls__input"><input aria-checked="false" id="input-26" role="switch" type="checkbox" aria-disabled="false" value="">
             <div class="v-input--selection-controls__ripple"></div>
             <div class="v-input--switch__track theme--light"></div>
             <div class="v-input--switch__thumb theme--light">
               <transition-stub name="fab-transition" mode="out-in"></transition-stub>
             </div>
-          </div><label for="input-23" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
+          </div><label for="input-26" class="v-label theme--light" style="left: 0px; position: relative;">Internal/Local Network</label>
         </div>
         <div class="v-messages theme--light">
           <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>

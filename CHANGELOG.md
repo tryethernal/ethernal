@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2021-10-26
+### Added
+- Better support for BSC & Matic: native currencies, contract import, contract matching for tracing
+- Technical improvement in how workspaces are created
+
+### Fixed
+- Handling of array of addresses for contract methods
+- Handling of method responses that are not arrays
+
 ## [1.0.1] - 2021-10-25
 ### Fixed
 - Handling of array parameters for contract methods

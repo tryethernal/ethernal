@@ -17,7 +17,7 @@ describe('Account.vue', () => {
         
         const wrapper = helper.mountFn(Accounts);
 
-        // No idea how to wait for execution of promises returned by mounted fn;
+        // No idea how to wait for execution of promises returned by mounted fn
         // It is just a $bind, no network request, so 1s should always be enough
         setTimeout(() => {
             expect(wrapper.vm.accounts.length).toBe(2);
