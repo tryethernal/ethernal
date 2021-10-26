@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2021-10-26
+### Fixed
+- Wording for import contract modal (now depends on the chain setting)
+
 ## [1.1.0] - 2021-10-26
 ### Added
 - Better support for BSC & Matic: native currencies, contract import, contract matching for tracing
