@@ -88,16 +88,14 @@ export default {
                 }
 
                 const workspace = await this.server.initRpcServer(rpcServer, this.localNetwork);
+
                 const result = await this.server.createWorkspace(name, { ...workspace, localNetwork: this.localNetwork, chain: this.chain });
 
                 if (!result.data.success) {
                     throw 'Error while creating workspace';
                 }
 
-                await this.server.setCurrentWorkspace(name);
-
-                this.$store.dispatch('updateCurrentWorkspace', { ...workspace, name: name, localNetwork: this.localNetwork })
-                this.$emit('workspaceCreated', { workspace: workspace, name: name, localNetwork: this.localNetwork });
+                this.$emit('workspaceCreated', { workspace: workspace, name: name, localNetwork: this.localNetwork, chain: this.chain });
             } catch(error) {
                 console.log(error);
                 this.loading = false;

@@ -27,7 +27,7 @@ export const processMethodCallParam = function(param, inputType) {
     const regexArray = new RegExp("^(.*)\\[([0-9]*)\\]$");
 
     if (inputType.match(regexArray))
-        return param.slice(0, param.length - 2).split(',');
+        return param.slice(1, param.length - 1).split(',');
 
     return param;
 };

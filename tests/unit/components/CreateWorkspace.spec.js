@@ -41,6 +41,7 @@ describe('CreateWorkspace.vue', () => {
 
         expect(initRpcServerMock).toHaveBeenCalledWith(rpcServer, localNetwork);
         expect(createWorkspaceMock).toHaveBeenCalledWith(name, {
+            chain: 'ethereum',
             rpcServer: rpcServer,
             networkId: 1,
             settings: {
@@ -53,6 +54,7 @@ describe('CreateWorkspace.vue', () => {
         expect(wrapper.emitted().workspaceCreated[0]).toEqual([{
             localNetwork: localNetwork,
             name: name,
+            chain: 'ethereum',
             workspace: {
                 rpcServer: rpcServer,
                 networkId: 1,

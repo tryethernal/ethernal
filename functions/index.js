@@ -267,7 +267,7 @@ exports.initRpcServer = functions.https.onCall(async (data, context) => {
         var latestBlock = await rpcProvider.getBlock(latestBlockNumber);
         var accounts = await rpcProvider.listAccounts();
         var gasLimit = latestBlock.gasLimit.toString();
-        
+
         var workspace = {
             rpcServer: data.rpcServer,
             networkId: networkId,
@@ -277,7 +277,7 @@ exports.initRpcServer = functions.https.onCall(async (data, context) => {
         };
 
         if (accounts.length)
-            workspace.settings.defaultAccount = accounts[0];
+            workspace.settings.defaultAccount = accounts[0].toLowerCase();
 
         return workspace;
     } catch(error) {

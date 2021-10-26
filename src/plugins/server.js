@@ -124,7 +124,7 @@ const serverFunctions = {
             };
 
             if (accounts.length)
-                workspace.settings.defaultAccount = accounts[0];
+                workspace.settings.defaultAccount = accounts[0].toLowerCase();
 
             return workspace;
         } catch(error) {
@@ -149,8 +149,8 @@ const serverFunctions = {
                 signer = provider.getSigner(data.options.from);
             }
             var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
-            console.log(data.params)
-            return (await contract[data.method](...Object.values(data.params), options));
+
+            return (await contract.functions[data.method](...Object.values(data.params), options));
         } catch(error) {
             console.log(error);
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";

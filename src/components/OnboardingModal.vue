@@ -70,7 +70,7 @@ export default {
             this.stepperIndex = 2;
             this.server.setCurrentWorkspace(workspaceData.name)
                 .then(() => {
-                    this.$store.dispatch('updateCurrentWorkspace', { ...workspaceData.workspace, name: workspaceData.name, localNetwork: workspaceData.localNetwork })
+                    this.$store.dispatch('updateCurrentWorkspace', { ...workspaceData.workspace, name: workspaceData.name, localNetwork: workspaceData.localNetwork, chain: workspaceData.chain })
                         .then(() => this.$bind('transactions', this.db.collection('transactions')));
                 });
         },
