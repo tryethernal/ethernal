@@ -23,6 +23,7 @@
                                 </v-text-field>
                                 To use another server, create another workspace.
                                 <v-select class="mt-3" outlined required label="Chain" v-model="currentWorkspace.chain" :items="chains" hide-details="auto"></v-select>
+                                If you'd like support for other chains, please contact @antoinedc on Discord.
                                 <v-row class="mt-2 pb-1 mr-2">
                                     <v-spacer></v-spacer>
                                     <v-btn id="updateOptions" :loading="loading" depressed color="primary" class="mt-1" @click="update()">Update</v-btn>
