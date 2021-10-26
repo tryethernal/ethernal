@@ -50,14 +50,14 @@
                 </v-col>
                 <v-col cols="2">
                     <div class="text-overline">Cost</div>
-                    <span v-if="transaction.receipt">{{ transaction.receipt.gasUsed * transaction.gasPrice | fromWei }}</span>
+                    <span v-if="transaction.receipt">{{ transaction.receipt.gasUsed * transaction.gasPrice | fromWei('ether', nativeToken) }}</span>
                     <v-chip small class="grey white--text" v-else>
                         Not Available
                     </v-chip>
                 </v-col>
                 <v-col cols="2">
                     <div class="text-overline">Value</div>
-                    {{ transaction.value | fromWei }}
+                    {{ transaction.value | fromWei('ether', nativeToken) }}
                 </v-col>
             </v-row>
             <v-row class="mb-4">
@@ -106,6 +106,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import HashLink from './HashLink';
 import TransactionData from './TransactionData';
 import TraceStep from './TraceStep';
@@ -154,6 +155,11 @@ export default {
                 }
             }
         }
+    },
+     computed: {
+        ...mapGetters([
+            'nativeToken'
+        ])
     }
 }
 </script>

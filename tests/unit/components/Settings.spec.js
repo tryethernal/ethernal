@@ -65,7 +65,7 @@ describe('Settings.vue', () => {
             expect(wrapper.html()).toMatchSnapshot();
 
             done();
-        }, 1000);
+        }, 2000);
     });
 
     it('Should not display the tracing warning message for premium users', async (done) => {

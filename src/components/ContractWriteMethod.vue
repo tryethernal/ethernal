@@ -28,7 +28,6 @@
             </div>
         </div>
         <v-divider class="my-2"></v-divider>
-        Eth to send:
         <div class="col-4 px-0 py-1">
             <v-text-field
                 small
@@ -37,7 +36,7 @@
                 v-model="valueInEth"
                 type="number"
                 hide-details="auto"
-                label="Value (in eth)">
+                :label="`Value (in ${nativeToken})`">
             </v-text-field>
         </div>
         <v-btn :loading="loading" depressed class="mt-1" color="primary" @click="sendMethod()">Query</v-btn>
@@ -161,7 +160,8 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'currentWorkspace'
+            'currentWorkspace',
+            'nativeToken'
         ]),
         value: function() {
             return this.web3.utils.toWei(this.valueInEth.toString(), 'ether');

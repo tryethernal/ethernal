@@ -11,7 +11,7 @@ describe('TransactionFunctionCall.vue', () => {
         helper = new MockHelper();
     });
 
-    it.only('Should handle arrays as parameters', async (done) => {
+    it('Should handle arrays as parameters', async (done) => {
         const wrapper = helper.mountFn(TransactionFunctionCall, {
             propsData: {
                 data: '0xe10497e00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000003',

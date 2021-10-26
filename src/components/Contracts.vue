@@ -40,7 +40,6 @@ import { mapGetters } from 'vuex';
 import ImportContractModal from './ImportContractModal';
 import HashLink from './HashLink';
 import UpgradeLink from './UpgradeLink';
-import FromWei from '../filters/FromWei';
 import RemoveContractConfirmationModal from './RemoveContractConfirmationModal';
 
 export default {
@@ -50,9 +49,6 @@ export default {
         ImportContractModal,
         UpgradeLink,
         RemoveContractConfirmationModal
-    },
-    filters: {
-        FromWei
     },
     data: () => ({
         loading: true,
