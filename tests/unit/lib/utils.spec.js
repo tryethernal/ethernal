@@ -34,6 +34,11 @@ describe('getProvider', () => {
 });
 
 describe('processMethodCallParam', () => {
+    it('Should return a javascript array if input is array of addresses', () => {
+        const result = processMethodCallParam('[0xeb4220df353ecf892314f341d36868924221dc6f,0x01c1def3b91672704716159c9041aeca392ddffb]', 'address[]');
+        expect(Array.isArray(result)).toBe(true);
+    });
+
     it('Should return a javascript array if input is string and array type', () => {
         const result = processMethodCallParam('[1,2]', 'uint256[]');
         expect(Array.isArray(result)).toBe(true);

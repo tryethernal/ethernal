@@ -29,7 +29,6 @@
 </template>
 
 <script>
-import FromWei from '../filters/FromWei';
 import TransactionsList from './TransactionsList';
 
 export default {
@@ -37,9 +36,6 @@ export default {
     props: ['number'],
     components: {
         TransactionsList
-    },
-    filters: {
-        FromWei
     },
     data: () => ({
         block: {

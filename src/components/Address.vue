@@ -4,7 +4,7 @@
             <v-col cols="3">
                 <v-card outlined>
                     <v-card-text>
-                        Balance: {{ balance | fromWei('ether') }}
+                        Balance: {{ balance | fromWei('ether', nativeToken) }}
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -363,7 +363,8 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'currentWorkspace'
+            'currentWorkspace',
+            'nativeToken'
         ]),
         tab: {
             set (tab) {

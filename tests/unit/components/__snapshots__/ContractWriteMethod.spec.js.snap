@@ -23,7 +23,6 @@ exports[`ContractWriteMethod.vue Should display only the error message if the tx
     </div>
   </div>
   <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-  Eth to send:
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
       <div class="v-input__control">
@@ -31,7 +30,7 @@ exports[`ContractWriteMethod.vue Should display only the error message if the tx
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-75" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in eth)</label><input small="" id="input-75" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-87" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" id="input-87" type="number"></div>
         </div>
       </div>
     </div>
@@ -62,7 +61,6 @@ exports[`ContractWriteMethod.vue Should display only the error message if there 
     </div>
   </div>
   <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-  Eth to send:
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
       <div class="v-input__control">
@@ -70,7 +68,7 @@ exports[`ContractWriteMethod.vue Should display only the error message if there 
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-64" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in eth)</label><input small="" id="input-64" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-76" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" id="input-76" type="number"></div>
         </div>
       </div>
     </div>
@@ -101,7 +99,6 @@ exports[`ContractWriteMethod.vue Should display only the error message with the 
     </div>
   </div>
   <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-  Eth to send:
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
       <div class="v-input__control">
@@ -109,7 +106,7 @@ exports[`ContractWriteMethod.vue Should display only the error message with the 
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-40" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in eth)</label><input small="" id="input-40" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-52" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" id="input-52" type="number"></div>
         </div>
       </div>
     </div>
@@ -140,7 +137,6 @@ exports[`ContractWriteMethod.vue Should display only the tx hash when it succeed
     </div>
   </div>
   <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-  Eth to send:
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
       <div class="v-input__control">
@@ -148,7 +144,7 @@ exports[`ContractWriteMethod.vue Should display only the tx hash when it succeed
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-29" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in eth)</label><input small="" id="input-29" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-41" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" id="input-41" type="number"></div>
         </div>
       </div>
     </div>
@@ -179,7 +175,6 @@ exports[`ContractWriteMethod.vue Should display the UI to interact with a method
     </div>
   </div>
   <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-  Eth to send:
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
       <div class="v-input__control">
@@ -187,7 +182,7 @@ exports[`ContractWriteMethod.vue Should display the UI to interact with a method
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-8" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in eth)</label><input small="" id="input-8" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-8" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" id="input-8" type="number"></div>
         </div>
       </div>
     </div>
@@ -204,7 +199,7 @@ exports[`ContractWriteMethod.vue Should display the formatted error message with
         <fieldset aria-hidden="true">
           <legend style="width: -24px;"><span>​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-47" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">to (address)</label><input id="input-47" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-59" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">to (address)</label><input id="input-59" type="text"></div>
       </div>
     </div>
   </div>
@@ -214,7 +209,7 @@ exports[`ContractWriteMethod.vue Should display the formatted error message with
         <fieldset aria-hidden="true">
           <legend style="width: -24px;"><span>​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-48" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">amount (uint256)</label><input id="input-48" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-60" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">amount (uint256)</label><input id="input-60" type="text"></div>
       </div>
     </div>
   </div>
@@ -238,7 +233,6 @@ exports[`ContractWriteMethod.vue Should display the formatted error message with
     </div>
   </div>
   <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-  Eth to send:
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
       <div class="v-input__control">
@@ -246,7 +240,7 @@ exports[`ContractWriteMethod.vue Should display the formatted error message with
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-53" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in eth)</label><input small="" id="input-53" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-65" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" id="input-65" type="number"></div>
         </div>
       </div>
     </div>
@@ -277,7 +271,6 @@ exports[`ContractWriteMethod.vue Should display the tx hash and status when it s
     </div>
   </div>
   <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-  Eth to send:
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
       <div class="v-input__control">
@@ -285,7 +278,7 @@ exports[`ContractWriteMethod.vue Should display the tx hash and status when it s
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-18" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in eth)</label><input small="" id="input-18" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-30" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" id="input-30" type="number"></div>
         </div>
       </div>
     </div>
@@ -302,7 +295,7 @@ exports[`ContractWriteMethod.vue Should handle array input properly 1`] = `
         <fieldset aria-hidden="true">
           <legend style="width: -24px;"><span>​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-4" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">values (uint256[])</label><input id="input-4" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-14" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">values (uint256[])</label><input id="input-14" type="text"></div>
       </div>
     </div>
   </div>
@@ -326,7 +319,6 @@ exports[`ContractWriteMethod.vue Should handle array input properly 1`] = `
     </div>
   </div>
   <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-  Eth to send:
   <div class="col-4 px-0 py-1">
     <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
       <div class="v-input__control">
@@ -334,7 +326,7 @@ exports[`ContractWriteMethod.vue Should handle array input properly 1`] = `
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-9" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in eth)</label><input small="" id="input-9" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-19" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" id="input-19" type="number"></div>
         </div>
       </div>
     </div>

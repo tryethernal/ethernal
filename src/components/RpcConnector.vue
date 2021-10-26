@@ -1,6 +1,6 @@
 <template>
     <v-toolbar dense flat class="grey lighten-3">
-        Workspace: {{ currentWorkspace.name }}
+        Workspace: {{ currentWorkspace.name }} ({{ chainName }})
         <v-divider vertical inset class="mx-2"></v-divider>
         {{ currentWorkspace.rpcServer }}
         <v-spacer></v-spacer>
@@ -40,7 +40,19 @@ export default Vue.extend({
     computed: {
         ...mapGetters([
             'currentWorkspace'
-        ])
+        ]),
+        chainName: function() {
+            switch(this.currentWorkspace.chain) {
+                case 'ethereum':
+                    return 'Ethereum';
+                case 'bsc':
+                    return 'BSC';
+                case 'matic':
+                    return 'Matic';
+                default:
+                    return 'Ethereum';
+            }
+        }
     }
 });
 </script>

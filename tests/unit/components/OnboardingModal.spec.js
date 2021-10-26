@@ -26,6 +26,7 @@ describe('OnboardingModal.vue', () => {
         await wrapper.vm.$nextTick();
         
         expect(helper.actions.updateCurrentWorkspace).toHaveBeenCalledWith(expect.anything(), {
+            chain: 'ethereum',
             rpcServer: rpcServer,
             networkId: 1,
             settings: {
