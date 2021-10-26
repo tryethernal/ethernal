@@ -1104,7 +1104,7 @@ exports[`Settings.vue Should not display the tracing warning message for premium
                     <div class="col align-self-center">
                       Transactions Tracing <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/transactions#trace" style="text-decoration: none;"><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></a></div>
                     <div class="col">
-                      <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
+                      <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
                         <div class="v-input__control">
                           <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-325" class="v-input__slot">
                             <fieldset aria-hidden="true">

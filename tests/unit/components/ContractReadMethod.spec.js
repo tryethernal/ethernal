@@ -78,7 +78,7 @@ describe('ContractReadMethod.vue', () => {
         done();
     });
 
-    it.only('Should display the result even if it is not an array', async (done) => {
+    it('Should display the result even if it is not an array', async (done) => {
         helper.mocks.server.callContractReadMethod = () => {
             return new Promise(resolve => resolve('1234'));
         };
