@@ -13,7 +13,7 @@
             <template v-slot:item.address="{ item }">
                 <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">
-                        <span v-if="item.unlocked">
+                        <span v-show="item.unlocked">
                             <v-icon v-bind="attrs" v-on="on" small class="mr-2">mdi-lock-open-outline</v-icon>
                         </span>
                     </template>
