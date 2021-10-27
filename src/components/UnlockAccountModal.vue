@@ -60,7 +60,7 @@ export default {
 
                 const wallet = new ethers.Wallet(privateKey);
 
-                if (wallet.address != address)
+                if (wallet.address.toLowerCase() != address)
                     throw { code: 'WALLET_MISMATCH'};
 
                 this.server.storeAccountPrivateKey(this.currentWorkspace.name, address, privateKey)
