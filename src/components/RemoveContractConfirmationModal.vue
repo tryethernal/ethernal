@@ -69,7 +69,7 @@ export default {
             this.dialog = false;
             this.reject = null;
             this.resolve = null;
-            this.laoding = false;
+            this.loading = false;
             this.errorMessage = null;
         }
     }
