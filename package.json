@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit --forceExit -u",
+    "test:unit": "vue-cli-service test:unit --forceExit",
+    "test:unit:update": "vue-cli-service test:unit --forceExit -u",
     "lint": "vue-cli-service lint",
     "dev": "firebase emulators:start --import=./firebase-emulator --export-on-exit & vue-cli-service serve"
   },

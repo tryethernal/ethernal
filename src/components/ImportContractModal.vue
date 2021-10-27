@@ -71,6 +71,7 @@ export default {
                 .finally(() => this.loading = false);
         },
         reset: function() {
+            this.loading = false;
             this.dialog = false;
             this.resolve = null;
             this.reject = null;

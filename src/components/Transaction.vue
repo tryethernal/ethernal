@@ -83,7 +83,7 @@
                 </v-col>
             </v-row>
 
-            <v-row class="my-2" v-if="transaction.trace">
+            <v-row class="my-2" v-if="transaction.trace && user.plan == 'premium'">
                 <v-col v-if="transaction.trace.length">
                     <h3 class="mb-2">Trace</h3>
                     <Trace-Step v-for="(step, idx) in transaction.trace" :step="step" :key="idx" />
@@ -91,6 +91,12 @@
                 <v-col v-else>
                     <h3 class="mb-2">Trace</h3>
                     Empty trace (only CREATE(2) and CALLs are shown).
+                </v-col>
+            </v-row>
+            <v-row class="my-2" v-if="user.plan == 'free'">
+                <v-col>
+                    <h3 class="mb-2">Trace</h3>
+                    Transaction tracing is only available to Premium users. <Upgrade-Link>Upgrade</Upgrade-Link> to use it.
                 </v-col>
             </v-row>
         </div>
@@ -111,6 +117,7 @@ import HashLink from './HashLink';
 import TransactionData from './TransactionData';
 import TraceStep from './TraceStep';
 import FromWei from '../filters/FromWei';
+import UpgradeLink from './UpgradeLink';
 
 export default {
     name: 'Transaction',
@@ -118,7 +125,8 @@ export default {
     components: {
         HashLink,
         TransactionData,
-        TraceStep
+        TraceStep,
+        UpgradeLink
     },
     filters: {
         FromWei
@@ -156,8 +164,9 @@ export default {
             }
         }
     },
-     computed: {
+    computed: {
         ...mapGetters([
+            'user',
             'nativeToken'
         ])
     }

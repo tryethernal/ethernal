@@ -30,10 +30,11 @@ export default Vue.extend({
     },
     methods: {
         syncAccount: function(account) {
+            const lowercasedAccount = account.toLowerCase();
             this.server
-                .getAccountBalance(account)
+                .getAccountBalance(lowercasedAccount)
                 .then((data) => {
-                    this.server.syncBalance(this.currentWorkspace.name, account, ethers.BigNumber.from(data).toString());
+                    this.server.syncBalance(this.currentWorkspace.name, lowercasedAccount, ethers.BigNumber.from(data).toString());
                 });
         }
     },

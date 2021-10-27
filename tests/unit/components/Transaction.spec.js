@@ -37,6 +37,20 @@ describe('Transaction.vue', () => {
             .set(transactionData);
     });
 
+    it('Should display a message for trace if user is not premium', (done) => {
+        helper.getters.user.mockImplementation(() => { return { plan: 'free' } });
+
+        const wrapper = helper.mountFn(Transaction, {
+            propsData: {
+                hash: '0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0'
+            }
+        });
+        setTimeout(() => {
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1000);
+    });
+
     it('Should display the transaction', async (done) => {
         const wrapper = helper.mountFn(Transaction, {
             propsData: {
@@ -46,7 +60,7 @@ describe('Transaction.vue', () => {
         setTimeout(() => {
             expect(wrapper.html()).toMatchSnapshot();
             done();
-        }, 1000);        
+        }, 1000);
     });
 
     afterEach(async () => {
