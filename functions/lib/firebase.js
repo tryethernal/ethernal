@@ -203,7 +203,7 @@ const storeAccountPrivateKey = (userId, workspace, address, privateKey) => {
     return _getWorkspace(userId, workspace)
         .collection('accounts')
         .doc(address.toLowerCase())
-        .set({ privateKey: privateKey }, { merge: true });
+        .set({ address: address, privateKey: privateKey }, { merge: true });
 };
 
 const getAccount = async (userId, workspace, address) => {
