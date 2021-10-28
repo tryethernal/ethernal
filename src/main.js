@@ -63,6 +63,8 @@ const store = new Vuex.Store({
         updateUser({ commit }, user) {
             if (user) {
                 commit('SET_USER', { uid: user.uid, email: user.email, loggedIn: true });
+                if (process.env.VUE_APP_ENABLE_ANALYTICS)
+                    LogRocket.identify(user.uid, { email: user.email });
             }
             else {
                 commit('SET_USER', null);
@@ -77,8 +79,11 @@ const store = new Vuex.Store({
         updateConnected({ commit }, connected) {
             commit('SET_CONNECTED', connected);
         },
-        updateUserPlan({ commit }, plan) {
-            commit('SET_USER_PLAN', plan);
+        updateUserPlan({ commit }, data) {
+            commit('SET_USER_PLAN', data.plan);
+            if (process.env.VUE_APP_ENABLE_ANALYTICS && data.uid && data.plan && data.plan != 'free') {
+                LogRocket.identify(data.uid, { plan: data.plan });
+            }
         },
         updateTrialPeriod({ commit }, trialEndsAt) {
             commit('SET_TRIAL_ENDS_AT', trialEndsAt);
@@ -119,16 +124,13 @@ new Vue({
     router,
     store: store,
     mounted: function() {
-        if (process.env.NODE_ENV == 'production')
-            LogRocket.init('lqunne/ethernal');
+        if (process.env.VUE_APP_ENABLE_ANALYTICS)
+            LogRocket.init(process.env.VUE_APP_LOGROCKET_ID);
 
         auth().onAuthStateChanged(this.authStateChanged);
     },
     methods: {
         authStateChanged: function(user) {
-            if (process.env.NODE_ENV == 'production' && user)
-                LogRocket.identify(user.uid, { email: user.email });
-
             var currentPath = this.$router.currentRoute.path;
             store.dispatch('updateUser', user);
             if (currentPath != '/auth' && !user) {

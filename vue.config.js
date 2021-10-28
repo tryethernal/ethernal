@@ -5,6 +5,14 @@ module.exports = {
     "transpileDependencies": [
         "vuetify"
     ],
+    chainWebpack: config => {
+        config
+            .plugin('html')
+            .tap(args => {
+                args[0]['enableAnalytics'] = !!process.env.VUE_APP_ENABLE_ANALYTICS;
+                return args;
+            })
+    },
     configureWebpack: {
         devServer: {
             public: 'antoine.local'
