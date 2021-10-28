@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3] - 2021-10-28
+### Changed
+- Analytics are only loaded if ENABLE_ANALYTICS env variable is present
+- Logrocket id is an env variable
+- Logrocket users are tagged with their plan
+
 ## [1.1.2] - 2021-10-27
 ### Fixed
 - Loader for contract deletion modal
