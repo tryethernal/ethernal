@@ -14,6 +14,7 @@ const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('
 const { parseTrace } = require('./lib/utils');
 const { encrypt, decrypt, encode } = require('./lib/crypto');
 const { matchWithContract } = require('./triggers/contracts');
+const { findPatterns } = require('./lib/contract');
 
 const api = require('./api/index');
 const {
@@ -383,7 +384,7 @@ exports.syncContractDependencies = functions.https.onCall(async (data, context) 
     }
 });
 
-exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '1GB' }).https.onCall(async (data, context) => {
+exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).https.onCall(async (data, context) => {
     if (!context.auth)
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
 
@@ -674,8 +675,12 @@ exports.importContract = functions.https.onCall(async (data, context) => {
             throw { message: `Couldn't find contract on ${scannerName}, make sure the address is correct and that the contract has been verified.` };
         }
 
+        const contractAbi = JSON.parse(response.data.result[0].ABI);
+        const patterns = findPatterns(contractAbi);
+
         await storeContractData(context.auth.uid, data.workspace, data.contractAddress, {
-            abi: JSON.parse(response.data.result[0].ABI),
+            patterns: patterns,
+            abi: contractAbi,
             address: data.contractAddress,
             name: response.data.result[0].ContractName,
             imported: true

@@ -140,6 +140,7 @@ const serverFunctions = {
             var options = sanitize({
                 gasLimit: data.options.gasLimit,
                 gasPrice: data.options.gasPrice,
+                blockTag: data.options.blockTag
             });
 
             if (data.options.pkey) {
@@ -148,6 +149,7 @@ const serverFunctions = {
             else {
                 signer = provider.getSigner(data.options.from);
             }
+
             var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
 
             return (await contract.functions[data.method](...Object.values(data.params), options));

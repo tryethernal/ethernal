@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container fluid>
         <div v-if="transaction">
             <h2 class="text-truncate mb-2">Tx {{ transaction.hash }}</h2>
             <span v-if="transaction.receipt">
@@ -26,7 +26,7 @@
                 </v-col>
                 <v-col cols="5" class="text-truncate" v-if="transaction.to">
                     <div class="text-overline">To</div>
-                    <Hash-Link :type="'address'" :hash="transaction.to" :fullHash="true" />
+                    <Hash-Link :type="'address'" :hash="transaction.to" :fullHash="true" :withName="true" />
                 </v-col>
                 <v-col cols="5" class="text-truncate" v-else>
                     <div class="text-overline">Contract Created</div>
@@ -71,7 +71,26 @@
                 </v-col>
             </v-row>
 
-            <v-row class="my-2" v-if="transaction.to">
+            <v-row class="my-2" v-show="tokenTransfers.length">
+                <v-col>
+                    <h3 class="mb-2">Token Transfers</h3>
+                    <Token-Transfers :transfers="tokenTransfers" />
+                </v-col>
+            </v-row>
+
+            <v-row class="my-2" v-show="tokenTransfers.length">
+                <v-col>
+                    <h3 class="mb-2">Balance Changes</h3>
+                    <Tokens-Balance-Diff v-for="(tb, idx) in Object.keys(tokensBalances)"
+                        class="my-6"
+                        :contract="tokensBalances[tb].contract"
+                        :addresses="tokensBalances[tb].addresses"
+                        :block="transaction.blockNumber"
+                        :key="idx" />
+                </v-col>
+            </v-row>
+
+            <v-row v-if="transaction.to">
                 <v-col>
                     <h3>Data</h3>
                     <div v-if="contract && contract.abi">
@@ -116,8 +135,11 @@ import { mapGetters } from 'vuex';
 import HashLink from './HashLink';
 import TransactionData from './TransactionData';
 import TraceStep from './TraceStep';
+import TokenTransfers from './TokenTransfers';
+import TokensBalanceDiff from './TokensBalanceDiff';
 import FromWei from '../filters/FromWei';
 import UpgradeLink from './UpgradeLink';
+import { decodeLog } from '../lib/abi';
 
 export default {
     name: 'Transaction',
@@ -126,7 +148,9 @@ export default {
         HashLink,
         TransactionData,
         TraceStep,
-        UpgradeLink
+        UpgradeLink,
+        TokenTransfers,
+        TokensBalanceDiff
     },
     filters: {
         FromWei
@@ -146,13 +170,46 @@ export default {
         parsedLogsData: [],
         block: {
             gasLimit: 0
-        }
+        },
+        tokenTransfers: [],
+        tokensBalances: {}
     }),
+    methods: {
+        parseTokenTransfers: function() {
+            for (let i = 0; i < this.transaction.receipt.logs.length; i++) {
+                const log = this.transaction.receipt.logs[i];
+                if (log.topics[0] == '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
+                    this.db.collection('contracts').doc(log.address.toLowerCase())
+                        .get()
+                        .then((contractDoc) => {
+                            const contract = contractDoc.data();
+                            const decodedLog = decodeLog(log, contract.abi);
+
+                            if (decodedLog) {
+                                this.tokenTransfers.push({
+                                    token: log.address,
+                                    src: decodedLog.args[0],
+                                    dst: decodedLog.args[1],
+                                    amount: decodedLog.args[2]
+                                });
+
+                                if (!this.tokensBalances[contract.address])
+                                    this.tokensBalances[contract.address] = { addresses: [] };
+
+                                this.tokensBalances[contract.address].contract = contract;
+                                this.tokensBalances[contract.address].addresses.push(decodedLog.args[0], decodedLog.args[1]);
+                            }
+                        })
+                }
+            }
+        }
+    },
     watch: {
         hash: {
             immediate: true,
             handler(hash) {
-                this.$bind('transaction', this.db.collection('transactions').doc(hash), { wait: true });
+                this.$bind('transaction', this.db.collection('transactions').doc(hash), { wait: true })
+                    .then(this.parseTokenTransfers);
             }
         },
         transaction: function() {

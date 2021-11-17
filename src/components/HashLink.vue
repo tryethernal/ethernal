@@ -1,6 +1,6 @@
 <template>
     <span>
-        <router-link v-if="hash" :to="link()">{{ formattedHash }}</router-link>
+        <router-link v-if="hash" :to="link()">{{ withName && name ? name : formattedHash }}</router-link>
         <span v-if="hash && !copied">
             &nbsp; <v-icon @click="copyHash()" x-small>mdi-content-copy</v-icon><input type="hidden" :id="`copyElement-${hash}`" :value="hash">
         </span>
@@ -10,12 +10,35 @@
     </span>
 </template>
 <script>
+
 export default {
     name: 'HashLink',
-    props: ['type', 'hash', 'fullHash'],
+    props: ['type', 'hash', 'fullHash', 'withName'],
     data: () => ({
-        copied: false
+        copied: false,
+        name: null
     }),
+    watch: {
+        hash: {
+            immediate: true,
+            handler(hash) {
+                if (!hash)
+                    return;
+
+                if (this.withName)
+                    if (hash == '0x0000000000000000000000000000000000000000')
+                        return this.name = 'Black Hole';
+
+                    this.db.collection('contracts').doc(hash.toLowerCase())
+                        .get()
+                        .then((contractDoc) => {
+                            if (contractDoc.exists) {
+                                this.name = contractDoc.data().name
+                            }
+                        });
+            }
+        }
+    },
     computed: {
         formattedHash: function () {
             if (!this.hash) return;

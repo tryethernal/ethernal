@@ -6,7 +6,9 @@
             </div>
             Params:
             <div v-for="(input, index) in parsedTransactionData.functionFragment.inputs" :key="index">
-                {{ input.name }}: {{ formatResponse(parsedTransactionData.args[index]) }}
+                {{ input.name }}:
+                <span v-if="input.type == 'address'"><Hash-Link :type="'address'" :fullHash="true" :hash='parsedTransactionData.args[index]' /></span>
+                <span v-else>{{ formatResponse(parsedTransactionData.args[index]) }}</span>
             </div>
         </div>
          <div v-else>
@@ -16,11 +18,15 @@
 </template>
 <script>
 import { ethers } from 'ethers';
-import { formatSolidityObject } from '@/lib/utils';
+import { formatResponse } from '@/lib/utils';
+import HashLink from './HashLink';
 
 export default {
     name: 'TransactionFunctionCall',
     props: ['data', 'value', 'abi', 'to'],
+    components: {
+        HashLink
+    },
     data: () => ({
         parsedTransactionData: null
     }),
@@ -31,23 +37,10 @@ export default {
         }
     },
     methods: {
+        formatResponse: formatResponse,
         getSignatureFromFragment: function(fragment) {
             if (!fragment.inputs.length) return;
             return `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')'
-        },
-        formatResponse: function(response) {
-            if (Array.isArray(response)) {
-                let formattedResponse = [];
-                response.forEach((el) => {
-                    formattedResponse.push(formatSolidityObject(el));
-                })
-                return `[${formattedResponse.join(', ')}]`;
-            }
-            else if (response !== null && typeof response === 'object') {
-                return formatSolidityObject(response);
-            }
-            else
-                return response;
         }
     }
 }

@@ -32,14 +32,36 @@ export const processMethodCallParam = function(param, inputType) {
     return param;
 };
 
-export const formatSolidityObject = function(obj) {
-    if (!obj.type)
+export const formatSolidityObject = function(obj, commified) {
+    if (!obj)
         return obj;
 
-    switch(obj.type) {
-        case 'BigNumber':
-            return ethers.BigNumber.from(obj.hex).toString();
+    if (ethers.BigNumber.isBigNumber(obj) && commified)
+        return ethers.utils.commify(ethers.utils.formatUnits(ethers.BigNumber.from(obj)));
+    else
+        return obj;
+};
+
+export const formatContractPattern = function(pattern) {
+    switch (pattern) {
+        case 'erc20':
+            return 'ERC 20';
         default:
-            return obj;
+            return pattern;
     }
+};
+
+export const formatResponse = function(response, commified) {
+    if (Array.isArray(response)) {
+        let formattedResponse = [];
+        response.forEach((el) => {
+            formattedResponse.push(formatSolidityObject(el, commified));
+        })
+        return `[${formattedResponse.join(', ')}]`;
+    }
+    else if (response !== null && typeof response === 'object') {
+        return formatSolidityObject(response, commified);
+    }
+    else
+        return response;
 };
