@@ -228,7 +228,6 @@ exports[`Address.vue Should display the contract interaction interface under the
                 Or you can manually edit contract metadata (name &amp; ABI) <a href="#">here</a>.
               </div>
             </div>
-            <!---->
           </div>
           <h4>Call Options</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
