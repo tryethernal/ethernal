@@ -665,23 +665,26 @@ exports.importContract = functions.https.onCall(async (data, context) => {
         const endpoint = `https://api.${scannerHost}/api?module=contract&action=getsourcecode&address=${data.contractAddress}&apikey=${apiKey}`;
 
         const response = await axios.get(endpoint);
+        let contractIsVerified = true;
 
-        if (response.data.message == 'NOTOK') {
-            throw { message: response.data.result };
+        if (response.data.message == 'NOTOK' || response.data.result[0].ContractName == '') {
+            await storeContractData(context.auth.uid, data.workspace, data.contractAddress, {
+                address: data.contractAddress,
+                imported: true
+            });
+            contractIsVerified = false;
+        }
+        else {
+            await storeContractData(context.auth.uid, data.workspace, data.contractAddress, {
+                abi: JSON.parse(response.data.result[0].ABI),
+                address: data.contractAddress,
+                name: response.data.result[0].ContractName,
+                imported: true
+            });
+            contractIsVerified = true;
         }
 
-        if (response.data.result[0].ContractName == '') {
-            throw { message: `Couldn't find contract on ${scannerName}, make sure the address is correct and that the contract has been verified.` };
-        }
-
-        await storeContractData(context.auth.uid, data.workspace, data.contractAddress, {
-            abi: JSON.parse(response.data.result[0].ABI),
-            address: data.contractAddress,
-            name: response.data.result[0].ContractName,
-            imported: true
-        });
-
-       return { success: true };
+       return { success: true, contractIsVerified: contractIsVerified };
     } catch(error) {
         console.log(error);
         var reason = error.message || 'Server error. Please retry.';

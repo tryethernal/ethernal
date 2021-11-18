@@ -8,9 +8,10 @@
             <v-alert type="success" v-if="successMessage" v-html="successMessage"></v-alert>
             <v-alert type="error" v-if="errorMessage"> {{ errorMessage }}</v-alert>
             <div>
-                Enter an address of a contract deployed on {{ chainName }} mainnet <b>and</b> verified on {{ chainScanner }}.<br>
-                Then, contract details will be pulled using the {{ chainScanner }} API, and it will be added to this page.<br>
-                To be able to use it, your workspace needs to be connected to a mainnet fork.<br>
+                Enter an address of a contract deployed on {{ chainName }} mainnet.<br>
+                If the contract has been verified on {{ chainScanner }}, its name and ABI will be pulled automatically.<br>
+                If not, the contract will be imported but you'll have to manually add the name and ABI.
+                To be able to use this, your workspace needs to be connected to a mainnet fork.<br>
                 If it is not, the contract will still be imported but calls will fail.<br>
             </div>
             <v-text-field :disabled="!canImport" id="contractAddress" v-model="contractAddress" label="Address*" required></v-text-field>
@@ -66,7 +67,12 @@ export default {
             this.errorMessage = null;
             this.loading = true;
             this.server.importContract(this.currentWorkspace.name, this.contractAddress)
-                .then(() => this.successMessage = `Contact imported successfully at address <a class="white--text" href="/address/${this.contractAddress}">${this.contractAddress}</a>`)
+                .then(({data}) => {
+                    if (data.contractIsVerified)
+                        this.successMessage = `Verified contract imported with metadata at address <a class="white--text" href="/address/${this.contractAddress}">${this.contractAddress}</a>`
+                    else
+                        this.successMessage = `Unverified contract imported without metadata at address <a class="white--text" href="/address/${this.contractAddress}">${this.contractAddress}</a>`
+                })
                 .catch(error => this.errorMessage = error.message)
                 .finally(() => this.loading = false);
         },
