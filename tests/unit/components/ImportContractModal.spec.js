@@ -23,9 +23,9 @@ describe('ImportContractModal.vue', () => {
         done();
     });
 
-    it('Should warn the user if the contract has not been found', async (done) => {
+    it('Should let the user import a non verified mainnet contract', async (done) => {
         helper.mocks.server.importContract = () => {
-            return new Promise((_, reject) => reject({ message: 'Contract not found'}));
+            return new Promise((resolve) => resolve({ data: { success: true, contractIsVerified: false }}));
         };
         const wrapper = helper.mountFn(ImportContractModal);
         const importContractMock = jest.spyOn(helper.mocks.server, 'importContract');
@@ -41,9 +41,6 @@ describe('ImportContractModal.vue', () => {
     });
 
     it('Should warn the user if he is on a free plan and has already 10 contracts', async (done) => {
-        helper.mocks.server.importContract = () => {
-            return new Promise((_, reject) => reject({ message: 'Contract not found'}));
-        };
         const wrapper = helper.mountFn(ImportContractModal);
         await wrapper.setData({ dialog: true, options: { contractsCount: 10 } });
 
@@ -56,9 +53,6 @@ describe('ImportContractModal.vue', () => {
     });
 
     it('Should not warn the user if he is on a premium plan and has already 10 contracts', async (done) => {
-        helper.mocks.server.importContract = () => {
-            return new Promise((_, reject) => reject({ message: 'Contract not found'}));
-        };
         helper.getters.user.mockImplementation(() => { return { plan: 'premium' } });
         const wrapper = helper.mountFn(ImportContractModal);
         await wrapper.setData({ dialog: true, options: { contractsCount: 10 } });

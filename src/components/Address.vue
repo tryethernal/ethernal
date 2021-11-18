@@ -31,7 +31,7 @@
                 <h4>Artifact</h4>
                 <v-card outlined class="mb-4">
                     <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
-                    <div v-if="!contractLoader && !contract.imported">
+                    <div v-if="!contractLoader">
                         <v-card-text v-if="contract.artifact">
                             Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded.
                             <div v-if="Object.keys(contract.dependencies).length" class="mb-1 mt-2">
@@ -53,11 +53,6 @@
                             For Truffle projects, use our <a href="https://www.npmjs.com/package/ethernal" target="_blank">CLI</a>.<br />
                             For Hardhat project, use our <a href="https://github.com/antoinedc/hardhat-ethernal" target="_blank">plugin</a>.<br />
                             Or you can manually edit contract metadata (name & ABI) <a href="#" @click.stop="openImportArtifactModal()">here</a>.
-                        </v-card-text>
-                    </div>
-                    <div v-if="!contractLoader && contract.imported">
-                        <v-card-text>
-                            Contract <b>{{ contract.name }}</b> has been loaded.
                         </v-card-text>
                     </div>
                 </v-card>

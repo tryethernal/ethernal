@@ -24,7 +24,7 @@ export default {
     },
 
     importContract: function() {
-        return new Promise((resolve) => resolve(true));
+        return new Promise((resolve) => resolve({ data: { success: true, contractIsVerified: true }}));
     },
 
     syncContractData: () => {
