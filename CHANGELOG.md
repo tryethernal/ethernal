@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.4] - 2021-11-18
+### Added
+- Possibility to import unverified contracts
+
+### Removed
+- Open source banner
+
 ## [1.1.3] - 2021-10-28
 ### Changed
 - Analytics are only loaded if ENABLE_ANALYTICS env variable is present
