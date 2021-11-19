@@ -1,8 +1,5 @@
 <template>
     <v-app>
-        <v-system-bar v-if="userLoggedIn" class="white--text text-center font-weight-bold" color="primary" app window>
-            Ethernal is evolving! It is now open source and offers a paid premium plan on the hosted version. Check out the announcement for more details: <a style="margin-left:5px;color: white; text-decoration: underline;" href="https://blog.tryethernal.com/ethernal-is-going-open-source/" target="_blank">https://blog.tryethernal.com/ethernal-is-going-open-source/</a>
-        </v-system-bar>
         <v-navigation-drawer app permanent v-if="userLoggedIn">
             <v-list-item>
                 <v-list-item-content>

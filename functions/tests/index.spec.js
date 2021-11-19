@@ -886,7 +886,7 @@ describe('importContract', () => {
             abi: { my: 'function' },
             imported: true
         });
-        expect(result).toEqual({ success: true });
+        expect(result).toEqual({ contractIsVerified: true, success: true });
     });
 
     it('Should return an error message if the contract does not exist', async () => {
@@ -904,12 +904,11 @@ describe('importContract', () => {
 
         const wrapped = helper.test.wrap(index.importContract);
 
-        await expect(async () => {
-            await wrapped(data, auth);
-        }).rejects.toThrow({ message: 'Nothing at this address' });
+        const result = await wrapped(data, auth);
+        expect(result).toEqual({ contractIsVerified: false, success: true });
     });
 
-    it('Should return an error message if the contract is not verified on Etherscan', async () => {
+    it('Should import the contract if it is not verified on Etherscan', async () => {
         axios.get.mockImplementation(() => ({
             data: {
                 message: 'OK',
@@ -926,10 +925,9 @@ describe('importContract', () => {
         };
 
         const wrapped = helper.test.wrap(index.importContract);
+        const result = await wrapped(data, auth);
 
-        await expect(async () => {
-            await wrapped(data, auth);
-        }).rejects.toThrow({ message: `Couldn't find contract on Etherscan, make sure the address is correct and that the contract has been verified.` });
+        expect(result).toEqual({ contractIsVerified: false, success: true });
     });
 
     afterEach(async () => {
