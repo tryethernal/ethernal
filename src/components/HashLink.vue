@@ -1,7 +1,7 @@
 <template>
     <span>
-        <router-link v-if="hash" :to="link()">{{ withName && name ? name : formattedHash }}</router-link>
-        <span v-if="hash && !copied">
+        <router-link v-if="hash" :to="link()">{{ name }}</router-link>
+        <span v-if="hash && !copied && !notCopiable">
             &nbsp; <v-icon @click="copyHash()" x-small>mdi-content-copy</v-icon><input type="hidden" :id="`copyElement-${hash}`" :value="hash">
         </span>
         <span v-if="copied">
@@ -13,10 +13,11 @@
 
 export default {
     name: 'HashLink',
-    props: ['type', 'hash', 'fullHash', 'withName'],
+    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName'],
     data: () => ({
         copied: false,
-        name: null
+        token: null,
+        contractName: null,
     }),
     watch: {
         hash: {
@@ -27,13 +28,14 @@ export default {
 
                 if (this.withName)
                     if (hash == '0x0000000000000000000000000000000000000000')
-                        return this.name = 'Black Hole';
+                        return this.contractName = 'Black Hole';
 
                     this.db.collection('contracts').doc(hash.toLowerCase())
                         .get()
                         .then((contractDoc) => {
                             if (contractDoc.exists) {
-                                this.name = contractDoc.data().name
+                                this.token = contractDoc.data().token;
+                                this.contractName = contractDoc.data().name;
                             }
                         });
             }
@@ -48,6 +50,16 @@ export default {
             else {
                 return `${this.hash.slice(0, 10)}...${this.hash.slice(-5)}`;
             }
+        },
+        name: function() {
+            if (this.withName) {
+                if (this.token) {
+                    if (this.token.symbol && !this.withTokenName) return this.token.symbol;
+                    if (this.token.name) return this.token.name;
+                }
+                return this.contractName ? this.contractName : this.formattedHash;
+            }
+            return this.formattedHash;
         }
     },
     methods: {

@@ -4,7 +4,7 @@
         :headers="tableHeaders"
         :items="transfers">
         <template v-slot:item.src="{ item }">
-            <Hash-Link :type="'address'" :hash="item.src" :fullHash="true" :withName="true" />
+            <Hash-Link :type="'address'" :hash="item.src" :fullHash="true" :withName="true" :withTokenName="true" />
         </template>
         <template v-slot:item.dst="{ item }">
             <Hash-Link :type="'address'" :hash="item.dst" :fullHash="true" :withName="true" />

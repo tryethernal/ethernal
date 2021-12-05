@@ -12,8 +12,6 @@ const _rtdb = firebase.database();
 const _functions = firebase.functions();
 const _auth = firebase.auth;
 
-const TOKEN_PATTERNS = ['erc20', 'erc721'];
-
 export const dbPlugin = {
     install(Vue, options) {
         var store = options.store;
@@ -23,6 +21,25 @@ export const dbPlugin = {
         };
 
         Vue.prototype.db = {
+            tokens() {
+                var currentWorkspace = store.getters.currentWorkspace.name;
+                if (!currentUser() || !currentWorkspace) return;
+                return _db.collection('users')
+                    .doc(currentUser().uid)
+                    .collection('workspaces')
+                    .doc(currentWorkspace)
+                    .collection('contracts')
+                    .where('patterns', 'array-contains', 'erc20');
+            },
+            onNewContract(cb) {
+                var currentWorkspace = store.getters.currentWorkspace.name;
+                if (!currentUser() || !currentWorkspace) return;
+                return _db.collection('users')
+                    .doc(currentUser().uid)
+                    .collection('workspaces')
+                    .doc(currentWorkspace)
+                    .collection('contracts').onSnapshot(cb);
+            },
             contractStorage(contractAddress) {
                 var currentWorkspace = store.getters.currentWorkspace.name;
                 if (!currentUser() || !currentWorkspace) return;
@@ -36,16 +53,6 @@ export const dbPlugin = {
                     .collection('workspaces')
                     .doc(currentWorkspace)
                     .collection(path);
-            },
-            tokens: function() {
-                var currentWorkspace = store.getters.currentWorkspace.name;
-                if (!currentUser() || !currentWorkspace) return;
-                return _db.collection('users')
-                    .doc(currentUser().uid)
-                    .collection('workspaces')
-                    .doc(currentWorkspace)
-                    .collection('contracts')
-                    .where('patterns', 'array-contains-any', TOKEN_PATTERNS);
             },
             settings: function() {
                 var currentWorkspace = store.getters.currentWorkspace.name;
@@ -97,7 +104,6 @@ export const dbPlugin = {
             },
             contractSerializer: snapshot => {
                 var res = snapshot.data();
-
                 var paths = snapshot.data().watchedPaths ? JSON.parse(snapshot.data().watchedPaths) : [];
                 Object.defineProperty(res, 'watchedPaths', { value: paths });
 

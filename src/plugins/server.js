@@ -6,6 +6,7 @@ import { Storage } from '../lib/storage';
 import { functions } from './firebase';
 import { sanitize } from '../lib/utils';
 import { parseTrace } from '../lib/trace';
+import { isErc20 } from '../lib/contract';
 
 const serverFunctions = {
     // Private
@@ -57,6 +58,43 @@ const serverFunctions = {
         }
 
         return new provider(urlInfo);
+    },
+    _fetchTokenInfo: async function(contract, rpcServer) {
+        let decimals = [], symbol = [], name = [];
+        try {
+            const ERC20_ABI = [
+                {"name":"name", "constant":true, "payable":false, "type":"function", "inputs":[], "outputs":[{"name":"","type":"string"}]},
+                {"name":"symbol", "constant":true, "payable":false, "type":"function", "inputs":[], "outputs":[{"name":"","type":"string"}]},
+                {"name":"decimals", "constant":true, "payable":false, "type":"function", "inputs":[], "outputs":[{"name":"","type":"uint8"}]}
+            ];
+            const tmpContract = {
+                ...contract,
+                abi: ERC20_ABI
+            };
+            decimals = await serverFunctions.callContractReadMethod({ contract: tmpContract, method: 'decimals()', options: {}, params: {}, rpcServer: rpcServer });
+            symbol = await serverFunctions.callContractReadMethod({ contract: tmpContract, method: 'symbol()', options: {}, params: {}, rpcServer: rpcServer });
+            name = await serverFunctions.callContractReadMethod({ contract: tmpContract, method: 'name()', options: {}, params: {}, rpcServer: rpcServer });
+        } catch (error) {
+            if (error.reason == 'missing response')
+                throw "Can't connect to the server";
+        }
+
+        if (!decimals.length || !symbol.length || !name.length) {
+            return {};
+        }
+        else {
+            const tokenPatterns = ['erc20'];
+            if (!isErc20(contract.abi)) tokenPatterns.push('proxy');
+
+            return {
+                patterns: tokenPatterns,
+                properties: {
+                    decimals: decimals[0],
+                    symbol: symbol[0],
+                    name: name[0]
+                }
+            };
+        }
     },
 
     // Public
@@ -138,7 +176,7 @@ const serverFunctions = {
             var provider = serverFunctions._getProvider(data.rpcServer);
             var signer;
             var options = sanitize({
-                gasLimit: data.options.gasLimit,
+                gasLimit: data.options.gasLimit || 100000,
                 gasPrice: data.options.gasPrice,
                 blockTag: data.options.blockTag
             });
@@ -151,10 +189,8 @@ const serverFunctions = {
             }
 
             var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
-
-            return (await contract.functions[data.method](...Object.values(data.params), options));
+            return await contract.functions[data.method](...Object.values(data.params), options);
         } catch(error) {
-            console.log(error);
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
             throw { reason: reason };
         }
@@ -230,6 +266,27 @@ const serverFunctions = {
         } catch(error) {
             console.log(error);
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
+            throw { reason: reason };
+        }
+    },
+    processContracts: async function(data) {
+        try {
+            const contracts = (await functions.httpsCallable('getUnprocessedContracts')({ workspace: data.workspace })).data.contracts;
+            for (let i = 0; i < contracts.length; i++) {
+                const contract = contracts[i];
+                const token = await serverFunctions._fetchTokenInfo(contract, data.rpcServer);
+                await functions.httpsCallable('setTokenProperties')({
+                    workspace: data.workspace,
+                    contract: contract.address,
+                    tokenProperties: token.properties,
+                    tokenPatterns: token.patterns
+                });
+            }
+
+            return true;
+        } catch(error) {
+            console.log(error);
+            var reason = error.reason || error.message || "Can't connect to the server";
             throw { reason: reason };
         }
     }
@@ -310,6 +367,13 @@ export const serverPlugin = {
             },
             getProvider: function(url) {
                 return serverFunctions._getProvider(url);
+            },
+            processContracts: async function(workspace) {
+                return new Promise((resolve, reject) => {
+                    serverFunctions.processContracts({ workspace: workspace, rpcServer: _rpcServer() })
+                        .then(resolve)
+                        .catch(reject);
+                });
             },
             searchForLocalChains: async function() {
                 try {

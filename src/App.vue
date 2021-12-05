@@ -100,7 +100,7 @@ export default {
     name: 'App',
     components: {
         RpcConnector,
-        OnboardingModal
+        OnboardingModal,
     },
     data: () => ({
         version: process.env.VUE_APP_VERSION,

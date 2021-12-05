@@ -13,8 +13,7 @@ const Storage = require('./lib/storage');
 const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('./lib/utils');
 const { parseTrace } = require('./lib/utils');
 const { encrypt, decrypt, encode } = require('./lib/crypto');
-const { matchWithContract } = require('./triggers/contracts');
-const { findPatterns } = require('./lib/contract');
+const { processContract } = require('./triggers/contracts');
 
 const api = require('./api/index');
 const {
@@ -45,7 +44,8 @@ const {
     storeTransactionData,
     storeApiKey,
     createUser,
-    getWorkspaceByName
+    getWorkspaceByName,
+    getUnprocessedContracts
 } = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
@@ -1041,5 +1041,55 @@ exports.createUser = functions.https.onCall(async (data, context) => {
     }
 });
 
+exports.getUnprocessedContracts = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspace) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[getUnprocessedContracts] Missing parameter.');
+        }
+
+        const contracts = await getUnprocessedContracts(context.auth.uid, data.workspace);
+
+        return { contracts: contracts };
+    } catch(error) {
+        console.log(error)
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);        
+    }
+});
+
+exports.setTokenProperties = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.workspace || !data.contract) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[setTokenProperties] Missing parameter.');
+        }
+
+        const patterns = data.tokenPatterns ? admin.firestore.FieldValue.arrayUnion(...data.tokenPatterns) : [];
+
+        let tokenData = {};
+        if (data.tokenProperties)
+            tokenData = sanitize({
+                symbol: data.tokenProperties.symbol,
+                decimals: data.tokenProperties.decimals,
+                name: data.tokenProperties.name
+            });
+
+        const contracts = await storeContractData(context.auth.uid, data.workspace, data.contract, { patterns: patterns, processed: true, token: tokenData });
+
+        return { contracts: contracts };
+    } catch(error) {
+        console.log(error)
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);        
+    }
+});
+
 exports.api = functions.https.onRequest(api);
-exports.matchWithContract = functions.firestore.document('users/{userId}/workspaces/{workspaceName}/contracts/{contractName}').onCreate(matchWithContract);
+exports.processContract = functions.firestore.document('users/{userId}/workspaces/{workspaceName}/contracts/{contractName}').onCreate(processContract);

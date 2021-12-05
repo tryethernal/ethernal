@@ -9,6 +9,15 @@
             <template v-slot:item.address="{ item }">
                 <Hash-Link :type="'address'" :hash="item.address" />
             </template>
+            <template v-slot:item.contractName="{ item }">
+                {{ item.name }}
+            </template>
+            <template v-slot:item.tokenName="{ item }">
+                {{ item.token.name }}
+            </template>
+            <template v-slot:item.tokenSymbol="{ item }">
+                {{ item.token.symbol }}
+            </template>
             <template v-slot:item.tags="{ item }">
                 <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" x-small class="success mr-2">
                     {{ formatContractPattern(pattern) }}
@@ -35,8 +44,16 @@ export default {
                 value: 'address'
             },
             {
-                text: 'Name',
-                value: 'name'
+                text: 'Contract Name',
+                value: 'contractName'
+            },
+            {
+                text: 'Token Name',
+                value: 'tokenName'
+            },
+            {
+                text: 'Token Symbol',
+                value: 'tokenSymbol'
             },
             {
                 text: 'Deployed On',

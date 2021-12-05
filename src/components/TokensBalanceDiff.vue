@@ -1,6 +1,6 @@
 <template>
     <div v-show="formattedBalances.length">
-        Token: <Hash-Link :type="'address'" :hash="contract.address" :withName="true" /><br>
+        <Hash-Link :type="'address'" :hash="contract.address" :withName="true" /><br>
         <v-data-table
             :hide-default-footer="formattedBalances.length <= 10"
             :headers="tableHeaders"
@@ -39,8 +39,8 @@ export default {
     mounted: function() {
         this.tableHeaders.push(
             { text: 'Address', value: 'address' },
-            { text: `Block #${parseInt(this.block) - 1}`, value: 'before' },
-            { text: `Block #${parseInt(this.block)}`, value: 'now' },
+            { text: `Previous Block (#${parseInt(this.block) - 1})`, value: 'before' },
+            { text: `Tx Block (#${parseInt(this.block)})`, value: 'now' },
             { text: 'Change', value: 'change' }
         );
         for (let i = 0; i < this.validTokens.length; i++) {

@@ -1,35 +1,19 @@
 <template>
     <v-container fluid>
-        <h4>Balance</h4>
+        <h4>Balances</h4>
         <v-card outlined class="mb-4">
-            <v-card-text>
-                <v-row>
-                    <v-col cols="5">
-                        <v-select
-                            outlined
-                            dense
-                            label="Select from address"
-                            v-model="callOptions.from"
-                            :item-text="'id'"
-                            :items="accounts">
-                            <template v-slot:item="{ item }">
-                                <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
-                                {{ item.id }}
-                            </template>
-                            <template v-slot:selection="{ item }">
-                                <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
-                                {{ item.id }}
-                            </template>
-                        </v-select>
-                        <v-btn :loading="loading" class="mt-1" depressed color="primary" @click="fetchBalance()">Check</v-btn>
-                    </v-col>
-                </v-row>
+            <v-card-text v-if="!loading">
+                Add an address on the <router-link :to="'/accounts'">accounts</router-link> page to track its balance.
+                <pre v-show="Object.keys(balances).length">{{ formatBalances(balances) }}</pre>
             </v-card-text>
+            <v-skeleton-loader v-else class="col-5" type="list-item-three-line"></v-skeleton-loader>
         </v-card>
     </v-container>
 </template>
 <script>
+const ethers = require('ethers');
 import { mapGetters } from 'vuex';
+const ERC20_ABI = require('../abis/erc20');
 
 export default {
     name: 'Token',
@@ -39,27 +23,51 @@ export default {
         callOptions: {
             from: null
         },
-        loading: false
+        loading: false,
+        balances: []
     }),
+    mounted: function() {
+        this.fetchBalances();
+    },
     methods: {
-        fetchBalance: function() {
+        fetchBalance: function(account) {
             this.loading = true;
-            this.server.callContractReadMethod(
-                this.contract,
+            return this.server.callContractReadMethod(
+                { ...this.contract, abi: ERC20_ABI },
                 'balanceOf(address)',
                 this.callOptions,
-                { 0: this.callOptions.from },
+                { 0: account },
                 this.currentWorkspace.rpcServer
             )
             .then(res => {
-                console.log(res);
+                this.balances.push({ address: account, amount: res[0] });
             })
             .finally(() => this.loading = false);
+        },
+        formatBalances: function(balances) {
+            let formatted = {};
+            balances.forEach((balance) => {
+                formatted[balance.address] = ethers.BigNumber.from(balance.amount).toString()
+            });
+            return formatted;
+        },
+        fetchBalances: function() {
+            this.loading = true;
+            this.$bind('accounts', this.db.collection('accounts'))
+            .then(() => {
+                const promises = [];
+                for (let i = 0; i < this.accounts.length; i++)
+                    promises.push(this.fetchBalance(this.accounts[i].id));
+
+                Promise.all(promises).finally(() => this.loading = false);
+            })
+            .catch(() => this.loading = false);
         }
     },
-    mounted: function() {
-        this.$bind('accounts', this.db.collection('accounts'))
-            .then(() => this.callOptions.from = this.currentWorkspace.settings.defaultAccount);
+    watch: {
+        contract: function() {
+            this.fetchBalances();
+        }
     },
     computed: {
         ...mapGetters([

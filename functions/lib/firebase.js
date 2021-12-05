@@ -268,7 +268,7 @@ const updateWorkspaceSettings = (userId, workspace, settings) => {
 
     return _getWorkspace(userId, workspace)
         .update(settings);
-}
+};
 
 const getUserbyStripeCustomerId = async (stripeCustomerId) => {
     if (!stripeCustomerId) throw '[getUserbyStripeCustomerId] Missing parameter';
@@ -281,13 +281,26 @@ const getUserbyStripeCustomerId = async (stripeCustomerId) => {
     else {
         return userDoc.docs[0].ref;
     }
-}
+};
 
 const setUserData = async (userId, data) => {
     if (!userId || !data) throw '[setUserData] Missing parameter';
 
     return _db.collection('users').doc(userId).set(data, { merge: true });
-}
+};
+
+const getUnprocessedContracts = async (userId, workspace) => {
+    if (!userId || !workspace) throw '[getUnprocessedContracts] Missing parameter';
+
+    const contractDocs = await _getWorkspace(userId, workspace)
+        .collection('contracts')
+        .get();
+
+    return contractDocs.empty ? [] :
+        contractDocs.docs
+            .filter(doc => !doc.data().processed)
+            .map(doc => doc.data());
+}; 
 
 module.exports = {
     storeBlock: storeBlock,
@@ -320,5 +333,6 @@ module.exports = {
     getUserWorkspaces: getUserWorkspaces,
     removeDatabaseContractArtifacts: removeDatabaseContractArtifacts,
     storeTransactionData: storeTransactionData,
-    createUser: createUser
+    createUser: createUser,
+    getUnprocessedContracts: getUnprocessedContracts
 };

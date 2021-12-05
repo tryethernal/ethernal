@@ -5,16 +5,11 @@
                 <v-card outlined>
                     <v-card-text>
                         Balance: {{ balance | fromWei('ether', nativeToken) }}
-                        <div v-show="isTokenContract">
-                            <v-divider class="my-1"></v-divider>
-                            Symbol: {{ token.symbol }} | Decimals: {{ token.decimals }}<br>
-                            Total Supply: {{ parseFloat(token.totalSupply).toLocaleString() }}
-                        </div>
                     </v-card-text>
                 </v-card>
             </v-col>
             <v-spacer></v-spacer>
-            <v-col align-self="end" cols="2">
+            <v-col align-self="end" cols="2" v-if="isContract">
                 <Remove-Contract-Confirmation-Modal ref="removeContractConfirmationModal" />
                 <v-btn small outlined color="error" @click.stop="openRemoveContractConfirmationModal()">
                     Remove contract
@@ -23,8 +18,8 @@
         </v-row>
         <v-tabs optional v-model="tab">
             <v-tab href="#transactions">Transactions</v-tab>
-            <v-tab id="contractTab" href="#contract" v-if="contract && contract.address != null">Contract</v-tab>
-            <v-tab id="storageTab" href="#storage" v-if="contract && contract.address != null && !contract.imported">Storage</v-tab>
+            <v-tab id="contractTab" href="#contract" v-if="isContract">Contract</v-tab>
+            <v-tab id="storageTab" href="#storage" v-if="isContract && !contract.imported">Storage</v-tab>
             <v-tab id="tokenTab" href="#token" v-if="isTokenContract">Token</v-tab>
 
             <v-tab-item value="transactions">
@@ -328,34 +323,6 @@ export default {
                     this.decodeContract();
                 });
         },
-        setTokenInfo: function() {
-            this.server.callContractReadMethod(
-                    this.contract,
-                    'totalSupply()',
-                    {},
-                    {},
-                    this.currentWorkspace.rpcServer
-                )
-                .then((res) => this.token.totalSupply = ethers.utils.formatEther(res[0]).toString());
-
-            this.server.callContractReadMethod(
-                    this.contract,
-                    'decimals()',
-                    {},
-                    {},
-                    this.currentWorkspace.rpcServer
-                )
-                .then((res) => this.token.decimals = res[0]);
-
-            this.server.callContractReadMethod(
-                    this.contract,
-                    'symbol()',
-                    {},
-                    {},
-                    this.currentWorkspace.rpcServer
-                )
-                .then((res) => this.token.symbol = res[0]);
-        },
         bindTheStuff: function(hash) {
             this.$bind('accounts', this.db.collection('accounts'));
             var bindingTxFrom = this.$bind('transactionsFrom', this.db.collection('transactions').where('from', '==', hash));
@@ -369,7 +336,6 @@ export default {
                 }
 
                 this.contract = doc.data();
-                this.setTokenInfo();
 
                 this.db.contractStorage(hash).once('value', (snapshot) => {
                     if (snapshot.val()) {
@@ -407,6 +373,9 @@ export default {
             'currentWorkspace',
             'nativeToken'
         ]),
+        isContract: function() {
+            return this.contract && this.contract.address;
+        },
         isTokenContract: function() {
             return !!this.contract && this.contract.patterns && !!this.contract.patterns.length;
         },

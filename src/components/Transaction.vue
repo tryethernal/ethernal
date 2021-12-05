@@ -216,7 +216,11 @@ export default {
             if (this.transaction && this.transaction.hash) {
                 this.$bind('block', this.db.collection('blocks').doc(this.transaction.blockNumber.toString()), { wait: true });
                 if (this.transaction.to) {
-                    this.$bind('contract', this.db.collection('contracts').doc(this.transaction.to.toLowerCase()), this.db.contractSerializer);
+                    this.$bind('contract', this.db.collection('contracts').doc(this.transaction.to.toLowerCase()), this.db.contractSerializer)
+                        .then(() => {
+                            if (this.contract.proxy)
+                                this.$bind('contract', this.db.collection('contracts').doc(this.contract.proxy), this.db.contractSerializer);
+                        })
                 }
             }
         }
