@@ -30,3 +30,4 @@ pnpm-debug.log*
 *.sw?
 *.log
 .firebase/*.cache
+output.js

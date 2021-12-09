@@ -67,11 +67,8 @@ export default {
             this.errorMessage = null;
             this.loading = true;
             this.server.importContract(this.currentWorkspace.name, this.contractAddress)
-                .then(({data}) => {
-                    if (data.contractIsVerified)
-                        this.successMessage = `Verified contract imported with metadata at address <a class="white--text" href="/address/${this.contractAddress}">${this.contractAddress}</a>`
-                    else
-                        this.successMessage = `Unverified contract imported without metadata at address <a class="white--text" href="/address/${this.contractAddress}">${this.contractAddress}</a>`
+                .then(() => {
+                        this.successMessage = `Contract has been imported at address <a class="white--text" href="/address/${this.contractAddress}">${this.contractAddress}</a>. If available, metadata will be automatically imported from Etherscan in a few seconds...`
                 })
                 .catch(error => this.errorMessage = error.message)
                 .finally(() => this.loading = false);

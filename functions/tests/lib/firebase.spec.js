@@ -28,7 +28,8 @@ const {
     getUserbyStripeCustomerId,
     getCollectionRef,
     getUserWorkspaces,
-    removeDatabaseContractArtifacts
+    removeDatabaseContractArtifacts,
+    getUnprocessedContracts
 } = require('../../lib/firebase');
 
 const Block = require('../fixtures/Block');
@@ -593,3 +594,25 @@ describe('getUserbyStripeCustomerId', () => {
         expect(result).toBeNull();
     });
 });
+
+describe('getUnprocessedContracts', () => {
+    it('Should only return contracts without the processed property', async () => {
+        await helper.workspace
+            .collection('contracts')
+            .doc('0x123')
+            .set({ address: '0x123', processed: true });
+
+        await helper.workspace
+            .collection('contracts')
+            .doc('0x124')
+            .set({ address: '0x124' });
+
+        const result = await getUnprocessedContracts('123', 'hardhat');
+
+        expect(result).toEqual([{ address: '0x124' }]);
+    });
+});
+
+
+
+

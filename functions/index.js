@@ -646,46 +646,13 @@ exports.importContract = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[importContract] Missing parameter.');
         }
         const workspace = await getWorkspaceByName(context.auth.uid, data.workspace);
-        let scannerHost = 'etherscan.io', scannerName = 'Etherscan';
-        let apiKey = functions.config().etherscan.token;
+       
+        await storeContractData(context.auth.uid, data.workspace, data.contractAddress, {
+            address: data.contractAddress,
+            imported: true
+        });
 
-        switch (workspace.chain) {
-            case 'bsc':
-                scannerHost = 'bscscan.com';
-                scannerName = 'BSCscan';
-                apiKey = functions.config().bscscan.token;
-                break;
-            case 'matic':
-                scannerHost = 'polygonscan.com';
-                scannerName = 'Polygonscan';
-                apiKey = functions.config().polygonscan.token;
-                break;
-            default:
-            break;
-        }
-        const endpoint = `https://api.${scannerHost}/api?module=contract&action=getsourcecode&address=${data.contractAddress}&apikey=${apiKey}`;
-
-        const response = await axios.get(endpoint);
-        let contractIsVerified = true;
-
-        if (response.data.message == 'NOTOK' || response.data.result[0].ContractName == '') {
-            await storeContractData(context.auth.uid, data.workspace, data.contractAddress, {
-                address: data.contractAddress,
-                imported: true
-            });
-            contractIsVerified = false;
-        }
-        else {
-            await storeContractData(context.auth.uid, data.workspace, data.contractAddress, {
-                abi: JSON.parse(response.data.result[0].ABI),
-                address: data.contractAddress,
-                name: response.data.result[0].ContractName,
-                imported: true
-            });
-            contractIsVerified = true;
-        }
-
-       return { success: true, contractIsVerified: contractIsVerified };
+       return { success: true };
     } catch(error) {
         console.log(error);
         var reason = error.message || 'Server error. Please retry.';
@@ -1081,9 +1048,9 @@ exports.setTokenProperties = functions.https.onCall(async (data, context) => {
                 name: data.tokenProperties.name
             });
 
-        const contracts = await storeContractData(context.auth.uid, data.workspace, data.contract, { patterns: patterns, processed: true, token: tokenData });
+        await storeContractData(context.auth.uid, data.workspace, data.contract, { patterns: patterns, processed: true, token: tokenData });
 
-        return { contracts: contracts };
+        return { success: true };
     } catch(error) {
         console.log(error)
         var reason = error.reason || error.message || 'Server error. Please retry.';
