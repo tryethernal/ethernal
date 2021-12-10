@@ -176,6 +176,7 @@ export default {
     }),
     methods: {
         parseTokenTransfers: function() {
+            if (!this.transaction.receipt || !this.transaction.receipt.logs) return;
             for (let i = 0; i < this.transaction.receipt.logs.length; i++) {
                 const log = this.transaction.receipt.logs[i];
                 if (log.topics[0] == '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
@@ -218,7 +219,7 @@ export default {
                 if (this.transaction.to) {
                     this.$bind('contract', this.db.collection('contracts').doc(this.transaction.to.toLowerCase()), this.db.contractSerializer)
                         .then(() => {
-                            if (this.contract.proxy)
+                            if (this.contract && this.contract.proxy)
                                 this.$bind('contract', this.db.collection('contracts').doc(this.contract.proxy), this.db.contractSerializer);
                         })
                 }

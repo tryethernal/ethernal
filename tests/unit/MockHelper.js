@@ -63,7 +63,7 @@ class MockHelper {
                 networkId: null,
                 rpcServer: null,
                 localNetwork: true,
-                name: null,
+                name: 'Hardhat',
                 settings: {}
             },
             ...initialState
@@ -75,7 +75,8 @@ class MockHelper {
                 return { ...this.storeState.user, plan: this.storeState.user.plan || 'free' }
             }),
             isTrialActive: jest.fn(() => false),
-            hasTrialed: jest.fn(() => false)
+            hasTrialed: jest.fn(() => false),
+            nativeToken: jest.fn(() => 'Ether')
         };
 
         this.actions = {

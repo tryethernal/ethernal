@@ -6,7 +6,7 @@
         </span>
         <span v-else>
             {{ formatResponse(value, commified) }}
-            <v-icon @click="commified = !commified" small>mdi-swap-horizontal</v-icon>
+            <v-icon id="switchCommified" @click="commified = !commified" small>mdi-swap-horizontal</v-icon>
         </span>
     </div>
 </template>

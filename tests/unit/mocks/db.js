@@ -6,6 +6,19 @@ export default {
         const _database = firebase.database();
 
         return {
+            tokens: () => {
+                return _firestore.collection('users')
+                    .doc('123')
+                    .collection('workspaces')
+                    .doc('Hardhat')
+                    .collection('contracts')
+                    .where('patterns', 'array-contains', 'erc20');
+            },
+
+            onNewContract: function() {
+                return true;
+            },
+
             contractStorage: (contractAddress) => {
                 return _database.ref(`/users/123/workspaces/Hardhat/contracts/${contractAddress}`);
             },

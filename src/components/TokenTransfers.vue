@@ -35,9 +35,6 @@ export default {
             { text: 'Amount', value: 'amount' }
         ]
     }),
-    mounted: function() {
-        console.log(this.transfers)
-    },
     methods: {
         formatAmount: function(amount) {
             return ethers.utils.formatUnits(ethers.BigNumber.from(amount)).toLocaleString();

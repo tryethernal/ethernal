@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Token.vue Should show the balances of tracked addresses 1`] = `
+<div class="container container--fluid">
+  <h4>Balances</h4>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div aria-busy="true" aria-live="polite" role="alert" class="v-skeleton-loader col-5 v-skeleton-loader--is-loading theme--light">
+      <div class="v-skeleton-loader__list-item-three-line v-skeleton-loader__bone">
+        <div class="v-skeleton-loader__paragraph v-skeleton-loader__bone">
+          <div class="v-skeleton-loader__text v-skeleton-loader__bone"></div>
+          <div class="v-skeleton-loader__text v-skeleton-loader__bone"></div>
+          <div class="v-skeleton-loader__text v-skeleton-loader__bone"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

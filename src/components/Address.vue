@@ -141,7 +141,7 @@
             </v-tab-item>
 
             <v-tab-item value="token" v-show="isTokenContract">
-                <Token :address="contract.address" :contract="contract" />
+                <Token :contract="contract" />
             </v-tab-item>
 
             <v-tab-item value="storage" v-if="contract && !contract.imported">
@@ -219,11 +219,6 @@ export default {
         FromWei
     },
     data: () => ({
-        token: {
-            totalSupply: 0,
-            decimals: 0,
-            symbol: ''
-        },
         selectedTransaction: {},
         balance: 0,
         contract: {

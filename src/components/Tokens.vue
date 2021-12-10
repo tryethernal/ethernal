@@ -18,6 +18,9 @@
             <template v-slot:item.tokenSymbol="{ item }">
                 {{ item.token.symbol }}
             </template>
+            <template v-slot:item.timestamp="{ item }">
+                <span v-if="item.timestamp">{{ parseInt(item.timestamp) | moment('YYYY-MM-DD h:mm:ss A') }}</span>
+            </template>
             <template v-slot:item.tags="{ item }">
                 <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" x-small class="success mr-2">
                     {{ formatContractPattern(pattern) }}

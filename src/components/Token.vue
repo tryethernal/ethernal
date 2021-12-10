@@ -17,7 +17,7 @@ const ERC20_ABI = require('../abis/erc20');
 
 export default {
     name: 'Token',
-    props: ['address', 'contract'],
+    props: ['contract'],
     data: () => ({
         accounts: [],
         callOptions: {
@@ -42,6 +42,7 @@ export default {
             .then(res => {
                 this.balances.push({ address: account, amount: res[0] });
             })
+            .catch(console.log)
             .finally(() => this.loading = false);
         },
         formatBalances: function(balances) {
