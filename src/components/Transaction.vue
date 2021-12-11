@@ -175,15 +175,21 @@ export default {
         tokensBalances: {}
     }),
     methods: {
-        parseTokenTransfers: function() {
-            if (!this.transaction.receipt || !this.transaction.receipt.logs) return;
+        parseTokenTransfers: async function() {
+            if (!this.transaction || !this.transaction.receipt || !this.transaction.receipt.logs) return;
             for (let i = 0; i < this.transaction.receipt.logs.length; i++) {
                 const log = this.transaction.receipt.logs[i];
                 if (log.topics[0] == '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
                     this.db.collection('contracts').doc(log.address.toLowerCase())
                         .get()
-                        .then((contractDoc) => {
-                            const contract = contractDoc.data();
+                        .then(async (contractDoc) => {
+                            if (!contractDoc.exists) return;
+
+                            let contract = contractDoc.data();
+
+                            if (contract.proxy)
+                                contract = (await this.db.collection('contracts').doc(contract.proxy).get()).data()
+
                             const decodedLog = decodeLog(log, contract.abi);
 
                             if (decodedLog) {
