@@ -69,7 +69,7 @@ exports[`Block.vue Should show the block component 1`] = `
                 <!----></span>
               </td>
               <td class="text-start">
-                0 ether
+                0 Ether
               </td>
               <td class="text-start"></td>
             </tr>

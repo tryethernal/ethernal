@@ -25,6 +25,28 @@ describe('TransactionEvent.vue', () => {
         }, 1000);
     });
 
+    it('Should display transaction event for a proxied contract', async (done) => {
+        await helper.mocks.admin
+            .collection('contracts')
+            .doc(TransactionProp.to)
+            .set({ proxy: '0x123' });
+
+        await helper.mocks.admin
+            .collection('contracts')
+            .doc('0x123')
+            .set({ abi: ABIProp });
+
+        const wrapper = helper.mountFn(TransactionEvent, {
+            propsData: {
+                log: LogProp
+            }
+        });
+        setTimeout(() => {
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1000);
+    });
+
     it('Should display warning if no ABI', async (done) => {
         const wrapper = helper.mountFn(TransactionEvent, {
             propsData: {

@@ -6,9 +6,42 @@ const index = require('../../index');
 const Helper = require('../helper');
 let helper;
 
-describe('matchWithContract', () => {
+describe('processContract', () => {
     beforeEach(() => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
+    });
+
+    it('Should import and link proxy contract', async () => {
+        await helper.workspace.collection('contracts').doc('0x125').set({
+            address: '0x125',
+            imported: true
+        });
+        const data = helper.test.firestore.makeDocumentSnapshot({
+            address: '0x125',
+        }, 'users/123/workspaces/hardhat/contracts/0x125');
+
+        axios.get.mockImplementation(() => ({
+            data: {
+                message: 'OK',
+                result: [{
+                    ContractName: 'Contract',
+                    Proxy: '1',
+                    Implementation: '0xabcd',
+                    ABI: JSON.stringify([{ my: 'function' }])
+                }]
+            }
+        }));
+
+        const result = await helper.test.wrap(index.processContract)(data, { params: { userId: '123', workspaceName: 'hardhat' }});
+
+        const doc = await helper.workspace.collection('contracts').doc('0x125').get();
+        expect(doc.data()).toEqual({
+            address: '0x125',
+            name: 'Contract',
+            abi: [{ my: 'function' }],
+            proxy: '0xabcd',
+            imported: true
+        });
     });
 
     it('Should match when contract is found locally', async () => {
@@ -16,7 +49,7 @@ describe('matchWithContract', () => {
             name: 'Contract',
             address: '0x123',
             hashedBytecode: '0x123abcd',
-            abi: { my: 'function' }
+            abi: [{ my: 'function' }]
         });
         await helper.workspace.collection('contracts').doc('0x124').set({
             hashedBytecode: '0x123abcd',
@@ -28,14 +61,14 @@ describe('matchWithContract', () => {
             hashedBytecode: '0x123abcd'
         }, 'users/123/workspaces/hardhat/contracts/0x124');
 
-        const result = await helper.test.wrap(index.matchWithContract)(data, { params: { userId: '123', workspaceName: 'hardhat' }});
+        const result = await helper.test.wrap(index.processContract)(data, { params: { userId: '123', workspaceName: 'hardhat' }});
         const doc = await helper.workspace.collection('contracts').doc('0x124').get();
 
         expect(doc.data()).toEqual({
             hashedBytecode: '0x123abcd',
             address: '0x124',
             name: 'Contract',
-            abi: { my: 'function' }
+            abi: [{ my: 'function' }]
         });
     });
 
@@ -51,19 +84,19 @@ describe('matchWithContract', () => {
                 message: 'OK',
                 result: [{
                     ContractName: 'Contract',
-                    ABI: JSON.stringify({ my: 'function' })
+                    ABI: JSON.stringify([{ my: 'function' }])
                 }]
             }
         }));
 
-        const result = await helper.test.wrap(index.matchWithContract)(data, { params: { userId: '123', workspaceName: 'hardhat' }});
+        const result = await helper.test.wrap(index.processContract)(data, { params: { userId: '123', workspaceName: 'hardhat' }});
 
         const doc = await helper.workspace.collection('contracts').doc('0x125').get();
         expect(doc.data()).toEqual({
             address: '0x125',
             hashedBytecode: '0x123a',
             name: 'Contract',
-            abi: { my: 'function' }
+            abi: [{ my: 'function' }]
         });
     });
 
@@ -80,7 +113,7 @@ describe('matchWithContract', () => {
             }
         }));
 
-        const result = await helper.test.wrap(index.matchWithContract)(data, { params: { userId: '123', workspaceName: 'hardhat' }});
+        const result = await helper.test.wrap(index.processContract)(data, { params: { userId: '123', workspaceName: 'hardhat' }});
         const doc = await helper.workspace.collection('contracts').doc('0x123').get();
         expect(doc.data()).toEqual({
             address: '0x123',
@@ -94,7 +127,7 @@ describe('matchWithContract', () => {
             abi: { my: 'function' }
         }, 'users/123/workspaces/hardhat/contracts/0x123');
 
-        const result = await helper.test.wrap(index.matchWithContract)(data, { params: { userId: '123', workspaceName: 'hardhat' }});;
+        const result = await helper.test.wrap(index.processContract)(data, { params: { userId: '123', workspaceName: 'hardhat' }});;
 
         const doc = await helper.workspace.collection('contracts').doc('0x123').get();
         expect(doc.data()).toEqual({ address: '0x123' });
@@ -112,13 +145,11 @@ describe('matchWithContract', () => {
             }
         }));
 
-        const result = await helper.test.wrap(index.matchWithContract)(data, { params: { userId: '123', workspaceName: 'hardhat' }});;
+        const result = await helper.test.wrap(index.processContract)(data, { params: { userId: '123', workspaceName: 'hardhat' }});;
 
         const doc = await helper.workspace.collection('contracts').doc('0x123').get();
         expect(doc.data()).toEqual({ address: '0x123', hashedBytecode: '0x123' });
     });
 
-    afterEach(async () => {
-        await helper.clean();
-    });
+    afterEach(() => helper.clean());
 });

@@ -12,6 +12,8 @@ functions/report*
 functions/.runtimeconfig.json
 /ganache-db
 
+/firebase-export-*
+
 # Log files
 npm-debug.log*
 yarn-debug.log*
@@ -28,3 +30,4 @@ pnpm-debug.log*
 *.sw?
 *.log
 .firebase/*.cache
+output.js

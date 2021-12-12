@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormattedSolVar.vue Should display an address with the contract name 1`] = `
+<div><span>	address: </span> <span><span><a href="#/address/0x123" class="">My Contract</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x123" value="0x123"></span>
+  <!----></span></span>
+</div>
+`;
+
+exports[`FormattedSolVar.vue Should display the name of the variable if passed 1`] = `
+<div><span>	uint256 amount: </span> <span>
+        0.0000000005
+        <button type="button" id="switchCommified" class="v-icon notranslate v-icon--link mdi mdi-swap-horizontal theme--light" style="font-size: 16px;"></button></span></div>
+`;
+
+exports[`FormattedSolVar.vue Should display the value as an int 1`] = `
+<div><span>	uint256: </span> <span>
+        0.0000000005
+        <button type="button" id="switchCommified" class="v-icon notranslate v-icon--link mdi mdi-swap-horizontal theme--light" style="font-size: 16px;"></button></span></div>
+`;
+
+exports[`FormattedSolVar.vue Should switch the value to big number 1`] = `
+<div><span>	uint256: </span> <span>
+        500000000
+        <button type="button" id="switchCommified" class="v-icon notranslate v-icon--link mdi mdi-swap-horizontal theme--light" style="font-size: 16px;"></button></span></div>
+`;

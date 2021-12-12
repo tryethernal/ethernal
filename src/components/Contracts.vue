@@ -21,6 +21,11 @@
             <template v-slot:no-data>
                 No contracts found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a>
             </template>
+            <template v-slot:item.tags="{ item }">
+                <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" x-small class="success mr-2">
+                    {{ formatContractPattern(pattern) }}
+                </v-chip>
+            </template>
             <template v-slot:item.address="{ item }">
                 <Hash-Link :type="'address'" :hash="item.address" />
             </template>
@@ -41,6 +46,7 @@ import ImportContractModal from './ImportContractModal';
 import HashLink from './HashLink';
 import UpgradeLink from './UpgradeLink';
 import RemoveContractConfirmationModal from './RemoveContractConfirmationModal';
+import { formatContractPattern } from '@/lib/utils';
 
 export default {
     name: 'Contracts',
@@ -59,12 +65,16 @@ export default {
                 value: 'address'
             },
             {
+                text: 'Name',
+                value: 'name'
+            },
+            {
                 text: 'Deployed On',
                 value: 'timestamp'
             },
             {
-                text: 'Name',
-                value: 'name'
+                text: '',
+                value: 'tags'
             },
             {
                 text: '',
@@ -76,6 +86,7 @@ export default {
         this.$bind('contracts', this.db.collection('contracts'), { serialize: snapshot => Object.defineProperty(snapshot.data(), 'address', { value: snapshot.id })}).then(() => this.loading = false);
     },
     methods: {
+        formatContractPattern,
         openRemoveContractConfirmationModal: function(address) {
             this.$refs.removeContractConfirmationModal
                 .open({ address: address, workspace: this.currentWorkspace.name });

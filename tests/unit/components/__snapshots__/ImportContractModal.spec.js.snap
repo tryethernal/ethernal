@@ -9,7 +9,7 @@ exports[`ImportContractModal.vue Should let the user import a non verified mainn
           <div class="v-card__title headline">Import a third-party contract</div>
           <div class="v-card__text">
             <!---->
-            <div role="alert" class="v-alert v-sheet theme--dark success">Unverified contract imported without metadata at address <a class="white--text" href="/address/0x123">0x123</a></div>
+            <div role="alert" class="v-alert v-sheet theme--dark success">Contract has been imported at address <a class="white--text" href="/address/0x123">0x123</a>. If available, metadata will be automatically imported from Etherscan in a few seconds...</div>
             <!---->
             <div>
               Enter an address of a contract deployed on Ethereum mainnet.<br>
@@ -49,7 +49,7 @@ exports[`ImportContractModal.vue Should let the user import a verified mainnet c
           <div class="v-card__title headline">Import a third-party contract</div>
           <div class="v-card__text">
             <!---->
-            <div role="alert" class="v-alert v-sheet theme--dark success">Verified contract imported with metadata at address <a class="white--text" href="/address/0x123">0x123</a></div>
+            <div role="alert" class="v-alert v-sheet theme--dark success">Contract has been imported at address <a class="white--text" href="/address/0x123">0x123</a>. If available, metadata will be automatically imported from Etherscan in a few seconds...</div>
             <!---->
             <div>
               Enter an address of a contract deployed on Ethereum mainnet.<br>
@@ -89,7 +89,7 @@ exports[`ImportContractModal.vue Should not warn the user if he is on a premium 
           <div class="v-card__title headline">Import a third-party contract</div>
           <div class="v-card__text">
             <!---->
-            <div role="alert" class="v-alert v-sheet theme--dark success">Unverified contract imported without metadata at address <a class="white--text" href="/address/0x123">0x123</a></div>
+            <div role="alert" class="v-alert v-sheet theme--dark success">Contract has been imported at address <a class="white--text" href="/address/0x123">0x123</a>. If available, metadata will be automatically imported from Etherscan in a few seconds...</div>
             <!---->
             <div>
               Enter an address of a contract deployed on Ethereum mainnet.<br>

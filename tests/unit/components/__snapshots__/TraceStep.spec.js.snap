@@ -8,9 +8,9 @@ exports[`TraceStep.vue Should display the formatted step 1`] = `
     |--&gt;
     <span class="primary mr-2 v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content">
             call
-        </span></span> <span><a href="#/address/0xab8e74017a8cc7c15ffccd726603790d26d7deca" class="">0xab8e7401...7deca</a> <span>
+        </span></span> <span><a href="#/address/0xab8e74017a8cc7c15ffccd726603790d26d7deca" class="">0xab8e74017a8cc7c15ffccd726603790d26d7deca</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xab8e74017a8cc7c15ffccd726603790d26d7deca" value="0xab8e74017a8cc7c15ffccd726603790d26d7deca"></span>
-    <!----></span> (stakingpools)
+    <!----></span>
     <div class="ml-2"><small style="white-space: pre;">claim(uint256 _poolId: 2)</small></div>
   </div>
 </div>

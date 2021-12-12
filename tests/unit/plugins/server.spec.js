@@ -71,6 +71,9 @@ jest.mock('ethers', () => {
     const contract = function() {
         return {
             functions: {
+                name: () => ['Ethernal'],
+                symbol: () => ['ETL'],
+                decimals: () => [18],
                 fakeRead: () => 'This is a fake result'
             },
             fakeWrite: () => new Promise((resolve) => resolve({ hash: '0x123abc' }))
@@ -107,6 +110,32 @@ jest.mock('@/lib/trace', () => ({
         });
     }
 }))
+jest.mock('@/plugins/firebase', () => {
+    const httpsCallable = (fn) => {
+        switch(fn) {
+            case 'getUnprocessedContracts':
+                return jest.fn(() => ({
+                    data: {
+                        contracts: [
+                            { address: '0x123' }
+                        ]
+                    }
+                }));
+            case 'setTokenProperties':
+                return jest.fn(() => ({
+                    data: {
+                        success: true
+                    }
+                }));
+            default:
+                return jest.fn(() => ({ data: {}}));
+        }
+    }
+    return {
+        ...jest.requireActual('@/plugins/firebase'),
+        functions: { httpsCallable: httpsCallable }
+    };
+});
 import ethers from 'ethers';
 import MockHelper from '../MockHelper';
 
@@ -117,6 +146,12 @@ describe('server', () => {
         helper = new MockHelper({ currentWorkspace: { rpcServer: 'http://localhost:8545', localNetwork: true }}, true, false);
         const wrapper = helper.mountFn({});
         server = wrapper.vm.server;
+    });
+
+    it('Should process and update the contracts', async (done) => {
+        const result = await server.processContracts('Hardhat');
+        expect(result).toEqual(true);
+        done();
     });
 
     it('Should return local chains', async (done) => {
