@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TokensBalanceDiff.vue Should display token balances difference 1`] = `
+<div style=""><span><!----> <!----> <!----></span><br>
+  <div class="v-data-table theme--light">
+    <div class="v-data-table__wrapper">
+      <table>
+        <colgroup>
+          <col class="">
+          <col class="">
+          <col class="">
+          <col class="">
+        </colgroup>
+        <thead class="v-data-table-header">
+          <tr>
+            <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="Previous Block (#1): Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Previous Block (#1)</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="Tx Block (#2): Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Tx Block (#2)</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="Change: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Change</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="">
+            <td class="text-start"><span><a href="#/address/0xabcd" class="">0xabcd...xabcd</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xabcd" value="0xabcd"></span>
+              <!----></span>
+            </td>
+            <td class="text-start">
+              1
+            </td>
+            <td class="text-start">
+              100
+            </td>
+            <td class="text-start"><span class="success--text">+99</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+`;

@@ -3,6 +3,10 @@ import DecodedStorageData from '../fixtures/DecodedStorageData.json';
 
 export default {
 
+    processContracts: function() {
+        return new Promise((resolve) => resolve(true));
+    },
+
     removeContract: function() {
         return new Promise((resolve) => resolve(true));
     },
@@ -43,20 +47,20 @@ export default {
         return new Promise((resolve) => resolve({ data: { address: '0x1234', privateKey: null }}));
     },
 
-    callContractWriteMethod: () => {
+    callContractWriteMethod: jest.fn(() => {
         const pendingTx = {
             hash: '0xabcd',
             wait: () => new Promise((resolve) => resolve({ status: true }))
         }
 
         return new Promise((resolve) => resolve({ pendingTx: pendingTx }));
-    },
+    }),
 
-    callContractReadMethod: () => {
+    callContractReadMethod: jest.fn(() => {
         return new Promise((resolve, reject) => {
             resolve([true]);
         });
-    },
+    }),
 
     createWorkspace: () => {
         return new Promise((resolve) => {

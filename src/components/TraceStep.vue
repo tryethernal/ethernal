@@ -10,7 +10,7 @@
             <v-chip small class="primary mr-2">
                 {{ this.step.op }}
             </v-chip>
-            <Hash-Link :hash="this.step.address" :type="'address'" /> {{ this.contractName }}
+            <Hash-Link :type="'address'" :hash="this.step.address" :fullHash="true" :withName="true" :withTokenName="true" />
             <div class="ml-2" v-if="this.transactionDescription">
                 <small style="white-space: pre">{{ formattedTransactionDescription }}</small>
             </div>

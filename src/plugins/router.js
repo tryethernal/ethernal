@@ -8,6 +8,7 @@ import Transaction from '../components/Transaction.vue';
 import Address from '../components/Address.vue';
 import Auth from '../components/Auth.vue';
 import Contracts from '../components/Contracts.vue';
+import Tokens from '../components/Tokens.vue';
 import Settings from '../components/Settings.vue';
 
 var redirectIfLoggedIn = function (to, from, next) {
@@ -33,6 +34,7 @@ const routes = [
     { path: '/transaction/:hash', component: Transaction, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/address/:hash', component: Address, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/contracts', component: Contracts, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/tokens', component: Tokens, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/settings', component: Settings, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '*', redirect: '/transactions' }
 ];

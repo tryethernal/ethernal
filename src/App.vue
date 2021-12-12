@@ -45,6 +45,15 @@
                     </v-list-item-content>
                 </v-list-item>
 
+                <v-list-item link :to="'/tokens'">
+                    <v-list-item-icon>
+                        <v-icon>mdi-alpha-c-circle</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>Tokens</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
                 <v-list-item link :to="'/settings?tab=workspace'">
                     <v-list-item-icon>
                         <v-icon>mdi-cog</v-icon>

@@ -1,27 +1,57 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TransactionEvent.vue Should display transaction event 1`] = `
-<div class="pa-2 grey lighten-3">
-  <div>
-    <div class="mb-2">
-      Event: Transfer(address from, address to, uint256 amount)
-    </div>
-    Data:
+<div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__text"><span><span><a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <!----> <!----></span>.Transfer(
+    </span>
     <div>
-      from: 0xE93381fB4c4F14bDa253907b18faD305D799241a
-    </div>
-    <div>
-      to: 0xc00e94Cb662C3520282E6f5717214004A7f26888
+      <div class="ml-4"><span>	address from: </span> <span><span><a href="#/address/0xE93381fB4c4F14bDa253907b18faD305D799241a" class="">0xE93381fB...9241a</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xE93381fB4c4F14bDa253907b18faD305D799241a" value="0xE93381fB4c4F14bDa253907b18faD305D799241a"></span>
+        <!----></span></span>
+      </div>
     </div>
     <div>
-      amount: 1
+      <div class="ml-4"><span>	address to: </span> <span><span><a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xc00e94Cb662C3520282E6f5717214004A7f26888" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></span>
+        <!----></span></span>
+      </div>
     </div>
+    <div>
+      <div class="ml-4"><span>	uint256 amount: </span> <span>
+        0.000000000000000001
+        <button type="button" id="switchCommified" class="v-icon notranslate v-icon--link mdi mdi-swap-horizontal theme--light" style="font-size: 16px;"></button></span></div>
+    </div> <span>)</span>
+  </div>
+</div>
+`;
+
+exports[`TransactionEvent.vue Should display transaction event for a proxied contract 1`] = `
+<div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__text"><span><span><a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <!----> <!----></span>.Transfer(
+    </span>
+    <div>
+      <div class="ml-4"><span>	address from: </span> <span><span><a href="#/address/0xE93381fB4c4F14bDa253907b18faD305D799241a" class="">0xE93381fB...9241a</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xE93381fB4c4F14bDa253907b18faD305D799241a" value="0xE93381fB4c4F14bDa253907b18faD305D799241a"></span>
+        <!----></span></span>
+      </div>
+    </div>
+    <div>
+      <div class="ml-4"><span>	address to: </span> <span><span><a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xc00e94Cb662C3520282E6f5717214004A7f26888" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></span>
+        <!----></span></span>
+      </div>
+    </div>
+    <div>
+      <div class="ml-4"><span>	uint256 amount: </span> <span>
+        0.000000000000000001
+        <button type="button" id="switchCommified" class="v-icon notranslate v-icon--link mdi mdi-swap-horizontal theme--light" style="font-size: 16px;"></button></span></div>
+    </div> <span>)</span>
   </div>
 </div>
 `;
 
 exports[`TransactionEvent.vue Should display warning if no ABI 1`] = `
-<div class="pa-2 grey lighten-3">
-  <div><i>Upload contract artifact <a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888?tab=contract" class="">here</a> to decode events data.</i></div>
+<div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__text"><i>Upload contract artifact <a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888?tab=contract" class="">here</a> to decode events data.</i></div>
 </div>
 `;

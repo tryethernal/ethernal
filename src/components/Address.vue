@@ -9,7 +9,7 @@
                 </v-card>
             </v-col>
             <v-spacer></v-spacer>
-            <v-col align-self="end" cols="2">
+            <v-col align-self="end" cols="2" v-if="isContract">
                 <Remove-Contract-Confirmation-Modal ref="removeContractConfirmationModal" />
                 <v-btn small outlined color="error" @click.stop="openRemoveContractConfirmationModal()">
                     Remove contract
@@ -18,8 +18,9 @@
         </v-row>
         <v-tabs optional v-model="tab">
             <v-tab href="#transactions">Transactions</v-tab>
-            <v-tab id="contractTab" href="#contract" v-if="contract && contract.address != null">Contract</v-tab>
-            <v-tab id="storageTab" href="#storage" v-if="contract && contract.address != null && !contract.imported">Storage</v-tab>
+            <v-tab id="contractTab" href="#contract" v-if="isContract">Contract</v-tab>
+            <v-tab id="storageTab" href="#storage" v-if="isContract && !contract.imported">Storage</v-tab>
+            <v-tab id="tokenTab" href="#token" v-if="isTokenContract">Token</v-tab>
 
             <v-tab-item value="transactions">
                 <Transactions-List :transactions="allTransactions" :currentAddress="hash" :loading="loadingTx" />
@@ -139,6 +140,10 @@
                 </v-card>
             </v-tab-item>
 
+            <v-tab-item value="token" v-show="isTokenContract">
+                <Token :contract="contract" />
+            </v-tab-item>
+
             <v-tab-item value="storage" v-if="contract && !contract.imported">
                 <h4>Structure</h4>
                 <v-card outlined class="mb-4">
@@ -192,6 +197,7 @@ import ContractReadMethod from './ContractReadMethod';
 import ContractWriteMethod from './ContractWriteMethod';
 import ImportArtifactModal from './ImportArtifactModal';
 import RemoveContractConfirmationModal from './RemoveContractConfirmationModal';
+import Token from './Token';
 
 import FromWei from '../filters/FromWei';
 
@@ -206,7 +212,8 @@ export default {
         ContractReadMethod,
         ContractWriteMethod,
         ImportArtifactModal,
-        RemoveContractConfirmationModal
+        RemoveContractConfirmationModal,
+        Token
     },
     filters: {
         FromWei
@@ -361,6 +368,12 @@ export default {
             'currentWorkspace',
             'nativeToken'
         ]),
+        isContract: function() {
+            return this.contract && this.contract.address;
+        },
+        isTokenContract: function() {
+            return !!this.contract && this.contract.patterns && !!this.contract.patterns.length;
+        },
         tab: {
             set (tab) {
                 this.$router.replace({ query: { ...this.$route.query, tab } });

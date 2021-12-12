@@ -70,6 +70,75 @@ const Block = require('./fixtures/Block.json');
 let auth = { auth: { uid: '123' }};
 let helper;
 
+describe('getUnprocessedContracts', () => {
+    beforeEach(() => {
+        helper = new Helper(process.env.GCLOUD_PROJECT);
+    });
+
+    it('Should return contracts not marked as processed', async () => {
+        await helper.workspace
+                .collection('contracts')
+                .doc('0x123')
+                .set({ abi: 'abi' });
+
+        await helper.workspace
+                .collection('contracts')
+                .doc('0x124')
+                .set({ abi: 'abi', processed: true });
+
+        const wrapped = helper.test.wrap(index.getUnprocessedContracts);
+        const result = await wrapped({ workspace: 'hardhat' }, auth);
+
+        expect(result).toEqual({
+            contracts: [{ abi: 'abi' }]
+        });
+    });
+
+    afterEach(() => helper.clean());
+});
+
+describe('setTokenProperties', () => {
+    beforeEach(() => {
+        helper = new Helper(process.env.GCLOUD_PROJECT);
+        return helper.workspace
+            .collection('contracts')
+            .doc('0x123')
+            .set({ abi: 'abi' });
+    });
+
+    it('Should not set token/patterns if they are not passed', async () => {
+        const wrapped = helper.test.wrap(index.setTokenProperties);
+        const result = await wrapped({ workspace: 'hardhat', contract: '0x123' }, auth);
+
+        const contractRef = await helper.workspace.collection('contracts').doc('0x123').get();
+
+        expect(contractRef.data()).toEqual({ abi: 'abi', patterns: [], token: {}, processed: true });
+        expect(result).toEqual({ success: true });
+    });
+
+    it('Should set token patterns that are passed', async () => {
+        const wrapped = helper.test.wrap(index.setTokenProperties);
+        const result = await wrapped({ workspace: 'hardhat', contract: '0x123', tokenPatterns: ['erc20'] }, auth);
+
+        const contractRef = await helper.workspace.collection('contracts').doc('0x123').get();
+
+        expect(contractRef.data()).toEqual({ abi: 'abi', patterns: ['erc20'], token: {}, processed: true });
+        expect(result).toEqual({ success: true });
+    });
+
+    it('Should set token properties that are passed', async () => {
+        const wrapped = helper.test.wrap(index.setTokenProperties);
+        const result = await wrapped({ workspace: 'hardhat', contract: '0x123', tokenProperties: { symbol: 'ETL', decimals: 18, name: 'Ethenral' }}, auth);
+
+        const contractRef = await helper.workspace.collection('contracts').doc('0x123').get();
+
+        expect(contractRef.data()).toEqual({ abi: 'abi', patterns: [], token: { symbol: 'ETL', decimals: 18, name: 'Ethenral' }, processed: true });
+        expect(result).toEqual({ success: true });
+    });
+
+    afterEach(() => helper.clean());
+});
+
 describe('resetWorkspace', () => {
     beforeEach(() => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
@@ -854,7 +923,7 @@ describe('importContract', () => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
     });
 
-    it('Should import the name & ABI if the contract is verified on Etherscan', async () => {
+    it('Should create a document with the address and flag it as imported', async () => {
         await helper.workspace.set({ chain: 'ethereum' });
         axios.get.mockImplementation(() => ({
             data: {
@@ -882,53 +951,12 @@ describe('importContract', () => {
 
         expect(contractRef.data()).toEqual({
             address: '0x123',
-            name: 'Contract',
-            abi: { my: 'function' },
             imported: true
         });
-        expect(result).toEqual({ contractIsVerified: true, success: true });
+        expect(result).toEqual({ success: true });
     });
 
-    it('Should return an error message if the contract does not exist', async () => {
-        axios.get.mockImplementation(() => ({
-            data: {
-                message: 'NOTOK',
-                result: 'Nothing at this address'
-            }
-        }));
-
-        const data = {
-            workspace: 'hardhat',
-            contractAddress: '0x123'
-        };
-
-        const wrapped = helper.test.wrap(index.importContract);
-
-        const result = await wrapped(data, auth);
-        expect(result).toEqual({ contractIsVerified: false, success: true });
-    });
-
-    it('Should import the contract if it is not verified on Etherscan', async () => {
-        axios.get.mockImplementation(() => ({
-            data: {
-                message: 'OK',
-                result: [{
-                    ContractName: '',
-                    ABI: JSON.stringify({})
-                }]
-            }
-        }));
-
-        const data = {
-            workspace: 'hardhat',
-            contractAddress: '0x123'
-        };
-
-        const wrapped = helper.test.wrap(index.importContract);
-        const result = await wrapped(data, auth);
-
-        expect(result).toEqual({ contractIsVerified: false, success: true });
-    });
+    
 
     afterEach(async () => {
         await helper.clean();

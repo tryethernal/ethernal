@@ -40,7 +40,7 @@
         </template>
         <template v-slot:item.to="{ item }">
             <v-chip x-small class="mr-2" v-if="item.to && item.to === currentAddress">self</v-chip>
-            <Hash-Link :type="'address'" :hash="item.to" />
+            <Hash-Link :type="'address'" :hash="item.to" :withName="true" />
         </template>
         <template v-slot:item.value="{ item }">
             {{ item.value | fromWei('ether', nativeToken) }}
