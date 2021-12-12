@@ -148,7 +148,7 @@ describe('server', () => {
         server = wrapper.vm.server;
     });
 
-    it.only('Should process and update the contracts', async (done) => {
+    it('Should process and update the contracts', async (done) => {
         const result = await server.processContracts('Hardhat');
         expect(result).toEqual(true);
         done();
