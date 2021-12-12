@@ -1,5 +1,6 @@
-import { sanitize, getProvider, processMethodCallParam, formatSolidityObject } from '@/lib/utils.js';
+import { sanitize, getProvider, processMethodCallParam, formatSolidityObject, formatResponse } from '@/lib/utils.js';
 const Web3 = require('web3');
+const ethers = require('ethers');
 
 describe('sanitize', () => {
     it('Should clear null keys', () => {
@@ -50,15 +51,42 @@ describe('processMethodCallParam', () => {
     })
 });
 
+describe('formatResponse', () => {
+    it('Should return an array of int if an array of BN is passed', () => {
+        const data = [
+            ethers.BigNumber.from('0x1dcd6500'),
+            ethers.BigNumber.from('0x03')
+        ];
+
+        const result = formatResponse(data);
+        expect(result).toBe('[500000000, 3]')
+    });
+
+    it('Should be parsed as BN adn return an int if an object is passed', () => {
+        const result = formatResponse(ethers.BigNumber.from('0x03'));
+        expect(result).toBe('3');
+    });
+
+    it('Should return the parameter if it does not match any pattern', () => {
+        const result = formatResponse('hi');
+        expect(result).toBe('hi');
+    })
+});
+
 describe('formatSolidityObject', () => {
+    it('Should return a commified number if flag is passed', () => {
+        const result = formatSolidityObject(ethers.BigNumber.from('0x1dcd6500'), true);
+        expect(result).toBe('0.0000000005');
+    });
+
     it('Should return a string containing an int if a BigNumber is passed', () => {
-        const result = formatSolidityObject({ 'type': 'BigNumber', 'hex': '0x03' });
+        const result = formatSolidityObject(ethers.BigNumber.from('0x03'));
         expect(result).toBe('3');
     });
 
     it('Should return the param if type is unknown', () => {
-        const result = formatSolidityObject({ 'type': 'unknown', 'hex': '0x03' });
-        expect(result).toEqual({ 'type': 'unknown', 'hex': '0x03' });
+        const result = formatSolidityObject({ '_type': 'unknown', '_hex': '0x03' });
+        expect(result).toEqual({ '_type': 'unknown', '_hex': '0x03' });
     });
 
    it('Should return the param if no type', () => {

@@ -53,12 +53,5 @@ const isErc20 = (abi) => {
 };
 
 module.exports = {
-    isErc20: isErc20,
-    findTokenPatterns: (abi) => {
-        const patterns = [];
-
-        if (isErc20(abi)) patterns.push('erc20');
-
-        return patterns;
-    }
+    isErc20: isErc20
 };

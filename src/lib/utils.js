@@ -38,6 +38,8 @@ export const formatSolidityObject = function(obj, commified) {
 
     if (ethers.BigNumber.isBigNumber(obj) && commified)
         return ethers.utils.commify(ethers.utils.formatUnits(ethers.BigNumber.from(obj)));
+    else if (ethers.BigNumber.isBigNumber(obj))
+        return ethers.BigNumber.from(obj).toString();
     else
         return obj;
 };
