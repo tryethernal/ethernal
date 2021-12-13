@@ -123,7 +123,7 @@ export default {
                         this.server.createUser(auth().currentUser.uid).then(this.launchOnboarding);
                     }
                     else {
-                        this.$store.dispatch('updateUserPlan', { uid: auth().currentUser.uid, plan: user.plan });
+                        this.$store.dispatch('updateUserPlan', { uid: auth().currentUser.uid, plan: user.plan, email: auth().currentUser.email });
                         this.$store.dispatch('updateTrialPeriod', user.trialEndsAt);
                         this.$store.dispatch('updateOnboardedStatus', true);
 
