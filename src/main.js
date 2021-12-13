@@ -82,7 +82,7 @@ const store = new Vuex.Store({
         updateUserPlan({ commit }, data) {
             commit('SET_USER_PLAN', data.plan);
             if (process.env.VUE_APP_ENABLE_ANALYTICS && data.uid && data.plan && data.plan != 'free') {
-                LogRocket.identify(data.uid, { plan: data.plan });
+                LogRocket.identify(data.uid, { email: data.email, plan: data.plan });
             }
         },
         updateTrialPeriod({ commit }, trialEndsAt) {
