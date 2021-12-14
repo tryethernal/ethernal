@@ -123,17 +123,12 @@
                         <v-card outlined class="mb-4">
                             <v-skeleton-loader type="list-item-three-line" v-if="advancedOptionsLoading"></v-skeleton-loader>
                             <v-card-text v-else>
-                                <v-row v-if="user.plan == 'free'">
-                                    <v-col>
-                                        <v-alert text type="warning">This feature is only available on Premium plans. <Upgrade-Link>Upgrade</Upgrade-Link> to use it.</v-alert>
-                                    </v-col>
-                                </v-row>
                                 <v-row>
                                     <v-col align-self="center">
                                         Transactions Tracing <a style="text-decoration: none" target="_blank" href="https://doc.tryethernal.com/dashboard-pages/transactions#trace"><v-icon small>mdi-help-circle-outline</v-icon></a>
                                     </v-col>
                                     <v-col>
-                                        <v-select :disabled="user.plan == 'free'" dense outlined hide-details="auto" label="Status"
+                                        <v-select dense outlined hide-details="auto" label="Status"
                                             :items="advancedOptionsDesc[0].choices"
                                             item-text="label"
                                             item-value="slug"
@@ -143,7 +138,7 @@
                                 </v-row>
                                 <v-row class="mt-2 pb-1 mr-1">
                                     <v-spacer></v-spacer>
-                                    <v-btn :disabled="user.plan == 'free'" :loading="advancedOptionsLoading" depressed color="primary" class="mt-2" @click="updateAdvancedOptions()">Update</v-btn>
+                                    <v-btn :loading="advancedOptionsLoading" depressed color="primary" class="mt-2" @click="updateAdvancedOptions()">Update</v-btn>
                                 </v-row>
                             </v-card-text>
                         </v-card>
@@ -180,7 +175,6 @@ import CreateWorkspaceModal from './CreateWorkspaceModal';
 import AlchemyIntegrationModal from './AlchemyIntegrationModal';
 import ApiIntegrationModal from './ApiIntegrationModal';
 import Billing from './Billing';
-import UpgradeLink from './UpgradeLink';
 
 export default {
     name: 'Settings',
@@ -188,8 +182,7 @@ export default {
         CreateWorkspaceModal,
         AlchemyIntegrationModal,
         ApiIntegrationModal,
-        Billing,
-        UpgradeLink
+        Billing
     },
     data: () => ({
         plans: [

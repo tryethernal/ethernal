@@ -45,7 +45,9 @@ const {
     storeApiKey,
     createUser,
     getWorkspaceByName,
-    getUnprocessedContracts
+    getUnprocessedContracts,
+    canUserSyncContract,
+    isUserPremium
 } = require('./lib/firebase');
 
 if (process.env.NODE_ENV == 'development') {
@@ -339,12 +341,10 @@ exports.syncContractArtifact = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[syncContractArtifact] Missing parameter.');
         }
 
-        const user = (await getUser(context.auth.uid)).data();
-
-        const storedContracts = await getCollectionRef(context.auth.uid, data.workspace, 'contracts').limit(10).get();
+        const canSync = await canUserSyncContract(context.auth.uid, data.workspace);
         const existingContract = await getContractData(context.auth.uid, data.workspace, data.address);
 
-        if (existingContract || storedContracts._size < 10 || user.plan == 'premium')
+        if (existingContract || canSync)
             await storeContractArtifact(context.auth.uid, data.workspace, data.address, data.artifact);
         else
             throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
@@ -367,11 +367,10 @@ exports.syncContractDependencies = functions.https.onCall(async (data, context) 
             throw new functions.https.HttpsError('invalid-argument', '[syncContractDependencies] Missing parameter.');
         }
 
-        const user = (await getUser(context.auth.uid)).data();
-        const storedContracts = await getCollectionRef(context.auth.uid, data.workspace, 'contracts').limit(10).get();
+        const canSync = await canUserSyncContract(context.auth.uid, data.workspace);
         const existingContract = await getContractData(context.auth.uid, data.workspace, data.address);
 
-        if (existingContract || storedContracts._size < 10 || user.plan == 'premium')
+        if (existingContract || canSync)
             await storeContractDependencies(context.auth.uid, data.workspace, data.address, data.dependencies);
         else
             throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
@@ -394,27 +393,28 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).ht
             throw new functions.https.HttpsError('invalid-argument', '[syncTrace] Missing parameter.')
         }
 
-        const user = (await getUser(context.auth.uid)).data();
-
-        if (user.plan == 'free')
-            throw new functions.https.HttpsError('permission-denied', 'Transaction tracing is only available to Premium plan user. Please upgrade to use it.');
-
         const trace = [];
         for (const step of data.steps) {
             if (step.op.toUpperCase().indexOf(['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2'])) {
-                const contractData = sanitize({
-                    address: step.address.toLowerCase(),
-                    hashedBytecode: step.contractHashedBytecode
-                });
+                let contractRef;                
+                const canSync = await canUserSyncContract(context.auth.uid, data.workspace);
 
-                await storeContractData(
-                    context.auth.uid,
-                    data.workspace,
-                    step.address,
-                    contractData
-                );
+                if (canSync) {
+                    const contractData = sanitize({
+                        address: step.address.toLowerCase(),
+                        hashedBytecode: step.contractHashedBytecode
+                    });
 
-                const contractRef = getContractRef(context.auth.uid, data.workspace, step.address);
+                    await storeContractData(
+                        context.auth.uid,
+                        data.workspace,
+                        step.address,
+                        contractData
+                    );
+
+                    contractRef = getContractRef(context.auth.uid, data.workspace, step.address);
+                }
+
                 trace.push(sanitize({ ...step, contract: contractRef }));
             }
         }
@@ -439,11 +439,10 @@ exports.syncContractData = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[syncContractData] Missing parameter.');
         }
 
-        const user = (await getUser(context.auth.uid)).data();
-        const storedContracts = await getCollectionRef(context.auth.uid, data.workspace, 'contracts').limit(10).get();
+        const canSync = await canUserSyncContract(context.auth.uid, data.workspace);
         const existingContract = await getContractData(context.auth.uid, data.workspace, data.address);
 
-        if (existingContract || storedContracts._size < 10 || user.plan == 'premium') {
+        if (existingContract || canSync) {
             await storeContractData(context.auth.uid, data.workspace, data.address, sanitize({ address: data.address, name: data.name, abi: data.abi, watchedPaths: data.watchedPaths }));
         }
         else
@@ -491,9 +490,8 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
         promises.push(storeTransaction(context.auth.uid, data.workspace, txSynced));
 
         if (!txSynced.to && sTransactionReceipt) {
-            const user = (await getUser(context.auth.uid)).data();
-            const storedContracts = await getCollectionRef(context.auth.uid, data.workspace, 'contracts').limit(10).get();
-            if (storedContracts._size < 10 || user.plan == 'premium')
+            const canSync = await canUserSyncContract(context.auth.uid, data.workspace);
+            if (canSync)
                 promises.push(storeContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress, {
                     address: sTransactionReceipt.contractAddress,
                     timestamp: data.block.timestamp
@@ -755,10 +753,10 @@ exports.createWorkspace = functions.https.onCall(async (data, context) => {
             settings: data.workspaceData.settings
         });
 
-        const user = (await getUser(context.auth.uid)).data();
+        const isPremium = await isUserPremium(context.auth.uid);
         const workspaces = await getUserWorkspaces(context.auth.uid);
 
-        if ((!user.plan || user.plan == 'free') && workspaces._size > 0)
+        if (!isPremium && workspaces._size > 0)
             throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to one workspace. Upgrade to our Premium plan to create more.');
 
         await createWorkspace(context.auth.uid, data.name, filteredWorkspaceData);

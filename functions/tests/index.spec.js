@@ -478,7 +478,7 @@ describe('syncTrace', () => {
         expect(result).toEqual({ success: true });
     });
 
-    it('Should fail on a free plan', async () => {
+    it('Should succeed on a free plan', async () => {
         await helper.setUser({ plan: 'free' }, { merge: true })
 
         const wrapped = helper.test.wrap(index.syncTrace);
@@ -489,9 +489,8 @@ describe('syncTrace', () => {
             steps: Trace
         };
 
-        await expect(async () => {
-            await wrapped(data, auth);
-        }).rejects.toThrow({ message: 'Transaction tracing is only available to Premium plan user. Please upgrade to use it.' });
+        const result = await wrapped(data, auth);
+        expect(result).toEqual({ success: true });
     })
 
     afterEach(async () => {
