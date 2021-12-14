@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2021-12-14
+### Added
+- Token balances changes on transaction page (between previous/current block)
+- Token transfers on transaction page (based on Transfer event)
+- Contracts are automatically tagged with "erc20" and "proxy" tags in the "Contracts" page
+- New tokens pages that lists all ERC20 tokens
+- On an address page that is a token, there is a new tab that shows the token balance in the latest block for all tracked addresses (addresses in the "Accounts" page)
+- On transaction page, uint256 values are easily convertible to int by clicking on the button next to it
+
+### Changed
+- Transaction tracing is now included in the free plan
+- Contract matching with local or mainnet is done asynchronously. A process in the frontend is monitoring new contracts on Firebase and triggers the matching process (this is done in the frontend so requests can be sent to the chain)
+- Contract names are now displayed instead of addresses when applicable
+- Function calls and events are now properly decoded with proxy contracts
+
+### Fixed
+- Properly set email in Logrocket analytics for premium accounts
+
 ## [1.1.4] - 2021-11-18
 ### Added
 - Possibility to import unverified contracts
