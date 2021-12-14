@@ -49,7 +49,7 @@ afterEach(async () => {
     await helper.clean();
 });
 
-describe.only('canUserSyncContract', () => {
+describe('canUserSyncContract', () => {
     it('Should return true if user is premium & has more than 10 contracts', async () => {
         await helper.firestore
             .collection('users')
