@@ -300,7 +300,30 @@ const getUnprocessedContracts = async (userId, workspace) => {
         contractDocs.docs
             .filter(doc => !doc.data().processed)
             .map(doc => doc.data());
-}; 
+};
+
+const isUserPremium = async (userId) => {
+    if (!userId) throw '[canUserSyncContract Missing parameter';
+
+    const user = (await getUser(userId)).data();
+    
+    return user.plan == 'premium';
+};
+
+const canUserSyncContract = async (userId, workspace) => {
+    if (!userId) throw '[canUserSyncContract Missing parameter';
+
+    const premium = await isUserPremium(userId);
+
+    if (premium) return true;
+
+    const storedContracts = await _getWorkspace(userId, workspace)
+        .collection('contracts')
+        .limit(10)
+        .get();
+
+    return storedContracts._size < 10;
+};
 
 module.exports = {
     storeBlock: storeBlock,
@@ -334,5 +357,7 @@ module.exports = {
     removeDatabaseContractArtifacts: removeDatabaseContractArtifacts,
     storeTransactionData: storeTransactionData,
     createUser: createUser,
-    getUnprocessedContracts: getUnprocessedContracts
+    getUnprocessedContracts: getUnprocessedContracts,
+    canUserSyncContract: canUserSyncContract,
+    isUserPremium: isUserPremium
 };
