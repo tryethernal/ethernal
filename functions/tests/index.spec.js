@@ -405,7 +405,7 @@ describe('syncContractDependencies', () => {
     });
 });
 
-describe.only('syncTrace', () => {
+describe('syncTrace', () => {
     const firestoreConverter = async (snapshot, options) => {
         const data = snapshot.data(options);
         let res = { trace: [] };

@@ -29,7 +29,9 @@ const {
     getCollectionRef,
     getUserWorkspaces,
     removeDatabaseContractArtifacts,
-    getUnprocessedContracts
+    getUnprocessedContracts,
+    isUserPremium,
+    canUserSyncContract
 } = require('../../lib/firebase');
 
 const Block = require('../fixtures/Block');
@@ -45,6 +47,82 @@ beforeEach(() => {
 
 afterEach(async () => {
     await helper.clean();
+});
+
+describe.only('canUserSyncContract', () => {
+    it('Should return true if user is premium & has more than 10 contracts', async () => {
+        await helper.firestore
+            .collection('users')
+            .doc('123')
+            .set({ plan: 'premium' });
+        
+        for (let i = 0; i < 10; i++) {
+            await helper.firestore
+                .collection('users')
+                .doc('123')
+                .collection('workspaces')
+                .doc('hardhat')
+                .collection('contracts')
+                .doc(`0x12${i}`)
+                .set({ abi: 'abi' });
+        }
+
+        const result = await canUserSyncContract('123', 'hardhat');
+        expect(result).toEqual(true);
+    });
+
+    it('Should return false if user is not premium & has more than 10 contracts', async () => {
+        await helper.firestore
+            .collection('users')
+            .doc('123')
+            .set({ plan: 'free' });
+        
+        for (let i = 0; i < 10; i++) {
+            await helper.firestore
+                .collection('users')
+                .doc('123')
+                .collection('workspaces')
+                .doc('hardhat')
+                .collection('contracts')
+                .doc(`0x12${i}`)
+                .set({ abi: 'abi' });
+        }
+
+        const result = await canUserSyncContract('123', 'hardhat');
+        expect(result).toEqual(false);
+    });
+
+    it('Should return true if user is not premium & has not more than 10 contracts', async () => {
+        await helper.firestore
+            .collection('users')
+            .doc('123')
+            .set({ plan: 'free' });
+        
+        const result = await canUserSyncContract('123', 'hardhat');
+        expect(result).toEqual(true);
+    });
+});
+
+describe('isUserPremium', () => {
+    it('Should return true if user is premium', async () => {
+        await helper.firestore
+            .collection('users')
+            .doc('123')
+            .set({ plan: 'premium' });
+
+        const result = await isUserPremium('123');
+        expect(result).toEqual(true);
+    });
+
+    it('Should return false if user is not premium', async () => {
+        await helper.firestore
+            .collection('users')
+            .doc('123')
+            .set({ plan: 'free' });
+
+        const result = await isUserPremium('123');
+        expect(result).toEqual(false);
+    });
 });
 
 describe('getUser', () => {
