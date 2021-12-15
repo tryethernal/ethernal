@@ -201,12 +201,6 @@ exports[`Transaction.vue Should display a message for trace if user is not premi
       </div>
     </div>
     <!---->
-    <div class="row my-2">
-      <div class="col">
-        <h3 class="mb-2">Trace</h3>
-        Transaction tracing is only available to Premium users. <a>Upgrade</a> to use it.
-      </div>
-    </div>
   </div>
 </div>
 `;
@@ -412,12 +406,6 @@ exports[`Transaction.vue Should display infos properly with proxy contracts 1`] 
       </div>
     </div>
     <!---->
-    <div class="row my-2">
-      <div class="col">
-        <h3 class="mb-2">Trace</h3>
-        Transaction tracing is only available to Premium users. <a>Upgrade</a> to use it.
-      </div>
-    </div>
   </div>
 </div>
 `;
@@ -623,12 +611,6 @@ exports[`Transaction.vue Should display the transaction 1`] = `
       </div>
     </div>
     <!---->
-    <div class="row my-2">
-      <div class="col">
-        <h3 class="mb-2">Trace</h3>
-        Transaction tracing is only available to Premium users. <a>Upgrade</a> to use it.
-      </div>
-    </div>
   </div>
 </div>
 `;
