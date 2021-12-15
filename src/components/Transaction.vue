@@ -102,7 +102,7 @@
                 </v-col>
             </v-row>
 
-            <v-row class="my-2" v-if="transaction.trace && user.plan == 'premium'">
+            <v-row class="my-2" v-if="transaction.trace">
                 <v-col v-if="transaction.trace.length">
                     <h3 class="mb-2">Trace</h3>
                     <Trace-Step v-for="(step, idx) in transaction.trace" :step="step" :key="idx" />
@@ -110,12 +110,6 @@
                 <v-col v-else>
                     <h3 class="mb-2">Trace</h3>
                     Empty trace (only CREATE(2) and CALLs are shown).
-                </v-col>
-            </v-row>
-            <v-row class="my-2" v-if="user.plan == 'free'">
-                <v-col>
-                    <h3 class="mb-2">Trace</h3>
-                    Transaction tracing is only available to Premium users. <Upgrade-Link>Upgrade</Upgrade-Link> to use it.
                 </v-col>
             </v-row>
         </div>
@@ -138,7 +132,6 @@ import TraceStep from './TraceStep';
 import TokenTransfers from './TokenTransfers';
 import TokensBalanceDiff from './TokensBalanceDiff';
 import FromWei from '../filters/FromWei';
-import UpgradeLink from './UpgradeLink';
 import { decodeLog } from '../lib/abi';
 
 export default {
@@ -148,7 +141,6 @@ export default {
         HashLink,
         TransactionData,
         TraceStep,
-        UpgradeLink,
         TokenTransfers,
         TokensBalanceDiff
     },
