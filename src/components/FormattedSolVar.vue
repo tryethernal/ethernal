@@ -1,16 +1,33 @@
 <template>
     <div>
-        <span>{{ inputLabel }}</span>
-        <span v-if="input.type == 'address'">
-            <Hash-Link :type="'address'" :hash="value" :withName="true" />
+        <span>{{ inputLabel }}
+            (<template v-if="formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Raw</a></template>
+            <template v-if="!formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Formatted</a></template>)
         </span>
-        <span v-else>
-            {{ formatResponse(value, commified) }}
-            <v-icon id="switchCommified" @click="commified = !commified" small>mdi-swap-horizontal</v-icon>
-        </span>
+        <template v-if="formatted">
+            <span v-if="input.type == 'address'">
+                <Hash-Link :type="'address'" :hash="value" :withName="true" />
+            </span>
+            <span v-else-if="input.type == 'string'">
+                <span v-if="isValueJSON">
+                    <vue-json-pretty
+                        :data="JSONValue"
+                        :custom-value-formatter="JSONPrettyCustomFormatter"
+                    ></vue-json-pretty>
+                </span>
+                <span v-else v-html="formatString(value)"></span>
+            </span>
+            <span v-else>
+                {{ formatResponse(value, formatted) }}
+            </span>
+        </template>
+        <template v-else>{{ value }}</template>
+        &nbsp;
     </div>
 </template>
 <script>
+import VueJsonPretty from 'vue-json-pretty';
+import 'vue-json-pretty/lib/styles.css';
 import { formatResponse } from '@/lib/utils';
 import HashLink from './HashLink';
 
@@ -18,13 +35,32 @@ export default {
     name: 'FormattedSolVar',
     props: ['input', 'value'],
     components: {
-        HashLink
+        HashLink,
+        VueJsonPretty
     },
     data: () => ({
-        commified: true
+        formatted: true
     }),
     methods: {
-        formatResponse: formatResponse
+        formatResponse: formatResponse,
+        JSONPrettyCustomFormatter: function(data, _key, _path, defaultFormatResult) {
+            return typeof data === 'string' ? `"${this.formatString(data)}"` : defaultFormatResult;
+        },
+        formatString: function(data) {
+            const urlPattern = new RegExp('^https?|ipfs://', 'i');
+            if (urlPattern.test(data)) {
+                return `<a href="${data}" target="_blank">${data}</a>`;
+            }
+            else if (data.startsWith('<svg')) {
+                return `${data.replace('<svg', '<svg width="200px" height="200px"')}`;
+            }
+            else if (data.startsWith('data:image')) {
+                return `<img src="${data}" />`;
+            }
+            else {
+                return data;
+            }
+        }
     },
     computed: {
         inputLabel: function() {
@@ -32,7 +68,14 @@ export default {
                 return `\t${this.input.type} ${this.input.name}: `;
             else
                 return `\t${this.input.type}: `;
-        }
+        },
+        isValueJSON: function() {
+            try {
+                JSON.parse(this.value);
+                return true;
+            } catch(_) { return false; }
+        },
+        JSONValue: function() { return JSON.parse(this.value) },
     }
 }
 </script>
