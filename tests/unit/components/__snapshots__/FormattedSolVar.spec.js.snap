@@ -82,7 +82,7 @@ exports[`FormattedSolVar.vue Should display the value as an int 1`] = `
 </div>
 `;
 
-exports[`FormattedSolVar.vue Should switch the value to big number 1`] = `
+exports[`FormattedSolVar.vue Should switch the value to int 1`] = `
 <div><span>	uint256: 
         (<a id="switchFormatted">Display Raw</a> <!---->)
     </span> <span>
