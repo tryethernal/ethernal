@@ -21,7 +21,7 @@
                 {{ formatResponse(value, formatted) }}
             </span>
         </template>
-        <template v-else>{{ value }}</template>
+        <template v-else>{{ formatResponse(value, formatted) }}</template>
         &nbsp;
     </div>
 </template>
@@ -41,6 +41,10 @@ export default {
     data: () => ({
         formatted: true
     }),
+    mounted: function() {
+        if (this.input.type.startsWith('uint256'))
+            this.formatted = false;
+    },
     methods: {
         formatResponse: formatResponse,
         JSONPrettyCustomFormatter: function(data, _key, _path, defaultFormatResult) {
