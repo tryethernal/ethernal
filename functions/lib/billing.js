@@ -5,7 +5,11 @@ const { getUserbyStripeCustomerId, getUser } = require('./firebase');
 const { sanitize } = require('./utils');
 const Analytics = require('./analytics');
 
+<<<<<<< HEAD
 const analytics = new Analytics(functions.config().mixpanel ? functions.config().mixpanel.token : null);
+=======
+const analytics = new Analytics(process.env.ENABLE_BACKEND_ANALYTICS ? functions.config().mixpanel.token : null);
+>>>>>>> develop
 
 module.exports = {
     updatePlan: async (stripeSubscription) => {
