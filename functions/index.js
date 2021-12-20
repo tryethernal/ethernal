@@ -16,7 +16,7 @@ const { encrypt, decrypt, encode } = require('./lib/crypto');
 const { processContract } = require('./triggers/contracts');
 const Analytics = require('./lib/analytics');
 
-const analytics = new Analytics(process.env.ENABLE_BACKEND_ANALYTICS ? functions.config().mixpanel.token : null);
+const analytics = new Analytics(functions.config().mixpanel ? functions.config().mixpanel.token : null);
 
 const api = require('./api/index');
 const {
