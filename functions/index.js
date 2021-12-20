@@ -14,6 +14,9 @@ const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('
 const { parseTrace } = require('./lib/utils');
 const { encrypt, decrypt, encode } = require('./lib/crypto');
 const { processContract } = require('./triggers/contracts');
+const Analytics = require('./lib/analytics');
+
+const analytics = new Analytics(process.env.ENABLE_BACKEND_ANALYTICS ? functions.config().mixpanel.token : null);
 
 const api = require('./api/index');
 const {
@@ -323,6 +326,7 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
 
         await storeBlock(context.auth.uid, data.workspace, syncedBlock);
         
+        analytics.track(context.auth.uid, 'Block Sync');
         return { blockNumber: syncedBlock.number }
     } catch(error) {
         console.log(error);
@@ -349,6 +353,7 @@ exports.syncContractArtifact = functions.https.onCall(async (data, context) => {
         else
             throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
 
+        analytics.track(context.auth.uid, 'Contract Artifact Sync');
         return { address: data.address };
     } catch(error) {
         console.log(error);
@@ -421,6 +426,7 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).ht
 
         await storeTrace(context.auth.uid, data.workspace, data.txHash, trace);
 
+        analytics.track(context.auth.uid, 'Trace Sync');
         return { success: true };
     } catch(error) {
         console.log(error);
@@ -650,6 +656,7 @@ exports.importContract = functions.https.onCall(async (data, context) => {
             imported: true
         });
 
+       analytics.track(context.auth.uid, 'Contract Import');
        return { success: true };
     } catch(error) {
         console.log(error);
@@ -727,6 +734,7 @@ exports.impersonateAccount = functions.https.onCall(async (data, context) => {
         }
 
         const ganacheResult = await rpcProvider.send('evm_unlockUnknownAccount', [data.accountAddress]).catch(console.log);
+        
         return ganacheResult;
     } catch(error) {
         console.log(error);
@@ -945,6 +953,8 @@ exports.removeContract = functions.https.onCall(async (data, context) => {
 
         await removeDatabaseContractArtifacts(context.auth.uid, data.workspace, data.address);
 
+        analytics.track(context.auth.uid, 'Remove Contract');
+
         return { success: true };
     } catch(error) {
         console.log(error)
@@ -997,6 +1007,12 @@ exports.createUser = functions.https.onCall(async (data, context) => {
             stripeCustomerId: customer.id,
             plan: 'free'
         });
+
+        analytics.setUser(context.auth.uid, {
+            $email: authUser.email,
+            $created: (new Date()).toISOString(),
+        });
+        analytics.setSubscription(context.auth.uid, null, 'free', null, false);
 
         return { success: true };
     } catch(error) {

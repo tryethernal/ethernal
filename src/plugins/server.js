@@ -1,6 +1,6 @@
 const ethers = require('ethers');
 const Web3 = require('web3');
-const Decoder = require("@truffle/decoder");
+const Decoder = require('@truffle/decoder');
 
 import { Storage } from '../lib/storage';
 import { functions } from './firebase';
