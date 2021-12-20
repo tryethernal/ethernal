@@ -104,10 +104,10 @@ export default {
                     'Contract storage reading',
                     { message: '10 synced contracts', help: 'You will able to sync artifacts (abi, name, ...) for up to 10 different contracts.' },
                     '1 workspace',
-                    'Community support'
+                    'Community support',
+                    { message: 'Transaction tracing', href: 'https://www.tryethernal.com/transaction-tracing' }
                 ],
                 excludes: [
-                    { message: 'Transaction tracing', href: 'https://www.tryethernal.com/transaction-tracing' },
                     { message: 'API access', href: 'https://doc.tryethernal.com/integrations/api' }
                 ]
             },
