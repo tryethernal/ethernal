@@ -29,7 +29,7 @@ describe('ContractReadMethod.vue', () => {
 
     it('Should work when input is any array', async (done) => {
         helper.mocks.server.callContractReadMethod = () => {
-            return new Promise(resolve => resolve([1, 2]));
+            return new Promise(resolve => resolve([[1, 2]]));
         };
         props.method = {
             "inputs": [
@@ -58,7 +58,16 @@ describe('ContractReadMethod.vue', () => {
         await wrapper.find('button').trigger('click');
         await wrapper.vm.$nextTick();
         
-        expect(wrapper.vm.result).toBe('1 | 2');
+        expect(wrapper.vm.results.length).toEqual(1);
+        expect(wrapper.vm.results).toEqual([
+            {
+                input: {
+                    name: '',
+                    type: 'uint256[]'
+                },
+                value: [1, 2]
+            }
+        ]);
         expect(wrapper.html()).toMatchSnapshot();
         done();
     })
@@ -72,22 +81,51 @@ describe('ContractReadMethod.vue', () => {
         await wrapper.find('button').trigger('click');
         await wrapper.vm.$nextTick();
 
-        expect(wrapper.vm.result).toBe('true');
+        expect(wrapper.vm.results).toEqual([
+            {
+                input: {
+                    name: '',
+                    type: 'bool'
+                },
+                value: 'true'
+            }
+        ]);
         expect(wrapper.html()).toMatchSnapshot();
-
         done();
     });
 
     it('Should display the result even if it is not an array', async (done) => {
         helper.mocks.server.callContractReadMethod = () => {
-            return new Promise(resolve => resolve('1234'));
+            return new Promise(resolve => resolve(['1234']));
+        };
+        props.method = {
+            "inputs": [],
+            "name": "returnAnUInt",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function",
+            "constant": true
         };
         const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
 
         await wrapper.find('button').trigger('click');
         await wrapper.vm.$nextTick();
 
-        expect(wrapper.vm.result).toBe('1234');
+        expect(wrapper.vm.results).toEqual([
+            {
+                input: {
+                    name: '',
+                    type: 'uint256'
+                },
+                value: '1234'
+            }
+        ]);
         expect(wrapper.html()).toMatchSnapshot();
 
         done();
@@ -97,12 +135,34 @@ describe('ContractReadMethod.vue', () => {
         helper.mocks.server.callContractReadMethod = () => {
             return new Promise(resolve => resolve(['50000000000000000000']));
         };
+        props.method = {
+            "inputs": [],
+            "name": "returnAnUInt",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function",
+            "constant": true
+        };
         const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
 
         await wrapper.find('button').trigger('click');
         await wrapper.vm.$nextTick();
 
-        expect(wrapper.vm.result).toBe('50000000000000000000');
+        expect(wrapper.vm.results).toEqual([
+            {
+                input: {
+                    name: '',
+                    type: 'uint256'
+                },
+                value: '50000000000000000000'
+            }
+        ]);
         expect(wrapper.html()).toMatchSnapshot();
         done();
     });
@@ -111,12 +171,46 @@ describe('ContractReadMethod.vue', () => {
         helper.mocks.server.callContractReadMethod = () => {
             return new Promise(resolve => resolve(['1', '2']));
         };
+        props.method = {
+            "inputs": [],
+            "name": "returnAnUInt",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function",
+            "constant": true
+        };
         const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
 
         await wrapper.find('button').trigger('click');
         await wrapper.vm.$nextTick();
 
-        expect(wrapper.vm.result).toBe('1 | 2');
+        expect(wrapper.vm.results).toEqual([
+            {
+                input: {
+                    name: '',
+                    type: 'uint256'
+                },
+                value: '1'
+            },
+            {
+                input: {
+                    name: '',
+                    type: 'uint256'
+                },
+                value: '2'
+            }
+        ]);
         expect(wrapper.html()).toMatchSnapshot();
         done();
     });
@@ -130,7 +224,8 @@ describe('ContractReadMethod.vue', () => {
         await wrapper.find('button').trigger('click');
         await wrapper.vm.$nextTick();
 
-        expect(wrapper.vm.result).toBe('Wrong parameters');
+        expect(wrapper.vm.error).toEqual('Wrong parameters');
+        expect(wrapper.vm.results).toEqual([]);
         expect(wrapper.html()).toMatchSnapshot();
         done();        
     });
@@ -144,12 +239,11 @@ describe('ContractReadMethod.vue', () => {
         await wrapper.find('button').trigger('click');
         await wrapper.vm.$nextTick();
 
-        expect(wrapper.vm.result).toBe('Error while calling the method');
+        expect(wrapper.vm.error).toEqual('Error while calling the method');
+        expect(wrapper.vm.results).toEqual([]);
         expect(wrapper.html()).toMatchSnapshot();
         done();        
     });    
 
-    afterEach(async () => {
-        await helper.clearFirebase();
-    });
+    afterEach(() => helper.clearFirebase());
 });

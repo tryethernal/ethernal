@@ -32,6 +32,7 @@
     "stripe": "^8.176.0",
     "v-stripe-elements": "^1.2.0",
     "vue": "^2.6.11",
+    "vue-json-pretty": "^1.8.2",
     "vue-moment": "^4.1.0",
     "vue-router": "^3.4.9",
     "vuefire": "^2.2.5",
