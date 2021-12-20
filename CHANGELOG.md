@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2021-12-20
+### Added
+- Backend tracking to Mixpanel: an event is sent when the following actions happen: block sync, trace sync, artifact sync, contract imported, contract removed, signup, plan change. No blockchain data is sent, only user id, current plan, stripe subscription status, trial date.
+
+### Changed
+- Values emitted by events and returned by methods are now automatically parsed and formatted depending on their type. It's possible to switch between parsed/raw data
+
+### Fixed
+- Wording related to transaction tracing
+
 ## [1.2.0] - 2021-12-14
 ### Added
 - Token balances changes on transaction page (between previous/current block)
