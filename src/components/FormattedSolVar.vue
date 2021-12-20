@@ -67,6 +67,9 @@ export default {
         }
     },
     computed: {
+        isValueDataUriJson: function() {
+            return this.value.startsWith('data:application/json;base64,');
+        },
         inputLabel: function() {
             if (this.input.name)
                 return `\t${this.input.type} ${this.input.name}: `;
@@ -74,12 +77,18 @@ export default {
                 return `\t${this.input.type}: `;
         },
         isValueJSON: function() {
-            try {
-                JSON.parse(this.value);
+            if (this.isValueDataUriJson)
                 return true;
+            try {
+                const parsed = JSON.parse(this.value);
+                return JSON.stringify(parsed).startsWith('{') || JSON.stringify(parsed).startsWith('[');
             } catch(_) { return false; }
         },
-        JSONValue: function() { return JSON.parse(this.value) },
+        JSONValue: function() {
+            if (this.isValueDataUriJson)
+                return JSON.parse(atob(this.value.substring(29)));
+            return JSON.parse(this.value)
+        },
     }
 }
 </script>
