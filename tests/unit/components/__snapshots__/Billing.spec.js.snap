@@ -41,7 +41,7 @@ exports[`Billing.vue Should display the button to manage the subscription when t
             <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Community support</span> <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div> <a href="https://www.tryethernal.com/transaction-tracing" target="_blank">Transaction tracing</a> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <a href="https://www.tryethernal.com/transaction-tracing" target="_blank">Transaction tracing</a> <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
             <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div> <a href="https://doc.tryethernal.com/integrations/api" target="_blank">API access</a> <span class="v-tooltip v-tooltip--top"><!----></span>
@@ -144,7 +144,7 @@ exports[`Billing.vue Should display the button to manage the subscription when t
             <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Community support</span> <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div> <a href="https://www.tryethernal.com/transaction-tracing" target="_blank">Transaction tracing</a> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <a href="https://www.tryethernal.com/transaction-tracing" target="_blank">Transaction tracing</a> <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
             <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div> <a href="https://doc.tryethernal.com/integrations/api" target="_blank">API access</a> <span class="v-tooltip v-tooltip--top"><!----></span>
@@ -245,7 +245,7 @@ exports[`Billing.vue Should display the button to start the subscription when th
             <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Community support</span> <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div> <a href="https://www.tryethernal.com/transaction-tracing" target="_blank">Transaction tracing</a> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <a href="https://www.tryethernal.com/transaction-tracing" target="_blank">Transaction tracing</a> <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
             <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div> <a href="https://doc.tryethernal.com/integrations/api" target="_blank">API access</a> <span class="v-tooltip v-tooltip--top"><!----></span>
@@ -348,7 +348,7 @@ exports[`Billing.vue Should display the button to start the trial when user has 
             <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Community support</span> <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div> <a href="https://www.tryethernal.com/transaction-tracing" target="_blank">Transaction tracing</a> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <a href="https://www.tryethernal.com/transaction-tracing" target="_blank">Transaction tracing</a> <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
             <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div> <a href="https://doc.tryethernal.com/integrations/api" target="_blank">API access</a> <span class="v-tooltip v-tooltip--top"><!----></span>
