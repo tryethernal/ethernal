@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.4] - 2021-12-21
+### Changed
+- Prevents from restarting Stripe subscription portal while the subscription webhook is still being processed, better messaging too.
+
+### Removed
+- RPC requests sent from the server. All is sent from the browser now. Might need some remote chains to be configured to accept app.tryethernal.com as a domain name but sending requests from Firebase Functions was really buggy
+
 ## [1.2.3] - 2021-12-21
 ### Fixed
 - Bumped ethers.js to 5.5.0, fixing bug happening when a Solidity function has the same name than a javascript function (???? see https://github.com/ethers-io/ethers.js/issues/1432)
