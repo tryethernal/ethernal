@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.3] - 2021-12-21
+### Fixed
+- Bumped ethers.js to 5.5.0, fixing bug happening when a Solidity function has the same name than a javascript function (???? see https://github.com/ethers-io/ethers.js/issues/1432)
+
 ## [1.2.2] - 2021-12-20
 ### Added
 - Data URI for application/json is parsed and formatted when returned by methods
