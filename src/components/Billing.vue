@@ -1,6 +1,7 @@
 <template>
     <div>
-        <v-alert v-if="isPremium && justUpgraded" dense text type="success">You've been successfully upgraded to the Premium plan. Thank you!</v-alert>
+        <v-alert v-if="!isPremium && justUpgraded" dense text type="success">You've been successfully upgraded to the Premium plan. It is currently being activated, and should be ready in about a minute. Thank you!</v-alert>
+        <v-alert v-if="isPremium && justUpgraded" dense text type="success">Your Premium plan is now ready!</v-alert>
         <v-alert v-if="isPremium && startedTrial && formattedTrialEndsAt" dense text type="success">Your trial is now active until <b>{{ formattedTrialEndsAt }}</b>!</v-alert>
         <v-alert v-show="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
         <v-row>
@@ -127,6 +128,18 @@ export default {
             }
         }
     }),
+    mounted: function() {
+        if (this.justUpgraded) {
+            this.subscriptionButtonLoading = true;
+            this.db.currentUser().onSnapshot((doc) => {
+                const updatedUser = doc.data();
+                if (updatedUser.plan == 'premium') {
+                    this.$store.dispatch('updateUserPlan', { plan: updatedUser.plan });
+                    this.subscriptionButtonLoading = false;
+                }
+            })
+        }
+    },
     methods: {
         openStripePortal: function() {
             this.subscriptionButtonLoading = true;
