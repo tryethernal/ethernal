@@ -4,6 +4,7 @@ exports[`Billing.vue Should display the button to manage the subscription when t
 <div>
   <!---->
   <!---->
+  <!---->
   <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
     <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
       <div class="v-alert__content"></div>
@@ -105,6 +106,7 @@ exports[`Billing.vue Should display the button to manage the subscription when t
 
 exports[`Billing.vue Should display the button to manage the subscription when the user is trialing 1`] = `
 <div>
+  <!---->
   <!---->
   <!---->
   <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
@@ -209,6 +211,7 @@ exports[`Billing.vue Should display the button to start the subscription when th
 <div>
   <!---->
   <!---->
+  <!---->
   <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
     <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
       <div class="v-alert__content"></div>
@@ -310,6 +313,7 @@ exports[`Billing.vue Should display the button to start the subscription when th
 
 exports[`Billing.vue Should display the button to start the trial when user has no plan & did not trial already 1`] = `
 <div>
+  <!---->
   <!---->
   <!---->
   <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
