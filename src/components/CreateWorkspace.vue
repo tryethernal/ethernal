@@ -44,7 +44,6 @@
             <v-text-field outlined v-model="name" id="workspaceName" label="Name*" placeholder="My Ethereum Project" hide-details="auto" class="mb-2" required></v-text-field>
             <v-text-field outlined v-model="rpcServer" id="workspaceServer" label="RPC Server*" placeholder="ws://localhost:8545" hide-details="auto" class="mb-2" required></v-text-field>
             <v-select outlined required label="Chain" v-model="chain" :items="chains" hide-details="auto"></v-select>
-            <v-switch :disabled="loading" v-model="localNetwork" label="Internal/Local Network"></v-switch>
         </v-card-text>
 
         <v-card-actions>
@@ -87,15 +86,15 @@ export default {
                     throw { reason: 'A workspace with this name already exists.' };
                 }
 
-                const workspace = await this.server.initRpcServer(rpcServer, this.localNetwork);
+                const workspace = await this.server.initRpcServer(rpcServer);
 
-                const result = await this.server.createWorkspace(name, { ...workspace, localNetwork: this.localNetwork, chain: this.chain });
+                const result = await this.server.createWorkspace(name, { ...workspace, chain: this.chain });
 
                 if (!result.data.success) {
                     throw 'Error while creating workspace';
                 }
 
-                this.$emit('workspaceCreated', { workspace: workspace, name: name, localNetwork: this.localNetwork, chain: this.chain });
+                this.$emit('workspaceCreated', { workspace: workspace, name: name, chain: this.chain });
             } catch(error) {
                 console.log(error);
                 this.loading = false;

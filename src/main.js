@@ -26,7 +26,6 @@ const store = new Vuex.Store({
         currentWorkspace: {
             networkId: null,
             rpcServer: null,
-            localNetwork: true,
             name: null,
             settings: {
                 defaultAccount: null,

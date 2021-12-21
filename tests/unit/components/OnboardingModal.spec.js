@@ -12,7 +12,6 @@ describe('OnboardingModal.vue', () => {
     it('Should let the user create a new workspace', async (done) => {
         const name = 'Hardhat';
         const rpcServer = 'https://127.0.0.1';
-        const localNetwork = true;
 
         const wrapper = helper.mountFn(OnboardingModal);
 
@@ -33,7 +32,6 @@ describe('OnboardingModal.vue', () => {
                 gasLimit: 1234567
             },
             defaultAccount: '0x2D481eeb2bA97955CD081Cf218f453A817259AB1',
-            localNetwork: localNetwork,
             name: name
         });
         
