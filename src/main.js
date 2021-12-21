@@ -49,7 +49,7 @@ const store = new Vuex.Store({
             state.connected = connected;
         },
         SET_USER_PLAN(state, plan) {
-            state.user.plan = plan;
+            state.user = { ...state.user, plan: plan };
         },
         SET_ONBOARDED_STATUS(state, status) {
             state.user.onboarded = status;
@@ -95,7 +95,7 @@ const store = new Vuex.Store({
         hasTrialed: state => !!state.user.trialEndsAt,
         isTrialActive: state => !!state.user.trialEndsAt && moment(state.user.trialEndsAt).isAfter(moment()),
         user: state => {
-            return {...state.user, plan: state.user.plan || 'free' };
+            return { ...state.user, plan: state.user.plan || 'free' };
         },
         currentBlock: state => state.currentBlock,
         currentWorkspace: state => state.currentWorkspace,
