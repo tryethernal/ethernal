@@ -191,6 +191,7 @@ const serverFunctions = {
             var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
             return await contract.functions[data.method](...Object.values(data.params), options);
         } catch(error) {
+            console.log(error)
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
             throw { reason: reason };
         }
@@ -228,8 +229,13 @@ const serverFunctions = {
             const parsedError = JSON.parse(JSON.stringify(error));
 
             let errorData;
-            if (parsedError.error)
-                errorData = parsedError.error.data ? parsedError.error.data : parsedError.error.error.data;
+            if (parsedError.error) {
+                console.log(parsedError.error)
+                if (parsedError.error.data)
+                    errorData = parsedError.error.data;
+                else if (parsedError.error.error.data)
+                    errorData = parsedError.error.error.data;
+            }
 
             const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
             if (reason == 'invalid hexlify value')
@@ -295,10 +301,6 @@ const serverFunctions = {
 export const serverPlugin = {
     install(Vue, options) {
         var store = options.store;
-
-        var _isLocalNetwork = function() {
-            return store.getters.currentWorkspace.localNetwork;
-        };
 
         var _rpcServer = function() {
             return store.getters.currentWorkspace.rpcServer;
@@ -401,148 +403,68 @@ export const serverPlugin = {
                 }
             },
             impersonateAccount: function(rpcServer, accountAddress) {
-                if (_isLocalNetwork()) {
-                    return new Promise((resolve, reject) => {
-                        serverFunctions
-                            .impersonateAccount({ rpcServer: rpcServer, accountAddress: accountAddress })
-                            .then(resolve)
-                            .catch(reject)
-                    });
-                }
-                else {
-                    return new Promise((resolve, reject) => {
-                        functions
-                            .httpsCallable('impersonateAccount')({ accountAddress: accountAddress })
-                            .then((res) => resolve(res.data))
-                            .catch(reject)
-                    });
-                }
+                return new Promise((resolve, reject) => {
+                    serverFunctions
+                        .impersonateAccount({ rpcServer: rpcServer, accountAddress: accountAddress })
+                        .then(resolve)
+                        .catch(reject)
+                });
             },
             getAccounts: function() {
-                if (_isLocalNetwork()) {
-                    return new Promise((resolve, reject) => {
-                        serverFunctions
-                            .getAccounts({ rpcServer: _rpcServer() })
-                            .then(resolve)
-                            .catch(reject)
-                    });
-                }
-                else {
-                    return new Promise((resolve, reject) => {
-                        functions
-                            .httpsCallable('getAccounts')({ rpcServer: _rpcServer() })
-                            .then((res) => resolve(res.data))
-                            .catch(reject)
-                    });
-                }
+                return new Promise((resolve, reject) => {
+                    serverFunctions
+                        .getAccounts({ rpcServer: _rpcServer() })
+                        .then(resolve)
+                        .catch(reject)
+                });
             },
             getAccountBalance: function(account) {
-                if (_isLocalNetwork()) {
-                    return new Promise((resolve, reject) => {
-                        serverFunctions
-                            .getAccountBalance({ rpcServer: _rpcServer(), account: account })
-                            .then(resolve)
-                            .catch(reject)
-                    });
-                }
-                else {
-                    return new Promise((resolve, reject) => {
-                        functions
-                            .httpsCallable('getAccountBalance')({ rpcServer: _rpcServer(), account: account })
-                            .then((res) => resolve(res.data))
-                            .catch(reject)
-                    });
-                }
+                return new Promise((resolve, reject) => {
+                    serverFunctions
+                        .getAccountBalance({ rpcServer: _rpcServer(), account: account })
+                        .then(resolve)
+                        .catch(reject)
+                });
             },
-            initRpcServer: function(rpcServer, localNetwork) {
-                if (localNetwork) {
-                    return new Promise((resolve, reject) => {
-                        serverFunctions
-                            .initRpcServer({ rpcServer: rpcServer })
-                            .then(resolve)
-                            .catch(reject)
-                    });
-                }
-                else {
-                    return new Promise((resolve, reject) => {
-                        functions
-                            .httpsCallable('initRpcServer')({ rpcServer: rpcServer })
-                            .then((res) => resolve(res.data))
-                            .catch(reject)
-                    });
-                }
+            initRpcServer: function(rpcServer) {
+                return new Promise((resolve, reject) => {
+                    serverFunctions
+                        .initRpcServer({ rpcServer: rpcServer })
+                        .then(resolve)
+                        .catch(reject)
+                });
             },
             callContractReadMethod: function(contract, method, options, params, rpcServer) {
-                if (_isLocalNetwork()) {
-                    return new Promise((resolve, reject) => {
-                        serverFunctions
-                            .callContractReadMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer })
-                            .then(resolve)
-                            .catch(reject)
-                    });
-                }
-                else {
-                    return new Promise((resolve, reject) => {
-                        functions
-                            .httpsCallable('callContractReadMethod')({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer })
-                            .then((res) => resolve(res.data))
-                            .catch(reject)
-                    });
-                }
+                return new Promise((resolve, reject) => {
+                    serverFunctions
+                        .callContractReadMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer })
+                        .then(resolve)
+                        .catch(reject)
+                });
             },
             callContractWriteMethod: function(contract, method, options, params, rpcServer, shouldTrace) {
-                if (_isLocalNetwork()) {
-                    return new Promise((resolve, reject) => {
-                        serverFunctions
-                            .callContractWriteMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer, shouldTrace: shouldTrace })
-                            .then(resolve)
-                            .catch(reject)
-                    });
-                }
-                else {
-                    return new Promise((resolve, reject) => {
-                        functions
-                            .httpsCallable('callContractWriteMethod')({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer, shouldTrace: shouldTrace })
-                            .then((res) => resolve(res.data))
-                            .catch(reject)
-                    });
-                }
+                return new Promise((resolve, reject) => {
+                    serverFunctions
+                        .callContractWriteMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer, shouldTrace: shouldTrace })
+                        .then(resolve)
+                        .catch(reject)
+                });
             },
             getStructure: function(contract, rpcServer, dependenciesArtifact) {
-                if (_isLocalNetwork()) {
-                    return new Promise((resolve, reject) => {
-                        serverFunctions
-                            .getStructure({ contract: contract, rpcServer: rpcServer, dependenciesArtifact: dependenciesArtifact })
-                            .then(resolve)
-                            .catch(reject)
-                    });
-                }
-                else {
-                    return new Promise((resolve, reject) => {
-                        functions
-                            .httpsCallable('getStructure')({ contract: contract, rpcServer: rpcServer, dependenciesArtifact: dependenciesArtifact })
-                            .then((res) => resolve(res.data))
-                            .catch(reject)
-                    });
-                }
+                return new Promise((resolve, reject) => {
+                    serverFunctions
+                        .getStructure({ contract: contract, rpcServer: rpcServer, dependenciesArtifact: dependenciesArtifact })
+                        .then(resolve)
+                        .catch(reject)
+                });
             },
             decodeData: function(contract, rpcServer, blockNumber) {
-                if (_isLocalNetwork()) {
-                    return new Promise((resolve, reject) => {
-                        serverFunctions
-                            .decodeData({ contract: contract, rpcServer: rpcServer, blockNumber: blockNumber })
-                            .then(resolve)
-                            .catch(reject)
-                    });
-                }
-                else {
-                    return new Promise((resolve, reject) => {
-                        functions
-                            .httpsCallable('decodeData')({ contract: contract, rpcServer: rpcServer, blockNumber: blockNumber })
-                            .then((res) => resolve(res.data))
-                            .catch(reject)
-                    });
-                }
+                return new Promise((resolve, reject) => {
+                    serverFunctions
+                        .decodeData({ contract: contract, rpcServer: rpcServer, blockNumber: blockNumber })
+                        .then(resolve)
+                        .catch(reject)
+                });
             }
         };
     }

@@ -1043,59 +1043,6 @@ describe('getAccount', () => {
     });
 });
 
-describe('impersonateAccount', () => {
-    beforeEach(async () => {
-        helper = new Helper(process.env.GCLOUD_PROJECT);
-    });
-
-    it('Should impersonate an account on a hardhat network', async () => {
-        const wrapped = helper.test.wrap(index.impersonateAccount);
-
-        const data = {
-            accountAddress: '0x123',
-            rpcServer: 'http://localhost:8545'
-        };
-
-        const result = await wrapped(data, auth);
-
-        expect(result).toBe(true);
-    });
-
-    it('Should impersonate an account on a non-hardhat network', async () => {
-        ethers.providers.JsonRpcProvider.mockImplementation(() => ({
-            send: (command) => {
-                return new Promise((resolve) => {
-                    switch(command) {
-                        case 'hardhat_impersonateAccount':
-                            resolve(false)
-                            break;
-                        case 'evm_unlockUnknownAccount':
-                            resolve(true);
-                            break;
-                        default:
-                            resolve(false);
-                            break;
-                    }
-                })
-            }
-        }));
-        const wrapped = helper.test.wrap(index.impersonateAccount);
-
-        const data = {
-            accountAddress: '0x123',
-            rpcServer: 'http://localhost:8545'
-        };
-
-        const result = await wrapped(data, auth);
-
-        expect(result).toBe(true);
-    });    
-
-    afterEach(async () => {
-        await helper.clean();
-    });    
-});
-
 describe('createWorkspace', () => {
     beforeEach(async () => {
         helper = new Helper(process.env.GCLOUD_PROJECT);

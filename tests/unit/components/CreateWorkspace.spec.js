@@ -26,7 +26,6 @@ describe('CreateWorkspace.vue', () => {
     it('Should let the user create a new workspace', async (done) => {
         const name = 'Hardhat';
         const rpcServer = 'http://127.0.0.1:8545';
-        const localNetwork = true;
         const initRpcServerMock = jest.spyOn(helper.mocks.server, 'initRpcServer');
         const createWorkspaceMock = jest.spyOn(helper.mocks.server, 'createWorkspace');
 
@@ -39,7 +38,7 @@ describe('CreateWorkspace.vue', () => {
 
         await wrapper.vm.$nextTick();
 
-        expect(initRpcServerMock).toHaveBeenCalledWith(rpcServer, localNetwork);
+        expect(initRpcServerMock).toHaveBeenCalledWith(rpcServer);
         expect(createWorkspaceMock).toHaveBeenCalledWith(name, {
             chain: 'ethereum',
             rpcServer: rpcServer,
@@ -47,12 +46,10 @@ describe('CreateWorkspace.vue', () => {
             settings: {
                 gasLimit: 1234567
             },
-            defaultAccount: '0x2D481eeb2bA97955CD081Cf218f453A817259AB1',
-            localNetwork: localNetwork
+            defaultAccount: '0x2D481eeb2bA97955CD081Cf218f453A817259AB1'
         });
 
         expect(wrapper.emitted().workspaceCreated[0]).toEqual([{
-            localNetwork: localNetwork,
             name: name,
             chain: 'ethereum',
             workspace: {
@@ -61,8 +58,7 @@ describe('CreateWorkspace.vue', () => {
                 settings: {
                     gasLimit: 1234567
                 },
-                defaultAccount: '0x2D481eeb2bA97955CD081Cf218f453A817259AB1',
-                localNetwork: localNetwork
+                defaultAccount: '0x2D481eeb2bA97955CD081Cf218f453A817259AB1'
             }
         }]);
         done();
@@ -71,7 +67,6 @@ describe('CreateWorkspace.vue', () => {
     it('Should display an error if it cannot connect to the chain', async (done) => {
         const name = 'Hardhat';
         const rpcServer = 'http://127.0.0.1';
-        const localNetwork = true;
 
         helper.mocks.server.initRpcServer = () => {
             throw { reason: 'Invalid JSON RPC response' }
@@ -119,17 +114,6 @@ describe('CreateWorkspace.vue', () => {
         await wrapper.find('#workspaceServer').setValue(rpcServer);
 
         expect(wrapper.vm.localNetwork).toBe(true);
-        expect(wrapper.html()).toMatchSnapshot();
-        done();
-    });
-
-    it('Should display a warning if trying to connect to an endpoint in a local network that does not look like one', async (done) => {
-        const rpcServer = 'http://150.34.10.10';
-
-        const wrapper = helper.mountFn(CreateWorkspace, { propsData: { existingWorkspaces: [] }});
-        await wrapper.find('#workspaceServer').setValue(rpcServer);
-        await wrapper.setData({ localNetwork: true})
-
         expect(wrapper.html()).toMatchSnapshot();
         done();
     });
