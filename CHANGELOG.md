@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.5] - 2021-12-24
+### Fixed
+- Error handling when some write methods are failing
+- Merry Christmas 🎅!
+
 ## [1.2.4] - 2021-12-21
 ### Changed
 - Prevents from restarting Stripe subscription portal while the subscription webhook is still being processed, better messaging too.
