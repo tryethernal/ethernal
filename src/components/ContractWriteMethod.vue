@@ -94,6 +94,7 @@ export default {
                             this.server.syncTrace(this.currentWorkspace.name, pendingTx.hash, trace);
                         }
                         this.result.txHash = pendingTx.hash;
+
                         if (typeof pendingTx.wait === 'function') {
                             pendingTx.wait()
                                 .then((receipt) => {
@@ -120,7 +121,7 @@ export default {
                         console.log(error)
                         if (error.data && !error.data.stack) {
                             const jsonInterface = new ethers.utils.Interface(this.contract.abi);
-                            var txHash = Object.keys(error.data)[0];
+                            var txHash = error.data.txHash || Object.keys(error.data)[0];
                             try {
                                 const result = jsonInterface.parseError(error.data[txHash].return);
                                 this.result = {
@@ -128,9 +129,16 @@ export default {
                                     message: `Error: ${formatErrorFragment(result)}`
                                 };
                             } catch (parsingError) {
+                                let message;
+                                if (error.data[txHash] && error.data[txHash].reason)
+                                    message = error.data[txHash].reason;
+                                else if (error.message)
+                                    message = error.message;
+                                else if (error.reason)
+                                    message = error.reason;
                                 this.result = {
                                     txHash: txHash,
-                                    message: error.data[txHash].reason ? `Error: ${error.data[txHash].reason}` : 'Unknown error'
+                                    message: message ? `Error: ${message}` : 'Unknown error'
                                 }
                             } finally {
                                 this.noReceipt = true;
