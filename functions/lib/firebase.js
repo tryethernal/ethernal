@@ -326,6 +326,8 @@ const canUserSyncContract = async (userId, workspace) => {
 };
 
 module.exports = {
+    firestore: _db,
+    rtdb: _rtdb,
     storeBlock: storeBlock,
     storeTransaction: storeTransaction,
     storeContractData: storeContractData,
