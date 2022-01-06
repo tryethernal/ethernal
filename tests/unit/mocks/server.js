@@ -3,6 +3,10 @@ import DecodedStorageData from '../fixtures/DecodedStorageData.json';
 
 export default {
 
+    syncTransactionData: function() {
+        return new Promise((resolve) => resolve(true))
+    },
+
     processContracts: function() {
         return new Promise((resolve) => resolve(true));
     },
