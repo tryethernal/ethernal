@@ -121,12 +121,18 @@ const storeContractData = (userId, workspace, address, data) => {
 const storeContractArtifact = (userId, workspace, address, artifact) => {
     if (!userId || !workspace || !address || !artifact) throw '[storeContractArtifact] Missing parameter';
 
-    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}/artifact`).set(artifact);
+    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}`)
+        .set({ artifact: artifact, updatedAt: admin.firestore.Timestamp.now()._seconds });
 };
 
 const storeContractDependencies = (userId, workspace, address, dependencies) => {
     if (!userId || !workspace || !address || !dependencies) throw '[storeContractDependencies] Missing parameter';
-    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}/dependencies`).update(dependencies);
+
+    _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}/dependencies`)
+        .update(dependencies);
+
+    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}`)
+        .update({ updatedAt: admin.firestore.Timestamp.now()._seconds });
 };
 
 const getContractArtifact = (userId, workspace, address) => {
@@ -326,6 +332,7 @@ const canUserSyncContract = async (userId, workspace) => {
 };
 
 module.exports = {
+    Timestamp: admin.firestore.Timestamp,
     firestore: _db,
     rtdb: _rtdb,
     storeBlock: storeBlock,
