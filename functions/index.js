@@ -14,6 +14,7 @@ const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('
 const { parseTrace } = require('./lib/utils');
 const { encrypt, decrypt, encode } = require('./lib/crypto');
 const { processContract } = require('./triggers/contracts');
+const { cleanArtifactDependencies } = require('./schedulers/cleaner');
 const Analytics = require('./lib/analytics');
 
 const analytics = new Analytics(functions.config().mixpanel ? functions.config().mixpanel.token : null);
@@ -808,3 +809,4 @@ exports.setTokenProperties = functions.https.onCall(async (data, context) => {
 
 exports.api = functions.https.onRequest(api);
 exports.processContract = functions.firestore.document('users/{userId}/workspaces/{workspaceName}/contracts/{contractName}').onCreate(processContract);
+exports.cleanArtifactDependencies = functions.pubsub.schedule('every monday 09:00').onRun(cleanArtifactDependencies);

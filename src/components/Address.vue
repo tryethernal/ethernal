@@ -33,7 +33,7 @@
                 <v-card outlined class="mb-4">
                     <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
                     <div v-if="!contractLoader">
-                        <v-card-text v-if="contract.artifact">
+                        <v-card-text v-if="contract.name">
                             Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded.
                             <div v-if="Object.keys(contract.dependencies).length" class="mb-1 mt-2">
                                 <h5>This contract has dependencies:</h5>
@@ -145,40 +145,58 @@
             </v-tab-item>
 
             <v-tab-item value="storage" v-if="contract && !contract.imported">
-                <h4>Structure</h4>
-                <v-card outlined class="mb-4">
-                    <v-skeleton-loader class="col-4" type="list-item-three-line" v-if="storageLoader"></v-skeleton-loader>
-                    <v-card-text v-if="storage.structure && !storageLoader && !storageError">
-                        <Storage-Structure :storage="node" @addStorageStructureChild="addStorageStructureChild" v-for="(node, key, idx) in storage.structure.nodes" :key="idx" />
-                    </v-card-text>
-                    <v-card-text v-if="!storage.structure && !storageLoader || storageError">
-                        <span v-if="storageError">
-                            Error while loading storage:
-                            <span v-if="storageErrorMessage">
-                                <b>{{ storageErrorMessage }}</b>
+                <template v-if="isStorageAvailable">
+                    <h4>Structure</h4>
+                    <v-card outlined class="mb-4">
+                        <v-skeleton-loader class="col-4" type="list-item-three-line" v-if="storageLoader"></v-skeleton-loader>
+                        <v-card-text v-if="storage.structure && !storageLoader && !storageError">
+                            <Storage-Structure :storage="node" @addStorageStructureChild="addStorageStructureChild" v-for="(node, key, idx) in storage.structure.nodes" :key="idx" />
+                        </v-card-text>
+                        <v-card-text v-if="!storage.structure && !storageLoader || storageError">
+                            <span v-if="storageError">
+                                Error while loading storage:
+                                <span v-if="storageErrorMessage">
+                                    <b>{{ storageErrorMessage }}</b>
+                                </span>
+                                <span v-else>
+                                    <b>You might have loaded an invalid key (maybe a badly formatted address?).</b>
+                                </span>
+                                <br>
+                                <a href="#" @click.prevent="resetStorage()">Click here</a> to reset storage.
                             </span>
-                            <span v-else>
-                                <b>You might have loaded an invalid key (maybe a badly formatted address?).</b>
-                            </span>
+                            <i v-else>Upload contract artifact <router-link :to="`/address/${this.contract.address}?tab=contract`">here</router-link> to see variables of this contract.</i>
+                        </v-card-text>
+                    </v-card>
+                    <v-row>
+                        <v-col cols="3">
+                            <h4>Transactions</h4>
+                            <Transaction-Picker :transactions="transactionsTo" @selectedTransactionChanged="selectedTransactionChanged" />
+                        </v-col>
+                        <v-col cols="9">
+                            <h4>Data</h4>
+                            <v-card outlined>
+                                <v-skeleton-loader v-if="dataLoader" class="col-5" type="list-item-three-line"></v-skeleton-loader>
+                                <v-card-text>
+                                    <Transaction-Data v-if="!dataLoader" @decodeTx="decodeTx" :transaction="selectedTransaction" :abi="contract.abi" :key="selectedTransaction.hash" />
+                                </v-card-text>
+                            </v-card>
+                        </v-col>
+                    </v-row>
+                </template>
+                <template v-else>
+                    <v-card outlined class="mt-4">
+                        <v-card-text>
+                            Storage is not available on this contract. This is because the AST is not available. It can be for the following reasons:
+                            <ul>
+                                <li>This contract has been imported (AST is not available yet through imports).</li>
+                                <li>You've synced the contract through the CLI/Hardhat plugin, but artifacts were not synced properly. If you can't figure it out, you can ask for help in the <a target="_blank" href="https://discord.gg/jEAprf45jj">Discord server</a>.</li>
+                                <li>You've synced the contract through the CLI/Hardhat plugin, but are on a free plan, meaning that AST for your contracts are deleted on every Monday. You need to push the contract again, or <Upgrade-Link>upgrade your plan</Upgrade-Link>.</li>
+                            </ul>
                             <br>
-                            <a href="#" @click.prevent="resetStorage()">Click here</a> to reset storage.
-                        </span>
-                        <i v-else>Upload contract artifact <router-link :to="`/address/${this.contract.address}?tab=contract`">here</router-link> to see variables of this contract.</i>
-                    </v-card-text>
-                </v-card>
-                <v-row>
-                    <v-col cols="3">
-                        <h4>Transactions</h4>
-                        <Transaction-Picker :transactions="transactionsTo" @selectedTransactionChanged="selectedTransactionChanged" />
-                    </v-col>
-                    <v-col cols="9">
-                        <h4>Data</h4>
-                        <v-card outlined v-if="dataLoader">
-                            <v-skeleton-loader class="col-5" type="list-item-three-line"></v-skeleton-loader>
-                        </v-card>
-                        <Transaction-Data v-if="!dataLoader" @decodeTx="decodeTx" :transaction="selectedTransaction" :abi="contract.abi" :key="selectedTransaction.hash" />
-                    </v-col>
-                </v-row>
+                            <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/contracts/reading-variables">Read more</a> on how storage reading works.
+                        </v-card-text>
+                    </v-card>
+                </template>
             </v-tab-item>
         </v-tabs-items>
     </v-container>
@@ -198,6 +216,7 @@ import ContractWriteMethod from './ContractWriteMethod';
 import ImportArtifactModal from './ImportArtifactModal';
 import RemoveContractConfirmationModal from './RemoveContractConfirmationModal';
 import Token from './Token';
+import UpgradeLink from './UpgradeLink';
 
 import FromWei from '../filters/FromWei';
 
@@ -213,7 +232,8 @@ export default {
         ContractWriteMethod,
         ImportArtifactModal,
         RemoveContractConfirmationModal,
-        Token
+        Token,
+        UpgradeLink
     },
     filters: {
         FromWei
@@ -272,11 +292,12 @@ export default {
         selectedTransactionChanged: function(transaction) {
             this.selectedTransaction = transaction;
 
-            if (this.selectedTransaction.hash && !Object.keys(this.selectedTransaction.storage).length) {
+            if (this.selectedTransaction.hash && !Object.keys(this.selectedTransaction.storage || {}).length) {
                 this.decodeTx(this.selectedTransaction);
             }
         },
         decodeTx: function(transaction) {
+            if (!this.isStorageAvailable) return;
             this.dataLoader = true;
             this.server.decodeData(this.contract, this.currentWorkspace.rpcServer, transaction.blockNumber).then((data) => {
                 this.server.syncTransactionData(this.currentWorkspace.name, transaction.hash, data)
@@ -291,6 +312,7 @@ export default {
                 .then(this.decodeContract);
         },
         decodeContract: function() {
+            if (!this.isStorageAvailable) return;
             this.storageError = false;
             this.storageErrorMessage = '';
             if (this.dependenciesNeded()) {
@@ -368,6 +390,9 @@ export default {
             'currentWorkspace',
             'nativeToken'
         ]),
+        isStorageAvailable: function() {
+            return this.contract && this.contract.dependencies && Object.keys(this.contract.dependencies).length > 0;
+        },
         isContract: function() {
             return this.contract && this.contract.address;
         },
