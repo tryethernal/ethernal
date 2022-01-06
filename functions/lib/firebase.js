@@ -128,11 +128,15 @@ const storeContractArtifact = (userId, workspace, address, artifact) => {
 const storeContractDependencies = (userId, workspace, address, dependencies) => {
     if (!userId || !workspace || !address || !dependencies) throw '[storeContractDependencies] Missing parameter';
 
-    _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}/dependencies`)
-        .update(dependencies);
+    const promises = [];
 
-    return _rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}`)
-        .update({ updatedAt: admin.firestore.Timestamp.now()._seconds });
+    promises.push(_rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}/dependencies`)
+        .update(dependencies));
+
+    promises.push(_rtdb.ref(`/users/${userId}/workspaces/${workspace}/contracts/${address.toLowerCase()}`)
+        .update({ updatedAt: admin.firestore.Timestamp.now()._seconds }));
+
+    return Promise.all(promises);
 };
 
 const getContractArtifact = (userId, workspace, address) => {

@@ -382,9 +382,9 @@ describe('storeContractDependencies', () => {
         const contractDependency = JSON.stringify(AmalfiContract.dependencies['Address']);
         await storeContractDependencies('123', 'hardhat', '0x123', { Address: contractDependency });
 
-        const artifactRef = await helper.database.ref('/users/123/workspaces/hardhat/contracts/0x123/dependencies').once('value');
+        const artifactRef = await helper.database.ref('/users/123/workspaces/hardhat/contracts/0x123').once('value');
 
-        expect(artifactRef.val()).toEqual({ Address: contractDependency });
+        expect(artifactRef.val()).toEqual({ dependencies: { Address: contractDependency }, updatedAt: expect.anything() });
     });
 });
 
