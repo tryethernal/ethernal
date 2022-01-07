@@ -11,16 +11,22 @@
                 <Create-Workspace :existingWorkspaces="[]" @workspaceCreated="onWorkspaceCreated" />
             </v-stepper-content>
 
-            <v-stepper-step step="2" :complete="stepperIndex > 2">Set up the CLI</v-stepper-step>
+            <v-stepper-step step="2" :complete="stepperIndex > 2">Set up the client</v-stepper-step>
             <v-stepper-content step="2">
+                <h5>For Ganache</h5>
                 <p>
-                    Ethernal uses a <a href="https://www.npmjs.com/package/ethernal" target="_blank">CLI</a> to synchronize your transactions and display them on your dashboard (<a href="https://doc.tryethernal.com" target="_blank">doc</a>).
-                </p>
-                <p>
-                    Install it with <code>npm install ethernal -g</code>
+                    Install the <a href="https://github.com/tryethernal/ethernal-cli" target="_blank">CLI</a> with <code>npm install ethernal -g</code>
                 </p>
                 <p>
                     And sign-in with <code>ethernal login</code>
+                </p>
+
+                <h5>For Hardhat</h5>
+                <p>
+                    Add the <a href="https://github.com/tryethernal/hardhat-ethernal" target="_blank">plugin</a> to your project with <code>yarn add hardhat-ethernal</code><br>
+                </p>
+                <p>
+                    Add <code>require('hardhat-ethernal');</code> in your <code>hardhat-config.js</code> file.
                 </p>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -30,8 +36,13 @@
 
             <v-stepper-step step="3" :complete="stepperIndex > 3">Listen for transactions</v-stepper-step>
             <v-stepper-content step="3">
+                <h5>For Ganache</h5>
                 <p>
-                    Run <code>ethernal listen</code> to listen to transactions (<a href="https://doc.tryethernal.com" target="_blank">doc</a>).
+                    Run <code>ethernal listen</code> to listen to transactions (<a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">doc</a>).
+                </p>
+                <h5>For Hardhat</h5>
+                <p>
+                    Restart your Hardhat node and you are good to go :) the plugin will automatically synchronize all blocks and transactions.
                 </p>
                 <p v-if="!transactions.length">
                     Waiting for your first transaction...
