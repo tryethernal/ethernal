@@ -24,13 +24,15 @@ class Analytics {
     }
 
     setSubscription(uid, status, plan, trialEndsAt, subscriptionCancelsAtPeriodEnd) {
-        if (!this.token || !status || !plan || !trialEndsAt || subscriptionCancelsAtPeriodEnd === undefined) return;
-        this.mixpanel.people.set(uid, {
+        if (!this.token || status === undefined || !plan || trialEndsAt === undefined || subscriptionCancelsAtPeriodEnd === undefined) return;
+        const params = {
             subscriptionStatus: status,
             plan: plan,
             trialEndsAt: trialEndsAt,
             subscriptionCancelsAtPeriodEnd: subscriptionCancelsAtPeriodEnd
-        });
+        };
+        console.log(`Setting subscription for ${uid} with params: ${JSON.stringify(params)}`);
+        this.mixpanel.people.set(uid, params);
     }
 }
 

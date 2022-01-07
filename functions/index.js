@@ -503,6 +503,7 @@ exports.createWorkspace = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to one workspace. Upgrade to our Premium plan to create more.');
 
         await createWorkspace(context.auth.uid, data.name, filteredWorkspaceData);
+        analytics.track(context.auth.uid, 'Workspace Creation');
 
         return { success: true };
     } catch(error) {
@@ -748,6 +749,7 @@ exports.createUser = functions.https.onCall(async (data, context) => {
             $created: (new Date()).toISOString(),
         });
         analytics.setSubscription(context.auth.uid, null, 'free', null, false);
+        analytics.track(context.auth.uid, 'Sign Up');
 
         return { success: true };
     } catch(error) {
