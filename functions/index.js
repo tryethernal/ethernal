@@ -811,5 +811,5 @@ exports.setTokenProperties = functions.https.onCall(async (data, context) => {
 
 exports.api = functions.https.onRequest(api);
 exports.processContract = functions.firestore.document('users/{userId}/workspaces/{workspaceName}/contracts/{contractName}').onCreate(processContract);
-exports.cleanArtifactDependencies = functions.pubsub.schedule('every day').onRun(cleanArtifactDependencies);
+exports.cleanArtifactDependencies = functions.pubsub.schedule('every day 00:00').onRun(cleanArtifactDependencies);
 
