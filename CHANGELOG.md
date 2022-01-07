@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.7] - 2022-01-07
+### Added
+- Mixpanel tracking for workspace creation (for better onboarding analytics)
+
+### Fixed
+- An analytics helper function wasn't working properly
+
+### Changed
+- Wording on the onboarding modal (clearer for Hardhat users)
+
 ## [1.2.6] - 2022-01-06
 ### Changed
 - Artifacts stored in rtdb (ast) are deleted after 1 week of not being updated, for free users only. It's only useful for reading storage, and takes up a lot of space, increasing the bill.
