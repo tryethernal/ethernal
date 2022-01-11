@@ -60,6 +60,7 @@ class MockHelper {
         this.storeState = {
             user: {},
             currentWorkspace: {
+                chain: 'ethereum',
                 networkId: null,
                 rpcServer: null,
                 localNetwork: true,
