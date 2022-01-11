@@ -11,19 +11,18 @@
                     <v-col lg="5">
                         <v-alert v-show="updateSuccess" dense text type="success">Settings updated</v-alert>
                         <v-alert v-show="updateError" dense text type="error">Error while updating settings</v-alert>
-                        <h4>Server</h4>
+                        <h4>General</h4>
                         <v-card outlined class="mb-4">
                             <v-card-text>
                                 <v-text-field
                                     outlined
-                                    disabled
                                     v-model="currentWorkspace.rpcServer"
                                     hide-details="auto"
+                                    id="rpcServer"
                                     label="RPC Server">
                                 </v-text-field>
-                                To use another server, create another workspace.
-                                <v-select class="mt-3" outlined required label="Chain" v-model="currentWorkspace.chain" :items="chains" hide-details="auto"></v-select>
-                                If you'd like support for other chains, please contact @antoinedc on Discord.
+                                You will need to restart the CLI or the Hardhat node for a server change to take effect.
+                                <v-select id="chain" class="mt-3" outlined required label="Chain" v-model="currentWorkspace.chain" :items="chains" hide-details="auto"></v-select>
                                 <v-row class="mt-2 pb-1 mr-2">
                                     <v-spacer></v-spacer>
                                     <v-btn id="updateOptions" :loading="loading" depressed color="primary" class="mt-1" @click="update()">Update</v-btn>
@@ -304,7 +303,7 @@ export default {
             this.updateSuccess = false;
             this.updateError = false;
 
-            this.server.updateWorkspaceSettings(this.currentWorkspace.name, { chain: this.currentWorkspace.chain, settings: this.settings })
+            this.server.updateWorkspaceSettings(this.currentWorkspace.name, { rpcServer: this.currentWorkspace.rpcServer, chain: this.currentWorkspace.chain, settings: this.settings })
                 .then(() => {
                     this.updateSuccess = true;
                     this.currentWorkspace.settings = this.settings;

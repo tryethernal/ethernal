@@ -563,7 +563,7 @@ exports.updateWorkspaceSettings = functions.https.onCall(async (data, context) =
             throw new functions.https.HttpsError('invalid-argument', '[updateWorkspaceSettings] Missing parameter.');
         }
 
-        const ALLOWED_OPTIONS = ['chain'];
+        const ALLOWED_OPTIONS = ['chain', 'rpcServer'];
         const ALLOWED_ADVANCED_OPTIONS = ['tracing'];
         const ALLOWED_SETTINGS = ['defaultAccount', 'gasLimit', 'gasPrice'];
         const sanitizedParams = {};

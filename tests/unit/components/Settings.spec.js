@@ -10,6 +10,7 @@ describe('Settings.vue', () => {
         helper = new MockHelper({
             currentWorkspace: {
                 name: 'Hardhat',
+                chain: 'ethereum',
                 rpcServer: 'http://localhost:8545',
                 networkId: 1,
                 settings: {}
@@ -26,6 +27,30 @@ describe('Settings.vue', () => {
         }, 2000);
     });
 
+    it('Should let the user update general options', async (done) => {
+        const updateWorkspaceSettingsMock = jest.spyOn(helper.mocks.server, 'updateWorkspaceSettings');
+        const wrapper = helper.mountFn(Settings);
+
+        setTimeout(async () => {
+            await wrapper.find('#rpcServer').setValue('http://localhost:1234');
+            await wrapper.find('#chain').setValue('ethereum');
+            await wrapper.find('#updateOptions').trigger('click');
+
+            await wrapper.vm.$nextTick();
+
+            expect(updateWorkspaceSettingsMock).toHaveBeenCalledWith('Hardhat', { chain: 'ethereum', rpcServer: 'http://localhost:1234', settings: expect.anything() });
+            expect(helper.actions.updateCurrentWorkspace).toHaveBeenCalledWith(expect.anything(), {
+                rpcServer: 'http://localhost:1234',
+                chain: 'ethereum',
+                networkId: 1,
+                settings: expect.anything(),
+                name: 'Hardhat'
+            });
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1000)
+    });
+
     it('Should let the user update call options', async (done) => {
         const updateWorkspaceSettingsMock = jest.spyOn(helper.mocks.server, 'updateWorkspaceSettings');
         const wrapper = helper.mountFn(Settings);
@@ -38,9 +63,10 @@ describe('Settings.vue', () => {
 
             await wrapper.vm.$nextTick();
 
-            expect(updateWorkspaceSettingsMock).toHaveBeenCalledWith('Hardhat', { settings: expect.anything() });
+            expect(updateWorkspaceSettingsMock).toHaveBeenCalledWith('Hardhat', { chain: 'ethereum', rpcServer: 'http://localhost:8545', settings: { defaultAccount: '0x123', gasPrice: '1234', gasLimit: '12345' }});
             expect(helper.actions.updateCurrentWorkspace).toHaveBeenCalledWith(expect.anything(), {
                 rpcServer: 'http://localhost:8545',
+                chain: 'ethereum',
                 networkId: 1,
                 settings: {
                     defaultAccount: '0x123',
