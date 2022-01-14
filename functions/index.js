@@ -4,6 +4,7 @@ const ethers = require('ethers');
 const Web3 = require('web3');
 const axios = require('axios');
 const moment = require('moment');
+const jwt = require('jsonwebtoken');
 const Decoder = require('@truffle/decoder');
 const firebaseTools = require('firebase-tools');
 const admin = require('firebase-admin');
@@ -806,6 +807,28 @@ exports.setTokenProperties = functions.https.onCall(async (data, context) => {
         console.log(error)
         var reason = error.reason || error.message || 'Server error. Please retry.';
         throw new functions.https.HttpsError(error.code || 'unknown', reason);        
+    }
+});
+
+exports.getProductRoadToken = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        const prAuthSecret = functions.config().product_road.secret;
+
+        const data = {
+            email: context.auth.token.email,
+            name: context.auth.token.email
+        };
+
+        const token = jwt.sign(data, prAuthSecret, { algorithm: 'HS256' });
+
+        return { token: token };
+    } catch(error) {
+        console.log(error)
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 
