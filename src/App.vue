@@ -66,6 +66,14 @@
 
             <template v-slot:append>
                 <v-list>
+                    <v-list-item target="_blank" href="https://ethernal.productroad.com/board/feature-requests/">
+                        <v-list-item-icon>
+                            <v-icon>mdi-feature-search</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>Feature Requests</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
                     <v-list-item link @click="logOut()">
                         <v-list-item-icon>
                             <v-icon class="red--text text--darken-3">mdi-logout</v-icon>
