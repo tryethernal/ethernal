@@ -815,6 +815,9 @@ exports.getProductRoadToken = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
 
     try {
+        if (!functions.config().product_road || !functions.config().product_road.secret)
+            return { token: null };
+
         const prAuthSecret = functions.config().product_road.secret;
 
         const data = {
