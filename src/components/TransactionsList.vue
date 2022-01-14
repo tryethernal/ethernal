@@ -29,18 +29,27 @@
             <Hash-Link :type="'transaction'" :hash="item.hash" />
         </template>
         <template v-slot:item.method="{ item }">
-            <v-tooltip v-if="item.functionSignature" top color="black">
+            <v-tooltip v-if="item.functionSignature" top :open-delay="150" color="grey darken-3">
                 <template v-slot:activator="{ on, attrs }">
                     <span class="methodName" v-bind="attrs" v-on="on">
-                        {{ getMethodName(item) }}
+                        <v-chip label small color="primary">{{ getMethodName(item) }}</v-chip>
                     </span>
                 </template>
                 <span style="white-space: pre">{{ getMethodLabel(item.functionSignature) }}</span>
             </v-tooltip>
-            <span v-else>{{ getMethodName(item) }}</span>
+            <span v-else>
+                <v-chip label small color="primary" v-show="getMethodName(item)">{{ getMethodName(item) }}</v-chip>
+            </span>
         </template>
         <template v-slot:item.timestamp="{ item }">
-            {{ parseInt(item.timestamp) | moment('YYYY-MM-DD h:mm:ss A') }}
+            <v-tooltip top :open-delay="150" color="grey darken-3">
+                <template v-slot:activator="{ on, attrs }">
+                    <span v-bind="attrs" v-on="on">
+                        {{ parseInt(item.timestamp) | moment('MM/DD h:mm:ss A') }}
+                    </span>
+                </template>
+                {{ moment(item.timestamp * 1000).fromNow() }}
+            </v-tooltip>
         </template>
         <template v-slot:item.from="{ item }">
             <v-chip x-small class="mr-2" v-if="item.from && item.from === currentAddress">self</v-chip>
@@ -54,15 +63,16 @@
             <Hash-Link :type="'address'" :hash="item.to" :withName="true" />
         </template>
         <template v-slot:item.value="{ item }">
-            {{ item.value | fromWei('ether', nativeToken) }}
+            {{ item.value | fromWei('ether', nativeToken, 10) }}
         </template>
         <template v-slot:item.fee="{ item }">
-            <span v-if="item.receipt">{{ item.gasPrice * (item.gas || item.receipt.gasUsed)  | fromWei('ether', nativeToken) }}</span>
+            <span v-if="item.receipt">{{ item.gasPrice * (item.gas || item.receipt.gasUsed)  | fromWei('ether', nativeToken, 10) }}</span>
         </template>
     </v-data-table>
 </template>
 
 <script>
+const moment = require('moment');
 import { mapGetters } from 'vuex';
 import FromWei from '../filters/FromWei.js';
 import HashLink from './HashLink.vue';
@@ -114,8 +124,9 @@ export default {
         ]
     }),
     methods: {
+        moment: moment,
         getMethodName: function(transaction) {
-            if (!transaction.functionSignature) return transaction.data != '0x' ? transaction.data.slice(0, 10) : '';
+            if (!transaction.functionSignature) return transaction.data != '0x' ? transaction.data.slice(0, 10) : null;
             return transaction.functionSignature.name ? transaction.functionSignature.name : transaction.functionSignature.sighash;
         },
         getMethodLabel: function(functionSignature) {
