@@ -28,6 +28,17 @@
             </v-tooltip>
             <Hash-Link :type="'transaction'" :hash="item.hash" />
         </template>
+        <template v-slot:item.method="{ item }">
+            <v-tooltip v-if="item.functionSignature" top color="black">
+                <template v-slot:activator="{ on, attrs }">
+                    <span class="methodName" v-bind="attrs" v-on="on">
+                        {{ getMethodName(item) }}
+                    </span>
+                </template>
+                <span style="white-space: pre">{{ getMethodLabel(item.functionSignature) }}</span>
+            </v-tooltip>
+            <span v-else>{{ getMethodName(item) }}</span>
+        </template>
         <template v-slot:item.timestamp="{ item }">
             {{ parseInt(item.timestamp) | moment('YYYY-MM-DD h:mm:ss A') }}
         </template>
@@ -36,7 +47,7 @@
             <Hash-Link :type="'address'" :hash="item.from" />
         </template>
         <template v-slot:item.blockNumber="{ item }">
-            <router-link :to="'/block/' + item.blockNumber">{{item.blockNumber}}</router-link>
+            <router-link :to="'/block/' + item.blockNumber">{{ item.blockNumber }}</router-link>
         </template>
         <template v-slot:item.to="{ item }">
             <v-chip x-small class="mr-2" v-if="item.to && item.to === currentAddress">self</v-chip>
@@ -70,7 +81,11 @@ export default {
             {
                 text: 'Txn Hash',
                 value: 'hash',
-                align: 'start'
+                align: 'start',
+            },
+            {
+                text: 'Method',
+                value: 'method',
             },
             {
                 text: 'Block',
@@ -98,6 +113,16 @@ export default {
             }
         ]
     }),
+    methods: {
+        getMethodName: function(transaction) {
+            if (!transaction.functionSignature) return transaction.data != '0x' ? transaction.data.slice(0, 10) : '';
+            return transaction.functionSignature.name ? transaction.functionSignature.name : transaction.functionSignature.sighash;
+        },
+        getMethodLabel: function(functionSignature) {
+            if (!functionSignature) return '';
+            return functionSignature.label ? functionSignature.label : '';
+        }
+    },
     computed: {
         ...mapGetters([
             'nativeToken'
@@ -105,3 +130,12 @@ export default {
     }
 }
 </script>
+<style scoped>
+.methodName {
+    display: block;
+    max-width: 11ch;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+</style>

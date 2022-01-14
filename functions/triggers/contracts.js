@@ -1,8 +1,8 @@
 const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 
-const { getContractByHashedBytecode, getWorkspaceByName, storeContractData } = require('../lib/firebase');
+const { getContractByHashedBytecode, getWorkspaceByName, storeContractData, getContractTransactions } = require('../lib/firebase');
 const { sanitize } = require('../lib/utils');
+const { processTransactions } = require('../lib/transactions');
 const axios = require('axios');
 
 const findLocalMetadata = async (context, contract) => {
@@ -85,6 +85,11 @@ exports.processContract = async (snap, context) => {
                 contract.address, 
                 metadata
             )
+
+            if (metadata.abi) {
+                const transactions = await getContractTransactions(context.params.userId, context.params.workspaceName, contract.address);
+                await processTransactions(context.params.userId, context.params.workspaceName, transactions);
+            }
         }
 
     } catch (error) {

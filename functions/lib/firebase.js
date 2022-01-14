@@ -109,6 +109,14 @@ const storeTransaction = (userId, workspace, transaction) => {
         .set(transaction, { merge: true }); 
 };
 
+const storeTransactionSignature = (userId, workspace, transactionHash, signature) => {
+    if (!userId || !workspace || !transactionHash) throw '[storeTransaction] Missing parameter';
+    return _getWorkspace(userId, workspace)
+        .collection('transactions')
+        .doc(transactionHash)
+        .set({ functionSignature: signature }, { merge: true });
+};
+
 const storeContractData = (userId, workspace, address, data) => {
     if (!userId || !workspace || !address || !data) throw '[storeContractData] Missing parameter';
 
@@ -335,6 +343,19 @@ const canUserSyncContract = async (userId, workspace) => {
     return storedContracts._size < 10;
 };
 
+const getContractTransactions = async (userId, workspace, contractAddress) => {
+    if (!userId || !workspace || !contractAddress) throw  '[getContractTransactions] Missing parameter';
+
+    const docs = await _getWorkspace(userId, workspace)
+        .collection('transactions')
+        .where('to', '==', contractAddress)
+        .get();
+
+    const results = []
+    docs.forEach(doc => results.push(doc.data()));
+    return results;
+};
+
 module.exports = {
     Timestamp: admin.firestore.Timestamp,
     firestore: _db,
@@ -372,5 +393,7 @@ module.exports = {
     createUser: createUser,
     getUnprocessedContracts: getUnprocessedContracts,
     canUserSyncContract: canUserSyncContract,
-    isUserPremium: isUserPremium
+    isUserPremium: isUserPremium,
+    getContractTransactions: getContractTransactions,
+    storeTransactionSignature: storeTransactionSignature
 };
