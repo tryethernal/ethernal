@@ -307,6 +307,9 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            getProductRoadToken: function() {
+                return functions.httpsCallable('getProductRoadToken')();
+            },
             createUser: function(uid) {
                 return functions.httpsCallable('createUser')({ uid: uid });
             },

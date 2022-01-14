@@ -66,6 +66,14 @@
 
             <template v-slot:append>
                 <v-list>
+                    <v-list-item v-show="prAuthToken" target="_blank" :href="`https://ethernal.productroad.com/company/auth/?token=${prAuthToken}`">
+                        <v-list-item-icon>
+                            <v-icon>mdi-feature-search</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>Feature Requests</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
                     <v-list-item link @click="logOut()">
                         <v-list-item-icon>
                             <v-icon class="red--text text--darken-3">mdi-logout</v-icon>
@@ -110,7 +118,8 @@ export default {
         }),
         appBarComponent: Vue.component({
             template: '<v-container fluid>Loading...</v-container>'
-        })
+        }),
+        prAuthToken: null
     }),
     created: function() {
         const unsubscribe = this.$store.subscribe((mutation, state) => {
@@ -171,6 +180,7 @@ export default {
         loadWorkspace: function(workspaceRef) {
             workspaceRef.get().then((workspaceQuery) => {
                 this.$store.dispatch('updateCurrentWorkspace', { ...workspaceQuery.data(), name: workspaceQuery.id });
+                this.server.getProductRoadToken().then((res) => this.prAuthToken = res.data.token);
                 this.appBarComponent = 'rpc-connector';
                 this.routerComponent = 'router-view';
             });
