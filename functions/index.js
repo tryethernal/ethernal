@@ -832,4 +832,5 @@ exports.getProductRoadToken = functions.https.onCall(async (data, context) => {
 
 exports.api = functions.https.onRequest(api);
 exports.processContract = functions.firestore.document('users/{userId}/workspaces/{workspaceName}/contracts/{contractName}').onCreate(processContract);
+exports.processContractOnUpdate = functions.firestore.document('users/{userId}/workspaces/{workspaceName}/contracts/{contractName}').onUpdate(processContract);
 exports.cleanArtifactDependencies = functions.pubsub.schedule('every day 00:00').onRun(cleanArtifactDependencies);

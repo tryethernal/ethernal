@@ -64,15 +64,17 @@ const findScannerMetadata = async (context, contract) => {
 exports.processContract = async (snap, context) => {
     try {
         let scannerMetadata = {}, tokenPatterns = [];
-        const contract = { ...snap.data(), address: snap.id };
+        const newSnap = snap.after ? snap.after : snap;
+
+        const contract = { ...newSnap.data(), address: newSnap.id };
 
         const localMetadata = await findLocalMetadata(context, contract);
         if (!localMetadata.name || !localMetadata.abi)
             scannerMetadata = await findScannerMetadata(context, contract);
 
         const metadata = sanitize({
-            name: localMetadata.name || scannerMetadata.name,
-            abi: localMetadata.abi || scannerMetadata.abi,
+            name: contract.name || localMetadata.name || scannerMetadata.name,
+            abi: contract.abi || localMetadata.abi || scannerMetadata.abi,
             proxy: scannerMetadata.proxy
         });
 

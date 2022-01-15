@@ -4,9 +4,8 @@ const { getFunctionSignatureForTransaction } = require('./utils');
 
 exports.processTransactions = async (userId, workspace, transactions) => {
     for (let i = 0; i < transactions.length; i++) {
+        const transaction = transactions[i];
         try {
-            const transaction = transactions[i];
-
             if (!transaction.to) continue;
 
             const contract = await getContractData(userId, workspace, transaction.to);
@@ -49,6 +48,7 @@ exports.processTransactions = async (userId, workspace, transactions) => {
             });
         } catch(error) {
             console.log(error)
+            await storeTransactionMethodDetails(userId, workspace, transaction.hash, null);
             continue;
         }
     }
