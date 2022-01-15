@@ -110,7 +110,7 @@ const storeTransaction = (userId, workspace, transaction) => {
 };
 
 const storeTransactionMethodDetails = (userId, workspace, transactionHash, methodDetails) => {
-    if (!userId || !workspace || !transactionHash) throw '[storeTransaction] Missing parameter';
+    if (!userId || !workspace || !transactionHash) throw '[storeTransactionMethodDetails] Missing parameter';
     return _getWorkspace(userId, workspace)
         .collection('transactions')
         .doc(transactionHash)
@@ -183,7 +183,7 @@ const getContractData = async (userId, workspace, address) => {
 };
 
 const getContractRef = (userId, workspace, address) => {
-        if (!userId || !workspace || !address) throw '[getContractData] Missing parameter';
+        if (!userId || !workspace || !address) throw '[getContractRef] Missing parameter';
         return _getWorkspace(userId, workspace)
             .collection('contracts')
             .doc(address.toLowerCase());

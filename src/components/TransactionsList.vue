@@ -126,12 +126,15 @@ export default {
     methods: {
         moment: moment,
         getMethodName: function(transaction) {
-            if (!transaction.methodDetails) return transaction.data != '0x' ? transaction.data.slice(0, 10) : null;
-            return transaction.methodDetails.name ? transaction.methodDetails.name : transaction.methodDetails.sighash;
+            if (!transaction.methodDetails) return this.getSighash(transaction);
+            return transaction.methodDetails.name ? transaction.methodDetails.name : this.getSighash(transaction);
         },
         getMethodLabel: function(methodDetails) {
             if (!methodDetails) return null;
             return methodDetails.label ? methodDetails.label : null;
+        },
+        getSighash: function(transaction) {
+            return transaction.data != '0x' ? transaction.data.slice(0, 10) : null;
         }
     },
     computed: {

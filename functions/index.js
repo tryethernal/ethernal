@@ -245,13 +245,6 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
         const sTransactionReceipt = receipt ? stringifyBns(sanitize(receipt)) : null;
         const sTransaction = stringifyBns(sanitize(transaction));
 
-        let contractAbi = null;
-
-        if (sTransactionReceipt && transaction.to && transaction.data != '0x') {
-            const contractData = await getContractData(context.auth.uid, data.workspace, transaction.to);
-            contractAbi = contractData ? contractData.abi : null
-        }
-
         const txSynced = sanitize({
             ...sTransaction,
             receipt: sTransactionReceipt,
@@ -711,7 +704,7 @@ exports.syncTransactionData = functions.https.onCall(async (data, context) => {
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[syncTransactionData] Missing parameter.');
         }
-        console.log(data)
+
         await storeTransactionData(
             context.auth.uid,
             data.workspace,

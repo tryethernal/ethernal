@@ -39,7 +39,8 @@ const fetchEtherscanData = async (address, chain) => {
     }
 
     const endpoint = `https://api.${scannerHost}/api?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`;
-    return (await axios.get(endpoint)).data;
+    const response = await axios.get(endpoint);
+    return response ? response.data : null;
 };
 
 const findScannerMetadata = async (context, contract) => {
@@ -47,7 +48,7 @@ const findScannerMetadata = async (context, contract) => {
  
     const scannerData = await fetchEtherscanData(contract.address, workspace.chain);
     
-    if (scannerData.message != 'NOTOK' && scannerData.result[0].ContractName != '') {
+    if (scannerData && scannerData.message != 'NOTOK' && scannerData.result[0].ContractName != '') {
         const abi = JSON.parse(scannerData.result[0].ABI || '[]')
 
         return {
@@ -85,13 +86,10 @@ exports.processContract = async (snap, context) => {
                 contract.address, 
                 metadata
             )
-
-            if (metadata.abi) {
-                const transactions = await getContractTransactions(context.params.userId, context.params.workspaceName, contract.address);
-                await processTransactions(context.params.userId, context.params.workspaceName, transactions);
-            }
         }
 
+        const transactions = await getContractTransactions(context.params.userId, context.params.workspaceName, contract.address);
+        await processTransactions(context.params.userId, context.params.workspaceName, transactions);
     } catch (error) {
         console.log(error);
     }
