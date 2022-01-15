@@ -109,12 +109,12 @@ const storeTransaction = (userId, workspace, transaction) => {
         .set(transaction, { merge: true }); 
 };
 
-const storeTransactionSignature = (userId, workspace, transactionHash, signature) => {
+const storeTransactionMethodDetails = (userId, workspace, transactionHash, methodDetails) => {
     if (!userId || !workspace || !transactionHash) throw '[storeTransaction] Missing parameter';
     return _getWorkspace(userId, workspace)
         .collection('transactions')
         .doc(transactionHash)
-        .set({ functionSignature: signature }, { merge: true });
+        .set({ methodDetails: methodDetails }, { merge: true });
 };
 
 const storeContractData = (userId, workspace, address, data) => {
@@ -395,5 +395,5 @@ module.exports = {
     canUserSyncContract: canUserSyncContract,
     isUserPremium: isUserPremium,
     getContractTransactions: getContractTransactions,
-    storeTransactionSignature: storeTransactionSignature
+    storeTransactionMethodDetails: storeTransactionMethodDetails
 };

@@ -12,7 +12,7 @@
                                     {{ transaction.blockNumber }}
                                 </v-list-item-subtitle>
                                 <v-list-item-subtitle>
-                                    {{ transaction.functionSignature }}
+                                    {{ signatureForTx(transaction) }}
                                 </v-list-item-subtitle>
                             </v-list-item-content>
                         </v-list-item>
@@ -40,6 +40,12 @@ export default {
     methods: {
         selectedTransactionChanged: function(transaction) {
             this.$emit('selectedTransactionChanged', transaction || {});
+        },
+        signatureForTx: function(transaction) {
+            if (transaction.methodDetails) {
+                return transaction.methodDetails.signature ? transaction.methodDetails.signature : transaction.methodDetails.sighash;
+            }
+            return null;
         }
     }
 }

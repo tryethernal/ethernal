@@ -606,7 +606,7 @@ describe('syncContractData', () => {
     });
 });
 
-describe('syncTransaction', () => {
+describe.only('syncTransaction', () => {
     beforeEach(async () => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
         await helper.setUser();

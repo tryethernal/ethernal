@@ -29,16 +29,16 @@
             <Hash-Link :type="'transaction'" :hash="item.hash" />
         </template>
         <template v-slot:item.method="{ item }">
-            <v-tooltip v-if="item.functionSignature" top :open-delay="150" color="grey darken-3">
+            <v-tooltip v-if="item.methodDetails" top :open-delay="150" color="grey darken-3">
                 <template v-slot:activator="{ on, attrs }">
-                    <span class="methodName" v-bind="attrs" v-on="on">
-                        <v-chip label small color="primary">{{ getMethodName(item) }}</v-chip>
-                    </span>
+                    <v-chip v-bind="attrs" v-on="on" label small color="primary lighten-1">
+                        <span class="methodName">{{ getMethodName(item) }}</span>
+                    </v-chip>
                 </template>
-                <span style="white-space: pre">{{ getMethodLabel(item.functionSignature) }}</span>
+                <span style="white-space: pre">{{ getMethodLabel(item.methodDetails) }}</span>
             </v-tooltip>
             <span v-else>
-                <v-chip label small color="primary" v-show="getMethodName(item)">{{ getMethodName(item) }}</v-chip>
+                <v-chip label small color="primary lighten-1" v-show="getMethodName(item)">{{ getMethodName(item) }}</v-chip>
             </span>
         </template>
         <template v-slot:item.timestamp="{ item }">
@@ -126,12 +126,12 @@ export default {
     methods: {
         moment: moment,
         getMethodName: function(transaction) {
-            if (!transaction.functionSignature) return transaction.data != '0x' ? transaction.data.slice(0, 10) : null;
-            return transaction.functionSignature.name ? transaction.functionSignature.name : transaction.functionSignature.sighash;
+            if (!transaction.methodDetails) return transaction.data != '0x' ? transaction.data.slice(0, 10) : null;
+            return transaction.methodDetails.name ? transaction.methodDetails.name : transaction.methodDetails.sighash;
         },
-        getMethodLabel: function(functionSignature) {
-            if (!functionSignature) return '';
-            return functionSignature.label ? functionSignature.label : '';
+        getMethodLabel: function(methodDetails) {
+            if (!methodDetails) return null;
+            return methodDetails.label ? methodDetails.label : null;
         }
     },
     computed: {

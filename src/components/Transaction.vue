@@ -92,23 +92,20 @@
 
             <v-row v-if="transaction.to">
                 <v-col>
-                    <h3>Data</h3>
-                    <div v-if="contract && contract.abi">
-                        <Transaction-Data :abi="contract.abi" :transaction="transaction" />
-                    </div>
+                    <Transaction-Data v-if="contract && contract.abi" :abi="contract.abi" :transaction="transaction" :withoutStorageHeader="true" />
                     <div v-else class="pa-2 grey lighten-3">
                         <i>Couldn't decode data for this transaction. This probably means that you haven't <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/contracts/interacting-with-the-contract">synchronized contract metadata</a>. </i>
                     </div>
-                </v-col>
+            </v-col>
             </v-row>
 
             <v-row class="my-2" v-if="transaction.trace">
                 <v-col v-if="transaction.trace.length">
-                    <h3 class="mb-2">Trace</h3>
+                    <h4 class="mb-2">Trace</h4>
                     <Trace-Step v-for="(step, idx) in transaction.trace" :step="step" :key="idx" />
                 </v-col>
                 <v-col v-else>
-                    <h3 class="mb-2">Trace</h3>
+                    <h4 class="mb-2">Trace</h4>
                     Empty trace (only CREATE(2) and CALLs are shown).
                 </v-col>
             </v-row>

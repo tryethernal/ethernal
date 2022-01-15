@@ -711,12 +711,12 @@ exports.syncTransactionData = functions.https.onCall(async (data, context) => {
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[syncTransactionData] Missing parameter.');
         }
-
+        console.log(data)
         await storeTransactionData(
             context.auth.uid,
             data.workspace,
             data.hash,
-            sanitize({ storage: data.data.storage })
+            sanitize(data.data)
         );
 
         return { success: true };

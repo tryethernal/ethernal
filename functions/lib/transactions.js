@@ -1,5 +1,5 @@
 const ethers = require('ethers');
-const { getContractData, storeTransactionSignature } = require('./firebase');
+const { getContractData, storeTransactionMethodDetails } = require('./firebase');
 const { getFunctionSignatureForTransaction } = require('./utils');
 
 exports.processTransactions = async (userId, workspace, transactions) => {
@@ -11,11 +11,12 @@ exports.processTransactions = async (userId, workspace, transactions) => {
 
         const jsonInterface = new ethers.utils.Interface(contract.abi);
         const parsedTransactionData = jsonInterface.parseTransaction(transaction);
+        const fragment = parsedTransactionData.functionFragment;
 
-        const label = [`${parsedTransactionData.functionFragment.name}(`];
+        const label = [`${fragment.name}(`];
         const inputsLabel = [];
-        for (let i = 0; i < parsedTransactionData.functionFragment.inputs.length; i ++) {
-            const input = parsedTransactionData.functionFragment.inputs[i];
+        for (let i = 0; i < fragment.inputs.length; i ++) {
+            const input = fragment.inputs[i];
             const param = [];
             param.push(input.type)
             if (input.name)
@@ -35,10 +36,13 @@ exports.processTransactions = async (userId, workspace, transactions) => {
 
         label.push(')');
 
-        await storeTransactionSignature(userId, workspace, transaction.hash, {
+        const signature = `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')'
+
+        await storeTransactionMethodDetails(userId, workspace, transaction.hash, {
             name: parsedTransactionData.name,
             label: label.join(''),
-            sighash: parsedTransactionData.sighash
+            sighash: parsedTransactionData.sighash,
+            signature: signature
         });
     }
 };
