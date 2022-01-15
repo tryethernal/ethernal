@@ -134,7 +134,7 @@ export default {
             return methodDetails.label ? methodDetails.label : null;
         },
         getSighash: function(transaction) {
-            return transaction.data != '0x' ? transaction.data.slice(0, 10) : null;
+            return transaction.data && transaction.data != '0x' ? transaction.data.slice(0, 10) : null;
         }
     },
     computed: {

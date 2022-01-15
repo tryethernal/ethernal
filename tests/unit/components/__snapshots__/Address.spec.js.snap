@@ -6,7 +6,7 @@ exports[`Address.vue Should display extra tabs for contracts addresses 1`] = `
     <div class="col col-3">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
-          Balance: 0.00000000000001 Ether
+          Balance: 1e-14 Ether
         </div>
       </div>
     </div>
@@ -51,10 +51,12 @@ exports[`Address.vue Should display extra tabs for contracts addresses 1`] = `
                     <col class="">
                     <col class="">
                     <col class="">
+                    <col class="">
                   </colgroup>
                   <thead class="v-data-table-header">
                     <tr>
                       <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                      <th role="columnheader" scope="col" aria-label="Method: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Method</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
                       <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to remove sorting." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
                       <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
                       <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
@@ -65,7 +67,7 @@ exports[`Address.vue Should display extra tabs for contracts addresses 1`] = `
                   </thead>
                   <tbody>
                     <tr class="v-data-table__empty-wrapper">
-                      <td colspan="7">
+                      <td colspan="8">
                         No transactions found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
                     </tr>
                   </tbody>
@@ -74,10 +76,10 @@ exports[`Address.vue Should display extra tabs for contracts addresses 1`] = `
               <div class="v-data-footer">
                 <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-141" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-148" class="v-input__slot">
                         <div class="v-select__slot">
                           <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-141" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-148" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                           </div>
                           <div class="v-input__append-inner">
                             <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -122,7 +124,7 @@ exports[`Address.vue Should display the contract interaction interface under the
     <div class="col col-3">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
-          Balance: 0.00000000000001 Ether
+          Balance: 1e-14 Ether
         </div>
       </div>
     </div>
@@ -167,10 +169,12 @@ exports[`Address.vue Should display the contract interaction interface under the
                     <col class="">
                     <col class="">
                     <col class="">
+                    <col class="">
                   </colgroup>
                   <thead class="v-data-table-header">
                     <tr>
                       <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                      <th role="columnheader" scope="col" aria-label="Method: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Method</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
                       <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to remove sorting." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
                       <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
                       <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
@@ -181,7 +185,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                   </thead>
                   <tbody>
                     <tr class="v-data-table__empty-wrapper">
-                      <td colspan="7">
+                      <td colspan="8">
                         No transactions found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
                     </tr>
                   </tbody>
@@ -190,10 +194,10 @@ exports[`Address.vue Should display the contract interaction interface under the
               <div class="v-data-footer">
                 <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-189" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-197" class="v-input__slot">
                         <div class="v-select__slot">
                           <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-189" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-197" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                           </div>
                           <div class="v-input__append-inner">
                             <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -238,12 +242,12 @@ exports[`Address.vue Should display the contract interaction interface under the
                   <div class="col col-5">
                     <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
                       <div class="v-input__control">
-                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-210" class="v-input__slot">
+                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-218" class="v-input__slot">
                           <fieldset aria-hidden="true">
                             <legend style="width: 0px;"><span>​</span></legend>
                           </fieldset>
-                          <div class="v-select__slot"><label for="input-210" class="v-label theme--light" style="left: 0px; position: absolute;">Select from address</label>
-                            <div class="v-select__selections"><input id="input-210" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                          <div class="v-select__slot"><label for="input-218" class="v-label theme--light" style="left: 0px; position: absolute;">Select from address</label>
+                            <div class="v-select__selections"><input id="input-218" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
                             <div class="v-input__append-inner">
                               <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
                             </div><input type="hidden">
@@ -265,7 +269,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                           <fieldset aria-hidden="true">
                             <legend style="width: 0px;"><span>​</span></legend>
                           </fieldset>
-                          <div class="v-text-field__slot"><label for="input-215" class="v-label theme--light" style="left: 0px; position: absolute;">Gas Price (wei)</label><input id="input-215" type="number"></div>
+                          <div class="v-text-field__slot"><label for="input-223" class="v-label theme--light" style="left: 0px; position: absolute;">Gas Price (wei)</label><input id="input-223" type="number"></div>
                         </div>
                         <div class="v-text-field__details">
                           <div class="v-messages theme--light">
@@ -280,7 +284,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                           <fieldset aria-hidden="true">
                             <legend style="width: 0px;"><span>​</span></legend>
                           </fieldset>
-                          <div class="v-text-field__slot"><label for="input-218" class="v-label theme--light" style="left: 0px; position: absolute;">Maximum Gas</label><input id="input-218" type="number"></div>
+                          <div class="v-text-field__slot"><label for="input-226" class="v-label theme--light" style="left: 0px; position: absolute;">Maximum Gas</label><input id="input-226" type="number"></div>
                         </div>
                       </div>
                     </div>
@@ -327,7 +331,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-225" class="v-label theme--light" style="left: 0px; position: absolute;">payee (address)</label><input id="input-225" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-233" class="v-label theme--light" style="left: 0px; position: absolute;">payee (address)</label><input id="input-233" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -349,7 +353,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-228" class="v-label theme--light" style="left: 0px; position: absolute;">payee (address)</label><input id="input-228" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-236" class="v-label theme--light" style="left: 0px; position: absolute;">payee (address)</label><input id="input-236" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -399,7 +403,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-236" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-236" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-244" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-244" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -417,7 +421,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-239" class="v-label theme--light" style="left: 0px; position: absolute;">newOwner (address)</label><input id="input-239" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-247" class="v-label theme--light" style="left: 0px; position: absolute;">newOwner (address)</label><input id="input-247" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -448,7 +452,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-244" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-244" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-252" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-252" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -466,7 +470,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-247" class="v-label theme--light" style="left: 0px; position: absolute;">payee (address)</label><input id="input-247" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-255" class="v-label theme--light" style="left: 0px; position: absolute;">payee (address)</label><input id="input-255" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -476,56 +480,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-248" class="v-label theme--light" style="left: 0px; position: absolute;">maturity (uint256)</label><input id="input-248" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span>​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-253" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-253" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col col-5">
-                    <div>
-                      <div class="font-weight-bold">deposit</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span>​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-256" class="v-label theme--light" style="left: 0px; position: absolute;">payee (address)</label><input id="input-256" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-256" class="v-label theme--light" style="left: 0px; position: absolute;">maturity (uint256)</label><input id="input-256" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -567,6 +522,55 @@ exports[`Address.vue Should display the contract interaction interface under the
                 <div class="row pb-4">
                   <div class="col col-5">
                     <div>
+                      <div class="font-weight-bold">deposit</div>
+                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input__control">
+                          <div class="v-input__slot">
+                            <fieldset aria-hidden="true">
+                              <legend style="width: 0px;"><span>​</span></legend>
+                            </fieldset>
+                            <div class="v-text-field__slot"><label for="input-264" class="v-label theme--light" style="left: 0px; position: absolute;">payee (address)</label><input id="input-264" type="text"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
+                        <div style="display: none;"></div>
+                        <div style="display: none;">
+                          Tx: <a href="/transaction/null" target="_blank"></a></div>
+                        <div style="display: none;">
+                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+                            </svg>
+                            <div class="v-progress-circular__info"></div>
+                          </div>Waiting for receipt...
+                        </div>
+                        <div class="mt-1" style="display: none;">
+                          Status: Failed
+                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
+                        </div>
+                        <div style="display: none;">
+                          Couldn't get receipt.
+                        </div>
+                      </div>
+                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
+                      <div class="col-4 px-0 py-1">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                          <div class="v-input__control">
+                            <div class="v-input__slot">
+                              <fieldset aria-hidden="true">
+                                <legend style="width: 0px;"><span>​</span></legend>
+                              </fieldset>
+                              <div class="v-text-field__slot"><label for="input-269" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-269" type="number"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
+                    </div>
+                  </div>
+                </div>
+                <div class="row pb-4">
+                  <div class="col col-5">
+                    <div>
                       <div class="font-weight-bold">withdraw</div>
                       <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
                         <div style="display: none;"></div>
@@ -595,7 +599,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-268" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-268" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-276" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-276" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -625,7 +629,7 @@ exports[`Address.vue Should show the transactions for this address 1`] = `
     <div class="col col-3">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
-          Balance: 0.00000000000001 Ether
+          Balance: 1e-14 Ether
         </div>
       </div>
     </div>
@@ -666,10 +670,12 @@ exports[`Address.vue Should show the transactions for this address 1`] = `
                     <col class="">
                     <col class="">
                     <col class="">
+                    <col class="">
                   </colgroup>
                   <thead class="v-data-table-header">
                     <tr>
                       <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                      <th role="columnheader" scope="col" aria-label="Method: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Method</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
                       <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to remove sorting." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
                       <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
                       <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
@@ -684,10 +690,11 @@ exports[`Address.vue Should show the transactions for this address 1`] = `
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1" value="0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1"></span>
                         <!----></span>
                       </td>
+                      <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small primary lighten-1" style="display: none;"><span class="v-chip__content"></span></span></span></td>
                       <td class="text-start"><a href="#/block/1" class="">1</a></td>
-                      <td class="text-start">
-                        2021-05-21 12:07:42 AM
-                      </td>
+                      <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                    05/21 12:07:42 AM
+                </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
                       <td class="text-start">
                         <!----> <span><a href="#/address/0x2" class="">0x2...0x2</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x2" value="0x2"></span>
@@ -707,10 +714,11 @@ exports[`Address.vue Should show the transactions for this address 1`] = `
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" value="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0"></span>
                         <!----></span>
                       </td>
+                      <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small primary lighten-1" style="display: none;"><span class="v-chip__content"></span></span></span></td>
                       <td class="text-start"><a href="#/block/1" class="">1</a></td>
-                      <td class="text-start">
-                        2021-05-21 12:07:42 AM
-                      </td>
+                      <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                    05/21 12:07:42 AM
+                </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
                       <td class="text-start">
                         <!----> <span><a href="#/address/0x1" class="">0x1...0x1</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1" value="0x1"></span>
@@ -731,10 +739,10 @@ exports[`Address.vue Should show the transactions for this address 1`] = `
               <div class="v-data-footer">
                 <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-72" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-74" class="v-input__slot">
                         <div class="v-select__slot">
                           <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-72" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-74" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                           </div>
                           <div class="v-input__append-inner">
                             <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -779,7 +787,7 @@ exports[`Address.vue Should sync the balance when loaded 1`] = `
     <div class="col col-3">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
-          Balance: 0.00000000000001 Ether
+          Balance: 1e-14 Ether
         </div>
       </div>
     </div>
@@ -820,10 +828,12 @@ exports[`Address.vue Should sync the balance when loaded 1`] = `
                     <col class="">
                     <col class="">
                     <col class="">
+                    <col class="">
                   </colgroup>
                   <thead class="v-data-table-header">
                     <tr>
                       <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                      <th role="columnheader" scope="col" aria-label="Method: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Method</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
                       <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to remove sorting." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
                       <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
                       <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
@@ -834,7 +844,7 @@ exports[`Address.vue Should sync the balance when loaded 1`] = `
                   </thead>
                   <thead>
                     <tr class="v-data-table__progress">
-                      <th colspan="7" class="column">
+                      <th colspan="8" class="column">
                         <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-linear v-progress-linear--absolute theme--light" style="height: 4px;">
                           <div class="v-progress-linear__background primary" style="opacity: 0.3; left: 0%; width: 100%;"></div>
                           <div class="v-progress-linear__buffer"></div>
@@ -850,7 +860,7 @@ exports[`Address.vue Should sync the balance when loaded 1`] = `
                   </thead>
                   <tbody>
                     <tr class="v-data-table__empty-wrapper">
-                      <td colspan="7">Loading items...</td>
+                      <td colspan="8">Loading items...</td>
                     </tr>
                   </tbody>
                 </table>
@@ -858,10 +868,10 @@ exports[`Address.vue Should sync the balance when loaded 1`] = `
               <div class="v-data-footer">
                 <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-29" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-30" class="v-input__slot">
                         <div class="v-select__slot">
                           <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-29" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-30" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                           </div>
                           <div class="v-input__append-inner">
                             <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
