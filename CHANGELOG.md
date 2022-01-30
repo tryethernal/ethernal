@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.10] - 2022-01-30
+### Added
+- Method name in transactions lists. Hovering it will display a tooltip with the decoded arguments. Updating the ABI updates this in real time. If the method name is not available, the function signature will be displayed instead.
+
 ## [1.2.9] - 2022-01-14
 ### Added
 - Link to Product Road board to collect feature requests, you can ask for (almost) anything & I'll build it!!
