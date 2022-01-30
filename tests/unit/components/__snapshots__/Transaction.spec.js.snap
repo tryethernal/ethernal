@@ -1,218 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Transaction.vue Should display a message for trace if user is not premium 1`] = `
-<div class="container container--fluid">
-  <div>
-    <h2 class="text-truncate mb-2">Tx 0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759</h2> <span><span class="success mr-2 v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-check theme--light" style="font-size: 16px;"></i>
-                Transaction Succeeded
-            </span></span></span>
-    <!---->
-    <div class="row my-2">
-      <div class="text-truncate col col-5">
-        <div class="text-overline">From</div> <span><a href="#/address/0xc056255e6b1e6001852f9f20587a964cb89418e7" class="">0xc056255e6b1e6001852f9f20587a964cb89418e7</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xc056255e6b1e6001852f9f20587a964cb89418e7" value="0xc056255e6b1e6001852f9f20587a964cb89418e7"></span>
-        <!----></span>
-      </div>
-      <div class="text-truncate col col-5">
-        <div class="text-overline">To</div> <span><a href="#/address/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" class="">USDC</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" value="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"></span>
-        <!----></span>
-      </div>
-    </div>
-    <div class="row mb-4">
-      <div class="col col-2">
-        <div class="text-overline">Gas Used</div> <span>43,713</span>
-      </div>
-      <div class="col col-2">
-        <div class="text-overline">Gas Price</div>
-        59 gwei
-      </div>
-      <div class="col col-2">
-        <div class="text-overline">Cost</div> <span>0.002579067 Ether</span>
-      </div>
-      <div class="col col-2">
-        <div class="text-overline">Value</div>
-        0 Ether
-      </div>
-    </div>
-    <div class="row mb-4">
-      <div class="col col-2">
-        <div class="text-overline">Block</div> <a href="#/block/13012562" class="">13012562</a>
-      </div>
-      <div class="col col-2">
-        <div class="text-overline">Gas Limit</div>
-        1,000,000,000
-      </div>
-    </div>
-    <div class="row my-2" style="">
-      <div class="col">
-        <h3 class="mb-2">Token Transfers</h3>
-        <div class="v-data-table theme--light">
-          <div class="v-data-table__wrapper">
-            <table>
-              <colgroup>
-                <col class="">
-                <col class="">
-                <col class="">
-                <col class="">
-              </colgroup>
-              <thead class="v-data-table-header">
-                <tr>
-                  <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                  <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                  <th role="columnheader" scope="col" aria-label="Token: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Token</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                  <th role="columnheader" scope="col" aria-label="Amount: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Amount</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="">
-                  <td class="text-start"><span><a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e6B1E6001852f9f20587A964cb89418e7</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xC056255e6B1E6001852f9f20587A964cb89418e7" value="0xC056255e6B1E6001852f9f20587A964cb89418e7"></span>
-                    <!----></span>
-                  </td>
-                  <td class="text-start"><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bADB049791CD9A37ea913f2BAC38d01279</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
-                    <!----></span>
-                  </td>
-                  <td class="text-start"><span><a href="#/address/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" class="">USDC</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" value="0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"></span>
-                    <!----></span>
-                  </td>
-                  <td class="text-start">
-                    0.0000000005
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row my-2" style="">
-      <div class="col">
-        <h3 class="mb-2">Balance Changes</h3>
-        <div style="" class="my-6"><span><a href="#/address/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" class="">USDC</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" value="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"></span>
-          <!----></span><br>
-          <div class="v-data-table theme--light">
-            <div class="v-data-table__wrapper">
-              <table>
-                <colgroup>
-                  <col class="">
-                  <col class="">
-                  <col class="">
-                  <col class="">
-                </colgroup>
-                <thead class="v-data-table-header">
-                  <tr>
-                    <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                    <th role="columnheader" scope="col" aria-label="Previous Block (#13012561): Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Previous Block (#13012561)</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                    <th role="columnheader" scope="col" aria-label="Tx Block (#13012562): Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Tx Block (#13012562)</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                    <th role="columnheader" scope="col" aria-label="Change: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Change</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="">
-                    <td class="text-start"><span><a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e...418e7</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xC056255e6B1E6001852f9f20587A964cb89418e7" value="0xC056255e6B1E6001852f9f20587A964cb89418e7"></span>
-                      <!----></span>
-                    </td>
-                    <td class="text-start">
-                      1
-                    </td>
-                    <td class="text-start">
-                      100
-                    </td>
-                    <td class="text-start"><span class="success--text">+99</span></td>
-                  </tr>
-                  <tr class="">
-                    <td class="text-start"><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
-                      <!----></span>
-                    </td>
-                    <td class="text-start">
-                      1
-                    </td>
-                    <td class="text-start">
-                      100
-                    </td>
-                    <td class="text-start"><span class="success--text">+99</span></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row" style="">
-      <div class="col">
-        <h3>Data</h3>
-        <div>
-          <div>
-            <div class="text-right"><a href="#/transaction/0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759" class="">0x05d709954d59b...</a>
-              <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--vertical theme--light"> <a href="#/block/13012562" class="">13012562</a>
-              <hr role="separator" aria-orientation="vertical" class="ml-2 v-divider v-divider--vertical theme--light"> <button type="button" class="primary--text v-btn v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate link mdi mdi-reload theme--light" style="font-size: 16px;"></i></span></button>
-            </div> <pre></pre>
-            <div class="pa-2 grey lighten-3 my-1">
-              <div>
-                <div>
-                  Function: transfer(address _to, uint256 _value)
-                </div>
-                <div>
-                  Params:
-                  <div>
-                    _to:
-                    <span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bADB049791CD9A37ea913f2BAC38d01279</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
-                    <!----></span></span>
-                  </div>
-                  <div>
-                    _value:
-                    <span>500000000</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
-              <div class="v-card__text"><span><span><a href="#/address/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" class="">USDC</a> <!----> <!----></span>.Transfer(
-                </span>
-                <div>
-                  <div class="ml-4"><span>	address from: 
-        (<a id="switchFormatted">Display Raw</a> <!---->)
-    </span> <span><span><a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e...418e7</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xC056255e6B1E6001852f9f20587A964cb89418e7" value="0xC056255e6B1E6001852f9f20587A964cb89418e7"></span>
-                    <!----></span></span>
-                    &nbsp;
-                  </div>
-                </div>
-                <div>
-                  <div class="ml-4"><span>	address to: 
-        (<a id="switchFormatted">Display Raw</a> <!---->)
-    </span> <span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
-                    <!----></span></span>
-                    &nbsp;
-                  </div>
-                </div>
-                <div>
-                  <div class="ml-4"><span>	uint256 value: 
-        (<!----> <a id="switchFormatted">Display Formatted</a>)
-    </span> 500000000
-                    &nbsp;
-                  </div>
-                </div> <span>)</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!---->
-  </div>
-</div>
-`;
-
 exports[`Transaction.vue Should display infos properly with proxy contracts 1`] = `
 <div class="container container--fluid">
   <div>
@@ -360,62 +147,62 @@ exports[`Transaction.vue Should display infos properly with proxy contracts 1`] 
     </div>
     <div class="row" style="">
       <div class="col">
-        <h3>Data</h3>
         <div>
-          <div>
-            <div class="text-right"><a href="#/transaction/0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759" class="">0x05d709954d59b...</a>
-              <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--vertical theme--light"> <a href="#/block/13012562" class="">13012562</a>
-              <hr role="separator" aria-orientation="vertical" class="ml-2 v-divider v-divider--vertical theme--light"> <button type="button" class="primary--text v-btn v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate link mdi mdi-reload theme--light" style="font-size: 16px;"></i></span></button>
-            </div> <pre></pre>
-            <div class="pa-2 grey lighten-3 my-1">
+          <!---->
+          <!---->
+          <h4 class="mt-3">Called Function</h4>
+          <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+            <div class="v-card__text">
+              transfer(
+
               <div>
-                <div>
-                  Function: transfer(address _to, uint256 _value)
-                </div>
-                <div>
-                  Params:
-                  <div>
-                    _to:
-                    <span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bADB049791CD9A37ea913f2BAC38d01279</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
-                    <!----></span></span>
-                  </div>
-                  <div>
-                    _value:
-                    <span>500000000</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
-              <div class="v-card__text"><span><span><a href="#/address/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" class="">USDC</a> <!----> <!----></span>.Transfer(
-                </span>
-                <div>
-                  <div class="ml-4"><span>	address from: 
-        (<a id="switchFormatted">Display Raw</a> <!---->)
-    </span> <span><span><a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e...418e7</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xC056255e6B1E6001852f9f20587A964cb89418e7" value="0xC056255e6B1E6001852f9f20587A964cb89418e7"></span>
-                    <!----></span></span>
-                    &nbsp;
-                  </div>
-                </div>
-                <div>
-                  <div class="ml-4"><span>	address to: 
+                <div class="ml-4"><span>	address _to: 
         (<a id="switchFormatted">Display Raw</a> <!---->)
     </span> <span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
-                    <!----></span></span>
-                    &nbsp;
-                  </div>
+                  <!----></span></span>
+                  &nbsp;
                 </div>
-                <div>
-                  <div class="ml-4"><span>	uint256 value: 
+              </div>
+              <div>
+                <div class="ml-4"><span>	uint256 _value: 
         (<!----> <a id="switchFormatted">Display Formatted</a>)
     </span> 500000000
-                    &nbsp;
-                  </div>
-                </div> <span>)</span>
+                  &nbsp;
+                </div>
               </div>
+              )
+            </div>
+          </div>
+          <h4 class="mt-3">Emitted Events</h4>
+          <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+            <div class="v-card__text"><span><span><a href="#/address/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" class="">USDC</a> <!----> <!----></span>.Transfer(
+              </span>
+              <div>
+                <div class="ml-4"><span>	address from: 
+        (<a id="switchFormatted">Display Raw</a> <!---->)
+    </span> <span><span><a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e...418e7</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xC056255e6B1E6001852f9f20587A964cb89418e7" value="0xC056255e6B1E6001852f9f20587A964cb89418e7"></span>
+                  <!----></span></span>
+                  &nbsp;
+                </div>
+              </div>
+              <div>
+                <div class="ml-4"><span>	address to: 
+        (<a id="switchFormatted">Display Raw</a> <!---->)
+    </span> <span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
+                  <!----></span></span>
+                  &nbsp;
+                </div>
+              </div>
+              <div>
+                <div class="ml-4"><span>	uint256 value: 
+        (<!----> <a id="switchFormatted">Display Formatted</a>)
+    </span> 500000000
+                  &nbsp;
+                </div>
+              </div> <span>)</span>
             </div>
           </div>
         </div>
@@ -573,62 +360,62 @@ exports[`Transaction.vue Should display the transaction 1`] = `
     </div>
     <div class="row" style="">
       <div class="col">
-        <h3>Data</h3>
         <div>
-          <div>
-            <div class="text-right"><a href="#/transaction/0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759" class="">0x05d709954d59b...</a>
-              <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--vertical theme--light"> <a href="#/block/13012562" class="">13012562</a>
-              <hr role="separator" aria-orientation="vertical" class="ml-2 v-divider v-divider--vertical theme--light"> <button type="button" class="primary--text v-btn v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate link mdi mdi-reload theme--light" style="font-size: 16px;"></i></span></button>
-            </div> <pre></pre>
-            <div class="pa-2 grey lighten-3 my-1">
+          <!---->
+          <!---->
+          <h4 class="mt-3">Called Function</h4>
+          <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+            <div class="v-card__text">
+              transfer(
+
               <div>
-                <div>
-                  Function: transfer(address _to, uint256 _value)
-                </div>
-                <div>
-                  Params:
-                  <div>
-                    _to:
-                    <span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bADB049791CD9A37ea913f2BAC38d01279</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
-                    <!----></span></span>
-                  </div>
-                  <div>
-                    _value:
-                    <span>500000000</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
-              <div class="v-card__text"><span><span><a href="#/address/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" class="">USDC</a> <!----> <!----></span>.Transfer(
-                </span>
-                <div>
-                  <div class="ml-4"><span>	address from: 
-        (<a id="switchFormatted">Display Raw</a> <!---->)
-    </span> <span><span><a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e...418e7</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xC056255e6B1E6001852f9f20587A964cb89418e7" value="0xC056255e6B1E6001852f9f20587A964cb89418e7"></span>
-                    <!----></span></span>
-                    &nbsp;
-                  </div>
-                </div>
-                <div>
-                  <div class="ml-4"><span>	address to: 
+                <div class="ml-4"><span>	address _to: 
         (<a id="switchFormatted">Display Raw</a> <!---->)
     </span> <span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
-                    <!----></span></span>
-                    &nbsp;
-                  </div>
+                  <!----></span></span>
+                  &nbsp;
                 </div>
-                <div>
-                  <div class="ml-4"><span>	uint256 value: 
+              </div>
+              <div>
+                <div class="ml-4"><span>	uint256 _value: 
         (<!----> <a id="switchFormatted">Display Formatted</a>)
     </span> 500000000
-                    &nbsp;
-                  </div>
-                </div> <span>)</span>
+                  &nbsp;
+                </div>
               </div>
+              )
+            </div>
+          </div>
+          <h4 class="mt-3">Emitted Events</h4>
+          <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+            <div class="v-card__text"><span><span><a href="#/address/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" class="">USDC</a> <!----> <!----></span>.Transfer(
+              </span>
+              <div>
+                <div class="ml-4"><span>	address from: 
+        (<a id="switchFormatted">Display Raw</a> <!---->)
+    </span> <span><span><a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e...418e7</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xC056255e6B1E6001852f9f20587A964cb89418e7" value="0xC056255e6B1E6001852f9f20587A964cb89418e7"></span>
+                  <!----></span></span>
+                  &nbsp;
+                </div>
+              </div>
+              <div>
+                <div class="ml-4"><span>	address to: 
+        (<a id="switchFormatted">Display Raw</a> <!---->)
+    </span> <span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
+                  <!----></span></span>
+                  &nbsp;
+                </div>
+              </div>
+              <div>
+                <div class="ml-4"><span>	uint256 value: 
+        (<!----> <a id="switchFormatted">Display Formatted</a>)
+    </span> 500000000
+                  &nbsp;
+                </div>
+              </div> <span>)</span>
             </div>
           </div>
         </div>

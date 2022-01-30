@@ -28,6 +28,7 @@ jest.mock('ethers', () => {
 
     Object.defineProperty(ethers, 'providers', { value: providers });
     Object.defineProperty(ethers, 'BigNumber', { value: original.BigNumber });
+    Object.defineProperty(ethers, 'utils', { value: original.utils });
 
     return ethers;
 });
@@ -66,6 +67,7 @@ const Trace = require('./fixtures/ProcessedTrace.json');
 const Transaction = require('./fixtures/Transaction.json');
 const TransactionReceipt = require('./fixtures/TransactionReceipt.json');
 const ABI = require('./fixtures/ABI.json');
+const AmalfiContract = require('./fixtures/AmalfiContract.json');
 const Block = require('./fixtures/Block.json');
 let auth = { auth: { uid: '123' }};
 let helper;
@@ -644,6 +646,31 @@ describe('syncTransaction', () => {
         await helper.workspace.collection('contracts').doc(Transaction.to).set({
             address: Transaction.to,
             abi: ABI
+        });
+
+        const result = await wrapped(data, auth);
+        const txRef = await helper.workspace
+            .collection('transactions')
+            .doc(Transaction.hash)
+            .get();
+        const tx = await txRef.data();
+        expect(tx).toMatchSnapshot();
+        expect(result).toEqual({ txHash: Transaction.hash });
+    });
+
+    it('Should not break if there is an error during transaction processing', async () => {
+        const wrapped = helper.test.wrap(index.syncTransaction);
+
+        const data = {
+            workspace: 'hardhat',
+            transaction: Transaction,
+            transactionReceipt: TransactionReceipt,
+            block: Block
+        };
+
+        await helper.workspace.collection('contracts').doc(Transaction.to).set({
+            address: Transaction.to,
+            abi: AmalfiContract.artifact.abi
         });
         
         const result = await wrapped(data, auth);

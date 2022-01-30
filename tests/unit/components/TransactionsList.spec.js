@@ -17,7 +17,8 @@ describe('TransactionsList.vue', () => {
             from: '0x0',
             to: 'Ox1',
             blockNumber: 1,
-            value: '0'
+            value: '0',
+            data: '0xa9059cbb000000000000000000000000c00e94cb662c3520282e6f5717214004a7f268880000000000000000000000000000000000000000000000000000000000000001'
         };
 
         const transaction2 = {
@@ -29,15 +30,13 @@ describe('TransactionsList.vue', () => {
             value: '0'
         };        
 
-        await db.collection('transactions')
-            .doc(transaction1.hash)
-            .set(transaction1);
-
-        await db.collection('transactions')
-            .doc(transaction2.hash)
-            .set(transaction2);
-
-        const wrapper = helper.mountFn(TransactionsList)
+        const wrapper = helper.mountFn(TransactionsList, {
+            propsData: {
+                transactions: [transaction1, transaction2],
+                currentAddress: '0x123',
+                loading: false
+            }
+        })
 
         setTimeout(() => {
             expect(wrapper.html()).toMatchSnapshot();

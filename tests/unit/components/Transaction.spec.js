@@ -41,20 +41,6 @@ describe('Transaction.vue', () => {
                 .mockImplementationOnce(() => new Promise((resolve) => resolve([ethers.BigNumber.from('1000000000000000000')])))
     });
 
-    it('Should display a message for trace if user is not premium', (done) => {
-        helper.getters.user.mockImplementation(() => { return { plan: 'free' } });
-
-        const wrapper = helper.mountFn(Transaction, {
-            propsData: {
-                hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
-            }
-        });
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1000);
-    });
-
     it('Should display the transaction', async (done) => {
         const wrapper = helper.mountFn(Transaction, {
             propsData: {

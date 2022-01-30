@@ -1,33 +1,27 @@
 <template>
-    <div class="pa-2 grey lighten-3">
-        <div v-if="parsedTransactionData">
-            <div>
-                Function: {{ getSignatureFromFragment(parsedTransactionData.functionFragment) }}
+    <v-card outlined class="my-2">
+        <v-card-text v-if="parsedTransactionData">
+            {{ `${parsedTransactionData.functionFragment.name}(\n` }}
+            <div v-for="(input, index) in parsedTransactionData.functionFragment.inputs" :key="index">
+                <Formatted-Sol-Var :input="input" :value="parsedTransactionData.args[index]" class="ml-4" />
             </div>
-            <div v-if="parsedTransactionData.functionFragment.inputs.length">
-                Params:
-                <div v-for="(input, index) in parsedTransactionData.functionFragment.inputs" :key="index">
-                    {{ input.name }}:
-                    <span v-if="input.type == 'address'"><Hash-Link :type="'address'" :fullHash="true" :hash='parsedTransactionData.args[index]' /></span>
-                    <span v-else>{{ formatResponse(parsedTransactionData.args[index]) }}</span>
-                </div>
-            </div>
-        </div>
-         <div v-else>
+            )
+        </v-card-text>
+         <v-card-text v-else>
             <i>Upload contract artifact <router-link :to="`/address/${this.to}?tab=contract`">here</router-link> to decode function parameters.</i>
-        </div>
-    </div>
+        </v-card-text>
+    </v-card>
 </template>
 <script>
 import { ethers } from 'ethers';
 import { formatResponse } from '@/lib/utils';
-import HashLink from './HashLink';
+import FormattedSolVar from './FormattedSolVar';
 
 export default {
     name: 'TransactionFunctionCall',
     props: ['data', 'value', 'abi', 'to'],
     components: {
-        HashLink
+        FormattedSolVar
     },
     data: () => ({
         parsedTransactionData: null

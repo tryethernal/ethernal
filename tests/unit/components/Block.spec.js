@@ -23,7 +23,8 @@ describe('Block.vue', () => {
             from: '0x0',
             to: 'Ox1',
             blockNumber: 1,
-            value: '0'
+            value: '0',
+            data: '0xa9059cbb000000000000000000000000c00e94cb662c3520282e6f5717214004a7f268880000000000000000000000000000000000000000000000000000000000000001'
         };
 
         await db.collection('blocks')
