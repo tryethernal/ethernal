@@ -71,6 +71,7 @@ Object {
   "gasLimit": "123455",
   "gasPrice": "23",
   "hash": "0xb750fb9dd193bb4a46ea5426837c469815d2494abd68a94b1c2c190f3569c5b8",
+  "methodDetails": null,
   "nonce": 2196963,
   "r": "0x4ba8b20554c3997fcc63e94d68f15ff88e7b8f62828677cfe16dc376df65e8b8",
   "receipt": Object {

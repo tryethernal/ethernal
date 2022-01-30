@@ -153,10 +153,10 @@ describe('processContract', () => {
         const result = await helper.test.wrap(index.processContract)(data, { params: { userId: '123', workspaceName: 'hardhat' }});;
 
         const doc = await helper.workspace.collection('contracts').doc('0x123').get();
-        expect(doc.data()).toEqual({ address: '0x123' });
+        expect(doc.data()).toEqual({ address: '0x123', abi: { my: 'function' } });
     });
 
-    it('Should not match if no abi & hashedBytecode', async () => {
+    it('Should not match if no abi & hashedBytecode & no etherscan match', async () => {
         await helper.workspace.collection('contracts').doc('0x123').set({ address: '0x123', hashedBytecode: '0x123' });
         const data = helper.test.firestore.makeDocumentSnapshot({
             hashedBytecode: '0x123'
