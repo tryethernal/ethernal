@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container fluid>
         <v-row>
             <v-col cols="12">
                 <h2>Block {{ block.number }}</h2>

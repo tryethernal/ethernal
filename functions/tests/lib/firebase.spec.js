@@ -31,7 +31,8 @@ const {
     removeDatabaseContractArtifacts,
     getUnprocessedContracts,
     isUserPremium,
-    canUserSyncContract
+    canUserSyncContract,
+    getContractTransactions
 } = require('../../lib/firebase');
 
 const Block = require('../fixtures/Block');
@@ -691,6 +692,14 @@ describe('getUnprocessedContracts', () => {
     });
 });
 
+describe('getContractTransactions', () => {
+    it('Should return transactions to this contract', async () => {
+        await helper.workspace
+            .collection('transactions')
+            .doc(Transaction.hash)
+            .set(Transaction);
 
-
-
+        const result = await getContractTransactions('123', 'hardhat', Transaction.to);
+        expect(result.length).toBe(1);
+    });
+});

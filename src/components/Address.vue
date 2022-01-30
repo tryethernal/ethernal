@@ -33,8 +33,9 @@
                 <v-card outlined class="mb-4">
                     <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
                     <div v-if="!contractLoader">
+                        <Import-Artifact-Modal ref="importArtifactModal" />
                         <v-card-text v-if="contract.name">
-                            Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded.
+                            Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded. (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)
                             <div v-if="Object.keys(contract.dependencies).length" class="mb-1 mt-2">
                                 <h5>This contract has dependencies:</h5>
                             </div>
@@ -49,7 +50,6 @@
                             </div>
                         </v-card-text>
                         <v-card-text v-else>
-                            <Import-Artifact-Modal ref="importArtifactModal" />
                             <i>Upload an artifact to read contract storage and interact with it.</i><br />
                             For Truffle projects, use our <a href="https://www.npmjs.com/package/ethernal" target="_blank">CLI</a>.<br />
                             For Hardhat project, use our <a href="https://github.com/antoinedc/hardhat-ethernal" target="_blank">plugin</a>.<br />

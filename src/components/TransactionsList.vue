@@ -28,30 +28,51 @@
             </v-tooltip>
             <Hash-Link :type="'transaction'" :hash="item.hash" />
         </template>
+        <template v-slot:item.method="{ item }">
+            <v-tooltip v-if="item.methodDetails" top :open-delay="150" color="grey darken-3">
+                <template v-slot:activator="{ on, attrs }">
+                    <v-chip v-bind="attrs" v-on="on" label small color="primary lighten-1">
+                        <span class="methodName">{{ getMethodName(item) }}</span>
+                    </v-chip>
+                </template>
+                <span style="white-space: pre">{{ getMethodLabel(item.methodDetails) }}</span>
+            </v-tooltip>
+            <span v-else>
+                <v-chip label small color="primary lighten-1" v-show="getMethodName(item)">{{ getMethodName(item) }}</v-chip>
+            </span>
+        </template>
         <template v-slot:item.timestamp="{ item }">
-            {{ parseInt(item.timestamp) | moment('YYYY-MM-DD h:mm:ss A') }}
+            <v-tooltip top :open-delay="150" color="grey darken-3">
+                <template v-slot:activator="{ on, attrs }">
+                    <span v-bind="attrs" v-on="on">
+                        {{ parseInt(item.timestamp) | moment('MM/DD h:mm:ss A') }}
+                    </span>
+                </template>
+                {{ moment(item.timestamp * 1000).fromNow() }}
+            </v-tooltip>
         </template>
         <template v-slot:item.from="{ item }">
             <v-chip x-small class="mr-2" v-if="item.from && item.from === currentAddress">self</v-chip>
             <Hash-Link :type="'address'" :hash="item.from" />
         </template>
         <template v-slot:item.blockNumber="{ item }">
-            <router-link :to="'/block/' + item.blockNumber">{{item.blockNumber}}</router-link>
+            <router-link :to="'/block/' + item.blockNumber">{{ item.blockNumber }}</router-link>
         </template>
         <template v-slot:item.to="{ item }">
             <v-chip x-small class="mr-2" v-if="item.to && item.to === currentAddress">self</v-chip>
             <Hash-Link :type="'address'" :hash="item.to" :withName="true" />
         </template>
         <template v-slot:item.value="{ item }">
-            {{ item.value | fromWei('ether', nativeToken) }}
+            {{ item.value | fromWei('ether', nativeToken, 10) }}
         </template>
         <template v-slot:item.fee="{ item }">
-            <span v-if="item.receipt">{{ item.gasPrice * (item.gas || item.receipt.gasUsed)  | fromWei('ether', nativeToken) }}</span>
+            <span v-if="item.receipt">{{ item.gasPrice * (item.gas || item.receipt.gasUsed)  | fromWei('ether', nativeToken, 10) }}</span>
         </template>
     </v-data-table>
 </template>
 
 <script>
+const moment = require('moment');
 import { mapGetters } from 'vuex';
 import FromWei from '../filters/FromWei.js';
 import HashLink from './HashLink.vue';
@@ -70,7 +91,11 @@ export default {
             {
                 text: 'Txn Hash',
                 value: 'hash',
-                align: 'start'
+                align: 'start',
+            },
+            {
+                text: 'Method',
+                value: 'method',
             },
             {
                 text: 'Block',
@@ -98,6 +123,20 @@ export default {
             }
         ]
     }),
+    methods: {
+        moment: moment,
+        getMethodName: function(transaction) {
+            if (!transaction.methodDetails) return this.getSighash(transaction);
+            return transaction.methodDetails.name ? transaction.methodDetails.name : this.getSighash(transaction);
+        },
+        getMethodLabel: function(methodDetails) {
+            if (!methodDetails) return null;
+            return methodDetails.label ? methodDetails.label : null;
+        },
+        getSighash: function(transaction) {
+            return transaction.data && transaction.data != '0x' ? transaction.data.slice(0, 10) : null;
+        }
+    },
     computed: {
         ...mapGetters([
             'nativeToken'
@@ -105,3 +144,12 @@ export default {
     }
 }
 </script>
+<style scoped>
+.methodName {
+    display: block;
+    max-width: 11ch;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+</style>

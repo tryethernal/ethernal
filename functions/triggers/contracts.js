@@ -1,8 +1,8 @@
 const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 
-const { getContractByHashedBytecode, getWorkspaceByName, storeContractData } = require('../lib/firebase');
+const { getContractByHashedBytecode, getWorkspaceByName, storeContractData, getContractTransactions } = require('../lib/firebase');
 const { sanitize } = require('../lib/utils');
+const { processTransactions } = require('../lib/transactions');
 const axios = require('axios');
 
 const findLocalMetadata = async (context, contract) => {
@@ -39,7 +39,8 @@ const fetchEtherscanData = async (address, chain) => {
     }
 
     const endpoint = `https://api.${scannerHost}/api?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`;
-    return (await axios.get(endpoint)).data;
+    const response = await axios.get(endpoint);
+    return response ? response.data : null;
 };
 
 const findScannerMetadata = async (context, contract) => {
@@ -47,7 +48,7 @@ const findScannerMetadata = async (context, contract) => {
  
     const scannerData = await fetchEtherscanData(contract.address, workspace.chain);
     
-    if (scannerData.message != 'NOTOK' && scannerData.result[0].ContractName != '') {
+    if (scannerData && scannerData.message != 'NOTOK' && scannerData.result[0].ContractName != '') {
         const abi = JSON.parse(scannerData.result[0].ABI || '[]')
 
         return {
@@ -63,15 +64,17 @@ const findScannerMetadata = async (context, contract) => {
 exports.processContract = async (snap, context) => {
     try {
         let scannerMetadata = {}, tokenPatterns = [];
-        const contract = { ...snap.data(), address: snap.id };
+        const newSnap = snap.after ? snap.after : snap;
+
+        const contract = { ...newSnap.data(), address: newSnap.id };
 
         const localMetadata = await findLocalMetadata(context, contract);
         if (!localMetadata.name || !localMetadata.abi)
             scannerMetadata = await findScannerMetadata(context, contract);
 
         const metadata = sanitize({
-            name: localMetadata.name || scannerMetadata.name,
-            abi: localMetadata.abi || scannerMetadata.abi,
+            name: contract.name || localMetadata.name || scannerMetadata.name,
+            abi: contract.abi || localMetadata.abi || scannerMetadata.abi,
             proxy: scannerMetadata.proxy
         });
 
@@ -87,6 +90,8 @@ exports.processContract = async (snap, context) => {
             )
         }
 
+        const transactions = await getContractTransactions(context.params.userId, context.params.workspaceName, contract.address);
+        await processTransactions(context.params.userId, context.params.workspaceName, transactions);
     } catch (error) {
         console.log(error);
     }

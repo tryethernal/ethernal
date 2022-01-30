@@ -20,6 +20,8 @@ const Analytics = require('./lib/analytics');
 
 const analytics = new Analytics(functions.config().mixpanel ? functions.config().mixpanel.token : null);
 
+const { processTransactions } = require('./lib/transactions');
+
 const api = require('./api/index');
 const {
     resetDatabaseWorkspace,
@@ -243,18 +245,10 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
         const sTransactionReceipt = receipt ? stringifyBns(sanitize(receipt)) : null;
         const sTransaction = stringifyBns(sanitize(transaction));
 
-        let contractAbi = null;
-
-        if (sTransactionReceipt && transaction.to && transaction.data != '0x') {
-            const contractData = await getContractData(context.auth.uid, data.workspace, transaction.to);
-            contractAbi = contractData ? contractData.abi : null
-        }
-
         const txSynced = sanitize({
             ...sTransaction,
             receipt: sTransactionReceipt,
-            timestamp: data.block.timestamp,
-            functionSignature: contractAbi ? getFunctionSignatureForTransaction(transaction, contractAbi) : null
+            timestamp: data.block.timestamp
         });
     
         promises.push(storeTransaction(context.auth.uid, data.workspace, txSynced));
@@ -269,6 +263,7 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
         }
 
         await Promise.all(promises);
+        await processTransactions(context.auth.uid, data.workspace, [txSynced]);
        
        return { txHash: txSynced.hash };
     } catch(error) {
@@ -714,7 +709,7 @@ exports.syncTransactionData = functions.https.onCall(async (data, context) => {
             context.auth.uid,
             data.workspace,
             data.hash,
-            sanitize({ storage: data.data.storage })
+            sanitize(data.data)
         );
 
         return { success: true };
@@ -837,5 +832,5 @@ exports.getProductRoadToken = functions.https.onCall(async (data, context) => {
 
 exports.api = functions.https.onRequest(api);
 exports.processContract = functions.firestore.document('users/{userId}/workspaces/{workspaceName}/contracts/{contractName}').onCreate(processContract);
+exports.processContractOnUpdate = functions.firestore.document('users/{userId}/workspaces/{workspaceName}/contracts/{contractName}').onUpdate(processContract);
 exports.cleanArtifactDependencies = functions.pubsub.schedule('every day 00:00').onRun(cleanArtifactDependencies);
-
