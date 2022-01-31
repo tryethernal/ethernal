@@ -1390,21 +1390,7 @@ describe('createStripeCheckoutSession', () => {
         await helper.setUser();
     });
 
-    it('Should return a Stripe Checkout url when the user didnt have a trial', async () => {
-        const wrapped = helper.test.wrap(index.createStripeCheckoutSession);
-
-        const data = {
-            plan: 'premium'
-        };
-
-        const result = await wrapped(data, auth);
-
-        expect(result).toEqual({ url: expect.stringContaining('https://checkout.stripe.com/pay') })
-    });
-
-    it('Should return a Stripe Checkout url when the user already had a trial', async () => {
-        await helper.setUser({ trialEndsAt: 1234 });
-
+    it('Should return a Stripe Checkout url', async () => {
         const wrapped = helper.test.wrap(index.createStripeCheckoutSession);
 
         const data = {

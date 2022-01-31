@@ -24,25 +24,6 @@ describe('updatePlan', () => {
         });
     });
 
-    it('Should return true when passing a trial subscription & set the plan to premium with a trial end', async () => {
-        const subscription = {
-            ...StripeSubscription,
-            trial_end: 1633778007
-        };
-
-        await helper.setUser({ plan: 'premium', stripeCustomerId: subscription.customer });
-        const result = await updatePlan(subscription);
-        expect(result).toBe(true);
-
-        const userRef = await helper.firestore.collection('users').doc('123').get();
-
-        expect(userRef.data()).toEqual({
-            plan: 'premium',
-            stripeCustomerId: subscription.customer,
-            trialEndsAt: '2021-10-09T13:13:27+02:00'
-        });
-    });
-
     it('Should return true when passing an inactive subscription & set the plan to free', async () => {
         await helper.setUser({ plan: 'premium', stripeCustomerId: StripeCanceledSubscription.customer });
         const result = await updatePlan(StripeCanceledSubscription);

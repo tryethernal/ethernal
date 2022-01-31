@@ -64,7 +64,7 @@ describe('Contracts.vue', () => {
     });
 
     it('Should not display a warning message for premium users with 10 contracts', async (done) => {
-        helper.getters.user.mockImplementation(() => { return { plan: 'premium', trialEndsAt: Date.now() - 24 * 3600 } });
+        helper.getters.user.mockImplementation(() => { return { plan: 'premium' }});
         for (let i = 0; i < 10; i++)
             await db.collection('contracts')
                 .doc(`Ox${i}`)

@@ -20,9 +20,6 @@ module.exports = {
             case 'active':
                 plan = 'premium';
                 break;
-            case 'trialing':
-                plan = 'premium';
-                break;
             case 'canceled':
                 plan = 'free';
                 break;
@@ -31,15 +28,13 @@ module.exports = {
         }
 
         if (plan) {
-            const formattedTrialEnd = stripeSubscription.trial_end ? moment.unix(stripeSubscription.trial_end).format() : null;
-            await user.update(sanitize({ plan: plan, trialEndsAt: formattedTrialEnd }));
+            await user.update(sanitize({ plan: plan }));
             analytics.track(user.id, 'Subscription Change', {
                 plan: plan,
-                trialEndsAt: formattedTrialEnd,
                 subscriptionStatus: stripeSubscription.status,
                 cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end
             });
-            analytics.setSubscription(user.id, stripeSubscription.status, plan, formattedTrialEnd, stripeSubscription.cancel_at_period_end);
+            analytics.setSubscription(user.id, stripeSubscription.status, plan, stripeSubscription.cancel_at_period_end);
             return true;
         }
         else

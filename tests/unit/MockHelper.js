@@ -75,8 +75,6 @@ class MockHelper {
             user: jest.fn(() => {
                 return { ...this.storeState.user, plan: this.storeState.user.plan || 'free' }
             }),
-            isTrialActive: jest.fn(() => false),
-            hasTrialed: jest.fn(() => false),
             nativeToken: jest.fn(() => 'Ether')
         };
 

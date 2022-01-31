@@ -57,8 +57,6 @@ const {
     isUserPremium
 } = require('./lib/firebase');
 
-const TRIAL_PERIOD_IN_DAYS = 14;
-
 exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).https.onCall(async (data, context) => {
     if (!context.auth)
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
@@ -615,8 +613,6 @@ exports.createStripeCheckoutSession = functions.https.onCall(async (data, contex
         const rootUrl = functions.config().ethernal.root_url;
         const authUser = await admin.auth().getUser(context.auth.uid)
 
-        const trialPeriod = moment(authUser.metadata.creationTime).isBefore(moment('2021-10-18')) ? 30 : TRIAL_PERIOD_IN_DAYS;
-
         const session = await stripe.checkout.sessions.create(sanitize({
             mode: 'subscription',
             client_reference_id: user.uid,
@@ -629,9 +625,6 @@ exports.createStripeCheckoutSession = functions.https.onCall(async (data, contex
                     quantity: 1
                 }
             ],
-            subscription_data: user.trialEndsAt ? null : {
-                trial_period_days: trialPeriod
-            },
             success_url: `${rootUrl}/settings?tab=billing&status=upgraded`,
             cancel_url: `${rootUrl}/settings?tab=billing`
         }));
