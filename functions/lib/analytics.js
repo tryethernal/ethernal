@@ -23,12 +23,11 @@ class Analytics {
         this.mixpanel.people.set(uid, params);
     }
 
-    setSubscription(uid, status, plan, trialEndsAt, subscriptionCancelsAtPeriodEnd) {
-        if (!this.token || status === undefined || !plan || trialEndsAt === undefined || subscriptionCancelsAtPeriodEnd === undefined) return;
+    setSubscription(uid, status, plan, subscriptionCancelsAtPeriodEnd) {
+        if (!this.token || status === undefined || !plan || subscriptionCancelsAtPeriodEnd === undefined) return;
         const params = {
             subscriptionStatus: status,
             plan: plan,
-            trialEndsAt: trialEndsAt,
             subscriptionCancelsAtPeriodEnd: subscriptionCancelsAtPeriodEnd
         };
         console.log(`Setting subscription for ${uid} with params: ${JSON.stringify(params)}`);

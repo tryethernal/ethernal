@@ -1,8 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Billing.vue Should display the button to manage the subscription when the user has an active premium plan w/o trial 1`] = `
+exports[`Billing.vue Should display the button to manage the subscription when the user has an active premium plan 1`] = `
 <div>
-  <!---->
   <!---->
   <!---->
   <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
@@ -11,7 +10,7 @@ exports[`Billing.vue Should display the button to manage the subscription when t
     </div>
   </div>
   <div class="row">
-    <div class="col col-6">
+    <div class="col col-4">
       <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
         <div class="v-card__title">
           Free Plan
@@ -21,73 +20,64 @@ exports[`Billing.vue Should display the button to manage the subscription when t
         <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
         <div role="list" class="v-list v-sheet theme--light v-list--dense">
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Unlimited accounts / Blocks / Transactions sync</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            10 contracts
+            <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Hardhat / Ganache integration</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Contract UI for read/write functions</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Contract storage reading</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>10 synced contracts</span> <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>1 workspace</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Community support</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <a href="https://www.tryethernal.com/transaction-tracing" target="_blank">Transaction tracing</a> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div> <a href="https://doc.tryethernal.com/integrations/api" target="_blank">API access</a> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            1 workspace
+            <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
         </div>
       </div>
     </div>
-    <div class="col col-6">
+    <div class="col col-4">
       <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
         <div class="v-card__title">
           Premium Plan - $20/month
-          <div class="spacer"></div>
-          <!----> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current Plan</span></span>
+          <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current Plan</span></span>
         </div>
         <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
         <div role="list" class="v-list v-sheet theme--light v-list--dense">
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Unlimited accounts / Blocks / Transactions sync</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited contracts
+            <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Hardhat / Ganache integration</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited workspaces
+            <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Contract UI for read/write functions</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Contract storage reading</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Unlimited synced contracts</span> <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Unlimited workspaces</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Advanced support</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <a href="https://www.tryethernal.com/transaction-tracing" target="_blank">Transaction tracing</a> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <a href="https://doc.tryethernal.com/integrations/api" target="_blank">API access</a> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <!---->
+
+            <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
         </div>
         <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Manage Subscription</span></button></div>
+      </div>
+    </div>
+    <div class="col col-4">
+      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+        <div class="v-card__title">
+          Custom Plan
+          <div class="spacer"></div>
+        </div>
+        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+        <div role="list" class="v-list v-sheet theme--light v-list--dense">
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Custom team pricing (starting at 5 seats)</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Custom on-premise deployment</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Payment in crypto</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
+        </div>
+        <div class="v-card__actions justify-center d-flex flex-column"><a href="mailto:contact@tryethernal.com?subject=Custom+Ethernal+Subscription" target="blank" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Contact Us</span></a> <small>Or ping @antoinedc on <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a></small></div>
       </div>
     </div>
   </div>
@@ -95,8 +85,7 @@ exports[`Billing.vue Should display the button to manage the subscription when t
     <div class="col">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
-          We also offer payments in crypto, and custom on-premise deployment support. If you are interested in that or have any other
-          questions, you can reach out to <a href="mailto:contact@tryethernal.com">contact@tryethernal.com</a> or ping @antoinedc on <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a>.
+          All plans include unlimited blocks/transactions/accounts synchronization, Ganache/Hardhat/Brownie integration, and all Ethernal features.
         </div>
       </div>
     </div>
@@ -104,9 +93,8 @@ exports[`Billing.vue Should display the button to manage the subscription when t
 </div>
 `;
 
-exports[`Billing.vue Should display the button to manage the subscription when the user is trialing 1`] = `
+exports[`Billing.vue Should display the button to start the subscription when the user is on a free plan 1`] = `
 <div>
-  <!---->
   <!---->
   <!---->
   <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
@@ -115,110 +103,7 @@ exports[`Billing.vue Should display the button to manage the subscription when t
     </div>
   </div>
   <div class="row">
-    <div class="col col-6">
-      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-        <div class="v-card__title">
-          Free Plan
-          <div class="spacer"></div>
-          <!---->
-        </div>
-        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-        <div role="list" class="v-list v-sheet theme--light v-list--dense">
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Unlimited accounts / Blocks / Transactions sync</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Hardhat / Ganache integration</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Contract UI for read/write functions</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Contract storage reading</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>10 synced contracts</span> <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>1 workspace</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Community support</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <a href="https://www.tryethernal.com/transaction-tracing" target="_blank">Transaction tracing</a> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div> <a href="https://doc.tryethernal.com/integrations/api" target="_blank">API access</a> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col col-6">
-      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-        <div class="v-card__title">
-          Premium Plan - $20/month
-          <div class="spacer"></div> <small>Trial until Oct. 11th</small> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current Plan</span></span>
-        </div>
-        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-        <div role="list" class="v-list v-sheet theme--light v-list--dense">
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Unlimited accounts / Blocks / Transactions sync</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Hardhat / Ganache integration</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Contract UI for read/write functions</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Contract storage reading</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Unlimited synced contracts</span> <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Unlimited workspaces</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Advanced support</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <a href="https://www.tryethernal.com/transaction-tracing" target="_blank">Transaction tracing</a> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <a href="https://doc.tryethernal.com/integrations/api" target="_blank">API access</a> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-        </div>
-        <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Manage Subscription</span></button></div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          We also offer payments in crypto, and custom on-premise deployment support. If you are interested in that or have any other
-          questions, you can reach out to <a href="mailto:contact@tryethernal.com">contact@tryethernal.com</a> or ping @antoinedc on <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a>.
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Billing.vue Should display the button to start the subscription when the user is on a free plan and has already trialed 1`] = `
-<div>
-  <!---->
-  <!---->
-  <!---->
-  <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
-    <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
-      <div class="v-alert__content"></div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col col-6">
+    <div class="col col-4">
       <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
         <div class="v-card__title">
           Free Plan
@@ -227,178 +112,65 @@ exports[`Billing.vue Should display the button to start the subscription when th
         <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
         <div role="list" class="v-list v-sheet theme--light v-list--dense">
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Unlimited accounts / Blocks / Transactions sync</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            10 contracts
+            <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Hardhat / Ganache integration</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Contract UI for read/write functions</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Contract storage reading</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>10 synced contracts</span> <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>1 workspace</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Community support</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <a href="https://www.tryethernal.com/transaction-tracing" target="_blank">Transaction tracing</a> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div> <a href="https://doc.tryethernal.com/integrations/api" target="_blank">API access</a> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            1 workspace
+            <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
         </div>
       </div>
     </div>
-    <div class="col col-6">
+    <div class="col col-4">
       <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
         <div class="v-card__title">
           Premium Plan - $20/month
           <div class="spacer"></div>
           <!---->
-          <!---->
         </div>
         <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
         <div role="list" class="v-list v-sheet theme--light v-list--dense">
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Unlimited accounts / Blocks / Transactions sync</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited contracts
+            <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Hardhat / Ganache integration</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited workspaces
+            <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Contract UI for read/write functions</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Contract storage reading</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Unlimited synced contracts</span> <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Unlimited workspaces</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Advanced support</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <a href="https://www.tryethernal.com/transaction-tracing" target="_blank">Transaction tracing</a> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <a href="https://doc.tryethernal.com/integrations/api" target="_blank">API access</a> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-        </div>
-        <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content"><span>Subscribe</span></span></button></div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          We also offer payments in crypto, and custom on-premise deployment support. If you are interested in that or have any other
-          questions, you can reach out to <a href="mailto:contact@tryethernal.com">contact@tryethernal.com</a> or ping @antoinedc on <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a>.
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
+            <!---->
 
-exports[`Billing.vue Should display the button to start the trial when user has no plan & did not trial already 1`] = `
-<div>
-  <!---->
-  <!---->
-  <!---->
-  <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
-    <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
-      <div class="v-alert__content"></div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col col-6">
-      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-        <div class="v-card__title">
-          Free Plan
-          <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current Plan</span></span>
-        </div>
-        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-        <div role="list" class="v-list v-sheet theme--light v-list--dense">
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Unlimited accounts / Blocks / Transactions sync</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Hardhat / Ganache integration</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Contract UI for read/write functions</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Contract storage reading</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>10 synced contracts</span> <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>1 workspace</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Community support</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <a href="https://www.tryethernal.com/transaction-tracing" target="_blank">Transaction tracing</a> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div> <a href="https://doc.tryethernal.com/integrations/api" target="_blank">API access</a> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
         </div>
+        <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Subscribe</span></button></div>
       </div>
     </div>
-    <div class="col col-6">
+    <div class="col col-4">
       <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
         <div class="v-card__title">
-          Premium Plan - $20/month
+          Custom Plan
           <div class="spacer"></div>
-          <!---->
-          <!---->
         </div>
         <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
         <div role="list" class="v-list v-sheet theme--light v-list--dense">
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Unlimited accounts / Blocks / Transactions sync</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Custom team pricing (starting at 5 seats)</span> <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Hardhat / Ganache integration</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Custom on-premise deployment</span> <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Contract UI for read/write functions</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Contract storage reading</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Unlimited synced contracts</span> <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Unlimited workspaces</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Advanced support</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <a href="https://www.tryethernal.com/transaction-tracing" target="_blank">Transaction tracing</a> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <a href="https://doc.tryethernal.com/integrations/api" target="_blank">API access</a> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Payment in crypto</span> <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
         </div>
-        <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content"><span>Start 14 days free trial</span></span></button></div>
+        <div class="v-card__actions justify-center d-flex flex-column"><a href="mailto:contact@tryethernal.com?subject=Custom+Ethernal+Subscription" target="blank" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Contact Us</span></a> <small>Or ping @antoinedc on <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a></small></div>
       </div>
     </div>
   </div>
@@ -406,8 +178,7 @@ exports[`Billing.vue Should display the button to start the trial when user has 
     <div class="col">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
-          We also offer payments in crypto, and custom on-premise deployment support. If you are interested in that or have any other
-          questions, you can reach out to <a href="mailto:contact@tryethernal.com">contact@tryethernal.com</a> or ping @antoinedc on <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a>.
+          All plans include unlimited blocks/transactions/accounts synchronization, Ganache/Hardhat/Brownie integration, and all Ethernal features.
         </div>
       </div>
     </div>
