@@ -285,9 +285,9 @@ export default {
         this.$bind('advancedOptions', this.db.advancedOptions()).finally(() => this.advancedOptionsLoading = false);
         this.$bind('accounts', this.db.collection('accounts'));
         this.stripe = window.Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
-        this.currentChain = this.chain.slug;
         this.currentRpcServer = this.currentWorkspace.rpcServer;
         this.availableChains = Object.values(this.chains).map((chain) => ({ text: chain.name, value: chain.slug }));
+        this.currentChain = this.chain.slug;
     },
     methods: {
         updateAdvancedOptions: function() {
