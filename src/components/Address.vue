@@ -4,7 +4,7 @@
             <v-col cols="3">
                 <v-card outlined>
                     <v-card-text>
-                        Balance: {{ balance | fromWei('ether', nativeToken) }}
+                        Balance: {{ balance | fromWei('ether', chain.token) }}
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -388,7 +388,7 @@ export default {
     computed: {
         ...mapGetters([
             'currentWorkspace',
-            'nativeToken'
+            'chain'
         ]),
         isStorageAvailable: function() {
             return this.contract && this.contract.dependencies && Object.keys(this.contract.dependencies).length > 0;

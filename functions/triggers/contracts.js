@@ -34,6 +34,10 @@ const fetchEtherscanData = async (address, chain) => {
             scannerHost = 'polygonscan.com';
             apiKey = functions.config().polygonscan.token;
             break;
+        case 'avax':
+            scannerHost = 'snowtrace.io';
+            apiKey = functions.config().snowtrace.token;
+            break;
         default:
         break;
     }
