@@ -6,7 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.3.0] - 2022-021-31
+## [1.3.1] - 2022-02-01
+### Added
+- Avalanche support: contracts metadata can be imported from Snowtrace & the currency is set to Avax when selecting the chain
+
+### Changed
+- Technical refactor around multiple chain (only one source of available chains in the frontend now)
+
+## [1.3.0] - 2022-01-31
 ### Removed
 - Trial period: it made sense to have a trial when the transaction tracing feature was only included in the Premium plan, but now that it is available in the free plan as well, it doesn't anymore. The only difference between free/premium is now the 10 contracts/1 workspace limitation. And it doesn't make sense to have a trial for that (the free plan IS the trial already).
 
