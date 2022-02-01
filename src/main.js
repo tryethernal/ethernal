@@ -91,17 +91,34 @@ const store = new Vuex.Store({
         currentBlock: state => state.currentBlock,
         currentWorkspace: state => state.currentWorkspace,
         connected: state => state.connected,
-        nativeToken: state => {
-            switch(state.currentWorkspace.chain) {
-                case 'ethereum':
-                    return 'Ether';
-                case 'bsc':
-                    return 'BNB';
-                case 'matic':
-                    return 'Matic';
-                default:
-                    return 'Ether';
+        chains: () => ({
+            ethereum: {
+                slug: 'ethereum',
+                name: 'Ethereum',
+                token: 'Ether',
+                scanner: 'Etherscan'
+            },
+            bsc: {
+                slug: 'bsc',
+                name: 'BSC',
+                token: 'BNB',
+                scanner: 'BSCscan'
+            },
+            matic: {
+                slug: 'matic',
+                name: 'Matic',
+                token: 'Matic',
+                scanner: 'Polygonscan'
+            },
+            avax: {
+                slug: 'avax',
+                name: 'Avalanche',
+                token: 'Avax',
+                scanner: 'Snowtrace'
             }
+        }),
+        chain: (state, getters) => {
+            return getters.chains[state.currentWorkspace.chain || 'ethereum'];
         }
     }
 });

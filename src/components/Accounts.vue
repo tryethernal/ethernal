@@ -38,7 +38,7 @@
                 </v-toolbar>
             </template>
             <template v-slot:item.balance="{ item }">
-                {{ item.balance | fromWei('ether', nativeToken)  }}
+                {{ item.balance | fromWei('ether', chain.token)  }}
             </template>
             <template v-slot:item.actions="{ item }">
                 <a href="#" @click.prevent="openUnlockAccountModal(item)">Set Private Key</a>
@@ -123,7 +123,7 @@ export default {
     computed: {
         ...mapGetters([
             'currentWorkspace',
-            'nativeToken'
+            'chain'
         ])
     }
 }

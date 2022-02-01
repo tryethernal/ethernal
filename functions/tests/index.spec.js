@@ -80,7 +80,7 @@ describe('getUnprocessedContracts', () => {
     it('Should return contracts not marked as processed', async () => {
         await helper.workspace
                 .collection('contracts')
-                .doc('0x123')
+                .doc('0x12356')
                 .set({ abi: 'abi' });
 
         await helper.workspace

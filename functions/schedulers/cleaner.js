@@ -10,6 +10,7 @@ exports.cleanArtifactDependencies = async (context) => {
         .map((doc) => doc.id);
 
     for (let i = 0; i < userIds.length; i++) {
+        console.log(`Checking user ${userIds[i]}`);
         await rtdb.ref(`users/${userIds[i]}`).once('value', async (snapshot) => {
             const data = snapshot.val();
 

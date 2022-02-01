@@ -42,7 +42,7 @@ exports[`Settings.vue Should let the user switch workspaces 1`] = `
                     <div class="v-input__control">
                       <div class="v-input__slot">
                         <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span>​</span></legend>
+                          <legend style="width: -24px;"><span>​</span></legend>
                         </fieldset>
                         <div class="v-text-field__slot"><label for="rpcServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server</label><input id="rpcServer" type="text"></div>
                       </div>
@@ -53,7 +53,7 @@ exports[`Settings.vue Should let the user switch workspaces 1`] = `
                     <div class="v-input__control">
                       <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-261" class="v-input__slot">
                         <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span>​</span></legend>
+                          <legend style="width: -24px;"><span>​</span></legend>
                         </fieldset>
                         <div class="v-select__slot"><label for="chain" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
                           <div class="v-select__selections">
@@ -328,7 +328,7 @@ exports[`Settings.vue Should let the user update call options 1`] = `
                     <div class="v-input__control">
                       <div class="v-input__slot">
                         <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span>​</span></legend>
+                          <legend style="width: -24px;"><span>​</span></legend>
                         </fieldset>
                         <div class="v-text-field__slot"><label for="rpcServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server</label><input id="rpcServer" type="text"></div>
                       </div>
@@ -339,7 +339,7 @@ exports[`Settings.vue Should let the user update call options 1`] = `
                     <div class="v-input__control">
                       <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-180" class="v-input__slot">
                         <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span>​</span></legend>
+                          <legend style="width: -24px;"><span>​</span></legend>
                         </fieldset>
                         <div class="v-select__slot"><label for="chain" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
                           <div class="v-select__selections">
@@ -609,7 +609,7 @@ exports[`Settings.vue Should let the user update general options 1`] = `
                     <div class="v-input__control">
                       <div class="v-input__slot">
                         <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span>​</span></legend>
+                          <legend style="width: -24px;"><span>​</span></legend>
                         </fieldset>
                         <div class="v-text-field__slot"><label for="rpcServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server</label><input id="rpcServer" type="text"></div>
                       </div>
@@ -620,7 +620,7 @@ exports[`Settings.vue Should let the user update general options 1`] = `
                     <div class="v-input__control">
                       <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-99" class="v-input__slot">
                         <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span>​</span></legend>
+                          <legend style="width: -24px;"><span>​</span></legend>
                         </fieldset>
                         <div class="v-select__slot"><label for="chain" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
                           <div class="v-select__selections">
@@ -1171,7 +1171,7 @@ exports[`Settings.vue Should not display the tracing warning message for premium
                     <div class="v-input__control">
                       <div class="v-input__slot">
                         <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span>​</span></legend>
+                          <legend style="width: -24px;"><span>​</span></legend>
                         </fieldset>
                         <div class="v-text-field__slot"><label for="rpcServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server</label><input id="rpcServer" type="text"></div>
                       </div>
@@ -1182,7 +1182,7 @@ exports[`Settings.vue Should not display the tracing warning message for premium
                     <div class="v-input__control">
                       <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-341" class="v-input__slot">
                         <fieldset aria-hidden="true">
-                          <legend style="width: 0px;"><span>​</span></legend>
+                          <legend style="width: -24px;"><span>​</span></legend>
                         </fieldset>
                         <div class="v-select__slot"><label for="chain" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
                           <div class="v-select__selections">

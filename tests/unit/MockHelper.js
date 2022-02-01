@@ -75,7 +75,23 @@ class MockHelper {
             user: jest.fn(() => {
                 return { ...this.storeState.user, plan: this.storeState.user.plan || 'free' }
             }),
-            nativeToken: jest.fn(() => 'Ether')
+            nativeToken: jest.fn(() => 'Ether'),
+            chains: jest.fn(() => {
+                return {
+                    ethereum: {
+                        slug: 'ethereum',
+                        name: 'Ethereum',
+                        token: 'Ether',
+                        scanner: 'Etherscan'
+                    }
+                };
+            }),
+            chain: () => ({
+                slug: 'ethereum',
+                name: 'Ethereum',
+                token: 'Ether',
+                scanner: 'Etherscan'
+            })
         };
 
         this.actions = {

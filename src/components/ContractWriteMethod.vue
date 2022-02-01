@@ -36,7 +36,7 @@
                 v-model="valueInEth"
                 type="number"
                 hide-details="auto"
-                :label="`Value (in ${nativeToken})`">
+                :label="`Value (in ${chain.token})`">
             </v-text-field>
         </div>
         <v-btn :loading="loading" depressed class="mt-1" color="primary" @click="sendMethod()">Query</v-btn>
@@ -169,7 +169,7 @@ export default {
     computed: {
         ...mapGetters([
             'currentWorkspace',
-            'nativeToken'
+            'chain'
         ]),
         value: function() {
             return this.web3.utils.toWei(this.valueInEth.toString(), 'ether');
