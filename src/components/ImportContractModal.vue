@@ -8,8 +8,8 @@
             <v-alert type="success" v-if="successMessage" v-html="successMessage"></v-alert>
             <v-alert type="error" v-if="errorMessage"> {{ errorMessage }}</v-alert>
             <div>
-                Enter an address of a contract deployed on {{ chainName }} mainnet.<br>
-                If the contract has been verified on {{ chainScanner }}, its name and ABI will be pulled automatically.<br>
+                Enter an address of a contract deployed on {{ chain.name }} mainnet.<br>
+                If the contract has been verified on {{ chain.scanner }}, its name and ABI will be pulled automatically.<br>
                 If not, the contract will be imported but you'll have to manually add the name and ABI.
                 To be able to use this, your workspace needs to be connected to a mainnet fork.<br>
                 If it is not, the contract will still be imported but calls will fail.<br>
@@ -83,33 +83,12 @@ export default {
     computed: {
         ...mapGetters([
             'currentWorkspace',
-            'user'
+            'user',
+            'chain'
         ]),
         canImport: function() {
             return this.user.plan == 'premium' || this.options.contractsCount < 10;
         },
-        chainName: function() {
-            switch(this.currentWorkspace.chain) {
-                case 'bsc':
-                    return 'BSC';
-                case 'matic':
-                    return 'Matic';
-                case 'ethereum':
-                default:
-                    return 'Ethereum';
-            }
-        },
-        chainScanner: function() {
-            switch(this.currentWorkspace.chain) {
-                case 'bsc':
-                    return 'BSCscan';
-                case 'matic':
-                    return 'Polygonscan';
-                case 'ethereum':
-                default:
-                    return 'Etherscan';
-            }
-        }
     }
 }
 </script>

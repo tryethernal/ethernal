@@ -10,19 +10,19 @@
                 <v-row>
                     <v-col lg="5">
                         <v-alert v-show="updateSuccess" dense text type="success">Settings updated</v-alert>
-                        <v-alert v-show="updateError" dense text type="error">Error while updating settings</v-alert>
+                        <v-alert v-show="updateError || errorMessage" dense text type="error">{{ errorMessage  || 'Error while updating settings' }}</v-alert>
                         <h4>General</h4>
                         <v-card outlined class="mb-4">
                             <v-card-text>
                                 <v-text-field
                                     outlined
-                                    v-model="currentWorkspace.rpcServer"
+                                    v-model="currentRpcServer"
                                     hide-details="auto"
                                     id="rpcServer"
                                     label="RPC Server">
                                 </v-text-field>
                                 You will need to restart the CLI or the Hardhat node for a server change to take effect.
-                                <v-select id="chain" class="mt-3" outlined required label="Chain" v-model="currentWorkspace.chain" :items="chains" hide-details="auto"></v-select>
+                                <v-select id="chain" class="mt-3" outlined required label="Chain" v-model="currentChain" :items="availableChains" hide-details="auto"></v-select>
                                 <v-row class="mt-2 pb-1 mr-2">
                                     <v-spacer></v-spacer>
                                     <v-btn id="updateOptions" :loading="loading" depressed color="primary" class="mt-1" @click="update()">Update</v-btn>
@@ -259,7 +259,9 @@ export default {
                 value: 'actions'
             }
         ],
-        chains: [{ text: 'Ethereum', value: 'ethereum' }, { text: 'BSC', value: 'bsc' }, { text: 'Matic', value: 'matic' }],
+        availableChains: [],
+        currentChain: null,
+        currentRpcServer: null,
         settings: {},
         advancedOptions: {},
         workspaces: [],
@@ -271,7 +273,8 @@ export default {
         loadingWorkspaces: true,
         resetWorkspaceLoading: false,
         advancedOptionsLoading: true,
-        stripe: null
+        stripe: null,
+        errorMessage: null
     }),
     mounted: function() {
         if (!this.tab)
@@ -282,6 +285,9 @@ export default {
         this.$bind('advancedOptions', this.db.advancedOptions()).finally(() => this.advancedOptionsLoading = false);
         this.$bind('accounts', this.db.collection('accounts'));
         this.stripe = window.Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
+        this.currentRpcServer = this.currentWorkspace.rpcServer;
+        this.availableChains = Object.values(this.chains).map((chain) => ({ text: chain.name, value: chain.slug }));
+        this.currentChain = this.chain.slug;
     },
     methods: {
         updateAdvancedOptions: function() {
@@ -302,14 +308,21 @@ export default {
             this.loading = true;
             this.updateSuccess = false;
             this.updateError = false;
+            this.errorMessage = null;
 
-            this.server.updateWorkspaceSettings(this.currentWorkspace.name, { rpcServer: this.currentWorkspace.rpcServer, chain: this.currentWorkspace.chain, settings: this.settings })
+            this.server.initRpcServer(this.currentRpcServer)
                 .then(() => {
-                    this.updateSuccess = true;
-                    this.currentWorkspace.settings = this.settings;
-                    this.$store.dispatch('updateCurrentWorkspace', this.currentWorkspace);
+                    this.server.updateWorkspaceSettings(this.currentWorkspace.name, { rpcServer: this.currentRpcServer, chain: this.currentChain, settings: this.settings })
+                        .then(() => {
+                            this.updateSuccess = true;
+                            this.currentWorkspace.settings = this.settings;
+                            this.currentWorkspace.chain = this.currentChain;
+                            this.currentWorkspace.rpcServer = this.currentRpcServer;
+                            this.$store.dispatch('updateCurrentWorkspace', this.currentWorkspace);
+                        })
+                        .catch(() => this.updateError = true)
                 })
-                .catch(() => this.updateError = true)
+                .catch((error) => this.errorMessage = error.reason)
                 .finally(() => this.loading = false);
         },
         openCreateWorkspaceModal: function() {
@@ -368,7 +381,9 @@ export default {
     computed: {
         ...mapGetters([
             'currentWorkspace',
-            'user'
+            'user',
+            'chain',
+            'chains'
         ]),
         tab: {
             set (tab) {
