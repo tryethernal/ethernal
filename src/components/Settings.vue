@@ -273,7 +273,6 @@ export default {
         loadingWorkspaces: true,
         resetWorkspaceLoading: false,
         advancedOptionsLoading: true,
-        stripe: null,
         errorMessage: null
     }),
     mounted: function() {
@@ -284,7 +283,6 @@ export default {
         this.$bind('settings', this.db.settings()).finally(() => this.optionsLoader = false);
         this.$bind('advancedOptions', this.db.advancedOptions()).finally(() => this.advancedOptionsLoading = false);
         this.$bind('accounts', this.db.collection('accounts'));
-        this.stripe = window.Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY);
         this.currentRpcServer = this.currentWorkspace.rpcServer;
         this.availableChains = Object.values(this.chains).map((chain) => ({ text: chain.name, value: chain.slug }));
         this.currentChain = this.chain.slug;
