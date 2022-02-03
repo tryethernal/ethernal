@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.2] - 2022-02-03
+### Fixed
+- RPC server & chain were not displayed properly
+- Small race condition where button loading would change state before request is finished
+- Not all chains were properly on workspace creation
+
+### Removed
+- Obsolete frontend Stripe library
+
 ## [1.3.1] - 2022-02-01
 ### Added
 - Avalanche support: contracts metadata can be imported from Snowtrace & the currency is set to Avax when selecting the chain
