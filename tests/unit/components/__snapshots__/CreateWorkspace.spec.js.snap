@@ -55,7 +55,7 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Brave 1`] = 
       <div class="v-input__control">
         <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-79" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span>​</span></legend>
           </fieldset>
           <div class="v-select__slot"><label for="input-79" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
@@ -128,16 +128,14 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Safari 1`] =
         </div>
       </div>
     </div>
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+    <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
       <div class="v-input__control">
         <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-100" class="v-input__slot">
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-select__slot"><label for="input-100" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
-            <div class="v-select__selections">
-              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-100" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-            </div>
+          <div class="v-select__slot"><label for="input-100" class="v-label theme--light" style="left: 0px; position: absolute;">Chain</label>
+            <div class="v-select__selections"><input required="required" id="input-100" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
             <div class="v-input__append-inner">
               <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
             </div><input type="hidden" value="ethereum">
@@ -209,7 +207,7 @@ exports[`CreateWorkspace.vue Should display a warning if trying to connect to an
       <div class="v-input__control">
         <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-119" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span>​</span></legend>
           </fieldset>
           <div class="v-select__slot"><label for="input-119" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
@@ -301,7 +299,7 @@ exports[`CreateWorkspace.vue Should display an error if it cannot connect to the
       <div class="v-input__control">
         <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-62" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span>​</span></legend>
           </fieldset>
           <div class="v-select__slot"><label for="input-62" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
@@ -381,7 +379,7 @@ exports[`CreateWorkspace.vue Should display locally running networks 1`] = `
       <div class="v-input__control">
         <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-157" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span>​</span></legend>
           </fieldset>
           <div class="v-select__slot"><label for="input-157" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
@@ -458,7 +456,7 @@ exports[`CreateWorkspace.vue Should not allow multiple workspaces with the same 
       <div class="v-input__control">
         <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-176" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span>​</span></legend>
           </fieldset>
           <div class="v-select__slot"><label for="input-176" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
@@ -535,7 +533,7 @@ exports[`CreateWorkspace.vue Should not display a warning if trying to connect t
       <div class="v-input__control">
         <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-138" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span>​</span></legend>
           </fieldset>
           <div class="v-select__slot"><label for="input-138" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
@@ -608,16 +606,14 @@ exports[`CreateWorkspace.vue Should not display a warning message if user has al
         </div>
       </div>
     </div>
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+    <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
       <div class="v-input__control">
         <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-23" class="v-input__slot">
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-select__slot"><label for="input-23" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
-            <div class="v-select__selections">
-              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-23" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-            </div>
+          <div class="v-select__slot"><label for="input-23" class="v-label theme--light" style="left: 0px; position: absolute;">Chain</label>
+            <div class="v-select__selections"><input required="required" id="input-23" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
             <div class="v-input__append-inner">
               <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
             </div><input type="hidden" value="ethereum">

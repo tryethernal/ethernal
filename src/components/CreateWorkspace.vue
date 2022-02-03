@@ -43,7 +43,7 @@
             </v-alert>
             <v-text-field outlined v-model="name" id="workspaceName" label="Name*" placeholder="My Ethereum Project" hide-details="auto" class="mb-2" required></v-text-field>
             <v-text-field outlined v-model="rpcServer" id="workspaceServer" label="RPC Server*" placeholder="ws://localhost:8545" hide-details="auto" class="mb-2" required></v-text-field>
-            <v-select outlined required label="Chain" v-model="chain" :items="chains" hide-details="auto"></v-select>
+            <v-select outlined required label="Chain" v-model="chain" :items="availableChains" hide-details="auto"></v-select>
         </v-card-text>
 
         <v-card-actions>
@@ -59,7 +59,7 @@ export default {
     name: 'CreateWorkspace',
     props: ['existingWorkspaces'],
     data: () => ({
-        chains: [{ text: 'Ethereum', value: 'ethereum' }, { text: 'BSC', value: 'bsc' }, { text: 'Matic', value: 'matic' }],
+        availableChains: [],
         chain: 'ethereum',
         errorMessage: null,
         loading: false,
@@ -74,6 +74,7 @@ export default {
     }),
     mounted: function() {
         this.isBrave().then(res => this.isUsingBrave = res);
+        this.availableChains = Object.values(this.chains).map((chain) => ({ text: chain.name, value: chain.slug }));
     },
     methods: {
         isBrave: async function() {
@@ -135,7 +136,8 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'user'
+            'user',
+            'chains'
         ]),
         isUsingSafari: function() {
             return navigator.vendor.match(/apple/i) && !navigator.userAgent.match(/crios/i) && !navigator.userAgent.match(/fxios/i);
