@@ -319,9 +319,12 @@ export default {
                             this.$store.dispatch('updateCurrentWorkspace', this.currentWorkspace);
                         })
                         .catch(() => this.updateError = true)
+                        .finally(() => this.loading = false);
                 })
-                .catch((error) => this.errorMessage = error.reason)
-                .finally(() => this.loading = false);
+                .catch((error) => {
+                    this.errorMessage = error.reason;
+                    this.loading = false;
+                });
         },
         openCreateWorkspaceModal: function() {
             this.$refs.createWorkspaceModal
