@@ -65,7 +65,23 @@
             </v-list>
 
             <template v-slot:append>
-                <v-list>
+                <v-list dense nav>
+                    <v-list-item target="_blank" :href="`https://doc.tryethernal.com`">
+                        <v-list-item-icon>
+                            <v-icon>mdi-text-box-multiple-outline</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>Documentation</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item target="_blank" :href="`https://discord.gg/jEAprf45jj`">
+                        <v-list-item-icon>
+                            <v-icon>mdi-discord</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>Discord</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
                     <v-list-item v-show="prAuthToken" target="_blank" :href="`https://ethernal.productroad.com/company/auth/?token=${prAuthToken}`">
                         <v-list-item-icon>
                             <v-icon>mdi-feature-search</v-icon>
