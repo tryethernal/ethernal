@@ -13,20 +13,14 @@
 
             <v-stepper-step step="2" :complete="stepperIndex > 2">Set up the client</v-stepper-step>
             <v-stepper-content step="2">
-                <h5>For Ganache</h5>
                 <p>
                     Install the <a href="https://github.com/tryethernal/ethernal-cli" target="_blank">CLI</a> with <code>npm install ethernal -g</code>
                 </p>
                 <p>
                     And sign-in with <code>ethernal login</code>
                 </p>
-
-                <h5>For Hardhat</h5>
                 <p>
-                    Add the <a href="https://github.com/tryethernal/hardhat-ethernal" target="_blank">plugin</a> to your project with <code>yarn add hardhat-ethernal</code><br>
-                </p>
-                <p>
-                    Add <code>require('hardhat-ethernal');</code> in your <code>hardhat-config.js</code> file.
+                    If you have troubles signing in with <code>ethernal login</code>, you can run the <code>ethernal</code> CLI or Hardhat commands with env variables instead: <code>ETHERNAL_EMAIL=your@email.com ETHERNAL_PASSWORD=pwd npx hardhat node for example.</code>
                 </p>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -41,6 +35,12 @@
                     Run <code>ethernal listen</code> to listen to transactions (<a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">doc</a>).
                 </p>
                 <h5>For Hardhat</h5>
+                <p>
+                    Add the <a href="https://github.com/tryethernal/hardhat-ethernal" target="_blank">plugin</a> to your project with <code>yarn add hardhat-ethernal</code><br>
+                </p>
+                <p>
+                    Add <code>require('hardhat-ethernal');</code> in your <code>hardhat-config.js</code> file.
+                </p>
                 <p>
                     Restart your Hardhat node and you are good to go :) the plugin will automatically synchronize all blocks and transactions.
                 </p>
