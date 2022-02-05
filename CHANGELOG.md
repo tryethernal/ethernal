@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.3] - 2022-02-05
 ### Changed
 - Wording on onboarding modal, to make the process clearer, especially around logging in client side.
+- Moving around external links (doc, Discord)
+
+### Added
+- Feedback box on the top, maybe this'll work better than Product Road?
 
 ## [1.3.2] - 2022-02-03
 ### Fixed
