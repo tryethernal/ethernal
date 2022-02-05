@@ -8,9 +8,9 @@
             <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
         </span>
         <v-spacer></v-spacer>
-        <a href="https://doc.tryethernal.com" target="_blank">Documentation</a>
-        <v-divider vertical inset class="mx-2"></v-divider>
-        <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a>
+        <a v-if="isFeedbackFishEnabled" data-feedback-fish :data-feedback-fish-userid="user.email" :data-feedback-fish-page="page">
+            <v-icon color="primary" class="mr-1">mdi-comment-quote</v-icon>Feedback?
+        </a>
     </v-toolbar>
 </template>
 
@@ -25,13 +25,16 @@ import { bus } from '../bus.js';
 export default Vue.extend({
     name: 'RpcConnector',
     data: () => ({
-        processingContracts: false
+        processingContracts: false,
+        page: null,
+        isFeedbackFishEnabled: false,
     }),
     created: function() {
         if (auth().currentUser) {
             bus.$on('syncAccount', this.syncAccount);
         }
-
+        this.page = this.$route.path;
+        this.isFeedbackFishEnabled = !!process.env.VUE_APP_FEEDBACK_FISH_PID;
         this.server.getAccounts().then((data) => data.forEach(this.syncAccount));
         this.processContracts();
         this.db.onNewContract(this.processContracts);
@@ -55,7 +58,8 @@ export default Vue.extend({
     computed: {
         ...mapGetters([
             'currentWorkspace',
-            'chain'
+            'chain',
+            'user'
         ])
     }
 });
