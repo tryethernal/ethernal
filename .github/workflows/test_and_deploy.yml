@@ -31,7 +31,7 @@ jobs:
       - name: Install deps
         run: |
           cd functions
-          npm install -g firebase-tools firebase-functions
+          npm install -g firebase-tools@10.1.5 firebase-functions
           npm install
 
       - name: Setup environment
@@ -75,7 +75,7 @@ jobs:
       - name: Install deps
         run: |
           yarn
-          npm install -g firebase-tools firebase-functions
+          npm install -g firebase-tools@10.1.5 firebase-functions
           cd functions && npm install
 
       - name: Setup environment

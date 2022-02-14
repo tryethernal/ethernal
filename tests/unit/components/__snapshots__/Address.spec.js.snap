@@ -334,7 +334,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-235" class="v-label theme--light" style="left: 0px; position: absolute;">payee (address)</label><input id="input-235" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-235" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-235" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -356,7 +356,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-238" class="v-label theme--light" style="left: 0px; position: absolute;">payee (address)</label><input id="input-238" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-238" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-238" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -424,7 +424,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-249" class="v-label theme--light" style="left: 0px; position: absolute;">newOwner (address)</label><input id="input-249" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-249" class="v-label theme--light" style="left: 0px; position: absolute;">address newOwner</label><input id="input-249" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -473,7 +473,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-257" class="v-label theme--light" style="left: 0px; position: absolute;">payee (address)</label><input id="input-257" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-257" class="v-label theme--light" style="left: 0px; position: absolute;">address payee, uint256 maturity</label><input id="input-257" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -483,7 +483,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-258" class="v-label theme--light" style="left: 0px; position: absolute;">maturity (uint256)</label><input id="input-258" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-258" class="v-label theme--light" style="left: 0px; position: absolute;">address payee, uint256 maturity</label><input id="input-258" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -532,7 +532,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-266" class="v-label theme--light" style="left: 0px; position: absolute;">payee (address)</label><input id="input-266" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-266" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-266" type="text"></div>
                           </div>
                         </div>
                       </div>
