@@ -24,10 +24,8 @@ export const getProvider = function(rpcServer) {
 };
 
 export const processMethodCallParam = function(param, inputType) {
-    const regexArray = new RegExp("^(.*)\\[([0-9]*)\\]$");
-
-    if (inputType.match(regexArray))
-        return param.slice(1, param.length - 1).split(',');
+    if (inputType.indexOf('[]') > -1 || inputType == 'tuple')
+        return param.slice(1, param.length - 1).split(',').map(el => el.trim());
 
     return param;
 };

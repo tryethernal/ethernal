@@ -9,16 +9,16 @@
             v-model="params[inputIdx]"
             v-for="(input, inputIdx) in method.inputs"
             :key="inputIdx"
-            :label="`${input.name || '<input>'}  (${input.type})`">
+            :label="inputSignature">
         </v-text-field>
-        <div>=> {{ method.outputs.map(output => output.type).join(', ') }}</div>
+        <div>=> {{ outputSignature }}</div>
         <div id="call" class="grey lighten-3 pa-2" v-show="results.length">
             <FormattedSolVar v-for="(val, idx) in results" :input="val.input" :value="val.value" :key="idx" />
         </div>
         <div id="call" class="grey lighten-3 pa-2" v-show="error">
             {{ error }}
         </div>
-        <v-btn :loading="loading" class="mt-1" depressed color="primary" @click="callMethod(method)">Query</v-btn>
+        <v-btn :loading="loading" class="mt-1" depressed color="primary" @click="callMethod()">Query</v-btn>
     </div>
 </template>
 <script>
@@ -28,7 +28,7 @@ import FormattedSolVar from './FormattedSolVar';
 
 export default {
     name: 'ContractReadMethod',
-    props: ['method', 'contract', 'options'],
+    props: ['method', 'contract', 'options', 'signature'],
     components: {
         FormattedSolVar
     },
@@ -39,7 +39,7 @@ export default {
         loading: false
     }),
     methods: {
-        callMethod: function(method) {
+        callMethod: function() {
             try {
                 this.loading = true;
                 this.error = null;
@@ -47,7 +47,8 @@ export default {
                 for (let i = 0; i < this.method.inputs.length; i++) {
                     processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
                 }
-                this.server.callContractReadMethod(this.contract, method.name, this.options, processedParams, this.currentWorkspace.rpcServer)
+
+                this.server.callContractReadMethod(this.contract, this.signature, this.options, processedParams, this.currentWorkspace.rpcServer)
                     .then(res => {
                         this.results = Array.isArray(res) ? this.processResult(res) : this.processResult([res]);
                     })
@@ -59,7 +60,6 @@ export default {
                         this.loading = false;
                     })
             } catch(error) {
-                console.log(JSON.parse(JSON.stringify(error)));
                 if (error.reason)
                     this.error = `Error: ${error.reason.split('(')[0]}`;
                 else
@@ -84,7 +84,31 @@ export default {
     computed: {
         ...mapGetters([
             'currentWorkspace'
-        ])
+        ]),
+        inputSignature: function() {
+            const res = [];
+            const inputs = this.method.inputs;
+            for (var i = 0; i < inputs.length; i++) {
+                if (inputs[i].type == 'tuple') {
+                    res.push(`${inputs[i].name ? inputs[i].name : 'tuple'}(${inputs[i].components.map((cpt) => `${cpt.type}${cpt.name ? ` ${cpt.name}` : ''}`).join(', ')})`);
+                }
+                else
+                    res.push(`${inputs[i].type}${inputs[i].name ? ` ${inputs[i].name}` : ''}`);
+            }
+            return res.join(', ');
+        },
+        outputSignature: function() {
+            const res = [];
+            const outputs = this.method.outputs;
+            for (var i = 0; i < outputs.length; i++) {
+                if (outputs[i].type == 'tuple') {
+                    res.push(`${outputs[i].name ? outputs[i].name : 'tuple'}(${outputs[i].components.map((cpt) => `${cpt.type}${cpt.name ? ` ${cpt.name}` : ''}`).join(', ')})`);
+                }
+                else
+                    res.push(`${outputs[i].type}${outputs[i].name ? `: ${outputs[i].name}` : ''}`);
+            }
+            return res.join(', ');
+        }
     }
 }
 </script>

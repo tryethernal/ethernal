@@ -29,81 +29,86 @@
 
         <v-tabs-items :value="tab">
             <v-tab-item value="contract" v-if="contract">
-                <h4>Artifact</h4>
-                <v-card outlined class="mb-4">
-                    <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
-                    <div v-if="!contractLoader">
-                        <Import-Artifact-Modal ref="importArtifactModal" />
-                        <v-card-text v-if="contract.name">
-                            Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded. (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)
-                            <div v-if="Object.keys(contract.dependencies).length" class="mb-1 mt-2">
-                                <h5>This contract has dependencies:</h5>
-                            </div>
 
-                            <div v-for="(dep, key, idx) in contract.dependencies" :key="idx" class="mb-2">
-                                <div v-if="!dep.artifact">
-                                    Upload artifact for contract <b>{{ dep.name }}</b>
+                <template>
+                    <h4>Artifact</h4>
+                    <v-card outlined class="mb-4">
+                        <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
+                        <div v-if="!contractLoader">
+                            <Import-Artifact-Modal ref="importArtifactModal" />
+                            <v-card-text v-if="contract.name">
+                                Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded. (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)
+                                <div v-if="Object.keys(contract.dependencies).length" class="mb-1 mt-2">
+                                    <h5>This contract has dependencies:</h5>
                                 </div>
-                                <div v-else>
-                                    Artifact for contract <b>{{ key }}</b> has been uploaded.
-                                </div>
-                            </div>
-                        </v-card-text>
-                        <v-card-text v-else>
-                            <i>Upload an artifact to read contract storage and interact with it.</i><br />
-                            For Truffle projects, use our <a href="https://www.npmjs.com/package/ethernal" target="_blank">CLI</a>.<br />
-                            For Hardhat project, use our <a href="https://github.com/antoinedc/hardhat-ethernal" target="_blank">plugin</a>.<br />
-                            Or you can manually edit contract metadata (name & ABI) <a href="#" @click.stop="openImportArtifactModal()">here</a>.
-                        </v-card-text>
-                    </div>
-                </v-card>
 
-                <h4>Call Options</h4>
-                <v-card outlined class="mb-4">
-                    <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
-                    <div v-else>
-                        <v-card-text v-if="contract.abi">
-                            <v-row>
-                                <v-col cols="5">
-                                    <v-select
-                                        outlined
-                                        dense
-                                        label="Select from address"
-                                        v-model="callOptions.from"
-                                        :item-text="'id'"
-                                        :items="accounts">
-                                        <template v-slot:item="{ item }">
-                                            <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
-                                            {{ item.id }}
-                                        </template>
-                                        <template v-slot:selection="{ item }">
-                                            <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
-                                            {{ item.id }}
-                                        </template>
-                                    </v-select>
-                                    <v-text-field
-                                        outlined
-                                        dense
-                                        type="number"
-                                        v-model="callOptions.gasPrice"
-                                        label="Gas Price (wei)">
-                                    </v-text-field>
-                                    <v-text-field
-                                        outlined
-                                        dense
-                                        type="number"
-                                        hide-details="auto"
-                                        v-model="callOptions.gasLimit"
-                                        label="Maximum Gas">
-                                    </v-text-field>
-                                </v-col>
-                            </v-row>
-                        </v-card-text>
-                        <v-card-text v-else>
-                            <i>Upload an artifact to call this contract's methods.</i>
-                        </v-card-text>
-                    </div>
-                </v-card>
+                                <div v-for="(dep, key, idx) in contract.dependencies" :key="idx" class="mb-2">
+                                    <div v-if="!dep.artifact">
+                                        Upload artifact for contract <b>{{ dep.name }}</b>
+                                    </div>
+                                    <div v-else>
+                                        Artifact for contract <b>{{ key }}</b> has been uploaded.
+                                    </div>
+                                </div>
+                            </v-card-text>
+                            <v-card-text v-else>
+                                <i>Upload an artifact to read contract storage and interact with it.</i><br />
+                                For Truffle projects, use our <a href="https://www.npmjs.com/package/ethernal" target="_blank">CLI</a>.<br />
+                                For Hardhat project, use our <a href="https://github.com/antoinedc/hardhat-ethernal" target="_blank">plugin</a>.<br />
+                                Or you can manually edit contract metadata (name & ABI) <a href="#" @click.stop="openImportArtifactModal()">here</a>.
+                            </v-card-text>
+                        </div>
+                    </v-card>
+                </template>
+
+                <template>
+                    <h4>Call Options</h4>
+                    <v-card outlined class="mb-4">
+                        <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
+                        <div v-else>
+                            <v-card-text v-if="contract.abi">
+                                <v-row>
+                                    <v-col cols="5">
+                                        <v-select
+                                            outlined
+                                            dense
+                                            label="Select from address"
+                                            v-model="callOptions.from"
+                                            :item-text="'id'"
+                                            :items="accounts">
+                                            <template v-slot:item="{ item }">
+                                                <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
+                                                {{ item.id }}
+                                            </template>
+                                            <template v-slot:selection="{ item }">
+                                                <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
+                                                {{ item.id }}
+                                            </template>
+                                        </v-select>
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            type="number"
+                                            v-model="callOptions.gasPrice"
+                                            label="Gas Price (wei)">
+                                        </v-text-field>
+                                        <v-text-field
+                                            outlined
+                                            dense
+                                            type="number"
+                                            hide-details="auto"
+                                            v-model="callOptions.gasLimit"
+                                            label="Maximum Gas">
+                                        </v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                            <v-card-text v-else>
+                                <i>Upload an artifact to call this contract's methods.</i>
+                            </v-card-text>
+                        </div>
+                    </v-card>
+                </template>
 
                 <h4>Read Methods</h4>
                 <v-card outlined class="mb-4">
@@ -112,7 +117,7 @@
                         <v-card-text v-if="contract.abi">
                             <v-row v-for="(method, methodIdx) in contractReadMethods" :key="methodIdx" class="pb-4">
                                 <v-col cols="5">
-                                    <Contract-Read-Method :contract="contract" :method="method" :options="{...callOptions}" />
+                                    <Contract-Read-Method :contract="contract" :signature="method[0]" :method="method[1]" :options="{ ...callOptions, from: callOptions.from }" />
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -129,7 +134,7 @@
                         <v-card-text v-if="contract.abi">
                             <v-row v-for="(method, methodIdx) in contractWriteMethods" :key="methodIdx" class="pb-4">
                                 <v-col cols="5">
-                                    <Contract-Write-Method :contract="contract" :method="method" :options="{...callOptions}" />
+                                    <Contract-Write-Method :contract="contract" :signature="method[0]" :method="method[1]" :options="{ ...callOptions, from: callOptions.from }" />
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -239,6 +244,7 @@ export default {
         FromWei
     },
     data: () => ({
+        contractInterface: null,
         selectedTransaction: {},
         balance: 0,
         contract: {
@@ -250,7 +256,7 @@ export default {
         accounts: [],
         callOptions: {
             from: null,
-            gasLimit: null,
+            gasLimit: '100000',
             gasPrice: null
         },
         storage: {},
@@ -264,9 +270,11 @@ export default {
     }),
     created: function() {
         this.server.getAccountBalance(this.hash).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
+
         this.callOptions.from = this.currentWorkspace.settings.defaultAccount;
         this.callOptions.gasLimit = this.currentWorkspace.settings.gasLimit;
         this.callOptions.gasPrice = this.currentWorkspace.settings.gasPrice;
+
         if (!this.tab) {
             this.tab = 'transactions';
         }
@@ -354,6 +362,9 @@ export default {
 
                 this.contract = doc.data();
 
+                if (this.contract.abi)
+                    this.contractInterface = new ethers.utils.Interface(this.contract.abi);
+
                 this.db.contractStorage(hash).once('value', (snapshot) => {
                     if (snapshot.val()) {
                         this.contract.artifact = snapshot.val().artifact;
@@ -411,16 +422,18 @@ export default {
             return [...this.transactionsTo, ...this.transactionsFrom];
         },
         contractReadMethods: function() {
-            if (!this.contract.abi) {
+            if (!this.contractInterface) {
                 return [];
             }
-            return this.contract.abi.filter(member => member.type == 'function' && ['view', 'pure'].indexOf(member.stateMutability) > -1);
+            return Object.entries(this.contractInterface.functions)
+                .filter(([, member]) => member.type == 'function' && ['view', 'pure'].indexOf(member.stateMutability) > -1);
         },
         contractWriteMethods: function() {
-            if (!this.contract.abi) {
+            if (!this.contractInterface) {
                 return [];
             }
-            return this.contract.abi.filter(member => member.type == 'function' && ['view', 'pure'].indexOf(member.stateMutability) == -1);
+            return Object.entries(this.contractInterface.functions)
+                .filter(([, member]) => member.type == 'function' && ['view', 'pure'].indexOf(member.stateMutability) == -1);
         }
     }
 }
