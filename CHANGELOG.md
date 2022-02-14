@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.5] - 2022-02-14
+### Fixed
+- All parameters were displayed in all inputs on the contract interaction page
+
 ## [1.3.4] - 2022-02-14
 ### Changed
 - Better tuples handling on the contract interaction page, they can be entered like this `(param1,param2)`, function signatures on this page are also more precise and will display names when applicable
