@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.4] - 2022-02-14
+### Changed
+- Better tuples handling on the contract interaction page, they can be entered like this `(param1,param2)`, function signatures on this page are also more precise and will display names when applicable
+- Happy Valentine's day (even to those spending it releasing updates & bug fixes) 💝
+
 ## [1.3.3] - 2022-02-05
 ### Changed
 - Wording on onboarding modal, to make the process clearer, especially around logging in client side.
