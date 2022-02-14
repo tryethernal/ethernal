@@ -9,7 +9,7 @@ exports[`ContractReadMethod.vue Should display a generic error message if the fu
         <fieldset aria-hidden="true">
           <legend style="width: 0px;"><span>​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-55" class="v-label theme--light" style="left: 0px; position: absolute;">&lt;input&gt; (address)</label><input id="input-55" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-55" class="v-label theme--light" style="left: 0px; position: absolute;">address</label><input id="input-55" type="text"></div>
       </div>
     </div>
   </div>
@@ -30,7 +30,7 @@ exports[`ContractReadMethod.vue Should display the UI to interact with a method 
         <fieldset aria-hidden="true">
           <legend style="width: 0px;"><span>​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-4" class="v-label theme--light" style="left: 0px; position: absolute;">&lt;input&gt; (address)</label><input id="input-4" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-4" class="v-label theme--light" style="left: 0px; position: absolute;">address</label><input id="input-4" type="text"></div>
       </div>
     </div>
   </div>
@@ -51,7 +51,7 @@ exports[`ContractReadMethod.vue Should display the error message if one is retur
         <fieldset aria-hidden="true">
           <legend style="width: 0px;"><span>​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-48" class="v-label theme--light" style="left: 0px; position: absolute;">&lt;input&gt; (address)</label><input id="input-48" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-48" class="v-label theme--light" style="left: 0px; position: absolute;">address</label><input id="input-48" type="text"></div>
       </div>
     </div>
   </div>
@@ -128,7 +128,7 @@ exports[`ContractReadMethod.vue Should return the result when interacting with t
         <fieldset aria-hidden="true">
           <legend style="width: 0px;"><span>​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-18" class="v-label theme--light" style="left: 0px; position: absolute;">&lt;input&gt; (address)</label><input id="input-18" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-18" class="v-label theme--light" style="left: 0px; position: absolute;">address</label><input id="input-18" type="text"></div>
       </div>
     </div>
   </div>
@@ -157,7 +157,7 @@ exports[`ContractReadMethod.vue Should work when input is any array 1`] = `
         <fieldset aria-hidden="true">
           <legend style="width: -24px;"><span>​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-10" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">values (uint256[])</label><input id="input-10" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-10" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">uint256[] values</label><input id="input-10" type="text"></div>
       </div>
     </div>
   </div>

@@ -8,7 +8,7 @@
             class="py-1"
             v-model="params[inputIdx]"
             v-for="(input, inputIdx) in method.inputs" :key="inputIdx"
-            :label="`${input.name || '<input>'}  (${input.type})`">
+            :label="inputSignature">
         </v-text-field>
         <div class="grey lighten-3 pa-2 mt-1" v-show="result.txHash || result.message">
             <div v-show="result.message">{{ result.message }}</div>
@@ -51,7 +51,7 @@ import { formatErrorFragment } from '../lib/abi';
 
 export default {
     name: 'ContractWriteMethod',
-    props: ['method', 'contract', 'options'],
+    props: ['method', 'contract', 'options', 'signature'],
     data: () => ({
         valueInEth: 0,
         params: {},
@@ -87,8 +87,7 @@ export default {
                 for (let i = 0; i < this.method.inputs.length; i++) {
                     processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
                 }
-
-                this.server.callContractWriteMethod(this.contract, this.methodSignature, options, processedParams, this.currentWorkspace.rpcServer, shouldTrace)
+                this.server.callContractWriteMethod(this.contract, this.signature, options, processedParams, this.currentWorkspace.rpcServer, shouldTrace)
                     .then(({ pendingTx, trace }) => {
                         if (trace) {
                             this.server.syncTrace(this.currentWorkspace.name, pendingTx.hash, trace);
@@ -174,9 +173,29 @@ export default {
         value: function() {
             return this.web3.utils.toWei(this.valueInEth.toString(), 'ether');
         },
-        methodSignature: function() {
-            const params = this.method.inputs.map(input => input.type);
-            return `${this.method.name}(${params.join(',')})`;
+        inputSignature: function() {
+            const res = [];
+            const inputs = this.method.inputs;
+            for (var i = 0; i < inputs.length; i++) {
+                if (inputs[i].type == 'tuple') {
+                    res.push(`${inputs[i].name ? inputs[i].name : 'tuple'}(${inputs[i].components.map((cpt) => `${cpt.type}${cpt.name ? ` ${cpt.name}` : ''}`).join(', ')})`);
+                }
+                else
+                    res.push(`${inputs[i].type}${inputs[i].name ? ` ${inputs[i].name}` : ''}`);
+            }
+            return res.join(', ');
+        },
+        outputSignature: function() {
+            const res = [];
+            const outputs = this.method.outputs;
+            for (var i = 0; i < outputs.length; i++) {
+                if (outputs[i].type == 'tuple') {
+                    res.push(`${outputs[i].name ? outputs[i].name : 'tuple'}(${outputs[i].components.map((cpt) => `${cpt.type}${cpt.name ? ` ${cpt.name}` : ''}`).join(', ')})`);
+                }
+                else
+                    res.push(`${outputs[i].type}${outputs[i].name ? `: ${outputs[i].name}` : ''}`);
+            }
+            return res.join(', ');
         }
     }
 }
