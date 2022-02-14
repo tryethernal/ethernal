@@ -9,7 +9,7 @@
             v-model="params[inputIdx]"
             v-for="(input, inputIdx) in method.inputs"
             :key="inputIdx"
-            :label="inputSignature">
+            :label="inputSignature(input)">
         </v-text-field>
         <div>=> {{ outputSignature }}</div>
         <div id="call" class="grey lighten-3 pa-2" v-show="results.length">
@@ -79,24 +79,19 @@ export default {
                 })
             }
             return processed;
+        },
+        inputSignature: function(input) {
+            if (input.type == 'tuple') {
+                return `${input.name ? input.name : 'tuple'}(${input.components.map((cpt) => `${cpt.type}${cpt.name ? ` ${cpt.name}` : ''}`).join(', ')})`;
+            }
+            else
+                return `${input.type}${input.name ? ` ${input.name}` : ''}`;
         }
     },
     computed: {
         ...mapGetters([
             'currentWorkspace'
         ]),
-        inputSignature: function() {
-            const res = [];
-            const inputs = this.method.inputs;
-            for (var i = 0; i < inputs.length; i++) {
-                if (inputs[i].type == 'tuple') {
-                    res.push(`${inputs[i].name ? inputs[i].name : 'tuple'}(${inputs[i].components.map((cpt) => `${cpt.type}${cpt.name ? ` ${cpt.name}` : ''}`).join(', ')})`);
-                }
-                else
-                    res.push(`${inputs[i].type}${inputs[i].name ? ` ${inputs[i].name}` : ''}`);
-            }
-            return res.join(', ');
-        },
         outputSignature: function() {
             const res = [];
             const outputs = this.method.outputs;
