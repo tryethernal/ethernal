@@ -30,10 +30,15 @@ export default {
     props: ['step'],
     data: () => ({
         transactionDescription: null,
-        jsonInterface: null
+        jsonInterface: null,
+        contract: null
     }),
     methods: {
-        zeroXify: function(input) { return input.startsWith('0x') ? input : `0x${input}` }
+        zeroXify: function(input) { return input.startsWith('0x') ? input : `0x${input}` },
+        decodeInput: function() {
+            this.jsonInterface = new ethers.utils.Interface(this.contract.abi);
+            this.transactionDescription = this.jsonInterface.parseTransaction({ data: this.zeroXify(this.step.input) });
+        }
     },
     watch: {
         'step.contract.abi': {
@@ -41,8 +46,11 @@ export default {
             handler() {
                 if (this.step.input && this.step.contract.abi) {
                     try {
-                        this.jsonInterface = new ethers.utils.Interface(this.step.contract.abi);
-                        this.transactionDescription = this.jsonInterface.parseTransaction({ data: this.zeroXify(this.step.input) });
+                        this.contract = this.step.contract;
+                        if (this.contract.proxy)
+                            this.$bind('contract', this.db.collection('contracts').doc(this.contract.proxy)).then(this.decodeInput);
+                        else
+                            this.decodeInput();
                     } catch(_error) {
                         console.log(_error)
                         console.log(this.step);
