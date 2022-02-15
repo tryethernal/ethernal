@@ -21,7 +21,7 @@ module.exports = {
             if (paymentIntentId) {
                 const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
-                const subscription = await stripe.subscriptions.update(subscriptionId, {
+                subscription = await stripe.subscriptions.update(subscriptionId, {
                     default_payment_method: paymentIntent.payment_method
                 });
             }
