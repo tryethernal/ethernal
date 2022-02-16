@@ -32,7 +32,11 @@ const store = new Vuex.Store({
                 gas: null
             },
         },
-        connected: false
+        connected: false,
+        stats: {
+            transactionCount: 0,
+            blockCount: 0
+        }
     },
     mutations: {
         SET_USER(state, data) {
@@ -52,9 +56,21 @@ const store = new Vuex.Store({
         },
         SET_ONBOARDED_STATUS(state, status) {
             state.user.onboarded = status;
+        },
+        SET_TRANSACTION_COUNT(state, count) {
+            state.stats.transactionCount = count;
+        },
+        SET_BLOCK_COUNT(state, count) {
+            state.stats.blockCount = count
         }
     },
     actions: {
+        updateTransactionCount({ commit }, count) {
+            commit('SET_TRANSACTION_COUNT', count);
+        },
+        updateBlockCount({ commit }, count) {
+            commit('SET_BLOCK_COUNT', count);
+        },
         updateUser({ commit }, user) {
             if (user) {
                 commit('SET_USER', { uid: user.uid, email: user.email, loggedIn: true });
@@ -85,6 +101,8 @@ const store = new Vuex.Store({
         }
     },
     getters: {
+        transactionCount: state => state.stats.transactionCount,
+        blockCount: state => state.stats.blockCount,
         user: state => {
             return { ...state.user, plan: state.user.plan || 'free' };
         },

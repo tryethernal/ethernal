@@ -40,6 +40,36 @@ export const dbPlugin = {
                     .doc(currentWorkspace)
                     .collection('contracts').onSnapshot(cb);
             },
+            onNewTransactionCount(cb) {
+                var currentWorkspace = store.getters.currentWorkspace.name;
+                if (!currentUser() || !currentWorkspace) return;
+                return _db.collection('users')
+                    .doc(currentUser().uid)
+                    .collection('workspaces')
+                    .doc(currentWorkspace)
+                    .collection('stats/transactions/counters').onSnapshot((doc) => {
+                        let count = 0;
+                        if (!doc.empty) {
+                            doc.forEach((shard) => count += shard.data().value)
+                        }
+                        cb(count);
+                    });
+            },
+            onNewBlockCount(cb) {
+                var currentWorkspace = store.getters.currentWorkspace.name;
+                if (!currentUser() || !currentWorkspace) return;
+                return _db.collection('users')
+                    .doc(currentUser().uid)
+                    .collection('workspaces')
+                    .doc(currentWorkspace)
+                    .collection('stats/blocks/counters').onSnapshot((doc) => {
+                        let count = 0;
+                        if (!doc.empty) {
+                            doc.forEach((shard) => count += shard.data().value)
+                        }
+                        cb(count);
+                    });
+            },
             contractStorage(contractAddress) {
                 var currentWorkspace = store.getters.currentWorkspace.name;
                 if (!currentUser() || !currentWorkspace) return;
