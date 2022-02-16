@@ -38,17 +38,9 @@
                             <Import-Artifact-Modal ref="importArtifactModal" />
                             <v-card-text v-if="contract.name">
                                 Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded. (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)
-                                <div v-if="Object.keys(contract.dependencies).length" class="mb-1 mt-2">
-                                    <h5>This contract has dependencies:</h5>
-                                </div>
-
-                                <div v-for="(dep, key, idx) in contract.dependencies" :key="idx" class="mb-2">
-                                    <div v-if="!dep.artifact">
-                                        Upload artifact for contract <b>{{ dep.name }}</b>
-                                    </div>
-                                    <div v-else>
-                                        Artifact for contract <b>{{ key }}</b> has been uploaded.
-                                    </div>
+                                <div v-if="contract.dependencies.length" class="mb-1 mt-2">
+                                    <h5>Dependencies:</h5>
+                                    {{ contract.dependencies.join(', ') }}
                                 </div>
                             </v-card-text>
                             <v-card-text v-else>
@@ -369,15 +361,7 @@ export default {
                     if (snapshot.val()) {
                         this.contract.artifact = snapshot.val().artifact;
                         var dependencies = snapshot.val().dependencies;
-                        var formattedDependencies = {};
-                        if (dependencies) {
-                            Object.entries(dependencies).map((dep) => {
-                                formattedDependencies[dep[0]] = {
-                                    artifact: dep[1]
-                                }
-                            });
-                        }
-                        this.contract = { ...this.contract, dependencies: formattedDependencies, watchedPaths: this.contract.watchedPaths };
+                        this.contract = { ...this.contract, dependencies: Object.keys(dependencies), watchedPaths: this.contract.watchedPaths };
                         this.decodeContract();
                     }
                     else {
