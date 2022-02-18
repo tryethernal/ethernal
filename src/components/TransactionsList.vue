@@ -7,6 +7,9 @@
         :sort-desc="true"
         :headers="headers"
         :server-items-length="total"
+        :footer-props="{
+            itemsPerPageOptions: [10, 25, 100]
+        }"
         item-key="hash"
         @update:options="onPagination">
         <template v-slot:no-data>

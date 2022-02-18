@@ -5,8 +5,7 @@ export const getPaginatedQuery = function(collection, items, currentOptions, new
     let query;
     const sortDirection = newOptions.sortDesc[0] === false ? 'asc' : 'desc';
     const sortByField = newOptions.sortBy[0] || currentOptions.sortBy[0];
-
-    if (currentOptions.sortDesc[0] != newOptions.sortDesc[0])
+    if (currentOptions.sortDesc[0] != newOptions.sortDesc[0] || !items.length)
         query = collection
             .orderBy(sortByField, sortDirection)
             .limit(newOptions.itemsPerPage);
@@ -18,12 +17,12 @@ export const getPaginatedQuery = function(collection, items, currentOptions, new
     else if (newOptions.page < currentOptions.page)
         query = collection
             .orderBy(sortByField, sortDirection)
-            .endBefore(items[items.length - 1][sortByField])
-            .limit(newOptions.itemsPerPage);
+            .endBefore(items[0][sortByField])
+            .limitToLast(newOptions.itemsPerPage);
     else
         query = collection
             .orderBy(sortByField, sortDirection)
-            .startAt(items[0][newOptions])
+            .startAt(items[0][sortByField])
             .limit(newOptions.itemsPerPage);
 
     return query;

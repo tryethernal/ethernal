@@ -42,7 +42,7 @@ export default {
                 this.currentOptions,
                 options
             );
-            this.$bind('transactions', query).then(() => this.loading = false);
+            this.$bind('transactions', query, { reset: false }).then(() => this.loading = false);
             this.currentOptions = options;
         }
     },
