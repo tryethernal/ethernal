@@ -6,6 +6,15 @@ export default {
         const _database = firebase.database();
 
         return {
+            onNewBlockCount: function(cb) {
+                cb(2);
+            },
+            onNewAddressTransactionCount: function(address, cb) {
+                cb(2);
+            },
+            onNewTransactionCount: function(cb) {
+                cb(2);
+            },
             tokens: () => {
                 return _firestore.collection('users')
                     .doc('123')

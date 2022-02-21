@@ -40,61 +40,63 @@ exports[`Address.vue Should display extra tabs for contracts addresses 1`] = `
       <div class="v-window__container">
         <transition-stub name="v-window-x-transition">
           <div class="v-window-item v-window-item--active" id="transactions">
-            <div class="v-data-table v-data-table--has-bottom theme--light">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <colgroup>
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                  </colgroup>
-                  <thead class="v-data-table-header">
-                    <tr>
-                      <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Method: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Method</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to remove sorting." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Fee: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Fee</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="v-data-table__empty-wrapper">
-                      <td colspan="8">
-                        No transactions found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="v-data-footer">
-                <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-148" class="v-input__slot">
-                        <div class="v-select__slot">
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-148" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+            <div class="container container--fluid">
+              <div class="v-data-table v-data-table--has-bottom theme--light">
+                <div class="v-data-table__wrapper">
+                  <table>
+                    <colgroup>
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                    </colgroup>
+                    <thead class="v-data-table-header">
+                      <tr>
+                        <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
+                        <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="v-data-table__empty-wrapper">
+                        <td colspan="8">
+                          No transactions found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="v-data-footer">
+                  <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
+                      <div class="v-input__control">
+                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-145" class="v-input__slot">
+                          <div class="v-select__slot">
+                            <div class="v-select__selections">
+                              <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-145" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                            </div>
+                            <div class="v-input__append-inner">
+                              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                            </div><input type="hidden" value="10">
                           </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="10">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
+                          <div class="v-menu">
+                            <!---->
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
+                  <div class="v-data-footer__pagination">1-0 of 2</div>
+                  <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
+                  <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
                 </div>
-                <div class="v-data-footer__pagination">–</div>
-                <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-                <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
               </div>
             </div>
           </div>
@@ -158,61 +160,63 @@ exports[`Address.vue Should display the contract interaction interface under the
       <div class="v-window__container">
         <transition-stub name="v-window-x-reverse-transition">
           <div class="v-window-item" id="transactions" style="display: none;">
-            <div class="v-data-table v-data-table--has-bottom theme--light">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <colgroup>
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                  </colgroup>
-                  <thead class="v-data-table-header">
-                    <tr>
-                      <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Method: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Method</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to remove sorting." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Fee: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Fee</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="v-data-table__empty-wrapper">
-                      <td colspan="8">
-                        No transactions found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="v-data-footer">
-                <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-197" class="v-input__slot">
-                        <div class="v-select__slot">
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-197" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+            <div class="container container--fluid">
+              <div class="v-data-table v-data-table--has-bottom theme--light">
+                <div class="v-data-table__wrapper">
+                  <table>
+                    <colgroup>
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                    </colgroup>
+                    <thead class="v-data-table-header">
+                      <tr>
+                        <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
+                        <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="v-data-table__empty-wrapper">
+                        <td colspan="8">
+                          No transactions found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="v-data-footer">
+                  <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
+                      <div class="v-input__control">
+                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-193" class="v-input__slot">
+                          <div class="v-select__slot">
+                            <div class="v-select__selections">
+                              <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-193" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                            </div>
+                            <div class="v-input__append-inner">
+                              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                            </div><input type="hidden" value="10">
                           </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="10">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
+                          <div class="v-menu">
+                            <!---->
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
+                  <div class="v-data-footer__pagination">1-0 of 2</div>
+                  <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
+                  <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
                 </div>
-                <div class="v-data-footer__pagination">–</div>
-                <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-                <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
               </div>
             </div>
           </div>
@@ -245,12 +249,12 @@ exports[`Address.vue Should display the contract interaction interface under the
                   <div class="col col-5">
                     <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
                       <div class="v-input__control">
-                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-220" class="v-input__slot">
+                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-216" class="v-input__slot">
                           <fieldset aria-hidden="true">
                             <legend style="width: 0px;"><span>​</span></legend>
                           </fieldset>
-                          <div class="v-select__slot"><label for="input-220" class="v-label theme--light" style="left: 0px; position: absolute;">Select from address</label>
-                            <div class="v-select__selections"><input id="input-220" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                          <div class="v-select__slot"><label for="input-216" class="v-label theme--light" style="left: 0px; position: absolute;">Select from address</label>
+                            <div class="v-select__selections"><input id="input-216" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
                             <div class="v-input__append-inner">
                               <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
                             </div><input type="hidden">
@@ -272,7 +276,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                           <fieldset aria-hidden="true">
                             <legend style="width: 0px;"><span>​</span></legend>
                           </fieldset>
-                          <div class="v-text-field__slot"><label for="input-225" class="v-label theme--light" style="left: 0px; position: absolute;">Gas Price (wei)</label><input id="input-225" type="number"></div>
+                          <div class="v-text-field__slot"><label for="input-221" class="v-label theme--light" style="left: 0px; position: absolute;">Gas Price (wei)</label><input id="input-221" type="number"></div>
                         </div>
                         <div class="v-text-field__details">
                           <div class="v-messages theme--light">
@@ -287,7 +291,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                           <fieldset aria-hidden="true">
                             <legend style="width: 0px;"><span>​</span></legend>
                           </fieldset>
-                          <div class="v-text-field__slot"><label for="input-228" class="v-label theme--light" style="left: 0px; position: absolute;">Maximum Gas</label><input id="input-228" type="number"></div>
+                          <div class="v-text-field__slot"><label for="input-224" class="v-label theme--light" style="left: 0px; position: absolute;">Maximum Gas</label><input id="input-224" type="number"></div>
                         </div>
                       </div>
                     </div>
@@ -334,7 +338,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-235" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-235" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-231" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-231" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -356,7 +360,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-238" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-238" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-234" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-234" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -406,7 +410,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-246" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-246" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-242" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-242" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -424,7 +428,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-249" class="v-label theme--light" style="left: 0px; position: absolute;">address newOwner</label><input id="input-249" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-245" class="v-label theme--light" style="left: 0px; position: absolute;">address newOwner</label><input id="input-245" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -455,7 +459,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-254" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-254" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-250" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-250" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -473,7 +477,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-257" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-257" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-253" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-253" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -483,7 +487,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-258" class="v-label theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input id="input-258" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-254" class="v-label theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input id="input-254" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -514,7 +518,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-263" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-263" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-259" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-259" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -532,7 +536,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-266" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-266" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-262" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-262" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -563,7 +567,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-271" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-271" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-267" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-267" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -602,7 +606,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-278" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-278" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-274" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-274" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -662,105 +666,107 @@ exports[`Address.vue Should show the transactions for this address 1`] = `
       <div class="v-window__container">
         <transition-stub name="v-window-x-transition">
           <div class="v-window-item v-window-item--active" id="transactions">
-            <div class="v-data-table v-data-table--has-bottom theme--light">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <colgroup>
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                  </colgroup>
-                  <thead class="v-data-table-header">
-                    <tr>
-                      <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Method: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Method</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to remove sorting." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Fee: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Fee</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="">
-                      <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1" class="">0x0abc1678...94ef1</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1" value="0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small primary lighten-1" style="display: none;"><span class="v-chip__content"></span></span></span></td>
-                      <td class="text-start"><a href="#/block/1" class="">1</a></td>
-                      <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/21 12:07:42 AM
-                </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
-                      <td class="text-start">
-                        <!----> <span><a href="#/address/0x2" class="">0x2...0x2</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x2" value="0x2"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><a href="#/address/123" class="">123...123</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-123" value="123"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start">
-                        0 Ether
-                      </td>
-                      <td class="text-start"></td>
-                    </tr>
-                    <tr class="">
-                      <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" class="">0x06003448...94ef0</a> <span>
+            <div class="container container--fluid">
+              <div class="v-data-table v-data-table--has-bottom theme--light">
+                <div class="v-data-table__wrapper">
+                  <table>
+                    <colgroup>
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                    </colgroup>
+                    <thead class="v-data-table-header">
+                      <tr>
+                        <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
+                        <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="">
+                        <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" class="">0x06003448...94ef0</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" value="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small primary lighten-1" style="display: none;"><span class="v-chip__content"></span></span></span></td>
-                      <td class="text-start"><a href="#/block/1" class="">1</a></td>
-                      <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                          <!----></span>
+                        </td>
+                        <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small primary lighten-1" style="display: none;"><span class="v-chip__content"></span></span></span></td>
+                        <td class="text-start"><a href="#/block/1" class="">1</a></td>
+                        <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
                     05/21 12:07:42 AM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
-                      <td class="text-start">
-                        <!----> <span><a href="#/address/0x1" class="">0x1...0x1</a> <span>
+                        <td class="text-start">
+                          <!----> <span><a href="#/address/0x1" class="">0x1...0x1</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1" value="0x1"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><a href="#/address/123" class="">123...123</a> <span>
+                          <!----></span>
+                        </td>
+                        <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><a href="#/address/123" class="">123...123</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-123" value="123"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start">
-                        0 Ether
-                      </td>
-                      <td class="text-start"></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="v-data-footer">
-                <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-74" class="v-input__slot">
-                        <div class="v-select__slot">
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-74" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                          <!----></span>
+                        </td>
+                        <td class="text-start">
+                          0 Ether
+                        </td>
+                        <td class="text-start"></td>
+                      </tr>
+                      <tr class="">
+                        <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1" class="">0x0abc1678...94ef1</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1" value="0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1"></span>
+                          <!----></span>
+                        </td>
+                        <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small primary lighten-1" style="display: none;"><span class="v-chip__content"></span></span></span></td>
+                        <td class="text-start"><a href="#/block/1" class="">1</a></td>
+                        <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                    05/21 12:07:42 AM
+                </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
+                        <td class="text-start">
+                          <!----> <span><a href="#/address/0x2" class="">0x2...0x2</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x2" value="0x2"></span>
+                          <!----></span>
+                        </td>
+                        <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><a href="#/address/123" class="">123...123</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-123" value="123"></span>
+                          <!----></span>
+                        </td>
+                        <td class="text-start">
+                          0 Ether
+                        </td>
+                        <td class="text-start"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="v-data-footer">
+                  <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
+                      <div class="v-input__control">
+                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-72" class="v-input__slot">
+                          <div class="v-select__slot">
+                            <div class="v-select__selections">
+                              <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-72" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                            </div>
+                            <div class="v-input__append-inner">
+                              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                            </div><input type="hidden" value="10">
                           </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="10">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
+                          <div class="v-menu">
+                            <!---->
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
+                  <div class="v-data-footer__pagination">1-2 of 2</div>
+                  <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
+                  <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
                 </div>
-                <div class="v-data-footer__pagination">1-2 of 2</div>
-                <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-                <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
               </div>
             </div>
           </div>
@@ -820,76 +826,78 @@ exports[`Address.vue Should sync the balance when loaded 1`] = `
       <div class="v-window__container">
         <transition-stub name="">
           <div class="v-window-item v-window-item--active" id="transactions">
-            <div class="v-data-table v-data-table--has-bottom theme--light">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <colgroup>
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                  </colgroup>
-                  <thead class="v-data-table-header">
-                    <tr>
-                      <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Method: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Method</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to remove sorting." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Fee: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Fee</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                    </tr>
-                  </thead>
-                  <thead>
-                    <tr class="v-data-table__progress">
-                      <th colspan="8" class="column">
-                        <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-linear v-progress-linear--absolute theme--light" style="height: 4px;">
-                          <div class="v-progress-linear__background primary" style="opacity: 0.3; left: 0%; width: 100%;"></div>
-                          <div class="v-progress-linear__buffer"></div>
-                          <transition-stub name="fade-transition">
-                            <div class="v-progress-linear__indeterminate v-progress-linear__indeterminate--active">
-                              <div class="v-progress-linear__indeterminate long primary"></div>
-                              <div class="v-progress-linear__indeterminate short primary"></div>
-                            </div>
-                          </transition-stub>
-                        </div>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="v-data-table__empty-wrapper">
-                      <td colspan="8">Loading items...</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="v-data-footer">
-                <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-30" class="v-input__slot">
-                        <div class="v-select__slot">
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-30" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+            <div class="container container--fluid">
+              <div class="v-data-table v-data-table--has-bottom theme--light">
+                <div class="v-data-table__wrapper">
+                  <table>
+                    <colgroup>
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                      <col class="">
+                    </colgroup>
+                    <thead class="v-data-table-header">
+                      <tr>
+                        <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
+                        <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                        <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
+                      </tr>
+                    </thead>
+                    <thead>
+                      <tr class="v-data-table__progress">
+                        <th colspan="8" class="column">
+                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-linear v-progress-linear--absolute theme--light" style="height: 4px;">
+                            <div class="v-progress-linear__background primary" style="opacity: 0.3; left: 0%; width: 100%;"></div>
+                            <div class="v-progress-linear__buffer"></div>
+                            <transition-stub name="fade-transition">
+                              <div class="v-progress-linear__indeterminate v-progress-linear__indeterminate--active">
+                                <div class="v-progress-linear__indeterminate long primary"></div>
+                                <div class="v-progress-linear__indeterminate short primary"></div>
+                              </div>
+                            </transition-stub>
                           </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="10">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="v-data-table__empty-wrapper">
+                        <td colspan="8">Loading items...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="v-data-footer">
+                  <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
+                      <div class="v-input__control">
+                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-29" class="v-input__slot">
+                          <div class="v-select__slot">
+                            <div class="v-select__selections">
+                              <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-29" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                            </div>
+                            <div class="v-input__append-inner">
+                              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                            </div><input type="hidden" value="10">
+                          </div>
+                          <div class="v-menu">
+                            <!---->
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
+                  <div class="v-data-footer__pagination">1-0 of 2</div>
+                  <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
+                  <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
                 </div>
-                <div class="v-data-footer__pagination">–</div>
-                <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-                <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
               </div>
             </div>
           </div>

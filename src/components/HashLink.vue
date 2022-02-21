@@ -63,7 +63,7 @@ export default {
         }
     },
     methods: {
-        link: function() { return `/${[this.type, this.hash].join('/')}?tab=transactions`; },
+        link: function() { return `/${[this.type, this.hash].join('/')}`; },
         copyHash: function() {
             const webhookField = document.querySelector(`#copyElement-${this.hash}`);
             webhookField.setAttribute('type', 'text');

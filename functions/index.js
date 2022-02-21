@@ -163,6 +163,7 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).ht
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
 
     try {
+        console.log(data)
         if (!data.workspace || !data.txHash || !data.steps) {
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[syncTrace] Missing parameter.')
@@ -255,20 +256,20 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
             timestamp: data.block.timestamp
         });
     
-        promises.push(storeTransaction(context.auth.uid, data.workspace, txSynced));
-        promises.push(incrementAddressTransactionCount(context.auth.uid, data.workspace, txSynced.from, 1)),
-        promises.push(incrementAddressTransactionCount(context.auth.uid, data.workspace, txSynced.to, 1));
+        await storeTransaction(context.auth.uid, data.workspace, txSynced);
+        await incrementAddressTransactionCount(context.auth.uid, data.workspace, txSynced.from, 1);
+        if (txSynced.to)
+            await incrementAddressTransactionCount(context.auth.uid, data.workspace, txSynced.to, 1);
 
         if (!txSynced.to && sTransactionReceipt) {
             const canSync = await canUserSyncContract(context.auth.uid, data.workspace);
             if (canSync)
-                promises.push(storeContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress, {
+                await storeContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress, {
                     address: sTransactionReceipt.contractAddress,
                     timestamp: data.block.timestamp
-                }));
+                });
         }
 
-        await Promise.all(promises);
         await processTransactions(context.auth.uid, data.workspace, [txSynced]);
        
        return { txHash: txSynced.hash };

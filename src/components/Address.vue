@@ -24,7 +24,6 @@
 
             <v-tab-item value="transactions">
                 <Address-Transactions-List :address="hash" />
-                <!-- <Transactions-List :transactions="allTransactions" :currentAddress="hash" :loading="loadingTx" /> -->
             </v-tab-item>
         </v-tabs>
 
