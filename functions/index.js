@@ -163,7 +163,6 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).ht
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
 
     try {
-        console.log(data)
         if (!data.workspace || !data.txHash || !data.steps) {
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[syncTrace] Missing parameter.')
