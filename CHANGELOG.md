@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.1] - 2022-02-22
+### Changed
+- Onboarding text when there are issues connecting on remote servers
+
 ## [1.4.0] - 2022-02-22
 ### Changed
 - Pagination for blocks & transactions is now done server side
