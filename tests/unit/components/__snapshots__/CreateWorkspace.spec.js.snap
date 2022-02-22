@@ -248,7 +248,7 @@ exports[`CreateWorkspace.vue Should display a warning message if user has alread
 exports[`CreateWorkspace.vue Should display an error if it cannot connect to the chain 1`] = `
 <div class="v-card v-sheet theme--light elevation-0">
   <div class="v-card__text">
-    <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="">Can't connect to <b>http://127.0.0.1</b>. Please make sure hostname and ports are correct, and that a server is listening on those. If you still can't connect to a local server, check that your browser is not blocking requests to localhost (for Brave, you need to disable Shields).</div>
+    <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="">Can't connect to <b>http://127.0.0.1</b>. If you are connecting to a remote chain, make sure that you are using https or wss. If you can't connect to a local server, check that your browser is not blocking requests to localhost (for Brave, you need to disable Shields).</div>
     <div class="mb-2">
       <!---->
       <div role="alert" class="v-alert my-2 v-sheet theme--dark warning">
