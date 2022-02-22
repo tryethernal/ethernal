@@ -13,6 +13,12 @@ describe('Blocks.vue', () => {
     it('Should show the blocks list', async (done) => {
         const blocks = [
             {
+                number: '2',
+                gasUsed: '200000',
+                timestamp: '1621548470',
+                hash: '0x99c6edb3bb1124680a97661c1f5794d60617abb57bd1e611d81fc5b941f36d30'                
+            },
+            {
                 number: '1',
                 gasUsed: '100000',
                 timestamp: '1621548462',
@@ -27,12 +33,6 @@ describe('Blocks.vue', () => {
                         value: '0'
                     }
                 ]
-            },
-            {
-                number: '2',
-                gasUsed: '200000',
-                timestamp: '1621548470',
-                hash: '0x99c6edb3bb1124680a97661c1f5794d60617abb57bd1e611d81fc5b941f36d30'                
             }
         ];
 
