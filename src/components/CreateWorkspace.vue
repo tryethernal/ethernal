@@ -101,7 +101,7 @@ export default {
                 this.loading = false;
                 if (error.reason) {
                     if (error.reason.indexOf('Invalid JSON RPC response') > -1 || error.reason.indexOf('connection not open on send()') > -1) {
-                        return this.errorMessage = `Can't connect to <b>${rpcServer}</b>. Please make sure hostname and ports are correct, and that a server is listening on those. If you still can't connect to a local server, check that your browser is not blocking requests to localhost (for Brave, you need to disable Shields).`;
+                        return this.errorMessage = `Can't connect to <b>${rpcServer}</b>. If you are connecting to a remote chain, make sure that you are using https or wss. If you can't connect to a local server, check that your browser is not blocking requests to localhost (for Brave, you need to disable Shields).`;
                     }
                     return this.errorMessage = error.reason;
                 }
