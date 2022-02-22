@@ -2,10 +2,16 @@
     <v-data-table
         :loading="loading"
         :items="transactions"
-        :sort-by="'blockNumber'"
+        :sort-by="sortBy"
+        :must-sort="true"
         :sort-desc="true"
         :headers="headers"
-        item-key="hash">
+        :server-items-length="total"
+        :footer-props="{
+            itemsPerPageOptions: [10, 25, 100]
+        }"
+        item-key="hash"
+        @update:options="onPagination">
         <template v-slot:no-data>
             No transactions found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a>
         </template>
@@ -79,7 +85,7 @@ import HashLink from './HashLink.vue';
 
 export default {
     name: 'TransactionsList',
-    props: ['transactions', 'currentAddress', 'loading'],
+    props: ['transactions', 'currentAddress', 'loading', 'total', 'sortBy'],
     components: {
         HashLink
     },
@@ -96,6 +102,7 @@ export default {
             {
                 text: 'Method',
                 value: 'method',
+                sortable: false
             },
             {
                 text: 'Block',
@@ -119,12 +126,16 @@ export default {
             },
             {
                 text: 'Fee',
-                value: 'fee'
+                value: 'fee',
+                sortable: false
             }
-        ]
+        ],
     }),
     methods: {
         moment: moment,
+        onPagination: function(pagination) {
+            this.$emit('pagination', pagination);
+        },
         getMethodName: function(transaction) {
             if (!transaction.methodDetails) return this.getSighash(transaction);
             return transaction.methodDetails.name ? transaction.methodDetails.name : this.getSighash(transaction);

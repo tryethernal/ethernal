@@ -6,6 +6,15 @@ export default {
         const _database = firebase.database();
 
         return {
+            onNewBlockCount: jest.fn((cb) => {
+                cb(2);
+            }),
+            onNewAddressTransactionCount: jest.fn((address, cb) => {
+                cb(2);
+            }),
+            onNewTransactionCount: jest.fn((cb) => {
+                cb(2);
+            }),
             tokens: () => {
                 return _firestore.collection('users')
                     .doc('123')

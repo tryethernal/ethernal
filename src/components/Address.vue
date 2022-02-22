@@ -23,7 +23,7 @@
             <v-tab id="tokenTab" href="#token" v-if="isTokenContract">Token</v-tab>
 
             <v-tab-item value="transactions">
-                <Transactions-List :transactions="allTransactions" :currentAddress="hash" :loading="loadingTx" />
+                <Address-Transactions-List :address="hash" />
             </v-tab-item>
         </v-tabs>
 
@@ -204,7 +204,6 @@ const ethers = require('ethers');
 
 import { mapGetters } from 'vuex';
 
-import TransactionsList from './TransactionsList';
 import StorageStructure from './StorageStructure';
 import TransactionPicker from './TransactionPicker';
 import TransactionData from './TransactionData';
@@ -212,6 +211,7 @@ import ContractReadMethod from './ContractReadMethod';
 import ContractWriteMethod from './ContractWriteMethod';
 import ImportArtifactModal from './ImportArtifactModal';
 import RemoveContractConfirmationModal from './RemoveContractConfirmationModal';
+import AddressTransactionsList from './AddressTransactionsList';
 import Token from './Token';
 import UpgradeLink from './UpgradeLink';
 
@@ -221,7 +221,6 @@ export default {
     name: 'Address',
     props: ['hash'],
     components: {
-        TransactionsList,
         StorageStructure,
         TransactionPicker,
         TransactionData,
@@ -230,7 +229,8 @@ export default {
         ImportArtifactModal,
         RemoveContractConfirmationModal,
         Token,
-        UpgradeLink
+        UpgradeLink,
+        AddressTransactionsList
     },
     filters: {
         FromWei

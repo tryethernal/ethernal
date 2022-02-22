@@ -18,41 +18,16 @@ exports[`Transactions.vue Should display the list 1`] = `
         <thead class="v-data-table-header">
           <tr>
             <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Method: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Method</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to remove sorting." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
+            <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Fee: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Fee</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
           </tr>
         </thead>
         <tbody>
-          <tr class="">
-            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" class="">0x06003448...94ef0</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" value="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0"></span>
-              <!----></span>
-            </td>
-            <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
-            <td class="text-start"><a href="#/block/1" class="">1</a></td>
-            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/21 12:07:42 AM
-                </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
-            <td class="text-start">
-              <!----> <span><a href="#/address/0x0" class="">0x0...0x0</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
-              <!----></span>
-            </td>
-            <td class="text-start">
-              <!----> <span><a href="#/address/Ox1" class="">Ox1...Ox1</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox1" value="Ox1"></span>
-              <!----></span>
-            </td>
-            <td class="text-start">
-              0 Ether
-            </td>
-            <td class="text-start"></td>
-          </tr>
           <tr class="">
             <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x1234" class="">0x1234...x1234</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1234" value="0x1234"></span>
@@ -78,16 +53,41 @@ exports[`Transactions.vue Should display the list 1`] = `
             </td>
             <td class="text-start"></td>
           </tr>
+          <tr class="">
+            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" class="">0x06003448...94ef0</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" value="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0"></span>
+              <!----></span>
+            </td>
+            <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
+            <td class="text-start"><a href="#/block/1" class="">1</a></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                    05/21 12:07:42 AM
+                </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
+            <td class="text-start">
+              <!----> <span><a href="#/address/0x0" class="">0x0...0x0</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
+              <!----></span>
+            </td>
+            <td class="text-start">
+              <!----> <span><a href="#/address/Ox1" class="">Ox1...Ox1</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox1" value="Ox1"></span>
+              <!----></span>
+            </td>
+            <td class="text-start">
+              0 Ether
+            </td>
+            <td class="text-start"></td>
+          </tr>
         </tbody>
       </table>
     </div>
     <div class="v-data-footer">
       <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
           <div class="v-input__control">
-            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-20" class="v-input__slot">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-18" class="v-input__slot">
               <div class="v-select__slot">
                 <div class="v-select__selections">
-                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-20" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-18" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                 </div>
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>

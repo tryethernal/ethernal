@@ -54,7 +54,10 @@ const {
     getWorkspaceByName,
     getUnprocessedContracts,
     canUserSyncContract,
-    isUserPremium
+    isUserPremium,
+    incrementBlockCount,
+    incrementTotalTransactionCount,
+    incrementAddressTransactionCount
 } = require('./lib/firebase');
 
 exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).https.onCall(async (data, context) => {
@@ -62,7 +65,7 @@ exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' 
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
 
     const rootPath = `users/${context.auth.uid}/workspaces/${data.workspace}`;
-    const paths = ['accounts', 'blocks', 'contracts', 'transactions'].map(collection => `${rootPath}/${collection}`);
+    const paths = ['accounts', 'blocks', 'contracts', 'transactions', 'stats'].map(collection => `${rootPath}/${collection}`);
 
     for (var i = 0; i < paths.length; i++) {
         await firebaseTools.firestore.delete(paths[i], {
@@ -89,6 +92,9 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
         var syncedBlock = stringifyBns(sanitize(block));
 
         await storeBlock(context.auth.uid, data.workspace, syncedBlock);
+        await incrementBlockCount(context.auth.uid, data.workspace, 1);
+        if (syncedBlock.transactions.length > 0)
+            await incrementTotalTransactionCount(context.auth.uid, data.workspace, syncedBlock.transactions.length);
         
         analytics.track(context.auth.uid, 'Block Sync');
         return { blockNumber: syncedBlock.number }
@@ -249,18 +255,20 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
             timestamp: data.block.timestamp
         });
     
-        promises.push(storeTransaction(context.auth.uid, data.workspace, txSynced));
+        await storeTransaction(context.auth.uid, data.workspace, txSynced);
+        await incrementAddressTransactionCount(context.auth.uid, data.workspace, txSynced.from, 1);
+        if (txSynced.to)
+            await incrementAddressTransactionCount(context.auth.uid, data.workspace, txSynced.to, 1);
 
         if (!txSynced.to && sTransactionReceipt) {
             const canSync = await canUserSyncContract(context.auth.uid, data.workspace);
             if (canSync)
-                promises.push(storeContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress, {
+                await storeContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress, {
                     address: sTransactionReceipt.contractAddress,
                     timestamp: data.block.timestamp
-                }));
+                });
         }
 
-        await Promise.all(promises);
         await processTransactions(context.auth.uid, data.workspace, [txSynced]);
        
        return { txHash: txSynced.hash };

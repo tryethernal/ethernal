@@ -356,6 +356,36 @@ const getContractTransactions = async (userId, workspace, contractAddress) => {
     return results;
 };
 
+const incrementBlockCount = async (userId, workspace, incr) => {
+    if (!userId || !workspace || !incr) throw '[incrementBlockCount] Missing parameter';
+
+    const shardId = Math.floor(Math.random() * 10);
+    return await _getWorkspace(userId, workspace)
+        .collection('stats/blocks/counters')
+        .doc(`shard-${shardId}`)
+        .set({ value: admin.firestore.FieldValue.increment(incr) }, { merge: true });
+};
+
+const incrementTotalTransactionCount = async (userId, workspace, incr) => {
+    if (!userId || !workspace || !incr) throw '[incrementBlockCount] Missing parameter';
+
+    const shardId = Math.floor(Math.random() * 10);
+    return await _getWorkspace(userId, workspace)
+        .collection('stats/transactions/counters')
+        .doc(`shard-${shardId}`)
+        .set({ value: admin.firestore.FieldValue.increment(incr) }, { merge: true });
+};
+
+const incrementAddressTransactionCount = async (userId, workspace, address, incr) => {
+    if (!userId || !workspace || !address || !incr) throw '[incrementBlockCount] Missing parameter';
+
+    const shardId = Math.floor(Math.random() * 10);
+    return await _getWorkspace(userId, workspace)
+        .collection(`stats/addresses/${address}/counters/shards`)
+        .doc(`shard-${shardId}`)
+        .set({ value: admin.firestore.FieldValue.increment(incr) }, { merge: true });
+};
+
 module.exports = {
     Timestamp: admin.firestore.Timestamp,
     firestore: _db,
@@ -395,5 +425,8 @@ module.exports = {
     canUserSyncContract: canUserSyncContract,
     isUserPremium: isUserPremium,
     getContractTransactions: getContractTransactions,
-    storeTransactionMethodDetails: storeTransactionMethodDetails
+    storeTransactionMethodDetails: storeTransactionMethodDetails,
+    incrementBlockCount: incrementBlockCount,
+    incrementTotalTransactionCount: incrementTotalTransactionCount,
+    incrementAddressTransactionCount: incrementAddressTransactionCount
 };

@@ -38,6 +38,8 @@ export default Vue.extend({
         this.server.getAccounts().then((data) => data.forEach(this.syncAccount));
         this.processContracts();
         this.db.onNewContract(this.processContracts);
+        this.db.onNewTransactionCount((count) => this.$store.dispatch('updateTransactionCount', count));
+        this.db.onNewBlockCount((count) => this.$store.dispatch('updateBlockCount', count));
     },
     methods: {
         syncAccount: function(account) {

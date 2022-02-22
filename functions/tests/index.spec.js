@@ -183,14 +183,15 @@ describe('syncBlock', () => {
         const wrapped = helper.test.wrap(index.syncBlock);
         const block = {
             number: '123',
-            value: null
+            value: null,
+            transactions: []
         };
         
         const result = await wrapped({ block: block, workspace: 'hardhat' }, auth);
 
         const blockRef = await helper.workspace.collection('blocks').doc('123').get();
         
-        expect(blockRef.data()).toEqual({ number: '123' });
+        expect(blockRef.data()).toEqual({ number: '123', transactions: [] });
         expect(result).toEqual({ blockNumber: '123' });
     });
 
