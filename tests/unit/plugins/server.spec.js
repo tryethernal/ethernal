@@ -191,7 +191,6 @@ describe('server', () => {
             rpcServer: 'http://localhost:8545',
             networkId: 1,
             settings: {
-                defaultAccount: '0x123',
                 gasLimit: '1000'
             }
         });
