@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.2] - 2022-02-23
+### Removed
+- Accounts are not fetched anymore on workspace creation. This was preventing from connecting to chain without the eth_accounts endpoint
+
 ## [1.4.1] - 2022-02-22
 ### Changed
 - Onboarding text when there are issues connecting on remote servers
