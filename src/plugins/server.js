@@ -150,7 +150,6 @@ const serverFunctions = {
             var networkId = await web3Rpc.eth.net.getId();
             var latestBlockNumber = await rpcProvider.getBlockNumber();
             var latestBlock = await rpcProvider.getBlock(latestBlockNumber);
-            var accounts = await rpcProvider.listAccounts();
             var gasLimit = latestBlock.gasLimit.toString();
 
             var workspace = {
@@ -160,9 +159,6 @@ const serverFunctions = {
                     gasLimit: gasLimit
                 }
             };
-
-            if (accounts.length)
-                workspace.settings.defaultAccount = accounts[0].toLowerCase();
 
             return workspace;
         } catch(error) {
