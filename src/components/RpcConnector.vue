@@ -35,9 +35,11 @@ export default Vue.extend({
         }
         this.page = this.$route.path;
         this.isFeedbackFishEnabled = !!process.env.VUE_APP_FEEDBACK_FISH_PID;
-        this.server.getAccounts().then((data) => data.forEach(this.syncAccount));
-        this.processContracts();
-        this.db.onNewContract(this.processContracts);
+        if (!this.isPublicExplorer) {
+            this.server.getAccounts().then((data) => data.forEach(this.syncAccount));
+            this.processContracts();
+            this.db.onNewContract(this.processContracts);
+        }
         this.db.onNewTransactionCount((count) => this.$store.dispatch('updateTransactionCount', count));
         this.db.onNewBlockCount((count) => this.$store.dispatch('updateBlockCount', count));
     },
@@ -61,7 +63,8 @@ export default Vue.extend({
         ...mapGetters([
             'currentWorkspace',
             'chain',
-            'user'
+            'user',
+            'isPublicExplorer'
         ])
     }
 });

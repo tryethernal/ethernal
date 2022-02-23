@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <v-navigation-drawer app permanent v-if="userLoggedIn">
+        <v-navigation-drawer app permanent v-if="userLoggedIn || isPublicExplorer">
             <v-list-item>
                 <v-list-item-content>
                     <v-list-item-title class="logo">Ethernal</v-list-item-title>
@@ -9,7 +9,7 @@
             </v-list-item>
 
             <v-list dense nav>
-                <v-list-item link :to="'/accounts'">
+                <v-list-item link :to="'/accounts'" v-if="!isPublicExplorer">
                     <v-list-item-icon>
                         <v-icon>mdi-account-multiple</v-icon>
                     </v-list-item-icon>
@@ -54,7 +54,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link :to="'/settings?tab=workspace'">
+                <v-list-item link :to="'/settings?tab=workspace'" v-if="currentWorkspace.isAdmin">
                     <v-list-item-icon>
                         <v-icon>mdi-cog</v-icon>
                     </v-list-item-icon>
@@ -104,7 +104,7 @@
 
         <Onboarding-Modal ref="onboardingModal" />
 
-        <v-app-bar app dense fixed flat v-if="userLoggedIn" color="grey lighten-3">
+        <v-app-bar app dense fixed flat v-if="userLoggedIn || isPublicExplorer" color="grey lighten-3">
             <component :is="appBarComponent"></component>
         </v-app-bar>
 
@@ -116,6 +116,7 @@
 
 <script>
 import Vue from 'vue';
+import { mapGetters } from 'vuex';
 import { auth } from './plugins/firebase';
 import RpcConnector from './components/RpcConnector';
 import OnboardingModal from './components/OnboardingModal';
@@ -138,18 +139,23 @@ export default {
         prAuthToken: null
     }),
     created: function() {
+        if (this.isPublicExplorer)
+            this.initPublicExplorer();
+
         const unsubscribe = this.$store.subscribe((mutation, state) => {
-            if (mutation.type == 'SET_USER' && state.user !== null) {
+            if (mutation.type == 'SET_USER' && !!state.user.uid) {
                 this.userLoggedIn = true;
                 this.db.currentUser().get().then(userQuery => {
                     const user = userQuery.data();
 
-                    if (!user) {
+                    if (!user && !this.isPublicExplorer) {
                         this.server.createUser(auth().currentUser.uid).then(this.launchOnboarding);
                     }
                     else {
                         this.$store.dispatch('updateUserPlan', { uid: auth().currentUser.uid, plan: user.plan, email: auth().currentUser.email });
                         this.$store.dispatch('updateOnboardedStatus', true);
+
+                        if (this.isPublicExplorer) return;
 
                         if (user.currentWorkspace) {
                             this.loadWorkspace(user.currentWorkspace);
@@ -171,7 +177,7 @@ export default {
                     }
                 });
             }
-            if (mutation.type == 'SET_USER' && state.user == null) {
+            if (mutation.type == 'SET_USER' && state.user == null && !this.isPublicExplorer) {
                 this.routerComponent = 'router-view';
                 unsubscribe();
             }
@@ -193,13 +199,48 @@ export default {
                 })
         },
         loadWorkspace: function(workspaceRef) {
+            console.log('loading')
             workspaceRef.get().then((workspaceQuery) => {
                 this.$store.dispatch('updateCurrentWorkspace', { ...workspaceQuery.data(), name: workspaceQuery.id });
                 this.server.getProductRoadToken().then((res) => this.prAuthToken = res.data.token);
                 this.appBarComponent = 'rpc-connector';
                 this.routerComponent = 'router-view';
             });
+        },
+        initPublicExplorer: function() {
+            this.server.getPublicExplorerParams(this.publicExplorer.slug)
+                .then(({ data }) => {
+                    if (!data) return;
+
+                    this.$store.dispatch('setPublicExplorerData', {
+                        name: data.name,
+                        token: data.token
+                    }).then(() => {
+                        this.initWorkspace({
+                            userId: data.userId,
+                            name: data.workspace,
+                            networkId: data.networkId,
+                            rpcServer: data.rpcServer
+                        });
+                    });
+                });
+        },
+        initWorkspace: function(data) {
+            if (!data.userId || !data.name) return;
+            const isAdmin = !!auth().currentUser && auth().currentUser.uid == data.userId;
+            this.$store.dispatch('updateCurrentWorkspace', { isAdmin: isAdmin, ...data })
+                .then(() => {
+                    this.appBarComponent = 'rpc-connector';
+                    this.routerComponent = 'router-view';
+                });
         }
+    },
+     computed: {
+        ...mapGetters([
+            'isPublicExplorer',
+            'publicExplorer',
+            'currentWorkspace'
+        ])
     }
 };
 </script>

@@ -17,7 +17,7 @@ export const dbPlugin = {
         var store = options.store;
 
         var currentUser = function() {
-            return firebase.auth().currentUser;
+            return { uid: store.getters.currentWorkspace.userId };
         };
 
         Vue.prototype.db = {
@@ -128,9 +128,10 @@ export const dbPlugin = {
                     })
             },
             currentUser: function() {
-                if (!currentUser()) return;
+                const user = store.getters.user;
+                if (!user) return;
                 return _db.collection('users')
-                    .doc(currentUser().uid);
+                    .doc(user.uid);
             },
             workspaces: function() {
                 if (!currentUser()) return;

@@ -13,13 +13,14 @@ import Settings from '../components/Settings.vue';
 
 var redirectIfLoggedIn = function (to, from, next) {
     if (auth().currentUser) {
-        next({ path: '/transactions' });
+        next(to || { path: '/transactions' });
     }
     else next();
 };
 
 var redirectIfLoggedOut = function (to, from, next) {
-    if (!auth().currentUser) {
+    const isPublicExplorer = router.app.$store.getters.isPublicExplorer;
+    if (!auth().currentUser && !isPublicExplorer) {
         next({ path: '/auth', query: { next: document.location.pathname, ...to.query }});
     }
     else next();
@@ -39,7 +40,9 @@ const routes = [
     { path: '*', redirect: '/transactions' }
 ];
 
-export default new VueRouter({
+const router = new VueRouter({
     mode: 'history',
     routes: routes
 });
+
+export default router;
