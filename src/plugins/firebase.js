@@ -17,7 +17,7 @@ export const dbPlugin = {
         var store = options.store;
 
         var currentUser = function() {
-            return { uid: store.getters.currentWorkspace.userId };
+            return { uid: store.getters.currentWorkspace.userId || store.getters.user.uid };
         };
 
         Vue.prototype.db = {

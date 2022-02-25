@@ -90,20 +90,12 @@
                             <v-list-item-title>Feature Requests</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <v-list-item link @click="logOut()" v-if="userLoggedIn">
+                    <v-list-item link @click="logOut()" v-if="isUserLoggedIn">
                         <v-list-item-icon>
                             <v-icon class="red--text text--darken-3">mdi-logout</v-icon>
                         </v-list-item-icon>
                         <v-list-item-content>
                             <v-list-item-title class="red--text text--darken-3">Log Out</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item link :href="'/auth'" v-else>
-                        <v-list-item-icon>
-                            <v-icon>mdi-login</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>Log In</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </v-list>
@@ -148,52 +140,10 @@ export default {
     }),
     created: function() {
         if (this.isPublicExplorer)
-            this.initPublicExplorer();
-
-        const unsubscribe = this.$store.subscribe((mutation, state) => {
-            if (mutation.type == 'SET_USER' && !!state.user.uid) {
-                this.userLoggedIn = true;
-                this.db.currentUser().get().then(userQuery => {
-                    const user = userQuery.data();
-
-                    if (!user && !this.isPublicExplorer) {
-                        this.server.createUser(auth().currentUser.uid).then(this.launchOnboarding);
-                    }
-                    else {
-                        this.$store.dispatch('updateUserPlan', { uid: auth().currentUser.uid, plan: user.plan, email: auth().currentUser.email });
-                        this.$store.dispatch('updateOnboardedStatus', true);
-
-                        if (this.isPublicExplorer) return;
-
-                        if (user.currentWorkspace) {
-                            this.loadWorkspace(user.currentWorkspace);
-                        }
-                        else {
-                            this.db.workspaces().get().then(wsQuery => {
-                                const workspaces = []
-                                wsQuery.forEach((ws) => workspaces.push({ ...ws.data(), name: ws.id }));
-
-                                if (workspaces.length) {
-                                    this.server.setCurrentWorkspace(workspaces[0].name)
-                                        .then(() => this.loadWorkspace(workspaces[0]));
-                                }
-                                else {
-                                    this.launchOnboarding();
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-            if (mutation.type == 'SET_USER' && !state.user.uid && !this.isPublicExplorer) {
-                this.routerComponent = 'router-view';
-                unsubscribe();
-            }
-        })
+            return this.initPublicExplorer();
     },
     methods: {
         logOut: function() {
-            this.userLoggedIn = false;
             this.$store.dispatch('updateUser', null);
             auth().signOut();
         },
@@ -206,12 +156,6 @@ export default {
                         this.loadWorkspace(res.name);
                     }
                 })
-        },
-        loadWorkspace: function(workspaceRef) {
-            workspaceRef.get().then((workspaceQuery) => {
-                this.initWorkspace({ ...workspaceQuery.data(), name: workspaceQuery.id, userId: this.user.uid });
-                this.server.getProductRoadToken().then((res) => this.prAuthToken = res.data.token);
-            });
         },
         initPublicExplorer: function() {
             this.server.getPublicExplorerParams(this.publicExplorer.slug)
@@ -252,18 +196,62 @@ export default {
                 .then(() => {
                     this.appBarComponent = 'rpc-connector';
                     this.routerComponent = 'router-view';
+                    if (!this.publicExplorer)
+                        this.server.getProductRoadToken().then((res) => this.prAuthToken = res.data.token);
                 });
+        },
+        initPrivateExplorer: function() {
+            this.db.currentUser().get().then(userQuery => {
+                const user = userQuery.data();
+                if (!user && !this.isPublicExplorer) {
+                    this.server.createUser(auth().currentUser.uid).then(this.launchOnboarding);
+                }
+                else {
+                    if (this.isPublicExplorer) return;
+
+                    this.$store.dispatch('updateUserPlan', { uid: auth().currentUser.uid, plan: user.plan, email: auth().currentUser.email });
+                    this.$store.dispatch('updateOnboardedStatus', true);
+
+                    if (user.currentWorkspace) {
+                        user.currentWorkspace.get().then((workspaceQuery) => this.initWorkspace({ ...workspaceQuery.data(), name: workspaceQuery.id, userId: this.user.uid }));
+                    }
+                    else {
+                        this.db.workspaces().get().then(wsQuery => {
+                            const workspaces = []
+                            wsQuery.forEach((ws) => workspaces.push({ ...ws.data(), name: ws.id }));
+
+                            if (workspaces.length) {
+                                this.server.setCurrentWorkspace(workspaces[0].name)
+                                    .then(() => this.initWorkspace({ ...workspaces[0], userId: this.user.uid }));
+                            }
+                            else {
+                                this.launchOnboarding();
+                            }
+                        });
+                    }
+                }
+            });
         }
     },
-     computed: {
+    watch: {
+        '$store.getters.user': function(user, previousUser) {
+            if (!previousUser.uid && !!user.uid) {
+                this.initPrivateExplorer();
+            }
+            if (!user.uid && !this.isPublicExplorer)
+                this.routerComponent = 'router-view';
+        }
+    },
+    computed: {
         ...mapGetters([
             'isPublicExplorer',
             'publicExplorer',
             'currentWorkspace',
-            'user'
+            'user',
+            'isUserLoggedIn'
         ]),
         isAuthPage: function() { return this.$route.path.indexOf('/auth') > -1 },
-        canDisplaySides: function() { return (this.userLoggedIn || this.isPublicExplorer) && !this.isAuthPage }
+        canDisplaySides: function() { return (this.isUserLoggedIn || this.isPublicExplorer) && !this.isAuthPage }
     }
 };
 </script>

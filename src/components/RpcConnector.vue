@@ -14,9 +14,10 @@
             <v-divider vertical inset class="mx-2"></v-divider>
             Latest Block: <router-link :to="'/block/' + currentBlock.number">{{ currentBlock.number }}</router-link>
         </div>
-        <span v-show="processingContracts">
+        <div v-show="processingContracts">
+            <v-divider vertical inset class="mx-2"></v-divider>
             <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
-        </span>
+        </div>
         <v-spacer></v-spacer>
         <a v-if="isFeedbackFishEnabled" data-feedback-fish :data-feedback-fish-userid="user.email" :data-feedback-fish-page="page">
             <v-icon color="primary" class="mr-1">mdi-comment-quote</v-icon>Feedback?

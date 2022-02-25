@@ -113,6 +113,7 @@ export default new Vuex.Store({
         }
     },
     getters: {
+        isUserLoggedIn: state => !!state.user.uid,
         isPublicExplorer: state => !!state.publicExplorer.slug,
         publicExplorer: state => state.publicExplorer,
         transactionCount: state => state.stats.transactionCount,
