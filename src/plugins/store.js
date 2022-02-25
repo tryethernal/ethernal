@@ -6,12 +6,13 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        user: null,
-        currentBlock: null,
+        user: {},
+        currentBlock: {},
         publicExplorer: {
             name: null,
             slug: null,
             token: null,
+            chainId: null
         },
         currentWorkspace: {
             userId: null,
@@ -33,13 +34,10 @@ export default new Vuex.Store({
     },
     mutations: {
         SET_USER(state, data) {
-            state.user = {
-                ...state.user,
-                ...data
-            };
+            state.user = data ? { ...state.user, ...data } : {};
         },
-        SET_CURRENT_BLOCK(state, newBlockNumber) {
-            state.currentBlock = newBlockNumber;
+        SET_CURRENT_BLOCK(state, newBlock) {
+            state.currentBlock = newBlock;
         },
         SET_CURRENT_WORKSPACE(state, currentWorkspace) {
             state.currentWorkspace = {
@@ -89,8 +87,8 @@ export default new Vuex.Store({
                 commit('SET_USER', null);
             }
         },
-        updateCurrentBlock({ commit }, newBlockNumber) {
-            commit('SET_CURRENT_BLOCK', newBlockNumber);
+        updateCurrentBlock({ commit }, newBlock) {
+            commit('SET_CURRENT_BLOCK', newBlock);
         },
         updateCurrentWorkspace({ commit }, currentWorkspace) {
             commit('SET_CURRENT_WORKSPACE', currentWorkspace);

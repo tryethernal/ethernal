@@ -8,6 +8,7 @@
             class="py-1"
             v-model="params[inputIdx]"
             v-for="(input, inputIdx) in method.inputs" :key="inputIdx"
+            :disabled="!active"
             :label="inputSignature(input)">
         </v-text-field>
         <div class="grey lighten-3 pa-2 mt-1" v-show="result.txHash || result.message">
@@ -39,7 +40,8 @@
                 :label="`Value (in ${chain.token})`">
             </v-text-field>
         </div>
-        <v-btn :loading="loading" depressed class="mt-1" color="primary" @click="sendMethod()">Query</v-btn>
+        <v-btn :disabled="!active" v-if="isPublicExplorer" :loading="loading" depressed class="mt-1" color="primary" @click="sendWithMetamask()">Query</v-btn>
+        <v-btn :disabled="!active" v-else :loading="loading" depressed class="mt-1" color="primary" @click="sendMethod()">Query</v-btn>
     </div>
 </template>
 <script>
@@ -51,7 +53,7 @@ import { formatErrorFragment } from '../lib/abi';
 
 export default {
     name: 'ContractWriteMethod',
-    props: ['method', 'contract', 'options', 'signature'],
+    props: ['method', 'contract', 'options', 'signature', 'active'],
     data: () => ({
         valueInEth: 0,
         params: {},
@@ -66,6 +68,43 @@ export default {
         loading: false
     }),
     methods: {
+        sendWithMetamask: function() {
+            this.loading = true;
+            this.result = {
+                txHash: null,
+                message: null
+            };
+
+            const processedParams = {};
+            for (let i = 0; i < this.method.inputs.length; i++) {
+                processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
+            }
+            const options = sanitize({ ...this.options, value: this.value });
+            const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+            const signer = provider.getSigner();
+            const contract = new ethers.Contract(this.contract.address, this.contract.abi, signer);
+            console.log(contract.populateTransaction)
+            contract.populateTransaction[this.signature](...Object.values(processedParams), options)
+                .then((transaction) => {
+                    const params = {
+                        ...transaction,
+                        value: transaction.value.toString()
+                    };
+                    console.log(params)
+                    window.ethereum.request({
+                        method: 'eth_sendTransaction',
+                        params: [params]
+                    })
+                    .then((txHash) => {
+                        this.result.txHash = txHash;
+                        this.noReceipt = true;
+                    })
+                    .catch((error) => this.result.message = error.message)
+                    .finally(() => {
+                        this.loading = false;
+                    });
+                });
+        },
         sendMethod: async function() {
             try {
                 this.loading = true;
@@ -75,7 +114,11 @@ export default {
                     txHash: null,
                     message: null
                 };
-                var account = (await this.server.getAccount(this.currentWorkspace.name, this.options.from)).data;
+
+                const provider = this.isPublicExplorer ? window.ethereum : null;
+                const rpcServer = this.isPublicExplorer ? null : this.currentWorkspace.rpcServer
+
+                const account = this.isPublicExplorer ? {} : (await this.server.getAccount(this.currentWorkspace.name, this.options.from)).data;
                 var options = sanitize({...this.options, value: this.value, privateKey: account.privateKey });
                 const shouldTrace = this.currentWorkspace.advancedOptions && this.currentWorkspace.advancedOptions.tracing == 'other';
 
@@ -87,7 +130,7 @@ export default {
                 for (let i = 0; i < this.method.inputs.length; i++) {
                     processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
                 }
-                this.server.callContractWriteMethod(this.contract, this.signature, options, processedParams, this.currentWorkspace.rpcServer, shouldTrace)
+                this.server.callContractWriteMethod(this.contract, this.signature, options, processedParams, rpcServer, provider, shouldTrace)
                     .then(({ pendingTx, trace }) => {
                         if (trace) {
                             this.server.syncTrace(this.currentWorkspace.name, pendingTx.hash, trace);
@@ -175,7 +218,8 @@ export default {
     computed: {
         ...mapGetters([
             'currentWorkspace',
-            'chain'
+            'chain',
+            'isPublicExplorer'
         ]),
         value: function() {
             return this.web3.utils.toWei(this.valueInEth.toString(), 'ether');

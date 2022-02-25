@@ -1,9 +1,9 @@
 <template>
     <v-app>
-        <v-navigation-drawer app permanent v-if="userLoggedIn || isPublicExplorer">
+        <v-navigation-drawer app permanent v-if="canDisplaySides">
             <v-list-item>
                 <v-list-item-content>
-                    <v-list-item-title class="logo">Ethernal</v-list-item-title>
+                    <v-list-item-title class="logo">{{ publicExplorer.name || 'Ethernal' }}</v-list-item-title>
                     <v-list-item-subtitle>{{ version }}</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
@@ -90,12 +90,20 @@
                             <v-list-item-title>Feature Requests</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <v-list-item link @click="logOut()">
+                    <v-list-item link @click="logOut()" v-if="userLoggedIn">
                         <v-list-item-icon>
                             <v-icon class="red--text text--darken-3">mdi-logout</v-icon>
                         </v-list-item-icon>
                         <v-list-item-content>
                             <v-list-item-title class="red--text text--darken-3">Log Out</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item link :href="'/auth'" v-else>
+                        <v-list-item-icon>
+                            <v-icon>mdi-login</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>Log In</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </v-list>
@@ -104,7 +112,7 @@
 
         <Onboarding-Modal ref="onboardingModal" />
 
-        <v-app-bar app dense fixed flat v-if="userLoggedIn || isPublicExplorer" color="grey lighten-3">
+        <v-app-bar app dense fixed flat v-if="canDisplaySides" color="grey lighten-3">
             <component :is="appBarComponent"></component>
         </v-app-bar>
 
@@ -177,7 +185,7 @@ export default {
                     }
                 });
             }
-            if (mutation.type == 'SET_USER' && state.user == null && !this.isPublicExplorer) {
+            if (mutation.type == 'SET_USER' && !state.user.uid && !this.isPublicExplorer) {
                 this.routerComponent = 'router-view';
                 unsubscribe();
             }
@@ -186,6 +194,7 @@ export default {
     methods: {
         logOut: function() {
             this.userLoggedIn = false;
+            this.$store.dispatch('updateUser', null);
             auth().signOut();
         },
         launchOnboarding: function() {
@@ -199,27 +208,38 @@ export default {
                 })
         },
         loadWorkspace: function(workspaceRef) {
-            console.log('loading')
             workspaceRef.get().then((workspaceQuery) => {
-                this.$store.dispatch('updateCurrentWorkspace', { ...workspaceQuery.data(), name: workspaceQuery.id });
+                this.initWorkspace({ ...workspaceQuery.data(), name: workspaceQuery.id, userId: this.user.uid });
                 this.server.getProductRoadToken().then((res) => this.prAuthToken = res.data.token);
-                this.appBarComponent = 'rpc-connector';
-                this.routerComponent = 'router-view';
             });
         },
         initPublicExplorer: function() {
             this.server.getPublicExplorerParams(this.publicExplorer.slug)
                 .then(({ data }) => {
-                    if (!data) return;
+                    if (!data)
+                        return;
 
                     this.$store.dispatch('setPublicExplorerData', {
                         name: data.name,
-                        token: data.token
+                        token: data.token,
+                        chainId: data.chainId
                     }).then(() => {
+                        if (data.themes) {
+                            const lightTheme = data.themes.light || {};
+                            const darkTheme = data.themes.dark || {};
+
+                            Object.keys(lightTheme).forEach((key) => {
+                                this.$vuetify.theme.themes.light[key] = lightTheme[key];
+                            })
+                            Object.keys(darkTheme).forEach((key) => {
+                                this.$vuetify.theme.themes.dark[key] = darkTheme[key];
+                            })
+                        }
+
                         this.initWorkspace({
                             userId: data.userId,
                             name: data.workspace,
-                            networkId: data.networkId,
+                            networkId: data.chainId,
                             rpcServer: data.rpcServer
                         });
                     });
@@ -239,8 +259,11 @@ export default {
         ...mapGetters([
             'isPublicExplorer',
             'publicExplorer',
-            'currentWorkspace'
-        ])
+            'currentWorkspace',
+            'user'
+        ]),
+        isAuthPage: function() { return this.$route.path.indexOf('/auth') > -1 },
+        canDisplaySides: function() { return (this.userLoggedIn || this.isPublicExplorer) && !this.isAuthPage }
     }
 };
 </script>

@@ -173,7 +173,7 @@ const serverFunctions = {
     },
     callContractReadMethod: async function(data) {
         try {
-            var provider = serverFunctions._getProvider(data.rpcServer);
+            var provider = data.provider ? new ethers.providers.Web3Provider(data.provider, 'any') : serverFunctions._getProvider(data.rpcServer);
             var signer;
             var options = sanitize({
                 gasLimit: data.options.gasLimit || 100000,
@@ -198,11 +198,11 @@ const serverFunctions = {
     },
     callContractWriteMethod: async function(data) {
         try {
-            var provider = serverFunctions._getProvider(data.rpcServer);
+            var provider = data.provider ? new ethers.providers.Web3Provider(data.provider, 'any') : serverFunctions._getProvider(data.rpcServer);
             var signer;
             var options = sanitize({
-                gasLimit: data.options.gasLimit,
-                gasPrice: data.options.gasPrice,
+                gasLimit: 100000,
+                gasPrice: 1,
                 value: data.options.value,
             });
 
@@ -440,18 +440,18 @@ export const serverPlugin = {
                         .catch(reject)
                 });
             },
-            callContractReadMethod: function(contract, method, options, params, rpcServer) {
+            callContractReadMethod: function(contract, method, options, params, rpcServer, provider) {
                 return new Promise((resolve, reject) => {
                     serverFunctions
-                        .callContractReadMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer })
+                        .callContractReadMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer, provider: provider })
                         .then(resolve)
                         .catch(reject)
                 });
             },
-            callContractWriteMethod: function(contract, method, options, params, rpcServer, shouldTrace) {
+            callContractWriteMethod: function(contract, method, options, params, rpcServer, provider, shouldTrace) {
                 return new Promise((resolve, reject) => {
                     serverFunctions
-                        .callContractWriteMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer, shouldTrace: shouldTrace })
+                        .callContractWriteMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer, provider: provider, shouldTrace: shouldTrace })
                         .then(resolve)
                         .catch(reject)
                 });

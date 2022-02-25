@@ -1,9 +1,19 @@
 <template>
     <v-toolbar dense flat class="grey lighten-3">
-        Workspace: {{ currentWorkspace.name }} ({{ chain.name }})
-        <v-divider vertical inset class="mx-2"></v-divider>
-        {{ currentWorkspace.rpcServer }}
-        <v-divider vertical inset class="mx-2"></v-divider>
+        <template v-if="isPublicExplorer">
+            {{ chain.name }}
+        </template>
+        <template v-else>
+            Workspace: {{ currentWorkspace.name }} ({{ chain.name }})
+        </template>
+        <template v-if="!isPublicExplorer">
+            <v-divider vertical inset class="mx-2"></v-divider>
+            {{ currentWorkspace.rpcServer }}
+        </template>
+        <div v-show="currentBlock.number">
+            <v-divider vertical inset class="mx-2"></v-divider>
+            Latest Block: <router-link :to="'/block/' + currentBlock.number">{{ currentBlock.number }}</router-link>
+        </div>
         <span v-show="processingContracts">
             <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
         </span>
@@ -42,6 +52,7 @@ export default Vue.extend({
         }
         this.db.onNewTransactionCount((count) => this.$store.dispatch('updateTransactionCount', count));
         this.db.onNewBlockCount((count) => this.$store.dispatch('updateBlockCount', count));
+        this.db.onNewBlock((block) => this.$store.dispatch('updateCurrentBlock', block));
     },
     methods: {
         syncAccount: function(account) {
@@ -64,7 +75,8 @@ export default Vue.extend({
             'currentWorkspace',
             'chain',
             'user',
-            'isPublicExplorer'
+            'isPublicExplorer',
+            'currentBlock'
         ])
     }
 });

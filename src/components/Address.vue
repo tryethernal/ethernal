@@ -9,7 +9,7 @@
                 </v-card>
             </v-col>
             <v-spacer></v-spacer>
-            <v-col align-self="end" cols="2" v-if="isContract">
+            <v-col align-self="end" cols="2" v-if="isContract && currentWorkspace.isAdmin">
                 <Remove-Contract-Confirmation-Modal ref="removeContractConfirmationModal" />
                 <v-btn small outlined color="error" @click.stop="openRemoveContractConfirmationModal()">
                     Remove contract
@@ -19,7 +19,7 @@
         <v-tabs optional v-model="tab">
             <v-tab href="#transactions">Transactions</v-tab>
             <v-tab id="contractTab" href="#contract" v-if="isContract">Contract</v-tab>
-            <v-tab id="storageTab" href="#storage" v-if="isContract && !contract.imported">Storage</v-tab>
+            <v-tab id="storageTab" href="#storage" v-if="isContract && !contract.imported && !isPublicExplorer">Storage</v-tab>
             <v-tab id="tokenTab" href="#token" v-if="isTokenContract">Token</v-tab>
 
             <v-tab-item value="transactions">
@@ -35,9 +35,9 @@
                     <v-card outlined class="mb-4">
                         <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
                         <div v-if="!contractLoader">
-                            <Import-Artifact-Modal ref="importArtifactModal" />
+                            <Import-Artifact-Modal ref="importArtifactModal" v-if="currentWorkspace.isAdmin" />
                             <v-card-text v-if="contract.name">
-                                Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded. (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)
+                                Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded.<span v-if="currentWorkspace.isAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
                                 <div v-if="contract.dependencies.length" class="mb-1 mt-2">
                                     <h5>Dependencies:</h5>
                                     {{ contract.dependencies.join(', ') }}
@@ -55,7 +55,8 @@
 
                 <template>
                     <h4>Call Options</h4>
-                    <v-card outlined class="mb-4">
+                    <Metamask v-if="isPublicExplorer"></Metamask>
+                    <v-card outlined class="mb-4" v-else>
                         <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
                         <div v-else>
                             <v-card-text v-if="contract.abi">
@@ -109,7 +110,7 @@
                         <v-card-text v-if="contract.abi">
                             <v-row v-for="(method, methodIdx) in contractReadMethods" :key="methodIdx" class="pb-4">
                                 <v-col cols="5">
-                                    <Contract-Read-Method :contract="contract" :signature="method[0]" :method="method[1]" :options="{ ...callOptions, from: callOptions.from }" />
+                                    <Contract-Read-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="{ ...callOptions, from: callOptions.from }" />
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -126,7 +127,7 @@
                         <v-card-text v-if="contract.abi">
                             <v-row v-for="(method, methodIdx) in contractWriteMethods" :key="methodIdx" class="pb-4">
                                 <v-col cols="5">
-                                    <Contract-Write-Method :contract="contract" :signature="method[0]" :method="method[1]" :options="{ ...callOptions, from: callOptions.from }" />
+                                    <Contract-Write-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="{ ...callOptions, from: callOptions.from }" />
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -141,7 +142,7 @@
                 <Token :contract="contract" />
             </v-tab-item>
 
-            <v-tab-item value="storage" v-if="contract && !contract.imported">
+            <v-tab-item value="storage" v-if="contract && !contract.imported && !isPublicExplorer">
                 <template v-if="isStorageAvailable">
                     <h4>Structure</h4>
                     <v-card outlined class="mb-4">
@@ -203,6 +204,7 @@
 const ethers = require('ethers');
 
 import { mapGetters } from 'vuex';
+import { bus } from '../bus';
 
 import StorageStructure from './StorageStructure';
 import TransactionPicker from './TransactionPicker';
@@ -212,6 +214,7 @@ import ContractWriteMethod from './ContractWriteMethod';
 import ImportArtifactModal from './ImportArtifactModal';
 import RemoveContractConfirmationModal from './RemoveContractConfirmationModal';
 import AddressTransactionsList from './AddressTransactionsList';
+import Metamask from './Metamask';
 import Token from './Token';
 import UpgradeLink from './UpgradeLink';
 
@@ -230,7 +233,8 @@ export default {
         RemoveContractConfirmationModal,
         Token,
         UpgradeLink,
-        AddressTransactionsList
+        AddressTransactionsList,
+        Metamask
     },
     filters: {
         FromWei
@@ -258,7 +262,8 @@ export default {
         dataLoader: false,
         contractLoader: false,
         storageError: false,
-        loadingTx: true
+        loadingTx: true,
+        rpcConnectionStatus: false
     }),
     created: function() {
         this.server.getAccountBalance(this.hash).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
@@ -270,6 +275,9 @@ export default {
         if (!this.tab) {
             this.tab = 'transactions';
         }
+
+        if (this.isPublicExplorer)
+            bus.$on('rpcConnectionStatusChanged', (status) => this.rpcConnectionStatus = status);
     },
     methods: {
         openRemoveContractConfirmationModal: function() {
@@ -357,6 +365,9 @@ export default {
                 if (this.contract.abi)
                     this.contractInterface = new ethers.utils.Interface(this.contract.abi);
 
+                if (this.isPublicExplorer)
+                    return this.contractLoader = false;
+
                 this.db.contractStorage(hash).once('value', (snapshot) => {
                     if (snapshot.val()) {
                         this.contract.artifact = snapshot.val().artifact;
@@ -383,7 +394,8 @@ export default {
     computed: {
         ...mapGetters([
             'currentWorkspace',
-            'chain'
+            'chain',
+            'isPublicExplorer'
         ]),
         isStorageAvailable: function() {
             return this.contract && this.contract.dependencies && Object.keys(this.contract.dependencies).length > 0;

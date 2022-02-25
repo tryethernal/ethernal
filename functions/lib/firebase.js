@@ -399,7 +399,7 @@ const getPublicExplorerParamsBySlug = async (slug) => {
     if (!workspace) return;
 
     if (workspace.public)
-        return { ...publicExplorerParams, rpcServer: workspace.rpcServer };
+        return { ...publicExplorerParams, rpcServer: workspace.rpcServer, chainId: workspace.networkId };
 };
 
 module.exports = {

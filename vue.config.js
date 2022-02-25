@@ -16,7 +16,7 @@ module.exports = {
     },
     configureWebpack: {
         devServer: {
-            public: 'wagmi.antoine.local'
+            allowedHosts: ['.antoine.local']
         },
         plugins: [
             new CopyPlugin({

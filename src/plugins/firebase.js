@@ -85,6 +85,26 @@ export const dbPlugin = {
                         cb(count);
                     });
             },
+            onNewBlock(cb) {
+                var currentWorkspace = store.getters.currentWorkspace.name;
+                if (!currentUser() || !currentWorkspace) return;
+                return _db.collection('users')
+                    .doc(currentUser().uid)
+                    .collection('workspaces')
+                    .doc(currentWorkspace)
+                    .collection('blocks')
+                    .orderBy('number')
+                    .limitToLast(1)
+                    .onSnapshot((docs) => {
+                        if (docs.empty)
+                            cb({})
+                        else {
+                            const blocks = [];
+                            docs.forEach((doc) => blocks.push(doc.data()));
+                            cb(blocks[0]);
+                        }
+                    });
+            },
             contractStorage(contractAddress) {
                 var currentWorkspace = store.getters.currentWorkspace.name;
                 if (!currentUser() || !currentWorkspace) return;

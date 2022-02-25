@@ -40,7 +40,6 @@ new Vue({
 
             store.dispatch('updateUser', user);
             const isPublicExplorer = store.getters.isPublicExplorer;
-
             if (currentPath != '/auth' && !user && !isPublicExplorer) {
                 return this.$router.push('/auth');
             }
@@ -51,5 +50,5 @@ new Vue({
             }
         }
     },
-    render: h => h(App),
+    render: h => h(App)
 }).$mount('#app')
