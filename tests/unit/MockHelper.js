@@ -136,6 +136,7 @@ class MockHelper {
     }
 
     clearFirebase() {
+        jest.clearAllMocks();
         const promises = [];
         promises.push(firebase.clearFirestoreData({ projectId: this.projectId }));
         firebase.apps().map((app) => {

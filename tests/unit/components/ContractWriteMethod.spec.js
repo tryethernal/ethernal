@@ -16,11 +16,34 @@ describe('ContractWriteMethod.vue', () => {
                 from: '0x0',
                 gasLimit: '6721975',
                 gasPrice: undefined
-            }
+            },
+            active: true
         };
     });
 
     it('Should display the UI to interact with a method', (done) => {
+        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+
+        expect(wrapper.html()).toMatchSnapshot();
+
+        done();
+    });
+
+    it('Should make the UI unavailable if not active flag', (done) => {
+        props.method = {
+            "inputs": [
+                {
+                    "internalType": "uint256[]",
+                    "name": "values",
+                    "type": "uint256[]"
+                }
+            ],
+            "name": "reproWriteBug",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        };
+        props.active = false;
         const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
 
         expect(wrapper.html()).toMatchSnapshot();
@@ -72,12 +95,12 @@ describe('ContractWriteMethod.vue', () => {
     });
 
     it('Should display only the tx hash when it succeeds without a receipt', async (done) => {
-        helper.mocks.server.callContractWriteMethod = () => {
+        helper.mocks.server.callContractWriteMethod.mockImplementation(function() {
             const pendingTx = {
                 hash: '0xabcd'
             };
             return new Promise((resolve) => resolve({ pendingTx: pendingTx }));
-        };
+        });
         const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
 
         await wrapper.find('button').trigger('click');
@@ -94,7 +117,7 @@ describe('ContractWriteMethod.vue', () => {
     });
 
     it('Should display only the error message with the failed tx hash', async (done) => {
-        helper.mocks.server.callContractWriteMethod = () => {
+        helper.mocks.server.callContractWriteMethod.mockImplementation(function() {
             const pendingTx = {
                 hash: '0xabcd'
             };
@@ -107,7 +130,7 @@ describe('ContractWriteMethod.vue', () => {
                 }
             };
             return new Promise((resolve, reject) => reject(error));
-        };
+        });
         const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
 
         await wrapper.find('button').trigger('click');
@@ -122,7 +145,7 @@ describe('ContractWriteMethod.vue', () => {
     });
 
     it('Should display the formatted error message with the failed tx hash', async (done) => {
-        helper.mocks.server.callContractWriteMethod = () => {
+        helper.mocks.server.callContractWriteMethod.mockImplementation(function() {
             const pendingTx = {
                 hash: '0xabcd'
             };
@@ -135,7 +158,7 @@ describe('ContractWriteMethod.vue', () => {
                 }
             };
             return new Promise((resolve, reject) => reject(error));
-        };
+        });
 
         const props = {
             method: TokenContract.abi[1],
@@ -144,7 +167,8 @@ describe('ContractWriteMethod.vue', () => {
                 from: '0x0',
                 gasLimit: '6721975',
                 gasPrice: undefined
-            }
+            },
+            active: true
         };
 
         const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
@@ -166,12 +190,12 @@ describe('ContractWriteMethod.vue', () => {
     });
 
     it('Should display only the error message if there is no tx hash', async (done) => {
-        helper.mocks.server.callContractWriteMethod = () => {
+        helper.mocks.server.callContractWriteMethod.mockImplementation(function() {
             const error = {
                 message: 'Failed tx'
             };
             return new Promise((resolve, reject) => reject(error));
-        };
+        });
         const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
 
         await wrapper.find('button').trigger('click');
@@ -186,9 +210,9 @@ describe('ContractWriteMethod.vue', () => {
     });
 
     it('Should display only the error message if the tx cannot be sent', async (done) => {
-        helper.mocks.server.callContractWriteMethod = () => {
+        helper.mocks.server.callContractWriteMethod.mockImplementation(function() {
             throw { reason: 'call revert exception (method="feeTo()", errorSignature=null, errorArgs=[null], reason=null, code=CALL_EXCEPTION, version=abi/5.0.9)' };
-        };
+        });
         const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
 
         await wrapper.find('button').trigger('click');

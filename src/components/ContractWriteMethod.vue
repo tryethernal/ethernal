@@ -37,6 +37,7 @@
                 v-model="valueInEth"
                 type="number"
                 hide-details="auto"
+                :disabled="!active"
                 :label="`Value (in ${chain.token})`">
             </v-text-field>
         </div>
@@ -90,7 +91,6 @@ export default {
                         ...transaction,
                         value: transaction.value.toString()
                     };
-                    console.log(params)
                     window.ethereum.request({
                         method: 'eth_sendTransaction',
                         params: [params]
@@ -115,9 +115,6 @@ export default {
                     message: null
                 };
 
-                const provider = this.isPublicExplorer ? window.ethereum : null;
-                const rpcServer = this.isPublicExplorer ? null : this.currentWorkspace.rpcServer
-
                 const account = this.isPublicExplorer ? {} : (await this.server.getAccount(this.currentWorkspace.name, this.options.from)).data;
                 var options = sanitize({...this.options, value: this.value, privateKey: account.privateKey });
                 const shouldTrace = this.currentWorkspace.advancedOptions && this.currentWorkspace.advancedOptions.tracing == 'other';
@@ -130,8 +127,9 @@ export default {
                 for (let i = 0; i < this.method.inputs.length; i++) {
                     processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
                 }
-                this.server.callContractWriteMethod(this.contract, this.signature, options, processedParams, rpcServer, provider, shouldTrace)
+                this.server.callContractWriteMethod(this.contract, this.signature, options, processedParams, rpcServer, shouldTrace)
                     .then(({ pendingTx, trace }) => {
+                        console.log(pendingTx, trace)
                         if (trace) {
                             this.server.syncTrace(this.currentWorkspace.name, pendingTx.hash, trace);
                         }

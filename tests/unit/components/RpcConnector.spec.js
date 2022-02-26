@@ -9,7 +9,7 @@ describe('RpcConnector.vue', () => {
         helper = new MockHelper();
     });
 
-    it('Should display the correct info', async (done) => {
+    it('Should display the correct info', (done) => {
         const getAccountsMock = jest.spyOn(helper.mocks.server, 'getAccounts');
         const onNewContractMock = jest.spyOn(helper.mocks.db, 'onNewContract');
         const processContractMock = jest.spyOn(helper.mocks.server, 'processContracts');
@@ -23,7 +23,7 @@ describe('RpcConnector.vue', () => {
         done();
     });
 
-    it('Should not do private operations when in public explorer mode', async (done) => {
+    it('Should not do private operations when in public explorer mode', (done) => {
         helper.getters.isPublicExplorer.mockImplementation(() => true);
 
         const getAccountsMock = jest.spyOn(helper.mocks.server, 'getAccounts');

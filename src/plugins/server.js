@@ -194,11 +194,11 @@ const serverFunctions = {
     },
     callContractWriteMethod: async function(data) {
         try {
-            var provider = data.provider ? new ethers.providers.Web3Provider(data.provider, 'any') : serverFunctions._getProvider(data.rpcServer);
+            var provider = serverFunctions._getProvider(data.rpcServer);
             var signer;
             var options = sanitize({
-                gasLimit: 100000,
-                gasPrice: 1,
+                gasLimit: data.options.gasLimit,
+                gasPrice: data.options.gasPrice,
                 value: data.options.value,
             });
 
@@ -444,10 +444,10 @@ export const serverPlugin = {
                         .catch(reject)
                 });
             },
-            callContractWriteMethod: function(contract, method, options, params, rpcServer, provider, shouldTrace) {
+            callContractWriteMethod: function(contract, method, options, params, rpcServer, shouldTrace) {
                 return new Promise((resolve, reject) => {
                     serverFunctions
-                        .callContractWriteMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer, provider: provider, shouldTrace: shouldTrace })
+                        .callContractWriteMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer, shouldTrace: shouldTrace })
                         .then(resolve)
                         .catch(reject)
                 });

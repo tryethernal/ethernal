@@ -30,7 +30,7 @@ exports[`ContractWriteMethod.vue Should display only the error message if the tx
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-87" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-87" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-98" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-98" type="number"></div>
         </div>
       </div>
     </div>
@@ -68,7 +68,7 @@ exports[`ContractWriteMethod.vue Should display only the error message if there 
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-76" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-76" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-87" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-87" type="number"></div>
         </div>
       </div>
     </div>
@@ -106,7 +106,7 @@ exports[`ContractWriteMethod.vue Should display only the error message with the 
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-52" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-52" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-63" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-63" type="number"></div>
         </div>
       </div>
     </div>
@@ -144,7 +144,7 @@ exports[`ContractWriteMethod.vue Should display only the tx hash when it succeed
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-41" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-41" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-52" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-52" type="number"></div>
         </div>
       </div>
     </div>
@@ -199,7 +199,7 @@ exports[`ContractWriteMethod.vue Should display the formatted error message with
         <fieldset aria-hidden="true">
           <legend style="width: -24px;"><span>​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-59" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">address to</label><input id="input-59" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-70" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">address to</label><input id="input-70" type="text"></div>
       </div>
     </div>
   </div>
@@ -209,7 +209,7 @@ exports[`ContractWriteMethod.vue Should display the formatted error message with
         <fieldset aria-hidden="true">
           <legend style="width: -24px;"><span>​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-60" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">uint256 amount</label><input id="input-60" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-71" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">uint256 amount</label><input id="input-71" type="text"></div>
       </div>
     </div>
   </div>
@@ -240,7 +240,7 @@ exports[`ContractWriteMethod.vue Should display the formatted error message with
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-65" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-65" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-76" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-76" type="number"></div>
         </div>
       </div>
     </div>
@@ -278,7 +278,7 @@ exports[`ContractWriteMethod.vue Should display the tx hash and status when it s
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-30" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-30" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-41" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-41" type="number"></div>
         </div>
       </div>
     </div>
@@ -295,7 +295,7 @@ exports[`ContractWriteMethod.vue Should handle array input properly 1`] = `
         <fieldset aria-hidden="true">
           <legend style="width: -24px;"><span>​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-14" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">uint256[] values</label><input id="input-14" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-25" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">uint256[] values</label><input id="input-25" type="text"></div>
       </div>
     </div>
   </div>
@@ -326,10 +326,58 @@ exports[`ContractWriteMethod.vue Should handle array input properly 1`] = `
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span>​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-19" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-19" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-30" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-30" type="number"></div>
         </div>
       </div>
     </div>
   </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
+</div>
+`;
+
+exports[`ContractWriteMethod.vue Should make the UI unavailable if not active flag 1`] = `
+<div>
+  <div class="font-weight-bold">reproWriteBug</div>
+  <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input__control">
+      <div class="v-input__slot">
+        <fieldset aria-hidden="true">
+          <legend style="width: 0px;"><span>​</span></legend>
+        </fieldset>
+        <div class="v-text-field__slot"><label for="input-14" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">uint256[] values</label><input disabled="disabled" id="input-14" type="text"></div>
+      </div>
+    </div>
+  </div>
+  <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
+    <div style="display: none;"></div>
+    <div style="display: none;">
+      Tx: <a href="/transaction/null" target="_blank"></a></div>
+    <div style="display: none;">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+          <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+        </svg>
+        <div class="v-progress-circular__info"></div>
+      </div>Waiting for receipt...
+    </div>
+    <div class="mt-1" style="display: none;">
+      Status: Failed
+      <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
+    </div>
+    <div style="display: none;">
+      Couldn't get receipt.
+    </div>
+  </div>
+  <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
+  <div class="col-4 px-0 py-1">
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+      <div class="v-input__control">
+        <div class="v-input__slot">
+          <fieldset aria-hidden="true">
+            <legend style="width: 0px;"><span>​</span></legend>
+          </fieldset>
+          <div class="v-text-field__slot"><label for="input-19" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-19" type="number"></div>
+        </div>
+      </div>
+    </div>
+  </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
 </div>
 `;

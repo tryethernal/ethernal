@@ -46,6 +46,7 @@ export default Vue.extend({
         }
         this.page = this.$route.path;
         this.isFeedbackFishEnabled = !!process.env.VUE_APP_FEEDBACK_FISH_PID;
+
         if (!this.isPublicExplorer) {
             this.server.getAccounts().then((data) => data.forEach(this.syncAccount));
             this.processContracts();
