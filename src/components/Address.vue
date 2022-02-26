@@ -16,20 +16,19 @@
                 </v-btn>
             </v-col>
         </v-row>
-        <v-tabs optional v-model="tab">
+        <v-tabs v-model="tab">
             <v-tab href="#transactions">Transactions</v-tab>
             <v-tab id="contractTab" href="#contract" v-if="isContract">Contract</v-tab>
             <v-tab id="storageTab" href="#storage" v-if="isContract && !contract.imported && !isPublicExplorer">Storage</v-tab>
             <v-tab id="tokenTab" href="#token" v-if="isTokenContract">Token</v-tab>
-
-            <v-tab-item value="transactions">
-                <Address-Transactions-List :address="hash" />
-            </v-tab-item>
         </v-tabs>
 
         <v-tabs-items :value="tab">
-            <v-tab-item value="contract" v-if="contract">
+            <v-tab-item value="transactions">
+                <Address-Transactions-List :address="hash" />
+            </v-tab-item>
 
+            <v-tab-item value="contract" v-if="contract">
                 <template>
                     <h4>Artifact</h4>
                     <v-card outlined class="mb-4">

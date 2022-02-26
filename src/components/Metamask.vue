@@ -1,9 +1,9 @@
 <template>
     <v-card outlined class="mb-4">
-        <v-card-text v-if="!ethereum">
+        <v-card-text v-show="!ethereum">
             You need Metamask in order to interact with this contract
         </v-card-text>
-        <v-card-text v-else>
+        <v-card-text v-show="ethereum">
             <v-row>
                 <v-col cols="6">
                     <v-alert outlined dense type="error" v-if="chainId && !isChainValid">
@@ -36,6 +36,7 @@ export default {
             if (provider !== window.ethereum) return;
 
             this.ethereum = provider;
+
             if (this.ethereum.isConnected())
                 this.connectMetamask();
         });

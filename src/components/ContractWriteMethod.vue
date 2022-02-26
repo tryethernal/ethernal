@@ -83,7 +83,7 @@ export default {
             const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
             const signer = provider.getSigner();
             const contract = new ethers.Contract(this.contract.address, this.contract.abi, signer);
-            console.log(contract.populateTransaction)
+
             contract.populateTransaction[this.signature](...Object.values(processedParams), options)
                 .then((transaction) => {
                     const params = {

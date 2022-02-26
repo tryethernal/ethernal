@@ -41,7 +41,7 @@ export default Vue.extend({
         isFeedbackFishEnabled: false,
     }),
     created: function() {
-        if (auth().currentUser) {
+        if (auth().currentUser && !this.isPublicExplorer) {
             bus.$on('syncAccount', this.syncAccount);
         }
         this.page = this.$route.path;

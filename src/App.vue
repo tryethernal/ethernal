@@ -66,7 +66,7 @@
 
             <template v-slot:append>
                 <v-list dense nav>
-                    <v-list-item target="_blank" :href="`https://doc.tryethernal.com`">
+                    <v-list-item target="_blank" :href="`https://doc.tryethernal.com`" v-if="!isPublicExplorer">
                         <v-list-item-icon>
                             <v-icon>mdi-text-box-multiple-outline</v-icon>
                         </v-list-item-icon>
@@ -74,7 +74,7 @@
                             <v-list-item-title>Documentation</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <v-list-item target="_blank" :href="`https://discord.gg/jEAprf45jj`">
+                    <v-list-item target="_blank" :href="`https://discord.gg/jEAprf45jj`" v-if="!isPublicExplorer">
                         <v-list-item-icon>
                             <v-icon>mdi-discord</v-icon>
                         </v-list-item-icon>
