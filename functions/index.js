@@ -840,6 +840,7 @@ exports.getPublicExplorerParams = functions.https.onCall(async (data, context) =
         }
 
         const publicExplorerParams = await getPublicExplorerParamsBySlug(data.slug);
+
         return publicExplorerParams;
     } catch(error) {
         console.log(error);
