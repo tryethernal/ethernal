@@ -1,4 +1,4 @@
-const ethers = require('ethers');
+import { ethers } from 'ethers';
 const Web3 = require('web3');
 const Decoder = require('@truffle/decoder');
 
@@ -169,7 +169,7 @@ const serverFunctions = {
     },
     callContractReadMethod: async function(data) {
         try {
-            var provider = serverFunctions._getProvider(data.rpcServer);
+            var provider = data.provider ? new ethers.providers.Web3Provider(data.provider, 'any') : serverFunctions._getProvider(data.rpcServer);
             var signer;
             var options = sanitize({
                 gasLimit: data.options.gasLimit || 100000,
@@ -303,6 +303,9 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            getPublicExplorerParams: function(slug) {
+                return functions.httpsCallable('getPublicExplorerParams')({ slug: slug });
+            },
             getProductRoadToken: function() {
                 return functions.httpsCallable('getProductRoadToken')();
             },
@@ -433,10 +436,10 @@ export const serverPlugin = {
                         .catch(reject)
                 });
             },
-            callContractReadMethod: function(contract, method, options, params, rpcServer) {
+            callContractReadMethod: function(contract, method, options, params, rpcServer, provider) {
                 return new Promise((resolve, reject) => {
                     serverFunctions
-                        .callContractReadMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer })
+                        .callContractReadMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer, provider: provider })
                         .then(resolve)
                         .catch(reject)
                 });

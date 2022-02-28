@@ -1,17 +1,52 @@
 import MockHelper from '../MockHelper';
+import ethereum from '../mocks/ethereum';
+
+import detectEthereumProvider from '@metamask/detect-provider';
+jest.mock('@metamask/detect-provider');
+
+import AmalfiContract from '../fixtures/AmalfiContract.json';
 
 import Address from '@/components/Address.vue';
-import AmalfiContract from '../fixtures/AmalfiContract.json';
 
 describe('Address.vue', () => {
     let helper, $route;
 
-    beforeEach(async () => {
+    beforeEach(() => {
         helper = new MockHelper({}, $route);
     });
 
+    it('Should not display the "Remove Contract" button & storage tab on contract page if in public explorer mode and not admin', async (done) => {
+        helper.getters.isPublicExplorer.mockImplementation(() => true);
+        helper.storeState.currentWorkspace.isAdmin = false;
+        await helper.mocks.admin.collection('contracts').doc('123').set({ address: '123' });
+        const wrapper = helper.mountFn(Address, {
+            propsData: {
+                hash: '123'
+            }
+        });
+
+        setTimeout(() => {
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1000);
+    });
+
+    it('Should not display the storage tab on contract page if in public explorer mode', async (done) => {
+        helper.getters.isPublicExplorer.mockImplementation(() => true);
+        await helper.mocks.admin.collection('contracts').doc('123').set({ address: '123' });
+        const wrapper = helper.mountFn(Address, {
+            propsData: {
+                hash: '123'
+            }
+        });
+
+        setTimeout(() => {
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1000);
+    });
+
     it('Should sync the balance when loaded', async (done) => {
-        const db = helper.mocks.admin;
         const wrapper = helper.mountFn(Address, {
             propsData: {
                 hash: '123'
@@ -79,6 +114,59 @@ describe('Address.vue', () => {
             expect(wrapper.html()).toMatchSnapshot();
             done();
         }, 1000);
+    });
+
+    it('Should display the contract interaction interface under the contract tab if there is an ABI & it is a public explorer', async (done) => {
+        const db = helper.mocks.admin;
+        helper.getters.isPublicExplorer.mockImplementation(() => true);
+        helper.storeState.currentWorkspace.isAdmin = false;
+        
+        detectEthereumProvider.mockImplementation(function() {
+            return new Promise((resolve) => resolve(window.ethereum));
+        });
+
+        await db.collection('contracts').doc('123').set({ name: 'Amalfi', address: '123', abi: AmalfiContract.artifact.abi });
+        
+        const wrapper = helper.mountFn(Address, {
+            propsData: {
+                hash: '123'
+            }
+        });
+
+        await wrapper.vm.$nextTick();
+
+        setTimeout(async () => {
+            await wrapper.find('#contractTab').trigger('click');
+            await wrapper.vm.$nextTick();
+
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1500);
+    });
+
+    it('Should display the "Edit" button under the contract tab if there is an ABI & it is a public explorer & as admin', async (done) => {
+        const db = helper.mocks.admin;
+        helper.getters.isPublicExplorer.mockImplementation(() => true);
+        
+        detectEthereumProvider.mockImplementation(function() {
+            return new Promise((resolve) => resolve(window.ethereum));
+        });
+
+        await db.collection('contracts').doc('123').set({ name: 'Amalfi', address: '123', abi: AmalfiContract.artifact.abi });
+        
+        const wrapper = helper.mountFn(Address, {
+            propsData: {
+                hash: '123'
+            }
+        });
+
+        setTimeout(async () => {
+            await wrapper.find('#contractTab').trigger('click');
+            await wrapper.vm.$nextTick();
+
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1500);
     });
 
     it('Should display the contract interaction interface under the contract tab if there is an ABI', async (done) => {

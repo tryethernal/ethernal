@@ -1,15 +1,15 @@
 <template>
     <v-app>
-        <v-navigation-drawer app permanent v-if="userLoggedIn">
+        <v-navigation-drawer app permanent v-if="canDisplaySides">
             <v-list-item>
                 <v-list-item-content>
-                    <v-list-item-title class="logo">Ethernal</v-list-item-title>
+                    <v-list-item-title class="logo">{{ publicExplorer.name || 'Ethernal' }}</v-list-item-title>
                     <v-list-item-subtitle>{{ version }}</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
 
             <v-list dense nav>
-                <v-list-item link :to="'/accounts'">
+                <v-list-item link :to="'/accounts'" v-if="!isPublicExplorer">
                     <v-list-item-icon>
                         <v-icon>mdi-account-multiple</v-icon>
                     </v-list-item-icon>
@@ -54,7 +54,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link :to="'/settings?tab=workspace'">
+                <v-list-item link :to="'/settings?tab=workspace'" v-if="currentWorkspace.isAdmin">
                     <v-list-item-icon>
                         <v-icon>mdi-cog</v-icon>
                     </v-list-item-icon>
@@ -66,7 +66,7 @@
 
             <template v-slot:append>
                 <v-list dense nav>
-                    <v-list-item target="_blank" :href="`https://doc.tryethernal.com`">
+                    <v-list-item target="_blank" :href="`https://doc.tryethernal.com`" v-if="!isPublicExplorer">
                         <v-list-item-icon>
                             <v-icon>mdi-text-box-multiple-outline</v-icon>
                         </v-list-item-icon>
@@ -74,7 +74,7 @@
                             <v-list-item-title>Documentation</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <v-list-item target="_blank" :href="`https://discord.gg/jEAprf45jj`">
+                    <v-list-item target="_blank" :href="`https://discord.gg/jEAprf45jj`" v-if="!isPublicExplorer">
                         <v-list-item-icon>
                             <v-icon>mdi-discord</v-icon>
                         </v-list-item-icon>
@@ -90,7 +90,7 @@
                             <v-list-item-title>Feature Requests</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <v-list-item link @click="logOut()">
+                    <v-list-item link @click="logOut()" v-if="isUserLoggedIn">
                         <v-list-item-icon>
                             <v-icon class="red--text text--darken-3">mdi-logout</v-icon>
                         </v-list-item-icon>
@@ -104,7 +104,7 @@
 
         <Onboarding-Modal ref="onboardingModal" />
 
-        <v-app-bar app dense fixed flat v-if="userLoggedIn" color="grey lighten-3">
+        <v-app-bar app dense fixed flat v-if="canDisplaySides" color="grey lighten-3">
             <component :is="appBarComponent"></component>
         </v-app-bar>
 
@@ -116,6 +116,7 @@
 
 <script>
 import Vue from 'vue';
+import { mapGetters } from 'vuex';
 import { auth } from './plugins/firebase';
 import RpcConnector from './components/RpcConnector';
 import OnboardingModal from './components/OnboardingModal';
@@ -138,48 +139,12 @@ export default {
         prAuthToken: null
     }),
     created: function() {
-        const unsubscribe = this.$store.subscribe((mutation, state) => {
-            if (mutation.type == 'SET_USER' && state.user !== null) {
-                this.userLoggedIn = true;
-                this.db.currentUser().get().then(userQuery => {
-                    const user = userQuery.data();
-
-                    if (!user) {
-                        this.server.createUser(auth().currentUser.uid).then(this.launchOnboarding);
-                    }
-                    else {
-                        this.$store.dispatch('updateUserPlan', { uid: auth().currentUser.uid, plan: user.plan, email: auth().currentUser.email });
-                        this.$store.dispatch('updateOnboardedStatus', true);
-
-                        if (user.currentWorkspace) {
-                            this.loadWorkspace(user.currentWorkspace);
-                        }
-                        else {
-                            this.db.workspaces().get().then(wsQuery => {
-                                const workspaces = []
-                                wsQuery.forEach((ws) => workspaces.push({ ...ws.data(), name: ws.id }));
-
-                                if (workspaces.length) {
-                                    this.server.setCurrentWorkspace(workspaces[0].name)
-                                        .then(() => this.loadWorkspace(workspaces[0]));
-                                }
-                                else {
-                                    this.launchOnboarding();
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-            if (mutation.type == 'SET_USER' && state.user == null) {
-                this.routerComponent = 'router-view';
-                unsubscribe();
-            }
-        })
+        if (this.isPublicExplorer)
+            return this.initPublicExplorer();
     },
     methods: {
         logOut: function() {
-            this.userLoggedIn = false;
+            this.$store.dispatch('updateUser', null);
             auth().signOut();
         },
         launchOnboarding: function() {
@@ -192,14 +157,101 @@ export default {
                     }
                 })
         },
-        loadWorkspace: function(workspaceRef) {
-            workspaceRef.get().then((workspaceQuery) => {
-                this.$store.dispatch('updateCurrentWorkspace', { ...workspaceQuery.data(), name: workspaceQuery.id });
-                this.server.getProductRoadToken().then((res) => this.prAuthToken = res.data.token);
-                this.appBarComponent = 'rpc-connector';
-                this.routerComponent = 'router-view';
+        initPublicExplorer: function() {
+            this.server.getPublicExplorerParams(this.publicExplorer.slug)
+                .then(({ data }) => {
+                    if (!data)
+                        return;
+
+                    this.$store.dispatch('setPublicExplorerData', {
+                        name: data.name,
+                        token: data.token,
+                        chainId: data.chainId
+                    }).then(() => {
+                        if (data.themes) {
+                            const lightTheme = data.themes.light || {};
+                            const darkTheme = data.themes.dark || {};
+
+                            Object.keys(lightTheme).forEach((key) => {
+                                this.$vuetify.theme.themes.light[key] = lightTheme[key];
+                            })
+                            Object.keys(darkTheme).forEach((key) => {
+                                this.$vuetify.theme.themes.dark[key] = darkTheme[key];
+                            })
+                        }
+
+                        this.initWorkspace({
+                            userId: data.userId,
+                            name: data.workspace,
+                            networkId: data.chainId,
+                            rpcServer: data.rpcServer
+                        });
+                    });
+                });
+        },
+        initWorkspace: function(data) {
+            if (!data.userId || !data.name) return;
+            const isAdmin = !!auth().currentUser && auth().currentUser.uid == data.userId;
+            this.$store.dispatch('updateCurrentWorkspace', { isAdmin: isAdmin, ...data })
+                .then(() => {
+                    this.appBarComponent = 'rpc-connector';
+                    this.routerComponent = 'router-view';
+                    if (!this.publicExplorer)
+                        this.server.getProductRoadToken().then((res) => this.prAuthToken = res.data.token);
+                });
+        },
+        initPrivateExplorer: function() {
+            this.db.currentUser().get().then(userQuery => {
+                const user = userQuery.data();
+                if (!user && !this.isPublicExplorer) {
+                    this.server.createUser(auth().currentUser.uid).then(this.launchOnboarding);
+                }
+                else {
+                    if (this.isPublicExplorer) return;
+
+                    this.$store.dispatch('updateUserPlan', { uid: auth().currentUser.uid, plan: user.plan, email: auth().currentUser.email });
+                    this.$store.dispatch('updateOnboardedStatus', true);
+
+                    if (user.currentWorkspace) {
+                        user.currentWorkspace.get().then((workspaceQuery) => this.initWorkspace({ ...workspaceQuery.data(), name: workspaceQuery.id, userId: this.user.uid }));
+                    }
+                    else {
+                        this.db.workspaces().get().then(wsQuery => {
+                            const workspaces = []
+                            wsQuery.forEach((ws) => workspaces.push({ ...ws.data(), name: ws.id }));
+
+                            if (workspaces.length) {
+                                this.server.setCurrentWorkspace(workspaces[0].name)
+                                    .then(() => this.initWorkspace({ ...workspaces[0], userId: this.user.uid }));
+                            }
+                            else {
+                                this.launchOnboarding();
+                            }
+                        });
+                    }
+                }
             });
         }
+    },
+    watch: {
+        '$store.getters.user': function(user, previousUser) {
+            if (!previousUser.uid && !!user.uid) {
+                this.initPrivateExplorer();
+            }
+            if (!user.uid && !this.isPublicExplorer)
+                this.routerComponent = 'router-view';
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'isPublicExplorer',
+            'publicExplorer',
+            'currentWorkspace',
+            'user',
+            'isUserLoggedIn'
+        ]),
+        isAuthPage: function() { return this.$route.path.indexOf('/auth') > -1 },
+        canDisplaySides: function() { return (this.isUserLoggedIn || this.isPublicExplorer) && !this.isAuthPage }
     }
 };
 </script>

@@ -60,6 +60,7 @@ class MockHelper {
         this.storeState = {
             user: {},
             currentWorkspace: {
+                isAdmin: true,
                 chain: 'ethereum',
                 networkId: null,
                 rpcServer: null,
@@ -76,6 +77,8 @@ class MockHelper {
                 return { ...this.storeState.user, plan: this.storeState.user.plan || 'free' }
             }),
             nativeToken: jest.fn(() => 'Ether'),
+            isPublicExplorer: jest.fn(() => false),
+            publicExplorer: jest.fn(() => this.storeState.publicExplorer),
             chains: jest.fn(() => {
                 return {
                     ethereum: {
@@ -91,11 +94,17 @@ class MockHelper {
                 name: 'Ethereum',
                 token: 'Ether',
                 scanner: 'Etherscan'
+            }),
+            currentBlock: jest.fn(() => {
+                return { number: 2 };
             })
         };
 
         this.actions = {
-            updateCurrentWorkspace: jest.fn()
+            updateCurrentWorkspace: jest.fn(),
+            updateTransactionCount: jest.fn(),
+            updateBlockCount: jest.fn(),
+            updateCurrentBlock: jest.fn()
         };
 
         this.store = new Vuex.Store({ getters: this.getters, actions: this.actions });
@@ -128,6 +137,7 @@ class MockHelper {
     }
 
     clearFirebase() {
+        jest.clearAllMocks();
         const promises = [];
         promises.push(firebase.clearFirestoreData({ projectId: this.projectId }));
         firebase.apps().map((app) => {

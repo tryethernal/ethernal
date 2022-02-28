@@ -11,6 +11,7 @@ describe('ContractReadMethod.vue', () => {
         props = {
             method: DSProxyFactoryContract.abi[0],
             contract: DSProxyFactoryContract,
+            active: true,
             options: {
                 from: '0x0',
                 gasLimit: '6721975',
@@ -76,6 +77,31 @@ describe('ContractReadMethod.vue', () => {
         helper.mocks.server.callContractReadMethod = () => {
             return new Promise(resolve => resolve(['true']));
         };
+        const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
+
+        await wrapper.find('button').trigger('click');
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.results).toEqual([
+            {
+                input: {
+                    name: '',
+                    type: 'bool'
+                },
+                value: 'true'
+            }
+        ]);
+        expect(wrapper.html()).toMatchSnapshot();
+        done();
+    });
+
+    it('Should work when it is in public explorer mode', async (done) => {
+        helper.mocks.server.callContractReadMethod = () => {
+            return new Promise(resolve => resolve(['true']));
+        };
+        helper.getters.isPublicExplorer.mockImplementation(() => true);
+        window.ethereum = jest.fn(() => {});
+
         const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
 
         await wrapper.find('button').trigger('click');
