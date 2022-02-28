@@ -12,7 +12,7 @@
                     <div v-if="connectedAccount">
                         <b>Connected Metamask account:</b> {{ connectedAccount }}
                     </div>
-                    <v-btn v-else color="primary" @click="connectMetamask()">Connect With Metamask</v-btn>
+                    <v-btn id="connectMetamask" v-else color="primary" @click="connectMetamask()">Connect With Metamask</v-btn>
                 </v-col>
             </v-row>
         </v-card-text>
@@ -22,7 +22,6 @@
 <script>
 import detectEthereumProvider from '@metamask/detect-provider';
 import { mapGetters } from 'vuex';
-import { bus } from '../bus';
 
 export default {
     name: 'Metamask',
@@ -33,7 +32,7 @@ export default {
     }),
     mounted: function() {
         detectEthereumProvider().then((provider) => {
-            if (provider !== window.ethereum) return;
+            if (!provider || provider !== window.ethereum) return;
 
             this.ethereum = provider;
 
@@ -67,7 +66,7 @@ export default {
         },
         emitConnectionStatus: function() {
             const isReady = !!this.connectedAccount && this.isChainValid;
-            bus.$emit('rpcConnectionStatusChanged', isReady);
+            this.$emit('rpcConnectionStatusChanged', isReady);
         }
     },
     watch: {

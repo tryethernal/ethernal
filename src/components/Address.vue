@@ -54,7 +54,7 @@
 
                 <template>
                     <h4>Call Options</h4>
-                    <Metamask v-if="isPublicExplorer"></Metamask>
+                    <Metamask v-if="isPublicExplorer" @rpcConnectionStatusChanged="onRpcConnectionStatusChanged"></Metamask>
                     <v-card outlined class="mb-4" v-else>
                         <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
                         <div v-else>
@@ -203,7 +203,6 @@
 const ethers = require('ethers');
 
 import { mapGetters } from 'vuex';
-import { bus } from '../bus';
 
 import StorageStructure from './StorageStructure';
 import TransactionPicker from './TransactionPicker';
@@ -275,10 +274,13 @@ export default {
             this.tab = 'transactions';
         }
 
-        if (this.isPublicExplorer)
-            bus.$on('rpcConnectionStatusChanged', (status) => this.rpcConnectionStatus = status);
+        if (!this.isPublicExplorer)
+            this.rpcConnectionStatus = true;
     },
     methods: {
+        onRpcConnectionStatusChanged: function(status) {
+            this.rpcConnectionStatus = status;
+        },
         openRemoveContractConfirmationModal: function() {
             this.$refs.removeContractConfirmationModal
                 .open({ address: this.hash, workspace: this.currentWorkspace.name });

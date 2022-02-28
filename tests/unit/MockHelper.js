@@ -78,6 +78,7 @@ class MockHelper {
             }),
             nativeToken: jest.fn(() => 'Ether'),
             isPublicExplorer: jest.fn(() => false),
+            publicExplorer: jest.fn(() => this.storeState.publicExplorer),
             chains: jest.fn(() => {
                 return {
                     ethereum: {
