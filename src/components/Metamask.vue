@@ -12,7 +12,7 @@
                     <div v-if="connectedAccount">
                         <b>Connected Metamask account:</b> {{ connectedAccount }}
                     </div>
-                    <v-btn id="connectMetamask" v-else color="primary" @click="connectMetamask()">Connect With Metamask</v-btn>
+                    <v-btn :loading="loading" id="connectMetamask" v-else color="primary" @click="connectMetamask()">Connect With Metamask</v-btn>
                 </v-col>
             </v-row>
         </v-card-text>
@@ -28,7 +28,8 @@ export default {
     data: () => ({
         connectedAccount: null,
         ethereum: null,
-        chainId: null
+        chainId: null,
+        loading: false
     }),
     mounted: function() {
         detectEthereumProvider().then((provider) => {
@@ -36,16 +37,22 @@ export default {
 
             this.ethereum = provider;
 
-            if (this.ethereum.isConnected())
-                this.connectMetamask();
+            this.ethereum.on('accountsChanged', (accounts) => this.connectedAccount = accounts[0]);
+            this.ethereum.on('connect', (data) => this.chainId = data.chainId);
+            this.ethereum.on('chainChanged', (chainId) => this.chainId = chainId);
+            this.ethereum.on('disconnect', () => {
+                this.connectedAccount = null;
+                this.chainId = null
+            });
         });
     },
     methods: {
         connectMetamask: function() {
-            this.ethereum.request({ method: 'eth_requestAccounts' }).then((accounts) => this.connectedAccount = accounts[0]);
-            this.ethereum.request({ method: 'eth_chainId'}).then((chainId) => this.chainId = chainId);
-            this.ethereum.on('accountsChanged', (accounts) => this.connectedAccount = accounts[0]);
-            this.ethereum.on('chainChanged', (chainId) => this.chainId = chainId);
+            this.loading = true;
+            const promises = [];
+            promises.push(this.ethereum.request({ method: 'eth_requestAccounts' }).then((accounts) => this.connectedAccount = accounts[0]));
+            promises.push(this.ethereum.request({ method: 'eth_chainId'}).then((chainId) => this.chainId = chainId));
+            Promise.all(promises).finally(() => this.loading = false);
         },
         switchMetamaskChain: function() {
             this.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: this.formattedExpectedChainId }]})

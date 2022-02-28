@@ -29,7 +29,6 @@ describe('Metamask.vue', () => {
     });
 
     it('Should show a "Connect with Metamask" button if no account connected', (done) => {
-        ethereum.isConnected.mockImplementation(() => false);
         window.ethereum = ethereum;
         
         const wrapper = helper.mountFn(Metamask);
@@ -41,32 +40,34 @@ describe('Metamask.vue', () => {
     });
 
     it('Should show the address when an account is connected', (done) => {
-        ethereum.isConnected.mockImplementation(() => true);
         window.ethereum = ethereum;
 
         const wrapper = helper.mountFn(Metamask);
         
-        setTimeout(() => {
+        setTimeout(async () => {
+            await wrapper.find('#connectMetamask').trigger('click');
+            await wrapper.vm.$nextTick();
             expect(wrapper.html()).toMatchSnapshot();
             done();
         }, 1000);
     });
 
     it('Should show an error is Metamask is not on the expected network', (done) => {
-        ethereum.isConnected.mockImplementation(() => true);
         ethereum.eth_chainId.mockImplementation(() => '0x2');
         window.ethereum = ethereum;
 
         const wrapper = helper.mountFn(Metamask);
         
-        setTimeout(() => {
+        setTimeout(async () => {
+            await wrapper.find('#connectMetamask').trigger('click');
+            await wrapper.vm.$nextTick();
             expect(wrapper.html()).toMatchSnapshot();
             done();
         }, 1000);
     });
 
     it('Should emit the new connection status when connecting Metamask', (done) => {
-        ethereum.isConnected.mockImplementation(() => false);
+        ethereum.eth_chainId.mockImplementation(() => '0x1');
         window.ethereum = ethereum;
 
         const wrapper = helper.mountFn(Metamask);
