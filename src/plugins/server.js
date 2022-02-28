@@ -1,4 +1,4 @@
-const ethers = require('ethers');
+import { ethers } from 'ethers';
 const Web3 = require('web3');
 const Decoder = require('@truffle/decoder');
 

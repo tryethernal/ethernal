@@ -351,13 +351,13 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-413" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-413" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-413" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-413" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -400,13 +400,13 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-421" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-421" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-421" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-421" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -459,13 +459,13 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-430" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-430" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-430" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-430" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -508,13 +508,13 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-438" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-438" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-438" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-438" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -547,13 +547,13 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-445" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-445" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-445" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-445" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -803,13 +803,13 @@ exports[`Address.vue Should display the contract interaction interface under the
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-309" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-309" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-309" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-309" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -852,13 +852,13 @@ exports[`Address.vue Should display the contract interaction interface under the
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-317" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-317" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-317" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-317" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -911,13 +911,13 @@ exports[`Address.vue Should display the contract interaction interface under the
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-326" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-326" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-326" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-326" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -960,13 +960,13 @@ exports[`Address.vue Should display the contract interaction interface under the
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-334" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-334" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-334" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-334" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -999,13 +999,13 @@ exports[`Address.vue Should display the contract interaction interface under the
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-341" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-341" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-341" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-341" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -1307,13 +1307,13 @@ exports[`Address.vue Should display the contract interaction interface under the
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-528" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-528" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-528" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-528" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -1356,13 +1356,13 @@ exports[`Address.vue Should display the contract interaction interface under the
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-536" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-536" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-536" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-536" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -1415,13 +1415,13 @@ exports[`Address.vue Should display the contract interaction interface under the
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-545" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-545" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-545" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-545" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -1464,13 +1464,13 @@ exports[`Address.vue Should display the contract interaction interface under the
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-553" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-553" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-553" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-553" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -1503,13 +1503,13 @@ exports[`Address.vue Should display the contract interaction interface under the
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-560" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-560" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-560" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-560" type="number"></div>
                             </div>
                           </div>
                         </div>

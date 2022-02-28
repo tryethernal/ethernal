@@ -1,4 +1,8 @@
 import MockHelper from '../MockHelper';
+import { ethers } from '../mocks/ethers';
+import ethereum from '../mocks/ethereum';
+
+window.ethereum = ethereum;
 
 import ContractWriteMethod from '@/components/ContractWriteMethod.vue';
 import DSProxyFactoryContract from '../fixtures/DSProxyFactoryContract.json';
@@ -12,6 +16,7 @@ describe('ContractWriteMethod.vue', () => {
         props = {
             method: DSProxyFactoryContract.abi[2],
             contract: DSProxyFactoryContract,
+            signature: 'build()',
             options: {
                 from: '0x0',
                 gasLimit: '6721975',
@@ -19,6 +24,20 @@ describe('ContractWriteMethod.vue', () => {
             },
             active: true
         };
+    });
+
+    it('Should send the transaction with Metamask if public explorer', async (done) => {
+        helper.getters.isPublicExplorer.mockImplementation(() => true);
+        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+
+        await wrapper.find('button').trigger('click');
+        await wrapper.vm.$nextTick();
+
+        setTimeout(() => {
+            expect(wrapper.vm.result).toStrictEqual({ txHash: '0xabcd', message: null });
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1500);
     });
 
     it('Should display the UI to interact with a method', (done) => {
