@@ -1,15 +1,12 @@
 import MockHelper from '../MockHelper';
-
-import Address from '@/components/Address.vue';
-import AmalfiContract from '../fixtures/AmalfiContract.json';
+import ethereum from '../mocks/ethereum';
 
 import detectEthereumProvider from '@metamask/detect-provider';
 jest.mock('@metamask/detect-provider');
-window.ethereum = {
-    isConnected: jest.fn(function() {
-        return false;
-    })
-};
+
+import AmalfiContract from '../fixtures/AmalfiContract.json';
+
+import Address from '@/components/Address.vue';
 
 describe('Address.vue', () => {
     let helper, $route;
