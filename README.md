@@ -15,8 +15,8 @@ Installation instructions: https://doc.tryethernal.com/getting-started/installat
 ## Bugs Report
 You can open an issue in this repo.
 
-## Feature Requests / General Questions
-Start a new thread in Discussions: https://github.com/tryethernal/ethernal/discussions
+## Support Us
+You can support the development of Ethernal by subscribing to the Premium plan ($20/mo) or donating on Gitcoin: https://gitcoin.co/grants/3982/ethernal
 
 ## Contact Us
 Feel free to reach out about anything!
