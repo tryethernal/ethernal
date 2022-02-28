@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.2] - 2022-02-28
+### Changed
+- README updated
+
+### Added
+- It's now possible to make your workspace public and accessible through an url like http://wagmi.tryethernal.com, turning it into a public explorer, it can't be activated through the interface yet, but if you are interested in setting this up for you, reach out to Antoine | Ethernal on the Discord server or by email.
+
 ## [1.4.2] - 2022-02-23
 ### Removed
 - Accounts are not fetched anymore on workspace creation. This was preventing from connecting to chain without the eth_accounts endpoint
