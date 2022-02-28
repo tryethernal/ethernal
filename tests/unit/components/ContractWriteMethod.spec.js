@@ -34,7 +34,7 @@ describe('ContractWriteMethod.vue', () => {
         await wrapper.vm.$nextTick();
 
         setTimeout(() => {
-            expect(wrapper.vm.result).toStrictEqual({ txHash: '0xabcd', message: null });
+            expect(wrapper.vm.result).toStrictEqual({ txHash: '0x1234', message: null });
             expect(wrapper.html()).toMatchSnapshot();
             done();
         }, 1500);
