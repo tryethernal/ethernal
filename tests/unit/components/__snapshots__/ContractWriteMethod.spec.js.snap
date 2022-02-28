@@ -388,7 +388,7 @@ exports[`ContractWriteMethod.vue Should send the transaction with Metamask if pu
   <div class="grey lighten-3 pa-2 mt-1" style="">
     <div style="display: none;"></div>
     <div style="">
-      Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
+      Tx: <a href="/transaction/0x1234" target="_blank">0x1234</a></div>
     <div style="display: none;">
       <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
           <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
