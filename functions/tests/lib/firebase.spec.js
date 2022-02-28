@@ -32,7 +32,8 @@ const {
     getUnprocessedContracts,
     isUserPremium,
     canUserSyncContract,
-    getContractTransactions
+    getContractTransactions,
+    getPublicExplorerParamsBySlug
 } = require('../../lib/firebase');
 
 const Block = require('../fixtures/Block');
@@ -701,5 +702,90 @@ describe('getContractTransactions', () => {
 
         const result = await getContractTransactions('123', 'hardhat', Transaction.to);
         expect(result.length).toBe(1);
+    });
+});
+
+describe.only('getPublicExplorerParamsBySlug', () => {
+    it('Should return the params if the slug exists', async () => {
+        await helper.firestore
+            .collection('public')
+            .doc('ethernal')
+            .set({
+                slug: 'ethernal',
+                userId: '123',
+                workspace: 'hardhat',
+                name: 'Ethernal',
+                chainId: '1111',
+                token: 'ETL'
+            });
+
+        await helper.workspace
+            .set({
+                public: true,
+                rpcServer: 'http://localhost:8545',
+                networkId: '1111'
+            }, { merge: true });        
+
+        const result = await getPublicExplorerParamsBySlug('ethernal');
+        expect(result).toEqual({
+            slug: 'ethernal',
+            userId: '123',
+            workspace: 'hardhat',
+            name: 'Ethernal',
+            chainId: '1111',
+            token: 'ETL',
+            rpcServer: 'http://localhost:8545'
+        });
+    });
+
+    it('Should not return anything if the slug does not exists', async () => {
+        await helper.workspace
+            .set({
+                public: true,
+                rpcServer: 'http://localhost:8545',
+                networkId: '1111'
+            }, { merge: true });        
+
+        const result = await getPublicExplorerParamsBySlug('fgirugfufuirgfur');
+        expect(result).toEqual(undefined);
+    });
+
+    it('Should not return anything if the workspace does not exists', async () => {
+         await helper.firestore
+            .collection('public')
+            .doc('wagmi')
+            .set({
+                slug: 'ethernal',
+                userId: '123',
+                workspace: 'hardhat',
+                name: 'Ethernal',
+                chainId: '1111',
+                token: 'ETL'
+            });
+        const result = await getPublicExplorerParamsBySlug('wagmi');
+        expect(result).toEqual(undefined);
+    });
+
+    it('Should not return anything if the workspace is not public', async () => {
+        await helper.firestore
+            .collection('public')
+            .doc('ethernal')
+            .set({
+                slug: 'ethernal',
+                userId: '123',
+                workspace: 'hardhat',
+                name: 'Ethernal',
+                chainId: '1111',
+                token: 'ETL'
+            });
+
+        await helper.workspace
+            .set({
+                rpcServer: 'http://localhost:8545',
+                networkId: '1111'
+            }, { merge: true });        
+
+        const result = await getPublicExplorerParamsBySlug('ethernal');
+        expect(result).toEqual(undefined);
     });
 });

@@ -8,6 +8,7 @@
             class="py-1"
             v-model="params[inputIdx]"
             v-for="(input, inputIdx) in method.inputs"
+            :disabled='!active'
             :key="inputIdx"
             :label="inputSignature(input)">
         </v-text-field>
@@ -18,7 +19,7 @@
         <div id="call" class="grey lighten-3 pa-2" v-show="error">
             {{ error }}
         </div>
-        <v-btn :loading="loading" class="mt-1" depressed color="primary" @click="callMethod()">Query</v-btn>
+        <v-btn :disabled="!active" :loading="loading" class="mt-1" depressed color="primary" @click="callMethod()">Query</v-btn>
     </div>
 </template>
 <script>
@@ -28,7 +29,7 @@ import FormattedSolVar from './FormattedSolVar';
 
 export default {
     name: 'ContractReadMethod',
-    props: ['method', 'contract', 'options', 'signature'],
+    props: ['method', 'contract', 'options', 'signature', 'active'],
     components: {
         FormattedSolVar
     },
@@ -48,7 +49,10 @@ export default {
                     processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
                 }
 
-                this.server.callContractReadMethod(this.contract, this.signature, this.options, processedParams, this.currentWorkspace.rpcServer)
+                const provider = this.isPublicExplorer ? window.ethereum : null;
+                const rpcServer = this.isPublicExplorer ? null : this.currentWorkspace.rpcServer
+
+                this.server.callContractReadMethod(this.contract, this.signature, this.options, processedParams, rpcServer, provider)
                     .then(res => {
                         this.results = Array.isArray(res) ? this.processResult(res) : this.processResult([res]);
                     })
@@ -90,7 +94,8 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'currentWorkspace'
+            'currentWorkspace',
+            'isPublicExplorer'
         ]),
         outputSignature: function() {
             const res = [];

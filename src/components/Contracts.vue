@@ -1,16 +1,18 @@
 <template>
     <v-container fluid>
-        <v-alert v-if="removedContract" dense text type="success">Contract at address <b>{{ removedContract }}</b> has been successfully removed.</v-alert>
-        <v-alert dense text v-show="!canImport" type="warning">Free plan users are limited to 10 synced contracts. Remove some contracts or <Upgrade-Link @goToBilling="goToBilling" :emit="true">upgrade</Upgrade-Link> to the Premium plan for more.</v-alert>
-        <Import-Contract-Modal ref="importContractModal" />
-        <Remove-Contract-Confirmation-Modal ref="removeContractConfirmationModal" />
+        <template v-if="currentWorkspace.isAdmin">
+            <v-alert v-if="removedContract" dense text type="success">Contract at address <b>{{ removedContract }}</b> has been successfully removed.</v-alert>
+            <v-alert dense text v-show="!canImport" type="warning">Free plan users are limited to 10 synced contracts. Remove some contracts or <Upgrade-Link @goToBilling="goToBilling" :emit="true">upgrade</Upgrade-Link> to the Premium plan for more.</v-alert>
+            <Import-Contract-Modal ref="importContractModal" />
+            <Remove-Contract-Confirmation-Modal ref="removeContractConfirmationModal" />
+        </template>
         <v-data-table
             :loading="loading"
             :items="contracts"
             :headers="headers"
             sort-by="timestamp"
             :sort-desc="true">
-            <template v-slot:top>
+            <template v-slot:top v-if="currentWorkspace.isAdmin">
                 <v-toolbar flat dense class="py-0">
                     <v-spacer></v-spacer>
                     <v-btn small depressed color="primary" class="mr-2" @click="openImportContractModal()">
@@ -32,7 +34,7 @@
             <template v-slot:item.timestamp="{ item }">
                 <span v-if="item.timestamp">{{ parseInt(item.timestamp) | moment('YYYY-MM-DD h:mm:ss A') }}</span>
             </template>
-            <template v-slot:item.remove="{ item }">
+            <template v-slot:item.remove="{ item }" v-if="currentWorkspace.isAdmin">
                 <v-btn x-small icon @click="openRemoveContractConfirmationModal(item.address)">
                     <v-icon>mdi-delete</v-icon>
                 </v-btn>
@@ -75,15 +77,13 @@ export default {
             {
                 text: '',
                 value: 'tags'
-            },
-            {
-                text: '',
-                value: 'remove'
             }
         ]
     }),
     mounted: function() {
         this.$bind('contracts', this.db.collection('contracts'), { serialize: snapshot => Object.defineProperty(snapshot.data(), 'address', { value: snapshot.id })}).then(() => this.loading = false);
+        if (this.currentWorkspace.isAdmin)
+            this.headers.push({ text: '', value: 'remove' });
     },
     methods: {
         formatContractPattern,

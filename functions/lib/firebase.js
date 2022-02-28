@@ -386,6 +386,22 @@ const incrementAddressTransactionCount = async (userId, workspace, address, incr
         .set({ value: admin.firestore.FieldValue.increment(incr) }, { merge: true });
 };
 
+const getPublicExplorerParamsBySlug = async (slug) => {
+   if (!slug) throw '[getPublicExplorerParamsBySlug] Missing parameter';
+
+    const doc = await _db.collection('public').doc(slug).get();
+    const publicExplorerParams = doc.data();
+
+    if (!publicExplorerParams) return;
+
+    const workspace = (await _getWorkspace(publicExplorerParams.userId, publicExplorerParams.workspace).get()).data();
+
+    if (!workspace) return;
+
+    if (workspace.public)
+        return { ...publicExplorerParams, rpcServer: workspace.rpcServer, chainId: workspace.networkId };
+};
+
 module.exports = {
     Timestamp: admin.firestore.Timestamp,
     firestore: _db,
@@ -428,5 +444,6 @@ module.exports = {
     storeTransactionMethodDetails: storeTransactionMethodDetails,
     incrementBlockCount: incrementBlockCount,
     incrementTotalTransactionCount: incrementTotalTransactionCount,
-    incrementAddressTransactionCount: incrementAddressTransactionCount
+    incrementAddressTransactionCount: incrementAddressTransactionCount,
+    getPublicExplorerParamsBySlug: getPublicExplorerParamsBySlug
 };

@@ -2,7 +2,7 @@ import MockHelper from '../MockHelper';
 
 import Accounts from '@/components/Accounts.vue';
 
-describe('Account.vue', () => {
+describe('Accounts.vue', () => {
     let helper, db;
 
     beforeEach(async () => {
@@ -27,17 +27,15 @@ describe('Account.vue', () => {
     });
 
     it('Should resyncs all accounts when clicking on the "Resync" button', async (done) => {
-        const mockSyncAll = jest.spyOn(Accounts.methods, 'syncAll');
         const mockSyncAccount = jest.spyOn(Accounts.methods, 'syncAccount');
 
         const wrapper = helper.mountFn(Accounts);
-        await wrapper.vm.$nextTick();
 
-        await wrapper.find('#resyncAllAccounts').trigger('click');
-        await wrapper.vm.$nextTick();
-        expect(mockSyncAccount.mock.calls.length).toBe(2);
-
-        done();
+        setTimeout(async () => {
+            await wrapper.find('#resyncAllAccounts').trigger('click');
+            expect(mockSyncAccount.mock.calls.length).toBe(4);
+            done();
+        }, 1000);
     });
 
     it('Should sync the balance when syncing account', async (done) => {

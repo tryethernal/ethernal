@@ -1496,6 +1496,45 @@ describe('removeContract', () => {
         expect(contractDbSnap.val()).toBe(null);
     });
 
+    it('Should return public explorer params if the slug exists', async () => {
+        await helper.firestore
+            .collection('public')
+            .doc('ethernal')
+            .set({
+                slug: 'ethernal',
+                userId: '123',
+                workspace: 'hardhat',
+                name: 'Ethernal',
+                chainId: '1111',
+                token: 'ETL'
+            });
+
+        await helper.workspace
+            .set({
+                public: true,
+                rpcServer: 'http://localhost:8545',
+                networkId: '1111'
+            }, { merge: true });
+
+        const wrapped = helper.test.wrap(index.getPublicExplorerParams);
+
+        const data = {
+            slug: 'ethernal'
+        };
+
+        const result = await wrapped(data);
+
+        expect(result).toEqual({
+            slug: 'ethernal',
+            userId: '123',
+            workspace: 'hardhat',
+            name: 'Ethernal',
+            chainId: '1111',
+            token: 'ETL',
+            rpcServer: 'http://localhost:8545'
+        });
+    });
+
     afterEach(async () => {
         await helper.clean();
     });
