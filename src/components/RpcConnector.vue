@@ -51,6 +51,7 @@ export default Vue.extend({
             this.server.getAccounts().then((data) => data.forEach(this.syncAccount));
             this.processContracts();
             this.db.onNewContract(this.processContracts);
+            this.db.onNewTransaction(this.processTransaction);
         }
         this.db.onNewTransactionCount((count) => this.$store.dispatch('updateTransactionCount', count));
         this.db.onNewBlockCount((count) => this.$store.dispatch('updateBlockCount', count));
@@ -64,6 +65,10 @@ export default Vue.extend({
                 .then((data) => {
                     this.server.syncBalance(this.currentWorkspace.name, lowercasedAccount, ethers.BigNumber.from(data).toString());
                 });
+        },
+        processTransaction: function(transaction) {
+            this.server.processTransaction(transaction)
+                .catch(console.log);
         },
         processContracts: function() {
             this.processingContracts = true;

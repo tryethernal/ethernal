@@ -303,6 +303,9 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            storeTransactionBalanceChange: function(workspace, transactionHash, tokenBalanceChange) {
+                return functions.httpsCallable('storeTransactionBalanceChange')({ workspace: workspace, transactionHash: transactionHash, tokenBalanceChange: tokenBalanceChange });
+            },
             getPublicExplorerParams: function(slug) {
                 return functions.httpsCallable('getPublicExplorerParams')({ slug: slug });
             },

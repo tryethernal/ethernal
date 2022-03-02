@@ -28,65 +28,96 @@ import HashLink from './HashLink';
 
 export default {
     name: 'TokensBalanceDiff',
-    props: ['contract', 'addresses', 'block'],
+    props: ['contract', 'addresses', 'transaction'],
     components: {
         HashLink
     },
     data: () => ({
         tableHeaders: [],
-        balances: {}
+        newBalances: {}
     }),
     mounted: function() {
         this.tableHeaders.push(
             { text: 'Address', value: 'address' },
-            { text: `Previous Block (#${parseInt(this.block) - 1})`, value: 'before' },
-            { text: `Tx Block (#${parseInt(this.block)})`, value: 'now' },
+            { text: `Previous Block (#${parseInt(this.transaction.blockNumber) - 1})`, value: 'before' },
+            { text: `Tx Block (#${parseInt(this.transaction.blockNumber)})`, value: 'now' },
             { text: 'Change', value: 'change' }
         );
-        for (let i = 0; i < this.validTokens.length; i++) {
-            if (!this.balances[this.validTokens[i]])
-                this.$set(this.balances, this.validTokens[i], {});
 
-            this.server.callContractReadMethod(
-                this.contract,
-                'balanceOf(address)',
-                { from: null },
-                { 0: this.validTokens[i] },
-                this.currentWorkspace.rpcServer
-            ).then(res => this.$set(this.balances[this.validTokens[i]], 'now', res[0] ));
-
-            this.server.callContractReadMethod(
-                this.contract,
-                'balanceOf(address)',
-                { from: null, blockTag: parseInt(this.block) - 1 },
-                { 0: this.validTokens[i] },
-                this.currentWorkspace.rpcServer
-            ).then(res => this.$set(this.balances[this.validTokens[i]], 'before', res[0] ));
-        }
+        if (!this.transaction.balances && !this.isPublicExplorer)
+            this.fetchTokenBalances();
     },
     methods: {
         formatAmount: function(amount) {
             return parseFloat(ethers.utils.formatUnits(ethers.BigNumber.from(amount))).toLocaleString();
+        },
+        fetchTokenBalances: function() {
+            if (!this.validTokens.length)
+                return this.server.storeTransactionBalanceChange(this.currentWorkspace.name, this.transaction.hash, {});
+
+            for (let i = 0; i < this.validTokens.length; i++) {
+                const newBalances = {};
+                const promises = [];
+
+                promises.push(
+                    new Promise((resolve) => {
+                        this.server.callContractReadMethod(
+                            this.contract,
+                            'balanceOf(address)',
+                            { from: null },
+                            { 0: this.validTokens[i] },
+                            this.currentWorkspace.rpcServer
+                        ).then(res => {
+                            newBalances['now'] = res[0];
+                        }).finally(resolve);
+                    })
+                );
+
+                promises.push(
+                    new Promise((resolve) => {
+                        this.server.callContractReadMethod(
+                            this.contract,
+                            'balanceOf(address)',
+                            { from: null, blockTag: Math.max(0, parseInt(this.transaction.blockNumber) - 1) },
+                            { 0: this.validTokens[i] },
+                            this.currentWorkspace.rpcServer
+                        ).then(res => {
+                            newBalances['before'] = res[0];
+                        }).finally(resolve);
+                    })
+                );
+
+                Promise.all(promises).then(() => {
+                    this.server.storeTransactionBalanceChange(this.currentWorkspace.name, this.transaction.hash, { [this.validTokens[i]]: newBalances });
+                });
+            }
         }
     },
     computed: {
         ...mapGetters([
-            'currentWorkspace'
+            'currentWorkspace',
+            'isPublicExplorer'
         ]),
         validTokens: function() {
             const BLACKLIST = ['0x0000000000000000000000000000000000000000'];
             return this.addresses.filter(token => BLACKLIST.indexOf(token) == -1);
         },
         formattedBalances: function() {
+            const balances = this.transaction.balances;
+            if (!balances) return [];
+
             const res = [];
-            Object.keys(this.balances).forEach((address) => {
-                if (this.balances[address] && this.balances[address].now && this.balances[address].before && this.balances[address].now.sub(this.balances[address].before) != 0 )
-                    res.push({
-                        address: address,
-                        before: this.balances[address].before,
-                        now: this.balances[address].now,
-                       change: this.balances[address].now.sub(this.balances[address].before)
-                    });
+            Object.keys(balances).forEach((address) => {
+                if (!balances[address] || !balances[address].now) return;
+
+                const before = ethers.BigNumber.from(balances[address].before || '0x0');
+                const now = ethers.BigNumber.from(balances[address].now);
+                res.push({
+                    address: address,
+                    before: before,
+                    now: now,
+                    change: now.sub(before)
+                });
             });
             return res;
         }

@@ -257,6 +257,15 @@ const storeTransactionData = (userId, workspace, hash, data) => {
         .set({ storage: data }, { merge: true });
 };
 
+const storeTransactionBalanceChange = (userId, workspace, transactionHash, tokenBalances) => {
+    if (!userId || !workspace || !transactionHash || !tokenBalances) throw '[storeTransactionBalanceChange] Missing parameter';
+
+    return _getWorkspace(userId, workspace)
+        .collection('transactions')
+        .doc(transactionHash)
+        .set({ balances: tokenBalances }, { merge: true });
+};
+
 const updateAccountBalance = (userId, workspace, account, balance) => {
     if (!userId || !workspace || !account || !balance) throw '[updateAccountBalance] Missing parameter';
 
@@ -445,5 +454,6 @@ module.exports = {
     incrementBlockCount: incrementBlockCount,
     incrementTotalTransactionCount: incrementTotalTransactionCount,
     incrementAddressTransactionCount: incrementAddressTransactionCount,
-    getPublicExplorerParamsBySlug: getPublicExplorerParamsBySlug
+    getPublicExplorerParamsBySlug: getPublicExplorerParamsBySlug,
+    storeTransactionBalanceChange: storeTransactionBalanceChange
 };

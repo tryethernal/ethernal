@@ -58,8 +58,28 @@ const {
     incrementBlockCount,
     incrementTotalTransactionCount,
     incrementAddressTransactionCount,
-    getPublicExplorerParamsBySlug
+    getPublicExplorerParamsBySlug,
+    storeTransactionBalanceChange
 } = require('./lib/firebase');
+
+exports.storeTransactionBalanceChange = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+    try {
+        if (!data.workspace || !data.transactionHash || !data.tokenBalanceChange) {
+            console.log(data)
+            throw new functions.https.HttpsError('invalid-argument', '[storeTransactionBalanceChange] Missing parameter.');
+        }
+
+        await storeTransactionBalanceChange(context.auth.uid, data.workspace, data.transactionHash, data.tokenBalanceChange);
+
+        return { success: true }
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
+    }
+});
 
 exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).https.onCall(async (data, context) => {
     if (!context.auth)

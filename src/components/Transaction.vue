@@ -85,7 +85,7 @@
                         class="my-6"
                         :contract="tokensBalances[tb].contract"
                         :addresses="tokensBalances[tb].addresses"
-                        :block="transaction.blockNumber"
+                        :transaction="transaction"
                         :key="idx" />
                 </v-col>
             </v-row>
