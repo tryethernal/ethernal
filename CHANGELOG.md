@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.1] - 2022-03-03
+## Fixed
+- When sending a transaction with Metamask, the value passed was wrong
+- Display error messages when using Metamask
+
 ## [1.5.0] - 2022-02-28
 ### Changed
 - README updated
