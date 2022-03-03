@@ -20,7 +20,6 @@ const fetchTokenInfo = async (rpcServer, contractAddress, abi) => {
         const provider = new ethers.providers.JsonRpcProvider({ url: rpcServer });
         const contract = new ethers.Contract(contractAddress, ERC20_ABI, provider);
 
-
         promises.push(contract.decimals());
         promises.push(contract.symbol());
         promises.push(contract.name());
@@ -41,16 +40,17 @@ const fetchTokenInfo = async (rpcServer, contractAddress, abi) => {
             name: name
         });
 
-        const tokenPatterns = ['erc20'];
+        const patterns = ['erc20'];
         if (abi)
-            if (!isErc20(abi)) tokenPatterns.push('proxy');
+            if (!isErc20(abi)) patterns.push('proxy');
 
         return {
-            patterns: tokenPatterns,
+            patterns: patterns,
             tokenData: tokenData
         };
     } catch(error) {
         console.log(error);
+        return {};
     }
 };
 
