@@ -105,6 +105,11 @@ export const dbPlugin = {
                         }
                     });
             },
+            getPublicExplorerParams(slug) {
+                return _db.collection('public')
+                    .doc(slug)
+                    .get();
+            },
             contractStorage(contractAddress) {
                 var currentWorkspace = store.getters.currentWorkspace.name;
                 if (!currentUser() || !currentWorkspace) return;

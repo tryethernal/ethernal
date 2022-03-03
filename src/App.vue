@@ -158,10 +158,12 @@ export default {
                 })
         },
         initPublicExplorer: function() {
-            this.server.getPublicExplorerParams(this.publicExplorer.slug)
-                .then(({ data }) => {
-                    if (!data)
-                        return;
+            this.db.getPublicExplorerParams(this.publicExplorer.slug)
+                .then((doc) => {
+                    if (!doc.data())
+                        return document.location.href = process.env.VUE_APP_ROOT_URL;
+
+                    const data = doc.data();
 
                     this.$store.dispatch('setPublicExplorerData', {
                         name: data.name,
