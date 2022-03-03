@@ -25,7 +25,7 @@
 
         <v-tabs-items :value="tab">
             <v-tab-item value="transactions">
-                <Address-Transactions-List :address="hash" />
+                <Address-Transactions-List :address="lowerHash" />
             </v-tab-item>
 
             <v-tab-item value="contract" v-if="contract">
@@ -264,7 +264,7 @@ export default {
         rpcConnectionStatus: false
     }),
     created: function() {
-        this.server.getAccountBalance(this.hash).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
+        this.server.getAccountBalance(this.lowerHash).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
 
         this.callOptions.from = this.currentWorkspace.settings.defaultAccount;
         this.callOptions.gasLimit = this.currentWorkspace.settings.gasLimit;
@@ -283,12 +283,12 @@ export default {
         },
         openRemoveContractConfirmationModal: function() {
             this.$refs.removeContractConfirmationModal
-                .open({ address: this.hash, workspace: this.currentWorkspace.name });
+                .open({ address: this.lowerHash, workspace: this.currentWorkspace.name });
         },
         openImportArtifactModal: function() {
             this.$refs.importArtifactModal
-                .open({ address: this.hash, name: this.contract.name, abi: JSON.stringify(this.contract.abi) })
-                .then((reload) => reload ? this.bindTheStuff(this.hash) : null);
+                .open({ address: this.lowerHash, name: this.contract.name, abi: JSON.stringify(this.contract.abi) })
+                .then((reload) => reload ? this.bindTheStuff(this.lowerHash) : null);
         },
         getTransactionDirection: function(trx) {
             if (this.transactionsFrom.indexOf(trx) > -1) {
@@ -317,7 +317,7 @@ export default {
         addStorageStructureChild: function(struct, idx, newKey) {
             this.storageLoader = true;
             this.contract.watchedPaths.push([...struct.path, newKey]);
-            this.server.syncContractData(this.currentWorkspace.name, this.hash, null, null, JSON.stringify(this.contract.watchedPaths))
+            this.server.syncContractData(this.currentWorkspace.name, this.lowerHash, null, null, JSON.stringify(this.contract.watchedPaths))
                 .then(this.decodeContract);
         },
         decodeContract: function() {
@@ -343,7 +343,7 @@ export default {
             return false;
         },
         resetStorage: function() {
-            this.server.syncContractData(this.currentWorkspace.name, this.hash, null, null, JSON.stringify([]))
+            this.server.syncContractData(this.currentWorkspace.name, this.lowerHash, null, null, JSON.stringify([]))
                 .then(() => {
                     this.contract.watchedPaths = [];
                     this.decodeContract();
@@ -398,6 +398,9 @@ export default {
             'chain',
             'isPublicExplorer'
         ]),
+        lowerHash: function() {
+            return this.hash.toLowerCase();
+        },
         isStorageAvailable: function() {
             return this.contract && this.contract.dependencies && Object.keys(this.contract.dependencies).length > 0;
         },
