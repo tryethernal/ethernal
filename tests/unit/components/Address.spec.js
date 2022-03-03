@@ -100,6 +100,47 @@ describe('Address.vue', () => {
         }, 1000);
     });
 
+    it('Should show the transactions for a checksumed address', async (done) => {
+        const db = helper.mocks.admin;
+        const transaction1 = {
+            hash: '0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0',
+            timestamp: '1621548462',
+            from: '0x1',
+            to: '0xf134326143d2c83f173300463bae70cb9582d896',
+            blockNumber: 1,
+            value: '0'
+        };
+
+        const transaction2 = {
+            hash: '0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1',
+            timestamp: '1621548462',
+            from: '0x2',
+            to: '0xf134326143d2c83f173300463bae70cb9582d896',
+            blockNumber: 1,
+            value: '0'
+        };        
+
+        await db.collection('transactions')
+            .doc(transaction1.hash)
+            .set(transaction1);
+
+        await db.collection('transactions')
+            .doc(transaction2.hash)
+            .set(transaction2);
+
+        const wrapper = helper.mountFn(Address, {
+            propsData: {
+                hash: '0xf134326143d2c83F173300463Bae70CB9582D896'
+            }
+        });
+        
+        setTimeout(() => {
+            expect(wrapper.vm.transactionsTo.length).toBe(2);
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1000);
+    });
+
     it('Should display extra tabs for contracts addresses', async (done) => {
         const db = helper.mocks.admin;
         await db.collection('contracts').doc('123').set({ address: '123' });
