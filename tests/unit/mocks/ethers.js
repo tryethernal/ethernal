@@ -62,7 +62,7 @@ export const ethers = jest.mock('ethers', () => {
             },
             fakeWrite: () => new Promise((resolve) => resolve({ hash: '0x123abc' })),
             populateTransaction: {
-                'build()': () => new Promise((resolve) => resolve({ value: '0x1234567' }))
+                'build()': () => new Promise((resolve) => resolve({ value: actual.BigNumber.from('1') }))
             }
         }
     };
