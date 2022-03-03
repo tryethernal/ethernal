@@ -303,9 +303,6 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
-            getPublicExplorerParams: function(slug) {
-                return functions.httpsCallable('getPublicExplorerParams')({ slug: slug });
-            },
             getProductRoadToken: function() {
                 return functions.httpsCallable('getProductRoadToken')();
             },

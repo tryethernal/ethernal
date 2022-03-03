@@ -57,8 +57,7 @@ const {
     isUserPremium,
     incrementBlockCount,
     incrementTotalTransactionCount,
-    incrementAddressTransactionCount,
-    getPublicExplorerParamsBySlug
+    incrementAddressTransactionCount
 } = require('./lib/firebase');
 
 exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).https.onCall(async (data, context) => {
@@ -827,23 +826,6 @@ exports.getProductRoadToken = functions.https.onCall(async (data, context) => {
         return { token: token };
     } catch(error) {
         console.log(error)
-        var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError(error.code || 'unknown', reason);
-    }
-});
-
-exports.getPublicExplorerParams = functions.https.onCall(async (data, context) => {
-    try {
-        if (!data.slug) {
-            console.log(data);
-            throw new functions.https.HttpsError('invalid-argument', '[getPublicExplorerParams] Missing parameter.');
-        }
-
-        const publicExplorerParams = await getPublicExplorerParamsBySlug(data.slug);
-
-        return publicExplorerParams;
-    } catch(error) {
-        console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
         throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
