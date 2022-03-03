@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.5] - 2022-03-03
+### Fixed
+- Checksumed addresses now works for addresses pages
+
 ## [1.5.4] - 2022-03-03
 ### Changed
 - Add /tx/:hash and /token/:hash routes for better Metamask integration
