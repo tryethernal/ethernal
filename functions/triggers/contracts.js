@@ -1,9 +1,58 @@
 const functions = require('firebase-functions');
+const ethers = require('ethers');
 
 const { getContractByHashedBytecode, getWorkspaceByName, storeContractData, getContractTransactions } = require('../lib/firebase');
 const { sanitize } = require('../lib/utils');
 const { processTransactions } = require('../lib/transactions');
+const { isErc20 } = require('../lib/contract');
 const axios = require('axios');
+
+const ERC20_ABI = [
+    {"name":"name", "constant":true, "payable":false, "type":"function", "inputs":[], "outputs":[{"name":"","type":"string"}]},
+    {"name":"symbol", "constant":true, "payable":false, "type":"function", "inputs":[], "outputs":[{"name":"","type":"string"}]},
+    {"name":"decimals", "constant":true, "payable":false, "type":"function", "inputs":[], "outputs":[{"name":"","type":"uint8"}]}
+];
+
+const fetchTokenInfo = async (rpcServer, contractAddress, abi) => {
+    try {
+        let decimals, symbol, name, promises = [];
+
+        const provider = new ethers.providers.JsonRpcProvider({ url: rpcServer });
+        const contract = new ethers.Contract(contractAddress, ERC20_ABI, provider);
+
+
+        promises.push(contract.decimals());
+        promises.push(contract.symbol());
+        promises.push(contract.name());
+
+        await Promise.all(promises).then(res => {
+            decimals = res[0];
+            symbol = res[1];
+            name = res[2];
+        }).catch(() => {});
+
+        if (!decimals || !symbol || !name) {
+            return {};
+        }
+
+        const tokenData = sanitize({
+            decimals: decimals,
+            symbol: symbol,
+            name: name
+        });
+
+        const tokenPatterns = ['erc20'];
+        if (abi)
+            if (!isErc20(abi)) tokenPatterns.push('proxy');
+
+        return {
+            patterns: tokenPatterns,
+            tokenData: tokenData
+        };
+    } catch(error) {
+        console.log(error);
+    }
+};
 
 const findLocalMetadata = async (context, contract) => {
     if (!contract.hashedBytecode)
@@ -47,9 +96,7 @@ const fetchEtherscanData = async (address, chain) => {
     return response ? response.data : null;
 };
 
-const findScannerMetadata = async (context, contract) => {
-    const workspace = await getWorkspaceByName(context.params.userId, context.params.workspaceName);
- 
+const findScannerMetadata = async (workspace, contract) => {
     const scannerData = await fetchEtherscanData(contract.address, workspace.chain);
     
     if (scannerData && scannerData.message != 'NOTOK' && scannerData.result[0].ContractName != '') {
@@ -71,10 +118,11 @@ exports.processContract = async (snap, context) => {
         const newSnap = snap.after ? snap.after : snap;
 
         const contract = { ...newSnap.data(), address: newSnap.id };
+        const workspace = await getWorkspaceByName(context.params.userId, context.params.workspaceName);
 
         const localMetadata = await findLocalMetadata(context, contract);
         if (!localMetadata.name || !localMetadata.abi)
-            scannerMetadata = await findScannerMetadata(context, contract);
+            scannerMetadata = await findScannerMetadata(workspace, contract);
 
         const metadata = sanitize({
             name: contract.name || localMetadata.name || scannerMetadata.name,
@@ -92,6 +140,15 @@ exports.processContract = async (snap, context) => {
                 contract.address, 
                 metadata
             )
+        }
+
+        if (workspace.public) { 
+            const tokenInfo = await fetchTokenInfo(workspace.rpcServer, contract.address, metadata.abi);
+            await storeContractData(context.params.userId, workspace.name, contract.address, sanitize({
+                patterns: tokenInfo.patterns,
+                processed: true,
+                token: tokenInfo.tokenData
+            }));
         }
 
         const transactions = await getContractTransactions(context.params.userId, context.params.workspaceName, contract.address);
