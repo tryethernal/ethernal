@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.4] - 2022-03-03
+### Changed
+- Add /tx/:hash and /token/:hash routes for better Metamask integration
+
 ## [1.5.3] - 2022-03-03
 ### Changed
 - Public explorer parameters are now loaded directly from Firestore for faster initial loading
