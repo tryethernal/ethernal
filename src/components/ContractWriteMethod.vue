@@ -89,7 +89,7 @@ export default {
                 .then((transaction) => {
                     const params = {
                         ...transaction,
-                        value: transaction.value.toString()
+                        value: transaction.value.toHexString()
                     };
                     window.ethereum.request({
                         method: 'eth_sendTransaction',
@@ -103,6 +103,12 @@ export default {
                     .finally(() => {
                         this.loading = false;
                     });
+                })
+                .catch((error) => {
+                    this.loading = false;
+                    if (error.reason) {
+                        this.result.message = `Error: ${error.reason}`;
+                    }
                 });
         },
         sendMethod: async function() {
