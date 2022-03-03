@@ -705,7 +705,7 @@ describe('getContractTransactions', () => {
     });
 });
 
-describe.only('getPublicExplorerParamsBySlug', () => {
+describe('getPublicExplorerParamsBySlug', () => {
     it('Should return the params if the slug exists', async () => {
         await helper.firestore
             .collection('public')
