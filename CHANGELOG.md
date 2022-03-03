@@ -6,8 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.2] - 2022-03-03
+### Fixed
+- Server side contract processing (token & proxy detection) in public explorer mode
+
 ## [1.5.1] - 2022-03-03
-## Fixed
+### Fixed
 - When sending a transaction with Metamask, the value passed was wrong
 - Display error messages when using Metamask
 
