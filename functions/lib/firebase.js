@@ -117,6 +117,14 @@ const storeTransactionMethodDetails = (userId, workspace, transactionHash, metho
         .set({ methodDetails: methodDetails }, { merge: true });
 };
 
+const storeTransactionTokenTransfers = (userId, workspace, transactionHash, tokenTransfers) => {
+    if (!userId || !workspace || !transactionHash) throw '[storeTransactionTokenTransfers] Missing parameter';
+    return _getWorkspace(userId, workspace)
+        .collection('transactions')
+        .doc(transactionHash)
+        .set({ tokenTransfers: tokenTransfers }, { merge: true });
+};
+
 const storeContractData = (userId, workspace, address, data) => {
     if (!userId || !workspace || !address || !data) throw '[storeContractData] Missing parameter';
 
@@ -257,13 +265,13 @@ const storeTransactionData = (userId, workspace, hash, data) => {
         .set({ storage: data }, { merge: true });
 };
 
-const storeTransactionBalanceChange = (userId, workspace, transactionHash, tokenBalances) => {
-    if (!userId || !workspace || !transactionHash || !tokenBalances) throw '[storeTransactionBalanceChange] Missing parameter';
+const storeTokenBalanceChanges = (userId, workspace, transactionHash, tokenBalanceChanges) => {
+    if (!userId || !workspace || !transactionHash || !tokenBalanceChanges) throw '[storeTokenBalanceChanges] Missing parameter';
 
     return _getWorkspace(userId, workspace)
         .collection('transactions')
         .doc(transactionHash)
-        .set({ balances: tokenBalances }, { merge: true });
+        .set({ tokenBalanceChanges: tokenBalanceChanges }, { merge: true });
 };
 
 const updateAccountBalance = (userId, workspace, account, balance) => {
@@ -438,5 +446,6 @@ module.exports = {
     incrementBlockCount: incrementBlockCount,
     incrementTotalTransactionCount: incrementTotalTransactionCount,
     incrementAddressTransactionCount: incrementAddressTransactionCount,
-    storeTransactionBalanceChange: storeTransactionBalanceChange
+    storeTokenBalanceChanges: storeTokenBalanceChanges,
+    storeTransactionTokenTransfers: storeTransactionTokenTransfers
 };

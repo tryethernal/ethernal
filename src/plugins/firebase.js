@@ -31,6 +31,22 @@ export const dbPlugin = {
                     .collection('contracts')
                     .where('patterns', 'array-contains', 'erc20');
             },
+            onNewProcessableTransactions(cb) {
+                var currentWorkspace = store.getters.currentWorkspace.name;
+                if (!currentUser() || !currentWorkspace) return;
+                return _db.collection('users')
+                    .doc(currentUser().uid)
+                    .collection('workspaces')
+                    .doc(currentWorkspace)
+                    .collection('transactions')
+                    .where('tokenTransfers', '!=', [])
+                    .where('tokenBalanceChanges', '==', [])
+                    .onSnapshot((docs) => {
+                        const transactions = [];
+                        docs.forEach(doc => transactions.push(doc.data()));
+                        cb(store.getters.currentWorkspace, transactions);
+                    });
+            },
             onNewContract(cb) {
                 var currentWorkspace = store.getters.currentWorkspace.name;
                 if (!currentUser() || !currentWorkspace) return;

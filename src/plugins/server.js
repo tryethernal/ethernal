@@ -291,6 +291,49 @@ const serverFunctions = {
             var reason = error.reason || error.message || "Can't connect to the server";
             throw { reason: reason };
         }
+    },
+    getBalanceChanges: async function(account, token, block, rpcServer) {
+        let currentBalance = ethers.BigNumber.from('0');
+        let previousBalance = ethers.BigNumber.from('0');
+
+        const contract = { address: token, abi : ['function balanceOf(address owner) view returns (uint256)'] };
+
+        try {
+            const res = await serverFunctions.callContractReadMethod({
+                contract: contract,
+                method: 'balanceOf(address)',
+                options: { from: null, blockTag: block },
+                params: { 0: account },
+                rpcServer: rpcServer
+            })
+            currentBalance = res[0];
+        } catch(_error) {
+            console.log(_error)
+            currentBalance = ethers.BigNumber.from('0');
+        }
+
+        if (block > 1) {
+            try {
+                const res = await serverFunctions.callContractReadMethod({
+                    contract: contract,
+                    method: 'balanceOf(address)',
+                    options: { from: null, blockTag: block - 1},
+                    params: { 0: account },
+                    rpcServer: rpcServer
+                });
+                previousBalance = res[0];
+            } catch(_error) {
+                console.log(_error)
+                previousBalance = ethers.BigNumber.from('0');
+            }
+        }
+
+        return {
+            address: account,
+            currentBalance: currentBalance.toString(),
+            previousBalance: previousBalance.toString(),
+            diff: currentBalance.sub(previousBalance).toString()
+        };
     }
 };
 
@@ -303,9 +346,6 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
-            storeTransactionBalanceChange: function(workspace, transactionHash, tokenBalanceChange) {
-                return functions.httpsCallable('storeTransactionBalanceChange')({ workspace: workspace, transactionHash: transactionHash, tokenBalanceChange: tokenBalanceChange });
-            },
             getProductRoadToken: function() {
                 return functions.httpsCallable('getProductRoadToken')();
             },
@@ -378,6 +418,27 @@ export const serverPlugin = {
                         .then(resolve)
                         .catch(reject);
                 });
+            },
+            processTransactions: async function(workspace, transactions) {
+                try {
+                    for (let i = 0; i < transactions.length; i++) {
+                        const transaction = transactions[i];
+                        const tokenBalanceChanges = {};
+
+                        for (let j = 0; j < transaction.tokenTransfers.length; j++) {
+                            const transfer = transaction.tokenTransfers[j];
+                            tokenBalanceChanges[transfer.token] = [];
+                            tokenBalanceChanges[transfer.token].push(await serverFunctions.getBalanceChanges(transfer.src, transfer.token, transaction.blockNumber, workspace.rpcServer));
+                            tokenBalanceChanges[transfer.token].push(await serverFunctions.getBalanceChanges(transfer.dst, transfer.token, transaction.blockNumber, workspace.rpcServer));
+                        }
+
+                        functions.httpsCallable('syncTokenBalanceChanges')({ workspace: workspace.name, transaction: transaction.hash, tokenBalanceChanges: tokenBalanceChanges });
+                    }
+                } catch(error) {
+                    console.log(error);
+                    var reason = error.reason || error.message || "Can't connect to the server";
+                    throw { reason: reason };
+                }
             },
             searchForLocalChains: async function() {
                 try {

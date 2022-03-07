@@ -71,21 +71,21 @@
                 </v-col>
             </v-row>
 
-            <v-row class="my-2" v-show="tokenTransfers.length">
+            <v-row class="my-2" v-show="transaction.tokenTransfers.length">
                 <v-col>
                     <h3 class="mb-2">Token Transfers</h3>
-                    <Token-Transfers :transfers="tokenTransfers" />
+                    <Token-Transfers :transfers="transaction.tokenTransfers" />
                 </v-col>
             </v-row>
 
-            <v-row class="my-2" v-show="tokenTransfers.length">
+            <v-row class="my-2" v-show="Object.keys(transaction.tokenBalanceChanges).length">
                 <v-col>
                     <h3 class="mb-2">Balance Changes</h3>
-                    <Tokens-Balance-Diff v-for="(tb, idx) in Object.keys(tokensBalances)"
+                    <Tokens-Balance-Diff v-for="(token, idx) in Object.keys(transaction.tokenBalanceChanges)"
                         class="my-6"
-                        :contract="tokensBalances[tb].contract"
-                        :addresses="tokensBalances[tb].addresses"
-                        :transaction="transaction"
+                        :token="token"
+                        :balanceChanges="transaction.tokenBalanceChanges[token]"
+                        :blockNumber="transaction.blockNumber"
                         :key="idx" />
                 </v-col>
             </v-row>
@@ -129,7 +129,6 @@ import TraceStep from './TraceStep';
 import TokenTransfers from './TokenTransfers';
 import TokensBalanceDiff from './TokensBalanceDiff';
 import FromWei from '../filters/FromWei';
-import { decodeLog } from '../lib/abi';
 
 export default {
     name: 'Transaction',
@@ -153,59 +152,21 @@ export default {
             receipt: {
                 gasUsed: 0,
                 logs: []
-            }
+            },
+            tokenTransfers: [],
+            tokenBalanceChanges: {}
         },
         jsonInterface: null,
         parsedLogsData: [],
         block: {
             gasLimit: 0
-        },
-        tokenTransfers: [],
-        tokensBalances: {}
-    }),
-    methods: {
-        parseTokenTransfers: async function() {
-            if (!this.transaction || !this.transaction.receipt || !this.transaction.receipt.logs) return;
-            for (let i = 0; i < this.transaction.receipt.logs.length; i++) {
-                const log = this.transaction.receipt.logs[i];
-                if (log.topics[0] == '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
-                    this.db.collection('contracts').doc(log.address.toLowerCase())
-                        .get()
-                        .then(async (contractDoc) => {
-                            if (!contractDoc.exists) return;
-
-                            let contract = contractDoc.data();
-
-                            if (contract.proxy)
-                                contract = (await this.db.collection('contracts').doc(contract.proxy).get()).data()
-
-                            const decodedLog = decodeLog(log, contract.abi);
-
-                            if (decodedLog) {
-                                this.tokenTransfers.push({
-                                    token: log.address,
-                                    src: decodedLog.args[0],
-                                    dst: decodedLog.args[1],
-                                    amount: decodedLog.args[2]
-                                });
-
-                                if (!this.tokensBalances[contract.address])
-                                    this.tokensBalances[contract.address] = { addresses: [] };
-
-                                this.tokensBalances[contract.address].contract = contract;
-                                this.tokensBalances[contract.address].addresses.push(decodedLog.args[0], decodedLog.args[1]);
-                            }
-                        })
-                }
-            }
         }
-    },
+    }),
     watch: {
         hash: {
             immediate: true,
             handler(hash) {
-                this.$bind('transaction', this.db.collection('transactions').doc(hash), { wait: true })
-                    .then(this.parseTokenTransfers);
+                this.$bind('transaction', this.db.collection('transactions').doc(hash), { wait: true });
             }
         },
         transaction: function() {
