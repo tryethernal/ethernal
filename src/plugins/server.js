@@ -428,7 +428,9 @@ export const serverPlugin = {
                         for (let j = 0; j < transaction.tokenTransfers.length; j++) {
                             const transfer = transaction.tokenTransfers[j];
                             tokenBalanceChanges[transfer.token] = [];
-                            tokenBalanceChanges[transfer.token].push(await serverFunctions.getBalanceChanges(transfer.src, transfer.token, transaction.blockNumber, workspace.rpcServer));
+                            if (transfer.src != '0x0000000000000000000000000000000000000000')
+                                tokenBalanceChanges[transfer.token].push(await serverFunctions.getBalanceChanges(transfer.src, transfer.token, transaction.blockNumber, workspace.rpcServer));
+                            if (transfer.dst != '0x0000000000000000000000000000000000000000')
                             tokenBalanceChanges[transfer.token].push(await serverFunctions.getBalanceChanges(transfer.dst, transfer.token, transaction.blockNumber, workspace.rpcServer));
                         }
 

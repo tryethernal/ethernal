@@ -13,12 +13,11 @@
             <Hash-Link :type="'address'" :hash="item.token" :withName="true" />
         </template>
         <template v-slot:item.amount="{ item }">
-            {{ formatAmount(item.amount) }}
+            {{ item.amount }}
         </template>
     </v-data-table>
 </template>
 <script>
-const ethers = require('ethers');
 import HashLink from './HashLink';
 
 export default {
@@ -34,11 +33,6 @@ export default {
             { text: 'Token', value: 'token' },
             { text: 'Amount', value: 'amount' }
         ]
-    }),
-    methods: {
-        formatAmount: function(amount) {
-            return ethers.utils.formatUnits(ethers.BigNumber.from(amount)).toLocaleString();
-        }
-    }
+   }),
 }
 </script>

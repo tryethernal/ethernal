@@ -14,7 +14,6 @@
 </template>
 <script>
 import { ethers } from 'ethers';
-import { formatResponse } from '@/lib/utils';
 import FormattedSolVar from './FormattedSolVar';
 
 export default {
@@ -33,7 +32,6 @@ export default {
         }
     },
     methods: {
-        formatResponse: formatResponse,
         getSignatureFromFragment: function(fragment) {
             if (!fragment.inputs.length)
                 return `${fragment.name}()`;

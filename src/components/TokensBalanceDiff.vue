@@ -9,15 +9,15 @@
                 <Hash-Link :type="'address'" :hash="item.address" />
             </template>
             <template v-slot:item.before="{ item }">
-               {{ formatAmount(item.previousBalance) }}
+               {{ item.previousBalance }}
             </template>
             <template v-slot:item.now="{ item }">
-               {{ formatAmount(item.currentBalance) }}
+               {{ item.currentBalance }}
             </template>
             <template v-slot:item.change="{ item }">
-               <span v-if="changeDirection(item.diff) > 0" class="success--text">+{{ formatAmount(item.diff) }}</span>
+               <span v-if="changeDirection(item.diff) > 0" class="success--text">+{{ item.diff }}</span>
                <span v-if="changeDirection(item.diff) === 0">0</span>
-               <span v-if="changeDirection(item.diff) < 0" class="error--text">{{ formatAmount(item.diff) }}</span>
+               <span v-if="changeDirection(item.diff) < 0" class="error--text">{{ item.diff }}</span>
             </template>
         </v-data-table>
     </div>

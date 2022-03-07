@@ -1,8 +1,8 @@
 <template>
     <div>
         <span>{{ inputLabel }}
-            (<template v-if="formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Raw</a></template>
-            <template v-if="!formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Formatted</a></template>)
+            (<template v-if="formatted && isFormattable"><a id="switchFormatted" @click="formatted = !formatted">Display Raw</a></template>
+            <template v-else><a id="switchFormatted" @click="formatted = !formatted">Display Formatted</a></template>)
         </span>
         <template v-if="formatted">
             <span v-if="input.type == 'address'">
@@ -18,17 +18,16 @@
                 <span v-else v-html="formatString(value)"></span>
             </span>
             <span v-else>
-                {{ formatResponse(value, formatted) }}
+                {{ value }}
             </span>
         </template>
-        <template v-else>{{ formatResponse(value, formatted) }}</template>
+        <template v-else>{{ value }}</template>
         &nbsp;
     </div>
 </template>
 <script>
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
-import { formatResponse } from '@/lib/utils';
 import HashLink from './HashLink';
 
 export default {
@@ -46,7 +45,6 @@ export default {
             this.formatted = false;
     },
     methods: {
-        formatResponse: formatResponse,
         JSONPrettyCustomFormatter: function(data, _key, _path, defaultFormatResult) {
             return typeof data === 'string' ? `"${this.formatString(data)}"` : defaultFormatResult;
         },
@@ -67,6 +65,9 @@ export default {
         }
     },
     computed: {
+        isFormattable: function() {
+            return ['address', 'string'].indexOf(this.input.type) > -1;
+        },
         isValueDataUriJson: function() {
             return this.value.startsWith('data:application/json;base64,');
         },
