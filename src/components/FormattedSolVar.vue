@@ -1,8 +1,10 @@
 <template>
     <div>
         <span>{{ inputLabel }}
-            (<template v-if="formatted && isFormattable"><a id="switchFormatted" @click="formatted = !formatted">Display Raw</a></template>
-            <template v-else><a id="switchFormatted" @click="formatted = !formatted">Display Formatted</a></template>)
+            <template v-if="isFormattable">
+                (<template v-if="formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Raw</a></template>
+                <template v-if="!formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Formatted</a></template>)
+            </template>
         </span>
         <template v-if="formatted">
             <span v-if="input.type == 'address'">

@@ -84,7 +84,7 @@ const serverFunctions = {
         }
         else {
             const tokenPatterns = ['erc20'];
-            if (!isErc20(contract.abi)) tokenPatterns.push('proxy');
+            if (contract.abi && !isErc20(contract.abi)) tokenPatterns.push('proxy');
 
             return {
                 patterns: tokenPatterns,
@@ -297,6 +297,7 @@ const serverFunctions = {
         let previousBalance = ethers.BigNumber.from('0');
 
         const contract = { address: token, abi : ['function balanceOf(address owner) view returns (uint256)'] };
+        const previsouBlockNumber = Math.max(0, parseInt(block) - 1);
 
         try {
             const res = await serverFunctions.callContractReadMethod({
@@ -317,7 +318,7 @@ const serverFunctions = {
                 const res = await serverFunctions.callContractReadMethod({
                     contract: contract,
                     method: 'balanceOf(address)',
-                    options: { from: null, blockTag: block - 1},
+                    options: { from: null, blockTag: previsouBlockNumber},
                     params: { 0: account },
                     rpcServer: rpcServer
                 });
@@ -354,6 +355,9 @@ export const serverPlugin = {
             },
             syncTransactionData: function(workspace, hash, data) {
                 return functions.httpsCallable('syncTransactionData')({ workspace: workspace, hash: hash, data: data });
+            },
+            processTransaction: function(workspace, transactionHash) {
+                return functions.httpsCallable('processTransaction')({ workspace: workspace, transaction: transactionHash });
             },
             removeContract: function(workspace, address) {
                 return functions.httpsCallable('removeContract')({ workspace: workspace, address: address });
@@ -433,7 +437,6 @@ export const serverPlugin = {
                             if (transfer.dst != '0x0000000000000000000000000000000000000000')
                             tokenBalanceChanges[transfer.token].push(await serverFunctions.getBalanceChanges(transfer.dst, transfer.token, transaction.blockNumber, workspace.rpcServer));
                         }
-
                         functions.httpsCallable('syncTokenBalanceChanges')({ workspace: workspace.name, transaction: transaction.hash, tokenBalanceChanges: tokenBalanceChanges });
                     }
                 } catch(error) {

@@ -33,6 +33,6 @@ export default {
             { text: 'Token', value: 'token' },
             { text: 'Amount', value: 'amount' }
         ]
-   }),
+   })
 }
 </script>

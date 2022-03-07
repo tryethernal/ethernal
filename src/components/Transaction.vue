@@ -1,7 +1,25 @@
 <template>
     <v-container fluid>
-        <div v-if="transaction">
-            <h2 class="text-truncate mb-2">Tx {{ transaction.hash }}</h2>
+        <template v-if="transaction">
+            <v-row>
+                <v-col>
+                    <h2 class="text-truncate mb-2">Tx {{ transaction.hash }}</h2>
+                </v-col>
+                <v-spacer></v-spacer>
+                <v-col align="right">
+                    <v-progress-circular v-show="processing" indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>
+                    <v-menu :right="true">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn icon v-bind="attrs" v-on="on">
+                                <v-icon>mdi-dots-vertical</v-icon>
+                            </v-btn>
+                        </template>
+                        <v-list>
+                            <v-list-item :disabled="!transaction.hash || processing" link @click="reprocessTransaction()">Reprocess Transaction</v-list-item>
+                        </v-list>
+                    </v-menu>
+                </v-col>
+            </v-row>
             <span v-if="transaction.receipt">
                 <v-chip small class="success mr-2" v-if="transaction.receipt.status">
                     <v-icon small class="white--text mr-1">mdi-check</v-icon>
@@ -93,9 +111,11 @@
             <v-row v-if="transaction.to">
                 <v-col>
                     <Transaction-Data v-if="contract && contract.abi" :abi="contract.abi" :transaction="transaction" :withoutStorageHeader="true" />
-                    <div v-else class="pa-2 grey lighten-3">
-                        <i>Couldn't decode data for this transaction. This probably means that you haven't <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/contracts/interacting-with-the-contract">synchronized contract metadata</a>. </i>
-                    </div>
+                    <v-card v-else outlined>
+                        <v-card-text>
+                            <i>Couldn't decode data for this transaction. This probably means that you haven't <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/contracts/interacting-with-the-contract">synchronized contract metadata</a>. </i>
+                        </v-card-text>
+                    </v-card>
             </v-col>
             </v-row>
 
@@ -109,15 +129,15 @@
                     Empty trace (only CREATE(2) and CALLs are shown).
                 </v-col>
             </v-row>
-        </div>
-        <div v-else>
+        </template>
+        <template v-else>
             <h2 class="text-truncate mb-2">Tx {{ hash }}</h2>
             <v-row>
                 <v-col>
                     Cannot find transaction. If it just happened, it might still be in the mempool. Data will automatically appear when available.
                 </v-col>
             </v-row>
-        </div>
+        </template>
     </v-container>
 </template>
 
@@ -160,13 +180,23 @@ export default {
         parsedLogsData: [],
         block: {
             gasLimit: 0
-        }
+        },
+        processing: false
     }),
     watch: {
         hash: {
             immediate: true,
             handler(hash) {
-                this.$bind('transaction', this.db.collection('transactions').doc(hash), { wait: true });
+                this.$bind('transaction', this.db.collection('transactions').doc(hash), { serialize: (snapshot) => {
+                    const data = snapshot.data();
+                    if (!data.tokenTransfers)
+                        Object.defineProperty(data, 'tokenTransfers', { value: [] });
+                    if (!data.tokenBalanceChanges)
+                        Object.defineProperty(data, 'tokenBalanceChanges', { value: [] });
+
+                    return data;
+                }},
+                { wait: true });
             }
         },
         transaction: function() {
@@ -182,10 +212,27 @@ export default {
             }
         }
     },
+    methods: {
+        reprocessTransaction: function() {
+            this.processing = true
+            this.server
+                .processTransaction(this.currentWorkspace.name, this.hash)
+                .then(() => {
+                    this.server.processTransactions(this.currentWorkspace, [this.transaction])
+                        .catch(console.log)
+                        .finally(() => this.processing = false);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.processing = false;
+                });
+        }
+    },
     computed: {
         ...mapGetters([
             'user',
-            'chain'
+            'chain',
+            'currentWorkspace'
         ])
     }
 }

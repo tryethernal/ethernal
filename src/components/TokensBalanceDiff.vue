@@ -40,7 +40,7 @@ export default {
     mounted: function() {
         this.tableHeaders.push(
             { text: 'Address', value: 'address' },
-            { text: `Previous Block (#${parseInt(this.blockNumber) - 1})`, value: 'before' },
+            { text: `Previous Block (#${this.previousBlockNumber})`, value: 'before' },
             { text: `Tx Block (#${parseInt(this.blockNumber)})`, value: 'now' },
             { text: 'Change', value: 'change' }
         );
@@ -65,7 +65,10 @@ export default {
         ...mapGetters([
             'currentWorkspace',
             'isPublicExplorer'
-        ])
+        ]),
+        previousBlockNumber: function() {
+            return Math.max(0, parseInt(this.blockNumber) - 1);
+        }
     }
 }
 </script>

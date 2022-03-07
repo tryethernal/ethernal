@@ -403,6 +403,17 @@ const incrementAddressTransactionCount = async (userId, workspace, address, incr
         .set({ value: admin.firestore.FieldValue.increment(incr) }, { merge: true });
 };
 
+const getTransaction = async (userId, workspace, transactionHash) => {
+    if (!userId || !workspace || !transactionHash) throw '[getTransaction] Missing parameter';
+
+    const query = await _getWorkspace(userId, workspace)
+        .collection('transactions')
+        .doc(transactionHash)
+        .get();
+
+    return query.data();
+};
+
 module.exports = {
     Timestamp: admin.firestore.Timestamp,
     firestore: _db,
@@ -447,5 +458,6 @@ module.exports = {
     incrementTotalTransactionCount: incrementTotalTransactionCount,
     incrementAddressTransactionCount: incrementAddressTransactionCount,
     storeTokenBalanceChanges: storeTokenBalanceChanges,
-    storeTransactionTokenTransfers: storeTransactionTokenTransfers
+    storeTransactionTokenTransfers: storeTransactionTokenTransfers,
+    getTransaction: getTransaction
 };

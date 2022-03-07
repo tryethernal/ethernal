@@ -58,8 +58,32 @@ const {
     incrementBlockCount,
     incrementTotalTransactionCount,
     incrementAddressTransactionCount,
-    storeTokenBalanceChanges
+    storeTokenBalanceChanges,
+    getTransaction
 } = require('./lib/firebase');
+
+exports.processTransaction = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+    try {
+        if (!data.workspace || !data.transaction) {
+            console.log(data)
+            throw new functions.https.HttpsError('invalid-argument', '[syncTokenBalanceChanges] Missing parameter.');
+        }
+
+        const transaction = await getTransaction(context.auth.uid, data.workspace, data.transaction);
+
+        if (transaction) {
+            await processTransactions(context.auth.uid, data.workspace, [transaction]);
+        }
+
+        return { success: true };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
+    }
+});
 
 exports.syncTokenBalanceChanges = functions.https.onCall(async (data, context) => {
     if (!context.auth)
