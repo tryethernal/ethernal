@@ -33,7 +33,7 @@ exports[`TokenTransfers.vue Should display token transfers 1`] = `
             <!----></span>
           </td>
           <td class="text-start">
-            0.1
+            100000000000000000
           </td>
         </tr>
         <tr class="">
@@ -50,7 +50,7 @@ exports[`TokenTransfers.vue Should display token transfers 1`] = `
             <!----></span>
           </td>
           <td class="text-start">
-            0.1
+            100000000000000000
           </td>
         </tr>
       </tbody>
