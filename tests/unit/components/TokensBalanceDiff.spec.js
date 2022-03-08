@@ -6,24 +6,27 @@ import TokensBalanceDiff from '@/components/TokensBalanceDiff.vue';
 describe('TokensBalanceDiff.vue', () => {
     let helper;
 
-    beforeEach(async () => {
-        helper = new MockHelper();
-        await helper.mocks.admin.collection('contracts').doc('0x123')
-            .set({ timestamp: '1636557049', address: '0x123', contractName: 'Ethernal Token', token: { name: 'Ethernal', symbol: 'ETL', decimals: 18 }, patterns: ['erc20'] });
-        await helper.mocks.admin.collection('contracts').doc('0x124')
-            .set({ timestamp: '1636557049', address: '0x124', contractName: 'USD Coin', token: { name: 'USDC', symbol: 'USDC', decimals: 6 }, patterns: ['erc20', 'proxy'] });
-    
-        helper.mocks.server.callContractReadMethod
-            .mockImplementationOnce(() => new Promise((resolve) => resolve([ethers.BigNumber.from('100000000000000000000')])))
-            .mockImplementationOnce(() => new Promise((resolve) => resolve([ethers.BigNumber.from('1000000000000000000')])))
-    });
+    beforeEach(() => helper = new MockHelper());
 
     it('Should display token balances difference', async (done) => {
         const wrapper = helper.mountFn(TokensBalanceDiff, {
             propsData: {
-                contract: {},
-                addresses: ['0xabcd'],
-                block: '2'
+                token: '0xdc64a140aa3e981100a9beca4e685f962f0cf6c9',
+                balanceChanges: [
+                    {
+                        address: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+                        currentBalance: '99999999870000000000000000000',
+                        previousBalance: '99999999880000000000000000000',
+                        diff: '-10000000000000000000'
+                    },
+                    {
+                        address: '0x2d481eeb2ba97955cd081cf218f453a817259ab1',
+                        currentBalance: '130000000000000000000',
+                        previousBalance: '120000000000000000000',
+                        diff: '10000000000000000000'
+                    }
+                ],
+                blockNumber: '2'
             }
         });
 
