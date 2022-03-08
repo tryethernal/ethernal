@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2022-03-08
+### Changed
+- Token transfers are now processed server side & stored - they will be displayed even if there is no ABI associated to the contract
+- Balance changes are now stored server side
+- uint256 are not formatted anymore, too many use cases for this type to be able to infer how to process it automatically
+- Arrays are better displayed now (in functions call parameters & in return values)
+
+### Added
+- "Reprocessing" option on a menu on the top right of the transaction page, that will reprocess token transfers & balance changes in case the automatic processing failed for some reason
+
 ## [1.5.6] - 2022-03-08
 ### Fixed
 - Onboarding bug that prevented workspace creation
