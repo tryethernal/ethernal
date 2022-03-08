@@ -16,7 +16,7 @@ exports.processTransactions = async (userId, workspace, transactions) => {
 
         if (contract && contract.abi) {
             try {
-                const transactionMethodDetails = getTransactionMethodDetails(transaction, abi);
+                const transactionMethodDetails = getTransactionMethodDetails(transaction, contract.abi);
                 await storeTransactionMethodDetails(userId, workspace, transaction.hash, transactionMethodDetails);
             } catch(error) {
                 console.log(error)
