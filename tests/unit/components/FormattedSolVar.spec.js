@@ -80,7 +80,7 @@ describe('FormattedSolVar.vue', () => {
         }, 1500)
     });
 
-    it('Should display the value as an int', async (done) => {
+    it('Should not be switchable if type is uint256', async (done) => {
         const wrapper = helper.mountFn(FormattedSolVar, {
             propsData: {
                 input: { type: 'uint256' },
@@ -105,11 +105,15 @@ describe('FormattedSolVar.vue', () => {
         done();
     });
 
-    it('Should switch the value to int', async (done) => {
+    it('Should switch the value to raw hash', async (done) => {
+        await db.collection('contracts')
+            .doc('0x123')
+            .set({ address: '0x123', name: 'My Contract' });
+
         const wrapper = helper.mountFn(FormattedSolVar, {
             propsData: {
-                input: { type: 'uint256' },
-                value: ethers.BigNumber.from('0x1dcd6500')
+                input: { type: 'address' },
+                value: '0x123'
             }
         });
 
