@@ -1,53 +1,119 @@
+jest.mock('../../lib/firebase', () => ({
+    getContractData: jest.fn(),
+    storeTransactionMethodDetails: jest.fn(),
+    storeTransactionTokenTransfers: jest.fn()
+}));
+
+jest.mock('../../lib/utils', () => ({
+    getFunctionSignatureForTransaction: jest.fn()
+}));
+
+jest.mock('../../lib/abi', () => ({
+    getTokenTransfers: jest.fn(),
+    getTransactionMethodDetails: jest.fn()
+}));
+
+const { getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers } = require('../../lib/firebase');
+const { getTokenTransfers, getTransactionMethodDetails } = require('../../lib/abi');
+
 const Helper = require('../helper');
 const { processTransactions} = require('../../lib/transactions');
 const AmalfiContract = require('../fixtures/AmalfiContract.json');
 const TokenAbi = require('../fixtures/ABI.json');
-const Transaction = {"blockHash":"0x50b10286540941286570588a16a59cc73fac0f2d8213ad49e6614d1985fd6d82","data":"0xba118f6300000000000000000000000063606c22157476da3b26ad1c2eae573d0387d7330000000000000000000000000000000000000000000000000000000065a55d7d","accessList":[],"transactionIndex":0,"confirmations":1,"type":2,"nonce":2,"gasLimit":"6721975","r":"0x22ab3ac486de70bfe6735bae92a38e18a37bbfbe09a5facc1c8bb48967a802ee","s":"0x6ad0bebea8f80ff739a6cf9f75c057292ee2e29ded602734e5d496bd063797e3","chainId":31337,"v":1,"blockNumber":14008967,"from":"0x2d481eeb2ba97955cd081cf218f453a817259ab1","receipt":{"blockHash":"0x50b10286540941286570588a16a59cc73fac0f2d8213ad49e6614d1985fd6d82","logsBloom":"0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000","transactionIndex":0,"confirmations":1,"transactionHash":"0xaa82e74b71fb20503205beaffb60a38b08c6766a66dae1477b479df0e05f1bbe","gasUsed":"46419","blockNumber":14008967,"cumulativeGasUsed":"46419","from":"0x2d481eeb2ba97955cd081cf218f453a817259ab1","to":"0x63606c22157476da3b26ad1c2eae573d0387d733","logs":[],"byzantium":true,"status":1},"to":"0x63606c22157476da3b26ad1c2eae573d0387d733","value":"0","hash":"0xaa82e74b71fb20503205beaffb60a38b08c6766a66dae1477b479df0e05f1bbe","gasPrice":"76869329841","timestamp":1642264024,"methodDetails":{"signature":"setMaturity(address payee, uint256 maturity)","name":"setMaturity","label":"setMaturity(\n\taddress payee: 0x63606C22157476Da3B26Ad1c2EAE573D0387D733,\n\tuint256 maturity: 1705336189\n)"}};
+const Transaction = require('../fixtures/TransactionReceipt.json');
 let helper;
 
 describe('processTransactions ', () => {
-    beforeEach(async () => {
-        helper = new Helper(process.env.GCLOUD_PROJECT);
-        await helper.setUser();
+    beforeEach(jest.resetAllMocks);
+
+    it('Should get contract data from to, get proxy data, store transaction details & store token transfers ', async () => {
+        getContractData
+            .mockImplementationOnce(() => {
+                return new Promise((resolve) => {
+                    resolve({ proxy: '0x123' })
+                });
+            })
+            .mockImplementationOnce(() => {
+                return new Promise((resolve) => {
+                    resolve({ abi: TokenAbi })
+                });
+            });
+        getTransactionMethodDetails.mockImplementationOnce(() => ({ name: 'test' }));
+        getTokenTransfers.mockImplementationOnce(() => ['transfer']);
+
+        await processTransactions('123', 'hardhat', [Transaction]);
+
+        expect(getContractData).toHaveBeenCalledTimes(2);
+        expect(getTransactionMethodDetails).toHaveBeenCalledWith(Transaction, TokenAbi);
+        expect(storeTransactionMethodDetails).toHaveBeenCalledWith('123', 'hardhat', '0x123', { name: 'test' });
+        expect(getTokenTransfers).toHaveBeenCalledWith(Transaction);
+        expect(storeTransactionTokenTransfers).toHaveBeenCalledWith('123', 'hardhat', '0x123', ['transfer']);
     });
 
-    it('Should store method details', async () => {
-        await helper.workspace
-            .collection('contracts')
-            .doc(Transaction.to)
-            .set({ abi: AmalfiContract.artifact.abi });
+    it('Should store empty transaction details & store token transfers when no to', async () => {
+        const transaction = {
+            ...Transaction,
+            to: null
+        };
 
-        await processTransactions('123', 'hardhat', [Transaction])
+        getTokenTransfers.mockImplementationOnce(() => ['transfer']);
 
-        const transactionRef = await helper.workspace
-            .collection('transactions')
-            .doc(Transaction.hash)
-            .get();
+        await processTransactions('123', 'hardhat', [transaction]);
 
-        expect(transactionRef.data().methodDetails).toMatchSnapshot();
+        expect(getContractData).not.toHaveBeenCalled();
+        expect(storeTransactionMethodDetails).toHaveBeenCalledWith('123', 'hardhat', '0x123', null);
+        expect(getTokenTransfers).toHaveBeenCalledWith(transaction);
+        expect(storeTransactionTokenTransfers).toHaveBeenCalledWith('123', 'hardhat', '0x123', ['transfer']);
     });
 
-    it('Should not fail when data for a tx cannot be decoded', async () => {
-        await helper.workspace
-            .collection('contracts')
-            .doc(Transaction.to)
-            .set({ abi: TokenAbi });
+    it('Should store empty transaction details & store token transfers when no contracts @to', async () => {
+        getContractData
+            .mockImplementationOnce(() => {
+                return new Promise((resolve) => {
+                    resolve(null)
+                });
+            });
+        getTokenTransfers.mockImplementationOnce(() => ['transfer']);
 
-        await helper.workspace
-            .collection('transactions')
-            .doc(Transaction.to)
-            .set(Transaction);
+        await processTransactions('123', 'hardhat', [Transaction]);
 
-        await processTransactions('123', 'hardhat', [Transaction])
+        expect(getContractData).toHaveBeenCalledTimes(1);
+        expect(getTransactionMethodDetails).not.toHaveBeenCalled();
+        expect(storeTransactionMethodDetails).toHaveBeenCalledWith('123', 'hardhat', '0x123', null);
+        expect(getTokenTransfers).toHaveBeenCalledWith(Transaction);
+        expect(storeTransactionTokenTransfers).toHaveBeenCalledWith('123', 'hardhat', '0x123', ['transfer']);
     });
 
-    it('Should skip the processing without failing if there is no to address', async () => {
-        await processTransactions('123', 'hardhat', [{ ...Transaction, to: null }])
+    it('Should store empty transactions token transfers if no transfers', async () => {
+        getTokenTransfers.mockImplementationOnce(() => []);
+        
+        await processTransactions('123', 'hardhat', [Transaction]);
+
+        expect(getTokenTransfers).toHaveBeenCalledWith(Transaction);
+        expect(storeTransactionTokenTransfers).toHaveBeenCalledWith('123', 'hardhat', '0x123', []);
     });
 
-    it('Should skip the processing without failing if there is no matching contract', async () => {
-        await processTransactions('123', 'hardhat', [Transaction])
+    it('Should store empty method details if it fails', async () => {
+        getContractData
+            .mockImplementationOnce(() => {
+                return new Promise((resolve) => {
+                    resolve({ abi: TokenAbi })
+                });
+            });
+        getTransactionMethodDetails.mockImplementationOnce(() => { throw 'Error'; });
+
+        await processTransactions('123', 'hardhat', [Transaction]);
+
+        expect(getTransactionMethodDetails).toHaveBeenCalled();
+        expect(storeTransactionMethodDetails).toHaveBeenCalledWith('123', 'hardhat', '0x123', null);
     });
 
-    afterEach(() => helper.clean());
+    it('Should store empty token transfer if it fails', async () => {
+        getTokenTransfers.mockImplementationOnce(() => { throw 'Error'; });
+
+        await processTransactions('123', 'hardhat', [Transaction]);
+
+        expect(getTokenTransfers).toHaveBeenCalledWith(Transaction);
+        expect(storeTransactionTokenTransfers).toHaveBeenCalledWith('123', 'hardhat', '0x123', []);
+    });
 });

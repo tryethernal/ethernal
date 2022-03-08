@@ -31,6 +31,10 @@ export default {
                     .where('patterns', 'array-contains', 'erc20');
             },
 
+            onNewProcessableTransactions: function() {
+                return true;
+            },
+
             onNewContract: function() {
                 return true;
             },

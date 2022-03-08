@@ -1,22 +1,23 @@
 <template>
-    <div v-show="formattedBalances.length">
-        <Hash-Link :type="'address'" :hash="contract.address" :withName="true" /><br>
+    <div>
+        <Hash-Link :type="'address'" :hash="token" :withName="true" /><br>
         <v-data-table
-            :hide-default-footer="formattedBalances.length <= 10"
+            :hide-default-footer="balanceChanges.length <= 10"
             :headers="tableHeaders"
-            :items="formattedBalances">
+            :items="balanceChanges">
             <template v-slot:item.address="{ item }">
                 <Hash-Link :type="'address'" :hash="item.address" />
             </template>
             <template v-slot:item.before="{ item }">
-               {{ formatAmount(item.before) }}
+               {{ item.previousBalance }}
             </template>
             <template v-slot:item.now="{ item }">
-               {{ formatAmount(item.now) }}
+               {{ item.currentBalance }}
             </template>
             <template v-slot:item.change="{ item }">
-               <span v-if="item.change >= 0" class="success--text">+{{ formatAmount(item.change) }}</span>
-               <span v-else class="danger--text">-{{ formatAmount(item.change) }}</span>
+               <span v-if="changeDirection(item.diff) > 0" class="success--text">+{{ item.diff }}</span>
+               <span v-if="changeDirection(item.diff) === 0">0</span>
+               <span v-if="changeDirection(item.diff) < 0" class="error--text">{{ item.diff }}</span>
             </template>
         </v-data-table>
     </div>
@@ -28,67 +29,45 @@ import HashLink from './HashLink';
 
 export default {
     name: 'TokensBalanceDiff',
-    props: ['contract', 'addresses', 'block'],
+    props: ['token', 'balanceChanges', 'blockNumber'],
     components: {
         HashLink
     },
     data: () => ({
         tableHeaders: [],
-        balances: {}
+        newBalances: {}
     }),
     mounted: function() {
         this.tableHeaders.push(
             { text: 'Address', value: 'address' },
-            { text: `Previous Block (#${parseInt(this.block) - 1})`, value: 'before' },
-            { text: `Tx Block (#${parseInt(this.block)})`, value: 'now' },
+            { text: `Previous Block (#${this.previousBlockNumber})`, value: 'before' },
+            { text: `Tx Block (#${parseInt(this.blockNumber)})`, value: 'now' },
             { text: 'Change', value: 'change' }
         );
-        for (let i = 0; i < this.validTokens.length; i++) {
-            if (!this.balances[this.validTokens[i]])
-                this.$set(this.balances, this.validTokens[i], {});
-
-            this.server.callContractReadMethod(
-                this.contract,
-                'balanceOf(address)',
-                { from: null },
-                { 0: this.validTokens[i] },
-                this.currentWorkspace.rpcServer
-            ).then(res => this.$set(this.balances[this.validTokens[i]], 'now', res[0] ));
-
-            this.server.callContractReadMethod(
-                this.contract,
-                'balanceOf(address)',
-                { from: null, blockTag: parseInt(this.block) - 1 },
-                { 0: this.validTokens[i] },
-                this.currentWorkspace.rpcServer
-            ).then(res => this.$set(this.balances[this.validTokens[i]], 'before', res[0] ));
-        }
     },
     methods: {
+        changeDirection: function(diff) {
+            if (!diff) return 0;
+
+            const bigDiff = ethers.BigNumber.from(diff);
+            if (bigDiff.gt('0'))
+                return 1;
+            else if (bigDiff.eq('0'))
+                return 0;
+            else
+                return -1;
+        },
         formatAmount: function(amount) {
             return parseFloat(ethers.utils.formatUnits(ethers.BigNumber.from(amount))).toLocaleString();
         }
     },
     computed: {
         ...mapGetters([
-            'currentWorkspace'
+            'currentWorkspace',
+            'isPublicExplorer'
         ]),
-        validTokens: function() {
-            const BLACKLIST = ['0x0000000000000000000000000000000000000000'];
-            return this.addresses.filter(token => BLACKLIST.indexOf(token) == -1);
-        },
-        formattedBalances: function() {
-            const res = [];
-            Object.keys(this.balances).forEach((address) => {
-                if (this.balances[address] && this.balances[address].now && this.balances[address].before && this.balances[address].now.sub(this.balances[address].before) != 0 )
-                    res.push({
-                        address: address,
-                        before: this.balances[address].before,
-                        now: this.balances[address].now,
-                       change: this.balances[address].now.sub(this.balances[address].before)
-                    });
-            });
-            return res;
+        previousBlockNumber: function() {
+            return Math.max(0, parseInt(this.blockNumber) - 1);
         }
     }
 }

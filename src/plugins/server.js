@@ -84,7 +84,7 @@ const serverFunctions = {
         }
         else {
             const tokenPatterns = ['erc20'];
-            if (!isErc20(contract.abi)) tokenPatterns.push('proxy');
+            if (contract.abi && !isErc20(contract.abi)) tokenPatterns.push('proxy');
 
             return {
                 patterns: tokenPatterns,
@@ -291,6 +291,50 @@ const serverFunctions = {
             var reason = error.reason || error.message || "Can't connect to the server";
             throw { reason: reason };
         }
+    },
+    getBalanceChanges: async function(account, token, block, rpcServer) {
+        let currentBalance = ethers.BigNumber.from('0');
+        let previousBalance = ethers.BigNumber.from('0');
+
+        const contract = { address: token, abi : ['function balanceOf(address owner) view returns (uint256)'] };
+        const previsouBlockNumber = Math.max(0, parseInt(block) - 1);
+
+        try {
+            const res = await serverFunctions.callContractReadMethod({
+                contract: contract,
+                method: 'balanceOf(address)',
+                options: { from: null, blockTag: block },
+                params: { 0: account },
+                rpcServer: rpcServer
+            })
+            currentBalance = res[0];
+        } catch(_error) {
+            console.log(_error)
+            currentBalance = ethers.BigNumber.from('0');
+        }
+
+        if (block > 1) {
+            try {
+                const res = await serverFunctions.callContractReadMethod({
+                    contract: contract,
+                    method: 'balanceOf(address)',
+                    options: { from: null, blockTag: previsouBlockNumber},
+                    params: { 0: account },
+                    rpcServer: rpcServer
+                });
+                previousBalance = res[0];
+            } catch(_error) {
+                console.log(_error)
+                previousBalance = ethers.BigNumber.from('0');
+            }
+        }
+
+        return {
+            address: account,
+            currentBalance: currentBalance.toString(),
+            previousBalance: previousBalance.toString(),
+            diff: currentBalance.sub(previousBalance).toString()
+        };
     }
 };
 
@@ -311,6 +355,9 @@ export const serverPlugin = {
             },
             syncTransactionData: function(workspace, hash, data) {
                 return functions.httpsCallable('syncTransactionData')({ workspace: workspace, hash: hash, data: data });
+            },
+            processTransaction: function(workspace, transactionHash) {
+                return functions.httpsCallable('processTransaction')({ workspace: workspace, transaction: transactionHash });
             },
             removeContract: function(workspace, address) {
                 return functions.httpsCallable('removeContract')({ workspace: workspace, address: address });
@@ -375,6 +422,28 @@ export const serverPlugin = {
                         .then(resolve)
                         .catch(reject);
                 });
+            },
+            processTransactions: async function(workspace, transactions) {
+                try {
+                    for (let i = 0; i < transactions.length; i++) {
+                        const transaction = transactions[i];
+                        const tokenBalanceChanges = {};
+
+                        for (let j = 0; j < transaction.tokenTransfers.length; j++) {
+                            const transfer = transaction.tokenTransfers[j];
+                            tokenBalanceChanges[transfer.token] = [];
+                            if (transfer.src != '0x0000000000000000000000000000000000000000')
+                                tokenBalanceChanges[transfer.token].push(await serverFunctions.getBalanceChanges(transfer.src, transfer.token, transaction.blockNumber, workspace.rpcServer));
+                            if (transfer.dst != '0x0000000000000000000000000000000000000000')
+                            tokenBalanceChanges[transfer.token].push(await serverFunctions.getBalanceChanges(transfer.dst, transfer.token, transaction.blockNumber, workspace.rpcServer));
+                        }
+                        functions.httpsCallable('syncTokenBalanceChanges')({ workspace: workspace.name, transaction: transaction.hash, tokenBalanceChanges: tokenBalanceChanges });
+                    }
+                } catch(error) {
+                    console.log(error);
+                    var reason = error.reason || error.message || "Can't connect to the server";
+                    throw { reason: reason };
+                }
             },
             searchForLocalChains: async function() {
                 try {

@@ -256,7 +256,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                     <div>
                       <div class="pb-1 font-weight-bold">_feeBasisPoints</div>
                       <div>=&gt; uint256</div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;"></div>
+                      <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
                       </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
@@ -268,7 +268,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                     <div>
                       <div class="pb-1 font-weight-bold">owner</div>
                       <div>=&gt; address</div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;"></div>
+                      <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
                       </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
@@ -290,7 +290,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                         </div>
                       </div>
                       <div>=&gt; uint256</div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;"></div>
+                      <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
                       </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
@@ -312,7 +312,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                         </div>
                       </div>
                       <div>=&gt; uint256</div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;"></div>
+                      <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
                       </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
@@ -708,7 +708,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                     <div>
                       <div class="pb-1 font-weight-bold">_feeBasisPoints</div>
                       <div>=&gt; uint256</div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;"></div>
+                      <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
                       </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
@@ -720,7 +720,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                     <div>
                       <div class="pb-1 font-weight-bold">owner</div>
                       <div>=&gt; address</div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;"></div>
+                      <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
                       </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
@@ -742,7 +742,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                         </div>
                       </div>
                       <div>=&gt; uint256</div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;"></div>
+                      <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
                       </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
@@ -764,7 +764,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                         </div>
                       </div>
                       <div>=&gt; uint256</div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;"></div>
+                      <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
                       </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
@@ -1212,7 +1212,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                     <div>
                       <div class="pb-1 font-weight-bold">_feeBasisPoints</div>
                       <div>=&gt; uint256</div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;"></div>
+                      <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
                       </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
@@ -1224,7 +1224,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                     <div>
                       <div class="pb-1 font-weight-bold">owner</div>
                       <div>=&gt; address</div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;"></div>
+                      <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
                       </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
@@ -1246,7 +1246,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                         </div>
                       </div>
                       <div>=&gt; uint256</div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;"></div>
+                      <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
                       </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
@@ -1268,7 +1268,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                         </div>
                       </div>
                       <div>=&gt; uint256</div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;"></div>
+                      <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
                       </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>

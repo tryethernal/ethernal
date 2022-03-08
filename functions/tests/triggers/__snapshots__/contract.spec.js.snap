@@ -40,6 +40,7 @@ Object {
   "s": "0x6ad0bebea8f80ff739a6cf9f75c057292ee2e29ded602734e5d496bd063797e3",
   "timestamp": 1642264024,
   "to": "0x63606c22157476da3b26ad1c2eae573d0387d733",
+  "tokenTransfers": Array [],
   "transactionIndex": 0,
   "type": 2,
   "v": 1,

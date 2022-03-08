@@ -1,8 +1,10 @@
 <template>
     <div>
         <span>{{ inputLabel }}
-            (<template v-if="formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Raw</a></template>
-            <template v-if="!formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Formatted</a></template>)
+            <template v-if="isFormattable">
+                (<template v-if="formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Raw</a></template>
+                <template v-if="!formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Formatted</a></template>)
+            </template>
         </span>
         <template v-if="formatted">
             <span v-if="input.type == 'address'">
@@ -17,18 +19,24 @@
                 </span>
                 <span v-else v-html="formatString(value)"></span>
             </span>
+            <span v-else-if="isInputArray">
+                [
+                    <span style="white-space: pre;" v-for="(el, idx) in value" :key="idx">
+                        <Formatted-Sol-Var :input="{ type: input.type.split('[')[0] }" :value="el" />
+                    </span>
+                ]
+            </span>
             <span v-else>
-                {{ formatResponse(value, formatted) }}
+                {{ value }}
             </span>
         </template>
-        <template v-else>{{ formatResponse(value, formatted) }}</template>
+        <template v-else>{{ value }}</template>
         &nbsp;
     </div>
 </template>
 <script>
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
-import { formatResponse } from '@/lib/utils';
 import HashLink from './HashLink';
 
 export default {
@@ -42,11 +50,10 @@ export default {
         formatted: true
     }),
     mounted: function() {
-        if (this.input.type.startsWith('uint256'))
+        if (this.input.type == 'uint256')
             this.formatted = false;
     },
     methods: {
-        formatResponse: formatResponse,
         JSONPrettyCustomFormatter: function(data, _key, _path, defaultFormatResult) {
             return typeof data === 'string' ? `"${this.formatString(data)}"` : defaultFormatResult;
         },
@@ -67,7 +74,14 @@ export default {
         }
     },
     computed: {
+        isInputArray: function() {
+            return this.input.type.endsWith(']');
+        },
+        isFormattable: function() {
+            return ['address', 'string'].indexOf(this.input.type) > -1;
+        },
         isValueDataUriJson: function() {
+            if (this.input.type != 'string') return false;
             return this.value.startsWith('data:application/json;base64,');
         },
         inputLabel: function() {
@@ -77,6 +91,7 @@ export default {
                 return `\t${this.input.type}: `;
         },
         isValueJSON: function() {
+            if (this.input.type != 'string') return false;
             if (this.isValueDataUriJson)
                 return true;
             try {
@@ -85,6 +100,7 @@ export default {
             } catch(_) { return false; }
         },
         JSONValue: function() {
+            if (this.input.type != 'string') return;
             if (this.isValueDataUriJson)
                 return JSON.parse(atob(this.value.substring(29)));
             return JSON.parse(this.value)

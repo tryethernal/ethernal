@@ -41,8 +41,12 @@ jest.mock('@/lib/trace', () => ({
     }
 }))
 jest.mock('@/plugins/firebase', () => {
+    const syncTokenBalanceChangesFunction = jest.fn();
     const httpsCallable = (fn) => {
         switch(fn) {
+            case 'syncTokenBalanceChanges':
+                return syncTokenBalanceChangesFunction;
+                break;
             case 'getUnprocessedContracts':
                 return jest.fn(() => ({
                     data: {
@@ -51,12 +55,14 @@ jest.mock('@/plugins/firebase', () => {
                         ]
                     }
                 }));
+                break;
             case 'setTokenProperties':
                 return jest.fn(() => ({
                     data: {
                         success: true
                     }
                 }));
+                break;
             default:
                 return jest.fn(() => ({ data: {}}));
         }
@@ -70,14 +76,47 @@ jest.mock('@/plugins/firebase', () => {
 import { ethers } from '../mocks/ethers';
 
 import MockHelper from '../MockHelper';
+import { functions } from '@/plugins/firebase';
 
 describe('server', () => {
     let helper, server;
 
     beforeEach(() => {
-        helper = new MockHelper({ currentWorkspace: { rpcServer: 'http://localhost:8545', localNetwork: true }}, true, false);
+        helper = new MockHelper({ currentWorkspace: { rpcServer: 'http://localhost:8545' }}, true, false);
         const wrapper = helper.mountFn({});
         server = wrapper.vm.server;
+    });
+
+    it('Should fetch balance changes & sync them', async (done) => {
+        const transaction = {
+            hash: '0x123',
+            blockNumber: '2',
+            tokenTransfers: [
+                {
+                    token: '0xdc64a140aa3e981100a9beca4e685f962f0cf6c9',
+                    src: '0x5e03a5a4784bbd887aff75dc6eef78f4a41d76d1',
+                    dst: '0x0000000000000000000000000000000000000000',
+                    amount: '1000'
+                }
+            ]
+        };
+
+        await server.processTransactions({ name: 'Hardhat', rpcServer: 'http://localhost:8545' }, [transaction]);
+        expect(functions.httpsCallable('syncTokenBalanceChanges')).toHaveBeenCalledWith({
+            workspace: 'Hardhat',
+            transaction: '0x123',
+            tokenBalanceChanges: {
+                '0xdc64a140aa3e981100a9beca4e685f962f0cf6c9': [
+                    {
+                        address: '0x5e03a5a4784bbd887aff75dc6eef78f4a41d76d1',
+                        currentBalance: '2000000000000000',
+                        previousBalance: '1000000000000000',
+                        diff: '1000000000000000'
+                    }
+                ]
+            }
+        });
+        done();
     });
 
     it('Should process and update the contracts', async (done) => {
