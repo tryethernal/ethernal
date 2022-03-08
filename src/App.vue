@@ -206,7 +206,7 @@ export default {
                     if (this.isPublicExplorer) return;
 
                     this.$store.dispatch('updateUserPlan', { uid: auth().currentUser.uid, plan: user.plan, email: auth().currentUser.email });
-                    
+
                     if (user.currentWorkspace) {
                         user.currentWorkspace.get().then((workspaceQuery) => this.initWorkspace({ ...workspaceQuery.data(), name: workspaceQuery.id, userId: this.user.uid }));
                     }
