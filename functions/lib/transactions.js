@@ -2,7 +2,6 @@ const ethers = require('ethers');
 const { getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers } = require('./firebase');
 const { getFunctionSignatureForTransaction } = require('./utils');
 const { getTokenTransfers, getTransactionMethodDetails } = require('./abi');
-const ERC20_ABI = require('./abis/erc20.json');
 
 exports.processTransactions = async (userId, workspace, transactions) => {
     for (let i = 0; i < transactions.length; i++) {
@@ -15,18 +14,20 @@ exports.processTransactions = async (userId, workspace, transactions) => {
         if (contract && contract.proxy)
             contract = await getContractData(userId, workspace, contract.proxy);
 
-        const abi = contract && contract.abi ? contract.abi : ERC20_ABI;
-
-        try {
-            const transactionMethodDetails = getTransactionMethodDetails(transaction, abi);
-            await storeTransactionMethodDetails(userId, workspace, transaction.hash, transactionMethodDetails);
-        } catch(error) {
-            console.log(error)
-            await storeTransactionMethodDetails(userId, workspace, transaction.hash, null);
+        if (contract && contract.abi) {
+            try {
+                const transactionMethodDetails = getTransactionMethodDetails(transaction, abi);
+                await storeTransactionMethodDetails(userId, workspace, transaction.hash, transactionMethodDetails);
+            } catch(error) {
+                console.log(error)
+                await storeTransactionMethodDetails(userId, workspace, transaction.hash, null);
+            }
         }
+        else
+            await storeTransactionMethodDetails(userId, workspace, transaction.hash, null);
 
         try {
-            const tokenTransfers = getTokenTransfers(transaction, abi);
+            const tokenTransfers = getTokenTransfers(transaction);
             await storeTransactionTokenTransfers(userId, workspace, transaction.hash, tokenTransfers);
         } catch(error) {
             console.log(error)

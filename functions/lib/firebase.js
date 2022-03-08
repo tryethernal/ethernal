@@ -118,7 +118,7 @@ const storeTransactionMethodDetails = (userId, workspace, transactionHash, metho
 };
 
 const storeTransactionTokenTransfers = (userId, workspace, transactionHash, tokenTransfers) => {
-    if (!userId || !workspace || !transactionHash) throw '[storeTransactionTokenTransfers] Missing parameter';
+    if (!userId || !workspace || !transactionHash || !tokenTransfers) throw '[storeTransactionTokenTransfers] Missing parameter';
     return _getWorkspace(userId, workspace)
         .collection('transactions')
         .doc(transactionHash)

@@ -297,7 +297,7 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
             ...sTransaction,
             receipt: sTransactionReceipt,
             timestamp: data.block.timestamp,
-            tokenBalanceChanges: [],
+            tokenBalanceChanges: {},
             tokenTransfers: []
         });
     

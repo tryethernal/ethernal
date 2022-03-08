@@ -11,7 +11,7 @@ describe('processTransactions ', () => {
         await helper.setUser();
     });
 
-    it('Should store method details', async () => {
+    it('Should get contract data from to, get proxy data, store transaction details & store token transfers ', async () => {
         await helper.workspace
             .collection('contracts')
             .doc(Transaction.to)
@@ -27,7 +27,7 @@ describe('processTransactions ', () => {
         expect(transactionRef.data().methodDetails).toMatchSnapshot();
     });
 
-    it('Should not fail when data for a tx cannot be decoded', async () => {
+    it('Should store empty transaction details & store token transfers when no to', async () => {
         await helper.workspace
             .collection('contracts')
             .doc(Transaction.to)
@@ -41,11 +41,11 @@ describe('processTransactions ', () => {
         await processTransactions('123', 'hardhat', [Transaction])
     });
 
-    it('Should skip the processing without failing if there is no to address', async () => {
+    it('Should store empty transaction details & store token transfers when no contracts @to', async () => {
         await processTransactions('123', 'hardhat', [{ ...Transaction, to: null }])
     });
 
-    it('Should skip the processing without failing if there is no matching contract', async () => {
+    it('Should store empty transactions token transfers if no transfers', async () => {
         await processTransactions('123', 'hardhat', [Transaction])
     });
 

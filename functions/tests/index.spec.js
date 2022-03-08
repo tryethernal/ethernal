@@ -72,6 +72,62 @@ const Block = require('./fixtures/Block.json');
 let auth = { auth: { uid: '123' }};
 let helper;
 
+describe('processTransaction', () => {
+    beforeEach(() => {
+        helper = new Helper(process.env.GCLOUD_PROJECT);
+    });
+
+    it('Should return a success flag', async () => {
+        const wrapped = helper.test.wrap(index.processTransaction);
+
+        const data = {
+            workspace: 'hardhat',
+            transaction: Transaction.hash
+        };
+
+        const result = await wrapped(data, auth);
+        expect(result).toEqual({ success: true });
+    });
+
+    afterEach(() => helper.clean());
+});
+
+describe('syncTokenBalanceChanges', () => {
+    beforeEach(() => {
+        helper = new Helper(process.env.GCLOUD_PROJECT);
+    });
+
+    it('Should return a success flag', async () => {
+        const wrapped = helper.test.wrap(index.processTransaction);
+
+        const data = {
+            workspace: 'hardhat',
+            transaction: Transaction.hash,
+            tokenBalanceChanges: {
+                '0xdc64a140aa3e981100a9beca4e685f962f0cf6c9': [
+                    {
+                        address: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+                        currentBalance: '99999999870000000000000000000',
+                        previousBalance: '99999999880000000000000000000',
+                        diff: '-10000000000000000000'
+                    },
+                    {
+                        address: '0x2d481eeb2ba97955cd081cf218f453a817259ab1',
+                        currentBalance: '130000000000000000000',
+                        previousBalance: '120000000000000000000',
+                        diff: '10000000000000000000'
+                    }
+                ]
+            }
+        };
+
+        const result = await wrapped(data, auth);
+        expect(result).toEqual({ success: true });
+    });
+
+    afterEach(() => helper.clean());
+});
+
 describe('getUnprocessedContracts', () => {
     beforeEach(() => {
         helper = new Helper(process.env.GCLOUD_PROJECT);

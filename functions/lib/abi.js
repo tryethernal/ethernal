@@ -1,9 +1,12 @@
 const ethers = require('ethers');
 const { stringifyBns, sanitize } = require('./utils');
 
+const ERC20_ABI = require('./abis/erc20.json');
+
 const decodeLog = (log, abi) => {
     const ethersInterface = new ethers.utils.Interface(abi);
     let decodedLog;
+
     try {
         decodedLog = ethersInterface.parseLog(log);
     }
@@ -28,13 +31,13 @@ const decodeLog = (log, abi) => {
     return decodedLog;
 };
 
-const getTokenTransfers = (transaction, abi) => {
+const getTokenTransfers = (transaction) => {
     const transfers = [];
 
     for (let i = 0; i < transaction.receipt.logs.length; i++) {
         const log = transaction.receipt.logs[i];
         if (log.topics[0] == '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
-            const decodedLog = decodeLog(log, abi);
+            const decodedLog = decodeLog(log, ERC20_ABI);
             if (decodedLog) {
                 transfers.push(sanitize(stringifyBns({
                     token: log.address,

@@ -192,7 +192,7 @@ export default {
                     if (!data.tokenTransfers)
                         Object.defineProperty(data, 'tokenTransfers', { value: [] });
                     if (!data.tokenBalanceChanges)
-                        Object.defineProperty(data, 'tokenBalanceChanges', { value: [] });
+                        Object.defineProperty(data, 'tokenBalanceChanges', { value: {} });
 
                     return data;
                 }},
