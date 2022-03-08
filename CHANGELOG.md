@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.6] - 2022-03-08
+### Fixed
+- Onboarding bug that prevented workspace creation
+- Alchemy integration bug that prevented activation if url wasn't alchemy.io
+
 ## [1.5.5] - 2022-03-03
 ### Fixed
 - Checksumed addresses now works for addresses pages
