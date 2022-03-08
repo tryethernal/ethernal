@@ -52,7 +52,7 @@ export default new Vuex.Store({
             state.user = { ...state.user, plan: plan };
         },
         SET_ONBOARDED_STATUS(state, status) {
-            state.user.onboarded = status;
+            state.user = { ...state.user, onboarded: status };
         },
         SET_TRANSACTION_COUNT(state, count) {
             state.stats.transactionCount = count;
