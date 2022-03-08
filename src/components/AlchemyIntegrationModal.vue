@@ -40,7 +40,7 @@ export default {
     methods: {
         canUseIntegration: function() {
             const server = new URL(this.currentWorkspace.rpcServer);
-            return server.host.indexOf('alchemyapi.io') > -1;
+            return server.host.indexOf('alchemyapi.io') > -1 || server.host.indexOf('alchemy.com') > -1;
         },
         copyWebhook: function() {
             const webhookField = document.querySelector('#copyElement');
