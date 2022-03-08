@@ -1,7 +1,25 @@
 <template>
     <v-container fluid>
-        <div v-if="transaction">
-            <h2 class="text-truncate mb-2">Tx {{ transaction.hash }}</h2>
+        <template v-if="transaction">
+            <v-row>
+                <v-col>
+                    <h2 class="text-truncate mb-2">Tx {{ transaction.hash }}</h2>
+                </v-col>
+                <v-spacer></v-spacer>
+                <v-col align="right">
+                    <v-progress-circular v-show="processing" indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>
+                    <v-menu :right="true">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn icon v-bind="attrs" v-on="on">
+                                <v-icon>mdi-dots-vertical</v-icon>
+                            </v-btn>
+                        </template>
+                        <v-list>
+                            <v-list-item :disabled="!transaction.hash || processing" link @click="reprocessTransaction()">Reprocess Transaction</v-list-item>
+                        </v-list>
+                    </v-menu>
+                </v-col>
+            </v-row>
             <span v-if="transaction.receipt">
                 <v-chip small class="success mr-2" v-if="transaction.receipt.status">
                     <v-icon small class="white--text mr-1">mdi-check</v-icon>
@@ -71,21 +89,21 @@
                 </v-col>
             </v-row>
 
-            <v-row class="my-2" v-show="tokenTransfers.length">
+            <v-row class="my-2" v-show="transaction.tokenTransfers.length">
                 <v-col>
                     <h3 class="mb-2">Token Transfers</h3>
-                    <Token-Transfers :transfers="tokenTransfers" />
+                    <Token-Transfers :transfers="transaction.tokenTransfers" />
                 </v-col>
             </v-row>
 
-            <v-row class="my-2" v-show="tokenTransfers.length">
+            <v-row class="my-2" v-show="Object.keys(transaction.tokenBalanceChanges).length">
                 <v-col>
                     <h3 class="mb-2">Balance Changes</h3>
-                    <Tokens-Balance-Diff v-for="(tb, idx) in Object.keys(tokensBalances)"
+                    <Tokens-Balance-Diff v-for="(token, idx) in Object.keys(transaction.tokenBalanceChanges)"
                         class="my-6"
-                        :contract="tokensBalances[tb].contract"
-                        :addresses="tokensBalances[tb].addresses"
-                        :block="transaction.blockNumber"
+                        :token="token"
+                        :balanceChanges="transaction.tokenBalanceChanges[token]"
+                        :blockNumber="transaction.blockNumber"
                         :key="idx" />
                 </v-col>
             </v-row>
@@ -93,9 +111,11 @@
             <v-row v-if="transaction.to">
                 <v-col>
                     <Transaction-Data v-if="contract && contract.abi" :abi="contract.abi" :transaction="transaction" :withoutStorageHeader="true" />
-                    <div v-else class="pa-2 grey lighten-3">
-                        <i>Couldn't decode data for this transaction. This probably means that you haven't <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/contracts/interacting-with-the-contract">synchronized contract metadata</a>. </i>
-                    </div>
+                    <v-card v-else outlined>
+                        <v-card-text>
+                            <i>Couldn't decode data for this transaction. This probably means that you haven't <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/contracts/interacting-with-the-contract">synchronized contract metadata</a>. </i>
+                        </v-card-text>
+                    </v-card>
             </v-col>
             </v-row>
 
@@ -109,15 +129,15 @@
                     Empty trace (only CREATE(2) and CALLs are shown).
                 </v-col>
             </v-row>
-        </div>
-        <div v-else>
+        </template>
+        <template v-else>
             <h2 class="text-truncate mb-2">Tx {{ hash }}</h2>
             <v-row>
                 <v-col>
                     Cannot find transaction. If it just happened, it might still be in the mempool. Data will automatically appear when available.
                 </v-col>
             </v-row>
-        </div>
+        </template>
     </v-container>
 </template>
 
@@ -129,7 +149,6 @@ import TraceStep from './TraceStep';
 import TokenTransfers from './TokenTransfers';
 import TokensBalanceDiff from './TokensBalanceDiff';
 import FromWei from '../filters/FromWei';
-import { decodeLog } from '../lib/abi';
 
 export default {
     name: 'Transaction',
@@ -153,59 +172,31 @@ export default {
             receipt: {
                 gasUsed: 0,
                 logs: []
-            }
+            },
+            tokenTransfers: [],
+            tokenBalanceChanges: {}
         },
         jsonInterface: null,
         parsedLogsData: [],
         block: {
             gasLimit: 0
         },
-        tokenTransfers: [],
-        tokensBalances: {}
+        processing: false
     }),
-    methods: {
-        parseTokenTransfers: async function() {
-            if (!this.transaction || !this.transaction.receipt || !this.transaction.receipt.logs) return;
-            for (let i = 0; i < this.transaction.receipt.logs.length; i++) {
-                const log = this.transaction.receipt.logs[i];
-                if (log.topics[0] == '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
-                    this.db.collection('contracts').doc(log.address.toLowerCase())
-                        .get()
-                        .then(async (contractDoc) => {
-                            if (!contractDoc.exists) return;
-
-                            let contract = contractDoc.data();
-
-                            if (contract.proxy)
-                                contract = (await this.db.collection('contracts').doc(contract.proxy).get()).data()
-
-                            const decodedLog = decodeLog(log, contract.abi);
-
-                            if (decodedLog) {
-                                this.tokenTransfers.push({
-                                    token: log.address,
-                                    src: decodedLog.args[0],
-                                    dst: decodedLog.args[1],
-                                    amount: decodedLog.args[2]
-                                });
-
-                                if (!this.tokensBalances[contract.address])
-                                    this.tokensBalances[contract.address] = { addresses: [] };
-
-                                this.tokensBalances[contract.address].contract = contract;
-                                this.tokensBalances[contract.address].addresses.push(decodedLog.args[0], decodedLog.args[1]);
-                            }
-                        })
-                }
-            }
-        }
-    },
     watch: {
         hash: {
             immediate: true,
             handler(hash) {
-                this.$bind('transaction', this.db.collection('transactions').doc(hash), { wait: true })
-                    .then(this.parseTokenTransfers);
+                this.$bind('transaction', this.db.collection('transactions').doc(hash), { serialize: (snapshot) => {
+                    const data = snapshot.data();
+                    if (!data.tokenTransfers)
+                        Object.defineProperty(data, 'tokenTransfers', { value: [] });
+                    if (!data.tokenBalanceChanges)
+                        Object.defineProperty(data, 'tokenBalanceChanges', { value: {} });
+
+                    return data;
+                }},
+                { wait: true });
             }
         },
         transaction: function() {
@@ -221,10 +212,27 @@ export default {
             }
         }
     },
+    methods: {
+        reprocessTransaction: function() {
+            this.processing = true
+            this.server
+                .processTransaction(this.currentWorkspace.name, this.hash)
+                .then(() => {
+                    this.server.processTransactions(this.currentWorkspace, [this.transaction])
+                        .catch(console.log)
+                        .finally(() => this.processing = false);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.processing = false;
+                });
+        }
+    },
     computed: {
         ...mapGetters([
             'user',
-            'chain'
+            'chain',
+            'currentWorkspace'
         ])
     }
 }

@@ -34,11 +34,6 @@ describe('Transaction.vue', () => {
                 token: { name: 'USD Coin', symbol: 'USDC', decimals: 6 },
                 abi: ERC20ABI
             });
-
-        for (let i = 0; i < 2; i++)
-            helper.mocks.server.callContractReadMethod
-                .mockImplementationOnce(() => new Promise((resolve) => resolve([ethers.BigNumber.from('100000000000000000000')])))
-                .mockImplementationOnce(() => new Promise((resolve) => resolve([ethers.BigNumber.from('1000000000000000000')])))
     });
 
     it('Should display the transaction', async (done) => {

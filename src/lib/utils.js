@@ -1,5 +1,4 @@
 const Web3 = require('web3');
-const ethers = require('ethers');
 
 export const getPaginatedQuery = function(collection, items, currentOptions, newOptions) {
     let query;
@@ -57,18 +56,6 @@ export const processMethodCallParam = function(param, inputType) {
     return param;
 };
 
-export const formatSolidityObject = function(obj, commified) {
-    if (!obj)
-        return obj;
-
-    if (ethers.BigNumber.isBigNumber(obj) && commified)
-        return ethers.utils.commify(ethers.utils.formatUnits(ethers.BigNumber.from(obj)));
-    else if (ethers.BigNumber.isBigNumber(obj))
-        return ethers.BigNumber.from(obj).toString();
-    else
-        return obj;
-};
-
 export const formatContractPattern = function(pattern) {
     switch (pattern) {
         case 'erc20':
@@ -78,19 +65,4 @@ export const formatContractPattern = function(pattern) {
         default:
             return pattern;
     }
-};
-
-export const formatResponse = function(response, commified) {
-    if (Array.isArray(response)) {
-        let formattedResponse = [];
-        response.forEach((el) => {
-            formattedResponse.push(formatSolidityObject(el, commified));
-        })
-        return `[${formattedResponse.join(', ')}]`;
-    }
-    else if (response !== null && typeof response === 'object') {
-        return formatSolidityObject(response, commified);
-    }
-    else
-        return response;
 };

@@ -1,55 +1,37 @@
 const ethers = require('ethers');
-const { getContractData, storeTransactionMethodDetails } = require('./firebase');
+const { getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers } = require('./firebase');
 const { getFunctionSignatureForTransaction } = require('./utils');
+const { getTokenTransfers, getTransactionMethodDetails } = require('./abi');
 
 exports.processTransactions = async (userId, workspace, transactions) => {
     for (let i = 0; i < transactions.length; i++) {
+        let contract;
         const transaction = transactions[i];
-        try {
-            if (!transaction.to) continue;
 
-            const contract = await getContractData(userId, workspace, transaction.to);
+        if (transaction.to)
+            contract = await getContractData(userId, workspace, transaction.to);
 
-            if (!contract || !contract.abi) continue;
+        if (contract && contract.proxy)
+            contract = await getContractData(userId, workspace, contract.proxy);
 
-            const jsonInterface = new ethers.utils.Interface(contract.abi);
-            const parsedTransactionData = jsonInterface.parseTransaction({ data: transaction.data, value: transaction.value });
-            const fragment = parsedTransactionData.functionFragment;
-
-            const label = [`${fragment.name}(`];
-            const inputsLabel = [];
-            for (let i = 0; i < fragment.inputs.length; i ++) {
-                const input = fragment.inputs[i];
-                const param = [];
-                param.push(input.type)
-                if (input.name)
-                    param.push(` ${input.name}`);
-                if (parsedTransactionData.args[i])
-                    param.push(`: ${parsedTransactionData.args[i]}`)
-                inputsLabel.push(param.join(''));
+        if (contract && contract.abi) {
+            try {
+                const transactionMethodDetails = getTransactionMethodDetails(transaction, contract.abi);
+                await storeTransactionMethodDetails(userId, workspace, transaction.hash, transactionMethodDetails);
+            } catch(error) {
+                console.log(error)
+                await storeTransactionMethodDetails(userId, workspace, transaction.hash, null);
             }
+        }
+        else
+            await storeTransactionMethodDetails(userId, workspace, transaction.hash, null);
 
-            if (inputsLabel.length > 1)
-                label.push('\n\t');
-
-            label.push(inputsLabel.join(',\n\t'));
-
-            if (inputsLabel.length > 1)
-                label.push('\n');
-
-            label.push(')');
-
-            const signature = `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')'
-
-            await storeTransactionMethodDetails(userId, workspace, transaction.hash, {
-                name: parsedTransactionData.name,
-                label: label.join(''),
-                signature: signature
-            });
+        try {
+            const tokenTransfers = getTokenTransfers(transaction);
+            await storeTransactionTokenTransfers(userId, workspace, transaction.hash, tokenTransfers);
         } catch(error) {
             console.log(error)
-            await storeTransactionMethodDetails(userId, workspace, transaction.hash, null);
-            continue;
+            await storeTransactionTokenTransfers(userId, workspace, transaction.hash, []);
         }
     }
 };

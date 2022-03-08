@@ -117,6 +117,14 @@ const storeTransactionMethodDetails = (userId, workspace, transactionHash, metho
         .set({ methodDetails: methodDetails }, { merge: true });
 };
 
+const storeTransactionTokenTransfers = (userId, workspace, transactionHash, tokenTransfers) => {
+    if (!userId || !workspace || !transactionHash || !tokenTransfers) throw '[storeTransactionTokenTransfers] Missing parameter';
+    return _getWorkspace(userId, workspace)
+        .collection('transactions')
+        .doc(transactionHash)
+        .set({ tokenTransfers: tokenTransfers }, { merge: true });
+};
+
 const storeContractData = (userId, workspace, address, data) => {
     if (!userId || !workspace || !address || !data) throw '[storeContractData] Missing parameter';
 
@@ -257,6 +265,15 @@ const storeTransactionData = (userId, workspace, hash, data) => {
         .set({ storage: data }, { merge: true });
 };
 
+const storeTokenBalanceChanges = (userId, workspace, transactionHash, tokenBalanceChanges) => {
+    if (!userId || !workspace || !transactionHash || !tokenBalanceChanges) throw '[storeTokenBalanceChanges] Missing parameter';
+
+    return _getWorkspace(userId, workspace)
+        .collection('transactions')
+        .doc(transactionHash)
+        .set({ tokenBalanceChanges: tokenBalanceChanges }, { merge: true });
+};
+
 const updateAccountBalance = (userId, workspace, account, balance) => {
     if (!userId || !workspace || !account || !balance) throw '[updateAccountBalance] Missing parameter';
 
@@ -386,6 +403,17 @@ const incrementAddressTransactionCount = async (userId, workspace, address, incr
         .set({ value: admin.firestore.FieldValue.increment(incr) }, { merge: true });
 };
 
+const getTransaction = async (userId, workspace, transactionHash) => {
+    if (!userId || !workspace || !transactionHash) throw '[getTransaction] Missing parameter';
+
+    const query = await _getWorkspace(userId, workspace)
+        .collection('transactions')
+        .doc(transactionHash)
+        .get();
+
+    return query.data();
+};
+
 module.exports = {
     Timestamp: admin.firestore.Timestamp,
     firestore: _db,
@@ -428,5 +456,8 @@ module.exports = {
     storeTransactionMethodDetails: storeTransactionMethodDetails,
     incrementBlockCount: incrementBlockCount,
     incrementTotalTransactionCount: incrementTotalTransactionCount,
-    incrementAddressTransactionCount: incrementAddressTransactionCount
+    incrementAddressTransactionCount: incrementAddressTransactionCount,
+    storeTokenBalanceChanges: storeTokenBalanceChanges,
+    storeTransactionTokenTransfers: storeTransactionTokenTransfers,
+    getTransaction: getTransaction
 };

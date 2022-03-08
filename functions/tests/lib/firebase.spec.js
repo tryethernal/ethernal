@@ -32,7 +32,10 @@ const {
     getUnprocessedContracts,
     isUserPremium,
     canUserSyncContract,
-    getContractTransactions
+    getContractTransactions,
+    storeTransactionTokenTransfers,
+    storeTokenBalanceChanges,
+    getTransaction
 } = require('../../lib/firebase');
 
 const Block = require('../fixtures/Block');
@@ -48,6 +51,86 @@ beforeEach(() => {
 
 afterEach(async () => {
     await helper.clean();
+});
+
+describe('storeTransactionTokenTransfers', () => {
+    it('Should store transaction token transfers', async () => {
+        await helper.workspace
+            .collection('transactions')
+            .doc('0x123')
+            .set({ hash: '0x123', tokenTransfers: [] });
+
+        const tokenTransfers = [
+            {
+                token: '0xdc64a140aa3e981100a9beca4e685f962f0cf6c9',
+                src: '0x5e03a5a4784bbd887aff75dc6eef78f4a41d76d1',
+                dst: '0x0000000000000000000000000000000000000000',
+                amount: '1000'
+            }
+        ];
+
+        await storeTransactionTokenTransfers('123', 'hardhat', '0x123', tokenTransfers);
+
+        const query = await helper.workspace
+            .collection('transactions')
+            .doc('0x123')
+            .get();
+
+        expect(query.data()).toEqual({
+            hash: '0x123',
+            tokenTransfers: tokenTransfers
+        });
+    });
+});
+
+describe('storeTokenBalanceChanges', () => {
+    it('Should store token balance changes', async () => {
+        await helper.workspace
+            .collection('transactions')
+            .doc('0x123')
+            .set({ hash: '0x123', tokenBalanceChanges: {} });
+
+        const tokenBalanceChanges = {
+            '0xdc64a140aa3e981100a9beca4e685f962f0cf6c9': [
+                {
+                    address: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+                    currentBalance: '99999999870000000000000000000',
+                    previousBalance: '99999999880000000000000000000',
+                    diff: '-10000000000000000000'
+                },
+                {
+                    address: '0x2d481eeb2ba97955cd081cf218f453a817259ab1',
+                    currentBalance: '130000000000000000000',
+                    previousBalance: '120000000000000000000',
+                    diff: '10000000000000000000'
+                }
+            ]
+        };
+
+        await storeTokenBalanceChanges('123', 'hardhat', '0x123', tokenBalanceChanges);
+
+        const query = await helper.workspace
+            .collection('transactions')
+            .doc('0x123')
+            .get();
+
+        expect(query.data()).toEqual({
+            hash: '0x123',
+            tokenBalanceChanges: tokenBalanceChanges
+        });
+    });
+});
+
+describe('getTransaction', () => {
+    it('Should return the transaction', async () => {
+        await helper.workspace
+            .collection('transactions')
+            .doc('0x123')
+            .set({ hash: '0x123' });
+
+        const transaction = await getTransaction('123', 'hardhat', '0x123');
+        expect(transaction).toEqual({ hash: '0x123'});
+    });
 });
 
 describe('canUserSyncContract', () => {

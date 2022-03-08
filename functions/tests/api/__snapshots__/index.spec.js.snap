@@ -30,6 +30,7 @@ Object {
     "cumulativeGasUsed": "40662",
     "from": "0xe93381fb4c4f14bda253907b18fad305d799241a",
     "gasUsed": "40662",
+    "hash": "0x123",
     "logs": Array [
       Object {
         "address": "0xc00e94Cb662C3520282E6f5717214004A7f26888",
