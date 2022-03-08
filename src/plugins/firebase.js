@@ -40,7 +40,7 @@ export const dbPlugin = {
                     .doc(currentWorkspace)
                     .collection('transactions')
                     .where('tokenTransfers', '!=', [])
-                    .where('tokenBalanceChanges', '==', [])
+                    .where('tokenBalanceChanges', '==', {})
                     .onSnapshot((docs) => {
                         const transactions = [];
                         docs.forEach(doc => transactions.push(doc.data()));
