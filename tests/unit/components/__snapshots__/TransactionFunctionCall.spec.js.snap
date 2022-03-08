@@ -7,8 +7,9 @@ exports[`TransactionFunctionCall.vue Should display transaction call 1`] = `
 
     <div>
       <div class="ml-4"><span>	address dst: 
-        (<a id="switchFormatted">Display Raw</a> <!---->)
-    </span> <span><span><a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <span>
+        
+            (<a id="switchFormatted">Display Raw</a> <!---->)
+        </span> <span><span><a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xc00e94Cb662C3520282E6f5717214004A7f26888" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></span>
         <!----></span></span>
         &nbsp;
@@ -16,8 +17,7 @@ exports[`TransactionFunctionCall.vue Should display transaction call 1`] = `
     </div>
     <div>
       <div class="ml-4"><span>	uint256 rawAmount: 
-        (<!----> <a id="switchFormatted">Display Formatted</a>)
-    </span> 1
+        <!----></span> 1
         &nbsp;
       </div>
     </div>
@@ -39,12 +39,21 @@ exports[`TransactionFunctionCall.vue Should handle arrays as parameters 1`] = `
 
     <div>
       <div class="ml-4"><span>	uint256[] values: 
-        (<!----> <a id="switchFormatted">Display Formatted</a>)
-    </span> [1, 3]
+        <!----></span> <span>
+            [
+                <span style="white-space: pre;"><div><span>	uint256: 
+        <!----></span> 1
         &nbsp;
-      </div>
-    </div>
-    )
+      </div></span><span style="white-space: pre;"><div><span>	uint256: 
+        <!----></span> 3
+      &nbsp;
+    </div></span>
+    ]
+    </span>
+    &nbsp;
   </div>
+</div>
+)
+</div>
 </div>
 `;

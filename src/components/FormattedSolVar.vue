@@ -19,6 +19,13 @@
                 </span>
                 <span v-else v-html="formatString(value)"></span>
             </span>
+            <span v-else-if="isInputArray">
+                [
+                    <span style="white-space: pre;" v-for="(el, idx) in value" :key="idx">
+                        <Formatted-Sol-Var :input="{ type: input.type.split('[')[0] }" :value="el" />
+                    </span>
+                ]
+            </span>
             <span v-else>
                 {{ value }}
             </span>
@@ -43,7 +50,7 @@ export default {
         formatted: true
     }),
     mounted: function() {
-        if (this.input.type.startsWith('uint256'))
+        if (this.input.type == 'uint256')
             this.formatted = false;
     },
     methods: {
@@ -67,10 +74,14 @@ export default {
         }
     },
     computed: {
+        isInputArray: function() {
+            return this.input.type.endsWith(']');
+        },
         isFormattable: function() {
             return ['address', 'string'].indexOf(this.input.type) > -1;
         },
         isValueDataUriJson: function() {
+            if (this.input.type != 'string') return false;
             return this.value.startsWith('data:application/json;base64,');
         },
         inputLabel: function() {
@@ -80,6 +91,7 @@ export default {
                 return `\t${this.input.type}: `;
         },
         isValueJSON: function() {
+            if (this.input.type != 'string') return false;
             if (this.isValueDataUriJson)
                 return true;
             try {
@@ -88,6 +100,7 @@ export default {
             } catch(_) { return false; }
         },
         JSONValue: function() {
+            if (this.input.type != 'string') return;
             if (this.isValueDataUriJson)
                 return JSON.parse(atob(this.value.substring(29)));
             return JSON.parse(this.value)

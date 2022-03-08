@@ -13,8 +13,8 @@
             :label="inputSignature(input)">
         </v-text-field>
         <div>=> {{ outputSignature }}</div>
-        <div id="call" class="grey lighten-3 pa-2" v-show="results.length">
-            <FormattedSolVar v-for="(val, idx) in results" :input="val.input" :value="val.value" :key="idx" />
+        <div id="call" v-show="results.length">
+            <Formatted-Sol-Var class="grey lighten-3 pa-2 mt-2" v-for="(val, idx) in results" :input="val.input" :value="val.value" :key="idx" />
         </div>
         <div id="call" class="grey lighten-3 pa-2" v-show="error">
             {{ error }}
