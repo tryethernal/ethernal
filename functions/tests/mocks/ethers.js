@@ -1,5 +1,6 @@
 const ethers = jest.mock('ethers', () => {
     const original = jest.requireActual('ethers');
+
     const provider = {
         send: (command) => {
             return new Promise((resolve) => {
