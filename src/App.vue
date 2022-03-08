@@ -148,14 +148,7 @@ export default {
             auth().signOut();
         },
         launchOnboarding: function() {
-            this.$store.dispatch('updateOnboardedStatus', false);
-            this.$refs.onboardingModal.open()
-                .then((res) => {
-                    if (res) {
-                        this.$store.dispatch('updateOnboardedStatus', true);
-                        this.loadWorkspace(res.name);
-                    }
-                })
+            this.$refs.onboardingModal.open();
         },
         initPublicExplorer: function() {
             this.db.getPublicExplorerParams(this.publicExplorer.slug)
@@ -194,6 +187,7 @@ export default {
         initWorkspace: function(data) {
             if (!data.userId || !data.name) return;
             const isAdmin = !!auth().currentUser && auth().currentUser.uid == data.userId;
+            this.$store.dispatch('updateOnboardedStatus', true);
             this.$store.dispatch('updateCurrentWorkspace', { isAdmin: isAdmin, ...data })
                 .then(() => {
                     this.appBarComponent = 'rpc-connector';
@@ -212,8 +206,7 @@ export default {
                     if (this.isPublicExplorer) return;
 
                     this.$store.dispatch('updateUserPlan', { uid: auth().currentUser.uid, plan: user.plan, email: auth().currentUser.email });
-                    this.$store.dispatch('updateOnboardedStatus', true);
-
+                    
                     if (user.currentWorkspace) {
                         user.currentWorkspace.get().then((workspaceQuery) => this.initWorkspace({ ...workspaceQuery.data(), name: workspaceQuery.id, userId: this.user.uid }));
                     }
