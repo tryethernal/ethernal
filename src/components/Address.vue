@@ -37,9 +37,9 @@
                             <Import-Artifact-Modal ref="importArtifactModal" v-if="currentWorkspace.isAdmin" />
                             <v-card-text v-if="contract.name">
                                 Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded.<span v-if="currentWorkspace.isAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
-                                <div v-if="contract.dependencies.length" class="mb-1 mt-2">
+                                <div v-if="Object.keys(contract.dependencies).length" class="mb-1 mt-2">
                                     <h5>Dependencies:</h5>
-                                    {{ contract.dependencies.join(', ') }}
+                                    {{ Object.keys(contract.dependencies).join(', ') }}
                                 </div>
                             </v-card-text>
                             <v-card-text v-else>
@@ -372,8 +372,9 @@ export default {
                 this.db.contractStorage(hash).once('value', (snapshot) => {
                     if (snapshot.val()) {
                         this.contract.artifact = snapshot.val().artifact;
-                        var dependencies = snapshot.val().dependencies;
-                        this.contract = { ...this.contract, dependencies: Object.keys(dependencies), watchedPaths: this.contract.watchedPaths };
+                        const dependencies = {};
+                        Object.keys(snapshot.val().dependencies).forEach((dep) => dependencies[dep] = JSON.parse(snapshot.val().dependencies[dep]));
+                        this.contract = { ...this.contract, dependencies: dependencies, watchedPaths: this.contract.watchedPaths };
                         this.decodeContract();
                     }
                     else {
