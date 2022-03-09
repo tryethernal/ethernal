@@ -229,13 +229,13 @@ describe('Address.vue', () => {
         }, 1500);
     });
 
-    it('Should display the contract storage structure', async (done) => {
+    it.only('Should display the contract storage structure', async (done) => {
         const db = helper.mocks.admin;
         await db.collection('contracts').doc('123').set({ name: 'Amalfi', address: '123', abi: AmalfiContract.artifact.abi });
 
         await db.contractStorage('123/artifact').set(AmalfiContract.artifact);
         for (const dependency in AmalfiContract.dependencies)
-            await db.contractStorage(`123/dependencies/${dependency}`).set(AmalfiContract.dependencies[dependency]);
+            await db.contractStorage(`123/dependencies/${dependency}`).set(JSON.stringify(AmalfiContract.dependencies[dependency]));
 
         const transaction = {
             hash: '0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0',
