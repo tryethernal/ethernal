@@ -11,7 +11,7 @@ import { isErc20 } from '../lib/contract';
 const serverFunctions = {
     // Private
     _getDependenciesArtifact: function(contract) {
-        return contract.dependencies ? Object.entries(contract.dependencies).map(dep => JSON.parse(dep[1].artifact)) : [];
+        return contract.dependencies ? Object.entries(contract.dependencies).map(dep => dep[1]) : [];
     },
     _buildStructure: async function(contract, rpcServer) {
         var web3 = new Web3(serverFunctions._getWeb3Provider(rpcServer));
