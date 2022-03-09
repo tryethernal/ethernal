@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.1] - 2022-03-09
+### Fixed
+- Bug that prevented storage from being displayed
+
 ## [1.6.0] - 2022-03-08
 ### Changed
 - Token transfers are now processed server side & stored - they will be displayed even if there is no ABI associated to the contract
