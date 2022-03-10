@@ -307,10 +307,13 @@ const serverFunctions = {
                 params: { 0: account },
                 rpcServer: rpcServer
             })
-            currentBalance = res[0];
+            if (ethers.BigNumber.isBigNumber(res[0]))
+                currentBalance = res[0];
+            else
+                throw 'Not a big number result'
         } catch(_error) {
             console.log(_error)
-            currentBalance = ethers.BigNumber.from('0');
+            return null;
         }
 
         if (block > 1) {
@@ -322,10 +325,13 @@ const serverFunctions = {
                     params: { 0: account },
                     rpcServer: rpcServer
                 });
-                previousBalance = res[0];
+                if (ethers.BigNumber.isBigNumber(res[0]))
+                    previousBalance = res[0];
+                else
+                    throw 'Not a big number result'
             } catch(_error) {
                 console.log(_error)
-                previousBalance = ethers.BigNumber.from('0');
+                return null;
             }
         }
 
@@ -431,13 +437,24 @@ export const serverPlugin = {
 
                         for (let j = 0; j < transaction.tokenTransfers.length; j++) {
                             const transfer = transaction.tokenTransfers[j];
-                            tokenBalanceChanges[transfer.token] = [];
-                            if (transfer.src != '0x0000000000000000000000000000000000000000')
-                                tokenBalanceChanges[transfer.token].push(await serverFunctions.getBalanceChanges(transfer.src, transfer.token, transaction.blockNumber, workspace.rpcServer));
-                            if (transfer.dst != '0x0000000000000000000000000000000000000000')
-                            tokenBalanceChanges[transfer.token].push(await serverFunctions.getBalanceChanges(transfer.dst, transfer.token, transaction.blockNumber, workspace.rpcServer));
+                            const changes = [];
+                            if (transfer.src != '0x0000000000000000000000000000000000000000') {
+                                const balanceChange = await serverFunctions.getBalanceChanges(transfer.src, transfer.token, transaction.blockNumber, workspace.rpcServer);
+                                if (balanceChange)
+                                    changes.push(balanceChange);
+                            }
+                            if (transfer.dst != '0x0000000000000000000000000000000000000000') {
+                                const balanceChange = await serverFunctions.getBalanceChanges(transfer.dst, transfer.token, transaction.blockNumber, workspace.rpcServer);
+                                if (balanceChange)
+                                    changes.push(balanceChange);
+                            }
+
+                            if (changes.length > 0)
+                                tokenBalanceChanges[transfer.token] = changes;
                         }
-                        functions.httpsCallable('syncTokenBalanceChanges')({ workspace: workspace.name, transaction: transaction.hash, tokenBalanceChanges: tokenBalanceChanges });
+
+                        if (Object.keys(tokenBalanceChanges).length)
+                            return functions.httpsCallable('syncTokenBalanceChanges')({ workspace: workspace.name, transaction: transaction.hash, tokenBalanceChanges: tokenBalanceChanges });
                     }
                 } catch(error) {
                     console.log(error);
