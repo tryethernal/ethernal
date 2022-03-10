@@ -1,14 +1,14 @@
 const ethers = require('ethers');
-const { getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers } = require('./firebase');
+const { getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('./firebase');
 const { getFunctionSignatureForTransaction } = require('./utils');
 const { getTokenTransfers, getTransactionMethodDetails } = require('./abi');
-const Rpc = require('./rpc');
+const { ContractConnector } = require('./rpc');
 
 const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
     let currentBalance = ethers.BigNumber.from('0');
     let previousBalance = ethers.BigNumber.from('0');
-    const rpc = new Rpc(rpcServer);
     const abi = ['function balanceOf(address owner) view returns (uint256)'];
+    const contract = new ContractConnector(rpcServer, token, abi);
 
     try {
         const options = {
@@ -16,72 +16,94 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
             blockTag: blockNumber
         };
 
-        const res = await rpc.callContractReadMethod(token, abi, 'balanceOf(address)', { 0: address });
-        currentBalance = res[0];
+        const res = await contract.callReadMethod('balanceOf(address)', { 0: address }, options);
+        if (ethers.BigNumber.isBigNumber(res[0]))
+            currentBalance = res[0];
+        else
+            throw 'Not a big number result'
     } catch(error) {
-        console.log(error);
+        return null;
     }
 
-    if (block > 1) {
+    if (blockNumber > 1) {
         try {
             const options = {
                 from: null,
-                blockTag: Math.max(1, parseInt(block) - 1)
+                blockTag: Math.max(1, parseInt(blockNumber) - 1)
             };
 
-            const res = await rpc.callContractReadMethod(token, abi)
+            const res = await contract.callReadMethod('balanceOf(address)', { 0: address }, options);
+            if (ethers.BigNumber.isBigNumber(res[0]))
+                previousBalance = res[0];
+            else
+                throw 'Not a big number result'
         }  catch(error) {
-            console.log(error);
+            return null;
         }
     }
-    
+
+    return {
+        address: address,
+        currentBalance: currentBalance.toString(),
+        previousBalance: previousBalance.toString(),
+        diff: currentBalance.sub(previousBalance).toString()
+    };
 };
 
-exports.processTransactions = async (userId, workspace, transactions) => {
+exports.processTransactions = async (userId, workspaceName, transactions) => {
     for (let i = 0; i < transactions.length; i++) {
         let contract, tokenTransfers;
         const transaction = transactions[i];
 
         if (transaction.to)
-            contract = await getContractData(userId, workspace, transaction.to);
+            contract = await getContractData(userId, workspaceName, transaction.to);
 
         if (contract && contract.proxy)
-            contract = await getContractData(userId, workspace, contract.proxy);
+            contract = await getContractData(userId, workspaceName, contract.proxy);
 
         if (contract && contract.abi) {
             try {
                 const transactionMethodDetails = getTransactionMethodDetails(transaction, contract.abi);
-                await storeTransactionMethodDetails(userId, workspace, transaction.hash, transactionMethodDetails);
+                await storeTransactionMethodDetails(userId, workspaceName, transaction.hash, transactionMethodDetails);
             } catch(error) {
                 console.log(error)
-                await storeTransactionMethodDetails(userId, workspace, transaction.hash, null);
+                await storeTransactionMethodDetails(userId, workspaceName, transaction.hash, null);
             }
         }
         else
-            await storeTransactionMethodDetails(userId, workspace, transaction.hash, null);
+            await storeTransactionMethodDetails(userId, workspaceName, transaction.hash, null);
 
         try {
             tokenTransfers = getTokenTransfers(transaction);
-            await storeTransactionTokenTransfers(userId, workspace, transaction.hash, tokenTransfers);
+            await storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, tokenTransfers);
         } catch(error) {
             console.log(error)
-            await storeTransactionTokenTransfers(userId, workspace, transaction.hash, []);
+            await storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, []);
         }
 
         if (tokenTransfers) {
-            const workspace = await getWorkspace(userId, workspace);
+            const workspace = await getWorkspaceByName(userId, workspaceName);
             if (workspace.public) {
                 const tokenBalanceChanges = {};
                 for (let i = 0; i < tokenTransfers.length; i++) {
                     const transfer = tokenTransfers[i];
-                    tokenBalanceChanges[transfer.token] = [];
-                    if (transfer.src != '0x0000000000000000000000000000000000000000')
-                        tokenBalanceChanges[transfer.token].push(await getBalanceChange(transfer.src, transfer.token, transaction.blockNumber, workspace.rpcServer));
-                    if (transfer.dst != '0x0000000000000000000000000000000000000000')
-                        tokenBalanceChanges[transfer.token].push(await getBalanceChange(transfer.dst, transfer.token, transaction.blockNumber, workspace.rpcServer))
-                }
+                    const changes = [];
+                    if (transfer.src != '0x0000000000000000000000000000000000000000') {
+                        const balanceChange = await getBalanceChange(transfer.src, transfer.token, transaction.blockNumber, workspace.rpcServer);
+                        if (balanceChange)
+                            changes.push(balanceChange);
+                    }
+                    if (transfer.dst != '0x0000000000000000000000000000000000000000') {
+                        const balanceChange = await getBalanceChange(transfer.dst, transfer.token, transaction.blockNumber, workspace.rpcServer);
+                        if (balanceChange)
+                            changes.push(balanceChange);
+                    }
 
-                await storeTokenBalanceChanges(userId, workspace.name, transaction, tokenBalanceChanges);
+                    if (changes.length > 0)
+                        tokenBalanceChanges[transfer.token] = changes;
+                }
+                if (Object.keys(tokenBalanceChanges).length)
+                    await storeTokenBalanceChanges(userId, workspace.name, transaction.hash, tokenBalanceChanges);
             }
         }
     }

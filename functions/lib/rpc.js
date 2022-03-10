@@ -33,9 +33,9 @@ class ContractConnector {
         this.contract = new ethers.Contract(address, abi, this.provider);
     }
 
-    callContractReadMethod(method, params, options) {
+    async callReadMethod(method, params, options) {
         try {
-            return await this.contract.functions[method](...params, options);
+            return await this.contract.functions[method](...Object.values(params), options);
         } catch(error) {
             console.log(error);
             return error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
