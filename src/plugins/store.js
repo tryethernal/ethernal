@@ -12,7 +12,8 @@ export default new Vuex.Store({
             name: null,
             slug: null,
             token: null,
-            chainId: null
+            chainId: null,
+            domain: null
         },
         currentWorkspace: {
             userId: null,
@@ -68,6 +69,12 @@ export default new Vuex.Store({
                 ...state.publicExplorer,
                 ...data
             };
+        },
+        SET_PUBLIC_EXPLORER_DOMAIN(state, domain) {
+            state.publicExplorer = {
+                ...state.publicExplorer,
+                domain: domain
+            }
         }
     },
     actions: {
@@ -110,11 +117,14 @@ export default new Vuex.Store({
         },
         setPublicExplorerData({ commit }, data) {
             commit('SET_PUBLIC_EXPLORER_DATA', data);
+        },
+        updatePublicExplorerDomain({ commit }, domain) {
+            commit('SET_PUBLIC_EXPLORER_DOMAIN', domain);
         }
     },
     getters: {
         isUserLoggedIn: state => !!state.user.uid,
-        isPublicExplorer: state => !!state.publicExplorer.slug,
+        isPublicExplorer: state => !!state.publicExplorer.slug || !!state.publicExplorer.domain,
         publicExplorer: state => state.publicExplorer,
         transactionCount: state => state.stats.transactionCount,
         blockCount: state => state.stats.blockCount,
