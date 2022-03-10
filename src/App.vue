@@ -151,38 +151,41 @@ export default {
             this.$refs.onboardingModal.open();
         },
         initPublicExplorer: function() {
-            this.db.getPublicExplorerParams(this.publicExplorer.slug)
-                .then((doc) => {
-                    if (!doc.data())
-                        return document.location.href = process.env.VUE_APP_ROOT_URL;
+            if (this.publicExplorer.domain)
+                this.db.getPublicExplorerParamsByDomain(this.publicExplorer.domain)
+                    .then(this.setupPublicExplorer);
+            else
+                this.db.getPublicExplorerParamsBySlug(this.publicExplorer.slug)
+                    .then(this.setupPublicExplorer);
+        },
+        setupPublicExplorer: function(data) {
+            if (!data)
+                return;
 
-                    const data = doc.data();
+            this.$store.dispatch('setPublicExplorerData', {
+                name: data.name,
+                token: data.token,
+                chainId: data.chainId
+            }).then(() => {
+                if (data.themes) {
+                    const lightTheme = data.themes.light || {};
+                    const darkTheme = data.themes.dark || {};
 
-                    this.$store.dispatch('setPublicExplorerData', {
-                        name: data.name,
-                        token: data.token,
-                        chainId: data.chainId
-                    }).then(() => {
-                        if (data.themes) {
-                            const lightTheme = data.themes.light || {};
-                            const darkTheme = data.themes.dark || {};
+                    Object.keys(lightTheme).forEach((key) => {
+                        this.$vuetify.theme.themes.light[key] = lightTheme[key];
+                    })
+                    Object.keys(darkTheme).forEach((key) => {
+                        this.$vuetify.theme.themes.dark[key] = darkTheme[key];
+                    })
+                }
 
-                            Object.keys(lightTheme).forEach((key) => {
-                                this.$vuetify.theme.themes.light[key] = lightTheme[key];
-                            })
-                            Object.keys(darkTheme).forEach((key) => {
-                                this.$vuetify.theme.themes.dark[key] = darkTheme[key];
-                            })
-                        }
-
-                        this.initWorkspace({
-                            userId: data.userId,
-                            name: data.workspace,
-                            networkId: data.chainId,
-                            rpcServer: data.rpcServer
-                        });
-                    });
+                this.initWorkspace({
+                    userId: data.userId,
+                    name: data.workspace,
+                    networkId: data.chainId,
+                    rpcServer: data.rpcServer
                 });
+            });
         },
         initWorkspace: function(data) {
             if (!data.userId || !data.name) return;

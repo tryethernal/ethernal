@@ -121,10 +121,21 @@ export const dbPlugin = {
                         }
                     });
             },
-            getPublicExplorerParams(slug) {
-                return _db.collection('public')
+            async getPublicExplorerParamsByDomain(domain) {
+                const query = await _db.collection('public')
+                    .where('domain', '==', domain)
+                    .get();
+
+                const docs = [];
+                query.forEach((el) => docs.push(el.data()));
+                return docs[0];
+            },
+            async getPublicExplorerParamsBySlug(slug) {
+                const query = await _db.collection('public')
                     .doc(slug)
                     .get();
+
+                return query.data();
             },
             contractStorage(contractAddress) {
                 var currentWorkspace = store.getters.currentWorkspace.name;

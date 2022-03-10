@@ -20,9 +20,17 @@ Vue.use(require('vue-moment'));
 Vue.use(dbPlugin, { store: store });
 Vue.use(serverPlugin, { store: store });
 
-const publicExplorerSlug = window.location.host.split('.')[0];
-if (publicExplorerSlug != 'app')
-    store.dispatch('updatePublicExplorerSlug', publicExplorerSlug);
+
+const isEthernalDomain = window.location.host.endsWith(process.env.VUE_APP_MAIN_DOMAIN);
+
+if (isEthernalDomain) {
+    const publicExplorerSlug = window.location.host.split('.')[0];
+    if (publicExplorerSlug != 'app')
+        store.dispatch('updatePublicExplorerSlug', publicExplorerSlug);
+}
+else {
+    store.dispatch('updatePublicExplorerDomain', window.location.host);
+}
 
 new Vue({
     vuetify,
