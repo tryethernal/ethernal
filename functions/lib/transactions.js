@@ -1,10 +1,10 @@
 const ethers = require('ethers');
-const { getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('./firebase');
+let { getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('./firebase');
 const { getFunctionSignatureForTransaction } = require('./utils');
-const { getTokenTransfers, getTransactionMethodDetails } = require('./abi');
+let { getTokenTransfers, getTransactionMethodDetails } = require('./abi');
 const { ContractConnector } = require('./rpc');
 
-const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
+let getBalanceChange = async (address, token, blockNumber, rpcServer) => {
     let currentBalance = ethers.BigNumber.from('0');
     let previousBalance = ethers.BigNumber.from('0');
     const abi = ['function balanceOf(address owner) view returns (uint256)'];
@@ -48,7 +48,7 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
         previousBalance: previousBalance.toString(),
         diff: currentBalance.sub(previousBalance).toString()
     };
-};
+}
 
 exports.processTransactions = async (userId, workspaceName, transactions) => {
     for (let i = 0; i < transactions.length; i++) {
@@ -102,6 +102,7 @@ exports.processTransactions = async (userId, workspaceName, transactions) => {
                     if (changes.length > 0)
                         tokenBalanceChanges[transfer.token] = changes;
                 }
+
                 if (Object.keys(tokenBalanceChanges).length)
                     await storeTokenBalanceChanges(userId, workspace.name, transaction.hash, tokenBalanceChanges);
             }
