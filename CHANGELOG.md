@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.2] - 2022-03-10
+### Added
+- Support for custom domains for public explorers
+
 ## [1.6.1] - 2022-03-09
 ### Fixed
 - Bug that prevented storage from being displayed
