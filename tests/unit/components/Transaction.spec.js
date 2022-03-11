@@ -36,7 +36,7 @@ describe('Transaction.vue', () => {
             });
     });
 
-    it.only('Should not display the menu if public explorer', async (done) => {
+    it('Should not display the menu if public explorer', async (done) => {
         helper.getters.isPublicExplorer.mockImplementationOnce(() => true);
         const wrapper = helper.mountFn(Transaction, {
             propsData: {

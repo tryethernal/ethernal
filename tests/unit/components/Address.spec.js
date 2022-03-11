@@ -229,7 +229,7 @@ describe('Address.vue', () => {
         }, 1500);
     });
 
-    it.only('Should display the contract storage structure', async (done) => {
+    it('Should display the contract storage structure', async (done) => {
         const db = helper.mocks.admin;
         await db.collection('contracts').doc('123').set({ name: 'Amalfi', address: '123', abi: AmalfiContract.artifact.abi });
 
