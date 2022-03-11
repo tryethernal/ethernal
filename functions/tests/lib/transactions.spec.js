@@ -1,7 +1,11 @@
+const rewire = require('rewire')
+
 jest.mock('../../lib/firebase', () => ({
     getContractData: jest.fn(),
     storeTransactionMethodDetails: jest.fn(),
-    storeTransactionTokenTransfers: jest.fn()
+    storeTransactionTokenTransfers: jest.fn(),
+    getWorkspaceByName: jest.fn().mockResolvedValue({ public: false }),
+    storeTokenBalanceChanges: jest.fn()
 }));
 
 jest.mock('../../lib/utils', () => ({
@@ -13,31 +17,35 @@ jest.mock('../../lib/abi', () => ({
     getTransactionMethodDetails: jest.fn()
 }));
 
-const { getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers } = require('../../lib/firebase');
+const { getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('../../lib/firebase');
 const { getTokenTransfers, getTransactionMethodDetails } = require('../../lib/abi');
 
+const wiredTransactions = rewire('../../lib/transactions');
+wiredTransactions.__set__({
+    getBalanceChange: jest.fn().mockResolvedValue({ before: 1, after: 2 }),
+    getTokenTransfers: jest.fn().mockReturnValueOnce([{ token: '0x123', src: '0x456', dst: '0x789' }]),
+    getWorkspaceByName: jest.fn().mockResolvedValueOnce({ public: true, name: 'hardhat' }),
+    getTransactionMethodDetails: jest.fn(),
+    storeTransactionMethodDetails: jest.fn(),
+    storeTokenBalanceChanges: jest.fn()
+});
+const { processTransactions } = require('../../lib/transactions');
+
 const Helper = require('../helper');
-const { processTransactions} = require('../../lib/transactions');
+
 const AmalfiContract = require('../fixtures/AmalfiContract.json');
 const TokenAbi = require('../fixtures/ABI.json');
 const Transaction = require('../fixtures/TransactionReceipt.json');
 let helper;
 
 describe('processTransactions ', () => {
-    beforeEach(jest.resetAllMocks);
+    beforeEach(jest.clearAllMocks);
 
-    it('Should get contract data from to, get proxy data, store transaction details & store token transfers ', async () => {
+    it('Should get contract data from to, get proxy data, store transaction details & store token transfers, and not fetch balances if workspace is not public ', async () => {
         getContractData
-            .mockImplementationOnce(() => {
-                return new Promise((resolve) => {
-                    resolve({ proxy: '0x123' })
-                });
-            })
-            .mockImplementationOnce(() => {
-                return new Promise((resolve) => {
-                    resolve({ abi: TokenAbi })
-                });
-            });
+            .mockResolvedValueOnce({ proxy: '0x123' })
+            .mockResolvedValueOnce({ abi: TokenAbi });
+
         getTransactionMethodDetails.mockImplementationOnce(() => ({ name: 'test' }));
         getTokenTransfers.mockImplementationOnce(() => ['transfer']);
 
@@ -67,12 +75,7 @@ describe('processTransactions ', () => {
     });
 
     it('Should store empty transaction details & store token transfers when no contracts @to', async () => {
-        getContractData
-            .mockImplementationOnce(() => {
-                return new Promise((resolve) => {
-                    resolve(null)
-                });
-            });
+        getContractData.mockResolvedValueOnce(null);
         getTokenTransfers.mockImplementationOnce(() => ['transfer']);
 
         await processTransactions('123', 'hardhat', [Transaction]);
@@ -94,12 +97,7 @@ describe('processTransactions ', () => {
     });
 
     it('Should store empty method details if it fails', async () => {
-        getContractData
-            .mockImplementationOnce(() => {
-                return new Promise((resolve) => {
-                    resolve({ abi: TokenAbi })
-                });
-            });
+        getContractData.mockResolvedValueOnce({ abi: TokenAbi });
         getTransactionMethodDetails.mockImplementationOnce(() => { throw 'Error'; });
 
         await processTransactions('123', 'hardhat', [Transaction]);
@@ -115,5 +113,29 @@ describe('processTransactions ', () => {
 
         expect(getTokenTransfers).toHaveBeenCalledWith(Transaction);
         expect(storeTransactionTokenTransfers).toHaveBeenCalledWith('123', 'hardhat', '0x123', []);
+    });
+
+    it('Should fetch balance changes if workspace is public and store them if there are any', async () => {
+        await wiredTransactions.processTransactions('123', 'hardhat', [Transaction]);
+
+        expect(wiredTransactions.__get__('storeTokenBalanceChanges')).toHaveBeenCalledWith('123', 'hardhat', '0x123', { '0x123': [{ before: 1, after: 2 }, { before: 1, after: 2 }] });
+    });
+
+    it('Should not fetch balance changes if workspace is not public', async () => {
+        wiredTransactions.__set__({
+            getWorkspaceByName: jest.fn().mockResolvedValue({ public: false })
+        });
+        await wiredTransactions.processTransactions('123', 'hardhat', [Transaction]);
+
+        expect(wiredTransactions.__get__('storeTokenBalanceChanges')).not.toHaveBeenCalledWith();
+    });
+
+    it('Should not store anything if balance changes calls fail', async () => {
+        wiredTransactions.__set__({
+            getBalanceChange: jest.fn().mockResolvedValue(null),
+        });
+        await wiredTransactions.processTransactions('123', 'hardhat', [Transaction]);
+
+        expect(wiredTransactions.__get__('storeTokenBalanceChanges')).not.toHaveBeenCalledWith();
     });
 });
