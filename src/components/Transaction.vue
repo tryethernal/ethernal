@@ -5,20 +5,22 @@
                 <v-col>
                     <h2 class="text-truncate mb-2">Tx {{ transaction.hash }}</h2>
                 </v-col>
-                <v-spacer></v-spacer>
-                <v-col align="right">
-                    <v-progress-circular v-show="processing" indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>
-                    <v-menu :right="true">
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn icon v-bind="attrs" v-on="on">
-                                <v-icon>mdi-dots-vertical</v-icon>
-                            </v-btn>
-                        </template>
-                        <v-list>
-                            <v-list-item :disabled="!transaction.hash || processing" link @click="reprocessTransaction()">Reprocess Transaction</v-list-item>
-                        </v-list>
-                    </v-menu>
-                </v-col>
+                <template v-if="!isPublicExplorer">
+                    <v-spacer></v-spacer>
+                    <v-col align="right">
+                        <v-progress-circular v-show="processing" indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>
+                        <v-menu :right="true">
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn icon v-bind="attrs" v-on="on">
+                                    <v-icon>mdi-dots-vertical</v-icon>
+                                </v-btn>
+                            </template>
+                            <v-list>
+                                <v-list-item :disabled="!transaction.hash || processing" link @click="reprocessTransaction()">Reprocess Transaction</v-list-item>
+                            </v-list>
+                        </v-menu>
+                    </v-col>
+                </template>
             </v-row>
             <span v-if="transaction.receipt">
                 <v-chip small class="success mr-2" v-if="transaction.receipt.status">
@@ -218,9 +220,12 @@ export default {
             this.server
                 .processTransaction(this.currentWorkspace.name, this.hash)
                 .then(() => {
-                    this.server.processTransactions(this.currentWorkspace, [this.transaction])
-                        .catch(console.log)
-                        .finally(() => this.processing = false);
+                    if (!this.isPublicExplorer)
+                        this.server.processTransactions(this.currentWorkspace, [this.transaction])
+                            .catch(console.log)
+                            .finally(() => this.processing = false);
+                    else
+                        this.processing = false;
                 })
                 .catch((error) => {
                     console.log(error);
@@ -232,7 +237,8 @@ export default {
         ...mapGetters([
             'user',
             'chain',
-            'currentWorkspace'
+            'currentWorkspace',
+            'isPublicExplorer'
         ])
     }
 }

@@ -39,6 +39,7 @@
     "eslint-config-google": "^0.14.0",
     "firebase-functions-test": "^0.2.3",
     "jest": "^27.0.6",
+    "rewire": "^6.0.0",
     "supertest": "^6.1.4"
   },
   "private": true

@@ -31,7 +31,10 @@ const ethers = jest.mock('ethers', () => {
         return {
             name: () => new Promise((resolve) => resolve('Ethernal')),
             symbol: () => new Promise((resolve) => resolve('ETL')),
-            decimals: () => new Promise((resolve) => resolve(18))
+            decimals: () => new Promise((resolve) => resolve(18)),
+            functions: {
+                name: () => new Promise((resolve) => resolve('Ethernal'))
+            }
         }
     };
 

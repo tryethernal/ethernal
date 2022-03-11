@@ -36,6 +36,19 @@ describe('Transaction.vue', () => {
             });
     });
 
+    it('Should not display the menu if public explorer', async (done) => {
+        helper.getters.isPublicExplorer.mockImplementationOnce(() => true);
+        const wrapper = helper.mountFn(Transaction, {
+            propsData: {
+                hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
+            }
+        });
+        setTimeout(() => {
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1000);
+    });
+
     it('Should display the transaction', async (done) => {
         const wrapper = helper.mountFn(Transaction, {
             propsData: {

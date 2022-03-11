@@ -16,6 +16,7 @@ const { parseTrace } = require('./lib/utils');
 const { encrypt, decrypt, encode } = require('./lib/crypto');
 const { processContract } = require('./triggers/contracts');
 const { cleanArtifactDependencies } = require('./schedulers/cleaner');
+const { getTokenTransfers } = require('./lib/abi');
 const Analytics = require('./lib/analytics');
 
 const analytics = new Analytics(functions.config().mixpanel ? functions.config().mixpanel.token : null);
