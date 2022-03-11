@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.3] - 2022-03-11
+### Changed
+- Balance changes is now processed server side for public explorers
+
+### Removed
+- Transaction top right menu for public explorers
+
 ## [1.6.2] - 2022-03-10
 ### Added
 - Support for custom domains for public explorers
