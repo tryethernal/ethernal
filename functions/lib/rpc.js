@@ -1,4 +1,5 @@
 const ethers = require('ethers');
+const { parseTrace, storeTrace } = require('./trace');
 
 const getProvider = function(url) {
     const rpcServer = new URL(url);
@@ -26,6 +27,34 @@ const getProvider = function(url) {
     return new provider(urlInfo);
 };
 
+class Tracer {
+    constructor(server) {
+        if (!server) throw '[Tracer] Missing parameter';
+        this.provider = getProvider(server);
+    }
+
+    async process(transaction) {
+        try {
+            this.transaction = transaction;
+            const rawTrace = await this.provider.send('debug_traceTransaction', [transaction.hash, {}]);
+            this.parsedTrace = await parseTrace(transaction.from, rawTrace, this.provider);
+        } catch(error) {
+            if (error.error && error.error.code == '-32601')
+                throw 'debug_traceTransaction is not available';
+            else
+                throw error;
+        }
+    }
+
+    async saveTrace(userId, workspace) {
+        try {
+            await storeTrace(userId, workspace, this.transaction.hash, this.parsedTrace);
+        } catch(error) {
+            console.log(error);
+        }
+    }
+}
+
 class ContractConnector {
     constructor(server, address, abi) {
         if (!server || !address || !abi) throw '[ContractConnector] Missing parameter';
@@ -44,5 +73,6 @@ class ContractConnector {
 }
 
 module.exports = {
-    ContractConnector: ContractConnector
+    ContractConnector: ContractConnector,
+    Tracer: Tracer
 };

@@ -3,7 +3,7 @@
         <v-card-text v-if="parsedLog">
             <span v-if="parsedLog.args.length > 0"><Hash-Link :type="'address'" :notCopiable="true" :withName="true" :hash="this.log.address" />{{ `.${parsedLog.name}(\n` }}</span>
             <span v-else>{{ `${ contract.name }.${parsedLog.name}` }}()</span>
-            <div v-for="(input, index) in parsedLog.eventFragment.inputs" :key="index">
+            <div style="white-space: pre;" v-for="(input, index) in parsedLog.eventFragment.inputs" :key="index">
                 <Formatted-Sol-Var :input="input" :value="parsedLog.args[index]" class="ml-4" />
             </div>
             <span v-if="parsedLog.args.length > 0">{{ ')' }}</span>

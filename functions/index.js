@@ -12,7 +12,6 @@ const stripe = require('stripe')(functions.config().stripe.secret_key);
 
 const Storage = require('./lib/storage');
 const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('./lib/utils');
-const { parseTrace } = require('./lib/utils');
 const { encrypt, decrypt, encode } = require('./lib/crypto');
 const { processContract } = require('./triggers/contracts');
 const { cleanArtifactDependencies } = require('./schedulers/cleaner');
@@ -215,7 +214,7 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).ht
 
         const trace = [];
         for (const step of data.steps) {
-            if (step.op.toUpperCase().indexOf(['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2'])) {
+            if (step.op.toUpperCase().indexOf(['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2']) > -1) {
                 let contractRef;                
                 const canSync = await canUserSyncContract(context.auth.uid, data.workspace);
 
