@@ -1,7 +1,7 @@
 const ethers = require('ethers');
 const { parseTrace, storeTrace } = require('./trace');
 
-const getProvider = function(url) {
+let getProvider = function(url) {
     const rpcServer = new URL(url);
     var urlInfo;
     var provider = ethers.providers.WebSocketProvider;
