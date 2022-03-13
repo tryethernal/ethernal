@@ -6,7 +6,7 @@ import flushPromises from 'flush-promises';
 describe('AddAccountModal.vue', () => {
     let helper;
 
-    beforeEach(async () => {
+    beforeEach(() => {
         helper = new MockHelper();
     });
 
@@ -21,10 +21,9 @@ describe('AddAccountModal.vue', () => {
         await setTimeout(() => {
             expect(storeAccountPrivateKeyMock).toHaveBeenCalled();
             expect(wrapper.vm.loading).toBe(false);
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
         }, 1500);
-
-        expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
     it('Should be able to add an account from an address', async (done) => {
@@ -38,10 +37,9 @@ describe('AddAccountModal.vue', () => {
         await setTimeout(() => {
             expect(impersonateAccountMock).toHaveBeenCalled();
             expect(wrapper.vm.loading).toBe(false);
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
         }, 1500);
-
-        expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
     it('Should display an error message if the private key has an invalid format', async (done) => {
@@ -51,11 +49,10 @@ describe('AddAccountModal.vue', () => {
         await wrapper.find('#privateKey').setValue('0x0');
         await wrapper.find('#submitAccount').trigger('click');
 
-        await wrapper.vm.$nextTick();
-
-        expect(wrapper.html()).toMatchSnapshot();
-
-        done();
+        setTimeout(() => {
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1500);
     });
 
     afterEach(async () => {
