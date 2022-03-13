@@ -2,13 +2,13 @@ const rewire = require('rewire');
 
 jest.mock('../../lib/trace', () => ({
     parseTrace: jest.fn().mockResolvedValue({ trace: 1 }),
-    storeTrace: jest.fn()
+    processTrace: jest.fn()
 }));
 
 const wiredRpc = rewire('../../lib/rpc');
 
 const { ethers } = require('../mocks/ethers');
-const { storeTrace } = require('../../lib/trace');
+const { processTrace } = require('../../lib/trace');
 const { ContractConnector, Tracer } = require('../../lib/rpc');
 
 describe('ContractConnector', () => {
@@ -59,6 +59,6 @@ describe('Tracer', () => {
         await tracer.process({ hash: '0x123' });
         await tracer.saveTrace('123', 'hardhat');
 
-        expect(storeTrace).toHaveBeenCalledWith('123', 'hardhat', '0x123', { trace: 1 });
+        expect(processTrace).toHaveBeenCalledWith('123', 'hardhat', '0x123', { trace: 1 });
     });
 });

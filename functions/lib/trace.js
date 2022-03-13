@@ -2,7 +2,7 @@ const ethers = require('ethers');
 const { canUserSyncContract, storeContractData, getContractRef, storeTrace } = require('./firebase');
 const { sanitize } = require('./utils');
 
-exports.storeTrace = async (userId, workspace, transactionHash, steps) => {
+exports.processTrace = async (userId, workspace, transactionHash, steps) => {
     const trace = [];
     for (const step of steps) {
         if (['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2'].indexOf(step.op.toUpperCase()) > -1) {

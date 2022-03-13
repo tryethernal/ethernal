@@ -1,5 +1,5 @@
 const ethers = require('ethers');
-const { parseTrace, storeTrace } = require('./trace');
+const { parseTrace, processTrace } = require('./trace');
 
 let getProvider = function(url) {
     const rpcServer = new URL(url);
@@ -48,7 +48,7 @@ class Tracer {
 
     async saveTrace(userId, workspace) {
         try {
-            await storeTrace(userId, workspace, this.transaction.hash, this.parsedTrace);
+            await processTrace(userId, workspace, this.transaction.hash, this.parsedTrace);
         } catch(error) {
             console.log(error);
         }
