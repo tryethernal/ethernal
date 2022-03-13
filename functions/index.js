@@ -214,7 +214,7 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).ht
 
         const trace = [];
         for (const step of data.steps) {
-            if (step.op.toUpperCase().indexOf(['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2']) > -1) {
+            if (['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2'].indexOf(step.op.toUpperCase()) > -1) {
                 let contractRef;                
                 const canSync = await canUserSyncContract(context.auth.uid, data.workspace);
 
