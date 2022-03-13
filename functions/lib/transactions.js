@@ -83,7 +83,7 @@ exports.processTransactions = async (userId, workspaceName, transactions) => {
 
         const workspace = await getWorkspaceByName(userId, workspaceName);
 
-        if (!workspace.public) {
+        if (workspace.public) {
             try {
                 const tracer = new Tracer(workspace.rpcServer);
                 await tracer.process(transaction);
