@@ -18,16 +18,18 @@
                     <div v-for="(input, index) in transactionDescription.functionFragment.inputs" :key="`in-${index}`">
                         <Formatted-Sol-Var :input="input" :value="transactionDescription.args[index]" class="ml-8" />
                     </div><span class="ml-4">)</span>
-                    <template v-if="transactionDescription.functionFragment.outputs.length > 0">
-                        =>
-                    </template>
-                    <template v-if="transactionDescription.functionFragment.outputs.length > 1 ">
-                        (<div v-for="(output, index) in transactionDescription.functionFragment.outputs" :key="`out-${index}`">
-                            <Formatted-Sol-Var :input="output" :value="decodeOutput(index)" />
-                        </div>)
-                    </template>
-                    <template v-else>
-                        <Formatted-Sol-Var :input="transactionDescription.functionFragment.outputs[0]" :value="decodeOutput(0)" />
+                    <template v-if="transactionDescription.functionFragment.outputs.length">
+                        <template v-if="transactionDescription.functionFragment.outputs.length > 0">
+                            =>
+                        </template>
+                        <template v-if="transactionDescription.functionFragment.outputs.length > 1 ">
+                            (<div v-for="(output, index) in transactionDescription.functionFragment.outputs" :key="`out-${index}`">
+                                <Formatted-Sol-Var :input="output" :value="decodeOutput(index)" />
+                            </div>)
+                        </template>
+                        <template v-else>
+                            <Formatted-Sol-Var :input="transactionDescription.functionFragment.outputs[0]" :value="decodeOutput(0)" />
+                        </template>
                     </template>
                 </v-card-text>
             </v-card>
@@ -60,7 +62,7 @@ export default {
             this.transactionDescription = this.jsonInterface.parseTransaction({ data: this.zeroXify(this.step.input) });
         },
         decodeOutput: function(index) {
-            if (!this.step.returnData.length) return '';
+            if (!this.step.returnData) return '';
             return this.jsonInterface.decodeFunctionResult(this.transactionDescription.functionFragment, this.zeroXify(this.step.returnData))[index];
         }
     },
@@ -73,75 +75,13 @@ export default {
                         this.contract = this.step.contract;
                         if (this.contract.proxy)
                             this.$bind('contract', this.db.collection('contracts').doc(this.contract.proxy)).then(this.decodeInput);
-                        else {
+                        else
                             this.decodeInput();
-                        }
                     } catch(_error) {
                         console.log(_error)
-                        console.log(this.step);
                     }
                 }
             }
-        }
-    },
-    computed: {
-        formattedTransactionDescription: function() {
-            if (!this.transactionDescription) return '';
-            const label = [];
-            label.push(`${this.transactionDescription.functionFragment.name}(`);
-
-            const inputsLabel = []
-            for (let i = 0; i < this.transactionDescription.functionFragment.inputs.length; i++) {
-                const input = this.transactionDescription.functionFragment.inputs[i];
-                const param = [];
-                param.push(input.type)
-                if (input.name)
-                    param.push(` ${input.name}`);
-                if (this.transactionDescription.args[i])
-                    param.push(`: ${this.transactionDescription.args[i]}`)
-                inputsLabel.push(param.join(''));
-            }
-
-            if (inputsLabel.length > 1)
-                label.push('\n\t');
-
-            label.push(inputsLabel.join('\n\t'));
-
-            if (inputsLabel.length > 1)
-                label.push('\n');
-            label.push(')');
-
-            const outputsLabel = [];
-            if (this.transactionDescription.functionFragment.outputs.length > 0 && this.step.returnData) {
-                const result = this.jsonInterface.decodeFunctionResult(this.transactionDescription.functionFragment, this.zeroXify(this.step.returnData));
-
-                label.push('\n\t => (');
-                for (let i = 0; i < this.transactionDescription.functionFragment.outputs.length; i++) {
-                    const output = this.transactionDescription.functionFragment.outputs[i];
-                    const param = [];
-                    param.push(output.type)
-                    if (output.name)
-                        param.push(` ${output.name}`);
-                    if (result[i]) {
-                        param.push(`: ${result[i]}`)
-                    }
-                    outputsLabel.push(param.join(''));
-                }
-
-                if (outputsLabel.length > 1)
-                    label.push('\n\t\t');
-
-                label.push(outputsLabel.join('\n\t\t'));
-
-                if (outputsLabel.length > 1)
-                    label.push('\n\t');
-
-                label.push(')');
-            }
-            return label.join('');
-        },
-        contractName: function() {
-            return this.step.contract.name ? `(${this.step.contract.name})` : '';
         }
     }
 
