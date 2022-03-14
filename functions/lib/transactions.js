@@ -2,7 +2,7 @@ const ethers = require('ethers');
 let { getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('./firebase');
 const { getFunctionSignatureForTransaction } = require('./utils');
 let { getTokenTransfers, getTransactionMethodDetails } = require('./abi');
-const { ContractConnector } = require('./rpc');
+const { ContractConnector, Tracer } = require('./rpc');
 
 let getBalanceChange = async (address, token, blockNumber, rpcServer) => {
     let currentBalance = ethers.BigNumber.from('0');
@@ -81,31 +81,40 @@ exports.processTransactions = async (userId, workspaceName, transactions) => {
             await storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, []);
         }
 
-        if (tokenTransfers) {
-            const workspace = await getWorkspaceByName(userId, workspaceName);
-            if (workspace.public) {
-                const tokenBalanceChanges = {};
-                for (let i = 0; i < tokenTransfers.length; i++) {
-                    const transfer = tokenTransfers[i];
-                    const changes = [];
-                    if (transfer.src != '0x0000000000000000000000000000000000000000') {
-                        const balanceChange = await getBalanceChange(transfer.src, transfer.token, transaction.blockNumber, workspace.rpcServer);
-                        if (balanceChange)
-                            changes.push(balanceChange);
-                    }
-                    if (transfer.dst != '0x0000000000000000000000000000000000000000') {
-                        const balanceChange = await getBalanceChange(transfer.dst, transfer.token, transaction.blockNumber, workspace.rpcServer);
-                        if (balanceChange)
-                            changes.push(balanceChange);
-                    }
+        const workspace = await getWorkspaceByName(userId, workspaceName);
 
-                    if (changes.length > 0)
-                        tokenBalanceChanges[transfer.token] = changes;
+        if (workspace.public) {
+            try {
+                const tracer = new Tracer(workspace.rpcServer);
+                await tracer.process(transaction);
+                await tracer.saveTrace(userId, workspaceName);
+            } catch(error) {
+                console.log(error);
+            }
+        }
+
+        if (tokenTransfers && workspace.public) {
+            const tokenBalanceChanges = {};
+            for (let i = 0; i < tokenTransfers.length; i++) {
+                const transfer = tokenTransfers[i];
+                const changes = [];
+                if (transfer.src != '0x0000000000000000000000000000000000000000') {
+                    const balanceChange = await getBalanceChange(transfer.src, transfer.token, transaction.blockNumber, workspace.rpcServer);
+                    if (balanceChange)
+                        changes.push(balanceChange);
+                }
+                if (transfer.dst != '0x0000000000000000000000000000000000000000') {
+                    const balanceChange = await getBalanceChange(transfer.dst, transfer.token, transaction.blockNumber, workspace.rpcServer);
+                    if (balanceChange)
+                        changes.push(balanceChange);
                 }
 
-                if (Object.keys(tokenBalanceChanges).length)
-                    await storeTokenBalanceChanges(userId, workspace.name, transaction.hash, tokenBalanceChanges);
+                if (changes.length > 0)
+                    tokenBalanceChanges[transfer.token] = changes;
             }
+
+            if (Object.keys(tokenBalanceChanges).length)
+                await storeTokenBalanceChanges(userId, workspace.name, transaction.hash, tokenBalanceChanges);
         }
     }
 };

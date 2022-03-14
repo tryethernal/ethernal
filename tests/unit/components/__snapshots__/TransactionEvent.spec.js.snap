@@ -4,32 +4,25 @@ exports[`TransactionEvent.vue Should display transaction event 1`] = `
 <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
   <div class="v-card__text"><span><span><a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <!----> <!----></span>.Transfer(
     </span>
-    <div>
-      <div class="ml-4"><span>	address from: 
-        
+    <div style="white-space: pre;"><span class="ml-4">
+    address from: 
+    <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-        </span> <span><span><a href="#/address/0xE93381fB4c4F14bDa253907b18faD305D799241a" class="">0xE93381fB...9241a</a> <span>
+         <span><span><span><a href="#/address/0xE93381fB4c4F14bDa253907b18faD305D799241a" class="">0xE93381fB...9241a</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xE93381fB4c4F14bDa253907b18faD305D799241a" value="0xE93381fB4c4F14bDa253907b18faD305D799241a"></span>
-        <!----></span></span>
-        &nbsp;
-      </div>
+      <!----></span></span></span></span></span>
     </div>
-    <div>
-      <div class="ml-4"><span>	address to: 
-        
+    <div style="white-space: pre;"><span class="ml-4">
+    address to: 
+    <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-        </span> <span><span><a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <span>
+         <span><span><span><a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xc00e94Cb662C3520282E6f5717214004A7f26888" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></span>
-        <!----></span></span>
-        &nbsp;
-      </div>
+      <!----></span></span></span></span></span>
     </div>
-    <div>
-      <div class="ml-4"><span>	uint256 amount: 
-        <!----></span> 1
-        &nbsp;
-      </div>
-    </div> <span>)</span>
+    <div style="white-space: pre;"><span class="ml-4">
+    uint256 amount: 
+    <span><!----> 1</span></span></div> <span>)</span>
   </div>
 </div>
 `;
@@ -38,32 +31,25 @@ exports[`TransactionEvent.vue Should display transaction event for a proxied con
 <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
   <div class="v-card__text"><span><span><a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <!----> <!----></span>.Transfer(
     </span>
-    <div>
-      <div class="ml-4"><span>	address from: 
-        
+    <div style="white-space: pre;"><span class="ml-4">
+    address from: 
+    <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-        </span> <span><span><a href="#/address/0xE93381fB4c4F14bDa253907b18faD305D799241a" class="">0xE93381fB...9241a</a> <span>
+         <span><span><span><a href="#/address/0xE93381fB4c4F14bDa253907b18faD305D799241a" class="">0xE93381fB...9241a</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xE93381fB4c4F14bDa253907b18faD305D799241a" value="0xE93381fB4c4F14bDa253907b18faD305D799241a"></span>
-        <!----></span></span>
-        &nbsp;
-      </div>
+      <!----></span></span></span></span></span>
     </div>
-    <div>
-      <div class="ml-4"><span>	address to: 
-        
+    <div style="white-space: pre;"><span class="ml-4">
+    address to: 
+    <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-        </span> <span><span><a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <span>
+         <span><span><span><a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xc00e94Cb662C3520282E6f5717214004A7f26888" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></span>
-        <!----></span></span>
-        &nbsp;
-      </div>
+      <!----></span></span></span></span></span>
     </div>
-    <div>
-      <div class="ml-4"><span>	uint256 amount: 
-        <!----></span> 1
-        &nbsp;
-      </div>
-    </div> <span>)</span>
+    <div style="white-space: pre;"><span class="ml-4">
+    uint256 amount: 
+    <span><!----> 1</span></span></div> <span>)</span>
   </div>
 </div>
 `;

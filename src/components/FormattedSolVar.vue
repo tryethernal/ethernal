@@ -1,38 +1,38 @@
 <template>
-    <div>
-        <span>{{ inputLabel }}
+    <span>
+        {{ inputLabel }}
+        <span>
             <template v-if="isFormattable">
                 (<template v-if="formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Raw</a></template>
                 <template v-if="!formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Formatted</a></template>)
             </template>
-        </span>
-        <template v-if="formatted">
-            <span v-if="input.type == 'address'">
-                <Hash-Link :type="'address'" :hash="value" :withName="true" />
-            </span>
-            <span v-else-if="input.type == 'string'">
-                <span v-if="isValueJSON">
-                    <vue-json-pretty
-                        :data="JSONValue"
-                        :custom-value-formatter="JSONPrettyCustomFormatter"
-                    ></vue-json-pretty>
+            <span v-if="formatted">
+                <span v-if="input.type == 'address'">
+                    <Hash-Link :type="'address'" :hash="value" :withName="true" />
                 </span>
-                <span v-else v-html="formatString(value)"></span>
-            </span>
-            <span v-else-if="isInputArray">
-                [
-                    <span style="white-space: pre;" v-for="(el, idx) in value" :key="idx">
-                        <Formatted-Sol-Var :input="{ type: input.type.split('[')[0] }" :value="el" />
+                <span v-else-if="input.type == 'string'">
+                    <span v-if="isValueJSON">
+                        <vue-json-pretty
+                            :data="JSONValue"
+                            :custom-value-formatter="JSONPrettyCustomFormatter"
+                        ></vue-json-pretty>
                     </span>
-                ]
+                    <span v-else v-html="formatString(value)"></span>
+                </span>
+                <span v-else-if="isInputArray">
+                    [{{ '\n' }}
+                        <span v-for="(el, idx) in value" :key="idx">
+                            {{ '\t\t' }}<Formatted-Sol-Var :input="{ type: input.type.split('[')[0] }" :value="el" />{{ '\n' }}
+                        </span>
+                    ]
+                </span>
+                <span v-else>
+                    {{ value }}
+                </span>
             </span>
-            <span v-else>
-                {{ value }}
-            </span>
-        </template>
-        <template v-else>{{ value }}</template>
-        &nbsp;
-    </div>
+            <template v-else>{{ value }}</template>
+        </span>
+    </span>
 </template>
 <script>
 import VueJsonPretty from 'vue-json-pretty';
@@ -86,9 +86,9 @@ export default {
         },
         inputLabel: function() {
             if (this.input.name)
-                return `\t${this.input.type} ${this.input.name}: `;
+                return `${this.input.type} ${this.input.name}: `;
             else
-                return `\t${this.input.type}: `;
+                return `${this.input.type}: `;
         },
         isValueJSON: function() {
             if (this.input.type != 'string') return false;

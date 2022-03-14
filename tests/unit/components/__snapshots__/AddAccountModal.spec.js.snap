@@ -9,12 +9,16 @@ exports[`AddAccountModal.vue Should be able to add an account from a valid priva
           <div class="v-card__title headline">Add Account</div>
           <div class="v-card__text">
             <!---->
-            <!---->
+            <div role="alert" class="v-alert v-sheet theme--dark success">
+              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-check-circle theme--dark"></i>
+                <div class="v-alert__content">Account added.</div>
+              </div>
+            </div>
             <div>Enter a private key to add the corresponding account.</div>
             <div>
               Private keys are encrypted server side with AES 256 CBC, and stored encrypted. We strongly recommend to not use accounts with any value.
             </div>
-            <div class="v-input mt-2 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input mt-2 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
@@ -26,7 +30,7 @@ exports[`AddAccountModal.vue Should be able to add an account from a valid priva
             </div>
             <hr role="separator" aria-orientation="horizontal" class="my-3 v-divider theme--light">
             <div>Or impersonate an account.</div>
-            <div class="v-input theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
@@ -43,7 +47,7 @@ exports[`AddAccountModal.vue Should be able to add an account from a valid priva
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg v-btn--loading theme--light v-size--default primary" id="submitAccount"><span class="v-btn__content">Add</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="submitAccount"><span class="v-btn__content">Add</span></button>
           </div>
         </div>
       </div>
@@ -61,12 +65,16 @@ exports[`AddAccountModal.vue Should be able to add an account from an address 1`
           <div class="v-card__title headline">Add Account</div>
           <div class="v-card__text">
             <!---->
-            <!---->
+            <div role="alert" class="v-alert v-sheet theme--dark success">
+              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-check-circle theme--dark"></i>
+                <div class="v-alert__content">Account added.</div>
+              </div>
+            </div>
             <div>Enter a private key to add the corresponding account.</div>
             <div>
               Private keys are encrypted server side with AES 256 CBC, and stored encrypted. We strongly recommend to not use accounts with any value.
             </div>
-            <div class="v-input mt-2 v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input mt-2 v-input--hide-details theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
@@ -78,7 +86,7 @@ exports[`AddAccountModal.vue Should be able to add an account from an address 1`
             </div>
             <hr role="separator" aria-orientation="horizontal" class="my-3 v-divider theme--light">
             <div>Or impersonate an account.</div>
-            <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
@@ -95,7 +103,7 @@ exports[`AddAccountModal.vue Should be able to add an account from an address 1`
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg v-btn--loading theme--light v-size--default primary" id="submitAccount"><span class="v-btn__content">Add</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="submitAccount"><span class="v-btn__content">Add</span></button>
           </div>
         </div>
       </div>
@@ -122,7 +130,7 @@ exports[`AddAccountModal.vue Should display an error message if the private key 
             <div>
               Private keys are encrypted server side with AES 256 CBC, and stored encrypted. We strongly recommend to not use accounts with any value.
             </div>
-            <div class="v-input mt-2 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input mt-2 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
@@ -134,7 +142,7 @@ exports[`AddAccountModal.vue Should display an error message if the private key 
             </div>
             <hr role="separator" aria-orientation="horizontal" class="my-3 v-divider theme--light">
             <div>Or impersonate an account.</div>
-            <div class="v-input theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
