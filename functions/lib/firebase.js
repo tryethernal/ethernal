@@ -95,18 +95,52 @@ const getWorkspaceByName = async (userId, workspaceName) => {
 
 const storeBlock = (userId, workspace, block) => {
     if (!userId || !workspace || !block) throw '[storeBlock] Missing parameter';
-    return _getWorkspace(userId, workspace)
+    const batch = _db.batch();
+    const workspaceDoc = _db.collection('users').doc(userId).collection('workspaces').doc(workspace);
+    const shardId = Math.floor(Math.random() * 10);
+
+    const blockDoc = workspaceDoc
         .collection('blocks')
-        .doc(String(block.number))
-        .set(block, { merge: true });
+        .doc(String(block.number));
+    batch.set(blockDoc, block, { merge: true });
+
+    const counterDoc = workspaceDoc
+        .collection('stats/blocks/counters')
+        .doc(`shard-${shardId}`);
+    batch.set(counterDoc, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
+
+    return batch.commit();
 };
 
 const storeTransaction = (userId, workspace, transaction) => {
     if (!userId || !workspace || !transaction) throw '[storeTransaction] Missing parameter';
-    return _getWorkspace(userId, workspace)
+    const batch = _db.batch();
+    const workspaceDoc = _db.collection('users').doc(userId).collection('workspaces').doc(workspace);
+    const shardId = Math.floor(Math.random() * 10);
+    
+    const txDoc = workspaceDoc
         .collection('transactions')
-        .doc(transaction.hash)
-        .set(transaction, { merge: true }); 
+        .doc(transaction.hash);
+    batch.set(txDoc, transaction, { merge: true });
+
+    const counterDoc = workspaceDoc
+        .collection('stats/transactions/counters')
+        .doc(`shard-${shardId}`)
+    batch.set(counterDoc, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
+
+    const fromAddressCounterDoc = workspaceDoc
+            .collection(`stats/addresses/${transaction.from}/counters/shards`)
+            .doc(`shard-${shardId}`);
+        batch.set(fromAddressCounterDoc, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
+
+    if (transaction.to) {
+        const toAddressCounterDoc = workspaceDoc
+            .collection(`stats/addresses/${transaction.to}/counters/shards`)
+            .doc(`shard-${shardId}`);
+        batch.set(toAddressCounterDoc, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
+    }
+
+    return batch.commit();
 };
 
 const storeTransactionMethodDetails = (userId, workspace, transactionHash, methodDetails) => {
@@ -373,36 +407,6 @@ const getContractTransactions = async (userId, workspace, contractAddress) => {
     return results;
 };
 
-const incrementBlockCount = async (userId, workspace, incr) => {
-    if (!userId || !workspace || !incr) throw '[incrementBlockCount] Missing parameter';
-
-    const shardId = Math.floor(Math.random() * 10);
-    return await _getWorkspace(userId, workspace)
-        .collection('stats/blocks/counters')
-        .doc(`shard-${shardId}`)
-        .set({ value: admin.firestore.FieldValue.increment(incr) }, { merge: true });
-};
-
-const incrementTotalTransactionCount = async (userId, workspace, incr) => {
-    if (!userId || !workspace || !incr) throw '[incrementBlockCount] Missing parameter';
-
-    const shardId = Math.floor(Math.random() * 10);
-    return await _getWorkspace(userId, workspace)
-        .collection('stats/transactions/counters')
-        .doc(`shard-${shardId}`)
-        .set({ value: admin.firestore.FieldValue.increment(incr) }, { merge: true });
-};
-
-const incrementAddressTransactionCount = async (userId, workspace, address, incr) => {
-    if (!userId || !workspace || !address || !incr) throw '[incrementBlockCount] Missing parameter';
-
-    const shardId = Math.floor(Math.random() * 10);
-    return await _getWorkspace(userId, workspace)
-        .collection(`stats/addresses/${address}/counters/shards`)
-        .doc(`shard-${shardId}`)
-        .set({ value: admin.firestore.FieldValue.increment(incr) }, { merge: true });
-};
-
 const getTransaction = async (userId, workspace, transactionHash) => {
     if (!userId || !workspace || !transactionHash) throw '[getTransaction] Missing parameter';
 
@@ -454,9 +458,6 @@ module.exports = {
     isUserPremium: isUserPremium,
     getContractTransactions: getContractTransactions,
     storeTransactionMethodDetails: storeTransactionMethodDetails,
-    incrementBlockCount: incrementBlockCount,
-    incrementTotalTransactionCount: incrementTotalTransactionCount,
-    incrementAddressTransactionCount: incrementAddressTransactionCount,
     storeTokenBalanceChanges: storeTokenBalanceChanges,
     storeTransactionTokenTransfers: storeTransactionTokenTransfers,
     getTransaction: getTransaction

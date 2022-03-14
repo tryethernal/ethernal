@@ -55,9 +55,6 @@ const {
     getUnprocessedContracts,
     canUserSyncContract,
     isUserPremium,
-    incrementBlockCount,
-    incrementTotalTransactionCount,
-    incrementAddressTransactionCount,
     storeTokenBalanceChanges,
     getTransaction
 } = require('./lib/firebase');
@@ -136,9 +133,6 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
         var syncedBlock = stringifyBns(sanitize(block));
 
         await storeBlock(context.auth.uid, data.workspace, syncedBlock);
-        await incrementBlockCount(context.auth.uid, data.workspace, 1);
-        if (syncedBlock.transactions.length > 0)
-            await incrementTotalTransactionCount(context.auth.uid, data.workspace, syncedBlock.transactions.length);
         
         analytics.track(context.auth.uid, 'Block Sync');
         return { blockNumber: syncedBlock.number }
@@ -302,9 +296,6 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
         });
     
         await storeTransaction(context.auth.uid, data.workspace, txSynced);
-        await incrementAddressTransactionCount(context.auth.uid, data.workspace, txSynced.from, 1);
-        if (txSynced.to)
-            await incrementAddressTransactionCount(context.auth.uid, data.workspace, txSynced.to, 1);
 
         if (!txSynced.to && sTransactionReceipt) {
             const canSync = await canUserSyncContract(context.auth.uid, data.workspace);
