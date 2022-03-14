@@ -17,8 +17,11 @@ jest.mock('../../lib/abi', () => ({
     getTransactionMethodDetails: jest.fn()
 }));
 
+jest.mock('../../lib/rpc');
+
 const { getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('../../lib/firebase');
 const { getTokenTransfers, getTransactionMethodDetails } = require('../../lib/abi');
+const { Tracer } = require('../../lib/rpc');
 
 const wiredTransactions = rewire('../../lib/transactions');
 wiredTransactions.__set__({
@@ -40,6 +43,22 @@ let helper;
 
 describe('processTransactions ', () => {
     beforeEach(jest.clearAllMocks);
+
+    it('Should process & store the trace if the workspace is public', async () => {
+        getWorkspaceByName
+            .mockResolvedValueOnce({ rpcServer: 'https://remoterpc.com', public: true });
+
+        await processTransactions('123', 'hardhat', [Transaction]);
+
+        expect(Tracer.prototype.process).toHaveBeenCalledWith(Transaction);
+        expect(Tracer.prototype.saveTrace).toHaveBeenCalledWith('123', 'hardhat');
+    });
+
+    it('Should not process the trace for private workspaces', async () => {
+        await processTransactions('123', 'hardhat', [Transaction]);
+
+        expect(Tracer.prototype.process).not.toHaveBeenCalledWith(Transaction);
+    });
 
     it('Should get contract data from to, get proxy data, store transaction details & store token transfers, and not fetch balances if workspace is not public ', async () => {
         getContractData

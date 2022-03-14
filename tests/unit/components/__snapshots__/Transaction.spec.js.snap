@@ -103,22 +103,17 @@ exports[`Transaction.vue Should display infos properly with proxy contracts 1`] 
           <div class="v-card__text">
             transfer(
 
-            <div>
-              <div class="ml-4"><span>	address _to: 
-        
+            <div class="ml-4" style="white-space: pre;"><span>
+    address _to: 
+    <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-        </span> <span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
+         <span><span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
-                <!----></span></span>
-                &nbsp;
-              </div>
+              <!----></span></span></span></span></span>
             </div>
-            <div>
-              <div class="ml-4"><span>	uint256 _value: 
-        <!----></span> 500000000
-                &nbsp;
-              </div>
-            </div>
+            <div class="ml-4" style="white-space: pre;"><span>
+    uint256 _value: 
+    <span><!----> 500000000</span></span></div>
             )
           </div>
         </div>
@@ -126,32 +121,25 @@ exports[`Transaction.vue Should display infos properly with proxy contracts 1`] 
         <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
           <div class="v-card__text"><span><span><a href="#/address/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" class="">USDC</a> <!----> <!----></span>.Transfer(
             </span>
-            <div>
-              <div class="ml-4"><span>	address from: 
-        
+            <div style="white-space: pre;"><span class="ml-4">
+    address from: 
+    <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-        </span> <span><span><a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e...418e7</a> <span>
+         <span><span><span><a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e...418e7</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xC056255e6B1E6001852f9f20587A964cb89418e7" value="0xC056255e6B1E6001852f9f20587A964cb89418e7"></span>
-                <!----></span></span>
-                &nbsp;
-              </div>
+              <!----></span></span></span></span></span>
             </div>
-            <div>
-              <div class="ml-4"><span>	address to: 
-        
+            <div style="white-space: pre;"><span class="ml-4">
+    address to: 
+    <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-        </span> <span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
+         <span><span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
-                <!----></span></span>
-                &nbsp;
-              </div>
+              <!----></span></span></span></span></span>
             </div>
-            <div>
-              <div class="ml-4"><span>	uint256 value: 
-        <!----></span> 500000000
-                &nbsp;
-              </div>
-            </div> <span>)</span>
+            <div style="white-space: pre;"><span class="ml-4">
+    uint256 value: 
+    <span><!----> 500000000</span></span></div> <span>)</span>
           </div>
         </div>
       </div>
@@ -264,22 +252,17 @@ exports[`Transaction.vue Should display the transaction 1`] = `
           <div class="v-card__text">
             transfer(
 
-            <div>
-              <div class="ml-4"><span>	address _to: 
-        
+            <div class="ml-4" style="white-space: pre;"><span>
+    address _to: 
+    <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-        </span> <span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
+         <span><span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
-                <!----></span></span>
-                &nbsp;
-              </div>
+              <!----></span></span></span></span></span>
             </div>
-            <div>
-              <div class="ml-4"><span>	uint256 _value: 
-        <!----></span> 500000000
-                &nbsp;
-              </div>
-            </div>
+            <div class="ml-4" style="white-space: pre;"><span>
+    uint256 _value: 
+    <span><!----> 500000000</span></span></div>
             )
           </div>
         </div>
@@ -287,32 +270,25 @@ exports[`Transaction.vue Should display the transaction 1`] = `
         <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
           <div class="v-card__text"><span><span><a href="#/address/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" class="">USDC</a> <!----> <!----></span>.Transfer(
             </span>
-            <div>
-              <div class="ml-4"><span>	address from: 
-        
+            <div style="white-space: pre;"><span class="ml-4">
+    address from: 
+    <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-        </span> <span><span><a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e...418e7</a> <span>
+         <span><span><span><a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e...418e7</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xC056255e6B1E6001852f9f20587A964cb89418e7" value="0xC056255e6B1E6001852f9f20587A964cb89418e7"></span>
-                <!----></span></span>
-                &nbsp;
-              </div>
+              <!----></span></span></span></span></span>
             </div>
-            <div>
-              <div class="ml-4"><span>	address to: 
-        
+            <div style="white-space: pre;"><span class="ml-4">
+    address to: 
+    <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-        </span> <span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
+         <span><span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
-                <!----></span></span>
-                &nbsp;
-              </div>
+              <!----></span></span></span></span></span>
             </div>
-            <div>
-              <div class="ml-4"><span>	uint256 value: 
-        <!----></span> 500000000
-                &nbsp;
-              </div>
-            </div> <span>)</span>
+            <div style="white-space: pre;"><span class="ml-4">
+    uint256 value: 
+    <span><!----> 500000000</span></span></div> <span>)</span>
           </div>
         </div>
       </div>
@@ -415,22 +391,17 @@ exports[`Transaction.vue Should not display the menu if public explorer 1`] = `
           <div class="v-card__text">
             transfer(
 
-            <div>
-              <div class="ml-4"><span>	address _to: 
-        
+            <div class="ml-4" style="white-space: pre;"><span>
+    address _to: 
+    <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-        </span> <span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
+         <span><span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
-                <!----></span></span>
-                &nbsp;
-              </div>
+              <!----></span></span></span></span></span>
             </div>
-            <div>
-              <div class="ml-4"><span>	uint256 _value: 
-        <!----></span> 500000000
-                &nbsp;
-              </div>
-            </div>
+            <div class="ml-4" style="white-space: pre;"><span>
+    uint256 _value: 
+    <span><!----> 500000000</span></span></div>
             )
           </div>
         </div>
@@ -438,32 +409,25 @@ exports[`Transaction.vue Should not display the menu if public explorer 1`] = `
         <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
           <div class="v-card__text"><span><span><a href="#/address/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" class="">USDC</a> <!----> <!----></span>.Transfer(
             </span>
-            <div>
-              <div class="ml-4"><span>	address from: 
-        
+            <div style="white-space: pre;"><span class="ml-4">
+    address from: 
+    <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-        </span> <span><span><a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e...418e7</a> <span>
+         <span><span><span><a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e...418e7</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xC056255e6B1E6001852f9f20587A964cb89418e7" value="0xC056255e6B1E6001852f9f20587A964cb89418e7"></span>
-                <!----></span></span>
-                &nbsp;
-              </div>
+              <!----></span></span></span></span></span>
             </div>
-            <div>
-              <div class="ml-4"><span>	address to: 
-        
+            <div style="white-space: pre;"><span class="ml-4">
+    address to: 
+    <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-        </span> <span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
+         <span><span><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bA...01279</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
-                <!----></span></span>
-                &nbsp;
-              </div>
+              <!----></span></span></span></span></span>
             </div>
-            <div>
-              <div class="ml-4"><span>	uint256 value: 
-        <!----></span> 500000000
-                &nbsp;
-              </div>
-            </div> <span>)</span>
+            <div style="white-space: pre;"><span class="ml-4">
+    uint256 value: 
+    <span><!----> 500000000</span></span></div> <span>)</span>
           </div>
         </div>
       </div>

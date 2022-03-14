@@ -14,7 +14,13 @@
         </v-text-field>
         <div>=> {{ outputSignature }}</div>
         <div id="call" v-show="results.length">
-            <Formatted-Sol-Var class="grey lighten-3 pa-2 mt-2" v-for="(val, idx) in results" :input="val.input" :value="val.value" :key="idx" />
+            <v-card outlined v-for="(val, idx) in results" :key="idx" class="my-1">
+                <v-card-text class="py-2 ma-0 px-1">
+                    <div style="white-space: pre;">
+                        <Formatted-Sol-Var :input="val.input" :value="val.value" />
+                    </div>
+                </v-card-text>
+            </v-card>
         </div>
         <div id="call" class="grey lighten-3 pa-2" v-show="error">
             {{ error }}
@@ -44,6 +50,7 @@ export default {
             try {
                 this.loading = true;
                 this.error = null;
+                this.results = [];
                 const processedParams = {};
                 for (let i = 0; i < this.method.inputs.length; i++) {
                     processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);

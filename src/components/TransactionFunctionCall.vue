@@ -2,8 +2,8 @@
     <v-card outlined class="my-2">
         <v-card-text v-if="parsedTransactionData">
             {{ `${parsedTransactionData.functionFragment.name}(\n` }}
-            <div v-for="(input, index) in parsedTransactionData.functionFragment.inputs" :key="index">
-                <Formatted-Sol-Var :input="input" :value="parsedTransactionData.args[index]" class="ml-4" />
+            <div class="ml-4" style="white-space: pre;" v-for="(input, index) in parsedTransactionData.functionFragment.inputs" :key="index">
+                <Formatted-Sol-Var :input="input" :value="parsedTransactionData.args[index]" />
             </div>
             )
         </v-card-text>

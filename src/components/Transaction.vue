@@ -121,14 +121,10 @@
             </v-col>
             </v-row>
 
-            <v-row class="my-2" v-if="transaction.trace">
-                <v-col v-if="transaction.trace.length">
-                    <h4 class="mb-2">Trace</h4>
+            <v-row class="my-2" v-if="transaction.trace && transaction.trace.length">
+                <v-col>
+                    <h3 class="mb-2">Trace</h3>
                     <Trace-Step v-for="(step, idx) in transaction.trace" :step="step" :key="idx" />
-                </v-col>
-                <v-col v-else>
-                    <h4 class="mb-2">Trace</h4>
-                    Empty trace (only CREATE(2) and CALLs are shown).
                 </v-col>
             </v-row>
         </template>
