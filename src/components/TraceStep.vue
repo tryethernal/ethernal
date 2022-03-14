@@ -1,5 +1,5 @@
 <template>
-    <v-row v-if="transactionDescription">
+    <v-row>
         <template v-if="step.depth > 1">
             <v-col v-for="(n, idx) in new Array(step.depth)" :key="idx" cols="1">
             </v-col>
@@ -14,21 +14,23 @@
                     <v-chip small class="primary mr-2">
                         {{ this.step.op }}
                     </v-chip>
-                    <Hash-Link :type="'address'" :hash="step.address" :notCopiable="true" :fullHash="true" :withName="true" />.{{ transactionDescription.functionFragment.name }}(
-                    <div v-for="(input, index) in transactionDescription.functionFragment.inputs" :key="`in-${index}`">
-                        <Formatted-Sol-Var :input="input" :value="transactionDescription.args[index]" class="ml-8" />
-                    </div><span class="ml-4">)</span>
-                    <template v-if="transactionDescription.functionFragment.outputs.length">
-                        <template v-if="transactionDescription.functionFragment.outputs.length > 0">
-                            =>
-                        </template>
-                        <template v-if="transactionDescription.functionFragment.outputs.length > 1 ">
-                            (<div v-for="(output, index) in transactionDescription.functionFragment.outputs" :key="`out-${index}`">
-                                <Formatted-Sol-Var :input="output" :value="decodeOutput(index)" />
-                            </div>)
-                        </template>
-                        <template v-else>
-                            <Formatted-Sol-Var :input="transactionDescription.functionFragment.outputs[0]" :value="decodeOutput(0)" />
+                    <Hash-Link :type="'address'" :hash="step.address" :notCopiable="true" :fullHash="true" :withName="true" /><span v-if="transactionDescription">.{{ transactionDescription.functionFragment.name }}(</span>
+                    <template v-if="transactionDescription">
+                        <div v-for="(input, index) in transactionDescription.functionFragment.inputs" :key="`in-${index}`">
+                            <Formatted-Sol-Var :input="input" :value="transactionDescription.args[index]" class="ml-8" />
+                        </div><span class="ml-4">)</span>
+                        <template v-if="transactionDescription.functionFragment.outputs.length">
+                            <template v-if="transactionDescription.functionFragment.outputs.length > 0">
+                                =>
+                            </template>
+                            <template v-if="transactionDescription.functionFragment.outputs.length > 1 ">
+                                (<div v-for="(output, index) in transactionDescription.functionFragment.outputs" :key="`out-${index}`">
+                                    <Formatted-Sol-Var :input="output" :value="decodeOutput(index)" />
+                                </div>)
+                            </template>
+                            <template v-else>
+                                <Formatted-Sol-Var :input="transactionDescription.functionFragment.outputs[0]" :value="decodeOutput(0)" />
+                            </template>
                         </template>
                     </template>
                 </v-card-text>
