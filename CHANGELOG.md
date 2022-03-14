@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] - 2022-03-14
+### Changed
+- Tracing is now proccessed server side for public explorers
+- Tracing steps are now formatted as others variables
+- Read functions results have a more consistent display with the rest of the UI
+
 ## [1.6.3] - 2022-03-11
 ### Changed
 - Balance changes is now processed server side for public explorers
