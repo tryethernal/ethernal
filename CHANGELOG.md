@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.2] - 2022-03-14
+### Changed
+- Blocks & txs synced are now batched with counter increments for more accuracy
+
 ## [1.7.1] - 2022-03-14
 ### Changed
 - Display trace step even if there isn't an input
