@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.1] - 2022-03-14
+### Changed
+- Display trace step even if there isn't an input
+
 ## [1.7.0] - 2022-03-14
 ### Changed
 - Tracing is now proccessed server side for public explorers
