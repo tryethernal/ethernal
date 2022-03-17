@@ -93,7 +93,7 @@ const getWorkspaceByName = async (userId, workspaceName) => {
     };
 };
 
-const storeBlock = (userId, workspace, block) => {
+const storeBlock = async (userId, workspace, block) => {
     if (!userId || !workspace || !block) throw '[storeBlock] Missing parameter';
     const batch = _db.batch();
     const workspaceDoc = _db.collection('users').doc(userId).collection('workspaces').doc(workspace);
@@ -102,17 +102,22 @@ const storeBlock = (userId, workspace, block) => {
     const blockDoc = workspaceDoc
         .collection('blocks')
         .doc(String(block.number));
+
+    const blockExists = !!(await blockDoc.get()).data();
+
     batch.set(blockDoc, block, { merge: true });
 
-    const counterDoc = workspaceDoc
-        .collection('stats/blocks/counters')
-        .doc(`shard-${shardId}`);
-    batch.set(counterDoc, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
+    if (!blockExists) {
+        const counterDoc = workspaceDoc
+            .collection('stats/blocks/counters')
+            .doc(`shard-${shardId}`);
+        batch.set(counterDoc, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
+    }
 
     return batch.commit();
 };
 
-const storeTransaction = (userId, workspace, transaction) => {
+const storeTransaction = async (userId, workspace, transaction) => {
     if (!userId || !workspace || !transaction) throw '[storeTransaction] Missing parameter';
     const batch = _db.batch();
     const workspaceDoc = _db.collection('users').doc(userId).collection('workspaces').doc(workspace);
@@ -121,23 +126,28 @@ const storeTransaction = (userId, workspace, transaction) => {
     const txDoc = workspaceDoc
         .collection('transactions')
         .doc(transaction.hash);
+
+    const txExists = !!(await txDoc.get()).data();
+
     batch.set(txDoc, transaction, { merge: true });
 
-    const counterDoc = workspaceDoc
-        .collection('stats/transactions/counters')
-        .doc(`shard-${shardId}`)
-    batch.set(counterDoc, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
+    if (!txExists) {
+        const counterDoc = workspaceDoc
+            .collection('stats/transactions/counters')
+            .doc(`shard-${shardId}`)
+        batch.set(counterDoc, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
 
-    const fromAddressCounterDoc = workspaceDoc
-            .collection(`stats/addresses/${transaction.from}/counters/shards`)
-            .doc(`shard-${shardId}`);
-        batch.set(fromAddressCounterDoc, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
+        const fromAddressCounterDoc = workspaceDoc
+                .collection(`stats/addresses/${transaction.from}/counters/shards`)
+                .doc(`shard-${shardId}`);
+            batch.set(fromAddressCounterDoc, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
 
-    if (transaction.to) {
-        const toAddressCounterDoc = workspaceDoc
-            .collection(`stats/addresses/${transaction.to}/counters/shards`)
-            .doc(`shard-${shardId}`);
-        batch.set(toAddressCounterDoc, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
+        if (transaction.to) {
+            const toAddressCounterDoc = workspaceDoc
+                .collection(`stats/addresses/${transaction.to}/counters/shards`)
+                .doc(`shard-${shardId}`);
+            batch.set(toAddressCounterDoc, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
+        }
     }
 
     return batch.commit();
