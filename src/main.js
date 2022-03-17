@@ -20,7 +20,6 @@ Vue.use(require('vue-moment'));
 Vue.use(dbPlugin, { store: store });
 Vue.use(serverPlugin, { store: store });
 
-
 const isEthernalDomain = window.location.host.endsWith(process.env.VUE_APP_MAIN_DOMAIN);
 
 if (isEthernalDomain) {
