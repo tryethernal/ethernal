@@ -360,7 +360,7 @@ describe('storeBlock', () => {
     });
 });
 
-describe('storeTransaction', () => {
+describe.only('storeTransaction', () => {
     it('Should add the tx in the db if it does not exist', async () => {
         await storeTransaction('123', 'hardhat', Transaction);
 
@@ -389,7 +389,44 @@ describe('storeTransaction', () => {
             .get();
 
         expect(txRef.data()).toMatchSnapshot();        
-    })
+    });
+
+    it('Should increment the counter if tx does not exist', async () => {
+        await storeTransaction('123', 'hardhat', {
+            hash: '0xb750fb9dd193bb4a46ea5426837c469815d2494abd68a94b1c2c190f3569c5b8',
+            from: '0x123'
+        });
+
+        let count = 0;
+        const query = await helper.workspace
+            .collection(`stats/transactions/counters`)
+            .get();
+        
+        query.forEach((shard) => count += shard.data().value);
+        
+        expect(count).toEqual(1);
+    });
+
+    it('Should not increment the counter if it exists', async () => {
+        await storeTransaction('123', 'hardhat', {
+            hash: '0xb750fb9dd193bb4a46ea5426837c469815d2494abd68a94b1c2c190f3569c5b8',
+            from: '0x123'
+        });
+
+        await storeTransaction('123', 'hardhat', {
+            hash: '0xb750fb9dd193bb4a46ea5426837c469815d2494abd68a94b1c2c190f3569c5b8',
+            from: '0x123'
+        });
+
+        let count = 0;
+        const query = await helper.workspace
+            .collection(`stats/transactions/counters`)
+            .get();
+        
+        query.forEach((shard) => count += shard.data().value);
+        
+        expect(count).toEqual(1);
+    });
 });
 
 describe('storeContractData', () => {
