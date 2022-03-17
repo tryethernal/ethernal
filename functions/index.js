@@ -8,7 +8,9 @@ const jwt = require('jsonwebtoken');
 const Decoder = require('@truffle/decoder');
 const firebaseTools = require('firebase-tools');
 const admin = require('firebase-admin');
+const { PubSub } = require('@google-cloud/pubsub');
 const stripe = require('stripe')(functions.config().stripe.secret_key);
+const solc = require('solc');
 
 const Storage = require('./lib/storage');
 const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('./lib/utils');
@@ -56,8 +58,113 @@ const {
     canUserSyncContract,
     isUserPremium,
     storeTokenBalanceChanges,
-    getTransaction
+    getTransaction,
+    getPublicExplorerParamsBySlug,
+    getContractDeploymentTxByAddress,
+    updateContractVerificationStatus
 } = require('./lib/firebase');
+
+const pubsub = new PubSub();
+
+exports.processContractVerification = functions.pubsub.topic('verify-contract').onPublish(async (message) => {
+    try {
+        const payload = message.json;
+
+        const sources = payload.code.sources;
+        console.log(payload.code)
+        if (!sources)
+            throw '[processContractVerification] Missing sources';
+
+        const imports = payload.code.imports || {};
+        const compilerVersion = payload.compilerVersion;
+        const contractAddress = payload.contractAddress;
+        const constructorArguments = payload.constructorArguments;
+        const explorerSlug = payload.explorerSlug;
+        const contractName = payload.contractName;
+
+        // Only supports verifying one contract at a time at the moment
+        const contractFile = Object.keys(sources)[0];
+
+        const publicExplorerParams = await getPublicExplorerParamsBySlug(explorerSlug);
+
+        await updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, 'pending');
+
+        const compiler = await new Promise((resolve, reject) => {
+            solc.loadRemoteVersion(compilerVersion, (err, solc) => {
+                if (err)
+                    reject(err);
+                resolve(solc);
+            });
+        });
+
+        const inputs = {
+            language: 'Solidity',
+            sources: sources,
+            settings: {
+                outputSelection: {
+                    '*': { '*': ['abi', 'evm.bytecode.object'] }
+                }
+            }
+        };
+
+        const compiledCode = compiler.compile(JSON.stringify(inputs), { import : function(path) { return imports[path] }});
+
+        if (compiledCode.errors) { 
+            for (let error of compiledCode.errors)
+                console.log(error.formattedMessage)
+        }
+        console.log(JSON.parse(compiledCode))
+        const compiledRuntimeBytecode = `0x${JSON.parse(compiledCode).contracts[contractFile][contractName].evm.bytecode.object}${constructorArguments ? constructorArguments : ''}`;
+
+        const deploymentTx = await getContractDeploymentTxByAddress(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress);
+        const deployedRuntimeBytecode = deploymentTx.data;
+
+        if (compiledRuntimeBytecode === deployedRuntimeBytecode) {
+            console.log('Verification succeeded!');
+            await updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, 'success');
+        }
+        else {
+            console.log('Verification failed!');
+            console.log(compiledRuntimeBytecode)
+            console.log('------')
+            console.log(deployedRuntimeBytecode)
+            await updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, 'failed');
+        }
+    } catch(error) {
+        console.log(error);
+        await updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, 'failed');
+    } 
+});
+
+exports.startContractVerification = functions.https.onCall(async (data, context) => {
+    try {
+        if (!data.explorerSlug || !data.contractAddress || !data.compilerVersion || !data.code || !data.contractName) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[startContractVerification] Missing parameter.');
+        }
+
+        const topic = pubsub.topic('verify-contract');
+        const message = sanitize({
+            explorerSlug: data.explorerSlug,
+            contractAddress: data.contractAddress,
+            compilerVersion: data.compilerVersion,
+            constructorArguments: data.constructorArguments,
+            code: data.code,
+            contractName: data.contractName
+        });
+        
+        const messageBuffer = Buffer.from(JSON.stringify(message), 'utf8');
+
+        const res = await topic.publish(messageBuffer);
+        console.log(res);
+
+        return { success: true };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
+    }
+});
 
 exports.processTransaction = functions.https.onCall(async (data, context) => {
     if (!context.auth)

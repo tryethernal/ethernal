@@ -418,6 +418,47 @@ const getTransaction = async (userId, workspace, transactionHash) => {
     return query.data();
 };
 
+const getPublicExplorerParamsBySlug = async (slug) => {
+   if (!slug) throw '[getPublicExplorerParamsBySlug] Missing parameter';
+
+    const doc = await _db.collection('public').doc(slug).get();
+    const publicExplorerParams = doc.data();
+
+    if (!publicExplorerParams) return;
+
+    const workspace = (await _getWorkspace(publicExplorerParams.userId, publicExplorerParams.workspace).get()).data();
+
+    if (!workspace) return;
+
+    if (workspace.public)
+        return publicExplorerParams;
+};
+
+const getContractDeploymentTxByAddress = async (userId, workspace, address) => {
+    if (!userId || !workspace || !address) throw '[getContractDeploymentTxByAddress] Missing parameter';
+
+    const query = await _getWorkspace(userId, workspace)
+        .collection('transactions')
+        .where('creates', '==', address)
+        .get();
+
+    const results = [];
+    query.forEach((doc) => results.push(doc.data()));
+
+    return results[0];
+};
+
+const updateContractVerificationStatus = async (userId, workspace, contractAddress, status) => {
+    if (!userId || !workspace || !contractAddress || !status) throw '[updateContractVerificationStatus] Missing parameter';
+
+    if (['success', 'pending', 'failed'].indexOf(status) === -1) return;
+
+    return _getWorkspace(userId, workspace)
+        .collection('contracts')
+        .doc(contractAddress)
+        .set({ verificationStatus: status }, { merge: true });
+};
+
 module.exports = {
     Timestamp: admin.firestore.Timestamp,
     firestore: _db,
@@ -460,5 +501,8 @@ module.exports = {
     storeTransactionMethodDetails: storeTransactionMethodDetails,
     storeTokenBalanceChanges: storeTokenBalanceChanges,
     storeTransactionTokenTransfers: storeTransactionTokenTransfers,
-    getTransaction: getTransaction
+    getTransaction: getTransaction,
+    getPublicExplorerParamsBySlug: getPublicExplorerParamsBySlug,
+    getContractDeploymentTxByAddress: getContractDeploymentTxByAddress,
+    updateContractVerificationStatus: updateContractVerificationStatus
 };
