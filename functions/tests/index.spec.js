@@ -55,6 +55,9 @@ jest.mock('stripe', () => {
                         return new Promise((resolve) => resolve({ url: 'https://checkout.stripe.com/pay/cs_test_a1iLHyCoBSlctiheACjbxq' }));
                     }
                 }
+            },
+            subscriptionItems: {
+                createUsageRecord: jest.fn().mockResolvedValue()
             }
         }
     }
@@ -243,12 +246,35 @@ describe('syncBlock', () => {
             transactions: []
         };
         
-        const result = await wrapped({ block: block, workspace: 'hardhat' }, auth);
+        setTimeout(async () => {
+            const result = await wrapped({ block: block, workspace: 'hardhat' }, auth);
 
-        const blockRef = await helper.workspace.collection('blocks').doc('123').get();
+            const blockRef = await helper.workspace.collection('blocks').doc('123').get();
+            
+            expect(blockRef.data()).toEqual({ number: '123', transactions: [] });
+            expect(result).toEqual({ blockNumber: '123' });
+            expect(stripe.subscriptionItems.createUsageRecord).toHaveBeenCalledOnce();
+        }, 2000);
+    });
+
+
+    it('Should not bill the block if there is a tx', async () => {
+        const wrapped = helper.test.wrap(index.syncBlock);
+        const block = {
+            number: '123',
+            value: null,
+            transactions: [{ hash: '0x1234' }]
+        };
         
-        expect(blockRef.data()).toEqual({ number: '123', transactions: [] });
-        expect(result).toEqual({ blockNumber: '123' });
+        setTimeout(async () => {
+            const result = await wrapped({ block: block, workspace: 'hardhat' }, auth);
+
+            const blockRef = await helper.workspace.collection('blocks').doc('123').get();
+            
+            expect(blockRef.data()).toEqual({ number: '123', transactions: [{ hash: '0x1234' }] });
+            expect(result).toEqual({ blockNumber: '123' });
+            expect(stripe.subscriptionItems.createUsageRecord).not.toHaveBeenCalledOnce();
+        }, 2000);
     });
 
     afterEach(async () => {
