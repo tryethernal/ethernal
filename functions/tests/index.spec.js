@@ -39,6 +39,8 @@ jest.mock('axios', () => ({
 }));
 const axios = require('axios');
 
+jest.mock('')
+
 jest.mock('stripe', () => {
     return () => {
         return {
@@ -55,11 +57,17 @@ jest.mock('stripe', () => {
                         return new Promise((resolve) => resolve({ url: 'https://checkout.stripe.com/pay/cs_test_a1iLHyCoBSlctiheACjbxq' }));
                     }
                 }
+            },
+            subscriptionItems: {
+                createUsageRecord: jest.fn().mockResolvedValue()
             }
         }
     }
 });
 const stripe = require('stripe');
+
+const PubSub = require('@google-cloud/pubsub');
+const pubSubMock = require('google-pubsub-mock')
 
 const index = require('../index');
 const Helper = require('./helper');
@@ -71,6 +79,18 @@ const AmalfiContract = require('./fixtures/AmalfiContract.json');
 const Block = require('./fixtures/Block.json');
 let auth = { auth: { uid: '123' }};
 let helper;
+
+const pubSubMockInstance = pubSubMock.setUp({
+    topics: {
+        'bill-usage': {
+            subscriptions: ['test']
+        }
+    }
+});
+
+beforeEach(() => {
+    pubSubMockInstance.clearState();
+});
 
 describe('processTransaction', () => {
     beforeEach(() => {
@@ -244,11 +264,27 @@ describe('syncBlock', () => {
         };
         
         const result = await wrapped({ block: block, workspace: 'hardhat' }, auth);
-
         const blockRef = await helper.workspace.collection('blocks').doc('123').get();
         
         expect(blockRef.data()).toEqual({ number: '123', transactions: [] });
         expect(result).toEqual({ blockNumber: '123' });
+        expect(pubSubMockInstance.publish.callCount).toEqual(1);
+    });
+
+    it('Should not bill the block if there is a tx', async () => {
+        const wrapped = helper.test.wrap(index.syncBlock);
+        const block = {
+            number: '123',
+            value: null,
+            transactions: [{ hash: '0x1234' }]
+        };
+
+        const result = await wrapped({ block: block, workspace: 'hardhat' }, auth);
+        const blockRef = await helper.workspace.collection('blocks').doc('123').get();
+        
+        expect(blockRef.data()).toEqual({ number: '123', transactions: [{ hash: '0x1234' }] });
+        expect(result).toEqual({ blockNumber: '123' });
+        expect(pubSubMockInstance.publish.callCount).toEqual(0);
     });
 
     afterEach(async () => {
@@ -688,6 +724,7 @@ describe('syncTransaction', () => {
         const tx = await txRef.data();
         expect(tx).toMatchSnapshot();
         expect(result).toEqual({ txHash: Transaction.hash });
+        expect(pubSubMockInstance.publish.callCount).toEqual(1);
     });
 
     it('Should store the transaction & receipt, decode function signature, and return the hash', async () => {

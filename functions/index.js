@@ -10,6 +10,7 @@ const firebaseTools = require('firebase-tools');
 const admin = require('firebase-admin');
 const { PubSub } = require('@google-cloud/pubsub');
 const stripe = require('stripe')(functions.config().stripe.secret_key);
+const { PubSub } = require('@google-cloud/pubsub');
 const solc = require('solc');
 
 const Storage = require('./lib/storage');
@@ -65,6 +66,29 @@ const {
 } = require('./lib/firebase');
 
 const pubsub = new PubSub();
+
+exports.billUsage = functions.pubsub.topic('bill-usage').onPublish(async (message) => {
+    try {
+        const payload = message.json;
+
+        const userId = payload.userId;
+        const timestamp = payload.timestamp;
+
+        const user = (await getUser(userId)).data();
+        console.log(user)
+        if (!user.explorerSubscriptionId) return;
+
+        return stripe.subscriptionItems.createUsageRecord(
+            user.explorerSubscriptionId,
+            {
+                quantity: 1,
+                timestamp: timestamp
+            }
+        );
+    } catch(error) {
+        console.log(error);
+    }
+});
 
 exports.processContractVerification = functions.pubsub.topic('verify-contract').onPublish(async (message) => {
     try {
@@ -239,7 +263,17 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
 
         var syncedBlock = stringifyBns(sanitize(block));
 
-        await storeBlock(context.auth.uid, data.workspace, syncedBlock);
+        const storedBlock = await storeBlock(context.auth.uid, data.workspace, syncedBlock);
+
+        if (storedBlock && storedBlock.transactions.length === 0) {
+            const topic = pubsub.topic('bill-usage');
+            const message = sanitize({
+                userId: context.auth.uid,
+                timestamp: data.block.timestamp
+            });
+            const messageBuffer = Buffer.from(JSON.stringify(message), 'utf8');
+            await topic.publish(messageBuffer);
+        }
         
         analytics.track(context.auth.uid, 'Block Sync');
         return { blockNumber: syncedBlock.number }
@@ -401,8 +435,18 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
             tokenBalanceChanges: {},
             tokenTransfers: []
         });
-    
-        await storeTransaction(context.auth.uid, data.workspace, txSynced);
+
+        const storedTx = await storeTransaction(context.auth.uid, data.workspace, txSynced);
+
+        if (storedTx) {
+            const topic = pubsub.topic('bill-usage');
+            const message = sanitize({
+                userId: context.auth.uid,
+                timestamp: data.block.timestamp
+            });
+            const messageBuffer = Buffer.from(JSON.stringify(message), 'utf8');
+            await topic.publish(messageBuffer);
+        }
 
         if (!txSynced.to && sTransactionReceipt) {
             const canSync = await canUserSyncContract(context.auth.uid, data.workspace);
