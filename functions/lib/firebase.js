@@ -95,62 +95,81 @@ const getWorkspaceByName = async (userId, workspaceName) => {
 
 const storeBlock = async (userId, workspace, block) => {
     if (!userId || !workspace || !block) throw '[storeBlock] Missing parameter';
-    const batch = _db.batch();
     const workspaceDoc = _db.collection('users').doc(userId).collection('workspaces').doc(workspace);
-    const shardId = Math.floor(Math.random() * 10);
 
     const blockDoc = workspaceDoc
         .collection('blocks')
         .doc(String(block.number));
 
-    const blockExists = !!(await blockDoc.get()).data();
+    try {
+        return await _db.runTransaction(async t => {
+            const blockData = (await t.get(blockDoc)).data();
+            const blockExists = !!blockData;
 
-    batch.set(blockDoc, block, { merge: true });
+            if (!blockExists) {
+                const shardId = Math.floor(Math.random() * 10);
 
-    if (!blockExists) {
-        const counterDoc = workspaceDoc
-            .collection('stats/blocks/counters')
-            .doc(`shard-${shardId}`);
-        batch.set(counterDoc, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
+                await t.set(blockDoc, block);
+
+                const counterRef = workspaceDoc
+                    .collection('stats/blocks/counters')
+                    .doc(`shard-${shardId}`);
+                await t.set(counterRef, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
+
+                return block;
+            }
+            return null;
+        });
+    } catch(error) {
+        console.log(error);
     }
-
-    return batch.commit();
 };
 
 const storeTransaction = async (userId, workspace, transaction) => {
     if (!userId || !workspace || !transaction) throw '[storeTransaction] Missing parameter';
-    const batch = _db.batch();
     const workspaceDoc = _db.collection('users').doc(userId).collection('workspaces').doc(workspace);
-    const shardId = Math.floor(Math.random() * 10);
     
     const txDoc = workspaceDoc
         .collection('transactions')
         .doc(transaction.hash);
 
-    const txExists = !!(await txDoc.get()).data();
+    try {
+        const res = await _db.runTransaction(async t => {
+            const txData = (await t.get(txDoc)).data();
+            const txExists = !!txData;
 
-    batch.set(txDoc, transaction, { merge: true });
+            if (!txExists) {
+                const shardId = Math.floor(Math.random() * 10);
 
-    if (!txExists) {
-        const counterDoc = workspaceDoc
-            .collection('stats/transactions/counters')
-            .doc(`shard-${shardId}`)
-        batch.set(counterDoc, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
+                await t.set(txDoc, transaction);
 
-        const fromAddressCounterDoc = workspaceDoc
-                .collection(`stats/addresses/${transaction.from}/counters/shards`)
-                .doc(`shard-${shardId}`);
-            batch.set(fromAddressCounterDoc, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
+                const txCounterRef = workspaceDoc
+                    .collection('stats/transactions/counters')
+                    .doc(`shard-${shardId}`);
+                await t.set(txCounterRef, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
+                
+                const fromCounterRef = workspaceDoc
+                    .collection(`stats/addresses/${transaction.from}/counters/shards`)
+                    .doc(`shard-${shardId}`);
+                await t.set(fromCounterRef, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
 
-        if (transaction.to) {
-            const toAddressCounterDoc = workspaceDoc
-                .collection(`stats/addresses/${transaction.to}/counters/shards`)
-                .doc(`shard-${shardId}`);
-            batch.set(toAddressCounterDoc, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
-        }
+                if (transaction.to) {
+                    const toCounterRef = workspaceDoc
+                        .collection(`stats/addresses/${transaction.to}/counters/shards`)
+                        .doc(`shard-${shardId}`);
+                    await t.set(toCounterRef, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
+                }
+
+                return transaction;
+            }
+
+            return null;
+        });
+
+        return res;
+    } catch(error) {
+        console.log(error);
     }
-
-    return batch.commit();
 };
 
 const storeTransactionMethodDetails = (userId, workspace, transactionHash, methodDetails) => {
