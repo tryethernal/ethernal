@@ -358,6 +358,33 @@ describe('storeBlock', () => {
 
         expect(blockRef.data()).toMatchSnapshot();
     });
+
+    it('Should increment the counter if block does not exist', async () => {
+        await storeBlock('123', 'hardhat', Block);
+
+        let count = 0;
+        const query = await helper.workspace
+            .collection(`stats/blocks/counters`)
+            .get();
+        
+        query.forEach((shard) => count += shard.data().value);
+        
+        expect(count).toEqual(1);
+    });
+
+    it('Should not increment the counter if it exists', async () => {
+        await storeBlock('123', 'hardhat', Block);
+        await storeBlock('123', 'hardhat', Block);
+
+        let count = 0;
+        const query = await helper.workspace
+            .collection(`stats/blocks/counters`)
+            .get();
+        
+        query.forEach((shard) => count += shard.data().value);
+        
+        expect(count).toEqual(1);
+    });
 });
 
 describe.only('storeTransaction', () => {
