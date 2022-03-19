@@ -11,6 +11,7 @@ const admin = require('firebase-admin');
 const { PubSub } = require('@google-cloud/pubsub');
 const stripe = require('stripe')(functions.config().stripe.secret_key);
 const solc = require('solc');
+const linker = require('solc/linker');
 
 const Storage = require('./lib/storage');
 const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('./lib/utils');
@@ -74,7 +75,7 @@ exports.billUsage = functions.pubsub.topic('bill-usage').onPublish(async (messag
         const timestamp = payload.timestamp;
 
         const user = (await getUser(userId)).data();
-        console.log(user)
+
         if (!user.explorerSubscriptionId) return;
 
         return stripe.subscriptionItems.createUsageRecord(
@@ -90,26 +91,24 @@ exports.billUsage = functions.pubsub.topic('bill-usage').onPublish(async (messag
 });
 
 exports.processContractVerification = functions.pubsub.topic('verify-contract').onPublish(async (message) => {
-    try {
         const payload = message.json;
 
-        const sources = payload.code.sources;
-        console.log(payload.code)
-        if (!sources)
+        const code = payload.code;
+
+        if (!code.sources)
             throw '[processContractVerification] Missing sources';
 
         const imports = payload.code.imports || {};
         const compilerVersion = payload.compilerVersion;
         const contractAddress = payload.contractAddress;
         const constructorArguments = payload.constructorArguments;
-        const explorerSlug = payload.explorerSlug;
+        const publicExplorerParams = payload.publicExplorerParams;
         const contractName = payload.contractName;
 
         // Only supports verifying one contract at a time at the moment
-        const contractFile = Object.keys(sources)[0];
+        const contractFile = Object.keys(code.sources)[0];
 
-        const publicExplorerParams = await getPublicExplorerParamsBySlug(explorerSlug);
-
+    try {
         await updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, 'pending');
 
         const compiler = await new Promise((resolve, reject) => {
@@ -122,7 +121,7 @@ exports.processContractVerification = functions.pubsub.topic('verify-contract').
 
         const inputs = {
             language: 'Solidity',
-            sources: sources,
+            sources: code.sources,
             settings: {
                 outputSelection: {
                     '*': { '*': ['abi', 'evm.bytecode.object'] }
@@ -136,8 +135,15 @@ exports.processContractVerification = functions.pubsub.topic('verify-contract').
             for (let error of compiledCode.errors)
                 console.log(error.formattedMessage)
         }
-        console.log(JSON.parse(compiledCode))
-        const compiledRuntimeBytecode = `0x${JSON.parse(compiledCode).contracts[contractFile][contractName].evm.bytecode.object}${constructorArguments ? constructorArguments : ''}`;
+        
+        let bytecode = JSON.parse(compiledCode).contracts[contractFile][contractName].evm.bytecode.object;
+        if (Object.keys(code.libraries).length > 0) {
+            console.log('Linking bytecode...')
+            const linkedBytecode = linker.linkBytecode(bytecode, code.libraries);
+            bytecode = linkedBytecode;
+        }
+
+        const compiledRuntimeBytecode = `0x${bytecode}${constructorArguments ? constructorArguments : ''}`;
 
         const deploymentTx = await getContractDeploymentTxByAddress(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress);
         const deployedRuntimeBytecode = deploymentTx.data;
@@ -148,9 +154,6 @@ exports.processContractVerification = functions.pubsub.topic('verify-contract').
         }
         else {
             console.log('Verification failed!');
-            console.log(compiledRuntimeBytecode)
-            console.log('------')
-            console.log(deployedRuntimeBytecode)
             await updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, 'failed');
         }
     } catch(error) {
@@ -166,22 +169,36 @@ exports.startContractVerification = functions.https.onCall(async (data, context)
             throw new functions.https.HttpsError('invalid-argument', '[startContractVerification] Missing parameter.');
         }
 
+        const publicExplorerParams = await getPublicExplorerParamsBySlug(data.explorerSlug);
+
+        if (!publicExplorerParams)
+            throw new Error('Could not find explorer, make sure you passed the correct slug.')
+
+        const contract = await getContractData(publicExplorerParams.userId, publicExplorerParams.workspace, data.contractAddress);
+
+        if (!contract)
+            throw new Error(`Couldn't find contract at address ${data.contractAddress}. Make sure the address is correct and the sync is on.`);
+
+        if (contract.verificationStatus == 'success')
+            throw new Error('Contract has already been verified.');
+        if (contract.verificationStatus == 'pending')
+            throw new Error('There already is an ongoing verification for this contract.');
+
         const topic = pubsub.topic('verify-contract');
         const message = sanitize({
-            explorerSlug: data.explorerSlug,
+            publicExplorerParams: publicExplorerParams,
             contractAddress: data.contractAddress,
             compilerVersion: data.compilerVersion,
             constructorArguments: data.constructorArguments,
             code: data.code,
             contractName: data.contractName
         });
-        
+
         const messageBuffer = Buffer.from(JSON.stringify(message), 'utf8');
 
         const res = await topic.publish(messageBuffer);
-        console.log(res);
 
-        return { success: true };
+        return { success: true, contractPath: `users/${publicExplorerParams.userId}/workspaces/${publicExplorerParams.workspace}/contracts/${data.contractAddress.toLowerCase()}` };
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';

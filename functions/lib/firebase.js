@@ -242,7 +242,7 @@ const getContractData = async (userId, workspace, address) => {
     if (!userId || !workspace || !address) throw '[getContractData] Missing parameter';
     const doc = await _getWorkspace(userId, workspace)
         .collection('contracts')
-        .doc(address)
+        .doc(address.toLowerCase())
         .get();
 
     if (!doc.exists) {
@@ -484,7 +484,7 @@ const updateContractVerificationStatus = async (userId, workspace, contractAddre
 
     return _getWorkspace(userId, workspace)
         .collection('contracts')
-        .doc(contractAddress)
+        .doc(contractAddress.toLowerCase())
         .set({ verificationStatus: status }, { merge: true });
 };
 
