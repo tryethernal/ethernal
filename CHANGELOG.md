@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2022-03-19
+### Fixed
+- Pagination was off if a tx or block was synced multiple times
+
+### Added
+- Logic to bill transactions & empty blocks for public explorer plans (an empty block is billed, a block including at least one transaction is not billed, all transactions are billed)
+
 ## [1.7.2] - 2022-03-14
 ### Changed
 - Blocks & txs synced are now batched with counter increments for more accuracy
