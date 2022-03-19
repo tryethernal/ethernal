@@ -10,7 +10,6 @@ const firebaseTools = require('firebase-tools');
 const admin = require('firebase-admin');
 const { PubSub } = require('@google-cloud/pubsub');
 const stripe = require('stripe')(functions.config().stripe.secret_key);
-const { PubSub } = require('@google-cloud/pubsub');
 const solc = require('solc');
 
 const Storage = require('./lib/storage');
