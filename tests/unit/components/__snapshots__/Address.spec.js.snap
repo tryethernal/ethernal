@@ -224,15 +224,15 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
           <h4>Artifact</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
             <!---->
-            <div>
-              <div role="dialog" class="v-dialog__container">
-                <!---->
-              </div>
-              <div class="v-card__text">
-                Artifact for contract "<b>Amalfi</b>" has been uploaded.<span> (<a href="#">Edit</a>)</span>
-                <!---->
-              </div>
+            <div role="dialog" class="v-dialog__container">
+              <!---->
             </div>
+            <div class="v-card__text">
+              Artifact for contract "<b>Amalfi</b>" has been uploaded.<span> (<a href="#">Edit</a>)</span>
+              <!---->
+            </div>
+            <!---->
+            <!---->
           </div>
           <h4>Call Options</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
@@ -677,14 +677,14 @@ exports[`Address.vue Should display the contract interaction interface under the
           <h4>Artifact</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
             <!---->
-            <div>
+            <!---->
+            <div class="v-card__text">
+              Artifact for contract "<b>Amalfi</b>" has been uploaded.
               <!---->
-              <div class="v-card__text">
-                Artifact for contract "<b>Amalfi</b>" has been uploaded.
-                <!---->
-                <!---->
-              </div>
+              <!---->
             </div>
+            <!---->
+            <!---->
           </div>
           <h4>Call Options</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
@@ -1134,15 +1134,15 @@ exports[`Address.vue Should display the contract interaction interface under the
           <h4>Artifact</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
             <!---->
-            <div>
-              <div role="dialog" class="v-dialog__container">
-                <!---->
-              </div>
-              <div class="v-card__text">
-                Artifact for contract "<b>Amalfi</b>" has been uploaded.<span> (<a href="#">Edit</a>)</span>
-                <!---->
-              </div>
+            <div role="dialog" class="v-dialog__container">
+              <!---->
             </div>
+            <div class="v-card__text">
+              Artifact for contract "<b>Amalfi</b>" has been uploaded.<span> (<a href="#">Edit</a>)</span>
+              <!---->
+            </div>
+            <!---->
+            <!---->
           </div>
           <h4>Call Options</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
