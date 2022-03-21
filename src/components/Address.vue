@@ -20,7 +20,7 @@
             <v-tab href="#transactions">Transactions</v-tab>
             <v-tab id="contractTab" href="#contract" v-if="isContract">Contract</v-tab>
             <v-tab id="storageTab" href="#storage" v-if="isContract && !contract.imported && !isPublicExplorer">Storage</v-tab>
-            <v-tab id="tokenTab" href="#token" v-if="isTokenContract">Token</v-tab>
+            <v-tab id="tokenTab" href="#token" v-if="isTokenContract &&!isPublicExplorer">Token</v-tab>
         </v-tabs>
 
         <v-tabs-items :value="tab">
@@ -33,7 +33,7 @@
                     <h4>Artifact</h4>
                     <v-card outlined class="mb-4">
                         <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
-                        <div v-if="!contractLoader">
+                        <template v-if="!contractLoader">
                             <Import-Artifact-Modal ref="importArtifactModal" v-if="currentWorkspace.isAdmin" />
                             <v-card-text v-if="contract.name">
                                 Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded.<span v-if="currentWorkspace.isAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
@@ -42,13 +42,16 @@
                                     {{ Object.keys(contract.dependencies).join(', ') }}
                                 </div>
                             </v-card-text>
-                            <v-card-text v-else>
+                            <v-card-text v-if="!contract.name && currentWorkspace.isAdmin">
                                 <i>Upload an artifact to read contract storage and interact with it.</i><br />
                                 For Truffle projects, use our <a href="https://www.npmjs.com/package/ethernal" target="_blank">CLI</a>.<br />
                                 For Hardhat project, use our <a href="https://github.com/antoinedc/hardhat-ethernal" target="_blank">plugin</a>.<br />
                                 Or you can manually edit contract metadata (name & ABI) <a href="#" @click.stop="openImportArtifactModal()">here</a>.
                             </v-card-text>
-                        </div>
+                            <v-card-text v-if="!contract.name && !currentWorkspace.isAdmin">
+                                This contract hasn't been verified yet.
+                            </v-card-text>
+                        </template>
                     </v-card>
                 </template>
 

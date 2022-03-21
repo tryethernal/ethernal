@@ -18,7 +18,9 @@ describe('Address.vue', () => {
     it('Should not display the "Remove Contract" button & storage tab on contract page if in public explorer mode and not admin', async (done) => {
         helper.getters.isPublicExplorer.mockImplementation(() => true);
         helper.storeState.currentWorkspace.isAdmin = false;
+        
         await helper.mocks.admin.collection('contracts').doc('123').set({ address: '123' });
+        
         const wrapper = helper.mountFn(Address, {
             propsData: {
                 hash: '123'
@@ -33,7 +35,9 @@ describe('Address.vue', () => {
 
     it('Should not display the storage tab on contract page if in public explorer mode', async (done) => {
         helper.getters.isPublicExplorer.mockImplementation(() => true);
+
         await helper.mocks.admin.collection('contracts').doc('123').set({ address: '123' });
+        
         const wrapper = helper.mountFn(Address, {
             propsData: {
                 hash: '123'
@@ -167,7 +171,7 @@ describe('Address.vue', () => {
         });
 
         await db.collection('contracts').doc('123').set({ name: 'Amalfi', address: '123', abi: AmalfiContract.artifact.abi });
-        
+
         const wrapper = helper.mountFn(Address, {
             propsData: {
                 hash: '123'
