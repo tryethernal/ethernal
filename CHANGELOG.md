@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.1] - 2022-03-20
+### Changed
+- [Public Explorer] Do not display metadata upload field unless you're logged in as an admin
+- [Public Explorer] Do not display "Token" tab on the contract's page
+
 ## [1.8.0] - 2022-03-19
 ### Fixed
 - Pagination was off if a tx or block was synced multiple times
