@@ -57,7 +57,7 @@ jest.mock('stripe', () => {
                 }
             },
             subscriptionItems: {
-                createUsageRecord: jest.fn().mockResolvedValue()
+                createUsageRecord: jest.fn()
             }
         }
     }
@@ -73,8 +73,8 @@ jest.mock('../lib/firebase', () => {
 });
 const { getUser } = require('../lib/firebase');
 
-const PubSub = require('@google-cloud/pubsub');
 const pubSubMock = require('google-pubsub-mock');
+const PubSub = require('@google-cloud/pubsub');
 
 const index = require('../index');
 const Helper = require('./helper');
@@ -105,7 +105,7 @@ describe.only('billUsage', () => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
     });
 
-    it('Should create a record in Stripe if the user has an explorer subscription', async () => {
+    it.only('Should create a record in Stripe if the user has an explorer subscription', async () => {
         getUser.mockImplementation()
             .mockResolvedValue({ data: () => ({ explorerSubscriptionId: 'si_1234' }) });
 
@@ -119,8 +119,9 @@ describe.only('billUsage', () => {
         };
 
         const result = await wrapped(message);
-        await setTimeout(jest.fn, 3000);
-        expect(stripe.subscriptionItems.createUsageRecord).toHaveBeenCalledWith('si_1234', { quantity: 1, timestamp: 123 });
+        setTimeout(() => {
+            expect(stripe.subscriptionItems.createUsageRecord).toHaveBeenCalledWith('si_1234', { quantity: 1, timestamp: 123 });
+        }, 2000)
     });
 
     it('Should not create a record in Stripe if the user has not an explorer subscription', async () => {
