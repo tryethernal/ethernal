@@ -39,8 +39,6 @@ jest.mock('axios', () => ({
 }));
 const axios = require('axios');
 
-jest.mock('')
-
 jest.mock('stripe', () => {
     return () => {
         return {
@@ -64,10 +62,19 @@ jest.mock('stripe', () => {
         }
     }
 });
-const stripe = require('stripe');
+const stripe = require('stripe')('1234');
+
+jest.mock('../lib/firebase', () => {
+    const actual = jest.requireActual('../lib/firebase')
+    return {
+        ...actual,
+        getUser: jest.fn().mockResolvedValue({ data: () => ({ apiKey: '1234' })})
+    }
+});
+const { getUser } = require('../lib/firebase');
 
 const PubSub = require('@google-cloud/pubsub');
-const pubSubMock = require('google-pubsub-mock')
+const pubSubMock = require('google-pubsub-mock');
 
 const index = require('../index');
 const Helper = require('./helper');
@@ -90,6 +97,48 @@ const pubSubMockInstance = pubSubMock.setUp({
 
 beforeEach(() => {
     pubSubMockInstance.clearState();
+    jest.clearAllMocks();
+});
+
+describe.only('billUsage', () => {
+    beforeEach(()=> {
+        helper = new Helper(process.env.GCLOUD_PROJECT);
+    });
+
+    it('Should create a record in Stripe if the user has an explorer subscription', async () => {
+        getUser.mockImplementation()
+            .mockResolvedValue({ data: () => ({ explorerSubscriptionId: 'si_1234' }) });
+
+        const wrapped = helper.test.wrap(index.billUsage);
+
+        const message = {
+            json: {
+                userId: '123',
+                timestamp: 123
+            }
+        };
+
+        const result = await wrapped(message);
+        await setTimeout(jest.fn, 3000);
+        expect(stripe.subscriptionItems.createUsageRecord).toHaveBeenCalledWith('si_1234', { quantity: 1, timestamp: 123 });
+    });
+
+    it('Should not create a record in Stripe if the user has not an explorer subscription', async () => {
+        const wrapped = helper.test.wrap(index.billUsage);
+
+        const message = {
+            json: {
+                userId: '123',
+                timestamp: 123
+            }
+        };
+
+        const result = await wrapped(message);
+        await setTimeout(jest.fn, 3000);
+        expect(stripe.subscriptionItems.createUsageRecord).not.toHaveBeenCalled();
+    });
+
+    afterEach(() => helper.clean());
 });
 
 describe('processTransaction', () => {
@@ -875,6 +924,14 @@ describe('enableAlchemyWebhook', () => {
             .set({ apiKey: 'c51be5b4afd6f008f536611b2c1bf47d:8e167c103709c4238995cefae6975a366e150583cdf9c963de44913aa3f84438' }, { merge: true });
 
         await helper.workspace.set({ localNetwork: true }, { merge: true });
+
+        getUser.mockResolvedValue({
+            data: () => {
+                return {
+                    apiKey: 'c51be5b4afd6f008f536611b2c1bf47d:8e167c103709c4238995cefae6975a366e150583cdf9c963de44913aa3f84438'
+                }
+            }
+        });
     });
 
     it('Should enable the integration and return the token', async () => {
@@ -917,6 +974,14 @@ describe('enableWorkspaceApi', () => {
             .set({ apiKey: 'c51be5b4afd6f008f536611b2c1bf47d:8e167c103709c4238995cefae6975a366e150583cdf9c963de44913aa3f84438' }, { merge: true });
 
         await helper.workspace.set({ localNetwork: true }, { merge: true });
+
+        getUser.mockResolvedValue({
+            data: () => {
+                return {
+                    apiKey: 'c51be5b4afd6f008f536611b2c1bf47d:8e167c103709c4238995cefae6975a366e150583cdf9c963de44913aa3f84438'
+                }
+            }
+        });
     });
 
     it('Should enable the api and return the token', async () => {
@@ -959,6 +1024,14 @@ describe('getWorkspaceApiToken', () => {
             .set({ apiKey: 'c51be5b4afd6f008f536611b2c1bf47d:8e167c103709c4238995cefae6975a366e150583cdf9c963de44913aa3f84438' }, { merge: true });
 
         await helper.workspace.set({ localNetwork: true }, { merge: true });
+
+        getUser.mockResolvedValue({
+            data: () => {
+                return {
+                    apiKey: 'c51be5b4afd6f008f536611b2c1bf47d:8e167c103709c4238995cefae6975a366e150583cdf9c963de44913aa3f84438'
+                }
+            }
+        });
     });
 
     it('Should return the token', async () => {

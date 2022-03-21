@@ -76,7 +76,7 @@ exports.billUsage = functions.pubsub.topic('bill-usage').onPublish(async (messag
 
         const user = (await getUser(userId)).data();
 
-        if (!user.explorerSubscriptionId) return;
+        if (!user || !user.explorerSubscriptionId) return;
 
         return stripe.subscriptionItems.createUsageRecord(
             user.explorerSubscriptionId,
