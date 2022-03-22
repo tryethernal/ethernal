@@ -100,48 +100,6 @@ beforeEach(() => {
     jest.clearAllMocks();
 });
 
-describe.only('billUsage', () => {
-    beforeEach(()=> {
-        helper = new Helper(process.env.GCLOUD_PROJECT);
-    });
-
-    it.only('Should create a record in Stripe if the user has an explorer subscription', async () => {
-        getUser.mockImplementation()
-            .mockResolvedValue({ data: () => ({ explorerSubscriptionId: 'si_1234' }) });
-
-        const wrapped = helper.test.wrap(index.billUsage);
-
-        const message = {
-            json: {
-                userId: '123',
-                timestamp: 123
-            }
-        };
-
-        const result = await wrapped(message);
-        setTimeout(() => {
-            expect(stripe.subscriptionItems.createUsageRecord).toHaveBeenCalledWith('si_1234', { quantity: 1, timestamp: 123 });
-        }, 2000)
-    });
-
-    it('Should not create a record in Stripe if the user has not an explorer subscription', async () => {
-        const wrapped = helper.test.wrap(index.billUsage);
-
-        const message = {
-            json: {
-                userId: '123',
-                timestamp: 123
-            }
-        };
-
-        const result = await wrapped(message);
-        await setTimeout(jest.fn, 3000);
-        expect(stripe.subscriptionItems.createUsageRecord).not.toHaveBeenCalled();
-    });
-
-    afterEach(() => helper.clean());
-});
-
 describe('processTransaction', () => {
     beforeEach(() => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
