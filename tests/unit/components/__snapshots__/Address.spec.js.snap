@@ -1839,10 +1839,10 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
               <div class="v-data-footer">
                 <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-29" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-675" class="v-input__slot">
                         <div class="v-select__slot">
                           <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-29" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-675" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                           </div>
                           <div class="v-input__append-inner">
                             <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -1864,7 +1864,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
         </div>
       </transition-stub>
       <transition-stub name="v-window-x-transition">
-        <div class="v-window-item v-window-item--active" id="contract">
+        <div class="v-window-item v-window-item--active" id="contract" style="">
           <h4>Artifact</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
             <!---->
@@ -1925,13 +1925,13 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   <div class="col col-5">
                     <div>
                       <div class="pb-1 font-weight-bold">depositsOf</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-57" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-57" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-694" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-694" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -1947,13 +1947,13 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   <div class="col col-5">
                     <div>
                       <div class="pb-1 font-weight-bold">maturityOf</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-60" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-60" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-697" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-697" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -1997,13 +1997,13 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-68" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-68" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-704" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-704" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -2015,13 +2015,13 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   <div class="col col-5">
                     <div>
                       <div class="font-weight-bold">transferOwnership</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-71" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address newOwner</label><input disabled="disabled" id="input-71" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-707" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address newOwner</label><input disabled="disabled" id="input-707" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -2046,13 +2046,13 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-76" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-76" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-712" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-712" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -2064,23 +2064,23 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   <div class="col col-5">
                     <div>
                       <div class="font-weight-bold">setMaturity</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-79" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-79" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-715" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-715" type="text"></div>
                           </div>
                         </div>
                       </div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-80" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input disabled="disabled" id="input-80" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-716" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input disabled="disabled" id="input-716" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -2105,13 +2105,13 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-85" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-85" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-721" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-721" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -2123,13 +2123,13 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   <div class="col col-5">
                     <div>
                       <div class="font-weight-bold">deposit</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-88" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-88" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-724" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-724" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -2154,13 +2154,13 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-93" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-93" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-729" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-729" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -2193,13 +2193,13 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-100" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-100" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-736" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-736" type="number"></div>
                             </div>
                           </div>
                         </div>

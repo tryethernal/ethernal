@@ -72,6 +72,8 @@ class MockHelper {
         };
 
         this.getters = {
+            blockCount: jest.fn().mockReturnValue(2),
+            transactionCount: jest.fn().mockReturnValue(2),
             currentWorkspace: jest.fn(() => this.storeState.currentWorkspace),
             user: jest.fn(() => {
                 return { ...this.storeState.user, plan: this.storeState.user.plan || 'free' }
