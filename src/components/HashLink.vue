@@ -1,5 +1,11 @@
 <template>
     <span>
+        <v-tooltip top v-if="verified">
+            <template v-slot:activator="{on, attrs}">
+                <v-icon v-bind="attrs" v-on="on" class="success--text mr-1" small v-if="verified">mdi-check-circle</v-icon>
+            </template>
+            Verified contract.
+        </v-tooltip>
         <router-link v-if="hash" :to="link()">{{ name }}</router-link>
         <span v-if="hash && !copied && !notCopiable">
             &nbsp; <v-icon @click="copyHash()" x-small>mdi-content-copy</v-icon><input type="hidden" :id="`copyElement-${hash}`" :value="hash">
@@ -18,6 +24,7 @@ export default {
         copied: false,
         token: null,
         contractName: null,
+        verified: false
     }),
     watch: {
         hash: {
@@ -36,6 +43,7 @@ export default {
                             if (contractDoc.exists) {
                                 this.token = contractDoc.data().token;
                                 this.contractName = contractDoc.data().name;
+                                this.verified = contractDoc.data().verificationStatus == 'success';
                             }
                         });
             }

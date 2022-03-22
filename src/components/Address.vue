@@ -35,11 +35,16 @@
                         <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
                         <template v-if="!contractLoader">
                             <Import-Artifact-Modal ref="importArtifactModal" v-if="currentWorkspace.isAdmin" />
-                            <v-card-text v-if="contract.name">
-                                Artifact for contract "<b>{{ contract.name }}</b>" has been uploaded.<span v-if="currentWorkspace.isAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
+                            <v-card-text v-if="contract.name && contract.abi">
+                                <div class="mb-1">
+                                    <span class="success--text" v-if="contract.verificationStatus == 'success'">
+                                        <v-icon class="success--text mr-1" small>mdi-check-circle</v-icon>Verified contract.
+                                    </span>
+                                </div>
+                                Artifact for "<b>{{ contract.name }}</b>" has been uploaded.<span v-if="currentWorkspace.isAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
                                 <div v-if="Object.keys(contract.dependencies).length" class="mb-1 mt-2">
                                     <h5>Dependencies:</h5>
-                                    {{ Object.keys(contract.dependencies).join(', ') }}
+                                    {{ Object.keys(comntract.dependencies).join(', ') }}
                                 </div>
                             </v-card-text>
                             <v-card-text v-if="!contract.name && currentWorkspace.isAdmin">

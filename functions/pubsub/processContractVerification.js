@@ -2,7 +2,8 @@ const solc = require('solc');
 const linker = require('solc/linker');
 const {
     updateContractVerificationStatus,
-    getContractDeploymentTxByAddress
+    getContractDeploymentTxByAddress,
+    storeContractData
 } = require('../lib/firebase');
 
 module.exports = async function(message) {
@@ -51,6 +52,7 @@ module.exports = async function(message) {
                 console.log(error.formattedMessage)
         }
 
+        const abi = JSON.parse(compiledCode).contracts[contractFile][contractName].abi;
         let bytecode = JSON.parse(compiledCode).contracts[contractFile][contractName].evm.bytecode.object;
         if (typeof code.libraries == 'object' && Object.keys(code.libraries).length > 0) {
             console.log('Linking bytecode...')
@@ -66,6 +68,7 @@ module.exports = async function(message) {
         if (compiledRuntimeBytecode === deployedRuntimeBytecode) {
             console.log('Verification succeeded!');
             await updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, 'success');
+            await storeContractData(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, { abi: abi });
         }
         else {
             console.log('Verification failed!');

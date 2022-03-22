@@ -5,12 +5,14 @@ jest.mock('../../lib/firebase', () => ({
     updateContractVerificationStatus: jest.fn().mockResolvedValue(),
     getContractDeploymentTxByAddress: jest.fn().mockResolvedValue({
         data: '0x1234'
-    })
+    }),
+    storeContractData: jest.fn().mockResolvedValue()
 }));
 const {
     getUser,
     updateContractVerificationStatus,
-    getContractDeploymentTxByAddress
+    getContractDeploymentTxByAddress,
+    storeContractData
 } = require('../../lib/firebase');
 
 jest.mock('solc', () => ({
@@ -86,6 +88,12 @@ describe('processContractVerification', () => {
             '0x123',
             'success'
         );
+        expect(storeContractData).toHaveBeenCalledWith(
+            '123',
+            'test',
+            '0x123',
+            expect.anything()
+        );
     });
 
     it('Should set the verification status to failed if source code is not matching', async () => {
@@ -121,6 +129,7 @@ describe('processContractVerification', () => {
             '0x123',
             'failed'
         );
+        expect(storeContractData).not.toHaveBeenCalled();
     });
 
     it('Should link bytecode if libraries are passed', async () => {
@@ -159,6 +168,12 @@ describe('processContractVerification', () => {
             '0x123',
             'success'
         );
+        expect(storeContractData).toHaveBeenCalledWith(
+            '123',
+            'test',
+            '0x123',
+            expect.anything()
+        );
     });
 
     it('Should append constructor arguments properly', async () => {
@@ -195,6 +210,12 @@ describe('processContractVerification', () => {
             '0x123',
             'success'
         );
+        expect(storeContractData).toHaveBeenCalledWith(
+            '123',
+            'test',
+            '0x123',
+            expect.anything()
+        );
     });
 
     it('Should set the verification status to failed if there is an error during the process', async () => {
@@ -228,5 +249,6 @@ describe('processContractVerification', () => {
             '0x123',
             'failed'
         );
+        expect(storeContractData).not.toHaveBeenCalled();
     });
 });
