@@ -12,7 +12,7 @@ module.exports = async function(message) {
         const user = (await getUser(userId)).data();
 
         if (!user || !user.explorerSubscriptionId) return;
-        console.log(user)
+
         await stripe.subscriptionItems.createUsageRecord(
             user.explorerSubscriptionId,
             {
