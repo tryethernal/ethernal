@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0] - 2022-03-21
+### Added
+- [Public Explorer] Add server side contract verification, see doc for more info
+- [Public Explorer] Add billing for explorer plan
+
 ## [1.8.1] - 2022-03-20
 ### Changed
 - [Public Explorer] Do not display metadata upload field unless you're logged in as an admin
