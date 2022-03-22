@@ -387,7 +387,7 @@ describe('storeBlock', () => {
     });
 });
 
-describe.only('storeTransaction', () => {
+describe('storeTransaction', () => {
     it('Should add the tx in the db if it does not exist', async () => {
         await storeTransaction('123', 'hardhat', Transaction);
 

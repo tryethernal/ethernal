@@ -52,6 +52,7 @@ describe('Blocks.vue', () => {
     });
 
     it('should show the loading message when empty blocks list', async (done) => {
+        helper.getters.blockCount.mockReturnValue(0);
         const wrapper = helper.mountFn(Blocks);
         await wrapper.vm.$nextTick();
 

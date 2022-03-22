@@ -20,15 +20,15 @@ exports[`TokenTransfers.vue Should display token transfers 1`] = `
       </thead>
       <tbody>
         <tr class="">
-          <td class="text-start"><span><a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e6B1E6001852f9f20587A964cb89418e7</a> <span>
+          <td class="text-start"><span><!----> <a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e6B1E6001852f9f20587A964cb89418e7</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xC056255e6B1E6001852f9f20587A964cb89418e7" value="0xC056255e6B1E6001852f9f20587A964cb89418e7"></span>
             <!----></span>
           </td>
-          <td class="text-start"><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bADB049791CD9A37ea913f2BAC38d01279</a> <span>
+          <td class="text-start"><span><!----> <a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bADB049791CD9A37ea913f2BAC38d01279</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
             <!----></span>
           </td>
-          <td class="text-start"><span><a href="#/address/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" class="">0xa0b86991...6eb48</a> <span>
+          <td class="text-start"><span><!----> <a href="#/address/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" class="">0xa0b86991...6eb48</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" value="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"></span>
             <!----></span>
           </td>
@@ -37,15 +37,15 @@ exports[`TokenTransfers.vue Should display token transfers 1`] = `
           </td>
         </tr>
         <tr class="">
-          <td class="text-start"><span><a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e6B1E6001852f9f20587A964cb89418e7</a> <span>
+          <td class="text-start"><span><!----> <a href="#/address/0xC056255e6B1E6001852f9f20587A964cb89418e7" class="">0xC056255e6B1E6001852f9f20587A964cb89418e7</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xC056255e6B1E6001852f9f20587A964cb89418e7" value="0xC056255e6B1E6001852f9f20587A964cb89418e7"></span>
             <!----></span>
           </td>
-          <td class="text-start"><span><a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bADB049791CD9A37ea913f2BAC38d01279</a> <span>
+          <td class="text-start"><span><!----> <a href="#/address/0x4f6742bADB049791CD9A37ea913f2BAC38d01279" class="">0x4f6742bADB049791CD9A37ea913f2BAC38d01279</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x4f6742bADB049791CD9A37ea913f2BAC38d01279" value="0x4f6742bADB049791CD9A37ea913f2BAC38d01279"></span>
             <!----></span>
           </td>
-          <td class="text-start"><span><a href="#/address/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" class="">0xa0b86991...6eb48</a> <span>
+          <td class="text-start"><span><!----> <a href="#/address/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" class="">0xa0b86991...6eb48</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" value="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"></span>
             <!----></span>
           </td>

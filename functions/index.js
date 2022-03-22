@@ -8,8 +8,10 @@ const jwt = require('jsonwebtoken');
 const Decoder = require('@truffle/decoder');
 const firebaseTools = require('firebase-tools');
 const admin = require('firebase-admin');
-const stripe = require('stripe')(functions.config().stripe.secret_key);
 const { PubSub } = require('@google-cloud/pubsub');
+const stripe = require('stripe')(functions.config().stripe.secret_key);
+const solc = require('solc');
+const linker = require('solc/linker');
 
 const Storage = require('./lib/storage');
 const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('./lib/utils');
@@ -57,31 +59,62 @@ const {
     canUserSyncContract,
     isUserPremium,
     storeTokenBalanceChanges,
-    getTransaction
+    getTransaction,
+    getPublicExplorerParamsBySlug,
+    getContractDeploymentTxByAddress,
+    updateContractVerificationStatus
 } = require('./lib/firebase');
+
+const billUsage = require('./pubsub/billUsage');
+const processContractVerification = require('./pubsub/processContractVerification');
 
 const pubsub = new PubSub();
 
-exports.billUsage = functions.pubsub.topic('bill-usage').onPublish(async (message) => {
+exports.billUsage = functions.pubsub.topic('bill-usage').onPublish(billUsage);
+
+exports.processContractVerification = functions.pubsub.topic('verify-contract').onPublish(processContractVerification);
+
+exports.startContractVerification = functions.https.onCall(async (data, context) => {
     try {
-        const payload = message.json;
+        if (!data.explorerSlug || !data.contractAddress || !data.compilerVersion || !data.code || !data.contractName) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[startContractVerification] Missing parameter.');
+        }
 
-        const userId = payload.userId;
-        const timestamp = payload.timestamp;
+        const publicExplorerParams = await getPublicExplorerParamsBySlug(data.explorerSlug);
 
-        const user = (await getUser(userId)).data();
-        console.log(user)
-        if (!user.explorerSubscriptionId) return;
+        if (!publicExplorerParams)
+            throw new Error('Could not find explorer, make sure you passed the correct slug.')
 
-        return stripe.subscriptionItems.createUsageRecord(
-            user.explorerSubscriptionId,
-            {
-                quantity: 1,
-                timestamp: timestamp
-            }
-        );
+        const contract = await getContractData(publicExplorerParams.userId, publicExplorerParams.workspace, data.contractAddress);
+
+        if (!contract)
+            throw new Error(`Couldn't find contract at address ${data.contractAddress}. Make sure the address is correct and the sync is on.`);
+
+        if (contract.verificationStatus == 'success')
+            throw new Error('Contract has already been verified.');
+        if (contract.verificationStatus == 'pending')
+            throw new Error('There already is an ongoing verification for this contract.');
+
+        const topic = pubsub.topic('verify-contract');
+        const message = sanitize({
+            publicExplorerParams: publicExplorerParams,
+            contractAddress: data.contractAddress,
+            compilerVersion: data.compilerVersion,
+            constructorArguments: data.constructorArguments,
+            code: data.code,
+            contractName: data.contractName
+        });
+
+        const messageBuffer = Buffer.from(JSON.stringify(message), 'utf8');
+
+        const res = await topic.publish(messageBuffer);
+
+        return { success: true, contractPath: `users/${publicExplorerParams.userId}/workspaces/${publicExplorerParams.workspace}/contracts/${data.contractAddress.toLowerCase()}` };
     } catch(error) {
         console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
     }
 });
 

@@ -5,7 +5,7 @@ exports[`FormattedSolVar.vue Should display an address with the contract name 1`
     address: 
     <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-         <span><span><span><a href="#/address/0x123" class="">My Contract</a> <span>
+         <span><span><span><!----> <a href="#/address/0x123" class="">My Contract</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x123" value="0x123"></span>
 <!----></span></span></span></span></span>
 `;

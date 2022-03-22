@@ -34,7 +34,7 @@ exports[`TransactionData.vue Should display transaction data 1`] = `
     address dst: 
     <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-         <span><span><span><a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <span>
+         <span><span><span><!----> <a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xc00e94Cb662C3520282E6f5717214004A7f26888" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></span>
         <!----></span></span></span></span></span>
       </div>
@@ -46,13 +46,13 @@ exports[`TransactionData.vue Should display transaction data 1`] = `
   </div>
   <h3 class="mb-2">Emitted Events</h3>
   <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__text"><span><span><a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <!----> <!----></span>.Transfer(
+    <div class="v-card__text"><span><span><!----> <a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <!----> <!----></span>.Transfer(
       </span>
       <div style="white-space: pre;"><span class="ml-4">
     address from: 
     <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-         <span><span><span><a href="#/address/0xE93381fB4c4F14bDa253907b18faD305D799241a" class="">0xE93381fB...9241a</a> <span>
+         <span><span><span><!----> <a href="#/address/0xE93381fB4c4F14bDa253907b18faD305D799241a" class="">0xE93381fB...9241a</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xE93381fB4c4F14bDa253907b18faD305D799241a" value="0xE93381fB4c4F14bDa253907b18faD305D799241a"></span>
         <!----></span></span></span></span></span>
       </div>
@@ -60,7 +60,7 @@ exports[`TransactionData.vue Should display transaction data 1`] = `
     address to: 
     <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-         <span><span><span><a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <span>
+         <span><span><span><!----> <a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xc00e94Cb662C3520282E6f5717214004A7f26888" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></span>
         <!----></span></span></span></span></span>
       </div>

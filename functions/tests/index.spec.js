@@ -39,8 +39,6 @@ jest.mock('axios', () => ({
 }));
 const axios = require('axios');
 
-jest.mock('')
-
 jest.mock('stripe', () => {
     return () => {
         return {
@@ -59,15 +57,24 @@ jest.mock('stripe', () => {
                 }
             },
             subscriptionItems: {
-                createUsageRecord: jest.fn().mockResolvedValue()
+                createUsageRecord: jest.fn()
             }
         }
     }
 });
-const stripe = require('stripe');
+const stripe = require('stripe')('1234');
 
+jest.mock('../lib/firebase', () => {
+    const actual = jest.requireActual('../lib/firebase')
+    return {
+        ...actual,
+        getUser: jest.fn().mockResolvedValue({ data: () => ({ apiKey: '1234' })})
+    }
+});
+const { getUser } = require('../lib/firebase');
+
+const pubSubMock = require('google-pubsub-mock');
 const PubSub = require('@google-cloud/pubsub');
-const pubSubMock = require('google-pubsub-mock')
 
 const index = require('../index');
 const Helper = require('./helper');
@@ -90,6 +97,7 @@ const pubSubMockInstance = pubSubMock.setUp({
 
 beforeEach(() => {
     pubSubMockInstance.clearState();
+    jest.clearAllMocks();
 });
 
 describe('processTransaction', () => {
@@ -875,6 +883,14 @@ describe('enableAlchemyWebhook', () => {
             .set({ apiKey: 'c51be5b4afd6f008f536611b2c1bf47d:8e167c103709c4238995cefae6975a366e150583cdf9c963de44913aa3f84438' }, { merge: true });
 
         await helper.workspace.set({ localNetwork: true }, { merge: true });
+
+        getUser.mockResolvedValue({
+            data: () => {
+                return {
+                    apiKey: 'c51be5b4afd6f008f536611b2c1bf47d:8e167c103709c4238995cefae6975a366e150583cdf9c963de44913aa3f84438'
+                }
+            }
+        });
     });
 
     it('Should enable the integration and return the token', async () => {
@@ -917,6 +933,14 @@ describe('enableWorkspaceApi', () => {
             .set({ apiKey: 'c51be5b4afd6f008f536611b2c1bf47d:8e167c103709c4238995cefae6975a366e150583cdf9c963de44913aa3f84438' }, { merge: true });
 
         await helper.workspace.set({ localNetwork: true }, { merge: true });
+
+        getUser.mockResolvedValue({
+            data: () => {
+                return {
+                    apiKey: 'c51be5b4afd6f008f536611b2c1bf47d:8e167c103709c4238995cefae6975a366e150583cdf9c963de44913aa3f84438'
+                }
+            }
+        });
     });
 
     it('Should enable the api and return the token', async () => {
@@ -959,6 +983,14 @@ describe('getWorkspaceApiToken', () => {
             .set({ apiKey: 'c51be5b4afd6f008f536611b2c1bf47d:8e167c103709c4238995cefae6975a366e150583cdf9c963de44913aa3f84438' }, { merge: true });
 
         await helper.workspace.set({ localNetwork: true }, { merge: true });
+
+        getUser.mockResolvedValue({
+            data: () => {
+                return {
+                    apiKey: 'c51be5b4afd6f008f536611b2c1bf47d:8e167c103709c4238995cefae6975a366e150583cdf9c963de44913aa3f84438'
+                }
+            }
+        });
     });
 
     it('Should return the token', async () => {
