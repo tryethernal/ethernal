@@ -192,13 +192,13 @@ describe('Address.vue', () => {
     it('Should display the "Edit" button under the contract tab if there is an ABI & it is a public explorer & as admin', async (done) => {
         const db = helper.mocks.admin;
         helper.getters.isPublicExplorer.mockImplementation(() => true);
-        
+
         detectEthereumProvider.mockImplementation(function() {
             return new Promise((resolve) => resolve(window.ethereum));
         });
 
         await db.collection('contracts').doc('123').set({ name: 'Amalfi', address: '123', abi: AmalfiContract.artifact.abi });
-        
+
         const wrapper = helper.mountFn(Address, {
             propsData: {
                 hash: '123'
@@ -218,6 +218,31 @@ describe('Address.vue', () => {
         const db = helper.mocks.admin;
         await db.collection('contracts').doc('123').set({ name: 'Amalfi', address: '123', abi: AmalfiContract.artifact.abi });
         
+        const wrapper = helper.mountFn(Address, {
+            propsData: {
+                hash: '123'
+            }
+        });
+
+        setTimeout(async () => {
+            await wrapper.find('#contractTab').trigger('click');
+            await wrapper.vm.$nextTick();
+
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1500);
+    });
+
+    it('Should say the contract is verified if it is a public explorer', async (done) => {
+        const db = helper.mocks.admin;
+        helper.getters.isPublicExplorer.mockImplementation(() => true);
+
+        detectEthereumProvider.mockImplementation(function() {
+            return new Promise((resolve) => resolve(window.ethereum));
+        });
+
+        await db.collection('contracts').doc('123').set({ name: 'Amalfi', address: '123', abi: AmalfiContract.artifact.abi, verificationStatus: 'success' });
+
         const wrapper = helper.mountFn(Address, {
             propsData: {
                 hash: '123'

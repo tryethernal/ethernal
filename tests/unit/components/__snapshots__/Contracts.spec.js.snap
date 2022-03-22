@@ -41,7 +41,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
         </thead>
         <tbody>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox9" class="">Ox9...Ox9</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox9" class="">Ox9...Ox9</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox9" value="Ox9"></span>
               <!----></span>
             </td>
@@ -51,7 +51,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox8" class="">Ox8...Ox8</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox8" class="">Ox8...Ox8</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox8" value="Ox8"></span>
               <!----></span>
             </td>
@@ -61,7 +61,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox7" class="">Ox7...Ox7</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox7" class="">Ox7...Ox7</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox7" value="Ox7"></span>
               <!----></span>
             </td>
@@ -71,7 +71,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox6" class="">Ox6...Ox6</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox6" class="">Ox6...Ox6</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox6" value="Ox6"></span>
               <!----></span>
             </td>
@@ -81,7 +81,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox5" class="">Ox5...Ox5</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox5" class="">Ox5...Ox5</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox5" value="Ox5"></span>
               <!----></span>
             </td>
@@ -91,7 +91,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox4" class="">Ox4...Ox4</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox4" class="">Ox4...Ox4</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox4" value="Ox4"></span>
               <!----></span>
             </td>
@@ -101,7 +101,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox3" class="">Ox3...Ox3</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox3" class="">Ox3...Ox3</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox3" value="Ox3"></span>
               <!----></span>
             </td>
@@ -111,7 +111,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox2" class="">Ox2...Ox2</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox2" class="">Ox2...Ox2</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox2" value="Ox2"></span>
               <!----></span>
             </td>
@@ -121,7 +121,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox1" class="">Ox1...Ox1</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox1" class="">Ox1...Ox1</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox1" value="Ox1"></span>
               <!----></span>
             </td>
@@ -131,7 +131,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox0" class="">Ox0...Ox0</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox0" class="">Ox0...Ox0</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox0" value="Ox0"></span>
               <!----></span>
             </td>
@@ -211,7 +211,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
         </thead>
         <tbody>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox9" class="">Ox9...Ox9</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox9" class="">Ox9...Ox9</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox9" value="Ox9"></span>
               <!----></span>
             </td>
@@ -221,7 +221,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox8" class="">Ox8...Ox8</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox8" class="">Ox8...Ox8</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox8" value="Ox8"></span>
               <!----></span>
             </td>
@@ -231,7 +231,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox7" class="">Ox7...Ox7</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox7" class="">Ox7...Ox7</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox7" value="Ox7"></span>
               <!----></span>
             </td>
@@ -241,7 +241,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox6" class="">Ox6...Ox6</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox6" class="">Ox6...Ox6</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox6" value="Ox6"></span>
               <!----></span>
             </td>
@@ -251,7 +251,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox5" class="">Ox5...Ox5</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox5" class="">Ox5...Ox5</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox5" value="Ox5"></span>
               <!----></span>
             </td>
@@ -261,7 +261,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox4" class="">Ox4...Ox4</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox4" class="">Ox4...Ox4</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox4" value="Ox4"></span>
               <!----></span>
             </td>
@@ -271,7 +271,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox3" class="">Ox3...Ox3</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox3" class="">Ox3...Ox3</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox3" value="Ox3"></span>
               <!----></span>
             </td>
@@ -281,7 +281,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox2" class="">Ox2...Ox2</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox2" class="">Ox2...Ox2</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox2" value="Ox2"></span>
               <!----></span>
             </td>
@@ -291,7 +291,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox1" class="">Ox1...Ox1</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox1" class="">Ox1...Ox1</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox1" value="Ox1"></span>
               <!----></span>
             </td>
@@ -301,7 +301,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/Ox0" class="">Ox0...Ox0</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/Ox0" class="">Ox0...Ox0</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox0" value="Ox0"></span>
               <!----></span>
             </td>
@@ -381,7 +381,7 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
         </thead>
         <tbody>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/0x0" class="">0x0...0x0</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
               <!----></span>
             </td>
@@ -391,7 +391,7 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/0x1" class="">0x1...0x1</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/0x1" class="">0x1...0x1</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1" value="0x1"></span>
               <!----></span>
             </td>

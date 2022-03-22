@@ -29,7 +29,7 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
         </thead>
         <tbody>
           <tr class="">
-            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x15" class="">0x15...0x15</a> <span>
+            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x15" class="">0x15...0x15</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x15" value="0x15"></span>
               <!----></span>
             </td>
@@ -39,11 +39,11 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
                     05/21 12:07:42 AM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start">
-              <!----> <span><a href="#/address/0x1" class="">0x1...0x1</a> <span>
+              <!----> <span><!----> <a href="#/address/0x1" class="">0x1...0x1</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1" value="0x1"></span>
               <!----></span>
             </td>
-            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><a href="#/address/0x0" class="">0x0...0x0</a> <span>
+            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
               <!----></span>
             </td>
@@ -53,7 +53,7 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x14" class="">0x14...0x14</a> <span>
+            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x14" class="">0x14...0x14</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x14" value="0x14"></span>
               <!----></span>
             </td>
@@ -63,11 +63,11 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
                     05/21 12:07:42 AM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start">
-              <!----> <span><a href="#/address/0x1" class="">0x1...0x1</a> <span>
+              <!----> <span><!----> <a href="#/address/0x1" class="">0x1...0x1</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1" value="0x1"></span>
               <!----></span>
             </td>
-            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><a href="#/address/0x0" class="">0x0...0x0</a> <span>
+            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
               <!----></span>
             </td>
@@ -77,7 +77,7 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x13" class="">0x13...0x13</a> <span>
+            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x13" class="">0x13...0x13</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x13" value="0x13"></span>
               <!----></span>
             </td>
@@ -87,11 +87,11 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
                     05/21 12:07:42 AM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start">
-              <!----> <span><a href="#/address/0x1" class="">0x1...0x1</a> <span>
+              <!----> <span><!----> <a href="#/address/0x1" class="">0x1...0x1</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1" value="0x1"></span>
               <!----></span>
             </td>
-            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><a href="#/address/0x0" class="">0x0...0x0</a> <span>
+            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
               <!----></span>
             </td>
@@ -101,7 +101,7 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x12" class="">0x12...0x12</a> <span>
+            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x12" class="">0x12...0x12</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x12" value="0x12"></span>
               <!----></span>
             </td>
@@ -111,11 +111,11 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
                     05/21 12:07:42 AM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start">
-              <!----> <span><a href="#/address/0x1" class="">0x1...0x1</a> <span>
+              <!----> <span><!----> <a href="#/address/0x1" class="">0x1...0x1</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1" value="0x1"></span>
               <!----></span>
             </td>
-            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><a href="#/address/0x0" class="">0x0...0x0</a> <span>
+            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
               <!----></span>
             </td>
@@ -125,7 +125,7 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x11" class="">0x11...0x11</a> <span>
+            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x11" class="">0x11...0x11</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x11" value="0x11"></span>
               <!----></span>
             </td>
@@ -135,11 +135,11 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
                     05/21 12:07:42 AM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start">
-              <!----> <span><a href="#/address/0x1" class="">0x1...0x1</a> <span>
+              <!----> <span><!----> <a href="#/address/0x1" class="">0x1...0x1</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1" value="0x1"></span>
               <!----></span>
             </td>
-            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><a href="#/address/0x0" class="">0x0...0x0</a> <span>
+            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
               <!----></span>
             </td>
@@ -149,7 +149,7 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x10" class="">0x10...0x10</a> <span>
+            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x10" class="">0x10...0x10</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x10" value="0x10"></span>
               <!----></span>
             </td>
@@ -158,12 +158,12 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
                     05/21 12:07:42 AM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
-            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><a href="#/address/0x0" class="">0x0...0x0</a> <span>
+            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
               <!----></span>
             </td>
             <td class="text-start">
-              <!----> <span><a href="#/address/0x1" class="">0x1...0x1</a> <span>
+              <!----> <span><!----> <a href="#/address/0x1" class="">0x1...0x1</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1" value="0x1"></span>
               <!----></span>
             </td>
@@ -173,7 +173,7 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x9" class="">0x9...0x9</a> <span>
+            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x9" class="">0x9...0x9</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x9" value="0x9"></span>
               <!----></span>
             </td>
@@ -182,12 +182,12 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
                     05/21 12:07:42 AM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
-            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><a href="#/address/0x0" class="">0x0...0x0</a> <span>
+            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
               <!----></span>
             </td>
             <td class="text-start">
-              <!----> <span><a href="#/address/0x1" class="">0x1...0x1</a> <span>
+              <!----> <span><!----> <a href="#/address/0x1" class="">0x1...0x1</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1" value="0x1"></span>
               <!----></span>
             </td>
@@ -197,7 +197,7 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x8" class="">0x8...0x8</a> <span>
+            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x8" class="">0x8...0x8</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x8" value="0x8"></span>
               <!----></span>
             </td>
@@ -206,12 +206,12 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
                     05/21 12:07:42 AM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
-            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><a href="#/address/0x0" class="">0x0...0x0</a> <span>
+            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
               <!----></span>
             </td>
             <td class="text-start">
-              <!----> <span><a href="#/address/0x1" class="">0x1...0x1</a> <span>
+              <!----> <span><!----> <a href="#/address/0x1" class="">0x1...0x1</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1" value="0x1"></span>
               <!----></span>
             </td>
@@ -221,7 +221,7 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x7" class="">0x7...0x7</a> <span>
+            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x7" class="">0x7...0x7</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x7" value="0x7"></span>
               <!----></span>
             </td>
@@ -230,12 +230,12 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
                     05/21 12:07:42 AM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
-            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><a href="#/address/0x0" class="">0x0...0x0</a> <span>
+            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
               <!----></span>
             </td>
             <td class="text-start">
-              <!----> <span><a href="#/address/0x1" class="">0x1...0x1</a> <span>
+              <!----> <span><!----> <a href="#/address/0x1" class="">0x1...0x1</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1" value="0x1"></span>
               <!----></span>
             </td>
@@ -245,7 +245,7 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><a href="#/transaction/0x6" class="">0x6...0x6</a> <span>
+            <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x6" class="">0x6...0x6</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x6" value="0x6"></span>
               <!----></span>
             </td>
@@ -254,12 +254,12 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
                     05/21 12:07:42 AM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
-            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><a href="#/address/0x0" class="">0x0...0x0</a> <span>
+            <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
               <!----></span>
             </td>
             <td class="text-start">
-              <!----> <span><a href="#/address/0x1" class="">0x1...0x1</a> <span>
+              <!----> <span><!----> <a href="#/address/0x1" class="">0x1...0x1</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1" value="0x1"></span>
               <!----></span>
             </td>

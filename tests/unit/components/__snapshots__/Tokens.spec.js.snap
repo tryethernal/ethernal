@@ -25,7 +25,7 @@ exports[`Tokens.vue Should display token contracts 1`] = `
         </thead>
         <tbody>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/0x123" class="">0x123...0x123</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/0x123" class="">0x123...0x123</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x123" value="0x123"></span>
               <!----></span>
             </td>
@@ -44,7 +44,7 @@ exports[`Tokens.vue Should display token contracts 1`] = `
             </span></span></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><a href="#/address/0x124" class="">0x124...0x124</a> <span>
+            <td class="text-start"><span><!----> <a href="#/address/0x124" class="">0x124...0x124</a> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x124" value="0x124"></span>
               <!----></span>
             </td>
