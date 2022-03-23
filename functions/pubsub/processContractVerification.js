@@ -1,5 +1,3 @@
-const solc = require('solc');
-const linker = require('solc/linker');
 const {
     updateContractVerificationStatus,
     getContractDeploymentTxByAddress,
@@ -7,6 +5,8 @@ const {
 } = require('../lib/firebase');
 
 module.exports = async function(message) {
+    const solc = require('solc');
+    const linker = require('solc/linker');
     const payload = message.json;
 
     const code = payload.code;

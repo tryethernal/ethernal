@@ -13,7 +13,7 @@
     "test:update": "jest --forceExit --runInBand -u"
   },
   "engines": {
-    "node": "12"
+    "node": "16"
   },
   "main": "index.js",
   "dependencies": {
