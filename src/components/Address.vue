@@ -192,8 +192,8 @@
                             Storage is not available on this contract. This is because the AST is not available. It can be for the following reasons:
                             <ul>
                                 <li>This contract has been imported (AST is not available yet through imports).</li>
-                                <li>You've synced the contract through the CLI/Hardhat plugin, but artifacts were not synced properly. If you can't figure it out, you can ask for help in the <a target="_blank" href="https://discord.gg/jEAprf45jj">Discord server</a>.</li>
-                                <li>You've synced the contract through the CLI/Hardhat plugin, but are on a free plan, meaning that AST for your contracts are deleted on every Monday. You need to push the contract again, or <Upgrade-Link>upgrade your plan</Upgrade-Link>.</li>
+                                <li>You've synced the contract through the CLI/Hardhat plugin, but you didn't activate AST upload. you can do it by setting <code>hre.ethernalAstUpload = true;</code> in your Hardhat config or by passing <code>--astUpload true</code> to the CLI.</li>
+                                <li>You've synced the contract through the CLI/Hardhat plugin, but are on a free plan, meaning that AST for your contracts are deleted after 7 days. You need to push the contract again, or <Upgrade-Link>upgrade your plan</Upgrade-Link>.</li>
                             </ul>
                             <br>
                             <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/contracts/reading-variables">Read more</a> on how storage reading works.
