@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.1] - 2022-03-27
+### Changed
+- Updated wording on storage section
+
 ## [1.9.0] - 2022-03-21
 ### Added
 - [Public Explorer] Add server side contract verification, see doc for more info
