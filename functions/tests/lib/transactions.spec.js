@@ -5,7 +5,8 @@ jest.mock('../../lib/firebase', () => ({
     storeTransactionMethodDetails: jest.fn(),
     storeTransactionTokenTransfers: jest.fn(),
     getWorkspaceByName: jest.fn().mockResolvedValue({ public: false }),
-    storeTokenBalanceChanges: jest.fn()
+    storeTokenBalanceChanges: jest.fn(),
+    storeContractData: jest.fn()
 }));
 
 jest.mock('../../lib/utils', () => ({
@@ -19,7 +20,7 @@ jest.mock('../../lib/abi', () => ({
 
 jest.mock('../../lib/rpc');
 
-const { getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('../../lib/firebase');
+const { storeContractData, getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('../../lib/firebase');
 const { getTokenTransfers, getTransactionMethodDetails } = require('../../lib/abi');
 const { Tracer } = require('../../lib/rpc');
 
@@ -75,6 +76,12 @@ describe('processTransactions ', () => {
         expect(storeTransactionMethodDetails).toHaveBeenCalledWith('123', 'hardhat', '0x123', { name: 'test' });
         expect(getTokenTransfers).toHaveBeenCalledWith(Transaction);
         expect(storeTransactionTokenTransfers).toHaveBeenCalledWith('123', 'hardhat', '0x123', ['transfer']);
+    });
+
+    it('Should store token as new contracts', async () => {
+        getTokenTransfers.mockImplementationOnce(() => ['transfer']);
+        await processTransactions('123', 'hardhat', [Transaction]);
+        expect(storeContractData).toHaveBeenCalledTimes(1);
     });
 
     it('Should store empty transaction details & store token transfers when no to', async () => {
