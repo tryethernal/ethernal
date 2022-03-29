@@ -1,5 +1,5 @@
 const ethers = require('ethers');
-let { getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('./firebase');
+let { storeContractData, getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('./firebase');
 const { getFunctionSignatureForTransaction } = require('./utils');
 let { getTokenTransfers, getTransactionMethodDetails } = require('./abi');
 const { ContractConnector, Tracer } = require('./rpc');
@@ -76,6 +76,9 @@ exports.processTransactions = async (userId, workspaceName, transactions) => {
         try {
             tokenTransfers = getTokenTransfers(transaction);
             await storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, tokenTransfers);
+            for (let i = 0; i < tokenTransfers.length; i++) {
+                await storeContractData(userId, workspaceName, tokenTransfers[i].token, { address: tokenTransfers[i].token })
+            }
         } catch(error) {
             console.log(error)
             await storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, []);
