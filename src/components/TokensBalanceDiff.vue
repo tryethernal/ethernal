@@ -36,10 +36,10 @@
                 <span v-if="changeDirection(item.diff) === 0">0</span>
                 <span v-if="changeDirection(item.diff) < 0" class="error--text">
                     <span v-if="decimals[item.address]">
-                        -{{ item.diff | fromWei('ether', '', decimals[item.address]) }}
+                        {{ item.diff | fromWei('ether', '', decimals[item.address]) }}
                     </span>
                     <span v-else>
-                        -{{ item.diff }}
+                        {{ item.diff }}
                     </span>
                 </span>
             </template>
