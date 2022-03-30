@@ -6,6 +6,10 @@ export default {
         const _database = firebase.database();
 
         return {
+            onNewFailedTransactions: jest.fn((cb) => {
+                cb([{ hash: '0x123' }]);
+            }),
+
             onNewBlock: jest.fn((cb) => {
                 cb({ number: 1 });
             }),

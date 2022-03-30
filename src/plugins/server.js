@@ -341,6 +341,23 @@ const serverFunctions = {
             previousBalance: previousBalance.toString(),
             diff: currentBalance.sub(previousBalance).toString()
         };
+    },
+    fetchErrorData: async function(transaction, rpcServer) {
+        try {
+            const provider = serverFunctions._getProvider(rpcServer);
+            const res = await provider.call({ to: transaction.to, data: transaction.data }, transaction.blockNumber);
+            return ethers.utils.toUtf8String('0x' + res.substr(138));
+        } catch(error) {
+            if (error.response) {
+                const parsed = JSON.parse(error.response);
+                if (parsed.error && parsed.error.message)
+                    return { parsed: true, message: parsed.error.message };
+                else
+                    return { parsed: false, message: parsed };
+            }
+            else
+                return { parsed: false, message: error }
+        }
     }
 };
 
@@ -429,12 +446,31 @@ export const serverPlugin = {
                         .catch(reject);
                 });
             },
+            processFailedTransactions: async function(transactions, workspace) {
+                 try {
+                    for (let i = 0; i < transactions.length; i++) {
+                        const transaction = transactions[i];
+
+                        if (transaction.receipt.status === 0) {
+                            serverFunctions.fetchErrorData(transaction, workspace.rpcServer)
+                                .then((result) => {
+                                    return functions.httpsCallable('syncFailedTransactionError')({ workspace: workspace.name, transaction: transaction.hash, error: result });
+                                })
+                                .catch(console.log);
+                        }
+                    }
+                } catch(error) {
+                    console.log(error);
+                    var reason = error.reason || error.message || "Can't connect to the server";
+                    throw { reason: reason };
+                }
+            },
             processTransactions: async function(workspace, transactions) {
                 try {
                     for (let i = 0; i < transactions.length; i++) {
                         const transaction = transactions[i];
-                        const tokenBalanceChanges = {};
 
+                        const tokenBalanceChanges = {};
                         for (let j = 0; j < transaction.tokenTransfers.length; j++) {
                             const transfer = transaction.tokenTransfers[j];
                             const changes = [];
