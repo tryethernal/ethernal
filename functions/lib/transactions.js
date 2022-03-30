@@ -1,8 +1,8 @@
 const ethers = require('ethers');
-let { storeContractData, getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('./firebase');
+let { storeFailedTransactionError, storeContractData, getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('./firebase');
 const { getFunctionSignatureForTransaction } = require('./utils');
 let { getTokenTransfers, getTransactionMethodDetails } = require('./abi');
-const { ContractConnector, Tracer } = require('./rpc');
+let { getProvider, ContractConnector, Tracer } = require('./rpc');
 
 let getBalanceChange = async (address, token, blockNumber, rpcServer) => {
     let currentBalance = ethers.BigNumber.from('0');
@@ -93,6 +93,29 @@ exports.processTransactions = async (userId, workspaceName, transactions) => {
                 await tracer.saveTrace(userId, workspaceName);
             } catch(error) {
                 console.log(error);
+            }
+            let errorObject;
+
+            if (transaction.receipt && transaction.receipt.status == 0) {
+                try {
+                    const provider = getProvider(workspace.rpcServer);
+                    const res = await provider.call({ to: transaction.to, data: transaction.data });
+                    const reason = ethers.utils.toUtf8String('0x' + res.substr(138));
+                    errorObject = { parsed: true, message: reason };
+                } catch(error) {
+                    if (error.response) {
+                        const parsed = JSON.parse(error.response);
+                        if (parsed.error && parsed.error.message)
+                            errorObject = { parsed: true, message: parsed.error.message };
+                        else
+                            errorObject = { parsed: false, message: parsed };
+                    }
+                    else
+                        errorObject = { parsed: false, message: error };
+                }
+
+                if (errorObject)
+                    await storeFailedTransactionError(userId, workspaceName, transaction.hash, errorObject);
             }
         }
 

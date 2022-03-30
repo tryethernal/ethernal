@@ -52,6 +52,7 @@ export default Vue.extend({
             this.processContracts();
             this.db.onNewContract(this.processContracts);
             this.db.onNewProcessableTransactions(this.server.processTransactions);
+            this.db.onNewFailedTransactions(this.server.processFailedTransactions);
         }
         this.db.onNewTransactionCount((count) => this.$store.dispatch('updateTransactionCount', count));
         this.db.onNewBlockCount((count) => this.$store.dispatch('updateBlockCount', count));

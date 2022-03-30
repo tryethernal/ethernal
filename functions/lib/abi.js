@@ -34,22 +34,26 @@ const decodeLog = (log, abi) => {
 const getTokenTransfers = (transaction) => {
     const transfers = [];
 
-    for (let i = 0; i < transaction.receipt.logs.length; i++) {
-        const log = transaction.receipt.logs[i];
-        if (log.topics[0] == '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
-            const decodedLog = decodeLog(log, ERC20_ABI);
-            if (decodedLog) {
-                transfers.push(sanitize(stringifyBns({
-                    token: log.address,
-                    src: decodedLog.args[0],
-                    dst: decodedLog.args[1],
-                    amount: decodedLog.args[2]
-                })));
+    try {
+        for (let i = 0; i < transaction.receipt.logs.length; i++) {
+            const log = transaction.receipt.logs[i];
+            if (log.topics[0] == '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
+                const decodedLog = decodeLog(log, ERC20_ABI);
+                if (decodedLog) {
+                    transfers.push(sanitize(stringifyBns({
+                        token: log.address,
+                        src: decodedLog.args[0],
+                        dst: decodedLog.args[1],
+                        amount: decodedLog.args[2]
+                    })));
+                }
             }
         }
-    }
 
-    return transfers;
+        return transfers;
+    } catch(error) {
+        return [];
+    }
 };
 
 const getTransactionMethodDetails = (transaction, abi) => {

@@ -6,7 +6,8 @@ jest.mock('../../lib/firebase', () => ({
     storeTransactionTokenTransfers: jest.fn(),
     getWorkspaceByName: jest.fn().mockResolvedValue({ public: false }),
     storeTokenBalanceChanges: jest.fn(),
-    storeContractData: jest.fn()
+    storeContractData: jest.fn(),
+    storeFailedTransactionError: jest.fn()
 }));
 
 jest.mock('../../lib/utils', () => ({
@@ -20,19 +21,11 @@ jest.mock('../../lib/abi', () => ({
 
 jest.mock('../../lib/rpc');
 
-const { storeContractData, getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('../../lib/firebase');
+const { storeFailedTransactionError, storeContractData, getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('../../lib/firebase');
 const { getTokenTransfers, getTransactionMethodDetails } = require('../../lib/abi');
-const { Tracer } = require('../../lib/rpc');
+const { Tracer, getProvider } = require('../../lib/rpc');
 
 const wiredTransactions = rewire('../../lib/transactions');
-wiredTransactions.__set__({
-    getBalanceChange: jest.fn().mockResolvedValue({ before: 1, after: 2 }),
-    getTokenTransfers: jest.fn().mockReturnValueOnce([{ token: '0x123', src: '0x456', dst: '0x789' }]),
-    getWorkspaceByName: jest.fn().mockResolvedValueOnce({ public: true, name: 'hardhat' }),
-    getTransactionMethodDetails: jest.fn(),
-    storeTransactionMethodDetails: jest.fn(),
-    storeTokenBalanceChanges: jest.fn()
-});
 const { processTransactions } = require('../../lib/transactions');
 
 const Helper = require('../helper');
@@ -43,7 +36,73 @@ const Transaction = require('../fixtures/TransactionReceipt.json');
 let helper;
 
 describe('processTransactions ', () => {
-    beforeEach(jest.clearAllMocks);
+    beforeEach(() => {
+        jest.clearAllMocks();
+        wiredTransactions.__set__({
+            getBalanceChange: jest.fn().mockResolvedValue({ before: 1, after: 2 }),
+            getTokenTransfers: jest.fn().mockReturnValueOnce([{ token: '0x123', src: '0x456', dst: '0x789' }]),
+            getWorkspaceByName: jest.fn().mockResolvedValueOnce({ public: true, name: 'hardhat' }),
+            getTransactionMethodDetails: jest.fn(),
+            storeTransactionMethodDetails: jest.fn(),
+            storeTokenBalanceChanges: jest.fn(),
+            getProvider: jest.fn(),
+            storeFailedTransactionError: jest.fn()
+        });
+    });
+
+    it('Should store a parsed failed transaction error return by the rpc call', async () => {
+        wiredTransactions.__get__('getProvider')
+            .mockImplementation(() => ({
+                call: jest.fn().mockResolvedValue('0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000a48656c6c6f6f6f6f6f6f00000000000000000000000000000000000000000000')
+            }));
+
+        await wiredTransactions.processTransactions('123', 'hardhat', [{ ...Transaction, receipt: { status: 0, ...Transaction.receipt }}]);
+
+        expect(wiredTransactions.__get__('storeFailedTransactionError')).toHaveBeenCalledWith('123', 'hardhat', Transaction.hash, { parsed: true, message: 'Helloooooo\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000' });
+    });
+
+    it('Should store a parsed failed transaction error thrown', async () => {
+        wiredTransactions.__get__('getProvider')
+            .mockImplementationOnce(() => ({
+                call: jest.fn().mockRejectedValue({
+                    response: JSON.stringify({
+                        error: { message: 'Helloooooo' }
+                    })
+                })
+            }));
+
+        await wiredTransactions.processTransactions('123', 'hardhat', [{ ...Transaction, receipt: { status: 0, ...Transaction.receipt }}]);
+
+        expect(wiredTransactions.__get__('storeFailedTransactionError')).toHaveBeenCalledWith('123', 'hardhat', Transaction.hash, { parsed: true, message: 'Helloooooo' });
+    });
+
+    it('Should store a raw failed transaction error thrown', async () => {
+        wiredTransactions.__get__('getProvider')
+            .mockImplementationOnce(() => ({
+                call: jest.fn().mockRejectedValue({
+                    response: JSON.stringify({
+                        error: { message2: 'Helloooooo' }
+                    })
+                })
+            }));
+
+        await wiredTransactions.processTransactions('123', 'hardhat', [{ ...Transaction, receipt: { status: 0, ...Transaction.receipt }}]);
+
+        expect(wiredTransactions.__get__('storeFailedTransactionError')).toHaveBeenCalledWith('123', 'hardhat', Transaction.hash, { parsed: false, message: { error: { message2: 'Helloooooo' }} });
+    });
+
+    it('Should store a raw failed transaction error thrown without a response object', async () => {
+        wiredTransactions.__get__('getProvider')
+            .mockImplementationOnce(() => ({
+                call: jest.fn().mockRejectedValue({
+                   message: 'Helloooooo'
+                })
+            }));
+
+        await wiredTransactions.processTransactions('123', 'hardhat', [{ ...Transaction, receipt: { status: 0, ...Transaction.receipt }}]);
+
+        expect(wiredTransactions.__get__('storeFailedTransactionError')).toHaveBeenCalledWith('123', 'hardhat', Transaction.hash, { parsed: false, message: { message: 'Helloooooo' } });
+    });
 
     it('Should process & store the trace if the workspace is public', async () => {
         getWorkspaceByName

@@ -74,5 +74,6 @@ class ContractConnector {
 
 module.exports = {
     ContractConnector: ContractConnector,
-    Tracer: Tracer
+    Tracer: Tracer,
+    getProvider: getProvider
 };

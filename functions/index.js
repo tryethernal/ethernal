@@ -60,7 +60,8 @@ const {
     getTransaction,
     getPublicExplorerParamsBySlug,
     getContractDeploymentTxByAddress,
-    updateContractVerificationStatus
+    updateContractVerificationStatus,
+    storeFailedTransactionError
 } = require('./lib/firebase');
 
 const billUsage = require('./pubsub/billUsage');
@@ -71,6 +72,23 @@ const pubsub = new PubSub();
 exports.billUsage = functions.pubsub.topic('bill-usage').onPublish(billUsage);
 
 exports.processContractVerification = functions.pubsub.topic('verify-contract').onPublish(processContractVerification);
+
+exports.syncFailedTransactionError = functions.https.onCall(async (data, context) => {
+    try {
+        if (!data.workspace || !data.transaction || !data.error) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[syncFailedTransactionError] Missing parameter.');
+        }
+     
+        await storeFailedTransactionError(context.auth.uid, data.workspace, data.transaction, data.error);
+
+        return { success: true };
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
+    }
+});
 
 exports.startContractVerification = functions.https.onCall(async (data, context) => {
     try {
@@ -357,6 +375,7 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
         const txSynced = sanitize({
             ...sTransaction,
             receipt: sTransactionReceipt,
+            error: '',
             timestamp: data.block.timestamp,
             tokenBalanceChanges: {},
             tokenTransfers: []
