@@ -3,6 +3,8 @@ import DecodedStorageData from '../fixtures/DecodedStorageData.json';
 
 export default {
 
+    processFailedTransactions: jest.fn,
+
     syncTransactionData: function() {
         return new Promise((resolve) => resolve(true))
     },
