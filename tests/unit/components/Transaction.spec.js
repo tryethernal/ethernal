@@ -52,7 +52,7 @@ describe('Transaction.vue', () => {
         }, 1000);
     });
 
-    it.only('Should display raw error messages', async (done) => {
+    it('Should display raw error messages', async (done) => {
         await helper.mocks.admin.collection('transactions')
             .doc(USDCTransferTx.hash)
             .set({ ...USDCTransferTx, receipt: { ...USDCTransferTx.receipt, status: 0 }, error: { parsed: false, message: JSON.stringify({ message: 'this is an error'})}});

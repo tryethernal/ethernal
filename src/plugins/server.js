@@ -345,7 +345,8 @@ const serverFunctions = {
     fetchErrorData: async function(transaction, rpcServer) {
         try {
             const provider = serverFunctions._getProvider(rpcServer);
-            await provider.call({ to: transaction.to, data: transaction.data }, transaction.blockNumber);
+            const res = await provider.call({ to: transaction.to, data: transaction.data }, transaction.blockNumber);
+            return ethers.utils.toUtf8String('0x' + res.substr(138));
         } catch(error) {
             if (error.response) {
                 const parsed = JSON.parse(error.response);
@@ -357,7 +358,6 @@ const serverFunctions = {
             else
                 return { parsed: false, message: error }
         }
-
     }
 };
 
