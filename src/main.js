@@ -36,7 +36,7 @@ new Vue({
     store: store,
     router,
     mounted: function() {
-        if (process.env.VUE_APP_ENABLE_ANALYTICS)
+        if (process.env.VUE_APP_ENABLE_ANALYTICS && isEthernalDomain)
             LogRocket.init(process.env.VUE_APP_LOGROCKET_ID);
 
         auth().onAuthStateChanged(this.authStateChanged);
