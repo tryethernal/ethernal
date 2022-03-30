@@ -2,7 +2,7 @@ const ethers = require('ethers');
 let { storeFailedTransactionError, storeContractData, getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('./firebase');
 const { getFunctionSignatureForTransaction } = require('./utils');
 let { getTokenTransfers, getTransactionMethodDetails } = require('./abi');
-const { getProvider, ContractConnector, Tracer } = require('./rpc');
+let { getProvider, ContractConnector, Tracer } = require('./rpc');
 
 let getBalanceChange = async (address, token, blockNumber, rpcServer) => {
     let currentBalance = ethers.BigNumber.from('0');
@@ -95,6 +95,7 @@ exports.processTransactions = async (userId, workspaceName, transactions) => {
                 console.log(error);
             }
             let errorObject;
+
             if (transaction.receipt && transaction.receipt.status == 0) {
                 try {
                     const provider = getProvider(workspace.rpcServer);
@@ -102,7 +103,6 @@ exports.processTransactions = async (userId, workspaceName, transactions) => {
                     const reason = ethers.utils.toUtf8String('0x' + res.substr(138));
                     errorObject = { parsed: true, message: reason };
                 } catch(error) {
-                    console.log(error)
                     if (error.response) {
                         const parsed = JSON.parse(error.response);
                         if (parsed.error && parsed.error.message)
