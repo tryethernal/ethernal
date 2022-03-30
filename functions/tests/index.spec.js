@@ -100,6 +100,27 @@ beforeEach(() => {
     jest.clearAllMocks();
 });
 
+describe('syncFailedTransactionError', () => {
+    beforeEach(() => {
+        helper = new Helper(process.env.GCLOUD_PROJECT);
+    });
+
+    it('Should return a success flag', async () => {
+        const wrapped = helper.test.wrap(index.syncFailedTransactionError);
+
+        const data = {
+            workspace: 'hardhat',
+            transaction: Transaction.hash,
+            error: { parsed: true, error: 'Helloooo' }
+        };
+
+        const result = await wrapped(data, auth);
+        expect(result).toEqual({ success: true });
+    });
+
+    afterEach(() => helper.clean());
+});
+
 describe('processTransaction', () => {
     beforeEach(() => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
