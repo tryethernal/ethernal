@@ -36,6 +36,38 @@ describe('Transaction.vue', () => {
             });
     });
 
+    it('Should display parsed error messages', async (done) => {
+        await helper.mocks.admin.collection('transactions')
+            .doc(USDCTransferTx.hash)
+            .set({ ...USDCTransferTx, receipt: { ...USDCTransferTx.receipt, status: 0 }, error: { parsed: true, message: 'Error' }});
+        
+        const wrapper = helper.mountFn(Transaction, {
+            propsData: {
+                hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
+            }
+        });
+        setTimeout(() => {
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1000);
+    });
+
+    it.only('Should display raw error messages', async (done) => {
+        await helper.mocks.admin.collection('transactions')
+            .doc(USDCTransferTx.hash)
+            .set({ ...USDCTransferTx, receipt: { ...USDCTransferTx.receipt, status: 0 }, error: { parsed: false, message: JSON.stringify({ message: 'this is an error'})}});
+        
+        const wrapper = helper.mountFn(Transaction, {
+            propsData: {
+                hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
+            }
+        });
+        setTimeout(() => {
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 1000);
+    });
+
     it('Should not display the menu if public explorer', async (done) => {
         helper.getters.isPublicExplorer.mockImplementationOnce(() => true);
         const wrapper = helper.mountFn(Transaction, {
