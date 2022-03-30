@@ -39,6 +39,22 @@
                 <v-icon small class="mr-1">mdi-file</v-icon>
                 Contract Creation
             </v-chip>
+            <v-row class="mt-2" v-if="transaction.error && transaction.error.message">
+                <v-col>
+                    <div class="text-overline">Error Message</div>
+                    <v-card outlined>
+                        <v-card-text v-if="transaction.error.parsed">
+                            {{ transaction.error.message }}
+                        </v-card-text>
+                        <v-card-text v-else>
+                            <b>Couldn't parse error message. Raw data:</b>
+                            <div  style="white-space: pre;" class="mt-1">
+                                {{ JSON.stringify(transaction.error.message, null, '\t\t') }}
+                            </div>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
             <v-row class="my-2">
                 <v-col cols="5" class="text-truncate">
                     <div class="text-overline">From</div>
@@ -164,6 +180,7 @@ export default {
     data: () => ({
         contract: null,
         transaction: {
+            error: '',
             value: 0,
             gasPrice: 0,
             trace: null,

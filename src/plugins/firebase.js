@@ -47,6 +47,22 @@ export const dbPlugin = {
                         cb(store.getters.currentWorkspace, transactions);
                     });
             },
+            onNewFailedTransactions(cb) {
+                var currentWorkspace = store.getters.currentWorkspace.name;
+                if (!currentUser() || !currentWorkspace) return;
+                return _db.collection('users')
+                    .doc(currentUser().uid)
+                    .collection('workspaces')
+                    .doc(currentWorkspace)
+                    .collection('transactions')
+                    .where('receipt.status', '==', 0)
+                    .where('error', '==', '')
+                    .onSnapshot((docs) => {
+                        const transactions = [];
+                        docs.forEach(doc => transactions.push(doc.data()));
+                        cb(transactions, store.getters.currentWorkspace);
+                    })
+            },
             onNewContract(cb) {
                 var currentWorkspace = store.getters.currentWorkspace.name;
                 if (!currentUser() || !currentWorkspace) return;
