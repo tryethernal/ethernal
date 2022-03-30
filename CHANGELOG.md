@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.1] - 2022-03-31
+### Changed
+- Only record sessions on Logrocket on app.tryethernal.com
+
 ## [1.11.0] - 2022-03-30
 ### Added
 - Display error message for failed transactions
