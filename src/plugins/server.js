@@ -470,12 +470,6 @@ export const serverPlugin = {
                     for (let i = 0; i < transactions.length; i++) {
                         const transaction = transactions[i];
 
-                        if (transaction.receipt.status === 0) {
-                            serverFunctions.fetchErrorData(transaction, workspace.rpcServer)
-                                .then(console.log)
-                                .catch(console.log);
-                        }
-
                         const tokenBalanceChanges = {};
                         for (let j = 0; j < transaction.tokenTransfers.length; j++) {
                             const transfer = transaction.tokenTransfers[j];
