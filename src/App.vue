@@ -1,5 +1,7 @@
 <template>
     <v-app :style="styles">
+        <v-system-bar v-html="banner" v-if="isPublicExplorer && banner" class="primary color--text text-center font-weight-bold" color="primary" app window>
+        </v-system-bar>
         <v-navigation-drawer :style="styles" app permanent v-if="canDisplaySides">
             <img :src="logo" alt="logo" v-if="logo" />
             <v-list-item v-else>
@@ -151,7 +153,8 @@ export default {
         prAuthToken: null,
         styles: {},
         logo: null,
-        links: []
+        links: [],
+        banner: null
     }),
     created: function() {
         if (this.isPublicExplorer)
@@ -192,6 +195,9 @@ export default {
 
                     if (data.themes.links)
                         this.links = data.themes.links;
+
+                    if (data.themes.banner)
+                        this.banner = data.themes.banner;
 
                     Object.keys(lightTheme).forEach((key) => {
                         switch (key) {
@@ -299,6 +305,9 @@ export default {
 };
 </script>
 <style>
+.v-system-bar a {
+    color: var(--v-color-base) !important;
+}
 .v-toolbar__content {
     padding: 0;
 }
