@@ -36,13 +36,14 @@ new Vue({
     store: store,
     router,
     mounted: function() {
-        if (process.env.VUE_APP_ENABLE_ANALYTICS && isEthernalDomain)
-            LogRocket.init(process.env.VUE_APP_LOGROCKET_ID);
-
         auth().onAuthStateChanged(this.authStateChanged);
     },
     methods: {
         authStateChanged: function(user) {
+            if (user && process.env.VUE_APP_ENABLE_ANALYTICS && window.location.host == 'app.tryethernal.com') {
+                LogRocket.init(process.env.VUE_APP_LOGROCKET_ID);
+            }
+
             var currentPath = this.$router.currentRoute.path;
 
             store.dispatch('updateUser', user);

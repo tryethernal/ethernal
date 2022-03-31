@@ -35,16 +35,16 @@
             <Hash-Link :type="'transaction'" :hash="item.hash" />
         </template>
         <template v-slot:item.method="{ item }">
-            <v-tooltip v-if="item.methodDetails" top :open-delay="150" color="grey darken-3">
+            <v-tooltip v-if="item.methodDetails" top :open-delay="150">
                 <template v-slot:activator="{ on, attrs }">
-                    <v-chip v-bind="attrs" v-on="on" label small color="primary lighten-1">
-                        <span class="methodName">{{ getMethodName(item) }}</span>
+                    <v-chip class="primary lighten-1" v-bind="attrs" v-on="on" label small>
+                        <span class="color--text methodName">{{ getMethodName(item) }}</span>
                     </v-chip>
                 </template>
                 <span style="white-space: pre">{{ getMethodLabel(item.methodDetails) }}</span>
             </v-tooltip>
             <span v-else>
-                <v-chip label small color="primary lighten-1" v-show="getMethodName(item)">{{ getMethodName(item) }}</v-chip>
+                <v-chip label small color="color--text primary lighten-1" v-show="getMethodName(item)">{{ getMethodName(item) }}</v-chip>
             </span>
         </template>
         <template v-slot:item.timestamp="{ item }">
