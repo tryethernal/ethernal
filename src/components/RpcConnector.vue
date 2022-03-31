@@ -22,9 +22,6 @@
         <a v-if="isFeedbackFishEnabled" data-feedback-fish :data-feedback-fish-userid="user.email" :data-feedback-fish-page="page">
             <v-icon color="primary" class="mr-1">mdi-comment-quote</v-icon>Feedback?
         </a>
-        <div>
-            <v-divider></v-divider>
-        </div>
     </v-toolbar>
 </template>
 
