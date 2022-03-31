@@ -1,14 +1,17 @@
 <template>
-    <v-app>
-        <v-navigation-drawer app permanent v-if="canDisplaySides">
-            <v-list-item>
+    <v-app :style="styles">
+        <v-navigation-drawer :style="styles" app permanent v-if="canDisplaySides">
+            <img :src="logo" alt="logo" v-if="logo" />
+            <v-list-item v-else>
                 <v-list-item-content>
-                    <v-list-item-title class="logo">{{ publicExplorer.name || 'Ethernal' }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ version }}</v-list-item-subtitle>
+                    <v-list-item-title class="logo">
+                        {{ publicExplorer.name || 'Ethernal' }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle class="color--text">{{ version }}</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
 
-            <v-list dense nav>
+            <v-list dense nav class="side--text">
                 <v-list-item link :to="'/accounts'" v-if="!isPublicExplorer">
                     <v-list-item-icon>
                         <v-icon>mdi-account-multiple</v-icon>
@@ -66,6 +69,14 @@
 
             <template v-slot:append>
                 <v-list dense nav>
+                    <v-list-item v-for="(link, idx) in links" target="_blank" :href="link.url" :key="idx">
+                        <v-list-item-icon>
+                            <v-icon>mdi-open-in-new</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>{{ link.name }}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
                     <v-list-item target="_blank" :href="`https://doc.tryethernal.com`" v-if="!isPublicExplorer">
                         <v-list-item-icon>
                             <v-icon>mdi-text-box-multiple-outline</v-icon>
@@ -104,17 +115,18 @@
 
         <Onboarding-Modal ref="onboardingModal" />
 
-        <v-app-bar app dense fixed flat v-if="canDisplaySides" color="grey lighten-3">
+        <v-app-bar :style="styles" app dense fixed flat v-if="canDisplaySides">
             <component :is="appBarComponent"></component>
         </v-app-bar>
 
-        <v-main>
+        <v-main class="color--text" :style="styles">
             <component :is="routerComponent"></component>
         </v-main>
     </v-app>
 </template>
 
 <script>
+import WebFont from 'webfontloader';
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import { auth } from './plugins/firebase';
@@ -136,7 +148,10 @@ export default {
         appBarComponent: Vue.component({
             template: '<v-container fluid>Loading...</v-container>'
         }),
-        prAuthToken: null
+        prAuthToken: null,
+        styles: {},
+        logo: null,
+        links: []
     }),
     created: function() {
         if (this.isPublicExplorer)
@@ -170,13 +185,43 @@ export default {
                 if (data.themes) {
                     const lightTheme = data.themes.light || {};
                     const darkTheme = data.themes.dark || {};
+                    const font = data.themes.font;
+                    this.$vuetify.theme.dark = data.themes.default == 'dark'
+                    if (data.themes.logo)
+                        this.logo = data.themes.logo;
+
+                    if (data.themes.links)
+                        this.links = data.themes.links;
 
                     Object.keys(lightTheme).forEach((key) => {
-                        this.$vuetify.theme.themes.light[key] = lightTheme[key];
-                    })
+                        switch (key) {
+                            case 'background':
+                                this.$set(this.styles, 'background', lightTheme[key]);
+                                break;
+                            default:
+                                this.$vuetify.theme.themes.light[key] = lightTheme[key];
+                        }
+                    });
+
                     Object.keys(darkTheme).forEach((key) => {
-                        this.$vuetify.theme.themes.dark[key] = darkTheme[key];
-                    })
+                        switch (key) {
+                            case 'background':
+                                this.$set(this.styles, 'background', darkTheme[key]);
+                                break;
+                            default:
+                                this.$vuetify.theme.themes.dark[key] = darkTheme[key];
+                        }
+                    });
+
+                    if (font)
+                        WebFont.load({
+                            fontactive: () => {
+                                this.$set(this.styles, 'fontFamily', font);
+                            },
+                            google: {
+                                families: [`${font}:100,300,400,500,700,900&display=swap`]
+                            }
+                        });
                 }
 
                 this.initWorkspace({
@@ -253,3 +298,8 @@ export default {
     }
 };
 </script>
+<style>
+.v-toolbar__content {
+    padding: 0;
+}
+</style>

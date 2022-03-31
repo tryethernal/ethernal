@@ -56,7 +56,7 @@ exports[`Block.vue Should show the block component 1`] = `
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" value="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0"></span>
                 <!----></span>
               </td>
-              <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
+              <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
               <td class="text-start"><a href="#/block/1" class="">1</a></td>
               <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
                     05/21 12:07:42 AM
