@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.4] - 2022-03-31
+### Added
+- [Public Explorer] Add custom banner option
+
 ## [1.11.3] - 2022-03-31
 ### Fixed
 - Only record session with LR for logged in users on app.tryethernal.com
