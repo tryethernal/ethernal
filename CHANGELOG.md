@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.3] - 2022-03-31
+### Fixed
+- Only record session with LR for logged in users on app.tryethernal.com
+
+### Added
+- [Public Explorer] More UI customization options: logo, extra links, font, colors
+
 ## [1.11.2] - 2022-03-31
 ### Fixed
 - Fix LR session recording
