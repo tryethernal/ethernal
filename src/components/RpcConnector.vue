@@ -1,5 +1,5 @@
 <template>
-    <v-toolbar dense flat class="grey lighten-3">
+    <v-toolbar style="border-bottom: thin solid rgba(0, 0, 0, 0.12)" dense flat class="px-5 color--text">
         <template v-if="isPublicExplorer">
             {{ chain.name }}
         </template>
@@ -22,6 +22,9 @@
         <a v-if="isFeedbackFishEnabled" data-feedback-fish :data-feedback-fish-userid="user.email" :data-feedback-fish-page="page">
             <v-icon color="primary" class="mr-1">mdi-comment-quote</v-icon>Feedback?
         </a>
+        <div>
+            <v-divider></v-divider>
+        </div>
     </v-toolbar>
 </template>
 
