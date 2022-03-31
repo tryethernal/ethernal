@@ -1,5 +1,5 @@
 <template>
-    <v-toolbar dense flat class="grey lighten-3">
+    <v-toolbar style="border-bottom: thin solid rgba(0, 0, 0, 0.12)" dense flat class="px-5 color--text">
         <template v-if="isPublicExplorer">
             {{ chain.name }}
         </template>
