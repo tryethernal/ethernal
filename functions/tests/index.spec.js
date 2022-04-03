@@ -68,10 +68,38 @@ jest.mock('../lib/firebase', () => {
     const actual = jest.requireActual('../lib/firebase')
     return {
         ...actual,
-        getUser: jest.fn().mockResolvedValue({ data: () => ({ apiKey: '1234' })})
+        getUser: jest.fn().mockResolvedValue({ data: () => ({ apiKey: '1234' })}),
+        getWorkspaceByName: jest.fn().mockResolvedValue({ rpcServer: 'rpc.com' }),
+        storeTransaction: jest.fn().mockResolvedValue(),
+        canUserSyncContract: jest.fn().mockResolvedValue(true),
+        storeContractData: jest.fn().mockResolvedValue(),
+        storeBlock: jest.fn().mockResolvedValue()
     }
 });
-const { getUser } = require('../lib/firebase');
+const { getUser, storeContractData, storeTransaction, storeBlock } = require('../lib/firebase');
+
+jest.mock('../lib/tasks', () => ({
+    enqueueTask: jest.fn().mockResolvedValue(true)
+}));
+const { enqueueTask } = require('../lib/tasks');
+
+jest.mock('../lib/rpc', () => ({
+    ProviderConnector: function() {
+        return {
+            fetchTransactionReceipt: jest.fn().mockResolvedValue({ status: 1, contractAddress: '0xabcd' }),
+            fetchBlockWithTransactions: jest.fn().mockResolvedValue({
+                number: 1,
+                timestamp: 1234,
+                transactions: [{ hash: '0x1234' }]
+            })
+        }
+    }
+}));
+
+jest.mock('../lib/transactions', () => ({
+    processTransactions: jest.fn().mockResolvedValue(true)
+}));
+const { processTransactions } = require('../lib/transactions');
 
 const pubSubMock = require('google-pubsub-mock');
 const PubSub = require('@google-cloud/pubsub');
@@ -98,6 +126,122 @@ const pubSubMockInstance = pubSubMock.setUp({
 beforeEach(() => {
     pubSubMockInstance.clearState();
     jest.clearAllMocks();
+});
+
+describe.only('transactionSyncTask', () => {
+    beforeEach(() => {
+        helper = new Helper(process.env.GCLOUD_PROJECT);
+    });
+
+    it('Should store & process the transaction', async () => {
+        const wrapped = helper.test.wrap(index.transactionSyncTask);
+
+        const data = {
+            userId: '123',
+            workspace: 'hardhat',
+            transaction: { hash: '0x1234', to: '0xabcd', receipt: { contractAddress: '0xabcd' }},
+            timestamp: 1234
+        };
+
+        await wrapped(data, auth);
+
+        const expectedTx = {
+            error: '',
+            hash: '0x1234',
+            to: '0xabcd',
+            receipt: { status: 1, contractAddress: '0xabcd' },
+            tokenBalanceChanges: {},
+            tokenTransfers: [],
+            timestamp: 1234
+        }
+        expect(storeTransaction).toBeCalledWith('123', 'hardhat', expectedTx);
+        expect(processTransactions).toBeCalledWith('123', 'hardhat', [expectedTx]);
+    });
+
+    it('Should store the contract if no to field', async () => {
+        const wrapped = helper.test.wrap(index.transactionSyncTask);
+
+        const data = {
+            userId: '123',
+            workspace: 'hardhat',
+            transaction: { hash: '0x1234', receipt: { contractAddress: '0xabcd' }},
+            timestamp: 1234
+        };
+
+        await wrapped(data, auth);
+
+        const expectedTx = {
+            error: '',
+            hash: '0x1234',
+            receipt: { status: 1 },
+            tokenBalanceChanges: {},
+            tokenTransfers: []
+        }
+        expect(storeContractData).toBeCalledWith('123', 'hardhat', '0xabcd', {
+            address: '0xabcd',
+            timestamp: 1234
+        });
+    });
+
+    afterEach(() => helper.clean());
+});
+
+describe('blockSyncTask', () => {
+    beforeEach(() => {
+        helper = new Helper(process.env.GCLOUD_PROJECT);
+    });
+
+    it('Should store the block & queue tx fetching', async () => {
+        const wrapped = helper.test.wrap(index.blockSyncTask);
+
+        const data = {
+            userId: '123',
+            workspace: 'hardhat',
+            blockNumber: 1
+        };
+
+        await wrapped(data, auth);
+
+        const syncedBlock = {
+            number: 1,
+            timestamp: 1234
+        };
+
+        expect(storeBlock).toHaveBeenCalledWith('123', 'hardhat', syncedBlock);
+        expect(enqueueTask).toHaveBeenCalledWith('transactionSyncTask', {
+            userId: '123',
+            workspace: 'hardhat',
+            transaction: { hash: '0x1234' },
+            timestamp: 1234
+        });
+    });
+
+    afterEach(() => helper.clean());
+});
+
+describe.only('serverSideBlockSync', () => {
+    beforeEach(() => {
+        helper = new Helper(process.env.GCLOUD_PROJECT);
+    });
+
+    it('Should enqueue block sync', async () => {
+        const wrapped = helper.test.wrap(index.serverSideBlockSync);
+
+        const data = {
+            blockNumber: 1,
+            workspace: 'hardhat'
+        };
+
+        await wrapped(data, auth);
+
+        expect(enqueueTask).toHaveBeenCalledWith('blockSyncTask', {
+            userId: '123',
+            workspace: 'hardhat',
+            blockNumber: 1
+        });
+    });
+
+    afterEach(() => helper.clean());
 });
 
 describe('syncFailedTransactionError', () => {

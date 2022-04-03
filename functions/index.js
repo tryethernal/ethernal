@@ -9,8 +9,6 @@ const Decoder = require('@truffle/decoder');
 const firebaseTools = require('firebase-tools');
 const admin = require('firebase-admin');
 const { PubSub } = require('@google-cloud/pubsub');
-const { CloudTasksClient } = require('@google-cloud/tasks');
-const grpc = require("@grpc/grpc-js");
 const stripe = require('stripe')(functions.config().stripe.secret_key);
 
 const Storage = require('./lib/storage');
@@ -66,51 +64,16 @@ const {
     storeFailedTransactionError
 } = require('./lib/firebase');
 const { ProviderConnector } = require('./lib/rpc');
+const { enqueueTask } = require('./lib/tasks');
 
 const billUsage = require('./pubsub/billUsage');
 const processContractVerification = require('./pubsub/processContractVerification');
-
-const TASKS_TO_QUEUE = {
-    blockSyncTask: 'block-sync',
-    transactionSyncTask: 'transaction-sync'
-};
 
 const publish = async (topicName, data) => {
     const topic = pubsub.topic(topicName);
     const message = sanitize(data);
     const messageBuffer = Buffer.from(JSON.stringify(message), 'utf8');
     return await topic.publish(messageBuffer);
-};
-
-const enqueueTask = async (taskName, data) => {
-    if (!TASKS_TO_QUEUE[taskName])
-        throw '[enqueueTask] Unknown task';
-
-    const client = functions.config().devMode ? new CloudTasksClient({
-        servicePath: 'localhost',
-        port: 9090,
-        sslCreds: grpc.credentials.createInsecure()
-    }) : new CloudTasksClient();
-
-    const parent = client.queuePath('ethernal-95a14', 'us-central1', TASKS_TO_QUEUE[taskName]);
-
-    const task = {
-        httpRequest: {
-            httpMethod: 'POST',
-            url: `${functions.config().ethernal.root_functions}/${taskName}`,
-            body: Buffer.from(JSON.stringify({ data: data })).toString('base64'),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
-    };
-
-    const request = {
-        parent: parent,
-        task: task
-    };
-    const [response] = await client.createTask(request);
-    return response;
 };
 
 const pubsub = new PubSub();
@@ -125,7 +88,7 @@ exports.syncFailedTransactionError = functions.https.onCall(async (data, context
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[syncFailedTransactionError] Missing parameter.');
         }
-     
+
         await storeFailedTransactionError(context.auth.uid, data.workspace, data.transaction, data.error);
 
         return { success: true };
@@ -320,9 +283,9 @@ exports.transactionSyncTask = functions.https.onCall(async (data, context) => {
 
 exports.blockSyncTask = functions.https.onCall(async (data, context) => {
     try {
-        if (!data.blockNumber) {
+        if (!data.userId || !data.workspace || !data.blockNumber) {
             console.log(data);
-            throw new functions.https.HttpsError('invalid-argument', '[blockSyncTask] Missing blockNumber parameter.');
+            throw new functions.https.HttpsError('invalid-argument', '[blockSyncTask] Missing parameter.');
         }
 
         const workspace = await getWorkspaceByName(data.userId, data.workspace);
@@ -332,9 +295,8 @@ exports.blockSyncTask = functions.https.onCall(async (data, context) => {
         const syncedBlock = sanitize(stringifyBns({ ...block, transactions: null }));
         const storedBlock = await storeBlock(data.userId, data.workspace, syncedBlock);
         
-        if (storedBlock && block.transactions.length === 0) {
+        if (storedBlock && block.transactions.length === 0)
             return publish('bill-usage', { userId: data.userId, timestamp: block.timestamp });
-        }
         
         for (let i = 0; i < block.transactions.length; i++) {
             await enqueueTask('transactionSyncTask', {
@@ -350,6 +312,9 @@ exports.blockSyncTask = functions.https.onCall(async (data, context) => {
 });
 
 exports.serverSideBlockSync = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
     try {
         if (!data.blockNumber || !data.workspace) {
             console.log(data);
