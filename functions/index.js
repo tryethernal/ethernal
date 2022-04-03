@@ -9,6 +9,8 @@ const Decoder = require('@truffle/decoder');
 const firebaseTools = require('firebase-tools');
 const admin = require('firebase-admin');
 const { PubSub } = require('@google-cloud/pubsub');
+const { CloudTasksClient } = require('@google-cloud/tasks');
+const grpc = require("@grpc/grpc-js");
 const stripe = require('stripe')(functions.config().stripe.secret_key);
 
 const Storage = require('./lib/storage');
@@ -295,8 +297,9 @@ exports.blockSyncTask = functions.https.onCall(async (data, context) => {
         const syncedBlock = sanitize(stringifyBns({ ...block, transactions: null }));
         const storedBlock = await storeBlock(data.userId, data.workspace, syncedBlock);
         
-        if (storedBlock && block.transactions.length === 0)
+        if (storedBlock && block.transactions.length === 0) {
             return publish('bill-usage', { userId: data.userId, timestamp: block.timestamp });
+        }
         
         for (let i = 0; i < block.transactions.length; i++) {
             await enqueueTask('transactionSyncTask', {
