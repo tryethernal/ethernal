@@ -27,6 +27,21 @@ let getProvider = function(url) {
     return new provider(urlInfo);
 };
 
+class ProviderConnector {
+    constructor(server) {
+        if (!server) throw '[ProviderConnector] Missing server parameter';
+        this.provider = getProvider(server);
+    }
+
+    async fetchBlockWithTransactions(blockNumber) {
+        return await this.provider.getBlockWithTransactions(blockNumber);
+    }
+
+    async fetchTransactionReceipt(transactionHash) {
+        return await this.provider.getTransactionReceipt(transactionHash)
+    }
+}
+
 class Tracer {
     constructor(server) {
         if (!server) throw '[Tracer] Missing parameter';
@@ -75,5 +90,6 @@ class ContractConnector {
 module.exports = {
     ContractConnector: ContractConnector,
     Tracer: Tracer,
+    ProviderConnector: ProviderConnector,
     getProvider: getProvider
 };

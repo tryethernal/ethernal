@@ -18,6 +18,7 @@
   "main": "index.js",
   "dependencies": {
     "@google-cloud/pubsub": "^2.19.0",
+    "@google-cloud/tasks": "^2.5.0",
     "@truffle/decoder": "^4.6.7",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",

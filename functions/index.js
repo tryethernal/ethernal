@@ -9,6 +9,8 @@ const Decoder = require('@truffle/decoder');
 const firebaseTools = require('firebase-tools');
 const admin = require('firebase-admin');
 const { PubSub } = require('@google-cloud/pubsub');
+const { CloudTasksClient } = require('@google-cloud/tasks');
+const grpc = require("@grpc/grpc-js");
 const stripe = require('stripe')(functions.config().stripe.secret_key);
 
 const Storage = require('./lib/storage');
@@ -63,9 +65,53 @@ const {
     updateContractVerificationStatus,
     storeFailedTransactionError
 } = require('./lib/firebase');
+const { ProviderConnector } = require('./lib/rpc');
 
 const billUsage = require('./pubsub/billUsage');
 const processContractVerification = require('./pubsub/processContractVerification');
+
+const TASKS_TO_QUEUE = {
+    blockSyncTask: 'block-sync',
+    transactionSyncTask: 'transaction-sync'
+};
+
+const publish = async (topicName, data) => {
+    const topic = pubsub.topic(topicName);
+    const message = sanitize(data);
+    const messageBuffer = Buffer.from(JSON.stringify(message), 'utf8');
+    return await topic.publish(messageBuffer);
+};
+
+const enqueueTask = async (taskName, data) => {
+    if (!TASKS_TO_QUEUE[taskName])
+        throw '[enqueueTask] Unknown task';
+
+    const client = functions.config().devMode ? new CloudTasksClient({
+        servicePath: 'localhost',
+        port: 9090,
+        sslCreds: grpc.credentials.createInsecure()
+    }) : new CloudTasksClient();
+
+    const parent = client.queuePath('ethernal-95a14', 'us-central1', TASKS_TO_QUEUE[taskName]);
+
+    const task = {
+        httpRequest: {
+            httpMethod: 'POST',
+            url: `${functions.config().ethernal.root_functions}/${taskName}`,
+            body: Buffer.from(JSON.stringify({ data: data })).toString('base64'),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+    };
+
+    const request = {
+        parent: parent,
+        task: task
+    };
+    const [response] = await client.createTask(request);
+    return response;
+};
 
 const pubsub = new PubSub();
 
@@ -221,6 +267,100 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
         
         analytics.track(context.auth.uid, 'Block Sync');
         return { blockNumber: syncedBlock.number }
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
+    }
+});
+
+exports.transactionSyncTask = functions.https.onCall(async (data, context) => {
+    try {
+        if (!data.userId || !data.workspace || !data.transaction) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[transactionSyncTask] Missing parameter.');
+        }
+
+        const workspace = await getWorkspaceByName(data.userId, data.workspace);
+        const providerConnector = new ProviderConnector(workspace.rpcServer);
+
+        const receipt = await providerConnector.fetchTransactionReceipt(data.transaction.hash);
+        const promises = [];
+
+        const sTransactionReceipt = receipt ? sanitize(stringifyBns(receipt)) : null;
+
+        const txSynced = sanitize({
+            ...data.transaction,
+            receipt: sTransactionReceipt,
+            error: '',
+            timestamp: data.timestamp,
+            tokenBalanceChanges: {},
+            tokenTransfers: []
+        });
+
+        const storedTx = await storeTransaction(data.userId, data.workspace, txSynced);
+
+        if (storedTx)
+            await publish('bill-usage', { userId: data.userId, timestamp: data.timestamp });
+
+        if (!txSynced.to && sTransactionReceipt) {
+            const canSync = await canUserSyncContract(data.userId, data.workspace);
+            if (canSync)
+                await storeContractData(data.userId, data.workspace, sTransactionReceipt.contractAddress, {
+                    address: sTransactionReceipt.contractAddress,
+                    timestamp: data.timestamp
+                });
+        }
+
+        return processTransactions(data.userId, data.workspace, [txSynced]);
+    } catch(error) {
+        console.log(error);
+    }
+});
+
+exports.blockSyncTask = functions.https.onCall(async (data, context) => {
+    try {
+        if (!data.blockNumber) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[blockSyncTask] Missing blockNumber parameter.');
+        }
+
+        const workspace = await getWorkspaceByName(data.userId, data.workspace);
+        const providerConnector = new ProviderConnector(workspace.rpcServer);
+
+        const block = await providerConnector.fetchBlockWithTransactions(data.blockNumber);
+        const syncedBlock = sanitize(stringifyBns({ ...block, transactions: null }));
+        const storedBlock = await storeBlock(data.userId, data.workspace, syncedBlock);
+        
+        if (storedBlock && block.transactions.length === 0) {
+            return publish('bill-usage', { userId: data.userId, timestamp: block.timestamp });
+        }
+        
+        for (let i = 0; i < block.transactions.length; i++) {
+            await enqueueTask('transactionSyncTask', {
+                userId: data.userId,
+                workspace: data.workspace,
+                transaction: stringifyBns(block.transactions[i]),
+                timestamp: block.timestamp
+            })
+        }
+    } catch(error) {
+        console.log(error);
+    }
+});
+
+exports.serverSideBlockSync = functions.https.onCall(async (data, context) => {
+    try {
+        if (!data.blockNumber || !data.workspace) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[serverSideBlockSync] Missing parameter.');
+        }
+
+        return enqueueTask('blockSyncTask', {
+            userId: context.auth.uid,
+            workspace: data.workspace,
+            blockNumber: data.blockNumber
+        });
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
