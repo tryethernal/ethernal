@@ -260,7 +260,8 @@ describe('blockSyncTask', () => {
 
         const syncedBlock = {
             number: 1,
-            timestamp: 1234
+            timestamp: 1234,
+            transactions: [{ hash: '0x1234' }]
         };
 
         expect(storeBlock).toHaveBeenCalledWith('123', 'hardhat', syncedBlock);
