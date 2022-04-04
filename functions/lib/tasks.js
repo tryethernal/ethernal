@@ -3,8 +3,9 @@ const grpc = require("@grpc/grpc-js");
 const functions = require('firebase-functions');
 
 const TASKS_TO_QUEUE = {
-    blockSyncTask: 'block-sync',
-    transactionSyncTask: 'transaction-sync'
+    batchBlockSyncTask: 'block-sync',
+    transactionSyncTask: 'transaction-sync',
+    blockSyncTask: 'batch-block-sync'
 };
 
 module.exports = {

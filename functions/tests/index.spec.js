@@ -128,7 +128,59 @@ beforeEach(() => {
     jest.clearAllMocks();
 });
 
-describe.only('transactionSyncTask', () => {
+describe('resyncBlocks', () => {
+    beforeEach(() => {
+        helper = new Helper(process.env.GCLOUD_PROJECT);
+    });
+
+    it('Should enqueue a batch sync task', async () => {
+        const wrapped = helper.test.wrap(index.resyncBlocks);
+        const data = {
+            workspace: 'hardhat',
+            fromBlock: 1,
+            toBlock: 5
+        };
+
+        await wrapped(data, auth);
+
+        expect(enqueueTask).toBeCalledWith('batchBlockSyncTask', {
+            userId: '123',
+            workspace: 'hardhat',
+            fromBlock: 1,
+            toBlock: 5
+        });
+    });
+
+    afterEach(() => helper.clean());
+});
+
+describe('batchBlockSyncTask', () => {
+    beforeEach(() => {
+        helper = new Helper(process.env.GCLOUD_PROJECT);
+    });
+
+    it('Should enqueue multiple block sync task', async () => {
+        const wrapped = helper.test.wrap(index.batchBlockSyncTask);
+        const data = {
+            userId: '123',
+            workspace: 'hardhat',
+            fromBlock: 1,
+            toBlock: 5
+        };
+
+        await wrapped(data, auth);
+
+        for (let i = 1; i < 6; i++)
+            expect(enqueueTask).toBeCalledWith('blockSyncTask', {
+                userId: '123',
+                workspace: 'hardhat',
+                blockNumber: i
+            });
+    });
+
+    afterEach(() => helper.clean());
+});
+describe('transactionSyncTask', () => {
     beforeEach(() => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
     });
@@ -219,7 +271,7 @@ describe('blockSyncTask', () => {
     afterEach(() => helper.clean());
 });
 
-describe.only('serverSideBlockSync', () => {
+describe('serverSideBlockSync', () => {
     beforeEach(() => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
     });
