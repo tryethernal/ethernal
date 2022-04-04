@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.6] - 2022-04-04
+### Added
+- Server side sync: blocks & txs can now be fetched by the server, in background tasks for better reliability
+
 ## [1.11.5] - 2022-04-04
 ### Changed
 - Stop automatically adding new detected contracts in the list for every transfers (except for public explorers)
