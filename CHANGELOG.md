@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.5] - 2022-04-04
+### Changed
+- Stop automatically adding new detected contracts in the list for every transfers (except for public explorers)
+
 ## [1.11.4] - 2022-03-31
 ### Added
 - [Public Explorer] Add custom banner option
