@@ -19,7 +19,7 @@ module.exports = {
             sslCreds: grpc.credentials.createInsecure()
         }) : new CloudTasksClient();
 
-        const parent = client.queuePath(projectId, functions.config().functions_location, TASKS_TO_QUEUE[taskName]);
+        const parent = client.queuePath(projectId, functions.config().ethernal.functions_location, TASKS_TO_QUEUE[taskName]);
 
         const task = {
             httpRequest: {
