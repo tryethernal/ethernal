@@ -1,5 +1,6 @@
 const { CloudTasksClient } = require('@google-cloud/tasks');
 const grpc = require("@grpc/grpc-js");
+const functions = require('firebase-functions');
 
 const TASKS_TO_QUEUE = {
     blockSyncTask: 'block-sync',
@@ -8,6 +9,7 @@ const TASKS_TO_QUEUE = {
 
 module.exports = {
     enqueueTask: async (taskName, data) => {
+        const projectId = JSON.parse(process.env.FIREBASE_CONFIG).projectId;
         if (!TASKS_TO_QUEUE[taskName])
             throw '[enqueueTask] Unknown task';
 
@@ -17,7 +19,7 @@ module.exports = {
             sslCreds: grpc.credentials.createInsecure()
         }) : new CloudTasksClient();
 
-        const parent = client.queuePath(functions.config().firebaseProjectId, functions.config().functionsLocation, TASKS_TO_QUEUE[taskName]);
+        const parent = client.queuePath(projectId, functions.config().functions_location, TASKS_TO_QUEUE[taskName]);
 
         const task = {
             httpRequest: {
