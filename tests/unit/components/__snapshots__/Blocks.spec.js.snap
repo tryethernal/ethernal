@@ -28,9 +28,9 @@ exports[`Blocks.vue Should show the blocks list 1`] = `
             <td class="text-start">
               200000
             </td>
-            <td class="text-start">
-              0 transactions
-            </td>
+            <td class="text-start"><span>
+                0 transactions
+            </span></td>
           </tr>
           <tr class="">
             <td class="text-start"><a href="#/block/1" class="">1</a></td>
@@ -40,9 +40,9 @@ exports[`Blocks.vue Should show the blocks list 1`] = `
             <td class="text-start">
               100000
             </td>
-            <td class="text-start">
-              1 transaction
-            </td>
+            <td class="text-start"><span>
+                1 transaction
+            </span></td>
           </tr>
         </tbody>
       </table>

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.8] - 2022-04-05
+### Fixed
+- Pagination with server-side syncing
+
 ## [1.11.7] - 2022-04-04
 ### Added
 - Batch server side syncing, for more reliable historical block syncing
