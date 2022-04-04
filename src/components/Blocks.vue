@@ -25,7 +25,12 @@
                 {{ item.gasUsed.toLocaleString()  }}
             </template>
             <template v-slot:item.transactionNumber="{ item }">
-                {{ item.transactions.length  }} {{ item.transactions.length != 1 ? 'transactions' : 'transaction' }}
+                <span v-if="item.transactions">
+                    {{ item.transactions.length  }} {{ item.transactions.length != 1 ? 'transactions' : 'transaction' }}
+                </span>
+                <span v-else>
+                    0 transactions
+                </span>
             </template>
         </v-data-table>
     </v-container>
@@ -86,7 +91,7 @@ export default {
                 this.currentOptions,
                 options
             );
-            this.$bind('blocks', query, { reset: false }).then(() => this.loading = false);
+            this.$bind('blocks', query, { serialize: this.serializer, reset: false }).then(() => this.loading = false);
             this.currentOptions = options;
         }
     },
