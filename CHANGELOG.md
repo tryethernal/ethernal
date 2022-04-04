@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.7] - 2022-04-04
+### Added
+- Batch server side syncing, for more reliable historical block syncing
+
 ## [1.11.6] - 2022-04-04
 ### Added
 - Server side sync: blocks & txs can now be fetched by the server, in background tasks for better reliability
