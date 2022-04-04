@@ -63,9 +63,18 @@ const {
     updateContractVerificationStatus,
     storeFailedTransactionError
 } = require('./lib/firebase');
+const { ProviderConnector } = require('./lib/rpc');
+const { enqueueTask } = require('./lib/tasks');
 
 const billUsage = require('./pubsub/billUsage');
 const processContractVerification = require('./pubsub/processContractVerification');
+
+const publish = async (topicName, data) => {
+    const topic = pubsub.topic(topicName);
+    const message = sanitize(data);
+    const messageBuffer = Buffer.from(JSON.stringify(message), 'utf8');
+    return await topic.publish(messageBuffer);
+};
 
 const pubsub = new PubSub();
 
@@ -79,7 +88,7 @@ exports.syncFailedTransactionError = functions.https.onCall(async (data, context
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[syncFailedTransactionError] Missing parameter.');
         }
-     
+
         await storeFailedTransactionError(context.auth.uid, data.workspace, data.transaction, data.error);
 
         return { success: true };
@@ -221,6 +230,102 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
         
         analytics.track(context.auth.uid, 'Block Sync');
         return { blockNumber: syncedBlock.number }
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
+    }
+});
+
+exports.transactionSyncTask = functions.https.onCall(async (data, context) => {
+    try {
+        if (!data.userId || !data.workspace || !data.transaction) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[transactionSyncTask] Missing parameter.');
+        }
+
+        const workspace = await getWorkspaceByName(data.userId, data.workspace);
+        const providerConnector = new ProviderConnector(workspace.rpcServer);
+
+        const receipt = await providerConnector.fetchTransactionReceipt(data.transaction.hash);
+        const promises = [];
+
+        const sTransactionReceipt = receipt ? sanitize(stringifyBns(receipt)) : null;
+
+        const txSynced = sanitize({
+            ...data.transaction,
+            receipt: sTransactionReceipt,
+            error: '',
+            timestamp: data.timestamp,
+            tokenBalanceChanges: {},
+            tokenTransfers: []
+        });
+
+        const storedTx = await storeTransaction(data.userId, data.workspace, txSynced);
+
+        if (storedTx)
+            await publish('bill-usage', { userId: data.userId, timestamp: data.timestamp });
+
+        if (!txSynced.to && sTransactionReceipt) {
+            const canSync = await canUserSyncContract(data.userId, data.workspace);
+            if (canSync)
+                await storeContractData(data.userId, data.workspace, sTransactionReceipt.contractAddress, {
+                    address: sTransactionReceipt.contractAddress,
+                    timestamp: data.timestamp
+                });
+        }
+
+        return processTransactions(data.userId, data.workspace, [txSynced]);
+    } catch(error) {
+        console.log(error);
+    }
+});
+
+exports.blockSyncTask = functions.https.onCall(async (data, context) => {
+    try {
+        if (!data.userId || !data.workspace || !data.blockNumber) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[blockSyncTask] Missing parameter.');
+        }
+
+        const workspace = await getWorkspaceByName(data.userId, data.workspace);
+        const providerConnector = new ProviderConnector(workspace.rpcServer);
+
+        const block = await providerConnector.fetchBlockWithTransactions(data.blockNumber);
+        const syncedBlock = sanitize(stringifyBns({ ...block, transactions: null }));
+        const storedBlock = await storeBlock(data.userId, data.workspace, syncedBlock);
+        
+        if (storedBlock && block.transactions.length === 0)
+            return publish('bill-usage', { userId: data.userId, timestamp: block.timestamp });
+        
+        for (let i = 0; i < block.transactions.length; i++) {
+            await enqueueTask('transactionSyncTask', {
+                userId: data.userId,
+                workspace: data.workspace,
+                transaction: stringifyBns(block.transactions[i]),
+                timestamp: block.timestamp
+            })
+        }
+    } catch(error) {
+        console.log(error);
+    }
+});
+
+exports.serverSideBlockSync = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
+    try {
+        if (!data.blockNumber || !data.workspace) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[serverSideBlockSync] Missing parameter.');
+        }
+
+        return enqueueTask('blockSyncTask', {
+            userId: context.auth.uid,
+            workspace: data.workspace,
+            blockNumber: data.blockNumber
+        });
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';

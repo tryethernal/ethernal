@@ -1,6 +1,14 @@
 const ethers = require('ethers');
 const { getContractData } = require('./firebase');
 
+const isStringifiedBN = function(obj) {
+    if (!obj)
+        return false;
+    return !!obj['type']
+    && obj['type'] === 'BigNumber'
+    && !!obj['hex'];
+};
+
 const _isJson = function(obj) {
     try {
         JSON.parse(obj);
@@ -26,7 +34,7 @@ const _sanitize = (obj) => {
 const _stringifyBns = (obj) => {
     var res = {}
     for (const key in obj) {
-        if (ethers.BigNumber.isBigNumber(obj[key])) {
+        if (ethers.BigNumber.isBigNumber(obj[key]) || isStringifiedBN(obj[key])) {
             res[key] = ethers.BigNumber.from(obj[key]).toString();
         }
         else if (typeof obj[key] !== 'function') {
