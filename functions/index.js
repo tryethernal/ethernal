@@ -339,7 +339,7 @@ exports.blockSyncTask = functions.https.onCall(async (data, context) => {
         if (!block)
             throw `Couldn't find block #${data.blockNumber}`;
 
-        const syncedBlock = sanitize(stringifyBns({ ...block, transactions: null }));
+        const syncedBlock = sanitize(stringifyBns(block));
         const storedBlock = await storeBlock(data.userId, data.workspace, syncedBlock);
         
         if (storedBlock && block.transactions.length === 0)
