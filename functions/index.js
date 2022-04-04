@@ -82,6 +82,49 @@ exports.billUsage = functions.pubsub.topic('bill-usage').onPublish(billUsage);
 
 exports.processContractVerification = functions.pubsub.topic('verify-contract').onPublish(processContractVerification);
 
+exports.resyncBlocks = functions.https.onCall(async (data, context) => {
+    if (!context.auth)
+        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+    try {
+        if (!data.workspace || !data.fromBlock || !data.toBlock) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[resyncBlocks] Missing parameter.');
+        }
+
+        return enqueueTask('batchBlockSyncTask', {
+            userId: context.auth.uid,
+            workspace: data.workspace,
+            fromBlock: data.fromBlock,
+            toBlock: data.toBlock
+        });
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
+    }
+});
+
+exports.batchBlockSyncTask = functions.https.onCall(async (data, context) => {
+    try {
+        if (!data.userId || !data.workspace || !data.fromBlock || !data.toBlock) {
+            console.log(data);
+            throw new functions.https.HttpsError('invalid-argument', '[batchBlockSyncTask] Missing parameter.');
+        }
+
+        for (let i = data.fromBlock; i <= data.toBlock; i++) {
+            await enqueueTask('blockSyncTask', {
+                userId: data.userId,
+                workspace: data.workspace,
+                blockNumber: i
+            });
+        }
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
+    }
+});
+
 exports.syncFailedTransactionError = functions.https.onCall(async (data, context) => {
     try {
         if (!data.workspace || !data.transaction || !data.error) {
@@ -218,7 +261,7 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
 
         const storedBlock = await storeBlock(context.auth.uid, data.workspace, syncedBlock);
 
-        if (storedBlock && storedBlock.transactions.length === 0) {
+        if (storedBlock && block.transactions.length === 0) {
             const topic = pubsub.topic('bill-usage');
             const message = sanitize({
                 userId: context.auth.uid,
@@ -292,6 +335,10 @@ exports.blockSyncTask = functions.https.onCall(async (data, context) => {
         const providerConnector = new ProviderConnector(workspace.rpcServer);
 
         const block = await providerConnector.fetchBlockWithTransactions(data.blockNumber);
+
+        if (!block)
+            throw `Couldn't find block #${data.blockNumber}`;
+
         const syncedBlock = sanitize(stringifyBns({ ...block, transactions: null }));
         const storedBlock = await storeBlock(data.userId, data.workspace, syncedBlock);
         
