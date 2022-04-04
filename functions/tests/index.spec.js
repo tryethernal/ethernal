@@ -70,13 +70,17 @@ jest.mock('../lib/firebase', () => {
         ...actual,
         getUser: jest.fn().mockResolvedValue({ data: () => ({ apiKey: '1234' })}),
         getWorkspaceByName: jest.fn().mockResolvedValue({ rpcServer: 'rpc.com' }),
-        storeTransaction: jest.fn().mockResolvedValue(),
+        storeTransaction: jest.fn().mockResolvedValue({ hash: '0x1234' }),
         canUserSyncContract: jest.fn().mockResolvedValue(true),
         storeContractData: jest.fn().mockResolvedValue(),
-        storeBlock: jest.fn().mockResolvedValue()
+        storeBlock: jest.fn().mockResolvedValue({ blockNumber: 1, transactions: [] }),
+        getContractData: jest.fn().mockResolvedValue(),
+        storeContractDependencies: jest.fn().mockResolvedValue(),
+        storeTrace: jest.fn().mockResolvedValue(),
+        storeContractArtifact: jest.fn().mockResolvedValue(),
     }
 });
-const { getUser, storeContractData, storeTransaction, storeBlock } = require('../lib/firebase');
+const { storeContractArtifact, storeTrace, getUser, storeContractData, storeTransaction, storeBlock, canUserSyncContract, getContractData, storeContractDependencies } = require('../lib/firebase');
 
 jest.mock('../lib/tasks', () => ({
     enqueueTask: jest.fn().mockResolvedValue(true)
@@ -409,33 +413,31 @@ describe('setTokenProperties', () => {
             .set({ abi: 'abi' });
     });
 
-    it('Should not set token/patterns if they are not passed', async () => {
-        const wrapped = helper.test.wrap(index.setTokenProperties);
-        const result = await wrapped({ workspace: 'hardhat', contract: '0x123' }, auth);
-
-        const contractRef = await helper.workspace.collection('contracts').doc('0x123').get();
-
-        expect(contractRef.data()).toEqual({ abi: 'abi', patterns: [], token: {}, processed: true });
-        expect(result).toEqual({ success: true });
-    });
-
     it('Should set token patterns that are passed', async () => {
         const wrapped = helper.test.wrap(index.setTokenProperties);
         const result = await wrapped({ workspace: 'hardhat', contract: '0x123', tokenPatterns: ['erc20'] }, auth);
 
         const contractRef = await helper.workspace.collection('contracts').doc('0x123').get();
 
-        expect(contractRef.data()).toEqual({ abi: 'abi', patterns: ['erc20'], token: {}, processed: true });
+        expect(storeContractData).toHaveBeenCalledWith('123', 'hardhat', '0x123', {
+            patterns: expect.anything(),
+            processed: true,
+            token: {}
+        });
         expect(result).toEqual({ success: true });
     });
 
     it('Should set token properties that are passed', async () => {
         const wrapped = helper.test.wrap(index.setTokenProperties);
-        const result = await wrapped({ workspace: 'hardhat', contract: '0x123', tokenProperties: { symbol: 'ETL', decimals: 18, name: 'Ethenral' }}, auth);
+        const result = await wrapped({ workspace: 'hardhat', contract: '0x123', tokenProperties: { symbol: 'ETL', decimals: 18, name: 'Ethernal' }}, auth);
 
         const contractRef = await helper.workspace.collection('contracts').doc('0x123').get();
 
-        expect(contractRef.data()).toEqual({ abi: 'abi', patterns: [], token: { symbol: 'ETL', decimals: 18, name: 'Ethenral' }, processed: true });
+        expect(storeContractData).toHaveBeenCalledWith('123', 'hardhat', '0x123', {
+            patterns: [],
+            processed: true,
+            token: { symbol: 'ETL', decimals: 18, name: 'Ethernal' }
+        });
         expect(result).toEqual({ success: true });
     });
 
@@ -480,7 +482,7 @@ describe('syncBlock', () => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
     });
 
-    it('Should sanitize and return the synced block number', async () => {
+    it('Should bill when no tx', async () => {
         const wrapped = helper.test.wrap(index.syncBlock);
         const block = {
             number: '123',
@@ -489,11 +491,19 @@ describe('syncBlock', () => {
         };
         
         const result = await wrapped({ block: block, workspace: 'hardhat' }, auth);
-        const blockRef = await helper.workspace.collection('blocks').doc('123').get();
-        
-        expect(blockRef.data()).toEqual({ number: '123', transactions: [] });
-        expect(result).toEqual({ blockNumber: '123' });
         expect(pubSubMockInstance.publish.callCount).toEqual(1);
+    });
+
+    it('Should return the synced block number', async () => {
+        const wrapped = helper.test.wrap(index.syncBlock);
+        const block = {
+            number: '123',
+            value: null,
+            transactions: []
+        };
+        
+        const result = await wrapped({ block: block, workspace: 'hardhat' }, auth);
+        expect(result).toEqual({ blockNumber: '123' });
     });
 
     it('Should not bill the block if there is a tx', async () => {
@@ -504,11 +514,7 @@ describe('syncBlock', () => {
             transactions: [{ hash: '0x1234' }]
         };
 
-        const result = await wrapped({ block: block, workspace: 'hardhat' }, auth);
-        const blockRef = await helper.workspace.collection('blocks').doc('123').get();
-        
-        expect(blockRef.data()).toEqual({ number: '123', transactions: [{ hash: '0x1234' }] });
-        expect(result).toEqual({ blockNumber: '123' });
+        const result = await wrapped({ block: block, workspace: 'hardhat' }, auth);        
         expect(pubSubMockInstance.publish.callCount).toEqual(0);
     });
 
@@ -536,25 +542,11 @@ describe('syncContractArtifact', () => {
         };
 
         const result = await wrapped(data, auth);
-
-        const artifactRef = await helper.database.ref('/users/123/workspaces/hardhat/contracts/0x123/artifact').once('value');
-
-        expect(artifactRef.val()).toEqual(contractArtifact);
-        expect(result).toEqual({ address: '0x123' });
+        expect(storeContractArtifact).toHaveBeenCalledWith('123', 'hardhat', '0x123', contractArtifact);
     });
 
     it('Should not store more than 10 contracts on a free plan', async () => {
-        for (let i = 0; i < 10; i++) {
-            await helper.firestore
-                .collection('users')
-                .doc('123')
-                .collection('workspaces')
-                .doc('hardhat')
-                .collection('contracts')
-                .doc(`0x12${i}`)
-                .set({ artifact: 'artifact' });
-        }
-
+        canUserSyncContract.mockResolvedValue(false);
         const wrapped = helper.test.wrap(index.syncContractArtifact);
         const data = {
             workspace: 'hardhat',
@@ -564,22 +556,12 @@ describe('syncContractArtifact', () => {
 
         await expect(async () => {
             await wrapped(data, auth);
+            expect(storeContractArtifact).not.toHaveBeenCalled();
         }).rejects.toThrow({ message: 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.' });
     });
 
     it('Should store more than 10 contracts on a premium plan', async () => {
-        await helper.setUser({ plan: 'premium' });
-
-        for (let i = 0; i < 10; i++) {
-            await helper.firestore
-                .collection('users')
-                .doc('123')
-                .collection('workspaces')
-                .doc('hardhat')
-                .collection('contracts')
-                .doc(`0x12${i}`)
-                .set({ artifact: 'artifact' });
-        }
+        canUserSyncContract.mockResolvedValue(true);
 
         const wrapped = helper.test.wrap(index.syncContractArtifact);
         const data = {
@@ -589,7 +571,7 @@ describe('syncContractArtifact', () => {
         };
 
         const result = await wrapped(data, auth);
-        expect(result).toEqual({ address: '0x222' });
+        expect(storeContractArtifact).toHaveBeenCalledWith('123', 'hardhat', '0x222', contractArtifact);
     });
 
     it('Should allow updating an artifact of a contract that already exists even with more than 10 contracts on a free plan', async () => {
@@ -639,25 +621,11 @@ describe('syncContractDependencies', () => {
         };
 
         const result = await wrapped(data, auth);
-
-        const artifactRef = await helper.database.ref('/users/123/workspaces/hardhat/contracts/0x123/dependencies').once('value');
-
-        expect(artifactRef.val()).toEqual({ Address: contractDependency });
-        expect(result).toEqual({ address: '0x123' });
+        expect(storeContractDependencies).toHaveBeenCalledWith('123', 'hardhat', '0x123', { Address: contractDependency });
     });
 
     it('Should not store more than 10 contracts on a free plan', async () => {
-        for (let i = 0; i < 10; i++) {
-            await helper.firestore
-                .collection('users')
-                .doc('123')
-                .collection('workspaces')
-                .doc('hardhat')
-                .collection('contracts')
-                .doc(`0x12${i}`)
-                .set({ dep: 'dep' });
-        }
-
+        canUserSyncContract.mockResolvedValue(false);
         const wrapped = helper.test.wrap(index.syncContractDependencies);
         const data = {
             workspace: 'hardhat',
@@ -667,23 +635,12 @@ describe('syncContractDependencies', () => {
 
         await expect(async () => {
             await wrapped(data, auth);
+            expect(storeContractDependencies).not.toHaveBeenCalled();
         }).rejects.toThrow({ message: 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.' });
     });
 
     it('Should store more than 10 contracts on a premium plan', async () => {
-        await helper.setUser({ plan: 'premium' });
-
-        for (let i = 0; i < 10; i++) {
-            await helper.firestore
-                .collection('users')
-                .doc('123')
-                .collection('workspaces')
-                .doc('hardhat')
-                .collection('contracts')
-                .doc(`0x12${i}`)
-                .set({ dep: 'dep' });
-        }
-
+        canUserSyncContract.mockResolvedValue(true);
         const wrapped = helper.test.wrap(index.syncContractDependencies);
         const data = {
             workspace: 'hardhat',
@@ -692,23 +649,12 @@ describe('syncContractDependencies', () => {
         };
 
         const result = await wrapped(data, auth);
-        expect(result).toEqual({ address: '0x222' });
+        expect(storeContractDependencies).toHaveBeenCalledWith('123', 'hardhat', '0x222', { Address: contractDependency });
     });
 
     it('Should allow updating a dependency of a contract that already exists even with more than 10 contracts on a free plan', async () => {
-        await helper.setUser({ plan: 'premium' });
-
-        for (let i = 0; i < 10; i++) {
-            await helper.firestore
-                .collection('users')
-                .doc('123')
-                .collection('workspaces')
-                .doc('hardhat')
-                .collection('contracts')
-                .doc(`0x12${i}`)
-                .set({ dep: 'dep' });
-        }
-
+        canUserSyncContract.mockResolvedValue(false);
+        getContractData.mockResolvedValue({ address: '0x120' });
         const wrapped = helper.test.wrap(index.syncContractDependencies);
         const data = {
             workspace: 'hardhat',
@@ -717,7 +663,7 @@ describe('syncContractDependencies', () => {
         };
 
         const result = await wrapped(data, auth);
-        expect(result).toEqual({ address: '0x120' });
+        expect(storeContractDependencies).toHaveBeenCalledWith('123', 'hardhat', '0x120', { Address: contractDependency });
     });
 
     afterEach(async () => {
@@ -726,23 +672,6 @@ describe('syncContractDependencies', () => {
 });
 
 describe('syncTrace', () => {
-    const firestoreConverter = async (snapshot, options) => {
-        const data = snapshot.data(options);
-        let res = { trace: [] };
-        for (let step of data.trace) {
-            const contract = (await step.contract.get()).data();
-            res.trace.push({
-                address: step.address,
-                hashedBytecode: step.hashedBytecode,
-                id: step.id,
-                input: step.input,
-                contract: contract,
-                op: step.op
-            })
-        }
-        return JSON.parse(JSON.stringify(res));
-    };
-
     beforeEach(async () => {
         helper = new Helper(process.env.GCLOUD_PROJECT);
         await helper.setUser({ plan: 'premium' });
@@ -758,60 +687,8 @@ describe('syncTrace', () => {
         };
 
         const result = await wrapped(data, auth);
-        const txRef = await helper.workspace
-            .collection('transactions')
-            .doc('0x123')
-            .withConverter({ fromFirestore: firestoreConverter })
-            .get();
-        
-        const tx = await txRef.data();
-        expect(tx).toMatchSnapshot();
-        expect(result).toEqual({ success: true });
+        expect(storeTrace).toHaveBeenCalledWith('123', 'hardhat', '0x123', Trace);
     });
-
-    it('Should match with a local contract if the called address is found', async () => {
-        const wrapped = helper.test.wrap(index.syncTrace);
-
-        await helper.workspace
-            .collection('contracts')
-            .doc('0x9ca4da328f8f337ffba3ebf39ef40f77df74e9c8')
-            .set({
-                address: '0x9ca4da328f8f337ffba3ebf39ef40f77df74e9c8',
-                abi: { my: 'function' }
-            });
-
-        const data = {
-            workspace: 'hardhat',
-            txHash: '0x123',
-            steps: [Trace[1]]
-        };
-
-        const result = await wrapped(data, auth);
-        const txRef = await helper.workspace
-            .collection('transactions')
-            .doc('0x123')
-            .withConverter({ fromFirestore: firestoreConverter })
-            .get();
-
-        const tx = await txRef.data();
-        expect(tx).toMatchSnapshot();
-        expect(result).toEqual({ success: true });
-    });
-
-    it('Should succeed on a free plan', async () => {
-        await helper.setUser({ plan: 'free' }, { merge: true })
-
-        const wrapped = helper.test.wrap(index.syncTrace);
-
-        const data = {
-            workspace: 'hardhat',
-            txHash: '0x123',
-            steps: Trace
-        };
-
-        const result = await wrapped(data, auth);
-        expect(result).toEqual({ success: true });
-    })
 
     afterEach(async () => {
         await helper.clean();
@@ -836,27 +713,16 @@ describe('syncContractData', () => {
 
         const result = await wrapped(data, auth);
 
-        const contractRef = await helper.workspace
-            .collection('contracts')
-            .doc('0x123')
-            .get();
-
-        const tx = await contractRef.data();
-        expect(tx).toMatchSnapshot();
-        expect(result).toEqual({ address: '0x123' });
+        expect(storeContractData).toHaveBeenCalledWith('123', 'hardhat', '0x123', {
+            address: '0x123',
+            name: 'Contract',
+            abi: { my: 'function' }
+        });
     });
 
-   it('Should not store more than 10 contracts on a free plan', async () => {
-        for (let i = 0; i < 10; i++) {
-            await helper.firestore
-                .collection('users')
-                .doc('123')
-                .collection('workspaces')
-                .doc('hardhat')
-                .collection('contracts')
-                .doc(`0x12${i}`)
-                .set({ abi: 'abi' });
-        }
+    it('Should not store more than 10 contracts on a free plan', async () => {
+        getContractData.mockResolvedValue(null);
+        canUserSyncContract.mockResolvedValue(false);
 
         const wrapped = helper.test.wrap(index.syncContractData);
         const data = {
@@ -869,56 +735,46 @@ describe('syncContractData', () => {
         await expect(async () => {
             await wrapped(data, auth);
         }).rejects.toThrow({ message: 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.' });
+        expect(storeContractData).not.toHaveBeenCalled();
     });
 
     it('Should store more than 10 contracts on a premium plan', async () => {
-        await helper.setUser({ plan: 'premium' });
-
-        for (let i = 0; i < 10; i++) {
-            await helper.firestore
-                .collection('users')
-                .doc('123')
-                .collection('workspaces')
-                .doc('hardhat')
-                .collection('contracts')
-                .doc(`0x12${i}`)
-                .set({ abi: 'abi' });
-        }
+        canUserSyncContract.mockResolvedValue(true);
 
         const wrapped = helper.test.wrap(index.syncContractData);
         const data = {
             workspace: 'hardhat',
-            address: '0x222',
+            address: '0x123',
             name: 'test',
             abi: { abi: 'abi' }
         };
 
         const result = await wrapped(data, auth);
-        expect(result).toEqual({ address: '0x222' });
+        expect(storeContractData).toHaveBeenCalledWith('123', 'hardhat', '0x123', {
+            address: '0x123',
+            name: 'test',
+            abi: { abi: 'abi' }
+        });
     });
 
     it('Should allow updating a contract that already exists even with more than 10 contracts on a free plan', async () => {
-        for (let i = 0; i < 10; i++) {
-            await helper.firestore
-                .collection('users')
-                .doc('123')
-                .collection('workspaces')
-                .doc('hardhat')
-                .collection('contracts')
-                .doc(`0x12${i}`)
-                .set({ artifact: 'artifact' });
-        }
+        canUserSyncContract.mockResolvedValue(true);
+        getContractData.mockResolvedValue({ address: '0x120' });
 
         const wrapped = helper.test.wrap(index.syncContractData);
         const data = {
             workspace: 'hardhat',
             address: '0x120',
             name: 'test',
-            abi: { abi: 'abi' }
+            abi: { my: 'abi' }
         };
 
         const result = await wrapped(data, auth);
-        expect(result).toEqual({ address: '0x120' });
+        expect(storeContractData).toHaveBeenCalledWith('123', 'hardhat', '0x120', {
+            address: '0x120',
+            name: 'test',
+            abi: { my: 'abi' }
+        });
     });
 
     afterEach(async () => {
@@ -942,14 +798,14 @@ describe('syncTransaction', () => {
         };
 
         const result = await wrapped(data, auth);
-        const txRef = await helper.workspace
-            .collection('transactions')
-            .doc(Transaction.hash)
-            .get();
-        const tx = await txRef.data();
-        expect(tx).toMatchSnapshot();
+
         expect(result).toEqual({ txHash: Transaction.hash });
         expect(pubSubMockInstance.publish.callCount).toEqual(1);
+        expect(storeTransaction).toHaveBeenCalledWith(
+            '123',
+            'hardhat',
+            expect.anything()
+        );
     });
 
     it('Should store the transaction & receipt, decode function signature, and return the hash', async () => {
@@ -962,22 +818,21 @@ describe('syncTransaction', () => {
             block: Block
         };
 
-        await helper.workspace.collection('contracts').doc(Transaction.to).set({
-            address: Transaction.to,
-            abi: ABI
-        });
-
         const result = await wrapped(data, auth);
-        const txRef = await helper.workspace
-            .collection('transactions')
-            .doc(Transaction.hash)
-            .get();
-        const tx = await txRef.data();
-        expect(tx).toMatchSnapshot();
+        expect(processTransactions).toHaveBeenCalledWith('123', 'hardhat', [{
+            ...Transaction,
+            receipt: TransactionReceipt,
+            timestamp: Block.timestamp.toString(),
+            error: '',
+            tokenTransfers: [],
+            tokenBalanceChanges: {}
+        }]);
         expect(result).toEqual({ txHash: Transaction.hash });
     });
 
     it('Should not break if there is an error during transaction processing', async () => {
+        getContractData.mockRejectedValue('error');
+
         const wrapped = helper.test.wrap(index.syncTransaction);
 
         const data = {
@@ -987,18 +842,7 @@ describe('syncTransaction', () => {
             block: Block
         };
 
-        await helper.workspace.collection('contracts').doc(Transaction.to).set({
-            address: Transaction.to,
-            abi: AmalfiContract.artifact.abi
-        });
-        
         const result = await wrapped(data, auth);
-        const txRef = await helper.workspace
-            .collection('transactions')
-            .doc(Transaction.hash)
-            .get();
-        const tx = await txRef.data();
-        expect(tx).toMatchSnapshot();
         expect(result).toEqual({ txHash: Transaction.hash });
     });
 
@@ -1016,61 +860,12 @@ describe('syncTransaction', () => {
 
         const result = await wrapped(data, auth);
 
-        const contractRef = await helper.workspace
-            .collection('contracts')
-            .doc(to)
-            .get();
-        const contract = await contractRef.data();
-        expect(contract).toMatchSnapshot();
+        expect(storeContractData).toHaveBeenCalledWith('123', 'hardhat', to, { address: to, timestamp: Block.timestamp });
         expect(result).toEqual({ txHash: Transaction.hash });
     });
 
     it('Should not store more than 10 contracts on a free plan', async () => {
-        for (let i = 0; i < 10; i++) {
-            await helper.firestore
-                .collection('users')
-                .doc('123')
-                .collection('workspaces')
-                .doc('hardhat')
-                .collection('contracts')
-                .doc(`0x12${i}`)
-                .set({ abi: 'abi' });
-        }
-
-        const wrapped = helper.test.wrap(index.syncTransaction);
-        const { to, ...creationTransaction } = Transaction;
-
-        const data = {
-            workspace: 'hardhat',
-            transaction: creationTransaction,
-            transactionReceipt: { ...TransactionReceipt, contractAddress: to },
-            block: Block
-        };
-
-        const contracts = await helper.firestore
-            .collection('users')
-            .doc('123')
-            .collection('workspaces')
-            .doc('hardhat')
-            .collection('contracts')
-            .get();
-
-        expect(contracts._size).toEqual(10);
-    });
-
-    it('Should store more than 10 contracts on a premium plan', async () => {
-        await helper.setUser({ plan: 'premium' });
-
-        for (let i = 0; i < 10; i++) {
-            await helper.firestore
-                .collection('users')
-                .doc('123')
-                .collection('workspaces')
-                .doc('hardhat')
-                .collection('contracts')
-                .doc(`0x12${i}`)
-                .set({ abi: 'abi' });
-        }
+        canUserSyncContract.mockResolvedValue(false);
 
         const wrapped = helper.test.wrap(index.syncTransaction);
         const { to, ...creationTransaction } = Transaction;
@@ -1083,7 +878,26 @@ describe('syncTransaction', () => {
         };
 
         const result = await wrapped(data, auth);
-        expect(result).toEqual({ txHash: Transaction.hash });
+
+        expect(storeContractData).not.toHaveBeenCalled();
+    });
+
+    it('Should store more than 10 contracts on a premium plan', async () => {
+        canUserSyncContract.mockResolvedValue(true);
+
+        const wrapped = helper.test.wrap(index.syncTransaction);
+        const { to, ...creationTransaction } = Transaction;
+
+        const data = {
+            workspace: 'hardhat',
+            transaction: creationTransaction,
+            transactionReceipt: { ...TransactionReceipt, contractAddress: to },
+            block: Block
+        };
+
+        const result = await wrapped(data, auth);
+
+        expect(storeContractData).toHaveBeenCalled();
     });
 
     afterEach(async () => {
@@ -1293,17 +1107,6 @@ describe('importContract', () => {
     });
 
     it('Should create a document with the address and flag it as imported', async () => {
-        await helper.workspace.set({ chain: 'ethereum' });
-        axios.get.mockImplementation(() => ({
-            data: {
-                message: 'OK',
-                result: [{
-                    ContractName: 'Contract',
-                    ABI: JSON.stringify({ my: 'function' })
-                }]
-            }
-        }));
-
         const data = {
             workspace: 'hardhat',
             contractAddress: '0x123'
@@ -1313,19 +1116,12 @@ describe('importContract', () => {
 
         const result = await wrapped(data, auth);
 
-        const contractRef = await helper.workspace
-            .collection('contracts')
-            .doc('0x123')
-            .get();
-
-        expect(contractRef.data()).toEqual({
+        expect(result).toEqual({ success: true });
+        expect(storeContractData).toHaveBeenCalledWith('123', 'hardhat', '0x123', {
             address: '0x123',
             imported: true
         });
-        expect(result).toEqual({ success: true });
     });
-
-    
 
     afterEach(async () => {
         await helper.clean();

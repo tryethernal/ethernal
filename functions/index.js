@@ -261,7 +261,7 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
 
         const storedBlock = await storeBlock(context.auth.uid, data.workspace, syncedBlock);
 
-        if (storedBlock && storedBlock.transactions.length === 0) {
+        if (storedBlock && block.transactions.length === 0) {
             const topic = pubsub.topic('bill-usage');
             const message = sanitize({
                 userId: context.auth.uid,
