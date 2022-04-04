@@ -73,18 +73,21 @@ exports.processTransactions = async (userId, workspaceName, transactions) => {
         else
             await storeTransactionMethodDetails(userId, workspaceName, transaction.hash, null);
 
+        const workspace = await getWorkspaceByName(userId, workspaceName);
+
         try {
             tokenTransfers = getTokenTransfers(transaction);
             await storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, tokenTransfers);
-            for (let i = 0; i < tokenTransfers.length; i++) {
-                await storeContractData(userId, workspaceName, tokenTransfers[i].token, { address: tokenTransfers[i].token })
+
+            if (workspace.public) {
+                for (let i = 0; i < tokenTransfers.length; i++) {
+                    await storeContractData(userId, workspaceName, tokenTransfers[i].token, { address: tokenTransfers[i].token })
+                }
             }
         } catch(error) {
             console.log(error)
             await storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, []);
         }
-
-        const workspace = await getWorkspaceByName(userId, workspaceName);
 
         if (workspace.public) {
             try {

@@ -137,10 +137,18 @@ describe('processTransactions ', () => {
         expect(storeTransactionTokenTransfers).toHaveBeenCalledWith('123', 'hardhat', '0x123', ['transfer']);
     });
 
-    it('Should store token as new contracts', async () => {
+    it('Should store token as new contracts if workspace is public', async () => {
+        getWorkspaceByName
+            .mockResolvedValueOnce({ rpcServer: 'https://remoterpc.com', public: true });
         getTokenTransfers.mockImplementationOnce(() => ['transfer']);
         await processTransactions('123', 'hardhat', [Transaction]);
         expect(storeContractData).toHaveBeenCalledTimes(1);
+    });
+
+    it('Should not store token as new contracts', async () => {
+        getTokenTransfers.mockImplementationOnce(() => ['transfer']);
+        await processTransactions('123', 'hardhat', [Transaction]);
+        expect(storeContractData).not.toHaveBeenCalled();
     });
 
     it('Should store empty transaction details & store token transfers when no to', async () => {
