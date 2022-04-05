@@ -260,7 +260,6 @@ export default {
             gasPrice: null
         },
         storage: {},
-        transactionsFrom: [],
         transactionsTo: [],
         storageLoader: true,
         dataLoader: false,
@@ -295,14 +294,6 @@ export default {
             this.$refs.importArtifactModal
                 .open({ address: this.lowerHash, name: this.contract.name, abi: JSON.stringify(this.contract.abi) })
                 .then((reload) => reload ? this.bindTheStuff(this.lowerHash) : null);
-        },
-        getTransactionDirection: function(trx) {
-            if (this.transactionsFrom.indexOf(trx) > -1) {
-                return 'OUT';
-            }
-            if (this.transactionsTo.indexOf(trx) > -1) {
-                return 'IN';
-            }
         },
         selectedTransactionChanged: function(transaction) {
             this.selectedTransaction = transaction;
@@ -357,9 +348,8 @@ export default {
         },
         bindTheStuff: function(hash) {
             this.$bind('accounts', this.db.collection('accounts'));
-            var bindingTxFrom = this.$bind('transactionsFrom', this.db.collection('transactions').where('from', '==', hash));
-            var bindingTxTo = this.$bind('transactionsTo', this.db.collection('transactions').where('to', '==', hash).orderBy('blockNumber', 'desc'));
-            Promise.all([bindingTxFrom, bindingTxTo]).then(() => this.loadingTx = false);
+            if (!this.isPublicExplorer)
+                this.$bind('transactionsTo', this.db.collection('transactions').where('to', '==', hash).orderBy('blockNumber', 'desc'));
             this.contractLoader = true;
 
             this.db.collection('contracts').doc(hash).withConverter({ fromFirestore: this.db.contractSerializer }).get().then((doc) => {
@@ -424,9 +414,6 @@ export default {
             get() {
                 return this.$route.query.tab;
             }
-        },
-        allTransactions: function() {
-            return [...this.transactionsTo, ...this.transactionsFrom];
         },
         contractReadMethods: function() {
             if (!this.contractInterface) {
