@@ -102,7 +102,7 @@ exports.processTransactions = async (userId, workspaceName, transactions) => {
             if (transaction.receipt && transaction.receipt.status == 0) {
                 try {
                     const provider = getProvider(workspace.rpcServer);
-                    const res = await provider.call({ to: transaction.to, data: transaction.data });
+                    const res = await provider.call({ to: transaction.to, data: transaction.data }, transaction.blockNumber);
                     const reason = ethers.utils.toUtf8String('0x' + res.substr(138));
                     errorObject = { parsed: true, message: reason };
                 } catch(error) {
@@ -114,7 +114,7 @@ exports.processTransactions = async (userId, workspaceName, transactions) => {
                             errorObject = { parsed: false, message: parsed };
                     }
                     else
-                        errorObject = { parsed: false, message: error };
+                        errorObject = { parsed: false, message: JSON.stringify(error) };
                 }
 
                 if (errorObject)
