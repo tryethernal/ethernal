@@ -43,12 +43,12 @@
                 <v-col>
                     <div class="text-overline">Error Message</div>
                     <v-card outlined>
-                        <v-card-text v-if="transaction.error.parsed">
+                        <v-card-text style="white-space: pre-wrap;" v-if="transaction.error.parsed">
                             {{ transaction.error.message }}
                         </v-card-text>
                         <v-card-text v-else>
                             <b>Couldn't parse error message. Raw data:</b>
-                            <div  style="white-space: pre;" class="mt-1">
+                            <div  style="white-space: pre-wrap;" class="mt-1">
                                 {{ JSON.stringify(transaction.error.message, null, '\t\t') }}
                             </div>
                         </v-card-text>
