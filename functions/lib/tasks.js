@@ -5,7 +5,10 @@ const functions = require('firebase-functions');
 const TASKS_TO_QUEUE = {
     blockSyncTask: 'block-sync',
     transactionSyncTask: 'transaction-sync',
-    batchBlockSyncTask: 'batch-block-sync'
+    batchBlockSyncTask: 'batch-block-sync',
+    dbBlockSyncTask: 'db-block-sync',
+    dbTransactionBlockSyncTask: 'transaction-block-sync',
+    populatePostgresTask: 'populate-postgres'
 };
 
 module.exports = {

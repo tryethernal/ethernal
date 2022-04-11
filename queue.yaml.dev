@@ -2,3 +2,4 @@ queue:
 - name: block-sync
 - name: batch-block-sync
 - name: transaction-sync
+- name: populate-postgres

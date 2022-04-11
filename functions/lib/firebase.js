@@ -11,7 +11,9 @@ const _getWorkspace = (userId, workspace) => _db.collection('users').doc(userId)
 
 const getUser = (id) => _db.collection('users').doc(id).get();
 
-const createUser = (uid, data) => _db.collection('users').doc(uid).set(data);
+const createUser = async (uid, data) => {
+    return _db.collection('users').doc(uid).set(data);
+}
 
 const getCollectionRef = (userId, workspace, collectionName) => {
     return _getWorkspace(userId, workspace).collection(collectionName)
@@ -67,7 +69,7 @@ const getUserByKey = async (key) => {
     }
 };
 
-const createWorkspace = (userId, name, data) => {
+const createWorkspace = async (userId, name, data) => {
     if (!userId || !name || !data) throw '[createWorkspace] Missing parameter';
 
     return _db.collection('users')

@@ -32,6 +32,9 @@
     "jsonwebtoken": "^8.5.1",
     "mixpanel": "^0.14.0",
     "moment": "^2.29.1",
+    "pg": "^8.7.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.18.0",
     "solc": "^0.8.13",
     "stripe": "^8.181.0",
     "uuid-apikey": "^1.5.2",
@@ -44,6 +47,7 @@
     "google-pubsub-mock": "^1.3.0",
     "jest": "^27.0.6",
     "rewire": "^6.0.0",
+    "sequelize-cli": "^6.4.1",
     "supertest": "^6.1.4"
   },
   "private": true

@@ -63,8 +63,12 @@ const {
     updateContractVerificationStatus,
     storeFailedTransactionError
 } = require('./lib/firebase');
+
+const { Workspace, User, Block } = require('./models');
+
 const { ProviderConnector } = require('./lib/rpc');
 const { enqueueTask } = require('./lib/tasks');
+const populatePostgresTask = require('./tasks/populatePostgres');
 
 const billUsage = require('./pubsub/billUsage');
 const processContractVerification = require('./pubsub/processContractVerification');
@@ -77,6 +81,17 @@ const publish = async (topicName, data) => {
 };
 
 const pubsub = new PubSub();
+
+exports.populatePostgresTask = functions.https.onCall(populatePostgresTask);
+exports.enqueuePopulatePostgres = functions.https.onCall(async (data, context) => {
+    try {
+        return enqueueTask('populatePostgresTask', {});
+    } catch(error) {
+        console.log(error);
+        var reason = error.reason || error.message || 'Server error. Please retry.';
+        throw new functions.https.HttpsError(error.code || 'unknown', reason);
+    }
+});
 
 exports.billUsage = functions.pubsub.topic('bill-usage').onPublish(billUsage);
 
@@ -250,9 +265,10 @@ exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' 
 });
 
 exports.syncBlock = functions.https.onCall(async (data, context) => {
-    if (!context.auth)
-        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
     try {
+        if (!context.auth)
+            throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
+
         const block = data.block;
         if (!block)
             throw new functions.https.HttpsError('invalid-argument', '[syncBlock] Missing block parameter.');
@@ -260,6 +276,15 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
         var syncedBlock = stringifyBns(sanitize(block));
 
         const storedBlock = await storeBlock(context.auth.uid, data.workspace, syncedBlock);
+
+        try {
+            const user = await User.findByAuthIdWithWorkspace(context.auth.uid, data.workspace);
+            const workspace = user.workspaces[0];
+            const sqBlock = await workspace.safeCreateBlock(syncedBlock);
+        } catch(dbError) {
+            console.log('index.syncBlock');
+            console.log(dbError);
+        }
 
         if (storedBlock && block.transactions.length === 0) {
             const topic = pubsub.topic('bill-usage');
@@ -270,7 +295,7 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
             const messageBuffer = Buffer.from(JSON.stringify(message), 'utf8');
             await topic.publish(messageBuffer);
         }
-        
+
         analytics.track(context.auth.uid, 'Block Sync');
         return { blockNumber: syncedBlock.number }
     } catch(error) {
@@ -535,6 +560,16 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
 
         const storedTx = await storeTransaction(context.auth.uid, data.workspace, txSynced);
 
+        try {
+            const user = await User.findByAuthIdWithWorkspace(context.auth.uid, data.workspace);
+            const workspace = user.workspaces[0];
+            const block = await Block.getByNumberAndWorkspace(txSynced.blockNumber, workspace.id);
+            const sqTx = await workspace.safeCreateTransaction(txSynced, block.id);
+        } catch(dbError) {
+            console.log('index.syncTransaction');
+            console.log(dbError);
+        }
+
         if (storedTx) {
             const topic = pubsub.topic('bill-usage');
             const message = sanitize({
@@ -776,20 +811,31 @@ exports.createWorkspace = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[createWorkspace] Missing parameter.');
         }
 
-        const filteredWorkspaceData = sanitize({
+        const filteredWorkspaceData = stringifyBns(sanitize({
             chain: data.workspaceData.chain,
             networkId: data.workspaceData.networkId,
             rpcServer: data.workspaceData.rpcServer,
             settings: data.workspaceData.settings
-        });
+        }));
+
+        try {
+            const user = await User.findByAuthId(context.auth.uid);
+            await user.safeCreateWorkspace({
+                name: data.name,
+                ...filteredWorkspaceData
+            });
+        } catch(dbError) {
+            console.log('index.createWorkspace');
+            console.log(dbError);
+        }
 
         const isPremium = await isUserPremium(context.auth.uid);
         const workspaces = await getUserWorkspaces(context.auth.uid);
-
         if (!isPremium && workspaces._size > 0)
             throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to one workspace. Upgrade to our Premium plan to create more.');
 
         await createWorkspace(context.auth.uid, data.name, filteredWorkspaceData);
+
         analytics.track(context.auth.uid, 'Workspace Creation');
 
         return { success: true };
@@ -1025,6 +1071,13 @@ exports.createUser = functions.https.onCall(async (data, context) => {
             stripeCustomerId: customer.id,
             plan: 'free'
         });
+
+        try {
+            await User.safeCreate(context.auth.uid, authUser.email, apiKey, customer.id, 'free');
+        } catch(dbError) {
+            console.log('index.createUser')
+            console.log(dbError);
+        }
 
         analytics.setUser(context.auth.uid, {
             $email: authUser.email,
