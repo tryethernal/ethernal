@@ -25,9 +25,9 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    static async findByAuthIdWithWorkspace(firebaseUserId, workspaceName) {
+    static findByAuthIdWithWorkspace(firebaseUserId, workspaceName) {
         const Workspace = sequelize.models.Workspace;
-        return await User.findOne({
+        return User.findOne({
             where: {
                 firebaseUserId: firebaseUserId
             },
@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
                     name: workspaceName
                 }
             }
-        })
+        });
     }
 
     static safeCreate(firebaseUserId, email, apiKey, stripeCustomerId, plan, explorerSubscriptionId, transaction) {

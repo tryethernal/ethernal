@@ -7,6 +7,8 @@ const app = admin.initializeApp();
 const _db = app.firestore();
 const _rtdb = app.database();
 
+const { User } = require('../models');
+
 const _getWorkspace = (userId, workspace) => _db.collection('users').doc(userId).collection('workspaces').doc(workspace);
 
 const getUser = (id) => _db.collection('users').doc(id).get();
@@ -174,9 +176,22 @@ const storeTransaction = async (userId, workspace, transaction) => {
     }
 };
 
-const storeTransactionMethodDetails = (userId, workspace, transactionHash, methodDetails) => {
-    if (!userId || !workspace || !transactionHash) throw '[storeTransactionMethodDetails] Missing parameter';
-    return _getWorkspace(userId, workspace)
+const storeTransactionMethodDetails = async (userId, workspaceName, transactionHash, methodDetails) => {
+    if (!userId || !workspaceName || !transactionHash) throw '[storeTransactionMethodDetails] Missing parameter';
+    
+    if (methodDetails) {
+        try {
+            const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
+            const workspace = user.workspaces[0];
+            const transaction = await workspace.findTransaction(transactionHash);
+            await transaction.updateMethodDetails(methodDetails);
+        } catch(error) {
+            console.log('storeTransactionMethodDetails');
+            console.log(error);
+        }
+    }
+
+    return _getWorkspace(userId, workspaceName)
         .collection('transactions')
         .doc(transactionHash)
         .set({ methodDetails: methodDetails }, { merge: true });

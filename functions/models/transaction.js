@@ -14,7 +14,12 @@ module.exports = (sequelize, DataTypes) => {
       Transaction.hasOne(models.TransactionReceipt, { foreignKey: 'transactionId', as: 'receipt' });
     }
 
-
+    updateMethodDetails(methodDetails) {
+        this.methodLabel = methodDetails.label;
+        this.methodName = methodDetails.name;
+        this.methodSignature = methodDetails.signature;
+        return this.save()
+    }
   }
   Transaction.init({
     blockHash: DataTypes.STRING,
@@ -35,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     nonce: DataTypes.INTEGER,
     r: DataTypes.STRING,
     s: DataTypes.STRING,
-    timestamp: DataTypes.DATE,
+    timestamp: DataTypes.STRING,
     to: DataTypes.STRING,
     transactionIndex: DataTypes.INTEGER,
     type: DataTypes.INTEGER,

@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     nonce: DataTypes.STRING,
     number: DataTypes.INTEGER,
     parentHash: DataTypes.STRING,
-    timestamp: DataTypes.DATE,
+    timestamp: DataTypes.STRING,
     raw: DataTypes.JSON,
     workspaceId: DataTypes.INTEGER
   }, {

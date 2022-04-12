@@ -57,8 +57,7 @@ module.exports = {
             allowNull: false
           },
           to: {
-            type: Sequelize.STRING,
-            allowNull: false
+            type: Sequelize.STRING
           },
           transactionHash: {
             type: Sequelize.STRING,

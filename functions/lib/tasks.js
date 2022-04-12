@@ -8,7 +8,7 @@ const TASKS_TO_QUEUE = {
     batchBlockSyncTask: 'batch-block-sync',
     dbBlockSyncTask: 'db-block-sync',
     dbTransactionBlockSyncTask: 'transaction-block-sync',
-    populatePostgresTask: 'populate-postgres'
+    insertUserTask: 'populate-postgres'
 };
 
 module.exports = {

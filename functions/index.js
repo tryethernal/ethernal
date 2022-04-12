@@ -9,6 +9,7 @@ const Decoder = require('@truffle/decoder');
 const firebaseTools = require('firebase-tools');
 const admin = require('firebase-admin');
 const { PubSub } = require('@google-cloud/pubsub');
+const { Logging } = require('@google-cloud/logging');
 const stripe = require('stripe')(functions.config().stripe.secret_key);
 
 const Storage = require('./lib/storage');
@@ -20,6 +21,10 @@ const { getTokenTransfers } = require('./lib/abi');
 const Analytics = require('./lib/analytics');
 
 const analytics = new Analytics(functions.config().mixpanel ? functions.config().mixpanel.token : null);
+const logging = new Logging();
+const loggers = {
+    postgresLogs: logging.log('postgresLogs')
+};
 
 const { processTransactions } = require('./lib/transactions');
 
@@ -64,11 +69,15 @@ const {
     storeFailedTransactionError
 } = require('./lib/firebase');
 
-const { Workspace, User, Block } = require('./models');
+const models = require('./models');
+const Workspace = models.Workspace;
+const User = models.User;
+const Block = models.Block;
+
+const isProductionEnvironment = functions.config().devMode ? false : true;
 
 const { ProviderConnector } = require('./lib/rpc');
 const { enqueueTask } = require('./lib/tasks');
-const populatePostgresTask = require('./tasks/populatePostgres');
 
 const billUsage = require('./pubsub/billUsage');
 const processContractVerification = require('./pubsub/processContractVerification');
@@ -80,18 +89,16 @@ const publish = async (topicName, data) => {
     return await topic.publish(messageBuffer);
 };
 
-const pubsub = new PubSub();
-
-exports.populatePostgresTask = functions.https.onCall(populatePostgresTask);
-exports.enqueuePopulatePostgres = functions.https.onCall(async (data, context) => {
-    try {
-        return enqueueTask('populatePostgresTask', {});
-    } catch(error) {
-        console.log(error);
-        var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError(error.code || 'unknown', reason);
+const writeLog = (logName, metadata, data) => {
+    if (isProductionEnvironment) {
+        const logger = loggers[logName];
+        return logger.write(logger.entry(metadata, data));
     }
-});
+    else
+        console.log(logName, { ...metadata, ...data });
+};
+
+const pubsub = new PubSub();
 
 exports.billUsage = functions.pubsub.topic('bill-usage').onPublish(billUsage);
 
@@ -282,8 +289,11 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
             const workspace = user.workspaces[0];
             const sqBlock = await workspace.safeCreateBlock(syncedBlock);
         } catch(dbError) {
-            console.log('index.syncBlock');
-            console.log(dbError);
+            writeLog(
+                'postgresLogs',
+                { severity: 'WARNING', labels: { function: 'index.syncBlock' }},
+                { message: dbError.original.message, detail: dbError.original.detail }
+            );
         }
 
         if (storedBlock && block.transactions.length === 0) {
@@ -343,6 +353,19 @@ exports.transactionSyncTask = functions.https.onCall(async (data, context) => {
                 });
         }
 
+        try {
+            const user = await User.findByAuthIdWithWorkspace(data.userId, data.workspace);
+            const workspace = user.workspaces[0];
+            const block = await Block.getByNumberAndWorkspace(txSynced.blockNumber, workspace.id);
+            const sqTx = await workspace.safeCreateTransaction(txSynced, block.id);
+        } catch(dbError) {
+            writeLog(
+                'postgresLogs',
+                { severity: 'WARNING', labels: { function: 'index.syncTransaction' }},
+                { message: dbError.original.message, detail: dbError.original.detail }
+            );
+        }
+
         return processTransactions(data.userId, data.workspace, [txSynced]);
     } catch(error) {
         console.log(error);
@@ -377,6 +400,18 @@ exports.blockSyncTask = functions.https.onCall(async (data, context) => {
                 transaction: stringifyBns(block.transactions[i]),
                 timestamp: block.timestamp
             })
+        }
+
+        try {
+            const user = await User.findByAuthIdWithWorkspace(data.userId, data.workspace);
+            const workspace = user.workspaces[0];
+            const sqBlock = await workspace.safeCreateBlock(syncedBlock);
+        } catch(dbError) {
+            writeLog(
+                'postgresLogs',
+                { severity: 'WARNING', labels: { function: 'index.blockSyncTask' }},
+                { message: dbError.original.message, detail: dbError.original.detail }
+            );
         }
     } catch(error) {
         console.log(error);
@@ -524,6 +559,15 @@ exports.syncContractData = functions.https.onCall(async (data, context) => {
         else
             throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
 
+        try {
+            const user = await User.findByAuthIdWithWorkspace(context.auth.uid, data.workspace);
+            const workspace = user.workspaces[0];
+            await workspace.safeCreateContract(sanitize({ address: data.address, name: data.name, abi: data.abi, watchedPaths: data.watchedPaths }))
+        } catch(error) {
+            console.log('index.syncContractData');
+            console.log(error);
+        }
+
         return { address: data.address };
     } catch(error) {
         console.log(error);
@@ -566,8 +610,11 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
             const block = await Block.getByNumberAndWorkspace(txSynced.blockNumber, workspace.id);
             const sqTx = await workspace.safeCreateTransaction(txSynced, block.id);
         } catch(dbError) {
-            console.log('index.syncTransaction');
-            console.log(dbError);
+            writeLog(
+                'postgresLogs',
+                { severity: 'WARNING', labels: { function: 'index.syncTransaction' }},
+                { message: dbError.original.message, detail: dbError.original.detail }
+            );
         }
 
         if (storedTx) {
@@ -825,8 +872,11 @@ exports.createWorkspace = functions.https.onCall(async (data, context) => {
                 ...filteredWorkspaceData
             });
         } catch(dbError) {
-            console.log('index.createWorkspace');
-            console.log(dbError);
+            writeLog(
+                'postgresLogs',
+                { severity: 'WARNING', labels: { function: 'index.createWorkspace' }},
+                { message: dbError.original.message, detail: dbError.original.detail }
+            );
         }
 
         const isPremium = await isUserPremium(context.auth.uid);
@@ -1075,8 +1125,11 @@ exports.createUser = functions.https.onCall(async (data, context) => {
         try {
             await User.safeCreate(context.auth.uid, authUser.email, apiKey, customer.id, 'free');
         } catch(dbError) {
-            console.log('index.createUser')
-            console.log(dbError);
+            writeLog(
+                'postgresLogs',
+                { severity: 'WARNING', labels: { function: 'index.createUser' }},
+                { message: dbError.original.message, detail: dbError.original.detail }
+            );
         }
 
         analytics.setUser(context.auth.uid, {

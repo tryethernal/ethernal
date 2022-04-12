@@ -17,6 +17,7 @@
   },
   "main": "index.js",
   "dependencies": {
+    "@google-cloud/logging": "^9.8.2",
     "@google-cloud/pubsub": "^2.19.0",
     "@google-cloud/tasks": "^2.5.0",
     "@truffle/decoder": "^4.6.7",

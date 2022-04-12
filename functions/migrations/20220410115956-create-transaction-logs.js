@@ -77,9 +77,9 @@ module.exports = {
         }, { transaction });
 
         await queryInterface.sequelize.query(`
-            ALTER TABLE ONLY public.transaction_logs
-            ADD CONSTRAINT unique_transactionHash_workspaceId_transaction_logs
-            UNIQUE ("transactionHash", "workspaceId");
+            ALTER TABLE ONLY transaction_logs
+            ADD CONSTRAINT unique_transactionHash_logIndex_workspaceId_transaction_logs
+            UNIQUE ("transactionHash", "workspaceId", "logIndex");
         `, { transaction });
 
         await transaction.commit();

@@ -30,7 +30,7 @@ module.exports = {
           defaultValue: 'ethereum'
         },
         networkId: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.STRING,
           allowNull: false
         },
         public: {

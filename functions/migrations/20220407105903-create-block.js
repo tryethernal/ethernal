@@ -54,7 +54,7 @@ module.exports = {
           allowNull: false
         },
         timestamp: {
-          type: Sequelize.DATE,
+          type: Sequelize.STRING,
           allowNull: false
         },
         transactionsCount: {

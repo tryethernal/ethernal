@@ -84,12 +84,11 @@ module.exports = {
           allowNull: false
         },
         timestamp: {
-          type: Sequelize.DATE,
+          type: Sequelize.STRING,
           allowNull: false
         },
         to: {
-          type: Sequelize.STRING,
-          allowNull: false
+          type: Sequelize.STRING
         },
         transactionIndex: {
           type: Sequelize.INTEGER,

@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.Transaction, { foreignKey: 'workspaceId', as: 'transactions' });
       Workspace.hasMany(models.TransactionReceipt, { foreignKey: 'workspaceId', as: 'receipts' });
       Workspace.hasMany(models.TransactionLog, { foreignKey: 'workspaceId', as: 'logs' });
+      Workspace.hasMany(models.Contract, { foreignKey: 'workspaceId', as: 'contract' });
     }
 
     static findByUserIdAndName(userId, name) {
@@ -113,12 +114,37 @@ module.exports = (sequelize, DataTypes) => {
             await sequelizeTransaction.rollback();
         }
     }
+
+    safeCreateContract(contract) {
+        return this.createContract({
+            abi: contract.abi,
+            address: contract.address,
+            name: contract.name,
+            patterns: contract.patterns,
+            processed: contract.processed,
+            timestamp: contract.timestamp,
+            tokenDecimals: contract.tokenDecimals,
+            tokenName: contract.tokenName,
+            tokenSymbol: contract.tokenSymbol,
+            watchedPaths: contract.watchedPaths
+        });
+    }
+
+    async findTransaction(hash) {
+        const transactions = await this.getTransactions({
+            where: {
+                hash: hash
+            }
+        });
+        console.log(transactions)
+        return transactions[0];
+    }
   }
 
   Workspace.init({
     name: DataTypes.STRING,
     chain: DataTypes.STRING,
-    networkId: DataTypes.INTEGER,
+    networkId: DataTypes.STRING,
     public: DataTypes.BOOLEAN,
     rpcServer: DataTypes.STRING,
     defaultAccount: DataTypes.STRING,
