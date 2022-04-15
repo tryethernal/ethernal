@@ -410,7 +410,8 @@ const getContractData = async (userId, workspace, address) => {
         const user = await User.findByAuthIdWithWorkspace(userId, workspace);
         const contract = await user.workspaces[0].findContractByAddress(address);
 
-        return contract ? contract.toJSON() : null;
+        if (contract)
+            return contract.toJSON();
     } catch(error) {
         writeLog({
             log: 'postgresLogs',
@@ -450,10 +451,8 @@ const getContractByHashedBytecode = async (userId, workspace, hashedBytecode, ex
         const user = await User.findByAuthIdWithWorkspace(userId, workspace);
         const contract = await user.workspaces[0].findContractByHashedBytecode(hashedBytecode);
 
-        if (!contract)
-            throw new Error(`Couldn't find contract with hashed bytecode ${hashedBytecode}`);
-
-        return contract.toJSON();
+        if (contract)
+            return contract.toJSON();
     } catch(error) {
         writeLog({
             log: 'postgresLogs',
@@ -689,7 +688,9 @@ const getUserbyStripeCustomerId = async (stripeCustomerId) => {
 
     try {
         const user = User.findByStripeCustomerId(stripeCustomerId);
-        return user.toJSON();
+
+        if (user)
+            return user.toJSON();
     } catch(error) {
         writeLog({
             log: 'postgresLogs',
@@ -716,7 +717,8 @@ const getUnprocessedContracts = async (userId, workspace) => {
     try {
         const user = await User.findByAuthIdWithWorkspace(userId, workspace);
         const contracts = await user.workspaces[0].getUnprocessedContracts();
-        return contracts.map(c => c.toJSON());
+        if (contracts.length)
+            return contracts.map(c => c.toJSON());
     } catch(error) {
         writeLog({
             log: 'postgresLogs',
@@ -752,7 +754,8 @@ const canUserSyncContract = async (userId, workspace) => {
         if (user.isPremium)
             return true;
         const contracts = await user.workspaces[0].getContracts();
-        return contracts.length < 10;
+        if (contracts.length >= 10)
+            return false;
     } catch(error) {
         writeLog({
             log: 'postgresLogs',
