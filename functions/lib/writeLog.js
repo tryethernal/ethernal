@@ -1,16 +1,13 @@
 const functions = require('firebase-functions');
 const { Logging } = require('@google-cloud/logging');
-const logging = new Logging();
-
-const loggers = {
-    postgresLogs: logging.log('postgresLogs')
-};
+const projectId = process.env.GCLOUD_PROJECT;
+const logging = new Logging({ projectId });
 
 const isProductionEnvironment = functions.config().devMode ? false : true;
 
-module.exports = ({ log, functionName, message, detail, severity = 'WARNING', uid }) => {
+module.exports = ({ logName = 'defaultLog', functionName, message, detail, severity = 'WARNING', uid }) => {
     if (isProductionEnvironment) {
-        const logger = loggers[log];
+        const logger = logging.log(logName);
         return logger.write(
             logger.entry({
                 severity: severity,

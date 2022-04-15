@@ -180,6 +180,7 @@ const storeBlock = async (userId, workspace, block) => {
     try {
         const user = await User.findByAuthIdWithWorkspace(userId, workspace);
         const existingBlock = await user.workspaces[0].findBlockByNumber(block.number);
+
         if (existingBlock)
             console.log(`Block ${existingBlock.number} has already been synced in workspace ${workspace}. Reset the workspace if you want to override it.`)
         else
@@ -410,7 +411,7 @@ const getContractData = async (userId, workspace, address) => {
         const user = await User.findByAuthIdWithWorkspace(userId, workspace);
         const contract = await user.workspaces[0].findContractByAddress(address);
 
-        if (contract)
+        if (contract && contract.abi)
             return contract.toJSON();
     } catch(error) {
         writeLog({

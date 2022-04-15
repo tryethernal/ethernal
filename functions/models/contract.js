@@ -28,6 +28,11 @@ module.exports = (sequelize, DataTypes) => {
     watchedPaths: DataTypes.STRING,
     verificationStatus: DataTypes.STRING
   }, {
+    hooks: {
+      afterUpsert: (created, options) => {
+          console.log(created, options)
+      }
+    },
     sequelize,
     modelName: 'Contract',
     tableName: 'contracts'
