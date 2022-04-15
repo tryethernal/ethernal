@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Block extends Model {
     /**
@@ -11,15 +12,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Block.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
-    }
-
-    static getByNumberAndWorkspace(number, workspaceId) {
-        return Block.findOne({
-            where: {
-                number: number,
-                workspaceId: workspaceId
-            }
-        });
+      Block.hasMany(models.Transaction, { foreignKey: 'blockId', as: 'transactions' });
     }
   }
   Block.init({

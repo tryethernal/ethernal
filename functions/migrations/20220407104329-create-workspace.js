@@ -97,12 +97,21 @@ module.exports = {
 
       await transaction.commit();
     } catch(error) {
+      console.log(error)
       await transaction.rollback();
       throw error;
     }
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeConstraint('users', 'fk_currentWorkspaceId_workspaces_id');
-    await queryInterface.dropTable('workspaces');
+    const transaction = await queryInterface.sequelize.transaction();
+    try {
+        await queryInterface.removeConstraint('users', 'fk_currentWorkspaceId_workspaces_id', { transaction });
+        await queryInterface.dropTable('workspaces', { transaction });
+        await transaction.commit();
+    } catch(error) {
+      console.log(error)
+      await transaction.rollback();
+      throw error;
+    }
   }
 };

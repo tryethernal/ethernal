@@ -1,6 +1,6 @@
 const functions = require('firebase-functions');
 const stripe = require('stripe')(functions.config().stripe.secret_key);
-const { getUserbyStripeCustomerId, getUser } = require('./firebase');
+const { getUser } = require('./firebase');
 const { updatePlan } = require('./billing');
 
 module.exports = {

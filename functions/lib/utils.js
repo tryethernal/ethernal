@@ -1,5 +1,4 @@
 const ethers = require('ethers');
-const { getContractData } = require('./firebase');
 
 const isStringifiedBN = function(obj) {
     if (!obj)
@@ -23,6 +22,8 @@ const _sanitize = (obj) => {
         Object.entries(obj)
             .filter(([_, v]) => v != null)
             .map(([_, v]) => {
+                if (v.constructor.name == 'ArrayUnionTransform')
+                    return [_, v.elements];
                 if (typeof v == 'string' && v.length == 42 && v.startsWith('0x'))
                     return [_, v.toLowerCase()];
                 else
@@ -44,44 +45,8 @@ const _stringifyBns = (obj) => {
     return res;
 };
 
-const _getFunctionSignatureForTransaction = (transaction, abi) => {
-    try {
-        if (!transaction || !abi)
-            return null;
-
-        var jsonInterface = new ethers.utils.Interface(abi);
-
-        var parsedTransactionData = jsonInterface.parseTransaction(transaction);
-        var fragment = parsedTransactionData.functionFragment;
-
-        return `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')'
-    } catch(error) {
-        if (error.code == 'INVALID_ARGUMENT')
-            return '';
-    }
-};
-
 module.exports = {
     sanitize: _sanitize,
     stringifyBns: _stringifyBns,
-    getFunctionSignatureForTransaction: _getFunctionSignatureForTransaction,
-    getTxSynced: async (uid, workspace, transaction, receipt, timestamp) => {
-        const sTransactionReceipt = receipt ? _stringifyBns(_sanitize(receipt)) : null;
-        const sTransaction = _stringifyBns(_sanitize(transaction));
-
-        let contractAbi = null;
-        
-        if (sTransactionReceipt && transaction.to && transaction.data != '0x') {
-            const contractData = await getContractData(uid, workspace, transaction.to);
-            contractAbi = contractData ? contractData.abi : null
-        }
-
-        return _sanitize({
-           ...sTransaction,
-            receipt: sTransactionReceipt,
-            timestamp: timestamp,
-            functionSignature: contractAbi ? _getFunctionSignatureForTransaction(transaction, contractAbi) : null
-        });
-    },
     isJson: _isJson
 }

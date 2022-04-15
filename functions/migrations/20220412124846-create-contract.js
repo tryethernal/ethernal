@@ -20,6 +20,9 @@ module.exports = {
             }
           }
         },
+        hashedBytecode: {
+            type: Sequelize.STRING,
+        },
         abi: {
           type: Sequelize.JSON
         },
@@ -54,6 +57,9 @@ module.exports = {
         },
         watchedPaths: {
           type: Sequelize.STRING
+        },
+        verificationStatus: {
+          type: Sequelize.STRING,
         },
         createdAt: {
           allowNull: false,

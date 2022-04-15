@@ -9,11 +9,10 @@ const Decoder = require('@truffle/decoder');
 const firebaseTools = require('firebase-tools');
 const admin = require('firebase-admin');
 const { PubSub } = require('@google-cloud/pubsub');
-const { Logging } = require('@google-cloud/logging');
 const stripe = require('stripe')(functions.config().stripe.secret_key);
 
 const Storage = require('./lib/storage');
-const { sanitize, stringifyBns, getFunctionSignatureForTransaction } = require('./lib/utils');
+const { sanitize, stringifyBns } = require('./lib/utils');
 const { encrypt, decrypt, encode } = require('./lib/crypto');
 const { processContract } = require('./triggers/contracts');
 const { cleanArtifactDependencies } = require('./schedulers/cleaner');
@@ -21,12 +20,8 @@ const { getTokenTransfers } = require('./lib/abi');
 const Analytics = require('./lib/analytics');
 
 const analytics = new Analytics(functions.config().mixpanel ? functions.config().mixpanel.token : null);
-const logging = new Logging();
-const loggers = {
-    postgresLogs: logging.log('postgresLogs')
-};
 
-const { processTransactions } = require('./lib/transactions');
+const { processTransactions, getFunctionSignatureForTransaction } = require('./lib/transactions');
 
 const api = require('./api/index');
 const {
@@ -52,15 +47,12 @@ const {
     Firebase,
     getCollectionRef,
     getUserWorkspaces,
-    setUserData,
     removeDatabaseContractArtifacts,
     storeTransactionData,
-    storeApiKey,
     createUser,
     getWorkspaceByName,
     getUnprocessedContracts,
     canUserSyncContract,
-    isUserPremium,
     storeTokenBalanceChanges,
     getTransaction,
     getPublicExplorerParamsBySlug,
@@ -69,15 +61,11 @@ const {
     storeFailedTransactionError
 } = require('./lib/firebase');
 
-const models = require('./models');
-const Workspace = models.Workspace;
-const User = models.User;
-const Block = models.Block;
-
-const isProductionEnvironment = functions.config().devMode ? false : true;
-
 const { ProviderConnector } = require('./lib/rpc');
 const { enqueueTask } = require('./lib/tasks');
+const writeLog = require('./lib/writeLog');
+
+const { User } = require('./models');
 
 const billUsage = require('./pubsub/billUsage');
 const processContractVerification = require('./pubsub/processContractVerification');
@@ -87,15 +75,6 @@ const publish = async (topicName, data) => {
     const message = sanitize(data);
     const messageBuffer = Buffer.from(JSON.stringify(message), 'utf8');
     return await topic.publish(messageBuffer);
-};
-
-const writeLog = (logName, metadata, data) => {
-    if (isProductionEnvironment) {
-        const logger = loggers[logName];
-        return logger.write(logger.entry(metadata, data));
-    }
-    else
-        console.log(logName, { ...metadata, ...data });
 };
 
 const pubsub = new PubSub();
@@ -219,9 +198,8 @@ exports.processTransaction = functions.https.onCall(async (data, context) => {
 
         const transaction = await getTransaction(context.auth.uid, data.workspace, data.transaction);
 
-        if (transaction) {
+        if (transaction)
             await processTransactions(context.auth.uid, data.workspace, [transaction]);
-        }
 
         return { success: true };
     } catch(error) {
@@ -265,6 +243,19 @@ exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' 
             token: functions.config().fb.token
         });
     }
+
+    try {
+        const user = await User.findByAuthIdWithWorkspace(context.auth.uid, data.workspace);
+        await user.workspaces[0].reset();
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'index.resetWorkspace',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+            uid: context.auth.uid
+        })
+    }
     
     await resetDatabaseWorkspace(context.auth.uid, data.workspace);
 
@@ -283,18 +274,6 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
         var syncedBlock = stringifyBns(sanitize(block));
 
         const storedBlock = await storeBlock(context.auth.uid, data.workspace, syncedBlock);
-
-        try {
-            const user = await User.findByAuthIdWithWorkspace(context.auth.uid, data.workspace);
-            const workspace = user.workspaces[0];
-            const sqBlock = await workspace.safeCreateBlock(syncedBlock);
-        } catch(dbError) {
-            writeLog(
-                'postgresLogs',
-                { severity: 'WARNING', labels: { function: 'index.syncBlock' }},
-                { message: dbError.original.message, detail: dbError.original.detail }
-            );
-        }
 
         if (storedBlock && block.transactions.length === 0) {
             const topic = pubsub.topic('bill-usage');
@@ -353,19 +332,6 @@ exports.transactionSyncTask = functions.https.onCall(async (data, context) => {
                 });
         }
 
-        try {
-            const user = await User.findByAuthIdWithWorkspace(data.userId, data.workspace);
-            const workspace = user.workspaces[0];
-            const block = await Block.getByNumberAndWorkspace(txSynced.blockNumber, workspace.id);
-            const sqTx = await workspace.safeCreateTransaction(txSynced, block.id);
-        } catch(dbError) {
-            writeLog(
-                'postgresLogs',
-                { severity: 'WARNING', labels: { function: 'index.syncTransaction' }},
-                { message: dbError.original.message, detail: dbError.original.detail }
-            );
-        }
-
         return processTransactions(data.userId, data.workspace, [txSynced]);
     } catch(error) {
         console.log(error);
@@ -400,18 +366,6 @@ exports.blockSyncTask = functions.https.onCall(async (data, context) => {
                 transaction: stringifyBns(block.transactions[i]),
                 timestamp: block.timestamp
             })
-        }
-
-        try {
-            const user = await User.findByAuthIdWithWorkspace(data.userId, data.workspace);
-            const workspace = user.workspaces[0];
-            const sqBlock = await workspace.safeCreateBlock(syncedBlock);
-        } catch(dbError) {
-            writeLog(
-                'postgresLogs',
-                { severity: 'WARNING', labels: { function: 'index.blockSyncTask' }},
-                { message: dbError.original.message, detail: dbError.original.detail }
-            );
         }
     } catch(error) {
         console.log(error);
@@ -559,15 +513,6 @@ exports.syncContractData = functions.https.onCall(async (data, context) => {
         else
             throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
 
-        try {
-            const user = await User.findByAuthIdWithWorkspace(context.auth.uid, data.workspace);
-            const workspace = user.workspaces[0];
-            await workspace.safeCreateContract(sanitize({ address: data.address, name: data.name, abi: data.abi, watchedPaths: data.watchedPaths }))
-        } catch(error) {
-            console.log('index.syncContractData');
-            console.log(error);
-        }
-
         return { address: data.address };
     } catch(error) {
         console.log(error);
@@ -604,19 +549,6 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
 
         const storedTx = await storeTransaction(context.auth.uid, data.workspace, txSynced);
 
-        try {
-            const user = await User.findByAuthIdWithWorkspace(context.auth.uid, data.workspace);
-            const workspace = user.workspaces[0];
-            const block = await Block.getByNumberAndWorkspace(txSynced.blockNumber, workspace.id);
-            const sqTx = await workspace.safeCreateTransaction(txSynced, block.id);
-        } catch(dbError) {
-            writeLog(
-                'postgresLogs',
-                { severity: 'WARNING', labels: { function: 'index.syncTransaction' }},
-                { message: dbError.original.message, detail: dbError.original.detail }
-            );
-        }
-
         if (storedTx) {
             const topic = pubsub.topic('bill-usage');
             const message = sanitize({
@@ -629,6 +561,7 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
 
         if (!txSynced.to && sTransactionReceipt) {
             const canSync = await canUserSyncContract(context.auth.uid, data.workspace);
+            writeLog({ severity: 'INFO', message: canSync });
             if (canSync)
                 await storeContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress, {
                     address: sTransactionReceipt.contractAddress,
@@ -688,7 +621,7 @@ exports.enableWorkspaceApi = functions.https.onCall(async (data, context) => {
         const user = await getUser(context.auth.uid);
         await addIntegration(context.auth.uid, data.workspace, 'api');
 
-        const apiKey = decrypt(user.data().apiKey);
+        const apiKey = decrypt(user.apiKey);
 
         const token = encode({
             uid: context.auth.uid,
@@ -716,7 +649,7 @@ exports.getWorkspaceApiToken = functions.https.onCall(async (data, context) => {
 
         const user = await getUser(context.auth.uid);
 
-        const apiKey = decrypt(user.data().apiKey);
+        const apiKey = decrypt(user.apiKey);
 
         const token = encode({
             uid: context.auth.uid,
@@ -858,31 +791,16 @@ exports.createWorkspace = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[createWorkspace] Missing parameter.');
         }
 
+        const user = await getUser(context.auth.uid);
+        if (!user.canCreateWorkspace)
+            throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to one workspace. Upgrade to our Premium plan to create more.');
+
         const filteredWorkspaceData = stringifyBns(sanitize({
             chain: data.workspaceData.chain,
             networkId: data.workspaceData.networkId,
             rpcServer: data.workspaceData.rpcServer,
             settings: data.workspaceData.settings
         }));
-
-        try {
-            const user = await User.findByAuthId(context.auth.uid);
-            await user.safeCreateWorkspace({
-                name: data.name,
-                ...filteredWorkspaceData
-            });
-        } catch(dbError) {
-            writeLog(
-                'postgresLogs',
-                { severity: 'WARNING', labels: { function: 'index.createWorkspace' }},
-                { message: dbError.original.message, detail: dbError.original.detail }
-            );
-        }
-
-        const isPremium = await isUserPremium(context.auth.uid);
-        const workspaces = await getUserWorkspaces(context.auth.uid);
-        if (!isPremium && workspaces._size > 0)
-            throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to one workspace. Upgrade to our Premium plan to create more.');
 
         await createWorkspace(context.auth.uid, data.name, filteredWorkspaceData);
 
@@ -993,7 +911,7 @@ exports.createStripeCheckoutSession = functions.https.onCall(async (data, contex
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
 
     try {
-        const user = (await getUser(context.auth.uid)).data();
+        const user = await getUser(context.auth.uid);
         const selectedPlan = functions.config().ethernal.plans[data.plan];
 
         if (!selectedPlan)
@@ -1006,7 +924,7 @@ exports.createStripeCheckoutSession = functions.https.onCall(async (data, contex
             mode: 'subscription',
             client_reference_id: user.uid,
             customer: user.stripeCustomerId,
-            customer_email: user.email,
+            // customer_email: user.email,
             payment_method_types: ['card'],
             line_items: [
                 {
@@ -1031,7 +949,7 @@ exports.createStripePortalSession = functions.https.onCall(async (data, context)
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
     
     try {
-        const user = (await getUser(context.auth.uid)).data();
+        const user = await getUser(context.auth.uid);
         const rootUrl = functions.config().ethernal.root_url;
         const session = await stripe.billingPortal.sessions.create({
             customer: user.stripeCustomerId,
@@ -1064,6 +982,19 @@ exports.removeContract = functions.https.onCall(async (data, context) => {
             yes: true,
             token: functions.config().fb.token
         });
+
+        try {
+            const user = await User.findByAuthIdWithWorkspace(context.auth.uid, data.workspace);
+            await user.workspaces[0].removeContractByAddress(data.address);
+        } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'index.removeContract',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+            uid: userId
+        });
+    }
 
         await removeDatabaseContractArtifacts(context.auth.uid, data.workspace, data.address);
 
@@ -1117,20 +1048,11 @@ exports.createUser = functions.https.onCall(async (data, context) => {
         });
 
         await createUser(context.auth.uid, {
+            email: authUser.email,
             apiKey: encryptedKey,
             stripeCustomerId: customer.id,
             plan: 'free'
         });
-
-        try {
-            await User.safeCreate(context.auth.uid, authUser.email, apiKey, customer.id, 'free');
-        } catch(dbError) {
-            writeLog(
-                'postgresLogs',
-                { severity: 'WARNING', labels: { function: 'index.createUser' }},
-                { message: dbError.original.message, detail: dbError.original.detail }
-            );
-        }
 
         analytics.setUser(context.auth.uid, {
             $email: authUser.email,

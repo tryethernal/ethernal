@@ -6,8 +6,9 @@ const ethers = require('ethers');
 const Decoder = require('@truffle/decoder');
 const Storage = require('../lib/storage');
 const stripe = require('stripe')(functions.config().stripe.secret_key);
-const { getContractArtifact, getContractArtifactDependencies, getContractData, getUserByKey, getWorkspaceByName, storeTransaction, storeBlock, getUser, storeContractData } = require('../lib/firebase');
-const { sanitize, stringifyBns, getTxSynced, isJson } = require('../lib/utils');
+const { getContractArtifact, getContractArtifactDependencies, getContractData, getWorkspaceByName, storeTransaction, storeBlock, getUser, storeContractData } = require('../lib/firebase');
+const { sanitize, stringifyBns, isJson } = require('../lib/utils');
+const { getTxSynced } = require('../lib/transactions');
 const { decrypt, decode, encrypt } = require('../lib/crypto');
 const { handleStripeSubscriptionUpdate, handleStripeSubscriptionDeletion, handleStripePaymentSucceeded } = require('../lib/stripe');
 const app = express();
@@ -34,7 +35,7 @@ const authMiddleware = async function(req, res, next) {
 
         const user = await getUser(data.uid);
 
-        if (!user.exists || decrypt(user.data().apiKey) != data.apiKey) {
+        if (!user || decrypt(user.apiKey) != data.apiKey) {
             throw new functions.https.HttpsError('unauthenticated', 'Failed authentication');
         }
 

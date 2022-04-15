@@ -28,7 +28,8 @@ module.exports = {
                 model: {
                     tableName: 'transaction_receipts'
                 }
-            }
+            },
+            onDelete: 'CASCADE'
           },
           address: {
             type: Sequelize.STRING,

@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Contract.init({
     workspaceId: DataTypes.INTEGER,
+    hashedBytecode: DataTypes.STRING,
     abi: DataTypes.JSON,
     address: DataTypes.STRING,
     name: DataTypes.STRING,
@@ -24,7 +25,8 @@ module.exports = (sequelize, DataTypes) => {
     tokenDecimals: DataTypes.INTEGER,
     tokenName: DataTypes.STRING,
     tokenSymbol: DataTypes.STRING,
-    watchedPaths: DataTypes.STRING
+    watchedPaths: DataTypes.STRING,
+    verificationStatus: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Contract',

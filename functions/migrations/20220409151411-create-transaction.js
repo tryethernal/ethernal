@@ -18,7 +18,8 @@ module.exports = {
             model: {
               tableName: 'blocks'
             }
-          }
+          },
+          onDelete: 'CASCADE'
         },
         blockHash: {
           type: Sequelize.STRING,
@@ -104,6 +105,9 @@ module.exports = {
         value: {
           type: Sequelize.STRING,
           allowNull: false
+        },
+        storage: {
+          type: Sequelize.JSON
         },
         raw: {
           type: Sequelize.JSON,

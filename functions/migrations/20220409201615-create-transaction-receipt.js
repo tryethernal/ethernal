@@ -79,7 +79,8 @@ module.exports = {
                 model: {
                     tableName: 'transactions'
                 }
-            }
+            },
+            onDelete: 'CASCADE'
           },
           raw: {
             type: Sequelize.JSON,

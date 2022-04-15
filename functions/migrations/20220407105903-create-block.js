@@ -12,7 +12,14 @@ module.exports = {
         },
         workspaceId: {
           type: Sequelize.INTEGER,
-          allowNull: false
+          allowNull: false,
+          references: {
+              key: 'id',
+              model: {
+                  tableName: 'workspaces'
+              }
+          },
+          onDelete: 'CASCADE'
         },
         baseFeePerGas: {
           type: Sequelize.STRING
@@ -101,20 +108,6 @@ module.exports = {
           fields: ['workspaceId', 'hash'],
           type: 'unique',
           name: 'blocks_hash_workspace_id_is_unique',
-          transaction
-        }
-      );
-
-      await queryInterface.addConstraint(
-        'blocks',
-        {
-          fields: ['workspaceId'],
-          type: 'foreign key',
-          name: 'fk_workspaceId_workspaces_id',
-          references: {
-            table: 'workspaces',
-            field: 'id'
-          },
           transaction
         }
       );

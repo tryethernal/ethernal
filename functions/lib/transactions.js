@@ -4,6 +4,42 @@ const { getFunctionSignatureForTransaction } = require('./utils');
 let { getTokenTransfers, getTransactionMethodDetails } = require('./abi');
 let { getProvider, ContractConnector, Tracer } = require('./rpc');
 
+const _getFunctionSignatureForTransaction = (transaction, abi) => {
+    try {
+        if (!transaction || !abi)
+            return null;
+
+        var jsonInterface = new ethers.utils.Interface(abi);
+
+        var parsedTransactionData = jsonInterface.parseTransaction(transaction);
+        var fragment = parsedTransactionData.functionFragment;
+
+        return `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')'
+    } catch(error) {
+        if (error.code == 'INVALID_ARGUMENT')
+            return '';
+    }
+};
+exports.getFunctionSignatureForTransaction = _getFunctionSignatureForTransaction;
+exports.getTxSynced = async (uid, workspace, transaction, receipt, timestamp) => {
+    const sTransactionReceipt = receipt ? _stringifyBns(_sanitize(receipt)) : null;
+    const sTransaction = _stringifyBns(_sanitize(transaction));
+
+    let contractAbi = null;
+    
+    if (sTransactionReceipt && transaction.to && transaction.data != '0x') {
+        const contractData = await getContractData(uid, workspace, transaction.to);
+        contractAbi = contractData ? contractData.abi : null
+    }
+
+    return _sanitize({
+       ...sTransaction,
+        receipt: sTransactionReceipt,
+        timestamp: timestamp,
+        functionSignature: contractAbi ? _getFunctionSignatureForTransaction(transaction, contractAbi) : null
+    });
+};
+
 let getBalanceChange = async (address, token, blockNumber, rpcServer) => {
     let currentBalance = ethers.BigNumber.from('0');
     let previousBalance = ethers.BigNumber.from('0');
@@ -97,8 +133,8 @@ exports.processTransactions = async (userId, workspaceName, transactions) => {
             } catch(error) {
                 console.log(error);
             }
-            let errorObject;
 
+            let errorObject;
             if (transaction.receipt && transaction.receipt.status == 0) {
                 try {
                     const provider = getProvider(workspace.rpcServer);

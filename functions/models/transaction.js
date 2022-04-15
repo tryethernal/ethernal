@@ -2,6 +2,8 @@
 const {
   Model
 } = require('sequelize');
+const { sanitize } = require('../lib/utils');
+
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
     /**
@@ -12,13 +14,60 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Transaction.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       Transaction.hasOne(models.TransactionReceipt, { foreignKey: 'transactionId', as: 'receipt' });
+      Transaction.hasMany(models.TokenTransfer, { foreignKey: 'transactionId', as: 'tokenTransfers' });
+      Transaction.hasMany(models.TokenBalanceChange, { foreignKey: 'transactionId', as: 'tokenBalanceChanges' });
+      Transaction.hasMany(models.TransactionTraceStep, { foreignKey: 'transactionId', as: 'TransactionTraceSteps' });
     }
 
     updateMethodDetails(methodDetails) {
-        this.methodLabel = methodDetails.label;
-        this.methodName = methodDetails.name;
-        this.methodSignature = methodDetails.signature;
-        return this.save()
+        return this.update(sanitize({
+            methodLabel: methodDetails.label,
+            methodName: methodDetails.name,
+            methodSignature: methodDetails.signature
+        }));
+    }
+
+    safeCreateTokenTransfer(tokenTransfer) {
+        return this.createTokenTransfer(sanitize({
+            dst: tokenTransfer.dst,
+            src: tokenTransfer.src,
+            amount: tokenTransfer.amount,
+            token: tokenTransfer.token
+        }));
+    }
+
+    updateFailedTransactionError(error) {
+        return this.update({
+            parsedError: error.parsed ? error.message : null,
+            rawError: error.parsed ? null :  error.message
+        });
+    }
+
+    safeCreateTokenBalanceChange(balanceChange) {
+        return this.createTokenBalanceChange(sanitize({
+            token: balanceChange.token,
+            address: balanceChange.address,
+            currentBalance: balanceChange.currentBalance,
+            previousBalance: balanceChange.previousBalance,
+            diff: balanceChange.diff
+        }));
+    }
+
+    safeUpdateStorage(data) {
+        return this.update({
+            storage: data
+        });
+    }
+
+    safeCreateTransactionTraceStep(step) {
+        return this.createTransactionTraceStep({
+            address: step.address,
+            contractHashedBytecode: step.contractHashedBytecode,
+            depth: step.depth,
+            input: step.input,
+            op: step.op,
+            returnData: step.returnData
+        });
     }
   }
   Transaction.init({
@@ -46,6 +95,7 @@ module.exports = (sequelize, DataTypes) => {
     type: DataTypes.INTEGER,
     v: DataTypes.INTEGER,
     value: DataTypes.STRING,
+    storage: DataTypes.JSON,
     raw: DataTypes.JSON
   }, {
     sequelize,

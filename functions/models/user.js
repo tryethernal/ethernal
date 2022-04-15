@@ -3,6 +3,7 @@ const {
   Model
 } = require('sequelize');
 
+const { sanitize } = require('../lib/utils');
 const { Workspace } = require('./index');
 
 module.exports = (sequelize, DataTypes) => {
@@ -20,6 +21,24 @@ module.exports = (sequelize, DataTypes) => {
         return User.findOne({
             where: {
                 firebaseUserId: firebaseUserId
+            },
+            include: 'workspaces'
+        });
+    }
+
+    static findByApiKey(apiKey) {
+        return User.findOne({
+            where: {
+                apiKey: apiKey
+            },
+            include: 'workspaces'
+        });
+    }
+
+    static findByStripeCustomerId(stripeCustomerId) {
+        return User.findOne({
+            where: {
+                stripeCustomerId: stripeCustomerId
             },
             include: 'workspaces'
         });
@@ -44,18 +63,18 @@ module.exports = (sequelize, DataTypes) => {
     static safeCreate(firebaseUserId, email, apiKey, stripeCustomerId, plan, explorerSubscriptionId, transaction) {
         if (!firebaseUserId || !apiKey || !stripeCustomerId || !plan) throw '[User.createUser] Missing parameter';
         
-        return User.create({
+        return User.create(sanitize({
             firebaseUserId: firebaseUserId,
             email: email,
             apiKey: apiKey,
             stripeCustomerId: stripeCustomerId,
             plan: plan,
             explorerSubscriptionId: explorerSubscriptionId,
-        }, { transaction: transaction });
+        }), { transaction: transaction });
     }
 
     safeCreateWorkspace(data, transaction) {
-        return this.createWorkspace({
+        return this.createWorkspace(sanitize({
             name: data.name,
             public: data.public,
             chain: data.chain,
@@ -66,7 +85,7 @@ module.exports = (sequelize, DataTypes) => {
             gasPrice: data.settings && data.settings.gasPrice,
             apiEnabled: data.integrations && data.integrations.indexOf('api') > -1,
             alchemyIntegrationEnabled: data.integrations && data.integrations.indexOf('alchemy') > -1
-        }, { transaction: transaction });
+        }), { transaction: transaction });
     }
   }
   User.init({
