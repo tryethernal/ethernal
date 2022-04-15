@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.11] - 2022-04-15
+### Fixed
+- Aray parsing for fixed sized array parameters in functions
+
 ## [1.11.10] - 2022-04-06
 ### Fixed
 - Transaction error formatting
