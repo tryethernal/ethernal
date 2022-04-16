@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.12] - 2022-04-16
+### Fixed
+- Unit tests
+
 ## [1.11.11] - 2022-04-15
 ### Fixed
 - Aray parsing for fixed sized array parameters in functions

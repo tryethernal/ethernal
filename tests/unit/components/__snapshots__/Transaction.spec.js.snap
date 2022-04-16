@@ -175,7 +175,7 @@ exports[`Transaction.vue Should display parsed error messages 1`] = `
     <div class="col">
       <div class="text-overline">Error Message</div>
       <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
+        <div class="v-card__text" style="white-space: pre-wrap;">
           Error
         </div>
       </div>
@@ -335,7 +335,7 @@ exports[`Transaction.vue Should display raw error messages 1`] = `
       <div class="text-overline">Error Message</div>
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text"><b>Couldn't parse error message. Raw data:</b>
-          <div class="mt-1" style="white-space: pre;">
+          <div class="mt-1" style="white-space: pre-wrap;">
             "{\\"message\\":\\"this is an error\\"}"
           </div>
         </div>
