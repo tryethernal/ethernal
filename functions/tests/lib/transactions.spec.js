@@ -101,7 +101,7 @@ describe('processTransactions ', () => {
 
         await wiredTransactions.processTransactions('123', 'hardhat', [{ ...Transaction, receipt: { status: 0, ...Transaction.receipt }}]);
 
-        expect(wiredTransactions.__get__('storeFailedTransactionError')).toHaveBeenCalledWith('123', 'hardhat', Transaction.hash, { parsed: false, message: { message: 'Helloooooo' } });
+        expect(wiredTransactions.__get__('storeFailedTransactionError')).toHaveBeenCalledWith('123', 'hardhat', Transaction.hash, { parsed: false, message: JSON.stringify({ message: 'Helloooooo' }) });
     });
 
     it('Should process & store the trace if the workspace is public', async () => {
