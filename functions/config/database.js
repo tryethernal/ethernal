@@ -16,6 +16,13 @@ module.exports = {
         "database": config.db.database,
         "host": config.db.host,
         "port": config.db.port,
-        "dialect": "postgres"
+        "dialect": "postgres",
+        "pool": {
+            "max": 1,
+            "min": 0,
+            "idle": 0,
+            "acquire": 3000,
+            "evict": 60000
+        }
     }
 }

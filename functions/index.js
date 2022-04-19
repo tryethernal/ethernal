@@ -561,7 +561,7 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
 
         if (!txSynced.to && sTransactionReceipt) {
             const canSync = await canUserSyncContract(context.auth.uid, data.workspace);
-            writeLog({ severity: 'INFO', message: canSync });
+
             if (canSync)
                 await storeContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress, {
                     address: sTransactionReceipt.contractAddress,
@@ -792,8 +792,8 @@ exports.createWorkspace = functions.https.onCall(async (data, context) => {
         }
 
         const user = await getUser(context.auth.uid);
-        if (!user.canCreateWorkspace)
-            throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to one workspace. Upgrade to our Premium plan to create more.');
+        // if (!user.canCreateWorkspace)
+        //     throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to one workspace. Upgrade to our Premium plan to create more.');
 
         const filteredWorkspaceData = stringifyBns(sanitize({
             chain: data.workspaceData.chain,

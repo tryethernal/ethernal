@@ -7,7 +7,8 @@ const app = admin.initializeApp();
 const _db = app.firestore();
 const _rtdb = app.database();
 
-const { User, TokenTransfer, Transaction } = require('../models');
+let User, TokenTransfer, Transaction, Sequelize, sequelize;
+
 const writeLog = require('./writeLog');
 
 const _getWorkspace = (userId, workspace) => _db.collection('users').doc(userId).collection('workspaces').doc(workspace);
@@ -301,6 +302,7 @@ const storeTransactionMethodDetails = async (userId, workspace, transactionHash,
                 functionName: 'firebase.storeTransactionMethodDetails',
                 message: (error.original && error.original.message) || error,
                 detail: error.original && error.original.detail,
+                transactionHash: transactionHash,
                 uid: userId
             });
         }
@@ -330,6 +332,7 @@ const storeTransactionTokenTransfers = async (userId, workspace, transactionHash
                 functionName: 'firebase.storeTransactionTokenTransfers',
                 message: (error.original && error.original.message) || error,
                 detail: error.original && error.original.detail,
+                transactionHash: transactionHash,
                 uid: userId
             });
         }
@@ -419,6 +422,7 @@ const getContractData = async (userId, workspace, address) => {
             functionName: 'firebase.getContractData',
             message: (error.original && error.original.message) || error.stack,
             detail: error.original && error.original.detail,
+            address: address,
             uid: userId
         });
     }
@@ -528,6 +532,7 @@ const storeTrace = async (userId, workspace, txHash, trace) => {
             functionName: 'firebase.storeTrace',
             message: (error.original && error.original.message) || error,
             detail: error.original && error.original.detail,
+            transactionHash: txHash,
             uid: userId
         });
     }
@@ -555,6 +560,7 @@ const storeTransactionData = async (userId, workspace, hash, data) => {
             functionName: 'firebase.storeTransactionData',
             message: (error.original && error.original.message) || error,
             detail: error.original && error.original.detail,
+            transactionHash: hash,
             uid: userId
         });
     }
@@ -588,6 +594,7 @@ const storeTokenBalanceChanges = async (userId, workspace, transactionHash, toke
                 functionName: 'firebase.storeTokenBalanceChanges',
                 message: (error.original && error.original.message) || error,
                 detail: error.original && error.original.detail,
+                transactionHash: transactionHash,
                 uid: userId
             });
         }
@@ -606,6 +613,10 @@ const storeFailedTransactionError = async (userId, workspace, transactionHash, e
         try {
             const user = await User.findByAuthIdWithWorkspace(userId, workspace);
             const transaction = await user.workspaces[0].findTransaction(transactionHash);
+
+            if (!transaction)
+                throw new Error(`Couldn't find trannsaction ${transactionHash}`);
+
             await transaction.updateFailedTransactionError({
                 parsed: error.parsed,
                 message: error.message
@@ -616,6 +627,7 @@ const storeFailedTransactionError = async (userId, workspace, transactionHash, e
                 functionName: 'firebase.storeFailedTransactionError',
                 message: (error.original && error.original.message) || error,
                 detail: error.original && error.original.detail,
+                transactionHash: transactionHash,
                 uid: userId
             });
         }
@@ -847,6 +859,7 @@ const updateContractVerificationStatus = async (userId, workspace, contractAddre
             functionName: 'firebase.updateContractVerificationStatus',
             message: (error.original && error.original.message) || error,
             detail: error.original && error.original.detail,
+            address: contractAddress,
             uid: userId
         });
     }
@@ -857,10 +870,7 @@ const updateContractVerificationStatus = async (userId, workspace, contractAddre
         .set({ verificationStatus: status }, { merge: true });
 };
 
-module.exports = {
-    Timestamp: admin.firestore.Timestamp,
-    firestore: _db,
-    rtdb: _rtdb,
+const exportedFunctions = {
     storeBlock: storeBlock,
     storeTransaction: storeTransaction,
     storeContractData: storeContractData,
@@ -901,4 +911,51 @@ module.exports = {
     getContractDeploymentTxByAddress: getContractDeploymentTxByAddress,
     updateContractVerificationStatus: updateContractVerificationStatus,
     storeFailedTransactionError: storeFailedTransactionError
+};
+
+const wrappedFunctions = {};
+
+async function loadSequelize() {
+    const env = process.env.NODE_ENV || 'development';
+    const config = require(__dirname + '/../config/database.js')[env];
+    const Sequelize = require('sequelize');
+    sequelize = new Sequelize(config.database, config.username, config.password, config);
+
+    await sequelize.authenticate();
+    return sequelize;
+}
+
+function wrapped(fn) {
+    return async function() {
+        if (!sequelize) {
+            sequelize = await loadSequelize();
+        }
+        else {
+            sequelize.connectionManager.initPools();
+            if (sequelize.connectionManager.hasOwnProperty("getConnection")) {
+                delete sequelize.connectionManager.getConnection;
+            }
+        }
+
+        try {
+            const db = require('../models');
+            db.loadModels(sequelize);
+            User = User || db.User;
+            TokenTransfer = TokenTransfer || db.TokenTransfer;
+            Transaction = Transaction || db.Transaction;
+            return await exportedFunctions[fn](...arguments);
+        } finally {
+            await sequelize.connectionManager.close();
+        }
+    }
+}
+
+for (const fn in exportedFunctions)
+    wrappedFunctions[fn] = wrapped(fn);
+
+module.exports = {
+    Timestamp: admin.firestore.Timestamp,
+    firestore: _db,
+    rtdb: _rtdb,
+    ...wrappedFunctions
 };

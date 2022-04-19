@@ -3,6 +3,7 @@ const {
   Model
 } = require('sequelize');
 const { sanitize } = require('../lib/utils');
+const writeLog = require('../lib/writeLog');
 
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
@@ -98,6 +99,12 @@ module.exports = (sequelize, DataTypes) => {
     storage: DataTypes.JSON,
     raw: DataTypes.JSON
   }, {
+    hooks: {
+        afterSave(instance, options) {
+            // writeLog({ message: instance });
+            // writeLog({ message: options });
+        }
+    },
     sequelize,
     modelName: 'Transaction',
     tableName: 'transactions'
