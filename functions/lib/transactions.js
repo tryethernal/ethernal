@@ -1,5 +1,5 @@
 const ethers = require('ethers');
-let { storeFailedTransactionError, storeContractData, getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('./firebase');
+let db;
 const { getFunctionSignatureForTransaction } = require('./utils');
 let { getTokenTransfers, getTransactionMethodDetails } = require('./abi');
 let { getProvider, ContractConnector, Tracer } = require('./rpc');
@@ -20,15 +20,15 @@ const _getFunctionSignatureForTransaction = (transaction, abi) => {
             return '';
     }
 };
-exports.getFunctionSignatureForTransaction = _getFunctionSignatureForTransaction;
-exports.getTxSynced = async (uid, workspace, transaction, receipt, timestamp) => {
+
+const getTxSynced = async (uid, workspace, transaction, receipt, timestamp) => {
     const sTransactionReceipt = receipt ? _stringifyBns(_sanitize(receipt)) : null;
     const sTransaction = _stringifyBns(_sanitize(transaction));
 
     let contractAbi = null;
     
     if (sTransactionReceipt && transaction.to && transaction.data != '0x') {
-        const contractData = await getContractData(uid, workspace, transaction.to);
+        const contractData = await db.getContractData(uid, workspace, transaction.to);
         contractAbi = contractData ? contractData.abi : null
     }
 
@@ -86,43 +86,43 @@ let getBalanceChange = async (address, token, blockNumber, rpcServer) => {
     };
 }
 
-exports.processTransactions = async (userId, workspaceName, transactions) => {
+const processTransactions = async (userId, workspaceName, transactions) => {
     for (let i = 0; i < transactions.length; i++) {
         let contract, tokenTransfers;
         const transaction = transactions[i];
 
         if (transaction.to)
-            contract = await getContractData(userId, workspaceName, transaction.to);
+            contract = await db.getContractData(userId, workspaceName, transaction.to);
 
         if (contract && contract.proxy)
-            contract = await getContractData(userId, workspaceName, contract.proxy);
+            contract = await db.getContractData(userId, workspaceName, contract.proxy);
 
         if (contract && contract.abi) {
             try {
                 const transactionMethodDetails = getTransactionMethodDetails(transaction, contract.abi);
-                await storeTransactionMethodDetails(userId, workspaceName, transaction.hash, transactionMethodDetails);
+                await db.storeTransactionMethodDetails(userId, workspaceName, transaction.hash, transactionMethodDetails);
             } catch(error) {
                 console.log(error)
-                await storeTransactionMethodDetails(userId, workspaceName, transaction.hash, null);
+                await db.storeTransactionMethodDetails(userId, workspaceName, transaction.hash, null);
             }
         }
         else
-            await storeTransactionMethodDetails(userId, workspaceName, transaction.hash, null);
+            await db.storeTransactionMethodDetails(userId, workspaceName, transaction.hash, null);
 
-        const workspace = await getWorkspaceByName(userId, workspaceName);
+        const workspace = await db.getWorkspaceByName(userId, workspaceName);
 
         try {
             tokenTransfers = getTokenTransfers(transaction);
-            await storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, tokenTransfers);
+            await db.storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, tokenTransfers);
 
             if (workspace.public) {
                 for (let i = 0; i < tokenTransfers.length; i++) {
-                    await storeContractData(userId, workspaceName, tokenTransfers[i].token, { address: tokenTransfers[i].token })
+                    await db.storeContractData(userId, workspaceName, tokenTransfers[i].token, { address: tokenTransfers[i].token })
                 }
             }
         } catch(error) {
             console.log(error)
-            await storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, []);
+            await db.storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, []);
         }
 
         if (workspace.public) {
@@ -154,7 +154,7 @@ exports.processTransactions = async (userId, workspaceName, transactions) => {
                 }
 
                 if (errorObject)
-                    await storeFailedTransactionError(userId, workspaceName, transaction.hash, errorObject);
+                    await db.storeFailedTransactionError(userId, workspaceName, transaction.hash, errorObject);
             }
         }
 
@@ -179,7 +179,17 @@ exports.processTransactions = async (userId, workspaceName, transactions) => {
             }
 
             if (Object.keys(tokenBalanceChanges).length)
-                await storeTokenBalanceChanges(userId, workspace.name, transaction.hash, tokenBalanceChanges);
+                await db.storeTokenBalanceChanges(userId, workspace.name, transaction.hash, tokenBalanceChanges);
         }
     }
 };
+
+module.exports = (loadedDb) => {
+    db = db || loadedDb;
+
+    return {
+        getFunctionSignatureForTransaction: _getFunctionSignatureForTransaction,
+        getTxSynced: getTxSynced,
+        processTransactions: processTransactions
+    };
+}

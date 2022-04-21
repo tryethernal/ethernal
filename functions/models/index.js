@@ -6,7 +6,9 @@ const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const db = {};
 
-const loadModels = function(sequelize) {
+db.Sequelize = Sequelize;
+
+module.exports = (sequelize) => {
     fs
       .readdirSync(__dirname)
       .filter(file => {
@@ -22,9 +24,6 @@ const loadModels = function(sequelize) {
         db[modelName].associate(db);
       }
     });
+
+    return db;
 }
-
-db.Sequelize = Sequelize;
-db.loadModels = loadModels;
-
-module.exports = db;

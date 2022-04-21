@@ -6,11 +6,31 @@ const ethers = require('ethers');
 const Decoder = require('@truffle/decoder');
 const Storage = require('../lib/storage');
 const stripe = require('stripe')(functions.config().stripe.secret_key);
-const { getContractArtifact, getContractArtifactDependencies, getContractData, getWorkspaceByName, storeTransaction, storeBlock, getUser, storeContractData } = require('../lib/firebase');
 const { sanitize, stringifyBns, isJson } = require('../lib/utils');
-const { getTxSynced } = require('../lib/transactions');
 const { decrypt, decode, encrypt } = require('../lib/crypto');
-const { handleStripeSubscriptionUpdate, handleStripeSubscriptionDeletion, handleStripePaymentSucceeded } = require('../lib/stripe');
+
+let config, sequelize, Sequelize, models, transactionsLib, stripeLib, db;
+async function loadSequelize() {
+    const env = process.env.NODE_ENV || 'development';
+    config = config || require(__dirname + '/../config/database.js')[env];
+    Sequelize = Sequelize || require('sequelize');
+    
+    const sequelize = new Sequelize(config.database, config.username, config.password, {
+        dialect: 'postgres',
+        host: config.host,
+        pool: {
+            max: 10,
+            min: 0,
+            acquire: 3000,
+            idle: 0,
+            evict: 10000
+        }
+    });
+    await sequelize.authenticate();
+    
+    return sequelize;
+}
+
 const app = express();
 app.use(bodyParser.json({
     verify: function(req,res,buf) {
@@ -23,6 +43,20 @@ app.use(bodyParser.json({
 
 const authMiddleware = async function(req, res, next) {
     try {
+        if (!sequelize) {
+            sequelize = await loadSequelize();
+        }
+        else {
+            sequelize.connectionManager.initPools();
+            if (sequelize.connectionManager.hasOwnProperty("getConnection")) {
+                delete sequelize.connectionManager.getConnection;
+            }
+        }
+        models = models || require('../models')(sequelize);
+        db = db || require('../lib/firebase')(models);
+        transactionsLib = transactionsLib || require('../lib/transactions')(db);
+        stripeLib = stripeLib || require('../lib/stripe')(db);
+
         if (!req.query.token) {
             throw 'Missing auth token.';
         }
@@ -33,13 +67,13 @@ const authMiddleware = async function(req, res, next) {
             throw 'Invalid auth token';
         }
 
-        const user = await getUser(data.uid);
+        const user = await db.getUser(data.uid);
 
         if (!user || decrypt(user.apiKey) != data.apiKey) {
             throw new functions.https.HttpsError('unauthenticated', 'Failed authentication');
         }
 
-        const workspace = await getWorkspaceByName(user.id, data.workspace);
+        const workspace = await db.getWorkspaceByName(user.id, data.workspace);
 
         res.locals.uid = data.uid;
         res.locals.workspace = { rpcServer: workspace.rpcServer, name: workspace.name };
@@ -66,13 +100,13 @@ app.get('/contracts/:address/storage', authMiddleware, async (req, res) => {
         const contractAddress = req.params.address.toLowerCase();
         const watchedPaths = req.query.watchedPaths;
 
-        const contractData = await getContractData(uid, workspace.name, contractAddress);
+        const contractData = await db.getContractData(uid, workspace.name, contractAddress);
 
         if (!contractData)
             throw { status: 400, message: `No contract at ${contractAddress} in workspace ${workspace.name}` };
 
-        const contractArtifact = (await getContractArtifact(uid, workspace.name, contractAddress)).val();
-        const contractDependencies = (await getContractArtifactDependencies(uid, workspace.name, contractAddress)).val();
+        const contractArtifact = (await db.getContractArtifact(uid, workspace.name, contractAddress)).val();
+        const contractDependencies = (await db.getContractArtifactDependencies(uid, workspace.name, contractAddress)).val();
 
         if (!contractArtifact) {
             throw { status: 400, message: `No artifact for contract at ${contractAddress} in ${workspace.name}` };
@@ -120,6 +154,9 @@ app.get('/contracts/:address/storage', authMiddleware, async (req, res) => {
             error);
 
         res.status(error.status || 401).json({ message: message });
+    } finally {
+        if (sequelize)
+            await sequelize.connectionManager.close();
     }
 });
 
@@ -148,16 +185,16 @@ app.post('/webhooks/alchemy', authMiddleware, async (req, res) => {
             extraData: block.extraData
         }));
 
-        promises.push(storeBlock(res.locals.uid, res.locals.workspace.name, blockData));
+        promises.push(db.storeBlock(res.locals.uid, res.locals.workspace.name, blockData));
         
         const transactionReceipt = await provider.getTransactionReceipt(transaction.hash);
 
-        const txSynced = await getTxSynced(res.locals.uid, res.locals.workspace.name, transaction, transactionReceipt, block.timestamp);
+        const txSynced = await transactionsLib.getTxSynced(res.locals.uid, res.locals.workspace.name, transaction, transactionReceipt, block.timestamp);
 
-        promises.push(storeTransaction(res.locals.uid, res.locals.workspace.name, txSynced));
+        promises.push(db.storeTransaction(res.locals.uid, res.locals.workspace.name, txSynced));
 
         if (!txSynced.to && transactionReceipt)
-            promises.push(storeContractData(res.locals.uid, res.locals.workspace.name, transactionReceipt.contractAddress, { address: transactionReceipt.contractAddress }));
+            promises.push(db.storeContractData(res.locals.uid, res.locals.workspace.name, transactionReceipt.contractAddress, { address: transactionReceipt.contractAddress }));
 
         await Promise.all(promises);
 
@@ -165,11 +202,27 @@ app.post('/webhooks/alchemy', authMiddleware, async (req, res) => {
     } catch(error) {
         console.log(error);
         res.status(401).json({ message: error });
+    } finally {
+        if (sequelize)
+            await sequelize.connectionManager.close();
     }
 });
 
 app.post('/webhooks/stripe', async (req, res, buf) => {
     try {
+        if (!sequelize) {
+            sequelize = await loadSequelize();
+        }
+        else {
+            sequelize.connectionManager.initPools();
+            if (sequelize.connectionManager.hasOwnProperty("getConnection")) {
+                delete sequelize.connectionManager.getConnection;
+            }
+        }
+        models = models || require('../models')(sequelize);
+        db = db || require('../lib/firebase')(models);
+        transactionsLib = transactionsLib || require('../lib/transactions')(db);
+        stripeLib = stripeLib || require('../lib/stripe')(db);
         const sig = req.headers['stripe-signature'];
 
         const webhookSecret = functions.config().stripe.webhook_secret;
@@ -183,15 +236,15 @@ app.post('/webhooks/stripe', async (req, res, buf) => {
 
         switch (event.type) {
             case 'invoice.payment_succeeded':
-                handleStripePaymentSucceeded(event.data.object)
+                await stripeLib.handleStripePaymentSucceeded(event.data.object)
                 break;
 
             case 'customer.subscription.updated':
-                handleStripeSubscriptionUpdate(event.data.object);
+                await stripeLib.handleStripeSubscriptionUpdate(event.data.object);
                 break;
 
             case 'customer.subscription.deleted':
-                handleStripeSubscriptionDeletion(event.data.object);
+                await stripeLib.handleStripeSubscriptionDeletion(event.data.object);
                 break;
         }
 
@@ -199,6 +252,9 @@ app.post('/webhooks/stripe', async (req, res, buf) => {
     } catch(error) {
         console.log(error);
         res.status(401).json({ message: error });
+    } finally {
+        if (sequelize)
+            await sequelize.connectionManager.close();
     }
 });
 

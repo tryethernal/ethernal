@@ -7,7 +7,7 @@ const app = admin.initializeApp();
 const _db = app.firestore();
 const _rtdb = app.database();
 
-let User, TokenTransfer, Transaction, Sequelize, sequelize;
+let User, TokenTransfer, Transaction;
 
 const writeLog = require('./writeLog');
 
@@ -223,7 +223,7 @@ const storeBlock = async (userId, workspace, block) => {
 const storeTransaction = async (userId, workspace, transaction) => {
     if (!userId || !workspace || !transaction) throw '[storeTransaction] Missing parameter';
     const workspaceDoc = _db.collection('users').doc(userId).collection('workspaces').doc(workspace);
-    
+
     const txDoc = workspaceDoc
         .collection('transactions')
         .doc(transaction.hash);
@@ -252,7 +252,7 @@ const storeTransaction = async (userId, workspace, transaction) => {
     try {
         const res = await _db.runTransaction(async t => {
             const txData = (await t.get(txDoc)).data();
-            const txExists = !!txData;
+            const txExists = txData && !!txData.hash;
 
             if (!txExists) {
                 const shardId = Math.floor(Math.random() * 10);
@@ -615,7 +615,7 @@ const storeFailedTransactionError = async (userId, workspace, transactionHash, e
             const transaction = await user.workspaces[0].findTransaction(transactionHash);
 
             if (!transaction)
-                throw new Error(`Couldn't find trannsaction ${transactionHash}`);
+                throw new Error(`Couldn't find transaction ${transactionHash}`);
 
             await transaction.updateFailedTransactionError({
                 parsed: error.parsed,
@@ -696,12 +696,26 @@ const updateWorkspaceSettings = async (userId, workspace, settings) => {
         .update(settings);
 };
 
+const resetWorkspace = async (userId, workspace) => {
+    try {
+        const user = await User.findByAuthIdWithWorkspace(userId, workspace);
+        await user.workspaces[0].reset();
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.resetWorkspace',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+            uid: userId
+        })
+    }
+};
+
 const getUserbyStripeCustomerId = async (stripeCustomerId) => {
     if (!stripeCustomerId) throw '[getUserbyStripeCustomerId] Missing parameter';
 
     try {
-        const user = User.findByStripeCustomerId(stripeCustomerId);
-
+        const user = await User.findByStripeCustomerId(stripeCustomerId);
         if (user)
             return user.toJSON();
     } catch(error) {
@@ -714,14 +728,11 @@ const getUserbyStripeCustomerId = async (stripeCustomerId) => {
         });
     }
 
-    const userDoc = await _db.collection('users').where('stripeCustomerId', '==', stripeCustomerId).get();
+    const userDocs = await _db.collection('users')
+        .where('stripeCustomerId', '==', stripeCustomerId)
+        .get();
 
-    if (userDoc.empty) {
-        return null;
-    }
-    else {
-        return userDoc.docs[0].ref;
-    }
+    return userDocs.empty ? [] : userDocs.docs.map(doc => { return { id: doc.id, ...doc.data() }})[0];
 };
 
 const getUnprocessedContracts = async (userId, workspace) => {
@@ -870,6 +881,31 @@ const updateContractVerificationStatus = async (userId, workspace, contractAddre
         .set({ verificationStatus: status }, { merge: true });
 };
 
+const updateUserPlan = async (userId, plan) => {
+    if (!userId || !plan) throw '[updateUserPlan] Missing parameter';
+
+    if (['free', 'premium'].indexOf(plan) == -1)
+        throw '[updateUserPlan] Invalid plan';
+
+    try {
+        const user = await User.findByAuthId(userId);
+        await user.update({ plan: plan });
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.updateUserPlan',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+            address: contractAddress,
+            uid: userId
+        });
+    }
+
+    return _db.collection('users')
+        .doc(userId)
+        .set({ plan: plan }, { merge: true });
+};
+
 const exportedFunctions = {
     storeBlock: storeBlock,
     storeTransaction: storeTransaction,
@@ -910,52 +946,20 @@ const exportedFunctions = {
     getPublicExplorerParamsBySlug: getPublicExplorerParamsBySlug,
     getContractDeploymentTxByAddress: getContractDeploymentTxByAddress,
     updateContractVerificationStatus: updateContractVerificationStatus,
-    storeFailedTransactionError: storeFailedTransactionError
+    storeFailedTransactionError: storeFailedTransactionError,
+    updateUserPlan: updateUserPlan,
+    resetWorkspace: resetWorkspace
 };
 
-const wrappedFunctions = {};
+module.exports = (models) => {
+    User = User || models.User;
+    TokenTransfer = TokenTransfer || models.TokenTransfer;
+    Transaction = Transaction || models.Transaction;
 
-async function loadSequelize() {
-    const env = process.env.NODE_ENV || 'development';
-    const config = require(__dirname + '/../config/database.js')[env];
-    const Sequelize = require('sequelize');
-    sequelize = new Sequelize(config.database, config.username, config.password, config);
-
-    await sequelize.authenticate();
-    return sequelize;
-}
-
-function wrapped(fn) {
-    return async function() {
-        if (!sequelize) {
-            sequelize = await loadSequelize();
-        }
-        else {
-            sequelize.connectionManager.initPools();
-            if (sequelize.connectionManager.hasOwnProperty("getConnection")) {
-                delete sequelize.connectionManager.getConnection;
-            }
-        }
-
-        try {
-            const db = require('../models');
-            db.loadModels(sequelize);
-            User = User || db.User;
-            TokenTransfer = TokenTransfer || db.TokenTransfer;
-            Transaction = Transaction || db.Transaction;
-            return await exportedFunctions[fn](...arguments);
-        } finally {
-            await sequelize.connectionManager.close();
-        }
+    return {
+        Timestamp: admin.firestore.Timestamp,
+        firestore: _db,
+        rtdb: _rtdb,
+        ...exportedFunctions
     }
-}
-
-for (const fn in exportedFunctions)
-    wrappedFunctions[fn] = wrapped(fn);
-
-module.exports = {
-    Timestamp: admin.firestore.Timestamp,
-    firestore: _db,
-    rtdb: _rtdb,
-    ...wrappedFunctions
 };
