@@ -12,7 +12,7 @@
                     <div v-if="connectedAccount">
                         <b>Connected Metamask account:</b> {{ connectedAccount }}
                     </div>
-                    <v-btn :loading="loading" id="connectMetamask" v-else color="primary" @click="connectMetamask()">Connect With Metamask</v-btn>
+                    <v-btn :loading="loading" id="connectMetamask" v-else :color="theme == 'dark' ? '' : 'primary'" @click="connectMetamask()">Connect With Metamask</v-btn>
                 </v-col>
             </v-row>
         </v-card-text>
@@ -83,7 +83,8 @@ export default {
     computed: {
         ...mapGetters([
             'publicExplorer',
-            'currentWorkspace'
+            'currentWorkspace',
+            'theme'
         ]),
         isChainValid: function() {
             return this.formattedExpectedChainId === this.chainId;

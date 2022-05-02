@@ -25,7 +25,7 @@
         <div id="call" class="grey lighten-3 pa-2" v-show="error">
             {{ error }}
         </div>
-        <v-btn :disabled="!active" :loading="loading" class="mt-1" depressed color="primary" @click="callMethod()">Query</v-btn>
+        <v-btn :disabled="!active" :loading="loading" class="mt-1" depressed :color="theme == 'dark' ? '' : 'primary'" @click="callMethod()">Query</v-btn>
     </div>
 </template>
 <script>
@@ -102,7 +102,8 @@ export default {
     computed: {
         ...mapGetters([
             'currentWorkspace',
-            'isPublicExplorer'
+            'isPublicExplorer',
+            'theme'
         ]),
         outputSignature: function() {
             const res = [];

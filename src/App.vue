@@ -176,6 +176,14 @@ export default {
                 this.db.getPublicExplorerParamsBySlug(this.publicExplorer.slug)
                     .then(this.setupPublicExplorer);
         },
+        updateTabInfo: function(logo, name) {
+            if (logo) {
+                const favicon = document.getElementById('favicon');
+                favicon.href = logo;
+            }
+
+            document.title = name;
+        },
         setupPublicExplorer: function(data) {
             if (!data)
                 return;
@@ -183,15 +191,20 @@ export default {
             this.$store.dispatch('setPublicExplorerData', {
                 name: data.name,
                 token: data.token,
-                chainId: data.chainId
+                chainId: data.chainId,
+                theme: data.themes.default
             }).then(() => {
                 if (data.themes) {
                     const lightTheme = data.themes.light || {};
                     const darkTheme = data.themes.dark || {};
                     const font = data.themes.font;
                     this.$vuetify.theme.dark = data.themes.default == 'dark'
+
                     if (data.themes.logo)
                         this.logo = data.themes.logo;
+
+                    const favicon = data.themes.favicon ? data.themes.favicon : this.logo;
+                    this.updateTabInfo(favicon, data.name);
 
                     if (data.themes.links)
                         this.links = data.themes.links;
