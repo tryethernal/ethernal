@@ -41,8 +41,8 @@
                 :label="`Value (in ${chain.token})`">
             </v-text-field>
         </div>
-        <v-btn :disabled="!active" v-if="isPublicExplorer" :loading="loading" depressed class="mt-1" color="primary" @click="sendWithMetamask()">Query</v-btn>
-        <v-btn :disabled="!active" v-else :loading="loading" depressed class="mt-1" color="primary" @click="sendMethod()">Query</v-btn>
+        <v-btn :disabled="!active" v-if="isPublicExplorer" :loading="loading" depressed class="mt-1" :color="theme == 'dark' ? '' : 'primary'" @click="sendWithMetamask()">Query</v-btn>
+        <v-btn :disabled="!active" v-else :loading="loading" depressed class="mt-1" :color="theme == 'dark' ? '' : 'primary'" @click="sendMethod()">Query</v-btn>
     </div>
 </template>
 <script>
@@ -222,7 +222,8 @@ export default {
         ...mapGetters([
             'currentWorkspace',
             'chain',
-            'isPublicExplorer'
+            'isPublicExplorer',
+            'theme'
         ]),
         value: function() {
             return this.web3.utils.toWei(this.valueInEth.toString(), 'ether');
