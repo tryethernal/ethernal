@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.0] - 2022-05-02
+### Added
+- [Public Explorer] Customization of favicon & page title
+- [Public Explorer] Fixed theming issue on buttons
+
 ## [1.11.12] - 2022-04-16
 ### Fixed
 - Unit tests
