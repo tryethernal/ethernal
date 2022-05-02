@@ -13,7 +13,8 @@ export default new Vuex.Store({
             slug: null,
             token: null,
             chainId: null,
-            domain: null
+            domain: null,
+            theme: 'light'
         },
         currentWorkspace: {
             userId: null,
@@ -123,6 +124,7 @@ export default new Vuex.Store({
         }
     },
     getters: {
+        theme: state => state.publicExplorer.theme,
         isUserLoggedIn: state => !!state.user.uid,
         isPublicExplorer: state => !!state.publicExplorer.slug || !!state.publicExplorer.domain,
         publicExplorer: state => state.publicExplorer,
