@@ -10,6 +10,7 @@ const firebaseTools = require('firebase-tools');
 const admin = require('firebase-admin');
 const { PubSub } = require('@google-cloud/pubsub');
 const stripe = require('stripe')(functions.config().stripe.secret_key);
+const cls = require('cls-hooked');
 
 const Storage = require('./lib/storage');
 const { sanitize, stringifyBns } = require('./lib/utils');
@@ -71,14 +72,17 @@ async function loadSequelize() {
     const env = process.env.NODE_ENV || 'development';
     config = config || require(__dirname + '/config/database.js')[env];
     Sequelize = Sequelize || require('sequelize');
+    const namespace = cls.createNamespace('my-very-own-namespace');
+    Sequelize.useCLS(namespace);
     
     const sequelize = new Sequelize(config.database, config.username, config.password, {
         dialect: 'postgres',
         host: config.host,
+        port: config.port,
         pool: {
-            max: 10,
+            max: 1,
             min: 0,
-            acquire: 3000,
+            acquire: 60000,
             idle: 0,
             evict: 10000
         }
@@ -88,17 +92,17 @@ async function loadSequelize() {
     return sequelize;
 }
 const psqlWrapper = async (cb, data, context) => {
-    if (!sequelize) {
-        sequelize = await loadSequelize();
-    }
-    else {
-        sequelize.connectionManager.initPools();
-        if (sequelize.connectionManager.hasOwnProperty("getConnection")) {
-            delete sequelize.connectionManager.getConnection;
-        }
-    }
+    // if (!sequelize) {
+    //     sequelize = await loadSequelize();
+    // }
+    // else {
+    //     sequelize.connectionManager.initPools();
+    //     if (sequelize.connectionManager.hasOwnProperty("getConnection")) {
+    //         delete sequelize.connectionManager.getConnection;
+    //     }
+    // }
     try {
-        models = models || require('./models')(sequelize);
+        // models = models || require('./models')(sequelize);
         db = db || require('./lib/firebase')(models);
         transactionsLib = transactionsLib || require('./lib/transactions')(db);
 
@@ -111,7 +115,7 @@ const psqlWrapper = async (cb, data, context) => {
             detail: error.original && error.original.detail,
         });
     } finally {
-        await sequelize.connectionManager.close();
+        // await sequelize.connectionManager.close();
     }
 };
 
@@ -119,7 +123,7 @@ const pubsub = new PubSub();
 
 exports.billUsage = functions.pubsub.topic('bill-usage').onPublish(billUsage);
 
-exports.processContractVerification = functions.pubsub.topic('verify-contract').onPublish(processContractVerification);
+// exports.processContractVerification = functions.pubsub.topic('verify-contract').onPublish(processContractVerification);
 
 exports.resyncBlocks = functions.https.onCall(async (data, context) => {
     if (!context.auth)
@@ -151,7 +155,7 @@ exports.batchBlockSyncTask = functions.https.onCall(async (data, context) => {
         }
 
         for (let i = data.fromBlock; i <= data.toBlock; i++) {
-            await enqueueTask('blockSyncTask', {
+            enqueueTask('blockSyncTask', {
                 userId: data.userId,
                 workspace: data.workspace,
                 blockNumber: i
@@ -291,7 +295,7 @@ exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' 
             });
         }
 
-        await db.resetWorkspace(context.auth.uid, data.workspace);
+        // await db.resetWorkspace(context.auth.uid, data.workspace);
         await db.resetDatabaseWorkspace(context.auth.uid, data.workspace);
 
         return { success: true };
@@ -424,11 +428,19 @@ exports.serverSideBlockSync = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[serverSideBlockSync] Missing parameter.');
         }
 
-        return enqueueTask('blockSyncTask', {
+        const url = `${functions.config().ethernal.root_tasks}/tasks/blockSync`;
+
+        await enqueueTask('blockSyncTask', {
             userId: context.auth.uid,
             workspace: data.workspace,
             blockNumber: data.blockNumber
         });
+
+        return enqueueTask('blockSyncTaskCloudRun', {
+            userId: context.auth.uid,
+            workspace: data.workspace,
+            blockNumber: data.blockNumber
+        }, url);
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';

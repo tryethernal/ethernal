@@ -8,20 +8,24 @@ const Storage = require('../lib/storage');
 const stripe = require('stripe')(functions.config().stripe.secret_key);
 const { sanitize, stringifyBns, isJson } = require('../lib/utils');
 const { decrypt, decode, encrypt } = require('../lib/crypto');
+const cls = require('cls-hooked');
 
 let config, sequelize, Sequelize, models, transactionsLib, stripeLib, db;
 async function loadSequelize() {
     const env = process.env.NODE_ENV || 'development';
     config = config || require(__dirname + '/../config/database.js')[env];
     Sequelize = Sequelize || require('sequelize');
+    const namespace = cls.createNamespace('my-very-own-namespace');
+    Sequelize.useCLS(namespace);
     
     const sequelize = new Sequelize(config.database, config.username, config.password, {
         dialect: 'postgres',
         host: config.host,
+        port: config.port,
         pool: {
-            max: 10,
+            max: 1,
             min: 0,
-            acquire: 3000,
+            acquire: 60000,
             idle: 0,
             evict: 10000
         }

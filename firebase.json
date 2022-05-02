@@ -48,6 +48,21 @@
           "function": "api"
         }
       ]
+    },
+    {
+      "target": "tasks",
+      "public": "public",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "function": "tasks"
+        }
+      ]
     }
   ]
 }

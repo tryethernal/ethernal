@@ -28,8 +28,8 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    safeCreateBlock(block) {
-        return this.createBlock(sanitize({
+    async safeCreateBlock(block) {
+        return await this.createBlock(sanitize({
             baseFeePerGas: block.baseFeePerGas,
             difficulty: block.difficulty,
             extraData: block.extraData,
@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
 
     async safeCreateTransaction(transaction, blockId) {
         try {
-            sequelize.transaction(async (sequelizeTransaction) => {
+            return await sequelize.transaction(async (sequelizeTransaction) => {
                 const storedTx = await this.createTransaction(sanitize({
                     blockHash: transaction.blockHash,
                     blockNumber: transaction.blockNumber,
@@ -75,7 +75,7 @@ module.exports = (sequelize, DataTypes) => {
                     v: transaction.v,
                     value: transaction.value,
                     raw: transaction
-                }), { transaction: sequelizeTransaction });
+                }));
 
                 const receipt = transaction.receipt;
                 const storedReceipt = await storedTx.createReceipt(sanitize({
@@ -94,7 +94,7 @@ module.exports = (sequelize, DataTypes) => {
                     transactionIndex: receipt.transactionIndex,
                     type_: receipt.type,
                     raw: receipt
-                }), { transaction: sequelizeTransaction });
+                }));
 
                 for (let i = 0; i < receipt.logs.length; i++) {
                     const log = receipt.logs[i];
@@ -109,8 +109,10 @@ module.exports = (sequelize, DataTypes) => {
                         transactionHash: log.transactionHash,
                         transactionIndex: log.transactionIndex,
                         raw: log
-                    }), { transaction: sequelizeTransaction });
+                    }));
                 }
+
+                return storedTx;
             });
         } catch(error) {
             console.log(error);

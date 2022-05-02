@@ -3,3 +3,5 @@ queue:
 - name: batch-block-sync
 - name: transaction-sync
 - name: populate-postgres
+- name: block-sync-cloud-run
+- name: transaction-sync-cloud-run

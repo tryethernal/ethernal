@@ -1,0 +1,24 @@
+{
+  "name": "tasks",
+  "description": "Task processor",
+  "version": "1.0.0",
+  "private": true,
+  "main": "tasks.js",
+  "scripts": {
+    "start": "node tasks.js"
+  },
+  "engines": {
+    "node": "17.1.x"
+  },
+  "author": "Antoine de Chevigné",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@google-cloud/logging": "^9.8.3",
+    "@google-cloud/tasks": "^2.5.0",
+    "cls-hooked": "^4.2.2",
+    "ethers": "^5.6.4",
+    "express": "^4.17.3",
+    "pg": "^8.7.3",
+    "sequelize": "^6.19.0"
+  }
+}
