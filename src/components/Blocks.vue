@@ -11,7 +11,7 @@
                 itemsPerPageOptions: [10, 25, 100]
             }"
             :headers="headers"
-            @update:options="onPagination">
+            @update:options="fetchBlocks">
             <template v-slot:no-data>
                 No blocks found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a>
             </template>
@@ -38,11 +38,12 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { getPaginatedQuery } from '@/lib/utils';
+const axios = require('axios');
 export default {
     name: 'Blocks',
     data: () => ({
         blocks: [],
+        blockCount: 0,
         headers: [
             {
                 text: 'Block',
@@ -67,37 +68,32 @@ export default {
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['number'], sortDesc: [true] }
     }),
     mounted: function() {
-        const sortDirection = this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc';
-        this.$bind('blocks',
-            this.db.collection('blocks')
-                .orderBy(this.currentOptions.sortBy[0], sortDirection)
-                .limit(this.currentOptions.itemsPerPage),
-                { serialize: this.serializer }
-        ).then(() => this.loading = false);
+        this.fetchBlocks(this.currentOptions);
     },
     methods: {
+        fetchBlocks: function(options) {
+            this.loading = true;
+            this.currentOptions = options;
+            const sortDirection = this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc';
+            axios.get(`http://localhost:8888/api/blocks?firebaseAuthToken=${this.firebaseIdToken}&firebaseUserId=${this.currentWorkspace.userId}&workspace=${this.currentWorkspace.name}&page=${this.currentOptions.page}&itemsPerPage=${this.currentOptions.itemsPerPage}&order=${sortDirection}`)
+                .then(({ data }) => {
+                    this.blocks = data.items;
+                    this.blockCount = data.total;
+                })
+                .catch(console.log)
+                .finally(() => this.loading = false);
+        },
         serializer: function(snapshot) {
             if (snapshot.data().transactions === undefined)
                 return Object.defineProperty(snapshot.data(), 'transactions', { value: [] })
             else
                 return snapshot.data();
-        },
-        onPagination: function(options) {
-            if (!this.blocks.length) return;
-            this.loading = true;
-            const query = getPaginatedQuery(
-                this.db.collection('blocks'),
-                this.blocks,
-                this.currentOptions,
-                options
-            );
-            this.$bind('blocks', query, { serialize: this.serializer, reset: false }).then(() => this.loading = false);
-            this.currentOptions = options;
         }
     },
     computed: {
         ...mapGetters([
-            'blockCount'
+            'firebaseIdToken',
+            'currentWorkspace'
         ])
     }
 }

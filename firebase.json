@@ -59,8 +59,11 @@
       ],
       "rewrites": [
         {
-          "source": "**",
-          "function": "tasks"
+          "source": "/api/**",
+          "run": {
+            "serviceId": "tasks",
+            "region": "us-central1"
+          }
         }
       ]
     }

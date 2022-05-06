@@ -17,6 +17,7 @@ const { sanitize, stringifyBns } = require('./lib/utils');
 const { encrypt, decrypt, encode } = require('./lib/crypto');
 const { getTokenTransfers } = require('./lib/abi');
 const Analytics = require('./lib/analytics');
+const processAllUsers = require('./tasks/populatePostgres');
 
 const api = require('./api/index');
 
@@ -29,8 +30,6 @@ let transactionsLib;
 const { ProviderConnector } = require('./lib/rpc');
 const { enqueueTask } = require('./lib/tasks');
 const writeLog = require('./lib/writeLog');
-
-// const { User } = require('./models');
 
 const billUsage = async function(message) {
     return await psqlWrapper(async () => {
@@ -68,41 +67,10 @@ const publish = async (topicName, data) => {
 };
 
 let config, sequelize, db, Sequelize, models;
-async function loadSequelize() {
-    const env = process.env.NODE_ENV || 'development';
-    config = config || require(__dirname + '/config/database.js')[env];
-    Sequelize = Sequelize || require('sequelize');
-    const namespace = cls.createNamespace('my-very-own-namespace');
-    Sequelize.useCLS(namespace);
-    
-    const sequelize = new Sequelize(config.database, config.username, config.password, {
-        dialect: 'postgres',
-        host: config.host,
-        port: config.port,
-        pool: {
-            max: 1,
-            min: 0,
-            acquire: 60000,
-            idle: 0,
-            evict: 10000
-        }
-    });
-    await sequelize.authenticate();
-    
-    return sequelize;
-}
+
 const psqlWrapper = async (cb, data, context) => {
-    // if (!sequelize) {
-    //     sequelize = await loadSequelize();
-    // }
-    // else {
-    //     sequelize.connectionManager.initPools();
-    //     if (sequelize.connectionManager.hasOwnProperty("getConnection")) {
-    //         delete sequelize.connectionManager.getConnection;
-    //     }
-    // }
     try {
-        // models = models || require('./models')(sequelize);
+        models = models || require('./models');
         db = db || require('./lib/firebase')(models);
         transactionsLib = transactionsLib || require('./lib/transactions')(db);
 
@@ -112,10 +80,8 @@ const psqlWrapper = async (cb, data, context) => {
             log: 'postgresLogs',
             functionName: 'index.psqlWrapper',
             message: (error.original && error.original.message) || error,
-            detail: error.original && error.original.detail,
+            detail: error.stack,
         });
-    } finally {
-        // await sequelize.connectionManager.close();
     }
 };
 
@@ -125,6 +91,7 @@ exports.billUsage = functions.pubsub.topic('bill-usage').onPublish(billUsage);
 
 // exports.processContractVerification = functions.pubsub.topic('verify-contract').onPublish(processContractVerification);
 
+exports.processAllUsers = functions.https.onCall(processAllUsers);
 exports.resyncBlocks = functions.https.onCall(async (data, context) => {
     if (!context.auth)
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
@@ -267,6 +234,12 @@ exports.syncTokenBalanceChanges = functions.https.onCall(async (data, context) =
                 throw new functions.https.HttpsError('invalid-argument', '[syncTokenBalanceChanges] Missing parameter.');
             }
 
+            writeLog({
+                log: 'postgresLogs',
+                functionName: 'index.syncTokenBalanceChanges',
+                detail: data,
+            });
+
             await db.storeTokenBalanceChanges(context.auth.uid, data.workspace, data.transaction, data.tokenBalanceChanges);
 
             return { success: true };
@@ -404,13 +377,14 @@ exports.blockSyncTask = functions.https.onCall(async (data, context) => {
             if (storedBlock && block.transactions.length === 0)
                 return publish('bill-usage', { userId: data.userId, timestamp: block.timestamp });
             
+            const url = `${functions.config().ethernal.root_functions}/transactionSyncTask`;
             for (let i = 0; i < block.transactions.length; i++) {
-                await enqueueTask('transactionSyncTask', {
+                await enqueueTask('transaction-sync', {
                     userId: data.userId,
                     workspace: data.workspace,
                     transaction: stringifyBns(block.transactions[i]),
                     timestamp: block.timestamp
-                })
+                }, url);
             }
         } catch(error) {
             console.log(error);
@@ -428,19 +402,19 @@ exports.serverSideBlockSync = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[serverSideBlockSync] Missing parameter.');
         }
 
-        const url = `${functions.config().ethernal.root_tasks}/tasks/blockSync`;
+        const url = `${functions.config().ethernal.root_functions}/blockSyncTask`;
 
-        await enqueueTask('blockSyncTask', {
-            userId: context.auth.uid,
-            workspace: data.workspace,
-            blockNumber: data.blockNumber
-        });
-
-        return enqueueTask('blockSyncTaskCloudRun', {
+        await enqueueTask('block-sync', {
             userId: context.auth.uid,
             workspace: data.workspace,
             blockNumber: data.blockNumber
         }, url);
+
+        return enqueueTask('blockSyncTask', {
+            userId: context.auth.uid,
+            workspace: data.workspace,
+            blockNumber: data.blockNumber
+        });
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
@@ -686,6 +660,7 @@ exports.enableWorkspaceApi = functions.https.onCall(async (data, context) => {
             }
 
             const user = await db.getUser(context.auth.uid);
+
             await db.addIntegration(context.auth.uid, data.workspace, 'api');
 
             const apiKey = decrypt(user.apiKey);
@@ -860,6 +835,7 @@ exports.getAccount = functions.https.onCall(async (data, context) => {
         }
     }, data, context);
 });
+
 
 exports.createWorkspace = functions.https.onCall(async (data, context) => {
     return await psqlWrapper(async () => {

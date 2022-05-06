@@ -10,7 +10,7 @@ const TASKS_TO_QUEUE = {
     dbTransactionBlockSyncTask: 'transaction-block-sync',
     insertUserTask: 'populate-postgres',
     blockSyncTaskCloudRun: 'block-sync-cloud-run',
-    transactionSyncTaskCloudRun: 'transaction-sync-cloud-run'
+    transactionSyncTaskCloudRun: 'ss-transaction-sync'
 };
 
 const getTaskClient = () => {
@@ -28,7 +28,7 @@ const getTaskClient = () => {
 
 module.exports = {
     enqueueTask: async (taskName, data, url) => {
-        const projectId = process.env.PROJECT_ID;
+        const projectId = process.env.GOOGLE_CLOUD_PROJECT;
         if (!TASKS_TO_QUEUE[taskName])
             throw '[enqueueTask] Unknown task';
         client = client || getTaskClient()

@@ -127,7 +127,7 @@ const processTransactions = async (userId, workspaceName, transactions) => {
 
         if (workspace.public) {
             try {
-                const tracer = new Tracer(workspace.rpcServer);
+                const tracer = new Tracer(workspace.rpcServer, db);
                 await tracer.process(transaction);
                 await tracer.saveTrace(userId, workspaceName);
             } catch(error) {

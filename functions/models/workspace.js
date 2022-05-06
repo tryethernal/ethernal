@@ -46,9 +46,9 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
-    async safeCreateTransaction(transaction, blockId) {
+    safeCreateTransaction(transaction, blockId) {
         try {
-            sequelize.transaction(async (sequelizeTransaction) => {
+            return sequelize.transaction(async (sequelizeTransaction) => {
                 const storedTx = await this.createTransaction(sanitize({
                     blockHash: transaction.blockHash,
                     blockNumber: transaction.blockNumber,

@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     number: DataTypes.INTEGER,
     parentHash: DataTypes.STRING,
     timestamp: DataTypes.STRING,
+    transactionsCount: DataTypes.INTEGER,
     raw: DataTypes.JSON,
     workspaceId: DataTypes.INTEGER
   }, {

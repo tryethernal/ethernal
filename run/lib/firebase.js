@@ -2,7 +2,52 @@ const models = require('../models');
 const User = models.User;
 const TokenTransfer = models.TokenTransfer;
 const Transaction = models.Transaction;
+const Workspace = models.Workspace;
 const writeLog = require('./writeLog');
+
+const getWorkspaceBlock = async (workspaceId, number, withTransactions) => {
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const blocks = withTransactions ?
+            await workspace.getBlocks({
+                where: { number: number },
+                include: {
+                    model: Transaction,
+                    as: 'transactions',
+                    include: 'receipt'
+                }
+            }) :
+            await workspace.getBlocks({ where: { number: number }});
+        return blocks[0].toJSON();
+    } catch(error) {
+         writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.getWorkspaceBlocks',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+        })
+    }
+}
+
+const getWorkspaceBlocks = async (workspaceId, page, itemsPerPage = 10, order = 'DESC') => {
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const blocks = await workspace.getFilteredBlocks(page, itemsPerPage, order);
+        const totalBlockCount = await workspace.countBlocks();
+        return {
+            items: blocks.map(b => b.toJSON()),
+            itemsPerPage: parseInt(itemsPerPage),
+            total: totalBlockCount
+        };
+    } catch(error) {
+         writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.getWorkspaceBlocks',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+        })
+    }
+}
 
 const getUser = async (id) => {
     try {
@@ -375,6 +420,7 @@ const storeTokenBalanceChanges = async (userId, workspace, transactionHash, toke
         try {
             const user = await User.findByAuthIdWithWorkspace(userId, workspace);
             const transaction = await user.workspaces[0].findTransaction(transactionHash);
+
             if (!transaction)
                 throw new Error(`Couldn't find transaction ${transactionHash}`);
 
@@ -654,5 +700,7 @@ module.exports = {
     updateContractVerificationStatus: updateContractVerificationStatus,
     storeFailedTransactionError: storeFailedTransactionError,
     updateUserPlan: updateUserPlan,
-    resetWorkspace: resetWorkspace
+    resetWorkspace: resetWorkspace,
+    getWorkspaceBlocks: getWorkspaceBlocks,
+    getWorkspaceBlock: getWorkspaceBlock
 };

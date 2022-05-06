@@ -21,7 +21,7 @@ module.exports = {
 
         const encryptedText = Buffer.from(textParts.join(':'), 'hex');
         const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
-
+        decipher.setAutoPadding(false);
         let decrypted = decipher.update(encryptedText);
         decrypted = Buffer.concat([decrypted, decipher.final()]);
 

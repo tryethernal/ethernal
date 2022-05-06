@@ -259,6 +259,10 @@ export default {
                 else {
                     if (this.isPublicExplorer) return;
 
+                    this.db.getIdToken(true).then((token) => {
+                        this.$store.dispatch('updateFirebaseIdToken', token);
+                    });
+
                     this.$store.dispatch('updateUserPlan', { uid: auth().currentUser.uid, plan: user.plan, email: auth().currentUser.email });
 
                     if (user.currentWorkspace) {

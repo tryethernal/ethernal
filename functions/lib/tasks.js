@@ -11,7 +11,9 @@ const ALLOWED_TASKS = [
     'transaction-block-sync',
     'populate-postgres',
     'ss-block-sync',
-    'ss-transaction-sync'
+    'ss-transaction-sync',
+    'transactionSyncTask',
+    'blockSyncTask'
 ];
 
 const getTaskClient = () => {
@@ -28,20 +30,20 @@ const getTaskClient = () => {
 };
 
 module.exports = {
-    enqueueTask: async (taskName, data) => {
+    enqueueTask: async (taskName, data, url) => {
         const projectId = JSON.parse(process.env.FIREBASE_CONFIG).projectId;
-        if (!ALLOWED_TASKS.indexOf(taskName))
+        if (ALLOWED_TASKS.indexOf(taskName) < 0)
             throw '[enqueueTask] Unknown task';
 
         client = client || getTaskClient();
 
         const parent = client.queuePath(projectId, functions.config().ethernal.functions_location, taskName);
-        const url = `${functions.config().ethernal.root_tasks}/${taskName}`;
+        const resource = url || `${functions.config().ethernal.root_tasks}/${taskName}`;
 
         const task = {
             httpRequest: {
                 httpMethod: 'POST',
-                url: url,
+                url: resource,
                 body: Buffer.from(JSON.stringify({ data: data })).toString('base64'),
                 headers: {
                     'Content-Type': 'application/json'

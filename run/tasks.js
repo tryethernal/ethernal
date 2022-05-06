@@ -1,12 +1,77 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const { ProviderConnector } = require('./lib/rpc');
 const { sanitize, stringifyBns } = require('./lib/utils');
 const { enqueueTask } = require('./lib/tasks');
 const db = require('./lib/firebase');
 const transactionsLib = require('./lib/transactions');
+const { initializeApp } = require('firebase-admin/app');
+const { getAuth } = require('firebase-admin/auth');
 
-app.use(express.json())
+const firebase = initializeApp();
+app.use(express.json());
+app.use(cors({ origin: 'http://app.antoine.local:8081' }));
+
+const workspaceAuthMiddleware = async (req, res, next) => {
+    try {
+        let firebaseUser;
+        const data = req.query;
+
+        if (!data.firebaseUserId || !data.workspace)
+            return res.status(401).send('[workspaceAuth] Missing parameters');
+
+        if (data.firebaseAuthToken) {
+            firebaseUser = await getAuth().verifyIdToken(data.firebaseAuthToken);
+        }
+
+        const workspace = await db.getWorkspaceByName(data.firebaseUserId, data.workspace);
+
+        if (workspace.public || (firebaseUser && data.firebaseUserId == firebaseUser.user_id)) {
+            res.locals.firebaseUserId = firebaseUser.user_id;
+            res.locals.workspace = workspace;
+            next();
+        }
+        else
+            res.sendStatus(404);
+    } catch(error) {
+        console.log(error);
+        res.status(401).send(error);
+    }
+};
+
+app.get('/api/blocks/:number', workspaceAuthMiddleware, async (req, res) => {
+    try {
+        if (!req.params.number)
+            throw '[/api/blocks/:number] Missing parameter';
+
+        const block = await db.getWorkspaceBlock(res.locals.workspace.id, req.params.number, !!req.query.withTransactions);
+        console.log(block)
+        res.status(200).json(block);
+    } catch(error) {
+        console.log(error);
+        res.status(400).send(error);
+    }
+});
+
+app.get('/api/blocks', workspaceAuthMiddleware, async (req, res) => {
+    try {
+        const data = {
+            ...req.query,
+            ...res.locals
+        };
+
+        if (!data.page || !data.itemsPerPage)
+            throw '[/api/blocks] Missing parameters';
+
+        const blocks = await db.getWorkspaceBlocks(data.workspace.id, data.page, data.itemsPerPage, data.order || 'DESC');
+        
+        res.status(200).json(blocks);
+    } catch(error) {
+        console.log(error);
+        res.status(400).send(error);
+    }
+});
 
 app.post('/ss-block-sync', async (req, res) => {
     try {
@@ -34,7 +99,7 @@ app.post('/ss-block-sync', async (req, res) => {
         
         const url = process.env.NODE_ENV == 'production' ?
             `https://tasks-pql6sv7epq-uc.a.run.app/tasks/transactionSync` :
-            `http://localhost:6000/tasks/transactionSync`;
+            `http://localhost:8888/ss-transaction-sync`;
 
         for (let i = 0; i < block.transactions.length; i++) {
             await enqueueTask('transactionSyncTaskCloudRun', {

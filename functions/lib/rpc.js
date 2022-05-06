@@ -43,9 +43,10 @@ class ProviderConnector {
 }
 
 class Tracer {
-    constructor(server) {
+    constructor(server, dbInstance) {
         if (!server) throw '[Tracer] Missing parameter';
         this.provider = getProvider(server);
+        this.db = dbInstance;
     }
 
     async process(transaction) {
@@ -63,7 +64,7 @@ class Tracer {
 
     async saveTrace(userId, workspace) {
         try {
-            await processTrace(userId, workspace, this.transaction.hash, this.parsedTrace);
+            await processTrace(userId, workspace, this.transaction.hash, this.parsedTrace, this.db);
         } catch(error) {
             console.log(error);
         }

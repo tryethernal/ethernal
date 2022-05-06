@@ -201,6 +201,10 @@ export const dbPlugin = {
                 return _db.collection('users')
                     .doc(user.uid);
             },
+            getIdToken: function() {
+                if (!currentUser()) return;
+                return _auth().currentUser.getIdToken();
+            },
             workspaces: function() {
                 if (!currentUser()) return;
                 return _db.collection('users')

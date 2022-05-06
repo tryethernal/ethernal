@@ -75,6 +75,12 @@ export default new Vuex.Store({
                 ...state.publicExplorer,
                 domain: domain
             }
+        },
+        SET_FIREBASE_ID_TOKEN(state, token) {
+            state.user = {
+                ...state.user,
+                firebaseIdToken: token
+            }
         }
     },
     actions: {
@@ -120,9 +126,13 @@ export default new Vuex.Store({
         },
         updatePublicExplorerDomain({ commit }, domain) {
             commit('SET_PUBLIC_EXPLORER_DOMAIN', domain);
+        },
+        updateFirebaseIdToken({ commit }, token) {
+            commit('SET_FIREBASE_ID_TOKEN', token);
         }
     },
     getters: {
+        firebaseIdToken: state => state.user.firebaseIdToken,
         isUserLoggedIn: state => !!state.user.uid,
         isPublicExplorer: state => !!state.publicExplorer.slug || !!state.publicExplorer.domain,
         publicExplorer: state => state.publicExplorer,

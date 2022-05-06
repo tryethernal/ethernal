@@ -134,10 +134,7 @@ export default {
                     processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
                 }
                 this.server.callContractWriteMethod(this.contract, this.signature, options, processedParams, this.currentWorkspace.rpcServer, shouldTrace)
-                    .then(({ pendingTx, trace }) => {
-                        if (trace) {
-                            this.server.syncTrace(this.currentWorkspace.name, pendingTx.hash, trace);
-                        }
+                    .then((pendingTx) => {
                         this.result.txHash = pendingTx.hash;
 
                         if (typeof pendingTx.wait === 'function') {

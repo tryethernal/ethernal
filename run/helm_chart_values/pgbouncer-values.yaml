@@ -10,7 +10,7 @@ replicasCount: 1
 maxClientConnections: 20000
 serverIdleTimeout: 0
 # The maximum number of upstream requests per instance.
-poolSize: 40
+poolSize: 80
 # Resources for the pods. For PgBouncer it's critical that these match to provide guaranteed QoS.
 # The chart therefore doesn't allow setting requests and limits separately.
 cpu: 150m

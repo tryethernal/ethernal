@@ -19,6 +19,15 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.Contract, { foreignKey: 'workspaceId', as: 'contracts' });
     }
 
+    static findPublicWorkspaceById(id) {
+        return Workspace.findOne({
+            where: {
+                public: true,
+                id: id
+            }
+        });
+    }
+
     static findByUserIdAndName(userId, name) {
         return Workspace.findOne({
             where: {
@@ -28,8 +37,16 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    async getFilteredBlocks(page, itemsPerPage, order = 'DESC') {
+        return this.getBlocks({
+            offset: (page - 1) * itemsPerPage,
+            limit: itemsPerPage,
+            order: [['number', order]]
+        });
+    }
+
     async safeCreateBlock(block) {
-        return await this.createBlock(sanitize({
+        return this.createBlock(sanitize({
             baseFeePerGas: block.baseFeePerGas,
             difficulty: block.difficulty,
             extraData: block.extraData,
