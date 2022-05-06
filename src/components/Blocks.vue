@@ -8,7 +8,8 @@
             :sort-desc="true"
             :server-items-length="blockCount"
             :footer-props="{
-                itemsPerPageOptions: [10, 25, 100]
+                itemsPerPageOptions: [10, 25, 100],
+                'page-text': ''
             }"
             :headers="headers"
             @update:options="onPagination">
