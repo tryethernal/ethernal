@@ -6,7 +6,6 @@
             :sort-by="currentOptions.sortBy[0]"
             :must-sort="true"
             :sort-desc="true"
-            :server-items-length="blockCount"
             :footer-props="{
                 itemsPerPageOptions: [10, 25, 100],
                 'page-text': ''
@@ -38,7 +37,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import { getPaginatedQuery } from '@/lib/utils';
 export default {
     name: 'Blocks',
@@ -95,11 +93,6 @@ export default {
             this.$bind('blocks', query, { serialize: this.serializer, reset: false }).then(() => this.loading = false);
             this.currentOptions = options;
         }
-    },
-    computed: {
-        ...mapGetters([
-            'blockCount'
-        ])
     }
 }
 </script>
