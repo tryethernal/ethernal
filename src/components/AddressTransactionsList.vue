@@ -3,7 +3,6 @@
         <Transactions-List
             :transactions="allTransactions"
             :loading="loading"
-            :total="transactionCount"
             :currentAddress="address"
             :sortBy="currentOptions.sortBy[0]"
             @pagination="onPagination" />
@@ -24,13 +23,11 @@ export default {
         transactionsFrom: [],
         transactionsTo: [],
         allTransactions: [],
-        transactionCount: 0,
         paginationDirection: 1,
         loading: true,
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] }
     }),
     mounted: function() {
-        this.db.onNewAddressTransactionCount(this.address, (count) => this.transactionCount = count);
         const bindingTxFrom = this.$bind('transactionsFrom',
             this.db.collection('transactions')
                 .where('from', '==', this.address)

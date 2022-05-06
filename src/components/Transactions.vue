@@ -3,14 +3,12 @@
         <Transactions-List
             :transactions="transactions"
             :loading="loading"
-            :total="transactionCount"
             :sortBy="currentOptions.sortBy[0]"
             @pagination="onPagination" />
     </v-container>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import TransactionsList from './TransactionsList';
 import { getPaginatedQuery } from '@/lib/utils';
 
@@ -45,11 +43,6 @@ export default {
             this.$bind('transactions', query, { reset: false }).then(() => this.loading = false);
             this.currentOptions = options;
         }
-    },
-    computed: {
-        ...mapGetters([
-            'transactionCount'
-        ])
     }
 }
 </script>

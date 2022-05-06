@@ -54,8 +54,6 @@ export default Vue.extend({
             this.db.onNewProcessableTransactions(this.server.processTransactions);
             this.db.onNewFailedTransactions(this.server.processFailedTransactions);
         }
-        this.db.onNewTransactionCount((count) => this.$store.dispatch('updateTransactionCount', count));
-        this.db.onNewBlockCount((count) => this.$store.dispatch('updateBlockCount', count));
         this.db.onNewBlock((block) => this.$store.dispatch('updateCurrentBlock', block));
     },
     methods: {
