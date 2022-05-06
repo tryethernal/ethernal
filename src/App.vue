@@ -203,8 +203,7 @@ export default {
                     if (data.themes.logo)
                         this.logo = data.themes.logo;
 
-                    const favicon = data.themes.favicon ? data.themes.favicon : this.logo;
-                    this.updateTabInfo(favicon, data.name);
+                    this.updateTabInfo(data.themes.favicon, data.name);
 
                     if (data.themes.links)
                         this.links = data.themes.links;
