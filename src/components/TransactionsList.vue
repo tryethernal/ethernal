@@ -6,9 +6,9 @@
         :must-sort="true"
         :sort-desc="true"
         :headers="headers"
-        :server-items-length="total"
         :footer-props="{
-            itemsPerPageOptions: [10, 25, 100]
+            itemsPerPageOptions: [10, 25, 100],
+            'page-text': ''
         }"
         item-key="hash"
         @update:options="onPagination">
@@ -85,7 +85,7 @@ import HashLink from './HashLink.vue';
 
 export default {
     name: 'TransactionsList',
-    props: ['transactions', 'currentAddress', 'loading', 'total', 'sortBy'],
+    props: ['transactions', 'currentAddress', 'loading', 'sortBy'],
     components: {
         HashLink
     },

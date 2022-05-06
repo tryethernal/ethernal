@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.1] - 2022-05-06
+- Removing total count in pagination for blocks & transactions (Firestore optimization)
+- [Public Explorer] Improve favicon customization
+
 ## [1.12.0] - 2022-05-02
 ### Added
 - [Public Explorer] Customization of favicon & page title
