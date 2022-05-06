@@ -85,7 +85,7 @@ import HashLink from './HashLink.vue';
 
 export default {
     name: 'TransactionsList',
-    props: ['transactions', 'currentAddress', 'loading', 'total', 'sortBy'],
+    props: ['transactions', 'currentAddress', 'loading', 'sortBy'],
     components: {
         HashLink
     },
