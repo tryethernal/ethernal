@@ -12,6 +12,8 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.addIndex('transactions_workspaceId_hash_idx');
+    await queryInterface.sequelize.query(`
+        DROP INDEX "transactions_workspaceId_hash_idx"
+    `);
   }
 };

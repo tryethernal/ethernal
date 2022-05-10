@@ -54,6 +54,7 @@ module.exports = (loadedDb) => {
         },
 
         handleStripePaymentSucceeded: async (data) => {
+            console.log(data);
             if (data.billing_reason == 'subscription_create') {
                 const subscriptionId = data.subscription;
                 const paymentIntentId = data.payment_intent;

@@ -206,8 +206,14 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async reset() {
-        await sequelize.models.Block.destroy({ where: { workspaceId: this.id }});
-        await sequelize.models.Contract.destroy({ where: { workspaceId: this.id }});
+        try {
+            return sequelize.transaction(async (transaction) => {
+                await sequelize.models.Block.destroy({ where: { workspaceId: this.id }}, { transaction });
+                await sequelize.models.Contract.destroy({ where: { workspaceId: this.id }}, { transaction });
+            });
+        } catch(error) {
+            console.log(error);
+        }
     }
 
     async removeContractByAddress(address) {

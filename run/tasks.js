@@ -9,6 +9,8 @@ const transactionsLib = require('./lib/transactions');
 const { initializeApp } = require('firebase-admin/app');
 const { getAuth } = require('firebase-admin/auth');
 
+const processContractVerification = require('./lib/processContractVerification');
+
 const firebase = initializeApp();
 app.use(express.json());
 app.use(cors({ origin: 'http://app.antoine.local:8081' }));
@@ -39,6 +41,16 @@ const workspaceAuthMiddleware = async (req, res, next) => {
         res.status(401).send(error);
     }
 };
+
+app.post('/api/contractVerification', async (req, res) => {
+    try {
+        await processContractVerification(db, req.body.data);
+        res.sendStatus(200);
+    } catch(error) {
+        console.log(error);
+        res.status(400).send(error);
+    }
+});
 
 app.get('/api/blocks/:number', workspaceAuthMiddleware, async (req, res) => {
     try {

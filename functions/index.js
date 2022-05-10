@@ -89,8 +89,6 @@ const pubsub = new PubSub();
 
 exports.billUsage = functions.pubsub.topic('bill-usage').onPublish(billUsage);
 
-// exports.processContractVerification = functions.pubsub.topic('verify-contract').onPublish(processContractVerification);
-
 exports.processAllUsers = functions.https.onCall(processAllUsers);
 exports.resyncBlocks = functions.https.onCall(async (data, context) => {
     if (!context.auth)
@@ -177,8 +175,7 @@ exports.startContractVerification = functions.https.onCall(async (data, context)
             if (contract.verificationStatus == 'pending')
                 throw new Error('There already is an ongoing verification for this contract.');
 
-            const topic = pubsub.topic('verify-contract');
-            const message = sanitize({
+            const payload = sanitize({
                 publicExplorerParams: publicExplorerParams,
                 contractAddress: data.contractAddress,
                 compilerVersion: data.compilerVersion,
@@ -187,11 +184,11 @@ exports.startContractVerification = functions.https.onCall(async (data, context)
                 contractName: data.contractName
             });
 
-            const messageBuffer = Buffer.from(JSON.stringify(message), 'utf8');
+            const url = `${functions.config().ethernal.root_tasks}/api/contractVerification`;
+            const task = await enqueueTask('contractVerification', payload, url);
+            const splitName = task.name.split('/');
 
-            const res = await topic.publish(messageBuffer);
-
-            return { success: true, contractPath: `users/${publicExplorerParams.userId}/workspaces/${publicExplorerParams.workspace}/contracts/${data.contractAddress.toLowerCase()}` };
+            return { success: true, taskId: splitName[splitName.length - 1] };
         } catch(error) {
             console.log(error);
             var reason = error.reason || error.message || 'Server error. Please retry.';
@@ -268,7 +265,7 @@ exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' 
             });
         }
 
-        // await db.resetWorkspace(context.auth.uid, data.workspace);
+        await db.resetWorkspace(context.auth.uid, data.workspace);
         await db.resetDatabaseWorkspace(context.auth.uid, data.workspace);
 
         return { success: true };

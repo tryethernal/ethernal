@@ -8,32 +8,27 @@ const Storage = require('../lib/storage');
 const stripe = require('stripe')(functions.config().stripe.secret_key);
 const { sanitize, stringifyBns, isJson } = require('../lib/utils');
 const { decrypt, decode, encrypt } = require('../lib/crypto');
+const writeLog = require('../lib/writeLog');
 const cls = require('cls-hooked');
 
-let config, sequelize, Sequelize, models, transactionsLib, stripeLib, db;
-async function loadSequelize() {
-    const env = process.env.NODE_ENV || 'development';
-    config = config || require(__dirname + '/../config/database.js')[env];
-    Sequelize = Sequelize || require('sequelize');
-    const namespace = cls.createNamespace('my-very-own-namespace');
-    Sequelize.useCLS(namespace);
-    
-    const sequelize = new Sequelize(config.database, config.username, config.password, {
-        dialect: 'postgres',
-        host: config.host,
-        port: config.port,
-        pool: {
-            max: 1,
-            min: 0,
-            acquire: 60000,
-            idle: 0,
-            evict: 10000
-        }
-    });
-    await sequelize.authenticate();
-    
-    return sequelize;
-}
+let db, models, transactionsLib, stripeLib;
+const psqlWrapper = async (cb, req, res, next) => {
+    try {
+        models = models || require('../models');
+        db = db || require('../lib/firebase')(models);
+        transactionsLib = transactionsLib || require('../lib/transactions')(db);
+        stripeLib = stripeLib|| require('../lib/stripe')(db);
+
+        return await cb(req, res, next);
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'api.index.psqlWrapper',
+            message: (error.original && error.original.message) || error,
+            detail: error.stack,
+        });
+    }
+};
 
 const app = express();
 app.use(bodyParser.json({
@@ -46,50 +41,38 @@ app.use(bodyParser.json({
 }));
 
 const authMiddleware = async function(req, res, next) {
-    try {
-        if (!sequelize) {
-            sequelize = await loadSequelize();
-        }
-        else {
-            sequelize.connectionManager.initPools();
-            if (sequelize.connectionManager.hasOwnProperty("getConnection")) {
-                delete sequelize.connectionManager.getConnection;
+    return await psqlWrapper(async () => {
+        try {
+            if (!req.query.token) {
+                throw 'Missing auth token.';
             }
+
+            const data = decode(req.query.token);
+
+            if (!data.apiKey || !data.workspace || !data.uid) {
+                throw 'Invalid auth token';
+            }
+
+            const user = await db.getUser(data.uid);
+
+            if (!user || decrypt(user.apiKey) != data.apiKey) {
+                throw new functions.https.HttpsError('unauthenticated', 'Failed authentication');
+            }
+
+            const workspace = await db.getWorkspaceByName(user.id, data.workspace);
+
+            res.locals.uid = data.uid;
+            res.locals.workspace = { rpcServer: workspace.rpcServer, name: workspace.name };
+            res.locals.integrations = workspace.settings && workspace.settings.integrations ?
+                workspace.settings.integrations :
+                [];
+
+            next();
+        } catch(error) {
+            console.log(error);
+            res.status(401).json({ message: error });
         }
-        models = models || require('../models')(sequelize);
-        db = db || require('../lib/firebase')(models);
-        transactionsLib = transactionsLib || require('../lib/transactions')(db);
-        stripeLib = stripeLib || require('../lib/stripe')(db);
-
-        if (!req.query.token) {
-            throw 'Missing auth token.';
-        }
-
-        const data = decode(req.query.token);
-
-        if (!data.apiKey || !data.workspace || !data.uid) {
-            throw 'Invalid auth token';
-        }
-
-        const user = await db.getUser(data.uid);
-
-        if (!user || decrypt(user.apiKey) != data.apiKey) {
-            throw new functions.https.HttpsError('unauthenticated', 'Failed authentication');
-        }
-
-        const workspace = await db.getWorkspaceByName(user.id, data.workspace);
-
-        res.locals.uid = data.uid;
-        res.locals.workspace = { rpcServer: workspace.rpcServer, name: workspace.name };
-        res.locals.integrations = workspace.settings && workspace.settings.integrations ?
-            workspace.settings.integrations :
-            [];
-
-        next();
-    } catch(error) {
-        console.log(error);
-        res.status(401).json({ message: error });
-    }
+    }, req, res, next)
 };
 
 app.get('/contracts/:address/storage', authMiddleware, async (req, res) => {
@@ -158,108 +141,89 @@ app.get('/contracts/:address/storage', authMiddleware, async (req, res) => {
             error);
 
         res.status(error.status || 401).json({ message: message });
-    } finally {
-        if (sequelize)
-            await sequelize.connectionManager.close();
     }
 });
 
 app.post('/webhooks/alchemy', authMiddleware, async (req, res) => {
-    try {
-        if (!req.body.fullTransaction) {
-            throw 'Missing transaction.';
+    return await psqlWrapper(async () => {
+        try {
+            if (!req.body.fullTransaction) {
+                throw 'Missing transaction.';
+            }
+
+            const promises = [];
+            const provider = new ethers.providers.JsonRpcProvider(res.locals.workspace.rpcServer);
+            const transaction = await provider.getTransaction(req.body.fullTransaction.hash);
+
+            const block = await provider.getBlock(transaction.blockHash);
+
+            const blockData = stringifyBns(sanitize({
+                hash: block.hash,
+                parentHash: block.parentHash,
+                number: block.number,
+                timestamp: block.timestamp,
+                nonce: block.nonce,
+                difficulty: block.difficulty,
+                gasLimit: block.gasLimit,
+                gasUsed: block.gasUsed,
+                miner: block.miner,
+                extraData: block.extraData
+            }));
+
+            promises.push(db.storeBlock(res.locals.uid, res.locals.workspace.name, blockData));
+            
+            const transactionReceipt = await provider.getTransactionReceipt(transaction.hash);
+
+            const txSynced = await transactionsLib.getTxSynced(res.locals.uid, res.locals.workspace.name, transaction, transactionReceipt, block.timestamp);
+
+            promises.push(db.storeTransaction(res.locals.uid, res.locals.workspace.name, txSynced));
+
+            if (!txSynced.to && transactionReceipt)
+                promises.push(db.storeContractData(res.locals.uid, res.locals.workspace.name, transactionReceipt.contractAddress, { address: transactionReceipt.contractAddress }));
+
+            await Promise.all(promises);
+
+            res.send({ success: true });
+        } catch(error) {
+            console.log(error);
+            res.status(401).json({ message: error });
         }
-
-        const promises = [];
-        const provider = new ethers.providers.JsonRpcProvider(res.locals.workspace.rpcServer);
-        const transaction = await provider.getTransaction(req.body.fullTransaction.hash);
-
-        const block = await provider.getBlock(transaction.blockHash);
-
-        const blockData = stringifyBns(sanitize({
-            hash: block.hash,
-            parentHash: block.parentHash,
-            number: block.number,
-            timestamp: block.timestamp,
-            nonce: block.nonce,
-            difficulty: block.difficulty,
-            gasLimit: block.gasLimit,
-            gasUsed: block.gasUsed,
-            miner: block.miner,
-            extraData: block.extraData
-        }));
-
-        promises.push(db.storeBlock(res.locals.uid, res.locals.workspace.name, blockData));
-        
-        const transactionReceipt = await provider.getTransactionReceipt(transaction.hash);
-
-        const txSynced = await transactionsLib.getTxSynced(res.locals.uid, res.locals.workspace.name, transaction, transactionReceipt, block.timestamp);
-
-        promises.push(db.storeTransaction(res.locals.uid, res.locals.workspace.name, txSynced));
-
-        if (!txSynced.to && transactionReceipt)
-            promises.push(db.storeContractData(res.locals.uid, res.locals.workspace.name, transactionReceipt.contractAddress, { address: transactionReceipt.contractAddress }));
-
-        await Promise.all(promises);
-
-        res.send({ success: true });
-    } catch(error) {
-        console.log(error);
-        res.status(401).json({ message: error });
-    } finally {
-        if (sequelize)
-            await sequelize.connectionManager.close();
-    }
+    }, req, res);
 });
 
-app.post('/webhooks/stripe', async (req, res, buf) => {
-    try {
-        if (!sequelize) {
-            sequelize = await loadSequelize();
-        }
-        else {
-            sequelize.connectionManager.initPools();
-            if (sequelize.connectionManager.hasOwnProperty("getConnection")) {
-                delete sequelize.connectionManager.getConnection;
-            }
-        }
-        models = models || require('../models')(sequelize);
-        db = db || require('../lib/firebase')(models);
-        transactionsLib = transactionsLib || require('../lib/transactions')(db);
-        stripeLib = stripeLib || require('../lib/stripe')(db);
-        const sig = req.headers['stripe-signature'];
-
-        const webhookSecret = functions.config().stripe.webhook_secret;
-        let event;
-
+app.post('/webhooks/stripe', async (req, res) => {
+    return await psqlWrapper(async () => {
         try {
-            event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecret);
-        } catch (err) {
-            throw err.message;
+            const sig = req.headers['stripe-signature'];
+            const webhookSecret = functions.config().stripe.webhook_secret;
+            let event;
+
+            try {
+                event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecret);
+            } catch (err) {
+                throw err.message;
+            }
+
+            switch (event.type) {
+                case 'invoice.payment_succeeded':
+                    await stripeLib.handleStripePaymentSucceeded(event.data.object)
+                    break;
+
+                case 'customer.subscription.updated':
+                    await stripeLib.handleStripeSubscriptionUpdate(event.data.object);
+                    break;
+
+                case 'customer.subscription.deleted':
+                    await stripeLib.handleStripeSubscriptionDeletion(event.data.object);
+                    break;
+            }
+
+            res.send({ success: true });
+        } catch(error) {
+            console.log(error);
+            res.status(401).json({ message: error });
         }
-
-        switch (event.type) {
-            case 'invoice.payment_succeeded':
-                await stripeLib.handleStripePaymentSucceeded(event.data.object)
-                break;
-
-            case 'customer.subscription.updated':
-                await stripeLib.handleStripeSubscriptionUpdate(event.data.object);
-                break;
-
-            case 'customer.subscription.deleted':
-                await stripeLib.handleStripeSubscriptionDeletion(event.data.object);
-                break;
-        }
-
-        res.send({ success: true });
-    } catch(error) {
-        console.log(error);
-        res.status(401).json({ message: error });
-    } finally {
-        if (sequelize)
-            await sequelize.connectionManager.close();
-    }
+    }, req, res);
 });
 
 module.exports = app;

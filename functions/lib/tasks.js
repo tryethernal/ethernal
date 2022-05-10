@@ -13,7 +13,8 @@ const ALLOWED_TASKS = [
     'ss-block-sync',
     'ss-transaction-sync',
     'transactionSyncTask',
-    'blockSyncTask'
+    'blockSyncTask',
+    'contractVerification'
 ];
 
 const getTaskClient = () => {

@@ -8,8 +8,5 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.changeColumn('blocks', 'difficulty', {
-        type: Sequelize.INTEGER
-    });
   }
 };

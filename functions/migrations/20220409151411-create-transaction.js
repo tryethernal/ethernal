@@ -169,7 +169,14 @@ module.exports = {
           }
       );
 
-      await queryInterface.sequelize.query(`ALTER TABLE ONLY public.transactions ADD CONSTRAINT fk_blockNumber_workspaceId_blocks_number_workspaceId FOREIGN KEY ("blockNumber", "workspaceId") REFERENCES public.blocks(number, "workspaceId") DEFERRABLE;`, { transaction });
+      await queryInterface.sequelize.query(`
+          ALTER TABLE ONLY public.transactions
+          ADD CONSTRAINT fk_blockNumber_workspaceId_blocks_number_workspaceId
+          FOREIGN KEY ("blockNumber", "workspaceId")
+          REFERENCES public.blocks(number, "workspaceId")
+          ON DELETE CASCADE
+          DEFERRABLE;
+      `, { transaction });
 
       await transaction.commit();
     } catch(error) {

@@ -5,3 +5,5 @@ queue:
 - name: populate-postgres
 - name: ss-block-sync
 - name: ss-transaction-sync
+- name: blockSyncTask
+- name: contractVerification

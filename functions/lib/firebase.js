@@ -172,11 +172,6 @@ const getWorkspaceByName = async (userId, workspaceName) => {
 
 const storeBlock = async (userId, workspace, block) => {
     if (!userId || !workspace || !block) throw '[storeBlock] Missing parameter';
-    const workspaceDoc = _db.collection('users').doc(userId).collection('workspaces').doc(workspace);
-
-    const blockDoc = workspaceDoc
-        .collection('blocks')
-        .doc(String(block.number));
 
     try {
         const user = await User.findByAuthIdWithWorkspace(userId, workspace);
@@ -199,37 +194,18 @@ const storeBlock = async (userId, workspace, block) => {
         })
     }
 
-    try {
-        return await _db.runTransaction(async t => {
-            const blockData = (await t.get(blockDoc)).data();
-            const blockExists = !!blockData;
+    const workspaceDoc = _db.collection('users').doc(userId).collection('workspaces').doc(workspace);
 
-            if (!blockExists) {
-                const shardId = Math.floor(Math.random() * 10);
+    const blockDoc = workspaceDoc
+        .collection('blocks')
+        .doc(String(block.number))
+        .set(block);
 
-                await t.set(blockDoc, block);
-
-                const counterRef = workspaceDoc
-                    .collection('stats/blocks/counters')
-                    .doc(`shard-${shardId}`);
-                await t.set(counterRef, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
-
-                return block;
-            }
-            return null;
-        });
-    } catch(error) {
-        console.log(error);
-    }
+    return blockDoc;
 };
 
 const storeTransaction = async (userId, workspace, transaction) => {
     if (!userId || !workspace || !transaction) throw '[storeTransaction] Missing parameter';
-    const workspaceDoc = _db.collection('users').doc(userId).collection('workspaces').doc(workspace);
-
-    const txDoc = workspaceDoc
-        .collection('transactions')
-        .doc(transaction.hash);
 
     try {
         const user = await User.findByAuthIdWithWorkspace(userId, workspace);
@@ -252,43 +228,14 @@ const storeTransaction = async (userId, workspace, transaction) => {
         })
     }
 
-    try {
-        const res = await _db.runTransaction(async t => {
-            const txData = (await t.get(txDoc)).data();
-            const txExists = txData && !!txData.hash;
+    const workspaceDoc = _db.collection('users').doc(userId).collection('workspaces').doc(workspace);
 
-            if (!txExists) {
-                const shardId = Math.floor(Math.random() * 10);
+    const txDoc = workspaceDoc
+        .collection('transactions')
+        .doc(transaction.hash)
+        .set(transaction);
 
-                await t.set(txDoc, transaction);
-
-                const txCounterRef = workspaceDoc
-                    .collection('stats/transactions/counters')
-                    .doc(`shard-${shardId}`);
-                await t.set(txCounterRef, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
-                
-                const fromCounterRef = workspaceDoc
-                    .collection(`stats/addresses/${transaction.from}/counters/shards`)
-                    .doc(`shard-${shardId}`);
-                await t.set(fromCounterRef, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
-
-                if (transaction.to) {
-                    const toCounterRef = workspaceDoc
-                        .collection(`stats/addresses/${transaction.to}/counters/shards`)
-                        .doc(`shard-${shardId}`);
-                    await t.set(toCounterRef, { value: admin.firestore.FieldValue.increment(1) }, { merge: true });
-                }
-
-                return transaction;
-            }
-
-            return null;
-        });
-
-        return res;
-    } catch(error) {
-        console.log(error);
-    }
+    return txDoc;
 };
 
 const storeTransactionMethodDetails = async (userId, workspace, transactionHash, methodDetails) => {
@@ -455,21 +402,21 @@ const getContractByHashedBytecode = async (userId, workspace, hashedBytecode, ex
         throw '[getContractByHashedBytecode] Missing parameter';
     }
 
-    // try {
-    //     const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-    //     const contract = await user.workspaces[0].findContractByHashedBytecode(hashedBytecode);
+    try {
+        const user = await User.findByAuthIdWithWorkspace(userId, workspace);
+        const contract = await user.workspaces[0].findContractByHashedBytecode(hashedBytecode);
 
-    //     if (contract)
-    //         return contract.toJSON();
-    // } catch(error) {
-    //     writeLog({
-    //         log: 'postgresLogs',
-    //         functionName: 'firebase.getContractByHashedBytecode',
-    //         message: (error.original && error.original.message) || error,
-    //         detail: error.original && error.original.detail,
-    //         uid: userId
-    //     });
-    // }
+        if (contract)
+            return contract.toJSON();
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.getContractByHashedBytecode',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+            uid: userId
+        });
+    }
 
     const contracts = await _getWorkspace(userId, workspace)
         .collection('contracts')
@@ -549,24 +496,24 @@ const storeTrace = async (userId, workspace, txHash, trace) => {
 const storeTransactionData = async (userId, workspace, hash, data) => {
     if (!userId || !workspace || !hash || !data) throw '[storeTransactionData] Missing parameter';
 
-    // try {
-    //     const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-    //     const transaction = await user.workspaces[0].findTransaction(hash);
+    try {
+        const user = await User.findByAuthIdWithWorkspace(userId, workspace);
+        const transaction = await user.workspaces[0].findTransaction(hash);
 
-    //     if (!transaction)
-    //         throw new Error(`Couldn't find transaction ${txHash}`);
+        if (!transaction)
+            throw new Error(`Couldn't find transaction ${txHash}`);
 
-    //     await transaction.safeUpdateStorage(data);
-    // } catch(error) {
-    //     writeLog({
-    //         log: 'postgresLogs',
-    //         functionName: 'firebase.storeTransactionData',
-    //         message: (error.original && error.original.message) || error,
-    //         detail: error.original && error.original.detail,
-    //         transactionHash: hash,
-    //         uid: userId
-    //     });
-    // }
+        await transaction.safeUpdateStorage(data);
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.storeTransactionData',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+            transactionHash: hash,
+            uid: userId
+        });
+    }
 
     return _getWorkspace(userId, workspace)
         .collection('transactions')
@@ -718,19 +665,19 @@ const resetWorkspace = async (userId, workspace) => {
 const getUserbyStripeCustomerId = async (stripeCustomerId) => {
     if (!stripeCustomerId) throw '[getUserbyStripeCustomerId] Missing parameter';
 
-    // try {
-    //     const user = await User.findByStripeCustomerId(stripeCustomerId);
-    //     if (user)
-    //         return user.toJSON();
-    // } catch(error) {
-    //     writeLog({
-    //         log: 'postgresLogs',
-    //         functionName: 'firebase.getUserbyStripeCustomerId',
-    //         message: (error.original && error.original.message) || error,
-    //         detail: error.original && error.original.detail,
-    //         stripeCustomerId: stripeCustomerId
-    //     });
-    // }
+    try {
+        const user = await User.findByStripeCustomerId(stripeCustomerId);
+        if (user)
+            return user.toJSON();
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.getUserbyStripeCustomerId',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+            stripeCustomerId: stripeCustomerId
+        });
+    }
 
     const userDocs = await _db.collection('users')
         .where('stripeCustomerId', '==', stripeCustomerId)
@@ -891,19 +838,18 @@ const updateUserPlan = async (userId, plan) => {
     if (['free', 'premium'].indexOf(plan) == -1)
         throw '[updateUserPlan] Invalid plan';
 
-    // try {
-    //     const user = await User.findByAuthId(userId);
-    //     await user.update({ plan: plan });
-    // } catch(error) {
-    //     writeLog({
-    //         log: 'postgresLogs',
-    //         functionName: 'firebase.updateUserPlan',
-    //         message: (error.original && error.original.message) || error,
-    //         detail: error.original && error.original.detail,
-    //         address: contractAddress,
-    //         uid: userId
-    //     });
-    // }
+    try {
+        const user = await User.findByAuthId(userId);
+        await user.update({ plan: plan });
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.updateUserPlan',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+            uid: userId
+        });
+    }
 
     return _db.collection('users')
         .doc(userId)

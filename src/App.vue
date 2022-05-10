@@ -177,6 +177,7 @@ export default {
                     .then(this.setupPublicExplorer);
         },
         setupPublicExplorer: function(data) {
+            console.log(data);
             if (!data)
                 return;
 
