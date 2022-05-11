@@ -45,6 +45,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     safeCreateTokenBalanceChange(balanceChange) {
+        console.log(balanceChange)
         return this.createTokenBalanceChange(sanitize({
             token: balanceChange.token,
             address: balanceChange.address,
@@ -77,6 +78,7 @@ module.exports = (sequelize, DataTypes) => {
     blockId: DataTypes.INTEGER,
     chainId: DataTypes.INTEGER,
     confirmations: DataTypes.INTEGER,
+    creates: DataTypes.STRING,
     data: DataTypes.STRING,
     parsedError: DataTypes.STRING,
     rawError: DataTypes.JSON,

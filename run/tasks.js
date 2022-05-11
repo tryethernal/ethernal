@@ -85,13 +85,13 @@ app.get('/api/blocks', workspaceAuthMiddleware, async (req, res) => {
     }
 });
 
-app.post('/ss-block-sync', async (req, res) => {
+app.post(['/ss-block-sync', '/tasks/blockSync'], async (req, res) => {
     try {
         const data = req.body.data;
 
         if (!data.userId || !data.workspace || !data.blockNumber) {
             console.log(data);
-            throw new functions.https.HttpsError('invalid-argument', '[blockSyncTask] Missing parameter.');
+            throw '[/tasks/blockSync] Missing parameter.';
         }
 
         const workspace = await db.getWorkspaceByName(data.userId, data.workspace);
@@ -110,7 +110,7 @@ app.post('/ss-block-sync', async (req, res) => {
         //     return publish('bill-usage', { userId: data.userId, timestamp: block.timestamp });
         
         const url = process.env.NODE_ENV == 'production' ?
-            `https://tasks-pql6sv7epq-uc.a.run.app/tasks/transactionSync` :
+            `https://tasks-pql6sv7epq-uc.a.run.app/ss-transaction-sync` :
             `http://localhost:8888/ss-transaction-sync`;
 
         for (let i = 0; i < block.transactions.length; i++) {
@@ -129,7 +129,7 @@ app.post('/ss-block-sync', async (req, res) => {
     }
 });
 
-app.post('/ss-transaction-sync', async (req, res) => {
+app.post(['/ss-transaction-sync', '/tasks/transactionSync'], async (req, res) => {
     try {
         const data = req.body.data;
         if (!data.userId || !data.workspace || !data.transaction) {

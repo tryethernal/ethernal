@@ -597,25 +597,37 @@ const canUserSyncContract = async (userId, workspace) => {
 const getContractTransactions = async (userId, workspace, contractAddress) => {
     if (!userId || !workspace || !contractAddress) throw  '[getContractTransactions] Missing parameter';
 
-    throw 'Not implemented';
+    throw '[getContractTransactions] Not implemented';
 };
 
 const getTransaction = async (userId, workspace, transactionHash) => {
     if (!userId || !workspace || !transactionHash) throw '[getTransaction] Missing parameter';
 
-    throw 'Not implemented';
+    throw '[getTransaction] Not implemented';
 };
 
 const getPublicExplorerParamsBySlug = async (slug) => {
    if (!slug) throw '[getPublicExplorerParamsBySlug] Missing parameter';
 
-   throw 'Not implemented';
+   throw '[getPublicExplorerParamsBySlug] Not implemented';
 };
 
 const getContractDeploymentTxByAddress = async (userId, workspace, address) => {
     if (!userId || !workspace || !address) throw '[getContractDeploymentTxByAddress] Missing parameter';
 
-    throw 'Not implemented';
+    try {
+        const user = await User.findByAuthIdWithWorkspace(userId, workspace);
+        const transactions = await user.workspaces[0].getTransactions({ where: { creates: address }});
+        return transactions[0];
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.getContractDeploymentTxByAddress',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+            uid: userId
+        });
+    }
 };
 
 const updateContractVerificationStatus = async (userId, workspace, contractAddress, status) => {

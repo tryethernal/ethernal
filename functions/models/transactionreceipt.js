@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     blockNumber: DataTypes.INTEGER,
     byzantium: DataTypes.BOOLEAN,
     confirmations: DataTypes.INTEGER,
+    contractAddress: DataTypes.STRING,
     cumulativeGasUsed: DataTypes.STRING,
     from: DataTypes.STRING,
     gasUsed: DataTypes.STRING,

@@ -104,7 +104,8 @@ exports.resyncBlocks = functions.https.onCall(async (data, context) => {
             workspace: data.workspace,
             fromBlock: data.fromBlock,
             toBlock: data.toBlock
-        });
+        }, `${functions.config().ethernal.root_functions}/batchBlockSyncTask`);
+
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
@@ -112,20 +113,28 @@ exports.resyncBlocks = functions.https.onCall(async (data, context) => {
     }
 });
 
-exports.batchBlockSyncTask = functions.https.onCall(async (data, context) => {
+exports.batchBlockSyncTask = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).https.onCall(async (data, context) => {
     try {
         if (!data.userId || !data.workspace || !data.fromBlock || !data.toBlock) {
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[batchBlockSyncTask] Missing parameter.');
         }
 
+        const promises = [];
         for (let i = data.fromBlock; i <= data.toBlock; i++) {
-            enqueueTask('blockSyncTask', {
+            promises.push(enqueueTask('block-sync', {
                 userId: data.userId,
                 workspace: data.workspace,
                 blockNumber: i
-            });
+            }, `${functions.config().ethernal.root_tasks}/ss-block-sync`));
+
+            promises.push(enqueueTask('blockSyncTask', {
+                userId: data.userId,
+                workspace: data.workspace,
+                blockNumber: i
+            }, `${functions.config().ethernal.root_functions}/blockSyncTask`));
         }
+        return Promise.all(promises);
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
@@ -167,13 +176,12 @@ exports.startContractVerification = functions.https.onCall(async (data, context)
 
             const contract = await db.getContractData(publicExplorerParams.userId, publicExplorerParams.workspace, data.contractAddress);
 
-            if (!contract)
-                throw new Error(`Couldn't find contract at address ${data.contractAddress}. Make sure the address is correct and the sync is on.`);
-
-            if (contract.verificationStatus == 'success')
-                throw new Error('Contract has already been verified.');
-            if (contract.verificationStatus == 'pending')
-                throw new Error('There already is an ongoing verification for this contract.');
+            if (contract) {
+                if (contract.verificationStatus == 'success')
+                    throw new Error('Contract has already been verified.');
+                if (contract.verificationStatus == 'pending')
+                    throw new Error('There already is an ongoing verification for this contract.');
+            }
 
             const payload = sanitize({
                 publicExplorerParams: publicExplorerParams,
@@ -196,6 +204,11 @@ exports.startContractVerification = functions.https.onCall(async (data, context)
         }
     }, data, context);
 });
+
+exports.getContractVerificationStatus = functions.https.onCall(async (data, context)=> {
+    return await psqlWrapper(async () => {
+    }, data, context);
+})
 
 exports.processTransaction = functions.https.onCall(async (data, context) => {
     return await psqlWrapper(async () => {
@@ -399,19 +412,17 @@ exports.serverSideBlockSync = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[serverSideBlockSync] Missing parameter.');
         }
 
-        const url = `${functions.config().ethernal.root_functions}/blockSyncTask`;
-
         await enqueueTask('block-sync', {
             userId: context.auth.uid,
             workspace: data.workspace,
             blockNumber: data.blockNumber
-        }, url);
+        }, `${functions.config().ethernal.root_tasks}/ss-block-sync`);
 
         return enqueueTask('blockSyncTask', {
             userId: context.auth.uid,
             workspace: data.workspace,
             blockNumber: data.blockNumber
-        });
+        }, `${functions.config().ethernal.root_functions}/blockSyncTask`);
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';

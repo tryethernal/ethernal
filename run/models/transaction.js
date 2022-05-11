@@ -77,6 +77,7 @@ module.exports = (sequelize, DataTypes) => {
     blockId: DataTypes.INTEGER,
     chainId: DataTypes.INTEGER,
     confirmations: DataTypes.INTEGER,
+    creates: DataTypes.STRING,
     data: DataTypes.STRING,
     parsedError: DataTypes.STRING,
     rawError: DataTypes.JSON,

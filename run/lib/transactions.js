@@ -124,11 +124,11 @@ const processTransactions = async (userId, workspaceName, transactions) => {
         }
 
         if (workspace && workspace.public) {
-            try {
-                const tracer = new Tracer(workspace.rpcServer, db);
-                await tracer.process(transaction);
-                await tracer.saveTrace(userId, workspaceName);
-            } catch(_error) {}
+            // try {
+            //     const tracer = new Tracer(workspace.rpcServer, db);
+            //     await tracer.process(transaction);
+            //     await tracer.saveTrace(userId, workspaceName);
+            // } catch(_error) {}
 
             let errorObject;
             if (transaction.receipt && transaction.receipt.status == 0) {

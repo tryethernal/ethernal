@@ -7,3 +7,4 @@ queue:
 - name: ss-transaction-sync
 - name: blockSyncTask
 - name: contractVerification
+- name: batchBlockSyncTask

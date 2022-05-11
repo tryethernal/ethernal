@@ -2,12 +2,12 @@
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-    queryInterface.addColumn('workspaces', 'tracing', {
+    await queryInterface.addColumn('workspaces', 'tracing', {
       type: Sequelize.DataTypes.STRING
     });
   },
 
   async down (queryInterface, Sequelize) {
-    queryInterface.removeColumn('workspaces', 'tracing');
+    await queryInterface.removeColumn('workspaces', 'tracing');
   }
 };

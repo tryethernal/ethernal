@@ -1,7 +1,8 @@
+let compiler;
+
 module.exports = async function(db, payload) {
     const solc = require('solc');
     const linker = require('solc/linker');
-    console.log(payload.code)
     const code = payload.code;
 
     if (!code.sources)
@@ -20,7 +21,7 @@ module.exports = async function(db, payload) {
     try {
         await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, 'pending');
 
-        const compiler = await new Promise((resolve, reject) => {
+        compiler = compiler || await new Promise((resolve, reject) => {
             solc.loadRemoteVersion(compilerVersion, (err, solc) => {
                 console.log(err, solc)
                 if (err)
@@ -28,7 +29,7 @@ module.exports = async function(db, payload) {
                 resolve(solc);
             });
         });
-        console.log(compiler)
+
         const inputs = {
             language: 'Solidity',
             sources: code.sources,
@@ -48,6 +49,7 @@ module.exports = async function(db, payload) {
 
         const abi = JSON.parse(compiledCode).contracts[contractFile][contractName].abi;
         let bytecode = JSON.parse(compiledCode).contracts[contractFile][contractName].evm.bytecode.object;
+
         if (typeof code.libraries == 'object' && Object.keys(code.libraries).length > 0) {
             console.log('Linking bytecode...')
             const linkedBytecode = linker.linkBytecode(bytecode, code.libraries);
@@ -62,14 +64,14 @@ module.exports = async function(db, payload) {
         if (compiledRuntimeBytecode === deployedRuntimeBytecode) {
             console.log('Verification succeeded!');
             await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, 'success');
-            await db.storeContractData(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, { abi: abi });
+            return db.storeContractData(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, { abi: abi });
         }
         else {
             console.log('Verification failed!');
-            await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, 'failed');
+            return db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, 'failed');
         }
     } catch(error) {
         console.log(error);
-        await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, 'failed');
+        return db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, 'failed');
     }
 }
