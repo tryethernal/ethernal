@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.2] - 2022-05-17
+### Fixed
+- Check if error field is present before accessing it when write call fails
+
 ## [1.12.1] - 2022-05-06
 - Removing total count in pagination for blocks & transactions (Firestore optimization)
 - [Public Explorer] Improve favicon customization
