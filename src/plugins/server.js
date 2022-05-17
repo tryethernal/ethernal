@@ -222,6 +222,7 @@ const serverFunctions = {
                 trace: trace
             });
         } catch(error) {
+            console.log(error)
             const parsedError = JSON.parse(JSON.stringify(error));
 
             let errorData;
@@ -229,7 +230,7 @@ const serverFunctions = {
                 console.log(parsedError.error)
                 if (parsedError.error.data)
                     errorData = parsedError.error.data;
-                else if (parsedError.error.error.data)
+                else if (parsedError.error.error && parsedError.error.error.data)
                     errorData = parsedError.error.error.data;
             }
 
