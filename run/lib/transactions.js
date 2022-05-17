@@ -1,7 +1,7 @@
 const ethers = require('ethers');
 const db = require('./firebase');
 const { getFunctionSignatureForTransaction } = require('./utils');
-let { getTokenTransfers, getTransactionMethodDetails } = require('./abi');
+let { getTokenTransfers } = require('./abi');
 let { getProvider, ContractConnector, Tracer } = require('./rpc');
 
 const _getFunctionSignatureForTransaction = (transaction, abi) => {
@@ -97,17 +97,6 @@ const processTransactions = async (userId, workspaceName, transactions) => {
         if (contract && contract.proxy)
             contract = await db.getContractData(userId, workspaceName, contract.proxy);
 
-        if (contract && contract.abi) {
-            try {
-                const transactionMethodDetails = getTransactionMethodDetails(transaction, contract.abi);
-                await db.storeTransactionMethodDetails(userId, workspaceName, transaction.hash, transactionMethodDetails);
-            } catch(error) {
-                await db.storeTransactionMethodDetails(userId, workspaceName, transaction.hash, null);
-            }
-        }
-        else
-            await db.storeTransactionMethodDetails(userId, workspaceName, transaction.hash, null);
-
         const workspace = await db.getWorkspaceByName(userId, workspaceName);
 
         try {
@@ -124,11 +113,13 @@ const processTransactions = async (userId, workspaceName, transactions) => {
         }
 
         if (workspace && workspace.public) {
-            // try {
-            //     const tracer = new Tracer(workspace.rpcServer, db);
-            //     await tracer.process(transaction);
-            //     await tracer.saveTrace(userId, workspaceName);
-            // } catch(_error) {}
+            if (workspace.tracing != 'disabled') {
+                try {
+                    const tracer = new Tracer(workspace.rpcServer, db);
+                    await tracer.process(transaction);
+                    await tracer.saveTrace(userId, workspaceName);
+                } catch(_error) {}
+            }
 
             let errorObject;
             if (transaction.receipt && transaction.receipt.status == 0) {

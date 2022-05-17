@@ -24,7 +24,21 @@
 </v-dialog>
 </template>
 <script>
-
+            // const params = {
+            //     data: {
+            //         firebaseAuthToken: this.firebaseIdToken,
+            //         firebaseUserId: this.currentWorkspace.userId,
+            //         workspace: this.currentWorkspace.name,
+            //     }
+            // };
+            // axios.post(`http://localhost:8888/api/contracts/${this.address}/remove`, params)
+            //     .then(() => {
+            //         this.$router.push({ path: '/contracts', query: { removedContract: this.address }});
+            //         this.reset();
+            //         this.$emit('refresh');
+            //     })
+            //     .catch(console.log)
+            //     .finally(() => this.loading = false);
 export default {
     name: 'RemoveContractConfirmationModal',
     data: () => ({

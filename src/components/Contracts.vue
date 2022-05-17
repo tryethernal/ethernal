@@ -4,14 +4,21 @@
             <v-alert v-if="removedContract" dense text type="success">Contract at address <b>{{ removedContract }}</b> has been successfully removed.</v-alert>
             <v-alert dense text v-show="!canImport" type="warning">Free plan users are limited to 10 synced contracts. Remove some contracts or <Upgrade-Link @goToBilling="goToBilling" :emit="true">upgrade</Upgrade-Link> to the Premium plan for more.</v-alert>
             <Import-Contract-Modal ref="importContractModal" />
-            <Remove-Contract-Confirmation-Modal ref="removeContractConfirmationModal" />
+            <Remove-Contract-Confirmation-Modal @refresh="fetchContracts" ref="removeContractConfirmationModal" />
         </template>
         <v-data-table
             :loading="loading"
             :items="contracts"
             :headers="headers"
-            sort-by="timestamp"
-            :sort-desc="true">
+            :sort-by="currentOptions.sortBy[0]"
+            :must-sort="true"
+            :sort-desc="true"
+            :server-items-length="contractCount"
+            :footer-props="{
+                itemsPerPageOptions: [10, 25, 100]
+            }"
+            item-key="address"
+            @update:options="fetchContracts">
             <template v-slot:top v-if="currentWorkspace.isAdmin">
                 <v-toolbar flat dense class="py-0">
                     <v-spacer></v-spacer>
@@ -43,6 +50,7 @@
     </v-container>
 </template>
 <script>
+const axios = require('axios');
 import { mapGetters } from 'vuex';
 import ImportContractModal from './ImportContractModal';
 import HashLink from './HashLink';
@@ -61,6 +69,7 @@ export default {
     data: () => ({
         loading: true,
         contracts: [],
+        contractCount: 0,
         headers: [
             {
                 text: 'Address',
@@ -78,14 +87,27 @@ export default {
                 text: '',
                 value: 'tags'
             }
-        ]
+        ],
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] }
     }),
     mounted: function() {
-        this.$bind('contracts', this.db.collection('contracts'), { serialize: snapshot => Object.defineProperty(snapshot.data(), 'address', { value: snapshot.id })}).then(() => this.loading = false);
         if (this.currentWorkspace.isAdmin)
             this.headers.push({ text: '', value: 'remove' });
     },
     methods: {
+        fetchContracts: function(options) {
+            this.loading = true;
+            if (options)
+                this.currentOptions = options;
+            const sortDirection = this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc';
+            axios.get(`http://localhost:8888/api/contracts?firebaseAuthToken=${this.firebaseIdToken}&firebaseUserId=${this.currentWorkspace.userId}&workspace=${this.currentWorkspace.name}&page=${this.currentOptions.page}&itemsPerPage=${this.currentOptions.itemsPerPage}&orderBt=${this.currentOptions.sortBy[0]}&order=${sortDirection}`)
+            .then(({ data }) => {
+                this.contracts = data.items;
+                this.contractCount = data.total;
+            })
+            .catch(console.log)
+            .finally(() => this.loading = false);
+        },
         formatContractPattern,
         openRemoveContractConfirmationModal: function(address) {
             this.$refs.removeContractConfirmationModal
@@ -100,6 +122,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'firebaseIdToken',
             'user',
             'currentWorkspace'
         ]),

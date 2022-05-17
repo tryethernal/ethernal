@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.TransactionReceipt, { foreignKey: 'workspaceId', as: 'receipts' });
       Workspace.hasMany(models.TransactionLog, { foreignKey: 'workspaceId', as: 'logs' });
       Workspace.hasMany(models.Contract, { foreignKey: 'workspaceId', as: 'contracts' });
+      Workspace.hasMany(models.Account, { foreignKey: 'workspaceId', as: 'accounts' });
     }
 
     static findByUserIdAndName(userId, name) {
@@ -163,7 +164,7 @@ module.exports = (sequelize, DataTypes) => {
     async findContractByAddress(address) {
         const contracts = await this.getContracts({
             where: {
-                address: address
+                address: address.toLowerCase()
             }
         });
         return contracts[0];

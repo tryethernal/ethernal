@@ -2,6 +2,8 @@
 const {
   Model
 } = require('sequelize');
+const { enqueueTask } = require('../lib/tasks');
+
 module.exports = (sequelize, DataTypes) => {
   class Contract extends Model {
     /**
@@ -17,7 +19,13 @@ module.exports = (sequelize, DataTypes) => {
     workspaceId: DataTypes.INTEGER,
     hashedBytecode: DataTypes.STRING,
     abi: DataTypes.JSON,
-    address: DataTypes.STRING,
+    address: {
+        type: DataTypes.STRING,
+        set(value) {
+            this.setDataValue('address', value.toLowerCase());
+        }
+    },
+    imported: DataTypes.BOOLEAN,
     name: DataTypes.STRING,
     patterns: DataTypes.ARRAY(DataTypes.STRING),
     processed: DataTypes.BOOLEAN,
@@ -25,13 +33,32 @@ module.exports = (sequelize, DataTypes) => {
     tokenDecimals: DataTypes.INTEGER,
     tokenName: DataTypes.STRING,
     tokenSymbol: DataTypes.STRING,
-    watchedPaths: DataTypes.STRING,
+    watchedPaths: {
+        type: DataTypes.STRING,
+        get() {
+            const raw = this.getDataValue('watchedPaths');
+            return raw ? JSON.parse(raw) : [];
+        }
+    },
     verificationStatus: DataTypes.STRING
   }, {
     hooks: {
-      afterUpsert: (created, options) => {
-          console.log(created, options)
-      }
+        afterUpdate(contract, options) {
+            console.log(contract);
+            return enqueueTask('contractProcessing', {
+                contractId: contract.id,
+                workspaceId: contract.workspaceId,
+                secret: process.env.AUTH_SECRET
+            }, `${process.env.CLOUD_RUN_ROOT}/tasks/processContract`)
+        },
+        afterSave(contract, options) {
+            console.log(contract);
+            return enqueueTask('contractProcessing', {
+                contractId: contract.id,
+                workspaceId: contract.workspaceId,
+                secret: process.env.AUTH_SECRET
+            }, `${process.env.CLOUD_RUN_ROOT}/tasks/processContract`)
+        }
     },
     sequelize,
     modelName: 'Contract',

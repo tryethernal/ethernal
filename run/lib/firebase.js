@@ -1,9 +1,42 @@
+const Sequelize = require('sequelize');
+const writeLog = require('./writeLog');
 const models = require('../models');
+
+const Op = Sequelize.Op;
 const User = models.User;
 const TokenTransfer = models.TokenTransfer;
 const Transaction = models.Transaction;
 const Workspace = models.Workspace;
-const writeLog = require('./writeLog');
+const TransactionReceipt = models.TransactionReceipt;
+
+const getWorkspaceById = async (workspaceId) => {
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        return workspace.toJSON();
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.getWorkspaceById',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+        });
+    }
+};
+
+const getWorkspaceContractById = async (workspaceId, contractId) => {
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const contract = await workspace.findContractById(contractId);
+        return contract.toJSON();
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.getWorkspaceContractById',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+        });
+    }
+};
 
 const getWorkspaceBlock = async (workspaceId, number, withTransactions) => {
     try {
@@ -47,7 +80,114 @@ const getWorkspaceBlocks = async (workspaceId, page, itemsPerPage = 10, order = 
             detail: error.original && error.original.detail,
         })
     }
+};
+
+const getWorkspaceTransaction = async (workspaceId, hash, withTransactions) => {
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const transaction = await workspace.findTransaction(hash);
+
+        return transaction.toJSON();
+    } catch(error) {
+         writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.getWorkspaceTransaction',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+        })
+    }
+};
+
+const getWorkspaceTransactions = async (workspaceId, page = 1, itemsPerPage = 10, order = 'DESC') => {
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const transactions = await workspace.getFilteredTransactions(page, itemsPerPage, order);
+        const totalTransactionCount = await workspace.countTransactions();
+        return {
+            items: transactions.map(t => t.toJSON()),
+            total: totalTransactionCount
+        };
+    } catch(error) {
+         writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.getWorkspaceTransactions',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+        })
+    }
+};
+
+const getAddressTransactions = async (workspaceId, address, page = 1, itemsPerPage = 10, order = 'DESC') => {
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const transactions = await workspace.getFilteredTransactions(page, itemsPerPage, order, address);
+        const totalTransactionCount = await workspace.countTransactions({
+            where: { [Op.or]: [{ to: address }, { from: address }] }
+        });
+        return {
+            items: transactions.map(t => t.toJSON()),
+            total: totalTransactionCount
+        };
+    } catch(error) {
+         writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.getWorkspaceTransactions',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+        })
+    } 
+};
+
+const getWorkspaceContracts = async (userId, workspaceName, page = 1, itemsPerPage = 10, orderBy = 'timestamp', order = 'DESC') => {
+    try {
+        const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
+        const workspace = user.workspaces[0];
+        const contracts = await workspace.getFilteredContracts(page, itemsPerPage, orderBy, order);
+        const contractCount = await workspace.countContracts();
+
+        return {
+            items: contracts.map(c => c.toJSON()),
+            total: contractCount
+        }
+    } catch(error) {
+         writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.getWorkspaceContracts',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+        })
+    } 
 }
+
+const getWorkspaceContract = async (userId, workspaceName, address) => {
+    try {
+        const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
+        const contracts = await user.workspaces[0].getContracts({ where: { address: address }});
+        return contracts[0];
+    } catch(error) {
+         writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.getWorkspaceContract',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+        })
+    } 
+}
+
+const getUserById = async (id) => {
+    try {
+        const user = await User.findByPk(id);
+        return user.toJSON();
+    } catch(error) {
+         writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.getUser',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+            uid: id
+        })
+    }
+};
 
 const getUser = async (id) => {
     try {
@@ -65,6 +205,8 @@ const getUser = async (id) => {
 };
 
 const createUser = async (uid, data) => {
+    if (!uid || !data) throw '[createUser] Missing parameter';
+
     try {
         await User.safeCreate(uid, data.email, data.apiKey, data.stripeCustomerId, data.plan);
     } catch(error) {
@@ -127,15 +269,12 @@ const removeIntegration = async (userId, workspace, integration) => {
     }
 };
 
-const createWorkspace = async (userId, name, data) => {
-    if (!userId || !name || !data) throw '[createWorkspace] Missing parameter';
+const createWorkspace = async (userId, data) => {
+    if (!userId || !data) throw '[createWorkspace] Missing parameter';
 
     try {
         const user = await User.findByAuthId(userId);
-        await user.safeCreateWorkspace({
-            name: name,
-            ...data
-        });
+        return user.safeCreateWorkspace(data);
     } catch(error) {
          writeLog({
             log: 'postgresLogs',
@@ -193,14 +332,11 @@ const storeTransaction = async (userId, workspace, transaction) => {
     try {
         const user = await User.findByAuthIdWithWorkspace(userId, workspace);
         const block = await user.workspaces[0].findBlockByNumber(transaction.blockNumber);
+
         if (!block)
             throw new Error(`Couldn't find block ${transaction.blockNumber}`);
 
-        const existingTx = await user.workspaces[0].findTransaction(transaction.hash);
-        if (existingTx)
-            console.log(`Transaction ${existingTx.hash} already exists in workspace ${workspace}. Reset the workspace if you want to override it.`);
-        else
-            return await user.workspaces[0].safeCreateTransaction(transaction, block.id);
+        return await user.workspaces[0].safeCreateTransaction(transaction, block.id);
     } catch(error) {
          writeLog({
             log: 'postgresLogs',
@@ -354,10 +490,21 @@ const getContractByHashedBytecode = async (userId, workspace, hashedBytecode, ex
     }
 };
 
-const storeAccountPrivateKey = (userId, workspace, address, privateKey) => {
+const storeAccountPrivateKey = async (userId, workspace, address, privateKey) => {
     if (!userId || !workspace || !address || !privateKey) throw '[storeAccountPrivateKey] Missing parameter';
 
-    throw 'Not implemented';
+    try {
+        const user = await User.findByAuthIdWithWorkspace(userId, workspace);
+        await user.workspaces[0].safeCreateOrUpdateAccount({ address: address, privateKey: privateKey });
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.updateAccountBalance',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+            uid: userId
+        });
+    }
 };
 
 const getAccount = async (userId, workspace, address) => {
@@ -396,11 +543,9 @@ const storeTransactionData = async (userId, workspace, hash, data) => {
     try {
         const user = await User.findByAuthIdWithWorkspace(userId, workspace);
         const transaction = await user.workspaces[0].findTransaction(hash);
-
-        if (!transaction)
-            throw new Error(`Couldn't find transaction ${txHash}`);
-
-        await transaction.safeUpdateStorage(data);
+        console.log(transaction)
+        if (transaction)
+            await transaction.safeUpdateStorage(data);
     } catch(error) {
         writeLog({
             log: 'postgresLogs',
@@ -472,10 +617,21 @@ const storeFailedTransactionError = async (userId, workspace, transactionHash, e
     }
 };
 
-const updateAccountBalance = (userId, workspace, account, balance) => {
-    if (!userId || !workspace || !account || !balance) throw '[updateAccountBalance] Missing parameter';
+const updateAccountBalance = async (userId, workspace, address, balance) => {
+    if (!userId || !workspace || !address || !balance) throw '[updateAccountBalance] Missing parameter';
 
-    throw 'Not implemented';
+    try {
+        const user = await User.findByAuthIdWithWorkspace(userId, workspace);
+        await user.workspaces[0].safeCreateOrUpdateAccount({ address: address, balance: balance });
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.updateAccountBalance',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+            uid: userId
+        });
+    }
 };
 
 const setCurrentWorkspace = async (userId, name) => {
@@ -488,6 +644,23 @@ const setCurrentWorkspace = async (userId, name) => {
         writeLog({
             log: 'postgresLogs',
             functionName: 'firebase.setCurrentWorkspace',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+            uid: userId
+        });
+    }
+};
+
+const removeContract = async (userId, workspace, address) => {
+    if (!userId || !workspace || !address) throw '[removeContract] Missing parameter';
+
+    try {
+        const user = await User.findByAuthIdWithWorkspace(userId, workspace);
+        return user.workspaces[0].removeContractByAddress(address);
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.removeContract',
             message: (error.original && error.original.message) || error,
             detail: error.original && error.original.detail,
             uid: userId
@@ -573,16 +746,27 @@ const isUserPremium = async (userId) => {
     return user.plan == 'premium';
 };
 
-const canUserSyncContract = async (userId, workspace) => {
+const canUserSyncContract = async (userId, workspaceName, address) => {
     if (!userId) throw '[canUserSyncContract] Missing parameter';
 
     try {
-        const user = await User.findByAuthIdWithWorkspace(userId, workspace);
+        const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
         if (user.isPremium)
             return true;
+
+        const workspace = user.workspaces[0];
+
+        // If the contract has already been synced we can update its data
+        const existingContracts = await workspace.getContracts({ where: { address: address }});
+        if (existingContracts.length > 0)
+            return true;
+
         const contracts = await user.workspaces[0].getContracts();
+
         if (contracts.length >= 10)
             return false;
+        else
+            return true;
     } catch(error) {
         writeLog({
             log: 'postgresLogs',
@@ -594,16 +778,21 @@ const canUserSyncContract = async (userId, workspace) => {
     }
 };
 
-const getContractTransactions = async (userId, workspace, contractAddress) => {
-    if (!userId || !workspace || !contractAddress) throw  '[getContractTransactions] Missing parameter';
-
-    throw '[getContractTransactions] Not implemented';
-};
-
 const getTransaction = async (userId, workspace, transactionHash) => {
     if (!userId || !workspace || !transactionHash) throw '[getTransaction] Missing parameter';
 
-    throw '[getTransaction] Not implemented';
+    try {
+        const user = await User.findByAuthIdWithWorkspace(userId, workspace);
+        return user.workspaces[0].findTransaction(transactionHash);
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.getTransaction',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+            uid: userId
+        });
+    }
 };
 
 const getPublicExplorerParamsBySlug = async (slug) => {
@@ -637,8 +826,8 @@ const updateContractVerificationStatus = async (userId, workspace, contractAddre
 
     try {
         const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-        const contracts = await user.workspaces[0].getContracts({ where: { address: contractAddress }});
-        contracts[0].update({ verificationStatus: status });
+        const contract = await user.workspaces[0].findContractByAddress(contractAddress);
+        contract.update({ verificationStatus: status });
     } catch(error) {
         writeLog({
             log: 'postgresLogs',
@@ -671,6 +860,25 @@ const updateUserPlan = async (userId, plan) => {
         });
     }
 };
+
+const getContractTransactions = async (userId, workspace, address) => {
+    if (!userId || !workspace || !address) throw '[getContractTransactions] Missing parameters';
+
+    try {
+        const user = await User.findByAuthIdWithWorkspace(userId, workspace);
+        const transactions = await user.workspaces[0].getTransactions({ where: { to: address }});
+        return transactions;
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.getContractTransactions',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+            address: contractAddress,
+            uid: userId
+        });
+    }
+}
 
 module.exports = {
     storeBlock: storeBlock,
@@ -714,5 +922,15 @@ module.exports = {
     updateUserPlan: updateUserPlan,
     resetWorkspace: resetWorkspace,
     getWorkspaceBlocks: getWorkspaceBlocks,
-    getWorkspaceBlock: getWorkspaceBlock
+    getWorkspaceBlock: getWorkspaceBlock,
+    getWorkspaceTransactions: getWorkspaceTransactions,
+    getWorkspaceTransaction: getWorkspaceTransaction,
+    getAddressTransactions: getAddressTransactions,
+    removeContract: removeContract,
+    getWorkspaceContracts: getWorkspaceContracts,
+    getWorkspaceContract: getWorkspaceContract,
+    getWorkspaceById: getWorkspaceById,
+    getWorkspaceContractById: getWorkspaceContractById,
+    getUserById: getUserById
+
 };

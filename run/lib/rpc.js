@@ -55,9 +55,7 @@ class Tracer {
             const rawTrace = await this.provider.send('debug_traceTransaction', [transaction.hash, {}]);
             this.parsedTrace = await parseTrace(transaction.from, rawTrace, this.provider);
         } catch(error) {
-            if (error.error && error.error.code == '-32601')
-                throw 'debug_traceTransaction is not available';
-            else
+            if (!error.error || error.error.code != '-32601')
                 throw error;
         }
     }

@@ -1,7 +1,10 @@
 'use strict';
 const {
-  Model
+  Model,
+  Sequelize
 } = require('sequelize');
+const Op = Sequelize.Op;
+
 module.exports = (sequelize, DataTypes) => {
   class TransactionTraceStep extends Model {
     /**
@@ -11,6 +14,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       TransactionTraceStep.belongsTo(models.Transaction, { foreignKey: 'id', as: 'transaction' });
+      TransactionTraceStep.hasOne(models.Contract, {
+          sourceKey: 'address',
+          foreignKey:  'address',
+          as: 'contract',
+          scope: {
+            [Op.and]: sequelize.where(sequelize.col("traceSteps.workspaceId"),
+                Op.eq,
+                sequelize.col("traceSteps->contract.workspaceId")
+              ),
+            },
+          constraints: false
+      });
     }
   }
   TransactionTraceStep.init({
@@ -20,7 +35,8 @@ module.exports = (sequelize, DataTypes) => {
     depth: DataTypes.INTEGER,
     input: DataTypes.STRING,
     op: DataTypes.STRING,
-    returnData: DataTypes.STRING
+    returnData: DataTypes.STRING,
+    workspaceId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'TransactionTraceStep',

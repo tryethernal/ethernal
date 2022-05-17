@@ -1,15 +1,14 @@
-const functions = require('firebase-functions');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const ALGORITHM = 'aes-256-cbc';
-const ENCRYPTION_KEY = functions.config().encryption.key;
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 const IV_LENGTH = 16;
 
 module.exports = {
     encrypt: (data) => {
         const iv = crypto.randomBytes(IV_LENGTH);
         const cipher = crypto.createCipheriv(ALGORITHM, Buffer.from(ENCRYPTION_KEY), iv);
-        console.log(iv.toString('hex'))
+
         let encryptedData = cipher.update(data);
         encryptedData = Buffer.concat([encryptedData, cipher.final()]);
 
@@ -28,12 +27,12 @@ module.exports = {
         return decrypted.toString();
     },
     encode: (data) => {
-        const jwtSecret = functions.config().encryption.jwt_secret;
+        const jwtSecret = process.env.ENCRYPTION_JWT_SECRET;
         return jwt.sign(data, jwtSecret);
     },
     decode: (token) => {
         try {
-            const jwtSecret = functions.config().encryption.jwt_secret;
+            const jwtSecret = process.env.ENCRYPTION_JWT_SECRET;
             return jwt.verify(token, jwtSecret);
         } catch (error) {
             throw 'Invalid auth token';

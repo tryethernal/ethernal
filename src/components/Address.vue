@@ -40,7 +40,7 @@
                                     <v-icon class="success--text mr-1" small>mdi-check-circle</v-icon>Verified contract.
                                 </div>
                                 Artifact for "<b>{{ contract.name }}</b>" has been uploaded.<span v-if="currentWorkspace.isAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
-                                <div v-if="Object.keys(contract.dependencies).length" class="mb-1 mt-2">
+                                <div v-if="contract.dependencies && Object.keys(contract.dependencies).length" class="mb-1 mt-2">
                                     <h5>Dependencies:</h5>
                                     {{ Object.keys(contract.dependencies).join(', ') }}
                                 </div>
@@ -206,6 +206,7 @@
 </template>
 
 <script>
+const axios = require('axios');
 const ethers = require('ethers');
 
 import { mapGetters } from 'vuex';
@@ -352,33 +353,30 @@ export default {
                 this.$bind('transactionsTo', this.db.collection('transactions').where('to', '==', hash).orderBy('blockNumber', 'desc'));
             this.contractLoader = true;
 
-            this.db.collection('contracts').doc(hash).withConverter({ fromFirestore: this.db.contractSerializer }).get().then((doc) => {
-                if (!doc.exists) {
-                    return;
-                }
+            axios.get(`http://localhost:8888/api/contracts/${hash}?firebaseAuthToken=${this.firebaseIdToken}&firebaseUserId=${this.currentWorkspace.userId}&workspace=${this.currentWorkspace.name}`)
+                .then(({ data }) => {
+                    this.contract = data;
+                    if (this.contract.abi)
+                        this.contractInterface = new ethers.utils.Interface(this.contract.abi);
 
-                this.contract = doc.data();
+                    if (this.isPublicExplorer)
+                        return this.contractLoader = false;
 
-                if (this.contract.abi)
-                    this.contractInterface = new ethers.utils.Interface(this.contract.abi);
-
-                if (this.isPublicExplorer)
-                    return this.contractLoader = false;
-
-                this.db.contractStorage(hash).once('value', (snapshot) => {
-                    if (snapshot.val()) {
-                        this.contract.artifact = snapshot.val().artifact;
-                        const dependencies = {};
-                        Object.keys(snapshot.val().dependencies).forEach((dep) => dependencies[dep] = JSON.parse(snapshot.val().dependencies[dep]));
-                        this.contract = { ...this.contract, dependencies: dependencies, watchedPaths: this.contract.watchedPaths };
-                        this.decodeContract();
-                    }
-                    else {
-                        this.storageLoader = false;
-                    }
+                    this.db.contractStorage(hash).once('value', (snapshot) => {
+                        if (snapshot.val()) {
+                            this.contract.artifact = snapshot.val().artifact;
+                            const dependencies = {};
+                            Object.keys(snapshot.val().dependencies).forEach((dep) => dependencies[dep] = JSON.parse(snapshot.val().dependencies[dep]));
+                            this.contract = { ...this.contract, dependencies: dependencies, watchedPaths: this.contract.watchedPaths };
+                            this.decodeContract();
+                        }
+                        else {
+                            this.storageLoader = false;
+                        }
+                    })
+                    .finally(() => this.contractLoader = false);
                 })
-                .finally(() => this.contractLoader = false);
-            })
+                .catch(console.log);
         }
     },
     watch: {
@@ -391,6 +389,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'firebaseIdToken',
             'currentWorkspace',
             'chain',
             'isPublicExplorer'

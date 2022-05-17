@@ -5,14 +5,15 @@
             :loading="loading"
             :total="transactionCount"
             :sortBy="currentOptions.sortBy[0]"
-            @pagination="onPagination" />
+            @pagination="onPagination"
+            @update:options="fetchTransactions" />
     </v-container>
 </template>
 
 <script>
+const axios = require('axios');
 import { mapGetters } from 'vuex';
 import TransactionsList from './TransactionsList';
-import { getPaginatedQuery } from '@/lib/utils';
 
 export default {
     name: 'Transactions',
@@ -21,34 +22,31 @@ export default {
     },
     data: () => ({
         transactions: [],
+        transactionCount: 0,
         loading: true,
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] }
     }),
-    mounted: function() {
-        const sortDirection = this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc';
-        this.$bind('transactions',
-            this.db.collection('transactions')
-                .orderBy(this.currentOptions.sortBy[0], sortDirection)
-                .limit(this.currentOptions.itemsPerPage)
-        ).then(() => this.loading = false);
-    },
     methods: {
         onPagination: function(options) {
-            if (!this.transactions.length) return;
+            this.fetchTransactions(options);
+        },
+        fetchTransactions: function(options) {
             this.loading = true;
-            const query = getPaginatedQuery(
-                this.db.collection('transactions'),
-                this.transactions,
-                this.currentOptions,
-                options
-            );
-            this.$bind('transactions', query, { reset: false }).then(() => this.loading = false);
             this.currentOptions = options;
-        }
+            const sortDirection = this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc';
+            axios.get(`http://localhost:8888/api/transactions?firebaseAuthToken=${this.firebaseIdToken}&firebaseUserId=${this.currentWorkspace.userId}&workspace=${this.currentWorkspace.name}&page=${this.currentOptions.page}&itemsPerPage=${this.currentOptions.itemsPerPage}&order=${sortDirection}`)
+                .then(({ data }) => {
+                    this.transactions = data.items;
+                    this.transactionCount = data.total;
+                })
+                .catch(console.log)
+                .finally(() => this.loading = false);
+        },
     },
     computed: {
         ...mapGetters([
-            'transactionCount'
+            'firebaseIdToken',
+            'currentWorkspace'
         ])
     }
 }

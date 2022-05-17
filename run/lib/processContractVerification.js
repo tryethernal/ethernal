@@ -18,6 +18,9 @@ module.exports = async function(db, payload) {
     // Only supports verifying one contract at a time at the moment
     const contractFile = Object.keys(code.sources)[0];
 
+    await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, 'success');
+    return db.storeContractData(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, { abi: {} });
+
     try {
         await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspace, contractAddress, 'pending');
 

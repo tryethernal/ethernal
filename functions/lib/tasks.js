@@ -4,19 +4,13 @@ const functions = require('firebase-functions');
 let client;
 
 const ALLOWED_TASKS = [
-    'block-sync',
-    'transaction-sync',
-    'batch-block-sync',
-    'db-block-sync',
-    'transaction-block-sync',
-    'populate-postgres',
-    'ss-block-sync',
-    'ss-transaction-sync',
-    'transactionSyncTask',
-    'blockSyncTask',
+    'cloudFunctionTransactionSync',
+    'cloudRunBlockSync',
+    'cloudFunctionBlockSync',
+    'cloudFunctionBatchBlockSync',
     'contractVerification',
-    'transaction-sync-cloud-run',
-    'batchBlockSyncTask'
+    'contractProcessing',
+    'migration'
 ];
 
 const getTaskClient = () => {

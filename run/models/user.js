@@ -73,7 +73,7 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
-    safeCreateWorkspace(data, transaction) {
+    safeCreateWorkspace(data) {
         return this.createWorkspace(sanitize({
             name: data.name,
             public: data.public,

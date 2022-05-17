@@ -1,10 +1,9 @@
 queue:
-- name: block-sync
-- name: batch-block-sync
-- name: transaction-sync
-- name: populate-postgres
-- name: ss-block-sync
-- name: ss-transaction-sync
-- name: blockSyncTask
+- name: cloudFunctionBlockSync
+- name: cloudRunBlockSync
+- name: cloudFunctionTransactionSync
+- name: cloudFunctionBatchBlockSync
 - name: contractVerification
-- name: batchBlockSyncTask
+- name: transactionProcessing
+- name: migration
+- name: contractProcessing

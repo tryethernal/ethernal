@@ -82,6 +82,7 @@ const psqlWrapper = async (cb, data, context) => {
             message: (error.original && error.original.message) || error,
             detail: error.stack,
         });
+        throw new functions.https.HttpsError(error.code || 'unknown', error.message);
     }
 };
 
@@ -99,7 +100,7 @@ exports.resyncBlocks = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[resyncBlocks] Missing parameter.');
         }
 
-        return enqueueTask('batchBlockSyncTask', {
+        return enqueueTask('cloudFunctionBatchBlockSync', {
             userId: context.auth.uid,
             workspace: data.workspace,
             fromBlock: data.fromBlock,
@@ -115,26 +116,38 @@ exports.resyncBlocks = functions.https.onCall(async (data, context) => {
 
 exports.batchBlockSyncTask = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).https.onCall(async (data, context) => {
     try {
+        const CONCURRENT_BATCHS = 1000;
         if (!data.userId || !data.workspace || !data.fromBlock || !data.toBlock) {
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[batchBlockSyncTask] Missing parameter.');
         }
+        let start = data.fromBlock;
+        let end = data.toBlock;
+        if (end - start >= CONCURRENT_BATCHS) {
+            end = start + CONCURRENT_BATCHS;
+            enqueueTask('cloudFunctionBatchBlockSync', {
+                userId: data.userId,
+                workspace: data.workspace,
+                fromBlock: end,
+                toBlock: data.toBlock
+            }, `${functions.config().ethernal.root_functions}/batchBlockSyncTask`)
+        }
 
-        const promises = [];
-        for (let i = data.fromBlock; i <= data.toBlock; i++) {
-            promises.push(enqueueTask('block-sync', {
+        for (let i = start; i < end; i++) {
+            const promises = [];
+            promises.push(enqueueTask('cloudRunBlockSync', {
                 userId: data.userId,
                 workspace: data.workspace,
                 blockNumber: i
-            }, `${functions.config().ethernal.root_tasks}/ss-block-sync`));
+            }, `${functions.config().ethernal.root_tasks}/tasks/blockSync`));
 
-            promises.push(enqueueTask('blockSyncTask', {
+            promises.push(enqueueTask('cloudFunctionBlockSync', {
                 userId: data.userId,
                 workspace: data.workspace,
                 blockNumber: i
             }, `${functions.config().ethernal.root_functions}/blockSyncTask`));
+            await Promise.all(promises);
         }
-        return Promise.all(promises);
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
@@ -151,6 +164,13 @@ exports.syncFailedTransactionError = functions.https.onCall(async (data, context
             }
 
             await db.storeFailedTransactionError(context.auth.uid, data.workspace, data.transaction, data.error);
+
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.workspace,
+                error: data.error,
+                secret: functions.config().ethernal.auth_secret
+            } ,`${functions.config().ethernal.root_tasks}/api/transactions/${data.transaction}/error`);
 
             return { success: true };
         } catch(error) {
@@ -174,7 +194,7 @@ exports.startContractVerification = functions.https.onCall(async (data, context)
             if (!publicExplorerParams)
                 throw new Error('Could not find explorer, make sure you passed the correct slug.')
 
-            const contract = await db.getContractData(publicExplorerParams.userId, publicExplorerParams.workspace, data.contractAddress);
+            const contract = await db.getContract(publicExplorerParams.userId, publicExplorerParams.workspace, data.contractAddress);
 
             if (contract) {
                 if (contract.verificationStatus == 'success')
@@ -182,6 +202,8 @@ exports.startContractVerification = functions.https.onCall(async (data, context)
                 if (contract.verificationStatus == 'pending')
                     throw new Error('There already is an ongoing verification for this contract.');
             }
+            else
+                throw new Error(`Couldn't find contract at address ${data.contractAddress}`);
 
             const payload = sanitize({
                 publicExplorerParams: publicExplorerParams,
@@ -192,7 +214,7 @@ exports.startContractVerification = functions.https.onCall(async (data, context)
                 contractName: data.contractName
             });
 
-            const url = `${functions.config().ethernal.root_tasks}/api/contractVerification`;
+            const url = `${functions.config().ethernal.root_tasks}/api/contracts/verification`;
             const task = await enqueueTask('contractVerification', payload, url);
             const splitName = task.name.split('/');
 
@@ -207,8 +229,27 @@ exports.startContractVerification = functions.https.onCall(async (data, context)
 
 exports.getContractVerificationStatus = functions.https.onCall(async (data, context)=> {
     return await psqlWrapper(async () => {
+        try {
+            if (!data.explorerSlug || !data.address) {
+                console.log(data);
+                throw new functions.https.HttpsError('invalid-argument', '[getContractVerificationStatus] Missing parameters');
+            }
+            const publicExplorerParams = await db.getPublicExplorerParamsBySlug(data.explorerSlug);
+            const contract = await db.getContract(publicExplorerParams.userId, publicExplorerParams.workspace, data.address);
+            console.log(contract)
+            if (contract.verificationStatus == 'success') {
+                await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspace, data.address, 'success');
+                await db.updateContractAbi(publicExplorerParams.userId, publicExplorerParams.workspace, data.address, { abi: contract.abi });
+            }
+
+            return { status: contract.verificationStatus };
+        } catch(error) {
+            console.log(error);
+            var reason = error.reason || error.message || 'Server error. Please retry.';
+            throw new functions.https.HttpsError(error.code || 'unknown', reason);
+        }
     }, data, context);
-})
+});
 
 exports.processTransaction = functions.https.onCall(async (data, context) => {
     return await psqlWrapper(async () => {
@@ -217,13 +258,19 @@ exports.processTransaction = functions.https.onCall(async (data, context) => {
         try {
             if (!data.workspace || !data.transaction) {
                 console.log(data)
-                throw new functions.https.HttpsError('invalid-argument', '[syncTokenBalanceChanges] Missing parameter.');
+                throw new functions.https.HttpsError('invalid-argument', '[processTransaction] Missing parameter.');
             }
 
             const transaction = await db.getTransaction(context.auth.uid, data.workspace, data.transaction);
 
             if (transaction)
                 await transactionsLib.processTransactions(context.auth.uid, data.workspace, [transaction]);
+
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.workspace,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/transactions/${data.transaction}/process`);
 
             return { success: true };
         } catch(error) {
@@ -244,13 +291,14 @@ exports.syncTokenBalanceChanges = functions.https.onCall(async (data, context) =
                 throw new functions.https.HttpsError('invalid-argument', '[syncTokenBalanceChanges] Missing parameter.');
             }
 
-            writeLog({
-                log: 'postgresLogs',
-                functionName: 'index.syncTokenBalanceChanges',
-                detail: data,
-            });
-
             await db.storeTokenBalanceChanges(context.auth.uid, data.workspace, data.transaction, data.tokenBalanceChanges);
+
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.workspace,
+                tokenBalanceChanges: data.tokenBalanceChanges,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/transactions/${data.transaction}/tokenBalanceChanges`);
 
             return { success: true };
         } catch(error) {
@@ -278,8 +326,12 @@ exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' 
             });
         }
 
-        await db.resetWorkspace(context.auth.uid, data.workspace);
         await db.resetDatabaseWorkspace(context.auth.uid, data.workspace);
+
+        await enqueueTask('migration', {
+            uid: context.auth.uid,
+            workspace: data.workspace,
+        }, `${functions.config().ethernal.root_tasks}/api/workspaces/reset`);
 
         return { success: true };
     }, data, context);
@@ -308,6 +360,13 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
                 const messageBuffer = Buffer.from(JSON.stringify(message), 'utf8');
                 await topic.publish(messageBuffer);
             }
+
+            await enqueueTask('migration', {
+                block: data.block,
+                workspace: data.workspace,
+                uid: context.auth.uid,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/blocks`);
 
             analytics.track(context.auth.uid, 'Block Sync');
             return { blockNumber: syncedBlock.number }
@@ -350,7 +409,7 @@ exports.transactionSyncTask = functions.https.onCall(async (data, context) => {
                 await publish('bill-usage', { userId: data.userId, timestamp: data.timestamp });
 
             if (!txSynced.to && sTransactionReceipt) {
-                const canSync = await db.canUserSyncContract(data.userId, data.workspace);
+                const canSync = await db.canUserSyncContract(data.userId, data.workspace, sTransactionReceipt.contractAddress);
                 if (canSync)
                     await db.storeContractData(data.userId, data.workspace, sTransactionReceipt.contractAddress, {
                         address: sTransactionReceipt.contractAddress,
@@ -387,14 +446,13 @@ exports.blockSyncTask = functions.https.onCall(async (data, context) => {
             if (storedBlock && block.transactions.length === 0)
                 return publish('bill-usage', { userId: data.userId, timestamp: block.timestamp });
             
-            const url = `${functions.config().ethernal.root_functions}/transactionSyncTask`;
             for (let i = 0; i < block.transactions.length; i++) {
-                await enqueueTask('transaction-sync', {
+                await enqueueTask('cloudFunctionTransactionSync', {
                     userId: data.userId,
                     workspace: data.workspace,
                     transaction: stringifyBns(block.transactions[i]),
                     timestamp: block.timestamp
-                }, url);
+                }, `${functions.config().ethernal.root_functions}/transactionSyncTask`);
             }
         } catch(error) {
             console.log(error);
@@ -412,13 +470,13 @@ exports.serverSideBlockSync = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[serverSideBlockSync] Missing parameter.');
         }
 
-        await enqueueTask('block-sync', {
+        await enqueueTask('cloudRunBlockSync', {
             userId: context.auth.uid,
             workspace: data.workspace,
             blockNumber: data.blockNumber
-        }, `${functions.config().ethernal.root_tasks}/ss-block-sync`);
+        }, `${functions.config().ethernal.root_tasks}/tasks/blockSync`);
 
-        return enqueueTask('blockSyncTask', {
+        return enqueueTask('cloudFunctionBlockSync', {
             userId: context.auth.uid,
             workspace: data.workspace,
             blockNumber: data.blockNumber
@@ -441,10 +499,9 @@ exports.syncContractArtifact = functions.https.onCall(async (data, context) => {
                 throw new functions.https.HttpsError('invalid-argument', '[syncContractArtifact] Missing parameter.');
             }
 
-            const canSync = await db.canUserSyncContract(context.auth.uid, data.workspace);
-            const existingContract = await db.getContractData(context.auth.uid, data.workspace, data.address);
+            const canSync = await db.canUserSyncContract(context.auth.uid, data.workspace, data.address);
 
-            if (existingContract || canSync)
+            if (canSync)
                 await db.storeContractArtifact(context.auth.uid, data.workspace, data.address, data.artifact);
             else
                 throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
@@ -527,6 +584,14 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).ht
             await db.storeTrace(context.auth.uid, data.workspace, data.txHash, trace);
 
             analytics.track(context.auth.uid, 'Trace Sync');
+
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.workspace,
+                steps: data.steps,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/transactions/${data.txHash}/trace`);
+
             return { success: true };
         } catch(error) {
             console.log(error);
@@ -555,6 +620,16 @@ exports.syncContractData = functions.https.onCall(async (data, context) => {
             }
             else
                 throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
+
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.workspace,
+                address: data.address,
+                name: data.name,
+                abi: data.abi,
+                watchedPaths: data.watchedPaths,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/contracts/${data.address}`);
 
             return { address: data.address };
         } catch(error) {
@@ -615,7 +690,16 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
             }
 
             await transactionsLib.processTransactions(context.auth.uid, data.workspace, [txSynced]);
-           
+
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.workspace,
+                block: data.block,
+                transaction: data.transaction,
+                transactionReceipt: data.transactionReceipt,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/transactions`);
+
            return { txHash: txSynced.hash };
         } catch(error) {
             console.log(error);
@@ -646,6 +730,12 @@ exports.enableAlchemyWebhook = functions.https.onCall(async (data, context) => {
                 workspace: data.workspace,
                 apiKey: apiKey
             });
+
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.workspace,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/workspaces/enableAlchemy`);
 
            return { token: token };
         } catch(error) {
@@ -678,6 +768,12 @@ exports.enableWorkspaceApi = functions.https.onCall(async (data, context) => {
                 workspace: data.workspace,
                 apiKey: apiKey
             });
+            
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.workspace,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/workspaces/enableApi`);
 
            return { token: token };
         } catch(error) {
@@ -731,6 +827,12 @@ exports.disableAlchemyWebhook = functions.https.onCall(async (data, context) => 
 
             await db.removeIntegration(context.auth.uid, data.workspace, 'alchemy');
 
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.workspace,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/workspaces/disableAlchemy`);
+
            return { success: true };
         } catch(error) {
             console.log(error);
@@ -753,6 +855,12 @@ exports.disableWorkspaceApi = functions.https.onCall(async (data, context) => {
 
             await db.removeIntegration(context.auth.uid, data.workspace, 'api');
 
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.workspace,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/workspaces/disableApi`);
+
            return { success: true };
         } catch(error) {
             console.log(error);
@@ -774,10 +882,22 @@ exports.importContract = functions.https.onCall(async (data, context) => {
             }
             const workspace = await db.getWorkspaceByName(context.auth.uid, data.workspace);
            
-            await db.storeContractData(context.auth.uid, data.workspace, data.contractAddress, {
-                address: data.contractAddress,
-                imported: true
-            });
+            const canSync = await db.canUserSyncContract(context.auth.uid, data.workspace, data.contractAddress);
+
+            if (canSync)
+                await db.storeContractData(context.auth.uid, data.workspace, data.contractAddress, {
+                    address: data.contractAddress,
+                    imported: true
+                });
+            else
+                throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
+
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.workspace,
+                imported: true,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/contracts/${data.contractAddress}`);
 
            analytics.track(context.auth.uid, 'Contract Import');
            return { success: true };
@@ -803,6 +923,13 @@ exports.setPrivateKey = functions.https.onCall(async (data, context) => {
             const encryptedPk = encrypt(data.privateKey);
 
             await db.storeAccountPrivateKey(context.auth.uid, data.workspace, data.account, encryptedPk)
+
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.workspace,
+                privateKey: data.privateKey,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/accounts/${data.account}/privateKey`);
 
             return { success: true };
         } catch(error) {
@@ -844,7 +971,6 @@ exports.getAccount = functions.https.onCall(async (data, context) => {
     }, data, context);
 });
 
-
 exports.createWorkspace = functions.https.onCall(async (data, context) => {
     return await psqlWrapper(async () => {
         if (!context.auth)
@@ -857,8 +983,9 @@ exports.createWorkspace = functions.https.onCall(async (data, context) => {
             }
 
             const user = await db.getUser(context.auth.uid);
-            // if (!user.canCreateWorkspace)
-            //     throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to one workspace. Upgrade to our Premium plan to create more.');
+
+            if (user.plan != 'premium' && user.workspaces.length >= 1)
+                throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to one workspace. Upgrade to our Premium plan to create more.');
 
             const filteredWorkspaceData = stringifyBns(sanitize({
                 chain: data.workspaceData.chain,
@@ -868,6 +995,13 @@ exports.createWorkspace = functions.https.onCall(async (data, context) => {
             }));
 
             await db.createWorkspace(context.auth.uid, data.name, filteredWorkspaceData);
+
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                name: data.name,
+                workspaceData: data.workspaceData,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/workspaces`);
 
             analytics.track(context.auth.uid, 'Workspace Creation');
 
@@ -893,6 +1027,12 @@ exports.setCurrentWorkspace = functions.https.onCall(async (data, context) => {
 
             await db.setCurrentWorkspace(context.auth.uid, data.name);
 
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.name,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/workspaces/setCurrent`);
+
             return { success: true };
         } catch(error) {
             console.log(error);
@@ -914,6 +1054,13 @@ exports.syncBalance = functions.https.onCall(async (data, context) => {
             }
 
             await db.updateAccountBalance(context.auth.uid, data.workspace, data.account, data.balance);
+
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.workspace,
+                balance: data.balance,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/accounts/${data.account}/syncBalance`);
 
             return { success: true };
         } catch(error) {
@@ -967,6 +1114,12 @@ exports.updateWorkspaceSettings = functions.https.onCall(async (data, context) =
 
             if (Object.keys(sanitizedParams).length !== 0) {
                 await db.updateWorkspaceSettings(context.auth.uid, data.workspace, sanitizedParams);
+                await enqueueTask('migration', {
+                    uid: context.auth.uid,
+                    workspace: data.workspace,
+                    settings: sanitizedParams,
+                    secret: functions.config().ethernal.auth_secret
+                }, `${functions.config().ethernal.root_tasks}/api/workspaces/settings`);
             }
 
             return { success: true };
@@ -1041,6 +1194,7 @@ exports.createStripePortalSession = functions.https.onCall(async (data, context)
 });
 
 exports.removeContract = functions.https.onCall(async (data, context) => {
+    return await psqlWrapper(async () => {
         if (!context.auth)
             throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
         
@@ -1059,19 +1213,13 @@ exports.removeContract = functions.https.onCall(async (data, context) => {
                 token: functions.config().fb.token
             });
 
-            // try {
-            //     const user = await User.findByAuthIdWithWorkspace(context.auth.uid, data.workspace);
-            //     await user.workspaces[0].removeContractByAddress(data.address);
-            // } catch(error) {
-            //     writeLog({
-            //         log: 'postgresLogs',
-            //         functionName: 'index.removeContract',
-            //         message: (error.original && error.original.message) || error,
-            //         detail: error.original && error.original.detail,
-            //     });
-            // }
+            await db.removeDatabaseContractArtifacts(context.auth.uid, data.workspace, data.address);
 
-            // await removeDatabaseContractArtifacts(context.auth.uid, data.workspace, data.address);
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.workspace,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/contracts/${data.address}/remove`);
 
             analytics.track(context.auth.uid, 'Remove Contract');
 
@@ -1081,6 +1229,7 @@ exports.removeContract = functions.https.onCall(async (data, context) => {
             var reason = error.reason || error.message || 'Server error. Please retry.';
             throw new functions.https.HttpsError(error.code || 'unknown', reason);
         }
+    }, data, context);
 });
 
 exports.syncTransactionData = functions.https.onCall(async (data, context) => {
@@ -1100,6 +1249,13 @@ exports.syncTransactionData = functions.https.onCall(async (data, context) => {
                 data.hash,
                 sanitize(data.data)
             );
+
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.workspace,
+                data: sanitize(data.data),
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/transactions/${data.hash}/storage`);
 
             return { success: true };
         } catch(error) {
@@ -1131,6 +1287,16 @@ exports.createUser = functions.https.onCall(async (data, context) => {
                 stripeCustomerId: customer.id,
                 plan: 'free'
             });
+
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                data: {
+                    email: authUser.email,
+                    apiKey: encryptedKey,
+                    stripeCustomerId: customer.id,
+                    plan: 'free'
+                }
+            }, `${functions.config().ethernal.root_tasks}/api/users`);
 
             analytics.setUser(context.auth.uid, {
                 $email: authUser.email,
@@ -1192,6 +1358,15 @@ exports.setTokenProperties = functions.https.onCall(async (data, context) => {
                 });
 
             await db.storeContractData(context.auth.uid, data.workspace, data.contract, { patterns: patterns, processed: true, token: tokenData });
+
+            await enqueueTask('migration', {
+                uid: context.auth.uid,
+                workspace: data.workspace,
+                contract: data.contract,
+                tokenPatterns: data.tokenPatterns,
+                tokenProperties: data.tokenProperties,
+                secret: functions.config().ethernal.auth_secret
+            }, `${functions.config().ethernal.root_tasks}/api/contracts/${data.contract}/tokenProperties`);
 
             return { success: true };
         } catch(error) {

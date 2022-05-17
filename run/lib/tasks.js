@@ -2,16 +2,13 @@ const { CloudTasksClient } = require('@google-cloud/tasks');
 
 let client;
 
-const TASKS_TO_QUEUE = {
-    blockSyncTask: 'block-sync',
-    transactionSyncTask: 'transaction-sync',
-    batchBlockSyncTask: 'batch-block-sync',
-    dbBlockSyncTask: 'db-block-sync',
-    dbTransactionBlockSyncTask: 'transaction-block-sync',
-    insertUserTask: 'populate-postgres',
-    blockSyncTaskCloudRun: 'block-sync-cloud-run',
-    transactionSyncTaskCloudRun: 'ss-transaction-sync'
-};
+const ALLOWED_TASKS = [
+    'blockSync',
+    'transactionSync',
+    'transactionProcessing',
+    'usageBilling',
+    'contractProcessing'
+];
 
 const getTaskClient = () => {
     if (process.env.NODE_ENV != 'production') {
@@ -27,13 +24,15 @@ const getTaskClient = () => {
 };
 
 module.exports = {
-    enqueueTask: async (taskName, data, url) => {
-        const projectId = process.env.GOOGLE_CLOUD_PROJECT;
-        if (!TASKS_TO_QUEUE[taskName])
+    enqueueTask: async (taskName, data) => {
+        const projectId = process.env.GCLOUD_PROJECT;
+        if (ALLOWED_TASKS.indexOf(taskName) < 0)
             throw '[enqueueTask] Unknown task';
-        client = client || getTaskClient()
 
-        const parent = client.queuePath(projectId, process.env.GCLOUD_LOCATION, TASKS_TO_QUEUE[taskName]);
+        client = client || getTaskClient();
+
+        const url = `${process.env.CLOUD_RUN_ROOT}/tasks/${taskName}`;
+        const parent = client.queuePath(projectId, process.env.GCLOUD_LOCATION, taskName);
 
         const task = {
             httpRequest: {

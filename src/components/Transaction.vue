@@ -33,23 +33,23 @@
                 </v-chip>
             </span>
             <div v-else class="mb-1">
-                Couldn't not retrieve receipt for this tx. Status and other information might not be available. You can try to resync the block with <code>ethernal sync -f {{ block.number }} -t {{ block.number + 1 }}</code>
+                Couldn't not retrieve receipt for this tx. Status and other information might not be available. You can try to resync the block with <code>ethernal sync -f {{ transaction.blockNumber }} -t {{ transaction.blockNumber + 1 }}</code>
             </div>
             <v-chip small v-if="!transaction.to">
                 <v-icon small class="mr-1">mdi-file</v-icon>
                 Contract Creation
             </v-chip>
-            <v-row class="mt-2" v-if="transaction.error && transaction.error.message">
+            <v-row class="mt-2" v-if="transaction.parsedError || transaction.rawError">
                 <v-col>
                     <div class="text-overline">Error Message</div>
                     <v-card outlined>
-                        <v-card-text style="white-space: pre-wrap;" v-if="transaction.error.parsed">
-                            {{ transaction.error.message }}
+                        <v-card-text style="white-space: pre-wrap;" v-if="transaction.parsedError">
+                            {{ transaction.parsedError }}
                         </v-card-text>
                         <v-card-text v-else>
                             <b>Couldn't parse error message. Raw data:</b>
                             <div  style="white-space: pre-wrap;" class="mt-1">
-                                {{ JSON.stringify(transaction.error.message, null, '\t\t') }}
+                                {{ JSON.stringify(transaction.rawError, null, '\t\t') }}
                             </div>
                         </v-card-text>
                     </v-card>
@@ -103,7 +103,7 @@
                 </v-col>
                 <v-col cols="2">
                     <div class="text-overline">Gas Limit</div>
-                    {{ parseInt(block.gasLimit).toLocaleString() }}
+                    {{ parseInt(transaction.block.gasLimit).toLocaleString() }}
                 </v-col>
             </v-row>
 
@@ -114,13 +114,13 @@
                 </v-col>
             </v-row>
 
-            <v-row class="my-2" v-show="Object.keys(transaction.tokenBalanceChanges).length">
+            <v-row class="my-2" v-show="Object.keys(transaction.formattedBalanceChanges).length">
                 <v-col>
                     <h3 class="mb-2">Balance Changes</h3>
-                    <Tokens-Balance-Diff v-for="(token, idx) in Object.keys(transaction.tokenBalanceChanges)"
+                    <Tokens-Balance-Diff v-for="(token, idx) in Object.keys(transaction.formattedBalanceChanges)"
                         class="my-6"
                         :token="token"
-                        :balanceChanges="transaction.tokenBalanceChanges[token]"
+                        :balanceChanges="transaction.formattedBalanceChanges[token]"
                         :blockNumber="transaction.blockNumber"
                         :key="idx" />
                 </v-col>
@@ -128,7 +128,7 @@
 
             <v-row v-if="transaction.to">
                 <v-col>
-                    <Transaction-Data v-if="contract && contract.abi" :abi="contract.abi" :transaction="transaction" :withoutStorageHeader="true" />
+                    <Transaction-Data v-if="transaction.contract && transaction.contract.abi" :abi="transaction.contract.abi" :transaction="transaction" :withoutStorageHeader="true" />
                     <v-card v-else outlined>
                         <v-card-text>
                             <i>Couldn't decode data for this transaction. This probably means that you haven't <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/contracts/interacting-with-the-contract">synchronized contract metadata</a>. </i>
@@ -137,10 +137,10 @@
             </v-col>
             </v-row>
 
-            <v-row class="my-2" v-if="transaction.trace && transaction.trace.length">
+            <v-row class="my-2" v-if="transaction.traceSteps.length">
                 <v-col>
                     <h3 class="mb-2">Trace</h3>
-                    <Trace-Step v-for="(step, idx) in transaction.trace" :step="step" :key="idx" />
+                    <Trace-Step v-for="(step, idx) in transaction.traceSteps" :step="step" :key="idx" />
                 </v-col>
             </v-row>
         </template>
@@ -156,6 +156,7 @@
 </template>
 
 <script>
+const axios = require('axios');
 import { mapGetters } from 'vuex';
 import HashLink from './HashLink';
 import TransactionData from './TransactionData';
@@ -189,41 +190,25 @@ export default {
                 logs: []
             },
             tokenTransfers: [],
-            tokenBalanceChanges: {}
+            tokenBalanceChanges: {},
+            formattedBalanceChanges: {},
+            block: {},
+            contract: {},
+            traceSteps: []
         },
         jsonInterface: null,
         parsedLogsData: [],
-        block: {
-            gasLimit: 0
-        },
         processing: false
     }),
     watch: {
         hash: {
             immediate: true,
             handler(hash) {
-                this.$bind('transaction', this.db.collection('transactions').doc(hash), { serialize: (snapshot) => {
-                    const data = snapshot.data();
-                    if (!data.tokenTransfers)
-                        Object.defineProperty(data, 'tokenTransfers', { value: [] });
-                    if (!data.tokenBalanceChanges)
-                        Object.defineProperty(data, 'tokenBalanceChanges', { value: {} });
-
-                    return data;
-                }},
-                { wait: true });
-            }
-        },
-        transaction: function() {
-            if (this.transaction && this.transaction.hash) {
-                this.$bind('block', this.db.collection('blocks').doc(this.transaction.blockNumber.toString()), { wait: true });
-                if (this.transaction.to) {
-                    this.$bind('contract', this.db.collection('contracts').doc(this.transaction.to.toLowerCase()), this.db.contractSerializer)
-                        .then(() => {
-                            if (this.contract && this.contract.proxy)
-                                this.$bind('contract', this.db.collection('contracts').doc(this.contract.proxy), this.db.contractSerializer);
-                        })
-                }
+                axios.get(`http://localhost:8888/api/transactions/${hash}?firebaseAuthToken=${this.firebaseIdToken}&firebaseUserId=${this.currentWorkspace.userId}&workspace=${this.currentWorkspace.name}`)
+                .then(({ data }) => {
+                    this.transaction = data;
+                })
+                .catch(console.log);
             }
         }
     },
@@ -251,7 +236,8 @@ export default {
             'user',
             'chain',
             'currentWorkspace',
-            'isPublicExplorer'
+            'isPublicExplorer',
+            'firebaseIdToken'
         ])
     }
 }

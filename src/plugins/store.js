@@ -16,10 +16,10 @@ export default new Vuex.Store({
             domain: null
         },
         currentWorkspace: {
-            userId: null,
+            userId: '',
             networkId: null,
             rpcServer: null,
-            name: null,
+            name: '',
             isAdmin: null,
             settings: {
                 defaultAccount: null,
@@ -132,7 +132,7 @@ export default new Vuex.Store({
         }
     },
     getters: {
-        firebaseIdToken: state => state.user.firebaseIdToken,
+        firebaseIdToken: state => state.user.firebaseIdToken || '',
         isUserLoggedIn: state => !!state.user.uid,
         isPublicExplorer: state => !!state.publicExplorer.slug || !!state.publicExplorer.domain,
         publicExplorer: state => state.publicExplorer,

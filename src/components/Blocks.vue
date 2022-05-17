@@ -39,6 +39,7 @@
 <script>
 import { mapGetters } from 'vuex';
 const axios = require('axios');
+
 export default {
     name: 'Blocks',
     data: () => ({

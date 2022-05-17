@@ -1,8 +1,11 @@
 'use strict';
 const {
-  Model
+  Model,
+  Sequelize
 } = require('sequelize');
 const { sanitize } = require('../lib/utils');
+
+const Op = Sequelize.Op;
 const INTEGRATION_FIELD_MAPPING = {
     'api': 'apiEnabled',
     'alchemy': 'alchemyIntegrationEnabled'
@@ -17,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.TransactionReceipt, { foreignKey: 'workspaceId', as: 'receipts' });
       Workspace.hasMany(models.TransactionLog, { foreignKey: 'workspaceId', as: 'logs' });
       Workspace.hasMany(models.Contract, { foreignKey: 'workspaceId', as: 'contracts' });
+      Workspace.hasMany(models.Account, { foreignKey: 'workspaceId', as: 'accounts' });
     }
 
     static findPublicWorkspaceById(id) {
@@ -37,7 +41,17 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async getFilteredBlocks(page, itemsPerPage, order = 'DESC') {
+    async getFilteredContracts(page = 1, itemsPerPage = 10, orderBy = 'timestamp', order = 'DESC') {
+        const contracts = await this.getContracts();
+        return this.getContracts({
+            offset: (page - 1) * itemsPerPage,
+            limit: itemsPerPage,
+            order: [[orderBy, order]],
+            attributes: ['address', 'name', 'timestamp', 'patterns', 'workspaceId']
+        });
+    }
+
+    getFilteredBlocks(page, itemsPerPage, order = 'DESC') {
         return this.getBlocks({
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
@@ -45,7 +59,30 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async safeCreateBlock(block) {
+    getFilteredTransactions(page, itemsPerPage, order = 'DESC', address) {
+        const where = address ? { [Op.or]: [{ to: address }, { from: address }] } : {};
+        return this.getTransactions({
+            where: where,
+            offset: (page - 1) * itemsPerPage,
+            limit: itemsPerPage,
+            order: [['blockNumber', order]],
+            attributes: ['blockNumber', 'from', 'gasPrice', 'hash', 'methodDetails', 'data', 'timestamp', 'to', 'value', 'workspaceId'],
+            include: [
+                {
+                    model: sequelize.models.TransactionReceipt,
+                    attributes: ['gasUsed', 'status'],
+                    as: 'receipt'
+                },
+                {
+                    model: sequelize.models.Contract,
+                    attributes: ['abi'],
+                    as: 'contract'
+                }
+            ]
+        });
+    }
+
+    safeCreateBlock(block) {
         return this.createBlock(sanitize({
             baseFeePerGas: block.baseFeePerGas,
             difficulty: block.difficulty,
@@ -93,7 +130,7 @@ module.exports = (sequelize, DataTypes) => {
                     v: transaction.v,
                     value: transaction.value,
                     raw: transaction
-                }));
+                }), { transaction: sequelizeTransaction });
 
                 const receipt = transaction.receipt;
                 const storedReceipt = await storedTx.createReceipt(sanitize({
@@ -113,7 +150,7 @@ module.exports = (sequelize, DataTypes) => {
                     transactionIndex: receipt.transactionIndex,
                     type_: receipt.type,
                     raw: receipt
-                }));
+                }), { transaction: sequelizeTransaction });
 
                 for (let i = 0; i < receipt.logs.length; i++) {
                     const log = receipt.logs[i];
@@ -128,7 +165,7 @@ module.exports = (sequelize, DataTypes) => {
                         transactionHash: log.transactionHash,
                         transactionIndex: log.transactionIndex,
                         raw: log
-                    }));
+                    }), { transaction: sequelizeTransaction });
                 }
 
                 return storedTx;
@@ -146,6 +183,7 @@ module.exports = (sequelize, DataTypes) => {
             abi: contract.abi,
             address: contract.address,
             name: contract.name,
+            imported: contract.imported,
             patterns: contract.patterns,
             processed: contract.processed,
             timestamp: contract.timestamp,
@@ -161,13 +199,76 @@ module.exports = (sequelize, DataTypes) => {
             return this.createContract(newContract);
     }
 
+    async safeCreateOrUpdateAccount(account) {
+        const accounts = await this.getAccounts({ where: { address: account.address }});
+        const existingAccount = accounts[0];
+        const newAccount = sanitize({
+            address: account.address,
+            balance: account.balance,
+            privateKey: account.privateKey
+        });
+
+        if (existingAccount)
+            return existingAccount.update(newAccount);
+        else
+            return this.createAccount(newAccount);
+    }
+
     async findTransaction(hash) {
         const transactions = await this.getTransactions({
             where: {
                 hash: hash
-            }
+            },
+            attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId'],
+            include: [
+                {
+                    model: sequelize.models.TransactionReceipt,
+                    attributes: ['gasUsed', 'status'],
+                    as: 'receipt',
+                    include: [
+                        {
+                            model: sequelize.models.TransactionLog,
+                            attributes: ['address', 'data', 'logIndex', 'topics'],
+                            as: 'logs'
+                        } 
+                    ]
+                },
+                {
+                    model: sequelize.models.TransactionTraceStep,
+                    attributes: ['address', 'contractHashedBytecode', 'depth', 'input', 'op', 'returnData', 'workspaceId'],
+                    as: 'traceSteps',
+                    include: [
+                        {
+                            model: sequelize.models.Contract,
+                            attributes: ['abi', 'address' , 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'verificationStatus', 'workspaceId'],
+                            as: 'contract'
+                        }
+                    ]
+                },
+                {
+                    model: sequelize.models.TokenBalanceChange,
+                    attributes: ['token', 'address', 'currentBalance', 'previousBalance', 'diff'],
+                    as: 'tokenBalanceChanges'
+                },
+                {
+                    model: sequelize.models.TokenTransfer,
+                    attributes: ['amount', 'dst', 'src', 'token'],
+                    as: 'tokenTransfers'
+                },
+                {
+                    model: sequelize.models.Block,
+                    attributes: ['gasLimit'],
+                    as: 'block'
+                },
+                {
+                    model: sequelize.models.Contract,
+                    attributes: ['abi', 'address', 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'verificationStatus', 'workspaceId'],
+                    as: 'contract'
+                }
+            ]
         });
-        return transactions[0];
+
+        return transactions.length ? transactions[0] :  null;
     }
 
     async findBlockByNumber(number) {
@@ -179,10 +280,19 @@ module.exports = (sequelize, DataTypes) => {
         return blocks[0];
     }
 
+    async findContractById(contractId) {
+        const contracts = await this.getContracts({
+            where: {
+                id: contractId
+            }
+        });
+        return contracts[0]
+    }
+
     async findContractByAddress(address) {
         const contracts = await this.getContracts({
             where: {
-                address: address
+                address: address.toLowerCase()
             }
         });
         return contracts[0];
@@ -227,15 +337,20 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async reset() {
-        await sequelize.models.Block.destroy({ where: { workspaceId: this.id }});
-        await sequelize.models.Contract.destroy({ where: { workspaceId: this.id }});
+        try {
+            return await sequelize.transaction(async (transaction) => {
+                await sequelize.models.Block.destroy({ where: { workspaceId: this.id }}, { transaction });
+                await sequelize.models.Contract.destroy({ where: { workspaceId: this.id }}, { transaction });
+            });
+        } catch(error) {
+            console.log(error);
+        }
     }
 
     async removeContractByAddress(address) {
         const contracts = await this.getContracts({ where: { address: address }});
-        if (!contracts.length)
-            throw `Couldn't find contract at ${address}`;
-        return contracts[0].destroy();
+        if (contracts.length)
+            return contracts[0].destroy();
     }
 
     getUnprocessedContracts() {
