@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.3] - 2022-06-07
+### Changed
+- Updated ethers.js to 5.6.8
+
 ## [1.12.2] - 2022-05-17
 ### Fixed
 - Check if error field is present before accessing it when write call fails
