@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   class Workspace extends Model {
     static associate(models) {
       Workspace.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
+      Workspace.hasOne(models.Explorer, { foreignKey: 'workspaceId', as: 'explorer' });
       Workspace.hasMany(models.Block, { foreignKey: 'workspaceId', as: 'blocks' });
       Workspace.hasMany(models.Transaction, { foreignKey: 'workspaceId', as: 'transactions' });
       Workspace.hasMany(models.TransactionReceipt, { foreignKey: 'workspaceId', as: 'receipts' });
@@ -41,31 +42,42 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async getFilteredContracts(page = 1, itemsPerPage = 10, orderBy = 'timestamp', order = 'DESC') {
-        const contracts = await this.getContracts();
-        return this.getContracts({
+    getFilteredAccounts(page = 1, itemsPerPage = 10, orderBy = 'address', order = 'DESC') {
+        return this.getAccounts({
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
             order: [[orderBy, order]],
-            attributes: ['address', 'name', 'timestamp', 'patterns', 'workspaceId']
+            attributes: ['workspaceId', 'address', 'balance', 'privateKey']
         });
     }
 
-    getFilteredBlocks(page, itemsPerPage, order = 'DESC') {
+    getFilteredContracts(page = 1, itemsPerPage = 10, orderBy = 'timestamp', order = 'DESC', onlyTokens = false) {
+        const where = onlyTokens ? { patterns: { [Op.contains]: ["erc20"] } } : {};
+
+        return this.getContracts({
+            where: where,
+            offset: (page - 1) * itemsPerPage,
+            limit: itemsPerPage,
+            order: [[orderBy, order]],
+            attributes: ['address', 'name', 'timestamp', 'patterns', 'workspaceId', 'tokenName', 'tokenSymbol']
+        });
+    }
+
+    getFilteredBlocks(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'number') {
         return this.getBlocks({
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
-            order: [['number', order]]
+            order: [[orderBy, order]]
         });
     }
 
-    getFilteredTransactions(page, itemsPerPage, order = 'DESC', address) {
-        const where = address ? { [Op.or]: [{ to: address }, { from: address }] } : {};
+    getFilteredTransactions(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'blockNumber', address) {
+        const where = address ? { [Op.or]: [{ to: address.toLowerCase() }, { from: address.toLowerCase() }] } : {};
         return this.getTransactions({
             where: where,
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
-            order: [['blockNumber', order]],
+            order: [[orderBy, order]],
             attributes: ['blockNumber', 'from', 'gasPrice', 'hash', 'methodDetails', 'data', 'timestamp', 'to', 'value', 'workspaceId'],
             include: [
                 {
@@ -102,7 +114,7 @@ module.exports = (sequelize, DataTypes) => {
 
     async safeCreateTransaction(transaction, blockId) {
         try {
-            return await sequelize.transaction(async (sequelizeTransaction) => {
+            return sequelize.transaction(async (sequelizeTransaction) => {
                 const storedTx = await this.createTransaction(sanitize({
                     blockHash: transaction.blockHash,
                     blockNumber: transaction.blockNumber,
@@ -176,7 +188,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeCreateOrUpdateContract(contract) {
-        const contracts = await this.getContracts({ where: { address: contract.address }});
+        const contracts = await this.getContracts({ where: { address: contract.address.toLowerCase() }});
         const existingContract = contracts[0];
         const newContract = sanitize({
             hashedBytecode: contract.hashedBytecode,
@@ -186,6 +198,7 @@ module.exports = (sequelize, DataTypes) => {
             imported: contract.imported,
             patterns: contract.patterns,
             processed: contract.processed,
+            proxy: contract.proxy,
             timestamp: contract.timestamp,
             tokenDecimals: contract.token && contract.token.decimals,
             tokenName: contract.token && contract.token.name,
@@ -200,7 +213,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeCreateOrUpdateAccount(account) {
-        const accounts = await this.getAccounts({ where: { address: account.address }});
+        const accounts = await this.getAccounts({ where: { address: account.address.toLowerCase() }});
         const existingAccount = accounts[0];
         const newAccount = sanitize({
             address: account.address,
@@ -338,7 +351,8 @@ module.exports = (sequelize, DataTypes) => {
 
     async reset() {
         try {
-            return await sequelize.transaction(async (transaction) => {
+            return sequelize.transaction(async (transaction) => {
+                await sequelize.models.Transaction.destroy({ where: { workspaceId: this.id }}, { transaction });
                 await sequelize.models.Block.destroy({ where: { workspaceId: this.id }}, { transaction });
                 await sequelize.models.Contract.destroy({ where: { workspaceId: this.id }}, { transaction });
             });
@@ -348,7 +362,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async removeContractByAddress(address) {
-        const contracts = await this.getContracts({ where: { address: address }});
+        const contracts = await this.getContracts({ where: { address: address.toLowerCase() }});
         if (contracts.length)
             return contracts[0].destroy();
     }

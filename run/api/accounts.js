@@ -4,6 +4,19 @@ const db = require('../lib/firebase');
 const { encrypt } = require('../lib/crypto');
 const authMiddleware = require('../middlewares/auth');
 
+router.get('/', authMiddleware, async (req, res) => {
+    const data = { ...req.query, ...req.body.data };
+    console.log(data);
+    try {
+        const result = await db.getAccounts(data.uid, data.workspace, data.page, data.itemsPerPage, data.orderBy, data.order)
+        
+        res.status(200).json(result);
+    } catch(error) {
+        console.log(error);
+        res.status(400).send(error);
+    }
+});
+
 router.post('/:address/syncBalance', authMiddleware, async (req, res) => {
     const data = req.body.data;
     try {
@@ -12,7 +25,7 @@ router.post('/:address/syncBalance', authMiddleware, async (req, res) => {
             throw new Error(`[POST /api/accounts/${address}/syncBalance] Missing parameters.`);
         }
 
-        await db.updateAccountBalance(data.uid, data.workspace, req.params.address, data.balance);
+        await db.updateAccountBalance(data.uid, data.workspace, req.params.address.toLowerCase(), data.balance);
 
         res.sendStatus(200);
     } catch(error) {

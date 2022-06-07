@@ -1,11 +1,11 @@
 {
-  "name": "tasks",
-  "description": "Task processor",
+  "name": "app",
+  "description": "Ethernal Backend",
   "version": "1.0.0",
   "private": true,
-  "main": "tasks.js",
   "scripts": {
-    "start": "node tasks.js"
+    "start": "node index.js",
+    "test": "jest"
   },
   "engines": {
     "node": "17.1.x"
@@ -22,7 +22,12 @@
     "express": "^4.17.3",
     "firebase-admin": "^10.2.0",
     "pg": "^8.7.3",
+    "pusher": "^5.1.0-beta",
     "sequelize": "^6.19.0",
     "solc": "^0.8.13"
+  },
+  "devDependencies": {
+    "jest": "^28.1.0",
+    "supertest": "^6.2.3"
   }
 }

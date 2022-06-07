@@ -2,12 +2,13 @@ const { getAuth } = require('firebase-admin/auth');
 const db = require('../lib/firebase');
 
 module.exports = async (req, res, next) => {
+    const data = { ...req.body.data, ...req.query };
     try {
         let firebaseUser;
-        const data = { ...req.body.data, ...req.query };
+
+        req.body.data = req.body.data || {};
 
         if (data.firebaseUserId && process.env.NODE_ENV !== 'production') {
-            firebaseUser = { user_id: data.firebaseUserId };
             req.body.data.uid = data.firebaseUserId;
             next();
         }
@@ -26,7 +27,8 @@ module.exports = async (req, res, next) => {
         else
             throw new Error('You must be signed in to do this.');
     } catch(error) {
-        console.log(error);
+        console.error(data)
+        console.error(error);
         res.status(401).send(error);
     }
 };

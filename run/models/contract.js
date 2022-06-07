@@ -14,6 +14,17 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Contract.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
     }
+
+    getProxyContract() {
+        if (!this.proxy) return null;
+
+        return Contract.findOne({
+            where: {
+                workspaceId: this.workspaceId,
+                address: this.proxy
+            }
+        });
+    }
   }
   Contract.init({
     workspaceId: DataTypes.INTEGER,
@@ -28,6 +39,12 @@ module.exports = (sequelize, DataTypes) => {
     imported: DataTypes.BOOLEAN,
     name: DataTypes.STRING,
     patterns: DataTypes.ARRAY(DataTypes.STRING),
+    proxy: {
+        type: DataTypes.STRING,
+        set(value) {
+            this.setDataValue('proxy', value.toLowerCase());
+        }
+    },
     processed: DataTypes.BOOLEAN,
     timestamp: DataTypes.STRING,
     tokenDecimals: DataTypes.INTEGER,
@@ -44,20 +61,18 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     hooks: {
         afterUpdate(contract, options) {
-            console.log(contract);
             return enqueueTask('contractProcessing', {
                 contractId: contract.id,
                 workspaceId: contract.workspaceId,
                 secret: process.env.AUTH_SECRET
-            }, `${process.env.CLOUD_RUN_ROOT}/tasks/processContract`)
+            }, `${process.env.CLOUD_RUN_ROOT}/tasks/contractProcessing`)
         },
         afterSave(contract, options) {
-            console.log(contract);
             return enqueueTask('contractProcessing', {
                 contractId: contract.id,
                 workspaceId: contract.workspaceId,
                 secret: process.env.AUTH_SECRET
-            }, `${process.env.CLOUD_RUN_ROOT}/tasks/processContract`)
+            }, `${process.env.CLOUD_RUN_ROOT}/tasks/contractProcessing`)
         }
     },
     sequelize,

@@ -102,12 +102,6 @@ module.exports = (sequelize, DataTypes) => {
             return this.getDataValue('plan') == 'premium';
         }
     },
-    canCreateWorkspace: {
-        type: DataTypes.VIRTUAL,
-        get() {
-            return this.isPremium || this.workspaces.length === 0;
-        }
-    }
   }, {
     sequelize,
     modelName: 'User',

@@ -1,0 +1,29 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: app
+spec:
+  template:
+    spec:
+      containers:
+      - env:
+        - name: NODE_ENV
+          value: development
+        - name: FIREBASE_CONFIG
+          value: {"projectId": "ethernal-95a14"}
+        - name: GCLOUD_LOCATION
+          value: us-central1
+        - name: GCLOUD_PROJET
+          value: ethernal-95a14
+        - name: PORT
+          value: 8888
+        - name: CLOUD_RUN_ROOT
+          value: http://localhost:8888
+        - name: AUTH_SECRET
+          value: 382A5C30A96D38E3DF430E5101E8D07D
+        - name: ENCRYPTION_KEY
+          value: 382A5C31A96D38E3DF430E5101E8D07D
+        - name: ENCRYPTION_JWT_SECRET
+          value: 26F95488BA7D7E545B1B8669990739BB21A0A6D3EFB4910C0460B068BDDD3E1C
+        - name: ETHERSCAN_API_TOKEN
+          value: JD1B68ZHWN2MCAQ39ZAGIJEXUSRVAXRYVK

@@ -206,7 +206,6 @@
 </template>
 
 <script>
-const axios = require('axios');
 const ethers = require('ethers');
 
 import { mapGetters } from 'vuex';
@@ -353,7 +352,7 @@ export default {
                 this.$bind('transactionsTo', this.db.collection('transactions').where('to', '==', hash).orderBy('blockNumber', 'desc'));
             this.contractLoader = true;
 
-            axios.get(`http://localhost:8888/api/contracts/${hash}?firebaseAuthToken=${this.firebaseIdToken}&firebaseUserId=${this.currentWorkspace.userId}&workspace=${this.currentWorkspace.name}`)
+            this.server.getContract(hash)
                 .then(({ data }) => {
                     this.contract = data;
                     if (this.contract.abi)
@@ -389,7 +388,6 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'firebaseIdToken',
             'currentWorkspace',
             'chain',
             'isPublicExplorer'

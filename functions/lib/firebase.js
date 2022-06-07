@@ -335,7 +335,7 @@ const getAccount = async (userId, workspace, address) => {
 
     const doc = await _getWorkspace(userId, workspace)
         .collection('accounts')
-        .doc(address)
+        .doc(address.toLowerCase())
         .get();
 
     if (!doc.exists) {

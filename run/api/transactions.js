@@ -34,7 +34,7 @@ router.post('/', authMiddleware, async (req, res) => {
         // TODO: Bill usage
 
         if (!txSynced.to && sTransactionReceipt) {
-            const canSync = await db.canUserSyncContract(data.uid, data.workspace, txSynced.to);
+            const canSync = await db.canUserSyncContract(data.uid, data.workspace, sTransactionReceipt.contractAddress);
 
             if (canSync)
                 await db.storeContractData(data.uid, data.workspace, sTransactionReceipt.contractAddress, {
@@ -46,7 +46,8 @@ router.post('/', authMiddleware, async (req, res) => {
         await enqueueTask('transactionProcessing', {
             userId: data.uid,
             workspace: data.workspace,
-            transaction: txSynced
+            transaction: txSynced,
+            secret: process.env.AUTH_SECRET
         });
        
        res.sendStatus(200);
@@ -106,7 +107,7 @@ router.post('/:hash/tokenBalanceChanges', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        console.lgo(error);
+        console.log(error);
         res.status(400).send(error);
     }
 });
@@ -148,7 +149,7 @@ router.post('/:hash/trace', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        console.lgo(error);
+        console.log(error);
         res.status(400).send(error);
     }
 });
@@ -172,12 +173,9 @@ router.post('/:hash/storage', authMiddleware, async (req, res) => {
 });
 
 router.get('/', workspaceAuthMiddleware, async (req, res) => {
+    const data = req.query;
+
     try {
-        const data = req.query;
-
-        if (!data.page || !data.itemsPerPage)
-            throw '[GET /api/transactions] Missing parameters';
-
         const transactions = await db.getWorkspaceTransactions(data.workspace.id, data.page, data.itemsPerPage, data.order || 'DESC');
 
         res.status(200).json(transactions);

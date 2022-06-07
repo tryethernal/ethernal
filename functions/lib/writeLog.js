@@ -13,7 +13,7 @@ module.exports = ({ logName = 'defaultLog', functionName, message, detail, sever
                 severity: severity,
                 labels: {
                     function: functionName,
-                    userId: uid
+                    userId: String(uid)
                 }
             }, {
                 message: message,

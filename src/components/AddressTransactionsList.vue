@@ -7,13 +7,11 @@
             :currentAddress="address"
             :sortBy="currentOptions.sortBy[0]"
             @pagination="onPagination"
-            @update:options="fetchTransactions" />
+            @update:options="getTransactions" />
     </v-container>
 </template>
 
 <script>
-const axios = require('axios');
-import { mapGetters } from 'vuex';
 import TransactionsList from './TransactionsList';
 
 export default {
@@ -30,13 +28,20 @@ export default {
     }),
     methods: {
         onPagination: function(options) {
-            this.fetchTransactions(options);
+            this.getTransactions(options);
         },
-        fetchTransactions: function(options) {
+        getTransactions: function(newOptions) {
             this.loading = true;
-            this.currentOptions = options;
-            const sortDirection = this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc';
-            axios.get(`http://localhost:8888/api/addresses/${this.address}/transactions?firebaseAuthToken=${this.firebaseIdToken}&firebaseUserId=${this.currentWorkspace.userId}&workspace=${this.currentWorkspace.name}&page=${this.currentOptions.page}&itemsPerPage=${this.currentOptions.itemsPerPage}&order=${sortDirection}`)
+            this.currentOptions = newOptions;
+
+            const options = {
+                page: this.currentOptions.page,
+                itemsPerPage: this.currentOptions.itemsPerPage,
+                sortBy: this.currentOptions.sortBy[0],
+                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
+            }
+
+            this.server.getAddressTransactions(this.address, options)
                 .then(({ data }) => {
                     this.transactions = data.items;
                     this.transactionCount = data.total;
@@ -44,12 +49,6 @@ export default {
             .catch(console.log)
             .finally(() => this.loading = false);
         }
-    },
-    computed: {
-        ...mapGetters([
-            'firebaseIdToken',
-            'currentWorkspace'
-        ])
     }
 }
 </script>

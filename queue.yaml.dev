@@ -7,3 +7,5 @@ queue:
 - name: transactionProcessing
 - name: migration
 - name: contractProcessing
+- name: transactionSync
+- name: blockSync

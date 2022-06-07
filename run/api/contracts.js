@@ -8,7 +8,7 @@ const processContractVerification = require('../lib/processContractVerification'
 
 router.post('/:address', authMiddleware, async (req, res) => {
     const data = req.body.data;
-    console.log(data);
+
     try {
         if (!data.uid || !data.workspace) {
             console.log(data);
@@ -39,7 +39,7 @@ router.post('/:address', authMiddleware, async (req, res) => {
 router.post('/:address/tokenProperties', authMiddleware, async (req, res) => {
     const data = req.body.data;
     try {
-        if (!data.uid || !data.workspace || !data.contract) {
+        if (!data.uid || !data.workspace) {
             console.log(data);
             throw new Error(`[POST /api/contracts/${req.params.address}/tokenProperties] Missing parameters`);
         }
@@ -47,7 +47,7 @@ router.post('/:address/tokenProperties', authMiddleware, async (req, res) => {
         const contract = await db.getWorkspaceContract(data.uid, data.workspace, req.params.address);
         
         if (!contract)
-            return res.status(200).send(`Couldn't find contract at address ${data.contract}.`);
+            return res.status(200).send(`Couldn't find contract at address ${req.params.address}.`);
 
         const newPatterns = data.tokenPatterns ? [...new Set([...contract.patterns, ...data.tokenPatterns])] : contract.patterns;
 
@@ -60,7 +60,7 @@ router.post('/:address/tokenProperties', authMiddleware, async (req, res) => {
             });
         }
 
-        await db.storeContractData(data.uid, data.workspace, data.contract, {
+        await db.storeContractData(data.uid, data.workspace, req.params.address, {
             patterns: newPatterns,
             token: tokenData,
             processed: true
@@ -85,14 +85,50 @@ router.post('/:address/remove', authMiddleware, async (req, res) => {
     }
 });
 
-router.post('/verification', async (req, res) => {
+router.post('/:address/verify', async (req, res) => {
+    const data = req.body;
+    const address = req.params.address.toLowerCase();
     try {
-        await processContractVerification(db, req.body.data);
+         if (!data.explorerSlug || !data.compilerVersion || !data.code || !data.contractName) {
+            console.log(data);
+            throw new Error(`[POST /${address}/verify] Missing parameter.`);
+        }
+
+        const explorer = await db.getPublicExplorerParamsBySlug(data.explorerSlug);
+
+        if (!explorer)
+            throw new Error('Could not find explorer, make sure you passed the correct slug.')
+
+        const contract = await db.getContract(explorer.userId, explorer.workspaceId, address)
+
+        if (!contract)
+            throw new Error(`Couldn't find contract at address ${address}`);
+        if (contract.verificationStatus == 'success')
+            throw new Error('Contract has already been verified.');
+        if (contract.verificationStatus == 'pending')
+            throw new Error('There already is an ongoing verification for this contract.');
+
+        const payload = sanitize({
+            publicExplorerParams: explorer,
+            contractAddress: address,
+            compilerVersion: data.compilerVersion,
+            constructorArguments: data.constructorArguments,
+            code: data.code,
+            contractName: data.contractName,
+            secret: process.env.AUTH_SECRET
+        });
+
+        const url = `${process.env.GCLOUD_RUN_ROOT}/tasks/`;
+
+        const result = await processContractVerification(db, payload);
+
+        if (!result.verificationSucceded)
+            throw new Error(result.reason);
 
         res.sendStatus(200);
     } catch(error) {
         console.log(error);
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
@@ -111,7 +147,7 @@ router.get('/:address', workspaceAuthMiddleware, async (req, res) => {
 router.get('/', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
     try {
-        const contracts = await db.getWorkspaceContracts(data.firebaseUserId, data.workspace.name, data.page, data.itemsPerPage, data.orderBy, data.order);
+        const contracts = await db.getWorkspaceContracts(data.firebaseUserId, data.workspace.name, data.page, data.itemsPerPage, data.orderBy, data.order, data.onlyTokens);
 
         res.status(200).json(contracts);
     } catch(error) {

@@ -21,11 +21,21 @@ module.exports = (sequelize, DataTypes) => {
     confirmations: DataTypes.INTEGER,
     contractAddress: DataTypes.STRING,
     cumulativeGasUsed: DataTypes.STRING,
-    from: DataTypes.STRING,
+    from: {
+        type: DataTypes.STRING,
+        set(value) {
+            this.setDataValue('from', value.toLowerCase());
+        }
+    },
     gasUsed: DataTypes.STRING,
     logsBloom: DataTypes.STRING,
     status: DataTypes.BOOLEAN,
-    to: DataTypes.STRING,
+    to: {
+        type: DataTypes.STRING,
+        set(value) {
+            this.setDataValue('to', value.toLowerCase());
+        }
+    },
     transactionHash: DataTypes.STRING,
     transactionIndex: DataTypes.INTEGER,
     type: DataTypes.INTEGER,

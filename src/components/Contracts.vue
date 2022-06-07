@@ -50,7 +50,6 @@
     </v-container>
 </template>
 <script>
-const axios = require('axios');
 import { mapGetters } from 'vuex';
 import ImportContractModal from './ImportContractModal';
 import HashLink from './HashLink';
@@ -95,18 +94,25 @@ export default {
             this.headers.push({ text: '', value: 'remove' });
     },
     methods: {
-        fetchContracts: function(options) {
+        fetchContracts: function(newOptions) {
             this.loading = true;
-            if (options)
-                this.currentOptions = options;
-            const sortDirection = this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc';
-            axios.get(`http://localhost:8888/api/contracts?firebaseAuthToken=${this.firebaseIdToken}&firebaseUserId=${this.currentWorkspace.userId}&workspace=${this.currentWorkspace.name}&page=${this.currentOptions.page}&itemsPerPage=${this.currentOptions.itemsPerPage}&orderBt=${this.currentOptions.sortBy[0]}&order=${sortDirection}`)
-            .then(({ data }) => {
-                this.contracts = data.items;
-                this.contractCount = data.total;
-            })
-            .catch(console.log)
-            .finally(() => this.loading = false);
+            if (newOptions)
+                this.currentOptions = newOptions;
+
+            const options = {
+                page: this.currentOptions.page,
+                itemsPerPage: this.currentOptions.itemsPerPage,
+                sortBy: this.currentOptions.sortBy[0],
+                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
+            };
+
+            this.server.getContracts(options)
+                .then(({ data }) => {
+                    this.contracts = data.items;
+                    this.contractCount = data.total;
+                })
+                .catch(console.log)
+                .finally(() => this.loading = false);
         },
         formatContractPattern,
         openRemoveContractConfirmationModal: function(address) {
@@ -122,7 +128,6 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'firebaseIdToken',
             'user',
             'currentWorkspace'
         ]),

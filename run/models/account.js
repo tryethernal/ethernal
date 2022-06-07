@@ -15,7 +15,12 @@ module.exports = (sequelize, DataTypes) => {
   }
   Account.init({
     workspaceId: DataTypes.INTEGER,
-    address: DataTypes.STRING,
+    address: {
+        type: DataTypes.STRING,
+        set(value) {
+            this.setDataValue('address', value.toLowerCase());
+        }
+    },
     balance: DataTypes.STRING,
     privateKey: DataTypes.STRING
   }, {

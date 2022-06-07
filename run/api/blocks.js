@@ -10,10 +10,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res) => {
     try {
         const data = req.query;
 
-        if (!data.page || !data.itemsPerPage)
-            throw '[GET /api/blocks] Missing parameters';
-
-        const blocks = await db.getWorkspaceBlocks(data.workspace.id, data.page, data.itemsPerPage, data.order || 'DESC');
+        const blocks = await db.getWorkspaceBlocks(data.workspace.id, data.page, data.itemsPerPage, data.order);
         
         res.status(200).json(blocks);
     } catch(error) {
@@ -42,16 +39,16 @@ router.post('/', authMiddleware, async (req, res) => {
         const data = req.body.data;
 
         const block = data.block;
+
         if (!block)
             throw Error('[POST /api/blocks] Missing block parameter.');
 
         var syncedBlock = stringifyBns(sanitize(block));
 
         const storedBlock = await db.storeBlock(data.uid, data.workspace, syncedBlock);
-
         // TODO: Bill usage for if empty block
 
-        res.status(200).json({ blockNumber: syncedBlock.number });
+        res.sendStatus(200);
     } catch(error) {
         console.log(error);
         res.status(400).send(error);

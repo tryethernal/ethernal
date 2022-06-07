@@ -15,8 +15,18 @@ module.exports = (sequelize, DataTypes) => {
   }
   TokenBalanceChange.init({
     transactionId: DataTypes.INTEGER,
-    token: DataTypes.STRING,
-    address: DataTypes.STRING,
+    token: {
+        type: DataTypes.STRING,
+        set(value) {
+            this.setDataValue('token', value.toLowerCase());
+        }
+    },
+    address: {
+        type: DataTypes.STRING,
+        set(value) {
+            this.setDataValue('address', value.toLowerCase());
+        }
+    },
     currentBalance: DataTypes.STRING,
     previousBalance: DataTypes.STRING,
     diff: DataTypes.STRING

@@ -101,6 +101,7 @@ const processTransactions = async (userId, workspaceName, transactions) => {
 
         try {
             tokenTransfers = getTokenTransfers(transaction);
+
             await db.storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, tokenTransfers);
 
             if (workspace && workspace.public) {
@@ -108,9 +109,7 @@ const processTransactions = async (userId, workspaceName, transactions) => {
                     await db.storeContractData(userId, workspaceName, tokenTransfers[i].token, { address: tokenTransfers[i].token })
                 }
             }
-        } catch(error) {
-            await db.storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, []);
-        }
+        } catch(_error) {}
 
         if (workspace && workspace.public) {
             if (workspace.tracing != 'disabled') {
@@ -145,6 +144,7 @@ const processTransactions = async (userId, workspaceName, transactions) => {
             }
         }
 
+
         if (tokenTransfers && workspace && workspace.public) {
             const tokenBalanceChanges = {};
             for (let i = 0; i < tokenTransfers.length; i++) {
@@ -164,7 +164,6 @@ const processTransactions = async (userId, workspaceName, transactions) => {
                 if (changes.length > 0)
                     tokenBalanceChanges[transfer.token] = changes;
             }
-
             if (Object.keys(tokenBalanceChanges).length)
                 await db.storeTokenBalanceChanges(userId, workspace.name, transaction.hash, tokenBalanceChanges);
         }

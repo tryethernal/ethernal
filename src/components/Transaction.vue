@@ -156,7 +156,6 @@
 </template>
 
 <script>
-const axios = require('axios');
 import { mapGetters } from 'vuex';
 import HashLink from './HashLink';
 import TransactionData from './TransactionData';
@@ -204,11 +203,9 @@ export default {
         hash: {
             immediate: true,
             handler(hash) {
-                axios.get(`http://localhost:8888/api/transactions/${hash}?firebaseAuthToken=${this.firebaseIdToken}&firebaseUserId=${this.currentWorkspace.userId}&workspace=${this.currentWorkspace.name}`)
-                .then(({ data }) => {
-                    this.transaction = data;
-                })
-                .catch(console.log);
+                this.server.getTransaction(hash)
+                    .then(({ data }) => this.transaction = data)
+                    .catch(console.log);
             }
         }
     },
@@ -237,7 +234,6 @@ export default {
             'chain',
             'currentWorkspace',
             'isPublicExplorer',
-            'firebaseIdToken'
         ])
     }
 }

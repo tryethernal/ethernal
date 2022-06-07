@@ -15,9 +15,24 @@ module.exports = (sequelize, DataTypes) => {
   }
   TokenTransfer.init({
     amount: DataTypes.STRING,
-    dst: DataTypes.STRING,
-    src: DataTypes.STRING,
-    token: DataTypes.STRING,
+    dst: {
+        type: DataTypes.STRING,
+        set(value) {
+            this.setDataValue('dst', value.toLowerCase());
+        }
+    },
+    src: {
+        type: DataTypes.STRING,
+        set(value) {
+            this.setDataValue('src', value.toLowerCase());
+        }
+    },
+    token: {
+        type: DataTypes.STRING,
+        set(value) {
+            this.setDataValue('token', value.toLowerCase());
+        }
+    },
     transactionId: DataTypes.INTEGER
   }, {
     sequelize,

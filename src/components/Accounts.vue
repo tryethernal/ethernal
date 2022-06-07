@@ -6,7 +6,15 @@
             :loading="loading"
             no-data-text="No Accounts"
             :items="accounts"
-            :headers="headers">
+            :sort-by="currentOptions.sortBy[0]"
+            :must-sort="true"
+            :sort-desc="true"
+            :server-items-length="accountCount"
+            :footer-props="{
+                itemsPerPageOptions: [10, 25, 100]
+            }"
+            :headers="headers"
+            @update:options="getAccounts">
             <template v-slot:no-data>
                 No Accounts Available - Try to resync them.
             </template>
@@ -26,7 +34,7 @@
                     <v-spacer></v-spacer>
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-btn id="resyncAllAccounts" :disabled="loading" v-bind="attrs" v-on="on" small depressed color="primary" class="mr-2" @click="syncAll()">
+                            <v-btn id="resyncAllAccounts" :disabled="loading" v-bind="attrs" v-on="on" small depressed color="primary" class="mr-2" @click="getAccounts()">
                                 <v-icon small class="mr-1">mdi-sync</v-icon>Resync
                             </v-btn>
                         </template>
@@ -68,6 +76,7 @@ export default {
     },
     data: () => ({
         accounts: [],
+        accountCount: 0,
         headers: [
             {
                 text: 'Address',
@@ -82,36 +91,39 @@ export default {
                 value: 'actions'
             }
         ],
-        loading: false
+        loading: false,
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['address'], sortDesc: [true] }
     }),
     mounted: function() {
-        this.loading = true;
-        this.$bind('accounts', this.db.collection('accounts'), { serialize: (snapshot) => {
-            return {
-                address: snapshot.id,
-                balance: snapshot.data().balance,
-                unlocked: snapshot.data().privateKey ? true : false
-            };
-        }})
-        .then(accounts => {
-            this.loading = false;
-            accounts.forEach(this.syncAccount);
-        })
+        this.getAccounts();
     },
     methods: {
-        syncAccount: function(account) {
-            this.server
-                .getAccountBalance(account)
-                .then((data) => {
-                    this.server.syncBalance(this.currentWorkspace.name, account, ethers.BigNumber.from(data).toString());
-                });
-        },
-        syncAll: function() {
+        getAccounts: function(newOptions) {
             this.loading = true;
-            this.server.getAccounts().then(accounts => {
-                accounts.forEach(this.syncAccount, this);
-                this.loading = false;
-            });
+
+            if (newOptions)
+                this.currentOptions = newOptions;
+
+            const options = {
+                page: this.currentOptions.page,
+                itemsPerPage: this.currentOptions.itemsPerPage,
+                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
+            };
+            this.server.getAccounts(options)
+                .then(({ data }) => {
+                    this.accounts = data.items;
+                    this.accountCount = data.total;
+                    this.accounts.forEach(({ address }, idx) => {
+                        this.server.getAccountBalance(address)
+                            .then((rawBalance) => {
+                                const balance = ethers.BigNumber.from(rawBalance).toString();
+                                this.server.syncBalance(this.currentWorkspace.name, address, balance)
+                                    .then(() => this.accounts[idx].balance = balance);
+                            });
+                    });
+                })
+                .catch(console.log)
+                .finally(() => this.loading = false);
         },
         openAddAccountModal: function() {
             this.$refs.addAccountModalRef.open();

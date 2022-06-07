@@ -1,10 +1,11 @@
 'use strict';
 const {
-  Model
+  Model, Sequelize
 } = require('sequelize');
-
 const { sanitize } = require('../lib/utils');
 const { Workspace } = require('./index');
+
+const Op = Sequelize.Op;
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -15,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       User.hasMany(models.Workspace, { foreignKey: 'userId', as: 'workspaces' });
+      User.hasMany(models.Explorer, { foreignKey: 'userId', as: 'explorers' });
     }
 
     static findByAuthId(firebaseUserId) {
@@ -60,16 +62,28 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    static safeCreate(firebaseUserId, email, apiKey, stripeCustomerId, plan, explorerSubscriptionId, transaction) {
-        if (!firebaseUserId || !apiKey || !stripeCustomerId || !plan) throw '[User.createUser] Missing parameter';
+    static async safeCreate(firebaseUserId, email, apiKey, stripeCustomerId, plan, explorerSubscriptionId, transaction) {
+        if (!firebaseUserId || !email || !apiKey || !stripeCustomerId || !plan) throw '[User.createUser] Missing parameter';
         
+        const existingUser = await User.findOne({
+            where: {
+                [Op.or]: [
+                    { firebaseUserId: firebaseUserId },
+                    { email: email }
+                ]
+            }
+        })
+
+        if (existingUser)
+            return;
+
         return User.create(sanitize({
             firebaseUserId: firebaseUserId,
             email: email,
             apiKey: apiKey,
             stripeCustomerId: stripeCustomerId,
             plan: plan,
-            explorerSubscriptionId: explorerSubscriptionId,
+            explorerSubscriptionId: explorerSubscriptionId
         }));
     }
 
@@ -100,12 +114,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.VIRTUAL,
         get() {
             return this.getDataValue('plan') == 'premium';
-        }
-    },
-    canCreateWorkspace: {
-        type: DataTypes.VIRTUAL,
-        get() {
-            return this.isPremium || this.workspaces.length === 0;
         }
     }
   }, {

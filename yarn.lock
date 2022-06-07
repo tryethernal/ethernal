@@ -10561,6 +10561,13 @@ pure-rand@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-4.1.1.tgz#9fca2d4af5c4e870bac337ed860977426ed17bf6"
 
+pusher-js@^7.1.1-beta:
+  version "7.1.1-beta"
+  resolved "https://registry.yarnpkg.com/pusher-js/-/pusher-js-7.1.1-beta.tgz#3f2895c9fbaf01bfdba41c9a3e49da1ecee859af"
+  integrity sha512-4aGhQFMOfHDmlc8hOS/wYf2f7wcKGJeUGUmLq5hDjRWlwYWBErPrGoTE5OdHJY9yRIsfwcBQzibvdyEXZ5ke6g==
+  dependencies:
+    tweetnacl "^1.0.3"
+
 q@^1.1.2:
   version "1.5.1"
   resolved "https://registry.npm.taobao.org/q/download/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
@@ -12114,6 +12121,11 @@ tunnel-agent@^0.6.0:
 tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "https://registry.npm.taobao.org/tweetnacl/download/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
+
+tweetnacl@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
+  integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
 type-check@~0.3.2:
   version "0.3.2"

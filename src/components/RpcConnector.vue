@@ -26,7 +26,6 @@
 </template>
 
 <script>
-const ethers = require('ethers');
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
 
@@ -48,7 +47,6 @@ export default Vue.extend({
         this.isFeedbackFishEnabled = !!process.env.VUE_APP_FEEDBACK_FISH_PID;
 
         if (!this.isPublicExplorer) {
-            this.server.getAccounts().then((data) => data.forEach(this.syncAccount));
             this.processContracts();
             this.db.onNewContract(this.processContracts);
             this.db.onNewProcessableTransactions(this.server.processTransactions);
@@ -59,14 +57,6 @@ export default Vue.extend({
         this.db.onNewBlock((block) => this.$store.dispatch('updateCurrentBlock', block));
     },
     methods: {
-        syncAccount: function(account) {
-            const lowercasedAccount = account.toLowerCase();
-            this.server
-                .getAccountBalance(lowercasedAccount)
-                .then((data) => {
-                    this.server.syncBalance(this.currentWorkspace.name, lowercasedAccount, ethers.BigNumber.from(data).toString());
-                });
-        },
         processContracts: function() {
             this.processingContracts = true;
             this.server.processContracts(this.currentWorkspace.name)

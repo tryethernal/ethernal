@@ -3,10 +3,11 @@ const { ProviderConnector } = require('../lib/rpc');
 const { sanitize, stringifyBns } = require('../lib/utils');
 const db = require('../lib/firebase');
 const { enqueueTask } = require('../lib/tasks');
+const taskAuthMiddleware = require('../middlewares/taskAuth');
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.post('/', taskAuthMiddleware, async (req, res) => {
     try {
         const data = req.body.data;
         if (!data.userId || !data.workspace || !data.transaction) {
@@ -44,7 +45,8 @@ router.post('/', async (req, res) => {
         await enqueueTask('transactionProcessing', {
             userId: data.userId,
             workspace: data.workspace,
-            transaction: txSynced
+            transaction: txSynced,
+            secret: process.env.AUTH_SECRET
         });
         
         res.sendStatus(200);

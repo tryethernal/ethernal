@@ -23,14 +23,12 @@
         </v-row>
         <h4>Transactions</h4>
         <v-card outlined>
-            <Transactions-List :transactions="block.transactions" :loading="loadingTx" />
+            <Transactions-List :transactions="block.transactions" :loading="loading" />
         </v-card>
     </v-container>
 </template>
 
 <script>
-const axios = require('axios');
-import { mapGetters } from 'vuex';
 import TransactionsList from './TransactionsList';
 
 export default {
@@ -47,33 +45,14 @@ export default {
         contract: {
             abi: {}
         },
-        loadingTx: true
+        loading: true
     }),
     mounted: function() {
-        this.fetchBlock();
-    },
-    methods: {
-        fetchBlock: function() {
-            this.loading = true;
-            axios.get(`http://localhost:8888/api/blocks/${this.number}?firebaseAuthToken=${this.firebaseIdToken}&firebaseUserId=${this.currentWorkspace.userId}&workspace=${this.currentWorkspace.name}&withTransactions=true`)
-                .then(({ data }) => this.block = data)
-                .catch(console.log)
-                .finally(() => this.loading = false);
-        },
-    },
-    watch: {
-        number: {
-            immediate: true,
-            handler(number) {
-                this.$bind('transactions', this.db.collection('transactions').where('blockNumber', '==', parseInt(number))).then(() => this.loadingTx = false);
-            }
-        }
-    },
-    computed: {
-        ...mapGetters([
-            'firebaseIdToken',
-            'currentWorkspace'
-        ])
+        this.loading = true;
+        this.server.getBlock(this.number, true)
+            .then(({ data }) => this.block = data)
+            .catch(console.log)
+            .finally(() => this.loading = false);
     }
 }
 </script>

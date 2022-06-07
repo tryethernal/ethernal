@@ -4,16 +4,16 @@ const db = require('../lib/firebase');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 
 router.get('/:address/transactions', workspaceAuthMiddleware, async (req, res) => {
+    const data = req.query;
+
     try {
-        const data = req.query;
+        const result = await db.getAddressTransactions(data.workspace.id, req.params.address, data.page, data.itemsPerPage, data.order, data.sortBy);
 
-        const transactions = await db.getAddressTransactions(data.workspace.id, req.params.address, data.page, data.itemsPerPage, data.order);
-
-        res.status(200).json(transactions);
+        res.status(200).json(result);
     } catch(error) {
         console.log(error);
         res.status(400).send(error);
     }
-});
+})
 
 module.exports = router;

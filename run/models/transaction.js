@@ -55,7 +55,17 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
-    safeCreateTokenTransfer(tokenTransfer) {
+    async safeCreateTokenTransfer(tokenTransfer) {
+        const existingRecords = await this.getTokenTransfers({
+            where: {
+                dst: tokenTransfer.dst,
+                src: tokenTransfer.src,
+                token: tokenTransfer.token
+            }
+        });
+        if (existingRecords.length > 0)
+            return null;
+
         return this.createTokenTransfer(sanitize({
             dst: tokenTransfer.dst,
             src: tokenTransfer.src,
@@ -71,7 +81,16 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    safeCreateTokenBalanceChange(balanceChange) {
+    async safeCreateTokenBalanceChange(balanceChange) {
+        const existingRecords = await this.getTokenBalanceChanges({
+            where: {
+                token: balanceChange.token,
+                address: balanceChange.address
+            }
+        });
+        if (existingRecords.length > 0)
+            return null;
+
         return this.createTokenBalanceChange(sanitize({
             token: balanceChange.token,
             address: balanceChange.address,
@@ -109,7 +128,12 @@ module.exports = (sequelize, DataTypes) => {
     data: DataTypes.STRING,
     parsedError: DataTypes.STRING,
     rawError: DataTypes.JSON,
-    from: DataTypes.STRING,
+    from: {
+        type: DataTypes.STRING,
+        set(value) {
+            this.setDataValue('from', value.toLowerCase());
+        }
+    },
     gasLimit: DataTypes.STRING,
     gasPrice: DataTypes.STRING,
     hash: DataTypes.STRING,
@@ -125,7 +149,12 @@ module.exports = (sequelize, DataTypes) => {
     r: DataTypes.STRING,
     s: DataTypes.STRING,
     timestamp: DataTypes.STRING,
-    to: DataTypes.STRING,
+    to: {
+        type: DataTypes.STRING,
+        set(value) {
+            this.setDataValue('to', value.toLowerCase());
+        }
+    },
     transactionIndex: DataTypes.INTEGER,
     type: DataTypes.INTEGER,
     v: DataTypes.INTEGER,

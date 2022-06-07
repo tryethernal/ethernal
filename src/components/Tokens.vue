@@ -4,8 +4,15 @@
             :loading="loading"
             :items="tokens"
             :headers="headers"
-            sort-by="timestamp"
-            :sort-desc="true">
+            :sort-by="currentOptions.sortBy[0]"
+            :must-sort="true"
+            :sort-desc="true"
+            :server-items-length="tokenCount"
+            :footer-props="{
+                itemsPerPageOptions: [10, 25, 100]
+            }"
+            item-key="address"
+            @update:options="getTokens">
             <template v-slot:item.address="{ item }">
                 <Hash-Link :type="'address'" :hash="item.address" />
             </template>
@@ -13,10 +20,10 @@
                 {{ item.name }}
             </template>
             <template v-slot:item.tokenName="{ item }">
-                {{ item.token.name }}
+                {{ item.tokenName }}
             </template>
             <template v-slot:item.tokenSymbol="{ item }">
-                {{ item.token.symbol }}
+                {{ item.tokenSymbol }}
             </template>
             <template v-slot:item.timestamp="{ item }">
                 <span v-if="item.timestamp">{{ parseInt(item.timestamp) | moment('YYYY-MM-DD h:mm:ss A') }}</span>
@@ -41,6 +48,7 @@ export default {
     data: () => ({
         loading: true,
         tokens: [],
+        tokenCount: 0,
         headers: [
             {
                 text: 'Address',
@@ -66,12 +74,32 @@ export default {
                 text: '',
                 value: 'tags'
             }
-        ]
+        ],
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] }
     }),
     mounted: function() {
-        this.$bind('tokens', this.db.tokens()).then(() => this.loading = false);
+        this.getTokens(this.currentOptions);
     },
     methods: {
+        getTokens: function(newOptions) {
+            this.loading = true;
+            this.currentOptions = newOptions;
+
+            const options = {
+                page: this.currentOptions.page,
+                itemsPerPage: this.currentOptions.itemsPerPage,
+                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc',
+                onlyTokens: true
+            };
+
+            this.server.getContracts(options)
+                .then(({ data }) => {
+                    this.tokens = data.items;
+                    this.tokenCount = data.total;
+                })
+                .catch(console.log)
+                .finally(() => this.loading = false);
+        },
         formatContractPattern
     }
 }

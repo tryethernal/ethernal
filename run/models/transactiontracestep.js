@@ -30,7 +30,12 @@ module.exports = (sequelize, DataTypes) => {
   }
   TransactionTraceStep.init({
     transactionId: DataTypes.INTEGER,
-    address: DataTypes.STRING,
+    address: {
+        type: DataTypes.STRING,
+        set(value) {
+            this.setDataValue('address', value.toLowerCase());
+        }
+    },
     contractHashedBytecode: DataTypes.STRING,
     depth: DataTypes.INTEGER,
     input: DataTypes.STRING,

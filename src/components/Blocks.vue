@@ -11,7 +11,7 @@
                 itemsPerPageOptions: [10, 25, 100]
             }"
             :headers="headers"
-            @update:options="fetchBlocks">
+            @update:options="getBlocks">
             <template v-slot:no-data>
                 No blocks found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a>
             </template>
@@ -37,9 +37,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-const axios = require('axios');
-
 export default {
     name: 'Blocks',
     data: () => ({
@@ -69,33 +66,35 @@ export default {
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['number'], sortDesc: [true] }
     }),
     mounted: function() {
-        this.fetchBlocks(this.currentOptions);
+        const channel = this.pusher.subscribeToBlocks();
+        channel.bind('pusher:subscription_succeeded', () => {
+            console.log('Connected!')
+        });
+        channel.bind('pusher:subscription_error', () => {
+            console.log('Error!')
+        });
+        this.getBlocks(this.currentOptions);
     },
     methods: {
-        fetchBlocks: function(options) {
+        getBlocks: function(newOptions) {
             this.loading = true;
-            this.currentOptions = options;
-            const sortDirection = this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc';
-            axios.get(`http://localhost:8888/api/blocks?firebaseAuthToken=${this.firebaseIdToken}&firebaseUserId=${this.currentWorkspace.userId}&workspace=${this.currentWorkspace.name}&page=${this.currentOptions.page}&itemsPerPage=${this.currentOptions.itemsPerPage}&order=${sortDirection}`)
+
+            if (newOptions)
+                this.currentOptions = newOptions;
+
+            const options = {
+                page: this.currentOptions.page,
+                itemsPerPage: this.currentOptions.itemsPerPage,
+                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
+            };
+            this.server.getBlocks(options)
                 .then(({ data }) => {
                     this.blocks = data.items;
                     this.blockCount = data.total;
                 })
                 .catch(console.log)
                 .finally(() => this.loading = false);
-        },
-        serializer: function(snapshot) {
-            if (snapshot.data().transactions === undefined)
-                return Object.defineProperty(snapshot.data(), 'transactions', { value: [] })
-            else
-                return snapshot.data();
         }
-    },
-    computed: {
-        ...mapGetters([
-            'firebaseIdToken',
-            'currentWorkspace'
-        ])
     }
 }
 </script>

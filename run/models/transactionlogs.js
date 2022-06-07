@@ -17,7 +17,12 @@ module.exports = (sequelize, DataTypes) => {
   TransactionLog.init({
     workspaceId: DataTypes.INTEGER,
     transactionReceiptId: DataTypes.INTEGER,
-    address: DataTypes.STRING,
+    address: {
+        type: DataTypes.STRING,
+        set(value) {
+            this.setDataValue('address', value.toLowerCase());
+        }
+    },
     blockHash: DataTypes.STRING,
     blockNumber: DataTypes.INTEGER,
     data: DataTypes.STRING,

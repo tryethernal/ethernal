@@ -1,21 +1,11 @@
 const ethers = require('ethers');
 const { parseTrace, processTrace } = require('./trace');
+const writeLog = require('./writeLog');
 
 let getProvider = function(url) {
     const rpcServer = new URL(url);
-    var urlInfo;
-    var provider = ethers.providers.WebSocketProvider;
 
-    if (rpcServer.username != '' && rpcServer.password != '') {
-        urlInfo = {
-            url: `${rpcServer.origin}${rpcServer.pathName ? rpcServer.pathName : ''}`,
-            user: rpcServer.username,
-            password: rpcServer.password
-        };
-    }
-    else {
-        urlInfo = rpcServer.href;
-    }
+    let provider = ethers.providers.WebSocketProvider;
 
     if (rpcServer.protocol == 'http:' || rpcServer.protocol == 'https:') {
         provider = ethers.providers.JsonRpcProvider;
@@ -24,7 +14,7 @@ let getProvider = function(url) {
         provider = ethers.providers.WebSocketProvider;
     }
 
-    return new provider(urlInfo);
+    return new provider(url);
 };
 
 class ProviderConnector {
@@ -55,16 +45,37 @@ class Tracer {
             const rawTrace = await this.provider.send('debug_traceTransaction', [transaction.hash, {}]);
             this.parsedTrace = await parseTrace(transaction.from, rawTrace, this.provider);
         } catch(error) {
-            if (!error.error || error.error.code != '-32601')
+            if (!error.error || error.error.code != '-32601') {
+                writeLog({
+                    severity: 'ERROR',
+                    functionName: 'rpc.Tracer.process',
+                    error: error,
+                    extra: {
+                        transaction: this.transaction.hash,
+                    }
+                });
                 throw error;
+            }
         }
     }
 
     async saveTrace(userId, workspace, db) {
         try {
-            await processTrace(userId, workspace, this.transaction.hash, this.parsedTrace, this.db);
+            if (Array.isArray(this.parsedTrace))
+                await processTrace(userId, workspace, this.transaction.hash, this.parsedTrace, this.db);
         } catch(error) {
-            console.log(error);
+            writeLog({
+                severity: 'ERROR',
+                functionName: 'rpc.Tracer.saveTrace',
+                error: error,
+                extra: {
+                    userId: String(userId),
+                    workspace: workspace,
+                    transaction: this.transaction.hash,
+                    trace: this.parsedTrace
+                }
+            });
+            throw error;
         }
     }
 }

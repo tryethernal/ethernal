@@ -3,6 +3,7 @@ const { CloudTasksClient } = require('@google-cloud/tasks');
 let client;
 
 const ALLOWED_TASKS = [
+    'migration',
     'blockSync',
     'transactionSync',
     'transactionProcessing',
@@ -24,14 +25,14 @@ const getTaskClient = () => {
 };
 
 module.exports = {
-    enqueueTask: async (taskName, data) => {
+    enqueueTask: async (taskName, data, resource) => {
         const projectId = process.env.GCLOUD_PROJECT;
         if (ALLOWED_TASKS.indexOf(taskName) < 0)
             throw '[enqueueTask] Unknown task';
 
         client = client || getTaskClient();
 
-        const url = `${process.env.CLOUD_RUN_ROOT}/tasks/${taskName}`;
+        const url = resource || `${process.env.CLOUD_RUN_ROOT}/tasks/${taskName}`;
         const parent = client.queuePath(projectId, process.env.GCLOUD_LOCATION, taskName);
 
         const task = {

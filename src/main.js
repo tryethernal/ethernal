@@ -7,6 +7,7 @@ import vuetify from './plugins/vuetify';
 import router from './plugins/router';
 import { dbPlugin, auth } from './plugins/firebase';
 import { serverPlugin } from './plugins/server';
+import { pusherPlugin } from './plugins/pusher';
 import store from './plugins/store';
 import { firestorePlugin } from 'vuefire';
 
@@ -19,6 +20,7 @@ Vue.use(require('vue-moment'));
 
 Vue.use(dbPlugin, { store: store });
 Vue.use(serverPlugin, { store: store });
+Vue.use(pusherPlugin, { store: store });
 
 const isEthernalDomain = window.location.host.endsWith(process.env.VUE_APP_MAIN_DOMAIN);
 

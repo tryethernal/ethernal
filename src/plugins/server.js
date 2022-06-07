@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 const Web3 = require('web3');
 const Decoder = require('@truffle/decoder');
+const axios = require('axios');
 
 import { Storage } from '../lib/storage';
 import { functions } from './firebase';
@@ -178,6 +179,7 @@ const serverFunctions = {
             });
 
             if (data.options.pkey) {
+                console.log(data.options.pkey)
                 signer = new ethers.Wallet(data.options.pkey, provider);
             }
             else {
@@ -221,7 +223,7 @@ const serverFunctions = {
                 console.log(parsedError.error)
                 if (parsedError.error.data)
                     errorData = parsedError.error.data;
-                else if (parsedError.error.error.data)
+                else if (parsedError.error.error && parsedError.error.error.data)
                     errorData = parsedError.error.error.data;
             }
 
@@ -355,13 +357,108 @@ const serverFunctions = {
 
 export const serverPlugin = {
     install(Vue, options) {
-        var store = options.store;
+        const store = options.store;
 
-        var _rpcServer = function() {
+        const _rpcServer = function() {
             return store.getters.currentWorkspace.rpcServer;
         };
 
         Vue.prototype.server = {
+            getBlocks(options) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.userId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/blocks`;
+                return axios.get(resource, { params });
+            },
+
+            getBlock(number, withTransactions = true) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.userId,
+                    workspace: store.getters.currentWorkspace.name,
+                    withTransactions: withTransactions
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/blocks/${number}`;
+                return axios.get(resource, { params });
+            },
+
+            getTransactions(options) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.userId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions`;
+                return axios.get(resource, { params });
+            },
+
+            getTransaction(hash) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.userId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${hash}`;
+                return axios.get(resource, { params });
+            },
+
+            getContracts(options) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.userId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts`;
+                return axios.get(resource, { params });
+            },
+
+            getContract(address) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.userId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}`;
+                return axios.get(resource, { params });
+            },
+
+            getAddressTransactions(address, options) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.userId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/addresses/${address}/transactions`;
+                return axios.get(resource, { params });
+            },
+
+            getAccounts(options) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.userId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/accounts`;
+                return axios.get(resource, { params });
+            },
+
+            getCurrentUser() {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.userId
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/me`;
+                console.log(params, resource)
+            },
+
             getProductRoadToken: function() {
                 return functions.httpsCallable('getProductRoadToken')();
             },
@@ -519,14 +616,6 @@ export const serverPlugin = {
                 return new Promise((resolve, reject) => {
                     serverFunctions
                         .impersonateAccount({ rpcServer: rpcServer, accountAddress: accountAddress })
-                        .then(resolve)
-                        .catch(reject)
-                });
-            },
-            getAccounts: function() {
-                return new Promise((resolve, reject) => {
-                    serverFunctions
-                        .getAccounts({ rpcServer: _rpcServer() })
                         .then(resolve)
                         .catch(reject)
                 });

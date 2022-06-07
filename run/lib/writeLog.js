@@ -5,25 +5,26 @@ const isProductionEnvironment = process.env.NODE_ENV == 'production' ? true : fa
 
 let logging;
 
-module.exports = ({ logName = 'defaultLog', functionName, message, detail, severity = 'WARNING', uid, extra }) => {
+module.exports = ({ logName = 'app', severity = 'WARNING', functionName, error, extra }) => {
     if (isProductionEnvironment) {
         logging = logging || new Logging({ projectId });
         const logger = logging.log(logName);
+        const message = error.message || '';
+        const stackTrace = error.stack || {}
         return logger.write(
             logger.entry({
                 severity: severity,
                 labels: {
                     function: functionName,
-                    userId: uid,
-                    extra: extra
                 }
             }, {
                 message: message,
-                detail: detail
+                stackTrace: stackTrace,
+                extra: extra
             })
         );
     }
     else
-        console.log(`[${severity}]`, functionName || '', message || '', detail || '', uid || '');
+        console.log(`[${severity}]`, functionName || '', error || '', extra || '');
 };
 

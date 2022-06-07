@@ -138,7 +138,8 @@ exports.batchBlockSyncTask = functions.runWith({ timeoutSeconds: 540, memory: '2
             promises.push(enqueueTask('cloudRunBlockSync', {
                 userId: data.userId,
                 workspace: data.workspace,
-                blockNumber: i
+                blockNumber: i,
+                secret: functions.config().ethernal.auth_secret
             }, `${functions.config().ethernal.root_tasks}/tasks/blockSync`));
 
             promises.push(enqueueTask('cloudFunctionBlockSync', {
@@ -211,10 +212,11 @@ exports.startContractVerification = functions.https.onCall(async (data, context)
                 compilerVersion: data.compilerVersion,
                 constructorArguments: data.constructorArguments,
                 code: data.code,
-                contractName: data.contractName
+                contractName: data.contractName,
+                secret: functions.config().ethernal.auth_secret
             });
 
-            const url = `${functions.config().ethernal.root_tasks}/api/contracts/verification`;
+            const url = `${functions.config().ethernal.root_tasks}/api/contracts/${data.contractAddress}/verify`;
             const task = await enqueueTask('contractVerification', payload, url);
             const splitName = task.name.split('/');
 
@@ -331,6 +333,7 @@ exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' 
         await enqueueTask('migration', {
             uid: context.auth.uid,
             workspace: data.workspace,
+            secret: functions.config().ethernal.auth_secret
         }, `${functions.config().ethernal.root_tasks}/api/workspaces/reset`);
 
         return { success: true };
@@ -469,11 +472,12 @@ exports.serverSideBlockSync = functions.https.onCall(async (data, context) => {
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[serverSideBlockSync] Missing parameter.');
         }
-
+        const secret = functions.config().ethernal.auth_secret;
         await enqueueTask('cloudRunBlockSync', {
             userId: context.auth.uid,
             workspace: data.workspace,
-            blockNumber: data.blockNumber
+            blockNumber: data.blockNumber,
+            secret: secret
         }, `${functions.config().ethernal.root_tasks}/tasks/blockSync`);
 
         return enqueueTask('cloudFunctionBlockSync', {
@@ -603,26 +607,27 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).ht
 
 exports.syncContractData = functions.https.onCall(async (data, context) => {
     return await psqlWrapper(async () => {
-        if (!context.auth)
+        if (!context.auth && (!data.secret || data.secret != functions.config().ethernal.auth_secret))
             throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
 
         try {
+            const uid = (context.auth && context.auth.uid) || data.userId;
             if (!data.workspace || !data.address) {
                 console.log(data);
                 throw new functions.https.HttpsError('invalid-argument', '[syncContractData] Missing parameter.');
             }
 
-            const canSync = await db.canUserSyncContract(context.auth.uid, data.workspace);
-            const existingContract = await db.getContractData(context.auth.uid, data.workspace, data.address);
+            const canSync = await db.canUserSyncContract(uid, data.workspace);
+            const existingContract = await db.getContractData(uid, data.workspace, data.address);
 
             if (existingContract || canSync) {
-                await db.storeContractData(context.auth.uid, data.workspace, data.address, sanitize({ address: data.address, name: data.name, abi: data.abi, watchedPaths: data.watchedPaths }));
+                await db.storeContractData(uid, data.workspace, data.address, sanitize({ verificationStatus: data.verificationStatus, address: data.address, name: data.name, abi: data.abi, watchedPaths: data.watchedPaths }));
             }
             else
                 throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
 
             await enqueueTask('migration', {
-                uid: context.auth.uid,
+                uid: uid,
                 workspace: data.workspace,
                 address: data.address,
                 name: data.name,
@@ -959,7 +964,7 @@ exports.getAccount = functions.https.onCall(async (data, context) => {
             const accountWithKey = sanitize({
                 address: account.id,
                 balance: account.balance,
-                privateKey: account.privateKey ? decrypt(account.privateKey) : null
+                privateKey: account.privateKey ? decrypt(account.privateKey).slice(0, 64) : null
             });
 
             return accountWithKey;
