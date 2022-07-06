@@ -430,7 +430,7 @@ exports.transactionSyncTask = functions.https.onCall(async (data, context) => {
 exports.blockSyncTask = functions.https.onCall(async (data, context) => {
     return await psqlWrapper(async () => {
         try {
-            if (!data.userId || !data.workspace || !data.blockNumber) {
+            if (!data.userId || !data.workspace || (!data.blockNumber && data.blockNumber !== 0)) {
                 console.log(data);
                 throw new functions.https.HttpsError('invalid-argument', '[blockSyncTask] Missing parameter.');
             }
@@ -468,7 +468,7 @@ exports.serverSideBlockSync = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
 
     try {
-        if (!data.blockNumber || !data.workspace) {
+        if ((!data.blockNumber && data.blockNumber !== 0) || !data.workspace) {
             console.log(data);
             throw new functions.https.HttpsError('invalid-argument', '[serverSideBlockSync] Missing parameter.');
         }

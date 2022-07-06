@@ -57,12 +57,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Cache firebase emulators
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/firebase/emulators
-          key: ${{ runner.os }}-firebase-emulators-${{ hashFiles('~/.cache/firebase/emulators/**') }}
-
       - uses: actions/setup-node@v1
         with:
           node-version: 12.9.1
@@ -74,28 +68,17 @@ jobs:
 
       - name: Install deps
         run: |
-          yarn
-          npm install -g firebase-tools@10.1.5 firebase-functions
-          cd functions && npm install
-
-      - name: Setup environment
-        run: |
-          cp functions/tests/fixtures/.runtimeconfig.json ./functions/
+          cd run
+          npm install
 
       - name: Run tests
-        run: firebase emulators:exec --token ${{ secrets.FIREBASE_TOKEN }} "yarn test:unit"
+        run: npm run test tests/
         env:
-          VUE_APP_FIREBASE_API_KEY: 123
-          VUE_APP_FIREBASE_PROJECT_ID: ethernal-test
-          VUE_APP_AUTH_HOST: http://localhost:9099
-          VUE_APP_FIRESTORE_HOST: localhost:8080
-          VUE_APP_RTDB_HOST: localhost:9000
-          VUE_APP_FIREBASE_DATABASE_URL: http://localhost:9000/?ns=ethernal-test-default-rtdb
-          VUE_APP_FUNCTIONS_HOST: http://localhost:5001
-          VUE_APP_API_ROOT_URL: http://localhost:8081
-          VUE_APP_ROOT_URL: http://localhost:8081
-          VUE_APP_ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN__TOKEN }}
-          FIRESTORE_EMULATOR_HOST: localhost:8080
+          ENCRYPTION_KEY: 382A5C31A96D38E3DF430E5101E8D07D
+          ENCRYPTION_JWT_SECRET: 26F95488BA7D7E545B1B8669990739BB21A0A6D3EFB4910C0460B068BDDD3E1C
+          AUTH_SECRET: 123
+          STRIPE_WEBHOOK_SECRET: 123
+          STRIPE_SECRET_KEY: 123
 
   deploy_saas:
     if: startsWith(github.ref, 'refs/tags/v')
