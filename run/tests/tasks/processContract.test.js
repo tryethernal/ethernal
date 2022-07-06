@@ -14,6 +14,7 @@ require('../mocks/lib/utils');
 require('../mocks/lib/firebase');
 require('../mocks/lib/transactions');
 require('../mocks/middlewares/taskAuth');
+require('../mocks/lib/pusher');
 
 const axios = require('axios');
 const db = require('../../lib/firebase');

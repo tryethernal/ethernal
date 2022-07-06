@@ -41,10 +41,6 @@ export default {
         block: {
             gasLimit: 0
         },
-        transactions: [],
-        contract: {
-            abi: {}
-        },
         loading: true
     }),
     mounted: function() {

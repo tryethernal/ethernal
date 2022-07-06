@@ -28,9 +28,9 @@ exports[`Blocks.vue Should show the blocks list 1`] = `
             <td class="text-start">
               200000
             </td>
-            <td class="text-start"><span>
-                0 transactions
-            </span></td>
+            <td class="text-start">
+              transactions
+            </td>
           </tr>
           <tr class="">
             <td class="text-start"><a href="#/block/1" class="">1</a></td>
@@ -40,15 +40,15 @@ exports[`Blocks.vue Should show the blocks list 1`] = `
             <td class="text-start">
               100000
             </td>
-            <td class="text-start"><span>
-                1 transaction
-            </span></td>
+            <td class="text-start">
+              transactions
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
     <div class="v-data-footer">
-      <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
+      <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
           <div class="v-input__control">
             <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-13" class="v-input__slot">
               <div class="v-select__slot">
@@ -102,7 +102,7 @@ exports[`Blocks.vue should show the loading message when empty blocks list 1`] =
       </table>
     </div>
     <div class="v-data-footer">
-      <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
+      <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
           <div class="v-input__control">
             <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-35" class="v-input__slot">
               <div class="v-select__slot">

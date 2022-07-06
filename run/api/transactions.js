@@ -8,6 +8,32 @@ const { enqueueTask } = require('../lib/tasks');
 
 const router = express.Router();
 
+router.get('/failedProcessable', authMiddleware, async (req, res) => {
+    const data = req.query;
+    console.log(data);
+    try {
+        const transactions = await db.getFailedProcessableTransactions(data.firebaseUserId, data.workspace);
+
+        res.status(200).json(transactions);
+    } catch(error) {
+        console.log(error);
+        res.status(400).send(error);
+    }
+});
+
+router.get('/processable', authMiddleware, async (req, res) => {
+    const data = req.query;
+    console.log(data);
+    try {
+        const transactions = await db.getProcessableTransactions(data.firebaseUserId, data.workspace);
+
+        res.status(200).json(transactions);
+    } catch(error) {
+        console.log(error);
+        res.status(400).send(error);
+    }
+});
+
 router.post('/', authMiddleware, async (req, res) => {
     const data = req.body.data;
     try {

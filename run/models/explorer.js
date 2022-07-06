@@ -18,7 +18,39 @@ module.exports = (sequelize, DataTypes) => {
         return Explorer.findOne({
             where: {
                 slug: slug
-            }
+            },
+            include: [
+                {
+                    model: sequelize.models.User,
+                    attributes: ['firebaseUserId'],
+                    as: 'admin'
+                },
+                {
+                    model: sequelize.models.Workspace,
+                    attributes: ['name'],
+                    as: 'workspace'
+                }
+            ]
+        });
+    }
+
+    static findByDomain(domain) {
+        return Explorer.findOne({
+            where: {
+                domain: domain
+            },
+            include: [
+                {
+                    model: sequelize.models.User,
+                    attributes: ['firebaseUserId'],
+                    as: 'admin'
+                },
+                {
+                    model: sequelize.models.Workspace,
+                    attributes: ['name'],
+                    as: 'workspace'
+                }
+            ]
         });
     }
   }

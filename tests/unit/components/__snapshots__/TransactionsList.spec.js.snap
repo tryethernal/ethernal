@@ -35,7 +35,7 @@ exports[`TransactionsList.vue Should display a message if no transactions 1`] = 
     </table>
   </div>
   <div class="v-data-footer">
-    <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
+    <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
         <div class="v-input__control">
           <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-65" class="v-input__slot">
             <div class="v-select__slot">
@@ -141,7 +141,7 @@ exports[`TransactionsList.vue Should display the list 1`] = `
     </table>
   </div>
   <div class="v-data-footer">
-    <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
+    <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
         <div class="v-input__control">
           <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-43" class="v-input__slot">
             <div class="v-select__slot">

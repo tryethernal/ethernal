@@ -1,3 +1,4 @@
+import flushPromises from 'flush-promises';
 import MockHelper from '../MockHelper';
 
 import TransactionEvent from '@/components/TransactionEvent.vue';
@@ -13,52 +14,43 @@ describe('TransactionEvent.vue', () => {
     });
 
     it('Should display transaction event', async (done) => {
-        await helper.mocks.admin.collection('contracts').doc(TransactionProp.to).set({ abi: ABIProp });
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValue({ data: { address: TransactionProp.to, abi: ABIProp }});
+
         const wrapper = helper.mountFn(TransactionEvent, {
             propsData: {
                 log: LogProp
-            }
+            },
+            stubs: ['Hash-Link', 'Formatted-Sol-Var']
         });
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1000);
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+        done();
     });
 
     it('Should display transaction event for a proxied contract', async (done) => {
-        await helper.mocks.admin
-            .collection('contracts')
-            .doc(TransactionProp.to)
-            .set({ proxy: '0x123' });
-
-        await helper.mocks.admin
-            .collection('contracts')
-            .doc('0x123')
-            .set({ abi: ABIProp });
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValue({ data: { address: TransactionProp.to, proxyContract: { address: '0x123', abi: ABIProp }}});
 
         const wrapper = helper.mountFn(TransactionEvent, {
             propsData: {
                 log: LogProp
-            }
+            },
+            stubs: ['Hash-Link', 'Formatted-Sol-Var']
         });
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1000);
-    });
+        await flushPromises();
 
-    it('Should display warning if no ABI', async (done) => {
-        const wrapper = helper.mountFn(TransactionEvent, {
-            propsData: {
-                log: LogProp
-            }
-        });
-        await wrapper.vm.$nextTick();
         expect(wrapper.html()).toMatchSnapshot();
         done();
-    });    
-
-    afterEach(async () => {
-        await helper.clearFirebase();
     });
+
+    it('Should display warning if no ABI', () => {
+        const wrapper = helper.mountFn(TransactionEvent, {
+            propsData: {
+                log: LogProp
+            }
+        });
+        expect(wrapper.html()).toMatchSnapshot();
+    });    
 });

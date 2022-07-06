@@ -38,5 +38,13 @@ jest.mock('../../../lib/firebase', () => ({
     getContractByHashedBytecode: jest.fn(),
     getContractTransactions: jest.fn(),
     getPublicExplorerParamsBySlug: jest.fn(),
-    getContract: jest.fn()
+    getContract: jest.fn(),
+    getAccounts: jest.fn(),
+    getFailedProcessableTransactions: jest.fn(),
+    getProcessableTransactions: jest.fn(),
+    getUserWorkspaces: jest.fn(),
+    getUserbyStripeCustomerId: jest.fn(),
+    updateUserPlan: jest.fn(),
+    getPublicExplorerParamsByDomain: jest.fn(),
+    getPublicExplorerParamsBySlug: jest.fn()
 }));

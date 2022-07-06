@@ -24,7 +24,7 @@ exports[`ContractWriteMethod.vue Should display only the error message if the tx
   </div>
   <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
@@ -62,7 +62,7 @@ exports[`ContractWriteMethod.vue Should display only the error message if there 
   </div>
   <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
@@ -100,7 +100,7 @@ exports[`ContractWriteMethod.vue Should display only the error message with the 
   </div>
   <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
@@ -138,7 +138,7 @@ exports[`ContractWriteMethod.vue Should display only the tx hash when it succeed
   </div>
   <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
@@ -193,7 +193,7 @@ exports[`ContractWriteMethod.vue Should display the UI to interact with a method
 exports[`ContractWriteMethod.vue Should display the formatted error message with the failed tx hash 1`] = `
 <div>
   <div class="font-weight-bold">transfer</div>
-  <div class="v-input py-1 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input py-1 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
@@ -203,7 +203,7 @@ exports[`ContractWriteMethod.vue Should display the formatted error message with
       </div>
     </div>
   </div>
-  <div class="v-input py-1 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input py-1 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
@@ -234,7 +234,7 @@ exports[`ContractWriteMethod.vue Should display the formatted error message with
   </div>
   <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
@@ -272,7 +272,7 @@ exports[`ContractWriteMethod.vue Should display the tx hash and status when it s
   </div>
   <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
@@ -289,7 +289,7 @@ exports[`ContractWriteMethod.vue Should display the tx hash and status when it s
 exports[`ContractWriteMethod.vue Should handle array input properly 1`] = `
 <div>
   <div class="font-weight-bold">reproWriteBug</div>
-  <div class="v-input py-1 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input py-1 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
@@ -320,7 +320,7 @@ exports[`ContractWriteMethod.vue Should handle array input properly 1`] = `
   </div>
   <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
@@ -406,7 +406,7 @@ exports[`ContractWriteMethod.vue Should send the transaction with Metamask if pu
   </div>
   <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
   <div class="col-4 px-0 py-1">
-    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+    <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">

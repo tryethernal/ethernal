@@ -7,6 +7,7 @@ const {
 const Op = Sequelize.Op
 const { sanitize } = require('../lib/utils');
 const writeLog = require('../lib/writeLog');
+const { trigger } = require('../lib/pusher');
 let { getTransactionMethodDetails } = require('../lib/abi');
 
 module.exports = (sequelize, DataTypes) => {
@@ -140,9 +141,11 @@ module.exports = (sequelize, DataTypes) => {
     methodDetails: {
         type: DataTypes.VIRTUAL,
         get() {
-            return this.contract && this.contract.abi ?
-                getTransactionMethodDetails(this, this.contract.abi) :
-                {}
+            try {
+                return this.contract && this.contract.abi ?
+                    getTransactionMethodDetails(this, this.contract.abi) :
+                    {}
+            } catch(_error) { return {} }
         }
     },
     nonce: DataTypes.INTEGER,
@@ -174,12 +177,15 @@ module.exports = (sequelize, DataTypes) => {
             else
                 return {};
         }
-    }
+    },
+    workspaceId: DataTypes.INTEGER
   }, {
     hooks: {
-        afterSave(instance, options) {
-            // writeLog({ message: instance });
-            // writeLog({ message: options });
+        afterSave(transaction, options) {
+            trigger(`private-transactions;workspace=${transaction.workspaceId}`, 'new', null);
+            if (transaction.to)
+                trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.to}`, 'new', null);
+            trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.from}`, 'new', null);
         }
     },
     sequelize,

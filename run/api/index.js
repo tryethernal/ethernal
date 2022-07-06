@@ -9,6 +9,8 @@ const users = require('./users');
 const accounts = require('./accounts');
 const addresses = require('./addresses');
 const pusher = require('./pusher');
+const explorers = require('./explorers');
+const stripe = require('./stripe');
 
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
@@ -19,5 +21,7 @@ router.use('/accounts', accounts);
 router.use('/add', accounts);
 router.use('/addresses', addresses);
 router.use('/pusher', pusher);
+router.use('/explorers', explorers);
+router.use('/stripe', stripe);
 
 module.exports = router;

@@ -10,6 +10,20 @@ const request = supertest(app);
 
 const BASE_URL = '/api/accounts';
 
+describe(`GET ${BASE_URL}`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('Should return the list of accounts', (done) => {
+        jest.spyOn(db, 'getAccounts').mockResolvedValueOnce([{ address: '0x123', balance: '1234567890' }]);
+        request.get(BASE_URL)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual([{ address: '0x123', balance: '1234567890' }]);
+                done();
+            });
+    });
+});
+
 describe(`POST ${BASE_URL}/:address/syncBalance`, () => {
     beforeEach(() => jest.clearAllMocks());
 

@@ -204,8 +204,9 @@ const getWorkspaceContracts = async (userId, workspaceName, page, itemsPerPage, 
 const getWorkspaceContract = async (userId, workspaceName, address) => {
     try {
         const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
-        const contracts = await user.workspaces[0].getContracts({ where: { address: address }});
-        return contracts[0] ? contracts[0].toJSON() : null;
+        const contract = await user.workspaces[0].findContractByAddress(address);
+
+        return contract ? contract.toJSON() : null;
     } catch(error) {
         writeLog({
             functionName: 'firebase.getWorkspaceContract',
@@ -337,7 +338,8 @@ const createWorkspace = async (userId, data) => {
 
     try {
         const user = await User.findByAuthId(userId);
-        return user.safeCreateWorkspace(data);
+        const workspace = await user.safeCreateWorkspace(data);
+        return workspace ? workspace.toJSON() : null;
     } catch(error) {
         writeLog({
             functionName: 'firebase.createWorkspace',
@@ -858,8 +860,6 @@ const resetWorkspace = async (userId, workspace) => {
         const user = await User.findByAuthIdWithWorkspace(userId, workspace);
         if (user.workspaces.length)
             await user.workspaces[0].reset();
-        else
-            throw new Error(`Couldn't find workspace`);
     } catch(error) {
         writeLog({
             functionName: 'firebase.resetWorkspace',
@@ -974,6 +974,46 @@ const getTransaction = async (userId, workspace, transactionHash) => {
     }
 };
 
+const getProcessableTransactions = async (uid, workspace) => {
+    if (!uid || !workspace) throw '[getProcessableTransactions] Missing parameter';
+
+    try {
+        const user = await User.findByAuthIdWithWorkspace(uid, workspace);
+        const transactions = await user.workspaces[0].getProcessableTransactions();
+        return transactions.map(t => t.toJSON());
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.getProcessableTransactions',
+            error: error,
+            extra: {
+                uid: uid,
+                workspace: workspace
+            }
+        });
+        throw error;
+    }
+};
+
+const getFailedProcessableTransactions = async (uid, workspace) => {
+    if (!uid || !workspace) throw '[getFailedProcessableTransactions] Missing parameter';
+
+    try {
+        const user = await User.findByAuthIdWithWorkspace(uid, workspace);
+        const transactions = await user.workspaces[0].getFailedProcessableTransactions();
+        return transactions.map(t => t.toJSON());
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.getFailedProcessableTransactions',
+            error: error,
+            extra: {
+                uid: uid,
+                workspace: workspace
+            }
+        });
+        throw error;
+    }
+}
+
 const getPublicExplorerParamsBySlug = async (slug) => {
    if (!slug) throw '[getPublicExplorerParamsBySlug] Missing parameter';
 
@@ -986,6 +1026,24 @@ const getPublicExplorerParamsBySlug = async (slug) => {
             error: error,
             extra: {
                 slug: slug
+            }
+        });
+        throw error;
+    }
+};
+
+const getPublicExplorerParamsByDomain = async (domain) => {
+   if (!domain) throw '[getPublicExplorerParamsByDomain] Missing parameter';
+
+   try {
+       const explorer = await Explorer.findByDomain(domain);
+       return explorer ? explorer.toJSON() : null;
+   } catch(error) {
+        writeLog({
+            functionName: 'firebase.getPublicExplorerParamsByDomain',
+            error: error,
+            extra: {
+                domain: domain
             }
         });
         throw error;
@@ -1136,5 +1194,8 @@ module.exports = {
     getWorkspaceContractById: getWorkspaceContractById,
     getUserById: getUserById,
     getContract: getContract,
-    getAccounts: getAccounts
+    getAccounts: getAccounts,
+    getPublicExplorerParamsByDomain: getPublicExplorerParamsByDomain,
+    getProcessableTransactions: getProcessableTransactions,
+    getFailedProcessableTransactions: getFailedProcessableTransactions
 };

@@ -82,6 +82,7 @@ export default {
             }
             const options = sanitize({ ...this.options, value: this.value });
             const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+
             const signer = provider.getSigner();
             const contract = new ethers.Contract(this.contract.address, this.contract.abi, signer);
 
@@ -121,8 +122,13 @@ export default {
                     message: null
                 };
 
-                const account = this.isPublicExplorer ? {} : (await this.server.getAccount(this.currentWorkspace.name, this.options.from)).data;
-                var options = sanitize({...this.options, value: this.value, privateKey: account.privateKey });
+                var options = sanitize({
+                    gasPrice: this.options.gasPrice,
+                    gasLimit: this.options.gasLimit,
+                    value: this.value,
+                    privateKey: this.options.from.privateKey,
+                    from: this.options.from.address
+                });
                 const shouldTrace = this.currentWorkspace.advancedOptions && this.currentWorkspace.advancedOptions.tracing == 'other';
 
                 if (!this.options.gasLimit || parseInt(this.options.gasLimit) < 1) {
@@ -133,8 +139,9 @@ export default {
                 for (let i = 0; i < this.method.inputs.length; i++) {
                     processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
                 }
+
                 this.server.callContractWriteMethod(this.contract, this.signature, options, processedParams, this.currentWorkspace.rpcServer, shouldTrace)
-                    .then((pendingTx) => {
+                    .then(({ pendingTx }) => {
                         this.result.txHash = pendingTx.hash;
 
                         if (typeof pendingTx.wait === 'function') {

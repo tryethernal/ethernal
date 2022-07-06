@@ -16,7 +16,7 @@ module.exports = {
     },
     configureWebpack: {
         devServer: {
-            allowedHosts: ['.antoine.local', '.ethernal.dev']
+            allowedHosts: ['.antoine.local', '.ethernal.test']
         },
         plugins: [
             new CopyPlugin({

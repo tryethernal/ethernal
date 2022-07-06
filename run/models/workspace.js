@@ -43,12 +43,18 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     getFilteredAccounts(page = 1, itemsPerPage = 10, orderBy = 'address', order = 'DESC') {
-        return this.getAccounts({
-            offset: (page - 1) * itemsPerPage,
-            limit: itemsPerPage,
-            order: [[orderBy, order]],
-            attributes: ['workspaceId', 'address', 'balance', 'privateKey']
-        });
+        if (page == -1)
+            return this.getAccounts({
+                order: [[orderBy, order]],
+                attributes: ['workspaceId', 'address', 'balance', 'privateKey']
+            });
+        else
+            return this.getAccounts({
+                offset: (page - 1) * itemsPerPage,
+                limit: itemsPerPage,
+                order: [[orderBy, order]],
+                attributes: ['workspaceId', 'address', 'balance', 'privateKey']
+            });
     }
 
     getFilteredContracts(page = 1, itemsPerPage = 10, orderBy = 'timestamp', order = 'DESC', onlyTokens = false) {
@@ -233,6 +239,9 @@ module.exports = (sequelize, DataTypes) => {
                 hash: hash
             },
             attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId'],
+            order: [
+                [ sequelize.literal('"traceSteps".'), 'id', 'asc']
+            ],
             include: [
                 {
                     model: sequelize.models.TransactionReceipt,
@@ -248,12 +257,27 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.TransactionTraceStep,
-                    attributes: ['address', 'contractHashedBytecode', 'depth', 'input', 'op', 'returnData', 'workspaceId'],
+                    attributes: ['address', 'contractHashedBytecode', 'depth', 'input', 'op', 'returnData', 'workspaceId', 'id'],
                     as: 'traceSteps',
                     include: [
                         {
                             model: sequelize.models.Contract,
                             attributes: ['abi', 'address' , 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'verificationStatus', 'workspaceId'],
+                            include: [
+                                {
+                                    model: sequelize.models.Contract,
+                                    attributes: ['name', 'tokenName', 'tokenSymbol', 'tokenDecimals', 'abi', 'address', 'workspaceId'],
+                                    as: 'proxyContract',
+                                    where: {
+                                        [Op.and]: sequelize.where(
+                                            sequelize.col("traceSteps->contract.workspaceId"),
+                                            Op.eq,
+                                            sequelize.col("traceSteps->contract->proxyContract.workspaceId")
+                                        ),
+                                    },
+                                    required: false
+                                }
+                            ],
                             as: 'contract'
                         }
                     ]
@@ -306,6 +330,19 @@ module.exports = (sequelize, DataTypes) => {
         const contracts = await this.getContracts({
             where: {
                 address: address.toLowerCase()
+            },
+            include: {
+                model: sequelize.models.Contract,
+                attributes: ['name', 'tokenName', 'tokenSymbol', 'tokenDecimals', 'abi', 'address'],
+                as: 'proxyContract',
+                required: false,
+                where: {
+                    [Op.and]: sequelize.where(
+                        sequelize.col("Contract.workspaceId"),
+                        Op.eq,
+                        sequelize.col("proxyContract.workspaceId")
+                    ),
+                }
             }
         });
         return contracts[0];
@@ -373,6 +410,67 @@ module.exports = (sequelize, DataTypes) => {
                 processed: false
             }
         });
+    }
+
+    getFailedProcessableTransactions() {
+        return this.getTransactions({
+            attributes: ['hash', 'workspaceId', 'rawError', 'parsedError', 'to', 'data', 'blockNumber'],
+            where: {
+                [Op.and]: [
+                    { parsedError: null },
+                    { rawError: null },
+                    { '$receipt.status$': false }
+                ]
+            },
+            include: [
+                {
+                    model: sequelize.models.Workspace,
+                    as: 'workspace',
+                    attributes: ['id', 'public']
+                },
+                {
+                    model: sequelize.models.TransactionReceipt,
+                    attributes: ['status'],
+                    as: 'receipt'
+                }
+            ]
+        });
+    }
+
+    getProcessableTransactions() {
+        const tokenTransferCount = `(
+            SELECT COUNT(*)
+            FROM "token_transfers"
+            WHERE
+                "token_transfers"."transactionId" = "Transaction"."id"
+        )`;
+        const tokenBalanceChangeCount = `(
+            SELECT COUNT(*)
+            FROM "token_balance_changes"
+            WHERE
+                "token_balance_changes"."transactionId" = "Transaction"."id"
+        )`;
+
+        return this.getTransactions({
+            attributes: ['blockNumber', 'hash'],
+            include: [
+                {
+                    model: sequelize.models.TokenTransfer,
+                    attributes: ['src', 'dst', 'token'],
+                    as: 'tokenTransfers'
+                },
+            ],
+            where: {
+                [Op.and]: [
+                    sequelize.where(
+                        sequelize.literal(tokenTransferCount), { [Op.gt]: 0 }
+                    ),
+                    sequelize.where(
+                        sequelize.literal(tokenBalanceChangeCount), { [Op.eq]: 0 }
+                    )
+                ]
+            },
+        })
     }
   }
 

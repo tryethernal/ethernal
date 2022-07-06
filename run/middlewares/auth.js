@@ -1,8 +1,10 @@
 const { getAuth } = require('firebase-admin/auth');
 const db = require('../lib/firebase');
+const { sanitize }  = require('../lib/utils');
 
 module.exports = async (req, res, next) => {
-    const data = { ...req.body.data, ...req.query };
+    const pusherData =  sanitize({ socket_id: req.body.socket_id, channel_name: req.body.channel_name, firebaseAuthToken: req.body.firebaseAuthToken, firebaseUserId: req.body.firebaseUserId });
+    const data = { ...req.body.data, ...req.query, ...pusherData };
     try {
         let firebaseUser;
 
@@ -29,6 +31,7 @@ module.exports = async (req, res, next) => {
     } catch(error) {
         console.error(data)
         console.error(error);
+        console.log(req.body);
         res.status(401).send(error);
     }
 };

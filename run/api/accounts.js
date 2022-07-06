@@ -6,10 +6,8 @@ const authMiddleware = require('../middlewares/auth');
 
 router.get('/', authMiddleware, async (req, res) => {
     const data = { ...req.query, ...req.body.data };
-    console.log(data);
     try {
         const result = await db.getAccounts(data.uid, data.workspace, data.page, data.itemsPerPage, data.orderBy, data.order)
-        
         res.status(200).json(result);
     } catch(error) {
         console.log(error);
@@ -22,7 +20,7 @@ router.post('/:address/syncBalance', authMiddleware, async (req, res) => {
     try {
         if (!data.uid || !data.workspace || !data.balance) {
             console.log(data);
-            throw new Error(`[POST /api/accounts/${address}/syncBalance] Missing parameters.`);
+            throw new Error(`[POST /api/accounts/${req.params.address}/syncBalance] Missing parameters.`);
         }
 
         await db.updateAccountBalance(data.uid, data.workspace, req.params.address.toLowerCase(), data.balance);

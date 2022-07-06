@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const { trigger } = require('../lib/pusher');
 
 module.exports = (sequelize, DataTypes) => {
   class Block extends Model {
@@ -31,6 +32,11 @@ module.exports = (sequelize, DataTypes) => {
     raw: DataTypes.JSON,
     workspaceId: DataTypes.INTEGER
   }, {
+    hooks: {
+        afterSave(block, options) {
+            trigger(`private-blocks;workspace=${block.workspaceId}`, 'new', { number: block.number });
+        }
+    },
     sequelize,
     modelName: 'Block',
     tableName: 'blocks'

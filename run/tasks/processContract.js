@@ -5,6 +5,7 @@ const { sanitize } = require('../lib/utils');
 const { isErc20 } = require('../lib/contract');
 const db = require('../lib/firebase');
 const writeLog = require('../lib/writeLog');
+const { trigger } = require('../lib/pusher');
 const transactionsLib = require('../lib/transactions');
 const taskAuthMiddleware = require('../middlewares/taskAuth');
 
@@ -167,6 +168,8 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
 
         const transactions = await db.getContractTransactions(user.firebaseUserId, workspace.name, contract.address);
         await transactionsLib.processTransactions(user.firebaseUserId, workspace.name, transactions);
+
+        trigger(`private-contracts;workspace=${contract.workspaceId};address=${contract.address}`, 'updated', null);
 
         res.sendStatus(200);
     } catch(error) {

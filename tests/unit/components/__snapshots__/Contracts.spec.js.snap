@@ -34,96 +34,24 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
           <tr>
             <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Deployed On: Sorted descending. Activate to remove sorting." aria-sort="descending" class="text-start sortable active desc"><span>Deployed On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="Deployed On: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Deployed On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
           </tr>
         </thead>
         <tbody>
           <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox9" class="">Ox9...Ox9</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox9" value="Ox9"></span>
-              <!----></span>
+            <td class="text-start">
+              <hash-link-stub hash="0x0" type="address"></hash-link-stub>
             </td>
-            <td class="text-start">0x9</td>
-            <td class="text-start"><span>2021-10-09 1:13:36 PM</span></td>
+            <td class="text-start">0x0</td>
+            <td class="text-start"><span>2021-10-09 1:13:27 PM</span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox8" class="">Ox8...Ox8</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox8" value="Ox8"></span>
-              <!----></span>
-            </td>
-            <td class="text-start">0x8</td>
-            <td class="text-start"><span>2021-10-09 1:13:35 PM</span></td>
-            <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
-          </tr>
-          <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox7" class="">Ox7...Ox7</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox7" value="Ox7"></span>
-              <!----></span>
-            </td>
-            <td class="text-start">0x7</td>
-            <td class="text-start"><span>2021-10-09 1:13:34 PM</span></td>
-            <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
-          </tr>
-          <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox6" class="">Ox6...Ox6</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox6" value="Ox6"></span>
-              <!----></span>
-            </td>
-            <td class="text-start">0x6</td>
-            <td class="text-start"><span>2021-10-09 1:13:33 PM</span></td>
-            <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
-          </tr>
-          <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox5" class="">Ox5...Ox5</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox5" value="Ox5"></span>
-              <!----></span>
-            </td>
-            <td class="text-start">0x5</td>
-            <td class="text-start"><span>2021-10-09 1:13:32 PM</span></td>
-            <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
-          </tr>
-          <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox4" class="">Ox4...Ox4</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox4" value="Ox4"></span>
-              <!----></span>
-            </td>
-            <td class="text-start">0x4</td>
-            <td class="text-start"><span>2021-10-09 1:13:31 PM</span></td>
-            <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
-          </tr>
-          <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox3" class="">Ox3...Ox3</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox3" value="Ox3"></span>
-              <!----></span>
-            </td>
-            <td class="text-start">0x3</td>
-            <td class="text-start"><span>2021-10-09 1:13:30 PM</span></td>
-            <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
-          </tr>
-          <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox2" class="">Ox2...Ox2</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox2" value="Ox2"></span>
-              <!----></span>
-            </td>
-            <td class="text-start">0x2</td>
-            <td class="text-start"><span>2021-10-09 1:13:29 PM</span></td>
-            <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
-          </tr>
-          <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox1" class="">Ox1...Ox1</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox1" value="Ox1"></span>
-              <!----></span>
+            <td class="text-start">
+              <hash-link-stub hash="0x1" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x1</td>
             <td class="text-start"><span>2021-10-09 1:13:28 PM</span></td>
@@ -131,12 +59,74 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox0" class="">Ox0...Ox0</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox0" value="Ox0"></span>
-              <!----></span>
+            <td class="text-start">
+              <hash-link-stub hash="0x2" type="address"></hash-link-stub>
             </td>
-            <td class="text-start">0x0</td>
-            <td class="text-start"><span>2021-10-09 1:13:27 PM</span></td>
+            <td class="text-start">0x2</td>
+            <td class="text-start"><span>2021-10-09 1:13:29 PM</span></td>
+            <td class="text-start"></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+          </tr>
+          <tr class="">
+            <td class="text-start">
+              <hash-link-stub hash="0x3" type="address"></hash-link-stub>
+            </td>
+            <td class="text-start">0x3</td>
+            <td class="text-start"><span>2021-10-09 1:13:30 PM</span></td>
+            <td class="text-start"></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+          </tr>
+          <tr class="">
+            <td class="text-start">
+              <hash-link-stub hash="0x4" type="address"></hash-link-stub>
+            </td>
+            <td class="text-start">0x4</td>
+            <td class="text-start"><span>2021-10-09 1:13:31 PM</span></td>
+            <td class="text-start"></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+          </tr>
+          <tr class="">
+            <td class="text-start">
+              <hash-link-stub hash="0x5" type="address"></hash-link-stub>
+            </td>
+            <td class="text-start">0x5</td>
+            <td class="text-start"><span>2021-10-09 1:13:32 PM</span></td>
+            <td class="text-start"></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+          </tr>
+          <tr class="">
+            <td class="text-start">
+              <hash-link-stub hash="0x6" type="address"></hash-link-stub>
+            </td>
+            <td class="text-start">0x6</td>
+            <td class="text-start"><span>2021-10-09 1:13:33 PM</span></td>
+            <td class="text-start"></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+          </tr>
+          <tr class="">
+            <td class="text-start">
+              <hash-link-stub hash="0x7" type="address"></hash-link-stub>
+            </td>
+            <td class="text-start">0x7</td>
+            <td class="text-start"><span>2021-10-09 1:13:34 PM</span></td>
+            <td class="text-start"></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+          </tr>
+          <tr class="">
+            <td class="text-start">
+              <hash-link-stub hash="0x8" type="address"></hash-link-stub>
+            </td>
+            <td class="text-start">0x8</td>
+            <td class="text-start"><span>2021-10-09 1:13:35 PM</span></td>
+            <td class="text-start"></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+          </tr>
+          <tr class="">
+            <td class="text-start">
+              <hash-link-stub hash="0x9" type="address"></hash-link-stub>
+            </td>
+            <td class="text-start">0x9</td>
+            <td class="text-start"><span>2021-10-09 1:13:36 PM</span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -144,12 +134,12 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
       </table>
     </div>
     <div class="v-data-footer">
-      <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
+      <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
           <div class="v-input__control">
-            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-101" class="v-input__slot">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-95" class="v-input__slot">
               <div class="v-select__slot">
                 <div class="v-select__selections">
-                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-101" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-95" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                 </div>
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -204,96 +194,24 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
           <tr>
             <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Deployed On: Sorted descending. Activate to remove sorting." aria-sort="descending" class="text-start sortable active desc"><span>Deployed On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="Deployed On: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Deployed On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
           </tr>
         </thead>
         <tbody>
           <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox9" class="">Ox9...Ox9</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox9" value="Ox9"></span>
-              <!----></span>
+            <td class="text-start">
+              <hash-link-stub hash="0x0" type="address"></hash-link-stub>
             </td>
-            <td class="text-start">0x9</td>
-            <td class="text-start"><span>2021-10-09 1:13:36 PM</span></td>
+            <td class="text-start">0x0</td>
+            <td class="text-start"><span>2021-10-09 1:13:27 PM</span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox8" class="">Ox8...Ox8</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox8" value="Ox8"></span>
-              <!----></span>
-            </td>
-            <td class="text-start">0x8</td>
-            <td class="text-start"><span>2021-10-09 1:13:35 PM</span></td>
-            <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
-          </tr>
-          <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox7" class="">Ox7...Ox7</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox7" value="Ox7"></span>
-              <!----></span>
-            </td>
-            <td class="text-start">0x7</td>
-            <td class="text-start"><span>2021-10-09 1:13:34 PM</span></td>
-            <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
-          </tr>
-          <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox6" class="">Ox6...Ox6</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox6" value="Ox6"></span>
-              <!----></span>
-            </td>
-            <td class="text-start">0x6</td>
-            <td class="text-start"><span>2021-10-09 1:13:33 PM</span></td>
-            <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
-          </tr>
-          <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox5" class="">Ox5...Ox5</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox5" value="Ox5"></span>
-              <!----></span>
-            </td>
-            <td class="text-start">0x5</td>
-            <td class="text-start"><span>2021-10-09 1:13:32 PM</span></td>
-            <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
-          </tr>
-          <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox4" class="">Ox4...Ox4</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox4" value="Ox4"></span>
-              <!----></span>
-            </td>
-            <td class="text-start">0x4</td>
-            <td class="text-start"><span>2021-10-09 1:13:31 PM</span></td>
-            <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
-          </tr>
-          <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox3" class="">Ox3...Ox3</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox3" value="Ox3"></span>
-              <!----></span>
-            </td>
-            <td class="text-start">0x3</td>
-            <td class="text-start"><span>2021-10-09 1:13:30 PM</span></td>
-            <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
-          </tr>
-          <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox2" class="">Ox2...Ox2</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox2" value="Ox2"></span>
-              <!----></span>
-            </td>
-            <td class="text-start">0x2</td>
-            <td class="text-start"><span>2021-10-09 1:13:29 PM</span></td>
-            <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
-          </tr>
-          <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox1" class="">Ox1...Ox1</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox1" value="Ox1"></span>
-              <!----></span>
+            <td class="text-start">
+              <hash-link-stub hash="0x1" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x1</td>
             <td class="text-start"><span>2021-10-09 1:13:28 PM</span></td>
@@ -301,12 +219,74 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/Ox0" class="">Ox0...Ox0</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox0" value="Ox0"></span>
-              <!----></span>
+            <td class="text-start">
+              <hash-link-stub hash="0x2" type="address"></hash-link-stub>
             </td>
-            <td class="text-start">0x0</td>
-            <td class="text-start"><span>2021-10-09 1:13:27 PM</span></td>
+            <td class="text-start">0x2</td>
+            <td class="text-start"><span>2021-10-09 1:13:29 PM</span></td>
+            <td class="text-start"></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+          </tr>
+          <tr class="">
+            <td class="text-start">
+              <hash-link-stub hash="0x3" type="address"></hash-link-stub>
+            </td>
+            <td class="text-start">0x3</td>
+            <td class="text-start"><span>2021-10-09 1:13:30 PM</span></td>
+            <td class="text-start"></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+          </tr>
+          <tr class="">
+            <td class="text-start">
+              <hash-link-stub hash="0x4" type="address"></hash-link-stub>
+            </td>
+            <td class="text-start">0x4</td>
+            <td class="text-start"><span>2021-10-09 1:13:31 PM</span></td>
+            <td class="text-start"></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+          </tr>
+          <tr class="">
+            <td class="text-start">
+              <hash-link-stub hash="0x5" type="address"></hash-link-stub>
+            </td>
+            <td class="text-start">0x5</td>
+            <td class="text-start"><span>2021-10-09 1:13:32 PM</span></td>
+            <td class="text-start"></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+          </tr>
+          <tr class="">
+            <td class="text-start">
+              <hash-link-stub hash="0x6" type="address"></hash-link-stub>
+            </td>
+            <td class="text-start">0x6</td>
+            <td class="text-start"><span>2021-10-09 1:13:33 PM</span></td>
+            <td class="text-start"></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+          </tr>
+          <tr class="">
+            <td class="text-start">
+              <hash-link-stub hash="0x7" type="address"></hash-link-stub>
+            </td>
+            <td class="text-start">0x7</td>
+            <td class="text-start"><span>2021-10-09 1:13:34 PM</span></td>
+            <td class="text-start"></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+          </tr>
+          <tr class="">
+            <td class="text-start">
+              <hash-link-stub hash="0x8" type="address"></hash-link-stub>
+            </td>
+            <td class="text-start">0x8</td>
+            <td class="text-start"><span>2021-10-09 1:13:35 PM</span></td>
+            <td class="text-start"></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+          </tr>
+          <tr class="">
+            <td class="text-start">
+              <hash-link-stub hash="0x9" type="address"></hash-link-stub>
+            </td>
+            <td class="text-start">0x9</td>
+            <td class="text-start"><span>2021-10-09 1:13:36 PM</span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -314,12 +294,12 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
       </table>
     </div>
     <div class="v-data-footer">
-      <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
+      <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
           <div class="v-input__control">
-            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-184" class="v-input__slot">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-158" class="v-input__slot">
               <div class="v-select__slot">
                 <div class="v-select__selections">
-                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-184" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-158" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                 </div>
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -348,12 +328,8 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
       <div class="v-alert__content">Free plan users are limited to 10 synced contracts. Remove some contracts or <a>upgrade</a> to the Premium plan for more.</div>
     </div>
   </div>
-  <div role="dialog" class="v-dialog__container">
-    <!---->
-  </div>
-  <div role="dialog" class="v-dialog__container">
-    <!---->
-  </div>
+  <import-contract-modal-stub></import-contract-modal-stub>
+  <remove-contract-confirmation-modal-stub></remove-contract-confirmation-modal-stub>
   <div class="v-data-table v-data-table--has-top v-data-table--has-bottom theme--light">
     <header class="py-0 v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px;">
       <div class="v-toolbar__content" style="height: 48px;">
@@ -374,16 +350,15 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
           <tr>
             <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Deployed On: Sorted descending. Activate to remove sorting." aria-sort="descending" class="text-start sortable active desc"><span>Deployed On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="Deployed On: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Deployed On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
           </tr>
         </thead>
         <tbody>
           <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
-              <!----></span>
+            <td class="text-start">
+              <hash-link-stub hash="0x0" type="address"></hash-link-stub>
             </td>
             <td class="text-start">My Contract</td>
             <td class="text-start"><span>2021-10-09 1:13:27 PM</span></td>
@@ -391,9 +366,8 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
             <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/0x1" class="">0x1...0x1</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1" value="0x1"></span>
-              <!----></span>
+            <td class="text-start">
+              <hash-link-stub hash="0x1" type="address"></hash-link-stub>
             </td>
             <td class="text-start">Another Contract</td>
             <td class="text-start"></td>
@@ -404,12 +378,12 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
       </table>
     </div>
     <div class="v-data-footer">
-      <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
+      <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
           <div class="v-input__control">
-            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-25" class="v-input__slot">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-23" class="v-input__slot">
               <div class="v-select__slot">
                 <div class="v-select__selections">
-                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-25" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-23" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                 </div>
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -464,7 +438,7 @@ exports[`Contracts.vue Should show the loading message when empty contracts list
           <tr>
             <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Deployed On: Sorted descending. Activate to remove sorting." aria-sort="descending" class="text-start sortable active desc"><span>Deployed On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="Deployed On: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Deployed On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
           </tr>
@@ -478,12 +452,12 @@ exports[`Contracts.vue Should show the loading message when empty contracts list
       </table>
     </div>
     <div class="v-data-footer">
-      <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
+      <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
           <div class="v-input__control">
-            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-68" class="v-input__slot">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-62" class="v-input__slot">
               <div class="v-select__slot">
                 <div class="v-select__selections">
-                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-68" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-62" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                 </div>
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>

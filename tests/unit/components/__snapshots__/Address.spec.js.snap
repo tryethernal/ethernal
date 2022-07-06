@@ -1,121 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Address.vue Should display extra tabs for contracts addresses 1`] = `
-<div class="container container--fluid">
-  <div class="row mb-2">
-    <div class="col col-3">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          Balance: 1e-14 Ether
-        </div>
-      </div>
-    </div>
-    <div class="spacer"></div>
-    <div class="col col-2 align-self-end">
-      <div role="dialog" class="v-dialog__container">
-        <!---->
-      </div> <button type="button" class="v-btn v-btn--depressed v-btn--flat v-btn--outlined theme--light v-size--small error--text"><span class="v-btn__content">
-                Remove contract
-            </span></button>
-    </div>
-  </div>
-  <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text" data-booted="true">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="height: 2px; left: 0px; width: 0px;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active">Transactions</a> <a tabindex="0" href="#contract" aria-selected="false" role="tab" class="v-tab" id="contractTab">Contract</a> <a tabindex="0" href="#storage" aria-selected="false" role="tab" class="v-tab" id="storageTab">Storage</a>
-          <!---->
-        </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-    </div>
-  </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
-    <div class="v-window__container">
-      <transition-stub name="v-window-x-transition">
-        <div class="v-window-item v-window-item--active" id="transactions">
-          <div class="container container--fluid">
-            <div class="v-data-table v-data-table--has-bottom theme--light">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <colgroup>
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                  </colgroup>
-                  <thead class="v-data-table-header">
-                    <tr>
-                      <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
-                      <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="v-data-table__empty-wrapper">
-                      <td colspan="8">
-                        No transactions found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="v-data-footer">
-                <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-300" class="v-input__slot">
-                        <div class="v-select__slot">
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-300" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-                          </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="10">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-data-footer__pagination">1-0 of 2</div>
-                <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-                <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </transition-stub>
-      <transition-stub name="v-window-x-transition">
-        <!---->
-      </transition-stub>
-      <transition-stub name="v-window-x-transition" style="display: none;">
-        <!---->
-      </transition-stub>
-      <transition-stub name="v-window-x-transition">
-        <!---->
-      </transition-stub>
-    </div>
-  </div>
-</div>
-`;
-
 exports[`Address.vue Should display the "Edit" button under the contract tab if there is an ABI & it is a public explorer & as admin 1`] = `
 <div class="container container--fluid">
   <div class="row mb-2">
@@ -136,16 +20,15 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
     </div>
   </div>
   <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text" data-booted="true">
+    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
       <div class="v-slide-group__prev v-slide-group__prev--disabled">
         <transition-stub name="fade-transition"></transition-stub>
       </div>
       <div class="v-slide-group__wrapper">
         <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="height: 2px; left: 0px; width: 0px;">
+          <div class="v-tabs-slider-wrapper" style="transition: none;">
             <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="true" role="tab" class="v-tab v-tab--active" id="contractTab">Contract</a>
-          <!---->
+          </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="true" role="tab" class="v-tab v-tab--active" id="contractTab">Contract</a> <a tabindex="0" href="#storage" aria-selected="false" role="tab" class="v-tab" id="storageTab">Storage</a>
           <!---->
         </div>
       </div>
@@ -156,70 +39,12 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
   </div>
   <div class="v-window v-item-group theme--light v-tabs-items">
     <div class="v-window__container">
-      <transition-stub name="v-window-x-transition">
+      <transition-stub name="">
         <div class="v-window-item" id="transactions" style="display: none;">
-          <div class="container container--fluid">
-            <div class="v-data-table v-data-table--has-bottom theme--light">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <colgroup>
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                  </colgroup>
-                  <thead class="v-data-table-header">
-                    <tr>
-                      <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
-                      <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="v-data-table__empty-wrapper">
-                      <td colspan="8">
-                        No transactions found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="v-data-footer">
-                <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-456" class="v-input__slot">
-                        <div class="v-select__slot">
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-456" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-                          </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="10">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-data-footer__pagination">1-0 of 2</div>
-                <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-                <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
-              </div>
-            </div>
-          </div>
+          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
         </div>
       </transition-stub>
-      <transition-stub name="v-window-x-transition">
+      <transition-stub name="">
         <div class="v-window-item v-window-item--active" id="contract" style="">
           <h4>Artifact</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
@@ -237,13 +62,59 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
           </div>
           <h4>Call Options</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-            <div class="v-card__text">
-              You need Metamask in order to interact with this contract
-            </div>
-            <div class="v-card__text" style="display: none;">
-              <div class="row">
-                <div class="col col-6">
-                  <!----> <button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="connectMetamask"><span class="v-btn__content">Connect With Metamask</span></button>
+            <div>
+              <div class="v-card__text">
+                <div class="row">
+                  <div class="col col-5">
+                    <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+                      <div class="v-input__control">
+                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-157" class="v-input__slot">
+                          <fieldset aria-hidden="true">
+                            <legend style="width: 0px;"><span>​</span></legend>
+                          </fieldset>
+                          <div class="v-select__slot"><label for="input-157" class="v-label theme--light" style="left: 0px; position: absolute;">Select from address</label>
+                            <div class="v-select__selections"><input id="input-157" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                            <div class="v-input__append-inner">
+                              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                            </div><input type="hidden">
+                          </div>
+                          <div class="v-menu">
+                            <!---->
+                          </div>
+                        </div>
+                        <div class="v-text-field__details">
+                          <div class="v-messages theme--light">
+                            <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input__control">
+                        <div class="v-input__slot">
+                          <fieldset aria-hidden="true">
+                            <legend style="width: 0px;"><span>​</span></legend>
+                          </fieldset>
+                          <div class="v-text-field__slot"><label for="input-162" class="v-label theme--light" style="left: 0px; position: absolute;">Gas Price (wei)</label><input id="input-162" type="number"></div>
+                        </div>
+                        <div class="v-text-field__details">
+                          <div class="v-messages theme--light">
+                            <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input__control">
+                        <div class="v-input__slot">
+                          <fieldset aria-hidden="true">
+                            <legend style="width: 0px;"><span>​</span></legend>
+                          </fieldset>
+                          <div class="v-text-field__slot"><label for="input-165" class="v-label theme--light" style="left: 0px; position: absolute;">Maximum Gas</label><input id="input-165" type="number"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -260,7 +131,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                       <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -272,7 +143,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                       <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -280,13 +151,13 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                   <div class="col col-5">
                     <div>
                       <div class="pb-1 font-weight-bold">depositsOf</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-474" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-474" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-171" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-171" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -294,7 +165,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                       <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -302,13 +173,13 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                   <div class="col col-5">
                     <div>
                       <div class="pb-1 font-weight-bold">maturityOf</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-477" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-477" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-174" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-174" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -316,7 +187,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                       <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -352,17 +223,17 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-484" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-484" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-181" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-181" type="number"></div>
                             </div>
                           </div>
                         </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -370,13 +241,13 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                   <div class="col col-5">
                     <div>
                       <div class="font-weight-bold">transferOwnership</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-487" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address newOwner</label><input disabled="disabled" id="input-487" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-184" class="v-label theme--light" style="left: 0px; position: absolute;">address newOwner</label><input id="input-184" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -401,17 +272,17 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-492" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-492" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-189" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-189" type="number"></div>
                             </div>
                           </div>
                         </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -419,23 +290,23 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                   <div class="col col-5">
                     <div>
                       <div class="font-weight-bold">setMaturity</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-495" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-495" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-192" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-192" type="text"></div>
                           </div>
                         </div>
                       </div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-496" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input disabled="disabled" id="input-496" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-193" class="v-label theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input id="input-193" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -460,17 +331,17 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-501" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-501" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-198" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-198" type="number"></div>
                             </div>
                           </div>
                         </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -478,13 +349,13 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                   <div class="col col-5">
                     <div>
                       <div class="font-weight-bold">deposit</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-504" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-504" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-201" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-201" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -509,17 +380,17 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-509" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-509" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-206" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-206" type="number"></div>
                             </div>
                           </div>
                         </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -548,17 +419,17 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-516" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-516" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-213" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-213" type="number"></div>
                             </div>
                           </div>
                         </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -567,10 +438,12 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
           </div>
         </div>
       </transition-stub>
-      <transition-stub name="v-window-x-transition" style="display: none;">
+      <transition-stub name="" style="display: none;">
         <!---->
       </transition-stub>
-      <!---->
+      <transition-stub name="">
+        <!---->
+      </transition-stub>
     </div>
   </div>
 </div>
@@ -582,7 +455,7 @@ exports[`Address.vue Should display the contract interaction interface under the
     <div class="col col-3">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
-          Balance: 1e-14 Ether
+          Balance: 1e-14 ether
         </div>
       </div>
     </div>
@@ -590,13 +463,13 @@ exports[`Address.vue Should display the contract interaction interface under the
     <!---->
   </div>
   <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text" data-booted="true">
+    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
       <div class="v-slide-group__prev v-slide-group__prev--disabled">
         <transition-stub name="fade-transition"></transition-stub>
       </div>
       <div class="v-slide-group__wrapper">
         <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="height: 2px; left: 0px; width: 0px;">
+          <div class="v-tabs-slider-wrapper" style="transition: none;">
             <div class="v-tabs-slider"></div>
           </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="true" role="tab" class="v-tab v-tab--active" id="contractTab">Contract</a>
           <!---->
@@ -610,70 +483,12 @@ exports[`Address.vue Should display the contract interaction interface under the
   </div>
   <div class="v-window v-item-group theme--light v-tabs-items">
     <div class="v-window__container">
-      <transition-stub name="v-window-x-transition">
+      <transition-stub name="">
         <div class="v-window-item" id="transactions" style="display: none;">
-          <div class="container container--fluid">
-            <div class="v-data-table v-data-table--has-bottom theme--light">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <colgroup>
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                  </colgroup>
-                  <thead class="v-data-table-header">
-                    <tr>
-                      <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
-                      <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="v-data-table__empty-wrapper">
-                      <td colspan="8">
-                        No transactions found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="v-data-footer">
-                <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-347" class="v-input__slot">
-                        <div class="v-select__slot">
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-347" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-                          </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="10">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-data-footer__pagination">1-0 of 2</div>
-                <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-                <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
-              </div>
-            </div>
-          </div>
+          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
         </div>
       </transition-stub>
-      <transition-stub name="v-window-x-transition">
+      <transition-stub name="">
         <div class="v-window-item v-window-item--active" id="contract">
           <h4>Artifact</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
@@ -739,7 +554,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-369" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-369" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-76" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-76" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -761,7 +576,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-372" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-372" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-79" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-79" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -811,7 +626,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-380" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-380" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-87" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-87" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -829,7 +644,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-383" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address newOwner</label><input disabled="disabled" id="input-383" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-90" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address newOwner</label><input disabled="disabled" id="input-90" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -860,7 +675,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-388" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-388" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-95" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-95" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -878,7 +693,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-391" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-391" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-98" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-98" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -888,7 +703,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-392" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input disabled="disabled" id="input-392" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-99" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input disabled="disabled" id="input-99" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -919,7 +734,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-397" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-397" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-104" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-104" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -937,7 +752,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-400" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-400" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-107" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-107" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -968,7 +783,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-405" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-405" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-112" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-112" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -1007,7 +822,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-412" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-412" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-119" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-119" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -1020,7 +835,7 @@ exports[`Address.vue Should display the contract interaction interface under the
           </div>
         </div>
       </transition-stub>
-      <transition-stub name="v-window-x-transition" style="display: none;">
+      <transition-stub name="" style="display: none;">
         <!---->
       </transition-stub>
       <!---->
@@ -1029,7 +844,7 @@ exports[`Address.vue Should display the contract interaction interface under the
 </div>
 `;
 
-exports[`Address.vue Should display the contract interaction interface under the contract tab if there is an ABI 1`] = `
+exports[`Address.vue Should display the contract storage structure 1`] = `
 <div class="container container--fluid">
   <div class="row mb-2">
     <div class="col col-3">
@@ -1049,15 +864,15 @@ exports[`Address.vue Should display the contract interaction interface under the
     </div>
   </div>
   <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text" data-booted="true">
+    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
       <div class="v-slide-group__prev v-slide-group__prev--disabled">
         <transition-stub name="fade-transition"></transition-stub>
       </div>
       <div class="v-slide-group__wrapper">
         <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="height: 2px; left: 0px; width: 0px;">
+          <div class="v-tabs-slider-wrapper" style="transition: none;">
             <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="true" role="tab" class="v-tab v-tab--active" id="contractTab">Contract</a> <a tabindex="0" href="#storage" aria-selected="false" role="tab" class="v-tab" id="storageTab">Storage</a>
+          </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="false" role="tab" class="v-tab" id="contractTab">Contract</a> <a tabindex="0" href="#storage" aria-selected="true" role="tab" class="v-tab v-tab--active" id="storageTab">Storage</a>
           <!---->
         </div>
       </div>
@@ -1068,578 +883,162 @@ exports[`Address.vue Should display the contract interaction interface under the
   </div>
   <div class="v-window v-item-group theme--light v-tabs-items">
     <div class="v-window__container">
-      <transition-stub name="v-window-x-transition">
+      <transition-stub name="">
         <div class="v-window-item" id="transactions" style="display: none;">
-          <div class="container container--fluid">
-            <div class="v-data-table v-data-table--has-bottom theme--light">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <colgroup>
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                  </colgroup>
-                  <thead class="v-data-table-header">
-                    <tr>
-                      <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
-                      <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="v-data-table__empty-wrapper">
-                      <td colspan="8">
-                        No transactions found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="v-data-footer">
-                <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-561" class="v-input__slot">
-                        <div class="v-select__slot">
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-561" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-                          </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="10">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-data-footer__pagination">1-0 of 2</div>
-                <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-                <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
-              </div>
-            </div>
-          </div>
+          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
         </div>
       </transition-stub>
-      <transition-stub name="v-window-x-transition">
-        <div class="v-window-item v-window-item--active" id="contract" style="">
+      <transition-stub name="">
+        <div class="v-window-item" id="contract" style="display: none;">
           <h4>Artifact</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
             <!---->
             <div role="dialog" class="v-dialog__container">
               <!---->
             </div>
-            <div class="v-card__text">
-              <!---->
-              Artifact for "<b>Amalfi</b>" has been uploaded.<span> (<a href="#">Edit</a>)</span>
-              <!---->
-            </div>
             <!---->
+            <div class="v-card__text"><i>Upload an artifact to read contract storage and interact with it.</i><br>
+              For Truffle projects, use our <a href="https://www.npmjs.com/package/ethernal" target="_blank">CLI</a>.<br>
+              For Hardhat project, use our <a href="https://github.com/antoinedc/hardhat-ethernal" target="_blank">plugin</a>.<br>
+              Or you can manually edit contract metadata (name &amp; ABI) <a href="#">here</a>.
+            </div>
             <!---->
           </div>
           <h4>Call Options</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
             <div>
-              <div class="v-card__text">
-                <div class="row">
-                  <div class="col col-5">
-                    <div class="v-input v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
-                      <div class="v-input__control">
-                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-575" class="v-input__slot">
-                          <fieldset aria-hidden="true">
-                            <legend style="width: 0px;"><span>​</span></legend>
-                          </fieldset>
-                          <div class="v-select__slot"><label for="input-575" class="v-label theme--light" style="left: 0px; position: absolute;">Select from address</label>
-                            <div class="v-select__selections"><input id="input-575" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
-                            <div class="v-input__append-inner">
-                              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                            </div><input type="hidden">
-                          </div>
-                          <div class="v-menu">
-                            <!---->
-                          </div>
-                        </div>
-                        <div class="v-text-field__details">
-                          <div class="v-messages theme--light">
-                            <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="v-input v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
-                      <div class="v-input__control">
-                        <div class="v-input__slot">
-                          <fieldset aria-hidden="true">
-                            <legend style="width: 0px;"><span>​</span></legend>
-                          </fieldset>
-                          <div class="v-text-field__slot"><label for="input-580" class="v-label theme--light" style="left: 0px; position: absolute;">Gas Price (wei)</label><input id="input-580" type="number"></div>
-                        </div>
-                        <div class="v-text-field__details">
-                          <div class="v-messages theme--light">
-                            <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
-                      <div class="v-input__control">
-                        <div class="v-input__slot">
-                          <fieldset aria-hidden="true">
-                            <legend style="width: 0px;"><span>​</span></legend>
-                          </fieldset>
-                          <div class="v-text-field__slot"><label for="input-583" class="v-label theme--light" style="left: 0px; position: absolute;">Maximum Gas</label><input id="input-583" type="number"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <div class="v-card__text"><i>Upload an artifact to call this contract's methods.</i></div>
             </div>
           </div>
           <h4>Read Methods</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
             <div>
-              <div class="v-card__text">
-                <div class="row pb-4">
-                  <div class="col col-5">
-                    <div>
-                      <div class="pb-1 font-weight-bold">_feeBasisPoints</div>
-                      <div>=&gt; uint256</div>
-                      <div id="call" style="display: none;"></div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col col-5">
-                    <div>
-                      <div class="pb-1 font-weight-bold">owner</div>
-                      <div>=&gt; address</div>
-                      <div id="call" style="display: none;"></div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col col-5">
-                    <div>
-                      <div class="pb-1 font-weight-bold">depositsOf</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span>​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-589" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-589" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div>=&gt; uint256</div>
-                      <div id="call" style="display: none;"></div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col col-5">
-                    <div>
-                      <div class="pb-1 font-weight-bold">maturityOf</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span>​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-592" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-592" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div>=&gt; uint256</div>
-                      <div id="call" style="display: none;"></div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <div class="v-card__text"><i>Upload an artifact to call this contract's methods.</i></div>
             </div>
           </div>
           <h4>Write Methods</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
             <div>
-              <div class="v-card__text">
-                <div class="row pb-4">
-                  <div class="col col-5">
-                    <div>
-                      <div class="font-weight-bold">renounceOwnership</div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span>​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-599" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-599" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col col-5">
-                    <div>
-                      <div class="font-weight-bold">transferOwnership</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span>​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-602" class="v-label theme--light" style="left: 0px; position: absolute;">address newOwner</label><input id="input-602" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span>​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-607" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-607" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col col-5">
-                    <div>
-                      <div class="font-weight-bold">setMaturity</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span>​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-610" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-610" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span>​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-611" class="v-label theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input id="input-611" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span>​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-616" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-616" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col col-5">
-                    <div>
-                      <div class="font-weight-bold">deposit</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span>​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-619" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-619" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span>​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-624" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-624" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col col-5">
-                    <div>
-                      <div class="font-weight-bold">withdraw</div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span>​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-631" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-631" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <div class="v-card__text"><i>Upload an artifact to call this contract's methods.</i></div>
             </div>
           </div>
         </div>
       </transition-stub>
-      <transition-stub name="v-window-x-transition" style="display: none;">
+      <transition-stub name="" style="display: none;">
         <!---->
       </transition-stub>
-      <transition-stub name="v-window-x-transition">
-        <!---->
-      </transition-stub>
-    </div>
-  </div>
-</div>
-`;
+      <transition-stub name="">
+        <div class="v-window-item v-window-item--active" id="storage">
+          <h4>Structure</h4>
+          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+            <!---->
+            <div class="v-card__text">
+              <div>
+                <div role="dialog" class="v-dialog__container">
+                  <!---->
+                </div>
+                mapping(address =&gt; uint256) _balances:
+                <button type="button" class="v-btn v-btn--depressed v-btn--flat v-btn--icon v-btn--outlined v-btn--round theme--light v-size--x-small primary--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-plus theme--light"></i></span></button>
+              </div>
+              <div>
+                <div role="dialog" class="v-dialog__container">
+                  <!---->
+                </div>
+                mapping(address =&gt; mapping(address =&gt; uint256)) _allowances:
+                <button type="button" class="v-btn v-btn--depressed v-btn--flat v-btn--icon v-btn--outlined v-btn--round theme--light v-size--x-small primary--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-plus theme--light"></i></span></button>
+              </div>
+              <div>
+                <div role="dialog" class="v-dialog__container">
+                  <!---->
+                </div>
+                uint256 _totalSupply;
+                <!---->
+              </div>
+              <div>
+                <div role="dialog" class="v-dialog__container">
+                  <!---->
+                </div>
+                string _name;
+                <!---->
+              </div>
+              <div>
+                <div role="dialog" class="v-dialog__container">
+                  <!---->
+                </div>
+                string _symbol;
+                <!---->
+              </div>
+              <div>
+                <div role="dialog" class="v-dialog__container">
+                  <!---->
+                </div>
 
-exports[`Address.vue Should not display the "Remove Contract" button & storage tab on contract page if in public explorer mode and not admin 1`] = `
-<div class="container container--fluid">
-  <div class="row mb-2">
-    <div class="col col-3">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          Balance: 1e-14 Ether
-        </div>
-      </div>
-    </div>
-    <div class="spacer"></div>
-    <!---->
-  </div>
-  <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text" data-booted="true">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="height: 2px; left: 0px; width: 0px;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active">Transactions</a> <a tabindex="0" href="#contract" aria-selected="false" role="tab" class="v-tab" id="contractTab">Contract</a>
-          <!---->
-          <!---->
-        </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-    </div>
-  </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
-    <div class="v-window__container">
-      <transition-stub name="v-window-x-transition">
-        <div class="v-window-item v-window-item--active" id="transactions">
-          <div class="container container--fluid">
-            <div class="v-data-table v-data-table--has-bottom theme--light">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <colgroup>
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                  </colgroup>
-                  <thead class="v-data-table-header">
-                    <tr>
-                      <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
-                      <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="v-data-table__empty-wrapper">
-                      <td colspan="8">
-                        No transactions found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
-                    </tr>
-                  </tbody>
-                </table>
+                <!---->
               </div>
-              <div class="v-data-footer">
-                <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-29" class="v-input__slot">
-                        <div class="v-select__slot">
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-29" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-                          </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="10">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+              <div>
+                <div role="dialog" class="v-dialog__container">
+                  <!---->
                 </div>
-                <div class="v-data-footer__pagination">1-0 of 2</div>
-                <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-                <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
+                string TOKEN_NAME;
+                <!---->
+              </div>
+              <div>
+                <div role="dialog" class="v-dialog__container">
+                  <!---->
+                </div>
+                string TOKEN_SYMBOL;
+                <!---->
+              </div>
+              <div>
+                <div role="dialog" class="v-dialog__container">
+                  <!---->
+                </div>
+                uint256 val;
+                <!---->
+              </div>
+              <div>
+                <div role="dialog" class="v-dialog__container">
+                  <!---->
+                </div>
+                uint256 TOTAL_SUPPLY;
+                <!---->
+              </div>
+              <div>
+                <div role="dialog" class="v-dialog__container">
+                  <!---->
+                </div>
+
+                <!---->
+              </div>
+              <div>
+                <div role="dialog" class="v-dialog__container">
+                  <!---->
+                </div>
+
+                <!---->
+              </div>
+            </div>
+            <!---->
+          </div>
+          <div class="row">
+            <div class="col col-3">
+              <h4>Transactions</h4>
+              <div class="v-card v-sheet v-sheet--outlined theme--light">
+                <div class="v-card__text"><i>No transactions here yet.</i></div>
+              </div>
+            </div>
+            <div class="col col-9">
+              <h4>Data</h4>
+              <div class="v-card v-sheet v-sheet--outlined theme--light">
+                <!---->
+                <div class="v-card__text">
+                  <div><i>Select a transaction.</i></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </transition-stub>
-      <transition-stub name="v-window-x-transition">
-        <!---->
-      </transition-stub>
-      <transition-stub name="v-window-x-transition" style="display: none;">
-        <!---->
-      </transition-stub>
-      <!---->
     </div>
   </div>
 </div>
@@ -1656,22 +1055,16 @@ exports[`Address.vue Should not display the storage tab on contract page if in p
       </div>
     </div>
     <div class="spacer"></div>
-    <div class="col col-2 align-self-end">
-      <div role="dialog" class="v-dialog__container">
-        <!---->
-      </div> <button type="button" class="v-btn v-btn--depressed v-btn--flat v-btn--outlined theme--light v-size--small error--text"><span class="v-btn__content">
-                Remove contract
-            </span></button>
-    </div>
+    <!---->
   </div>
   <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text" data-booted="true">
+    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
       <div class="v-slide-group__prev v-slide-group__prev--disabled">
         <transition-stub name="fade-transition"></transition-stub>
       </div>
       <div class="v-slide-group__wrapper">
         <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="height: 2px; left: 0px; width: 0px;">
+          <div class="v-tabs-slider-wrapper" style="transition: none;">
             <div class="v-tabs-slider"></div>
           </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active">Transactions</a> <a tabindex="0" href="#contract" aria-selected="false" role="tab" class="v-tab" id="contractTab">Contract</a>
           <!---->
@@ -1685,73 +1078,15 @@ exports[`Address.vue Should not display the storage tab on contract page if in p
   </div>
   <div class="v-window v-item-group theme--light v-tabs-items">
     <div class="v-window__container">
-      <transition-stub name="v-window-x-transition">
+      <transition-stub name="">
         <div class="v-window-item v-window-item--active" id="transactions">
-          <div class="container container--fluid">
-            <div class="v-data-table v-data-table--has-bottom theme--light">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <colgroup>
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                  </colgroup>
-                  <thead class="v-data-table-header">
-                    <tr>
-                      <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
-                      <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="v-data-table__empty-wrapper">
-                      <td colspan="8">
-                        No transactions found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="v-data-footer">
-                <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-70" class="v-input__slot">
-                        <div class="v-select__slot">
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-70" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-                          </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="10">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-data-footer__pagination">1-0 of 2</div>
-                <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-                <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
-              </div>
-            </div>
-          </div>
+          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
         </div>
       </transition-stub>
-      <transition-stub name="v-window-x-transition">
+      <transition-stub name="">
         <!---->
       </transition-stub>
-      <transition-stub name="v-window-x-transition" style="display: none;">
+      <transition-stub name="" style="display: none;">
         <!---->
       </transition-stub>
       <!---->
@@ -1780,16 +1115,15 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
     </div>
   </div>
   <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text" data-booted="true">
+    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
       <div class="v-slide-group__prev v-slide-group__prev--disabled">
         <transition-stub name="fade-transition"></transition-stub>
       </div>
       <div class="v-slide-group__wrapper">
         <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="height: 2px; left: 0px; width: 0px;">
+          <div class="v-tabs-slider-wrapper" style="transition: none;">
             <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="true" role="tab" class="v-tab v-tab--active" id="contractTab">Contract</a>
-          <!---->
+          </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="true" role="tab" class="v-tab v-tab--active" id="contractTab">Contract</a> <a tabindex="0" href="#storage" aria-selected="false" role="tab" class="v-tab" id="storageTab">Storage</a>
           <!---->
         </div>
       </div>
@@ -1800,70 +1134,12 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
   </div>
   <div class="v-window v-item-group theme--light v-tabs-items">
     <div class="v-window__container">
-      <transition-stub name="v-window-x-transition">
+      <transition-stub name="">
         <div class="v-window-item" id="transactions" style="display: none;">
-          <div class="container container--fluid">
-            <div class="v-data-table v-data-table--has-bottom theme--light">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <colgroup>
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                  </colgroup>
-                  <thead class="v-data-table-header">
-                    <tr>
-                      <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
-                      <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="v-data-table__empty-wrapper">
-                      <td colspan="8">
-                        No transactions found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="v-data-footer">
-                <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-675" class="v-input__slot">
-                        <div class="v-select__slot">
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-675" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-                          </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="10">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-data-footer__pagination">1-0 of 2</div>
-                <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-                <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
-              </div>
-            </div>
-          </div>
+          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
         </div>
       </transition-stub>
-      <transition-stub name="v-window-x-transition">
+      <transition-stub name="">
         <div class="v-window-item v-window-item--active" id="contract" style="">
           <h4>Artifact</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
@@ -1882,13 +1158,59 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
           </div>
           <h4>Call Options</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-            <div class="v-card__text">
-              You need Metamask in order to interact with this contract
-            </div>
-            <div class="v-card__text" style="display: none;">
-              <div class="row">
-                <div class="col col-6">
-                  <!----> <button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="connectMetamask"><span class="v-btn__content">Connect With Metamask</span></button>
+            <div>
+              <div class="v-card__text">
+                <div class="row">
+                  <div class="col col-5">
+                    <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+                      <div class="v-input__control">
+                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-252" class="v-input__slot">
+                          <fieldset aria-hidden="true">
+                            <legend style="width: 0px;"><span>​</span></legend>
+                          </fieldset>
+                          <div class="v-select__slot"><label for="input-252" class="v-label theme--light" style="left: 0px; position: absolute;">Select from address</label>
+                            <div class="v-select__selections"><input id="input-252" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                            <div class="v-input__append-inner">
+                              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                            </div><input type="hidden">
+                          </div>
+                          <div class="v-menu">
+                            <!---->
+                          </div>
+                        </div>
+                        <div class="v-text-field__details">
+                          <div class="v-messages theme--light">
+                            <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input__control">
+                        <div class="v-input__slot">
+                          <fieldset aria-hidden="true">
+                            <legend style="width: 0px;"><span>​</span></legend>
+                          </fieldset>
+                          <div class="v-text-field__slot"><label for="input-257" class="v-label theme--light" style="left: 0px; position: absolute;">Gas Price (wei)</label><input id="input-257" type="number"></div>
+                        </div>
+                        <div class="v-text-field__details">
+                          <div class="v-messages theme--light">
+                            <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input__control">
+                        <div class="v-input__slot">
+                          <fieldset aria-hidden="true">
+                            <legend style="width: 0px;"><span>​</span></legend>
+                          </fieldset>
+                          <div class="v-text-field__slot"><label for="input-260" class="v-label theme--light" style="left: 0px; position: absolute;">Maximum Gas</label><input id="input-260" type="number"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1905,7 +1227,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                       <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -1917,7 +1239,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                       <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -1925,13 +1247,13 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   <div class="col col-5">
                     <div>
                       <div class="pb-1 font-weight-bold">depositsOf</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-694" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-694" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-266" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-266" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -1939,7 +1261,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                       <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -1947,13 +1269,13 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   <div class="col col-5">
                     <div>
                       <div class="pb-1 font-weight-bold">maturityOf</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-697" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-697" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-269" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-269" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -1961,7 +1283,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                       <div id="call" style="display: none;"></div>
                       <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -1997,17 +1319,17 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-704" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-704" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-276" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-276" type="number"></div>
                             </div>
                           </div>
                         </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -2015,13 +1337,13 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   <div class="col col-5">
                     <div>
                       <div class="font-weight-bold">transferOwnership</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-707" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address newOwner</label><input disabled="disabled" id="input-707" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-279" class="v-label theme--light" style="left: 0px; position: absolute;">address newOwner</label><input id="input-279" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -2046,17 +1368,17 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-712" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-712" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-284" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-284" type="number"></div>
                             </div>
                           </div>
                         </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -2064,23 +1386,23 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   <div class="col col-5">
                     <div>
                       <div class="font-weight-bold">setMaturity</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-715" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-715" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-287" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-287" type="text"></div>
                           </div>
                         </div>
                       </div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-716" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input disabled="disabled" id="input-716" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-288" class="v-label theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input id="input-288" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -2105,17 +1427,17 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-721" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-721" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-293" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-293" type="number"></div>
                             </div>
                           </div>
                         </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -2123,13 +1445,13 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   <div class="col col-5">
                     <div>
                       <div class="font-weight-bold">deposit</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                      <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                         <div class="v-input__control">
                           <div class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span>​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-724" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-724" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-296" class="v-label theme--light" style="left: 0px; position: absolute;">address payee</label><input id="input-296" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -2154,17 +1476,17 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-729" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-729" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-301" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-301" type="number"></div>
                             </div>
                           </div>
                         </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -2193,17 +1515,17 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                       </div>
                       <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
                       <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                           <div class="v-input__control">
                             <div class="v-input__slot">
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span>​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-736" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-736" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-308" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-308" type="number"></div>
                             </div>
                           </div>
                         </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+                      </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
                     </div>
                   </div>
                 </div>
@@ -2212,320 +1534,10 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
           </div>
         </div>
       </transition-stub>
-      <transition-stub name="v-window-x-transition" style="display: none;">
+      <transition-stub name="" style="display: none;">
         <!---->
       </transition-stub>
-      <!---->
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Address.vue Should show the transactions for a checksumed address 1`] = `
-<div class="container container--fluid">
-  <div class="row mb-2">
-    <div class="col col-3">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          Balance: 1e-14 Ether
-        </div>
-      </div>
-    </div>
-    <div class="spacer"></div>
-    <!---->
-  </div>
-  <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text" data-booted="true">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="height: 2px; left: 0px; width: 0px;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active">Transactions</a>
-          <!---->
-          <!---->
-          <!---->
-        </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-    </div>
-  </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
-    <div class="v-window__container">
-      <transition-stub name="v-window-x-transition">
-        <div class="v-window-item v-window-item--active" id="transactions">
-          <div class="container container--fluid">
-            <div class="v-data-table v-data-table--has-bottom theme--light">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <colgroup>
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                  </colgroup>
-                  <thead class="v-data-table-header">
-                    <tr>
-                      <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
-                      <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="">
-                      <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" class="">0x06003448...94ef0</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" value="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1" style="display: none;"><span class="v-chip__content"></span></span></span></td>
-                      <td class="text-start"><a href="#/block/1" class="">1</a></td>
-                      <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/21 12:07:42 AM
-                </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
-                      <td class="text-start">
-                        <!----> <span><!----> <a href="#/address/0x1" class="">0x1...0x1</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1" value="0x1"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><!----> <a href="#/address/0xf134326143d2c83f173300463bae70cb9582d896" class="">0xf1343261...2d896</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xf134326143d2c83f173300463bae70cb9582d896" value="0xf134326143d2c83f173300463bae70cb9582d896"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start">
-                        0 Ether
-                      </td>
-                      <td class="text-start"></td>
-                    </tr>
-                    <tr class="">
-                      <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1" class="">0x0abc1678...94ef1</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1" value="0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1" style="display: none;"><span class="v-chip__content"></span></span></span></td>
-                      <td class="text-start"><a href="#/block/1" class="">1</a></td>
-                      <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/21 12:07:42 AM
-                </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
-                      <td class="text-start">
-                        <!----> <span><!----> <a href="#/address/0x2" class="">0x2...0x2</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x2" value="0x2"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><!----> <a href="#/address/0xf134326143d2c83f173300463bae70cb9582d896" class="">0xf1343261...2d896</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xf134326143d2c83f173300463bae70cb9582d896" value="0xf134326143d2c83f173300463bae70cb9582d896"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start">
-                        0 Ether
-                      </td>
-                      <td class="text-start"></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="v-data-footer">
-                <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-228" class="v-input__slot">
-                        <div class="v-select__slot">
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-228" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-                          </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="10">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-data-footer__pagination">1-2 of 2</div>
-                <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-                <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </transition-stub>
-      <transition-stub name="v-window-x-transition">
-        <!---->
-      </transition-stub>
-      <transition-stub name="v-window-x-transition" style="display: none;">
-        <!---->
-      </transition-stub>
-      <transition-stub name="v-window-x-transition">
-        <!---->
-      </transition-stub>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Address.vue Should show the transactions for this address 1`] = `
-<div class="container container--fluid">
-  <div class="row mb-2">
-    <div class="col col-3">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          Balance: 1e-14 Ether
-        </div>
-      </div>
-    </div>
-    <div class="spacer"></div>
-    <!---->
-  </div>
-  <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text" data-booted="true">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="height: 2px; left: 0px; width: 0px;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active">Transactions</a>
-          <!---->
-          <!---->
-          <!---->
-        </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-    </div>
-  </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
-    <div class="v-window__container">
-      <transition-stub name="v-window-x-transition">
-        <div class="v-window-item v-window-item--active" id="transactions">
-          <div class="container container--fluid">
-            <div class="v-data-table v-data-table--has-bottom theme--light">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <colgroup>
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                  </colgroup>
-                  <thead class="v-data-table-header">
-                    <tr>
-                      <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
-                      <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="">
-                      <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" class="">0x06003448...94ef0</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" value="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1" style="display: none;"><span class="v-chip__content"></span></span></span></td>
-                      <td class="text-start"><a href="#/block/1" class="">1</a></td>
-                      <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/21 12:07:42 AM
-                </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
-                      <td class="text-start">
-                        <!----> <span><!----> <a href="#/address/0x1" class="">0x1...0x1</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1" value="0x1"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><!----> <a href="#/address/123" class="">123...123</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-123" value="123"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start">
-                        0 Ether
-                      </td>
-                      <td class="text-start"></td>
-                    </tr>
-                    <tr class="">
-                      <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1" class="">0x0abc1678...94ef1</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1" value="0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1" style="display: none;"><span class="v-chip__content"></span></span></span></td>
-                      <td class="text-start"><a href="#/block/1" class="">1</a></td>
-                      <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/21 12:07:42 AM
-                </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
-                      <td class="text-start">
-                        <!----> <span><!----> <a href="#/address/0x2" class="">0x2...0x2</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x2" value="0x2"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start"><span class="mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">self</span></span> <span><!----> <a href="#/address/123" class="">123...123</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-123" value="123"></span>
-                        <!----></span>
-                      </td>
-                      <td class="text-start">
-                        0 Ether
-                      </td>
-                      <td class="text-start"></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="v-data-footer">
-                <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-156" class="v-input__slot">
-                        <div class="v-select__slot">
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-156" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-                          </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="10">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-data-footer__pagination">1-2 of 2</div>
-                <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-                <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </transition-stub>
-      <transition-stub name="v-window-x-transition">
-        <!---->
-      </transition-stub>
-      <transition-stub name="v-window-x-transition" style="display: none;">
-        <!---->
-      </transition-stub>
-      <transition-stub name="v-window-x-transition">
+      <transition-stub name="">
         <!---->
       </transition-stub>
     </div>
@@ -2544,7 +1556,13 @@ exports[`Address.vue Should sync the balance when loaded 1`] = `
       </div>
     </div>
     <div class="spacer"></div>
-    <!---->
+    <div class="col col-2 align-self-end">
+      <div role="dialog" class="v-dialog__container">
+        <!---->
+      </div> <button type="button" class="v-btn v-btn--depressed v-btn--flat v-btn--outlined theme--light v-size--small error--text"><span class="v-btn__content">
+                Remove contract
+            </span></button>
+    </div>
   </div>
   <div class="v-tabs theme--light">
     <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
@@ -2555,9 +1573,7 @@ exports[`Address.vue Should sync the balance when loaded 1`] = `
         <div class="v-slide-group__content v-tabs-bar__content">
           <div class="v-tabs-slider-wrapper" style="transition: none;">
             <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active">Transactions</a>
-          <!---->
-          <!---->
+          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active">Transactions</a> <a tabindex="0" href="#contract" aria-selected="false" role="tab" class="v-tab" id="contractTab">Contract</a> <a tabindex="0" href="#storage" aria-selected="false" role="tab" class="v-tab" id="storageTab">Storage</a>
           <!---->
         </div>
       </div>
@@ -2570,80 +1586,7 @@ exports[`Address.vue Should sync the balance when loaded 1`] = `
     <div class="v-window__container">
       <transition-stub name="">
         <div class="v-window-item v-window-item--active" id="transactions">
-          <div class="container container--fluid">
-            <div class="v-data-table v-data-table--has-bottom theme--light">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <colgroup>
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                  </colgroup>
-                  <thead class="v-data-table-header">
-                    <tr>
-                      <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
-                      <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
-                    </tr>
-                  </thead>
-                  <thead>
-                    <tr class="v-data-table__progress">
-                      <th colspan="8" class="column">
-                        <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-linear v-progress-linear--absolute theme--light" style="height: 4px;">
-                          <div class="v-progress-linear__background primary" style="opacity: 0.3; left: 0%; width: 100%;"></div>
-                          <div class="v-progress-linear__buffer"></div>
-                          <transition-stub name="fade-transition">
-                            <div class="v-progress-linear__indeterminate v-progress-linear__indeterminate--active">
-                              <div class="v-progress-linear__indeterminate long primary"></div>
-                              <div class="v-progress-linear__indeterminate short primary"></div>
-                            </div>
-                          </transition-stub>
-                        </div>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="v-data-table__empty-wrapper">
-                      <td colspan="8">Loading items...</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="v-data-footer">
-                <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-114" class="v-input__slot">
-                        <div class="v-select__slot">
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-114" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-                          </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="10">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-data-footer__pagination">1-0 of 2</div>
-                <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-                <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
-              </div>
-            </div>
-          </div>
+          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
         </div>
       </transition-stub>
       <transition-stub name="">

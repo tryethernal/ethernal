@@ -25,12 +25,7 @@
                 {{ item.gasUsed.toLocaleString()  }}
             </template>
             <template v-slot:item.transactionNumber="{ item }">
-                <span v-if="item.transactions">
-                    {{ item.transactions.length  }} {{ item.transactions.length != 1 ? 'transactions' : 'transaction' }}
-                </span>
-                <span v-else>
-                    0 transactions
-                </span>
+                {{ item.transactionsCount  }} {{ item.transactionsCount != 1 ? 'transactions' : 'transaction' }}
             </template>
         </v-data-table>
     </v-container>
@@ -66,14 +61,7 @@ export default {
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['number'], sortDesc: [true] }
     }),
     mounted: function() {
-        const channel = this.pusher.subscribeToBlocks();
-        channel.bind('pusher:subscription_succeeded', () => {
-            console.log('Connected!')
-        });
-        channel.bind('pusher:subscription_error', () => {
-            console.log('Error!')
-        });
-        this.getBlocks(this.currentOptions);
+        this.pusher.onNewBlock(() => this.getBlocks(this.currentOptions), this);
     },
     methods: {
         getBlocks: function(newOptions) {

@@ -6,6 +6,18 @@ const db = require('../lib/firebase');
 
 const router = express.Router();
 
+router.get('/', authMiddleware, async (req, res) => {
+    const data = req.body.data;
+    try {
+        const workspaces = await db.getUserWorkspaces(data.uid);
+
+        res.status(200).json(workspaces);
+    } catch(error) {
+        console.log(error);
+        res.status(400).send(error);
+    }
+});
+
 router.post('/disableApi', authMiddleware, async (req, res) => {
     const data = req.body.data;
     try {
@@ -108,9 +120,9 @@ router.post('/', authMiddleware, async (req, res) => {
             settings: data.workspaceData.settings
         }));
 
-        await db.createWorkspace(data.uid, filteredWorkspaceData);
+        const workspace = await db.createWorkspace(data.uid, filteredWorkspaceData);
 
-        res.sendStatus(200);
+        res.status(200).json(workspace);
     } catch(error) {
         console.log(error);
         res.status(400).send(error);

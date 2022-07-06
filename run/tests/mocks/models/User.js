@@ -4,7 +4,11 @@ const user = {
     id: 1,
     workspaces: [workspace],
     isPremium: true,
-    safeCreateWorkspace: jest.fn().mockResolvedValue({ id: 1, name: 'My Workspace' }),
+    safeCreateWorkspace: jest.fn().mockResolvedValue({
+        id: 1,
+        name: 'My Workspace',
+        toJSON: () => ({ id: 1, name: 'My Workspace' })
+    }),
     getWorkspaceByName: jest.fn().mockResolvedValue({ id: 1, name: 'My Workspace' }),
     getWorkspaces: jest.fn().mockResolvedValue([workspace]),
     update: jest.fn(),

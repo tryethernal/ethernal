@@ -15,6 +15,7 @@ describe('workspaceAuth', () => {
     it('Should return a 401 if no firebaseUserId', async () => {
         const next = jest.fn();
         const req = {
+            body: {},
             query: {
                 firebaseUserId: null,
                 workspace: 'My Workspace'
@@ -30,6 +31,7 @@ describe('workspaceAuth', () => {
     it('Should return a 401 if no workspace', async () => {
         const next = jest.fn();
         const req = {
+            body: {},
             query: {
                 firebaseUserId: '123',
                 workspace: null
@@ -46,6 +48,7 @@ describe('workspaceAuth', () => {
         jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace' });
         const next = jest.fn();
         const req = {
+            body: {},
             query: {
                 firebaseUserId: '123',
                 workspace: 'My Workspace'
@@ -61,6 +64,7 @@ describe('workspaceAuth', () => {
         jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue(null);
         const next = jest.fn();
         const req = {
+            body: {},
             query: {
                 firebaseUserId: '123',
                 workspace: 'My Workspace'
@@ -81,6 +85,7 @@ describe('workspaceAuth', () => {
         
         const next = jest.fn();
         const req = {
+            body: {},
             query: {
                 firebaseAuthToken: '123',
                 firebaseUserId: '123',
@@ -102,6 +107,7 @@ describe('workspaceAuth', () => {
         
         const next = jest.fn();
         const req = {
+            body: {},
             query: {
                 firebaseAuthToken: '123',
                 firebaseUserId: '123',

@@ -52,6 +52,7 @@ const workspace = {
     name: 'My Workspace',
     toJSON: jest.fn().mockReturnValue({ id: 1, name: 'My Workspace' }),
     findContractById: jest.fn().mockResolvedValue(contract1),
+    findContractByAddress: jest.fn().mockResolvedValue(contract1),
     getBlocks: jest.fn().mockResolvedValue([block1, block2]),
     getFilteredBlocks: jest.fn().mockResolvedValue([block1, block2]),
     countBlocks: jest.fn().mockResolvedValue(2),
@@ -74,6 +75,10 @@ const workspace = {
     removeContractByAddress: jest.fn(),
     updateSettings: jest.fn().mockResolvedValue({ toJSON: () => ({ id: 1, name: 'My Workspace' })}),
     getUnprocessedContracts: jest.fn().mockResolvedValue([ contract1, contract2 ]),
+    getFilteredAccounts: jest.fn(),
+    countAccounts: jest.fn(),
+    getProcessableTransactions: jest.fn(),
+    getFailedProcessableTransactions: jest.fn()
 };
 
 const Workspace = {

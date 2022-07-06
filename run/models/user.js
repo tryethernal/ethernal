@@ -3,6 +3,7 @@ const {
   Model, Sequelize
 } = require('sequelize');
 const { sanitize } = require('../lib/utils');
+const { trigger } = require('../lib/pusher');
 const { Workspace } = require('./index');
 
 const Op = Sequelize.Op;
@@ -16,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       User.hasMany(models.Workspace, { foreignKey: 'userId', as: 'workspaces' });
+      User.hasOne(models.Workspace, { foreignKey: 'id', sourceKey: 'currentWorkspaceId', as: 'currentWorkspace' });
       User.hasMany(models.Explorer, { foreignKey: 'userId', as: 'explorers' });
     }
 
@@ -24,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
             where: {
                 firebaseUserId: firebaseUserId
             },
-            include: 'workspaces'
+            include: ['workspaces', 'currentWorkspace']
         });
     }
 
@@ -33,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
             where: {
                 apiKey: apiKey
             },
-            include: 'workspaces'
+            include: ['workspaces', 'currentWorkspace']
         });
     }
 
@@ -42,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
             where: {
                 stripeCustomerId: stripeCustomerId
             },
-            include: 'workspaces'
+            include: ['workspaces', 'currentWorkspace']
         });
     }
 
@@ -52,13 +54,16 @@ module.exports = (sequelize, DataTypes) => {
             where: {
                 firebaseUserId: firebaseUserId
             },
-            include: {
-                model: Workspace,
-                as: 'workspaces',
-                where: {
-                    name: workspaceName
-                }
-            }
+            include: [
+                {
+                    model: Workspace,
+                    as: 'workspaces',
+                    where: {
+                        name: workspaceName
+                    }
+                },
+                'currentWorkspace'
+            ]
         });
     }
 
@@ -117,6 +122,11 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
   }, {
+    hooks: {
+        afterUpdate(user, options) {
+            trigger(`private-cache-users;id=${user.id}`, 'updated', user);
+        }
+    },
     sequelize,
     modelName: 'User',
     tableName: 'users'

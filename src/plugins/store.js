@@ -1,6 +1,7 @@
 import LogRocket from 'logrocket';
 import Vue from 'vue';
 import Vuex from 'vuex';
+const { sanitize } = require('../lib/utils');
 
 Vue.use(Vuex);
 
@@ -92,7 +93,13 @@ export default new Vuex.Store({
         },
         updateUser({ commit }, user) {
             if (user) {
-                commit('SET_USER', { uid: user.uid, email: user.email, loggedIn: true });
+                commit('SET_USER', sanitize({
+                    uid: user.uid,
+                    email: user.email,
+                    loggedIn: true,
+                    id: user.id,
+                    plan: user.plan
+                }));
                 if (process.env.VUE_APP_ENABLE_ANALYTICS)
                     LogRocket.identify(user.uid, { email: user.email });
             }

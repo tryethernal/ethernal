@@ -21,6 +21,14 @@ module.exports = (sequelize, DataTypes) => {
             }
         });
     }
+
+    static findByDomain(domain) {
+        return Explorer.findOne({
+            where: {
+                domain: domain
+            }
+        });
+    }
   }
   Explorer.init({
     userId: DataTypes.INTEGER,

@@ -1001,16 +1001,29 @@ exports.createWorkspace = functions.https.onCall(async (data, context) => {
 
             await db.createWorkspace(context.auth.uid, data.name, filteredWorkspaceData);
 
-            await enqueueTask('migration', {
+            const response = await axios.post(`${functions.config().ethernal.root_tasks}/api/workspaces`, {
                 uid: context.auth.uid,
-                name: data.name,
-                workspaceData: data.workspaceData,
-                secret: functions.config().ethernal.auth_secret
-            }, `${functions.config().ethernal.root_tasks}/api/workspaces`);
+                secret: functions.config().ethernal.auth_secret,
+                data: {
+                    uid: context.auth.uid,
+                    name: data.name,
+                    workspaceData: data.workspaceData,
+                    secret: functions.config().ethernal.auth_secret
+                }
+            });
+
+            await db.setCurrentWorkspace(context.auth.uid, data.name);
+            await axios.post(`${functions.config().ethernal.root_tasks}/api/workspaces/setCurrent`, {
+                data: {
+                    uid: context.auth.uid,
+                    workspace: data.name,
+                    secret: functions.config().ethernal.auth_secret
+                }
+            });
 
             analytics.track(context.auth.uid, 'Workspace Creation');
 
-            return { success: true };
+            return { success: true, workspace: response.data };
         } catch(error) {
             console.log(error);
             var reason = error.reason || error.message || 'Server error. Please retry.';
@@ -1031,12 +1044,13 @@ exports.setCurrentWorkspace = functions.https.onCall(async (data, context) => {
             }
 
             await db.setCurrentWorkspace(context.auth.uid, data.name);
-
-            await enqueueTask('migration', {
-                uid: context.auth.uid,
-                workspace: data.name,
-                secret: functions.config().ethernal.auth_secret
-            }, `${functions.config().ethernal.root_tasks}/api/workspaces/setCurrent`);
+            await axios.post(`${functions.config().ethernal.root_tasks}/api/workspaces/setCurrent`, {
+                data: {
+                    uid: context.auth.uid,
+                    workspace: data.name,
+                    secret: functions.config().ethernal.auth_secret
+                }
+            });
 
             return { success: true };
         } catch(error) {
@@ -1106,7 +1120,7 @@ exports.updateWorkspaceSettings = functions.https.onCall(async (data, context) =
                     }
                 });
             }
-            
+
             if (data.settings.settings) {
                 ALLOWED_SETTINGS.forEach((key) => {
                     if (!!data.settings.settings[key]) {
@@ -1119,12 +1133,14 @@ exports.updateWorkspaceSettings = functions.https.onCall(async (data, context) =
 
             if (Object.keys(sanitizedParams).length !== 0) {
                 await db.updateWorkspaceSettings(context.auth.uid, data.workspace, sanitizedParams);
-                await enqueueTask('migration', {
-                    uid: context.auth.uid,
-                    workspace: data.workspace,
-                    settings: sanitizedParams,
-                    secret: functions.config().ethernal.auth_secret
-                }, `${functions.config().ethernal.root_tasks}/api/workspaces/settings`);
+                await axios.post(`${functions.config().ethernal.root_tasks}/api/workspaces/settings`, {
+                    data: {
+                        uid: context.auth.uid,
+                        workspace: data.workspace,
+                        settings: sanitizedParams,
+                        secret: functions.config().ethernal.auth_secret
+                    }
+                });
             }
 
             return { success: true };
@@ -1293,15 +1309,17 @@ exports.createUser = functions.https.onCall(async (data, context) => {
                 plan: 'free'
             });
 
-            await enqueueTask('migration', {
-                uid: context.auth.uid,
+            await axios.post(`${functions.config().ethernal.root_tasks}/api/users`, {
                 data: {
-                    email: authUser.email,
-                    apiKey: encryptedKey,
-                    stripeCustomerId: customer.id,
-                    plan: 'free'
+                    uid: context.auth.uid,
+                    data: {
+                        email: authUser.email,
+                        apiKey: encryptedKey,
+                        stripeCustomerId: customer.id,
+                        plan: 'free'
+                    }
                 }
-            }, `${functions.config().ethernal.root_tasks}/api/users`);
+            });
 
             analytics.setUser(context.auth.uid, {
                 $email: authUser.email,

@@ -1,3 +1,4 @@
+import flushPromises from 'flush-promises';
 import MockHelper from '../MockHelper';
 
 import TransactionPicker from '@/components/TransactionPicker.vue';
@@ -9,16 +10,17 @@ describe('TransactionPicker.vue', () => {
 
     beforeEach(async () => {
         helper = new MockHelper();
-        await helper.mocks.admin.collection('contracts').doc(Transaction.to).set({ abi: ABI });
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValue({ data: { address: Transaction.to, abi: ABI }});
     });
 
     it('Should display the picker', async (done) => {
         const wrapper = helper.mountFn(TransactionPicker, {
             propsData: {
-                transactions: [Transaction, Transaction]
+                transactions: [Transaction]
             }
         });
-        await wrapper.vm.$nextTick();
+        await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
         done();
     });
@@ -29,12 +31,8 @@ describe('TransactionPicker.vue', () => {
                 transactions: []
             }
         });
-        await wrapper.vm.$nextTick();
+        await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
         done();
-    });
-
-    afterEach(async () => {
-        await helper.clearFirebase();
     });
 });

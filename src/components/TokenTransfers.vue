@@ -48,19 +48,15 @@ export default {
     mounted() {
         for (let i = 0; i < this.transfers.length; i++) {
             this.$set(this.symbols, this.transfers[i].token, '');
-            this.db
-                .collection('contracts')
-                .doc(this.transfers[i].token)
-                .get()
-                .then(doc => {
-                    const data = doc.data();
+            this.server.getContract(this.transfers[i].token)
+                .then(({ data }) => {
+                    const contract = data;
+                    if (!contract) return;
 
-                    if (!data) return;
-
-                    if (data.token && data.token.decimals)
-                        this.$set(this.decimals, this.transfers[i].token, data.token.decimals);
-                    if (data.token && data.token.symbol)
-                        this.$set(this.symbols, this.transfers[i].token, data.token.symbol);
+                    if (contract.tokenDecimals)
+                        this.$set(this.decimals, this.transfers[i].token, data.tokenDecimals);
+                    if (contract.tokenSymbol)
+                        this.$set(this.symbols, this.transfers[i].token, data.tokenSymbol);
                 });
         }
     }

@@ -2,6 +2,8 @@
 const {
   Model
 } = require('sequelize');
+const { trigger } = require('../lib/pusher');
+
 module.exports = (sequelize, DataTypes) => {
   class TokenTransfer extends Model {
     /**
@@ -35,6 +37,28 @@ module.exports = (sequelize, DataTypes) => {
     },
     transactionId: DataTypes.INTEGER
   }, {
+    hooks: {
+        async afterSave(tokenTransfer, options) {
+            
+            const transaction = await tokenTransfer.getTransaction({
+                attributes: ['blockNumber', 'hash'],
+                include: [
+                    {
+                        model: sequelize.models.TokenTransfer,
+                        attributes: ['src', 'dst', 'token'],
+                        as: 'tokenTransfers'
+                    },
+                    {
+                        model: sequelize.models.Workspace,
+                        attributes: ['id', 'public'],
+                        as: 'workspace'
+                    }
+                ]
+            });
+            if (!transaction.workspace.public)
+                trigger(`private-processableTransactions;workspace=${transaction.workspace.id}`, 'new', transaction.toJSON());
+        }
+    },
     sequelize,
     modelName: 'TokenTransfer',
     tableName: 'token_transfers'

@@ -1,8 +1,11 @@
 'use strict';
 const {
-  Model
+  Model,
+  Sequelize
 } = require('sequelize');
+const Op = Sequelize.Op;
 const { enqueueTask } = require('../lib/tasks');
+const { trigger } = require('../lib/pusher');
 
 module.exports = (sequelize, DataTypes) => {
   class Contract extends Model {
@@ -13,6 +16,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Contract.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
+      Contract.hasOne(models.Contract, {
+          sourceKey: 'proxy',
+          foreignKey: 'address',
+          as: 'proxyContract'
+      });
     }
 
     getProxyContract() {
@@ -61,6 +69,10 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     hooks: {
         afterUpdate(contract, options) {
+            trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
+            if (contract.patterns.indexOf('erc20') > -1)
+                trigger(`private-tokens;workspace=${contract.workspaceId}`, 'new', null);
+
             return enqueueTask('contractProcessing', {
                 contractId: contract.id,
                 workspaceId: contract.workspaceId,
@@ -68,6 +80,12 @@ module.exports = (sequelize, DataTypes) => {
             }, `${process.env.CLOUD_RUN_ROOT}/tasks/contractProcessing`)
         },
         afterSave(contract, options) {
+            trigger(`private-contracts;workspace=${contract.workspaceId}`, 'new', null);
+            trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
+
+            if (contract.patterns.indexOf('erc20') > -1)
+                trigger(`private-tokens;workspace=${contract.workspaceId}`, 'new', null);
+
             return enqueueTask('contractProcessing', {
                 contractId: contract.id,
                 workspaceId: contract.workspaceId,

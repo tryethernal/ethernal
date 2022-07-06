@@ -45,7 +45,7 @@
                                     {{ Object.keys(contract.dependencies).join(', ') }}
                                 </div>
                             </v-card-text>
-                            <v-card-text v-if="!contract.name && currentWorkspace.isAdmin">
+                            <v-card-text v-if="(!contract.name || !contract.abi) && currentWorkspace.isAdmin">
                                 <i>Upload an artifact to read contract storage and interact with it.</i><br />
                                 For Truffle projects, use our <a href="https://www.npmjs.com/package/ethernal" target="_blank">CLI</a>.<br />
                                 For Hardhat project, use our <a href="https://github.com/antoinedc/hardhat-ethernal" target="_blank">plugin</a>.<br />
@@ -72,15 +72,15 @@
                                             dense
                                             label="Select from address"
                                             v-model="callOptions.from"
-                                            :item-text="'id'"
+                                            item-text="address"
                                             :items="accounts">
                                             <template v-slot:item="{ item }">
                                                 <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
-                                                {{ item.id }}
+                                                {{ item.address }}
                                             </template>
                                             <template v-slot:selection="{ item }">
                                                 <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
-                                                {{ item.id }}
+                                                {{ item.address }}
                                             </template>
                                         </v-select>
                                         <v-text-field
@@ -115,7 +115,7 @@
                         <v-card-text v-if="contract.abi">
                             <v-row v-for="(method, methodIdx) in contractReadMethods" :key="methodIdx" class="pb-4">
                                 <v-col cols="5">
-                                    <Contract-Read-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="{ ...callOptions, from: callOptions.from }" />
+                                    <Contract-Read-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="callOptions" />
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -132,7 +132,7 @@
                         <v-card-text v-if="contract.abi">
                             <v-row v-for="(method, methodIdx) in contractWriteMethods" :key="methodIdx" class="pb-4">
                                 <v-col cols="5">
-                                    <Contract-Write-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="{ ...callOptions, from: callOptions.from }" />
+                                    <Contract-Write-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="callOptions" />
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -347,9 +347,18 @@ export default {
                 });
         },
         bindTheStuff: function(hash) {
-            this.$bind('accounts', this.db.collection('accounts'));
+            this.server.getAccounts({ page: -1 }).then(({ data: { items }}) => {
+                this.accounts = items;
+                if (!this.callOptions.from)
+                    this.callOptions.from = this.accounts[0];
+            });
+
             if (!this.isPublicExplorer)
-                this.$bind('transactionsTo', this.db.collection('transactions').where('to', '==', hash).orderBy('blockNumber', 'desc'));
+                this.server.getAddressTransactions(hash)
+                    .then(({ data: { items }}) => {
+                        this.transactionsTo = items;
+                    });
+
             this.contractLoader = true;
 
             this.server.getContract(hash)

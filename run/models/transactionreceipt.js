@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const { trigger } = require('../lib/pusher');
 module.exports = (sequelize, DataTypes) => {
   class TransactionReceipt extends Model {
     /**
@@ -42,6 +43,27 @@ module.exports = (sequelize, DataTypes) => {
     transactionId: DataTypes.INTEGER,
     raw: DataTypes.JSON
   }, {
+    hooks: {
+        async afterSave(receipt, options) {
+            const fullTransaction = await receipt.getTransaction({
+                attributes: ['hash', 'workspaceId', 'rawError', 'parsedError', 'to', 'data', 'blockNumber'],
+                include: [
+                    {
+                        model: sequelize.models.Workspace,
+                        as: 'workspace',
+                        attributes: ['id', 'public']
+                    },
+                    {
+                        model: sequelize.models.TransactionReceipt,
+                        as: 'receipt',
+                        attributes: ['status']
+                    }
+                ]
+            });
+            if (!fullTransaction.workspace.public && !fullTransaction.rawError && !fullTransaction.parsedError && fullTransaction.receipt && !fullTransaction.receipt.status)
+                trigger(`private-failedTransactions;workspace=${fullTransaction.workspaceId}`, 'new', fullTransaction.toJSON());
+        }
+    },
     sequelize,
     modelName: 'TransactionReceipt',
     tableName: 'transaction_receipts'

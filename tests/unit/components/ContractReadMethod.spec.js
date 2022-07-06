@@ -20,18 +20,16 @@ describe('ContractReadMethod.vue', () => {
         };
     });
 
-    it('Should display the UI to interact with a method', (done) => {
+    it('Should display the UI to interact with a method', () => {
         const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
 
         expect(wrapper.html()).toMatchSnapshot();
-
-        done();
     });
 
-    it('Should work when input is any array', async (done) => {
-        helper.mocks.server.callContractReadMethod = () => {
-            return new Promise(resolve => resolve([[1, 2]]));
-        };
+    it('Should work when input is any array', async () => {
+        jest.spyOn(helper.mocks.server, 'callContractReadMethod')
+            .mockResolvedValue([[1, 2]]);
+
         props.method = {
             "inputs": [
                 {
@@ -57,7 +55,7 @@ describe('ContractReadMethod.vue', () => {
 
         await wrapper.find('input').setValue('[1,2]');
         await wrapper.find('button').trigger('click');
-        await wrapper.vm.$nextTick();
+        await new Promise(process.nextTick);
         
         expect(wrapper.vm.results.length).toEqual(1);
         expect(wrapper.vm.results).toEqual([
@@ -70,17 +68,16 @@ describe('ContractReadMethod.vue', () => {
             }
         ]);
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     })
 
-    it('Should return the result when interacting with the method', async (done) => {
-        helper.mocks.server.callContractReadMethod = () => {
-            return new Promise(resolve => resolve(['true']));
-        };
+    it('Should return the result when interacting with the method', async () => {
+        jest.spyOn(helper.mocks.server, 'callContractReadMethod')
+            .mockResolvedValue(['true']);
+
         const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
 
         await wrapper.find('button').trigger('click');
-        await wrapper.vm.$nextTick();
+        await new Promise(process.nextTick);
 
         expect(wrapper.vm.results).toEqual([
             {
@@ -92,20 +89,23 @@ describe('ContractReadMethod.vue', () => {
             }
         ]);
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should work when it is in public explorer mode', async (done) => {
-        helper.mocks.server.callContractReadMethod = () => {
-            return new Promise(resolve => resolve(['true']));
-        };
-        helper.getters.isPublicExplorer.mockImplementation(() => true);
-        window.ethereum = jest.fn(() => {});
+    it('Should work when it is in public explorer mode', async () => {
+        jest.spyOn(helper.mocks.server, 'callContractReadMethod')
+            .mockResolvedValue(['true']);
 
-        const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
+        window.ethereum = jest.fn().mockReturnValue({});
+
+        const wrapper = helper.mountFn(ContractReadMethod, {
+            propsData: props,
+            getters: {
+                isPublicExplorer: jest.fn().mockReturnValue(true)
+            }
+        });
 
         await wrapper.find('button').trigger('click');
-        await wrapper.vm.$nextTick();
+        await new Promise(process.nextTick);
 
         expect(wrapper.vm.results).toEqual([
             {
@@ -117,13 +117,12 @@ describe('ContractReadMethod.vue', () => {
             }
         ]);
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should display the result even if it is not an array', async (done) => {
-        helper.mocks.server.callContractReadMethod = () => {
-            return new Promise(resolve => resolve(['1234']));
-        };
+    it('Should display the result even if it is not an array', async () => {
+        jest.spyOn(helper.mocks.server, 'callContractReadMethod')
+            .mockResolvedValue(['1234']);
+
         props.method = {
             "inputs": [],
             "name": "returnAnUInt",
@@ -141,7 +140,7 @@ describe('ContractReadMethod.vue', () => {
         const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
 
         await wrapper.find('button').trigger('click');
-        await wrapper.vm.$nextTick();
+        await new Promise(process.nextTick);
 
         expect(wrapper.vm.results).toEqual([
             {
@@ -153,14 +152,12 @@ describe('ContractReadMethod.vue', () => {
             }
         ]);
         expect(wrapper.html()).toMatchSnapshot();
-
-        done();
     });
 
-    it('Should handle big number results', async (done) => {
-        helper.mocks.server.callContractReadMethod = () => {
-            return new Promise(resolve => resolve(['50000000000000000000']));
-        };
+    it('Should handle big number results', async () => {
+        jest.spyOn(helper.mocks.server, 'callContractReadMethod')
+            .mockResolvedValue(['50000000000000000000']);
+
         props.method = {
             "inputs": [],
             "name": "returnAnUInt",
@@ -178,7 +175,7 @@ describe('ContractReadMethod.vue', () => {
         const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
 
         await wrapper.find('button').trigger('click');
-        await wrapper.vm.$nextTick();
+        await new Promise(process.nextTick);
 
         expect(wrapper.vm.results).toEqual([
             {
@@ -190,13 +187,12 @@ describe('ContractReadMethod.vue', () => {
             }
         ]);
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should handle multiple results', async (done) => {
-        helper.mocks.server.callContractReadMethod = () => {
-            return new Promise(resolve => resolve(['1', '2']));
-        };
+    it('Should handle multiple results', async () => {
+        jest.spyOn(helper.mocks.server, 'callContractReadMethod')
+            .mockResolvedValue(['1', '2']);
+
         props.method = {
             "inputs": [],
             "name": "returnAnUInt",
@@ -219,7 +215,7 @@ describe('ContractReadMethod.vue', () => {
         const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
 
         await wrapper.find('button').trigger('click');
-        await wrapper.vm.$nextTick();
+        await new Promise(process.nextTick);
 
         expect(wrapper.vm.results).toEqual([
             {
@@ -238,38 +234,33 @@ describe('ContractReadMethod.vue', () => {
             }
         ]);
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should display the error message if one is returned', async (done) => {
-        helper.mocks.server.callContractReadMethod = () => {
-            return new Promise((_resolve, reject) => reject({ reason: 'Wrong parameters' }));
-        };
+    it('Should display the error message if one is returned', async () => {
+        jest.spyOn(helper.mocks.server, 'callContractReadMethod')
+            .mockRejectedValue({ reason: 'Wrong parameters' });
+
         const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
 
         await wrapper.find('button').trigger('click');
-        await wrapper.vm.$nextTick();
+        await new Promise(process.nextTick);
 
         expect(wrapper.vm.error).toEqual('Wrong parameters');
         expect(wrapper.vm.results).toEqual([]);
         expect(wrapper.html()).toMatchSnapshot();
-        done();        
     });
 
-    it('Should display a generic error message if the function fails', async (done) => {
-        helper.mocks.server.callContractReadMethod = () => {
-            throw 'Error';
-        };
+    it('Should display a generic error message if the function fails', async () => {
+        jest.spyOn(helper.mocks.server, 'callContractReadMethod')
+            .mockImplementation(() => { throw 'Error' });
+
         const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
 
         await wrapper.find('button').trigger('click');
-        await wrapper.vm.$nextTick();
+        await new Promise(process.nextTick);
 
         expect(wrapper.vm.error).toEqual('Error while calling the method');
         expect(wrapper.vm.results).toEqual([]);
         expect(wrapper.html()).toMatchSnapshot();
-        done();        
     });    
-
-    afterEach(() => helper.clearFirebase());
 });

@@ -14,11 +14,41 @@ const request = supertest(app);
 
 const BASE_URL = '/api/transactions'
 
+describe(`GET ${BASE_URL}/failedProcessable`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('Should return failed non processed transactions', (done) => {
+        jest.spyOn(db, 'getFailedProcessableTransactions').mockResolvedValueOnce([{ hash: '0x123' }]);
+        
+        request.get(`${BASE_URL}/failedProcessable`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual([{ hash: '0x123' }]);
+                done();
+            })
+    });
+});
+
+describe(`GET ${BASE_URL}/processable`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('Should return non processed transactions', (done) => {
+        jest.spyOn(db, 'getProcessableTransactions').mockResolvedValueOnce([{ hash: '0x123' }]);
+        
+        request.get(`${BASE_URL}/processable`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual([{ hash: '0x123' }]);
+                done();
+            })
+    });
+});
+
 describe(`GET ${BASE_URL}`, () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('Should return transactions list', (done) => {
-        db.getWorkspaceTransactions.mockResolvedValue({
+        jest.spyOn(db, 'getWorkspaceTransactions').mockResolvedValueOnce({
             items: [{ hash: '1234' }, { hash: 'abcd' }],
             total: 2
         });
@@ -38,7 +68,7 @@ describe(`GET ${BASE_URL}/:hash`, () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('Should return individual transaction', (done) => {
-        db.getWorkspaceTransaction.mockResolvedValue({
+        jest.spyOn(db, 'getWorkspaceTransaction').mockResolvedValue({
             hash: '1234'
         });
         request.get(`${BASE_URL}/1234`)
@@ -65,7 +95,7 @@ describe(`POST ${BASE_URL}/:hash/trace`, () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('Should store contract data, store trace & return 200 status', (done) => {
-        db.canUserSyncContract.mockResolvedValue(true);
+        jest.spyOn(db, 'canUserSyncContract').mockResolvedValue(true);
         request.post(`${BASE_URL}/1234/trace`)
             .send({ data: { workspace: 'My Workspace', steps: [{ op: 'CALL', address: '0x1' }]}})
             .expect(200)
@@ -77,7 +107,7 @@ describe(`POST ${BASE_URL}/:hash/trace`, () => {
     });
 
     it('Should not store contract data, store trace & return 200 status', (done) => {
-        db.canUserSyncContract.mockResolvedValue(false);
+        jest.spyOn(db, 'canUserSyncContract').mockResolvedValue(false);
         request.post(`${BASE_URL}/1234/trace`)
             .send({ data: { workspace: 'My Workspace', steps: [{ op: 'CALL', address: '0x1' }]}})
             .expect(200)
@@ -107,7 +137,7 @@ describe(`POST ${BASE_URL}/:hash/process`, () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('Should return 200 status', (done) => {
-        db.getTransaction.mockResolvedValue({ hash: '1234' });
+        jest.spyOn(db, 'getTransaction').mockResolvedValue({ hash: '1234' });
         request.post(`${BASE_URL}/1234/process`)
             .send({ data: { workspace: 'My Workspace' }})
             .expect(200)
@@ -171,7 +201,7 @@ describe(`POST ${BASE_URL}/:hash`, () => {
     });
 
     it('Should return 200 status and store contract data if it is not deployment', (done) => {
-        db.canUserSyncContract.mockResolvedValue(true);
+        jest.spyOn(db, 'canUserSyncContract').mockResolvedValue(true);
         request.post(BASE_URL)
             .send({
                 data: { 

@@ -34,7 +34,7 @@
                     <v-spacer></v-spacer>
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-btn id="resyncAllAccounts" :disabled="loading" v-bind="attrs" v-on="on" small depressed color="primary" class="mr-2" @click="getAccounts()">
+                            <v-btn id="resyncAllAccounts" :disabled="loading" v-bind="attrs" v-on="on" small depressed color="primary" class="mr-2" @click="getRpcAccounts()">
                                 <v-icon small class="mr-1">mdi-sync</v-icon>Resync
                             </v-btn>
                         </template>
@@ -94,11 +94,20 @@ export default {
         loading: false,
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['address'], sortDesc: [true] }
     }),
-    mounted: function() {
-        this.getAccounts();
-    },
     methods: {
-        getAccounts: function(newOptions) {
+        getRpcAccounts() {
+            this.loading = true;
+            this.server.getRpcAccounts(this.currentWorkspace.rpcServer)
+                .then((accounts) => {
+                    this.syncAccounts(accounts);
+                    this.accountCount = accounts.length;
+                })
+                .catch(error => {
+                    console.log(error)
+                    this.loading = false;
+                });
+        },
+        getAccounts(newOptions) {
             this.loading = true;
 
             if (newOptions)
@@ -113,22 +122,34 @@ export default {
                 .then(({ data }) => {
                     this.accounts = data.items;
                     this.accountCount = data.total;
-                    this.accounts.forEach(({ address }, idx) => {
-                        this.server.getAccountBalance(address)
-                            .then((rawBalance) => {
-                                const balance = ethers.BigNumber.from(rawBalance).toString();
-                                this.server.syncBalance(this.currentWorkspace.name, address, balance)
-                                    .then(() => this.accounts[idx].balance = balance);
+                    if (this.accountCount > 0)
+                        this.syncAccounts(this.accounts.map(account => account.address));
+                    else
+                        this.getRpcAccounts();
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        syncAccounts(accounts) {
+            this.accounts = [];
+            this.loading = true;
+            accounts.forEach(address => {
+                this.server.getAccountBalance(address)
+                    .then(rawBalance => {
+                        const balance = ethers.BigNumber.from(rawBalance).toString();
+                        this.server.syncBalance(address, balance)
+                            .then(() => {
+                                this.accounts.push({ address: address, balance: balance });
                             });
                     });
-                })
-                .catch(console.log)
-                .finally(() => this.loading = false);
+            });
+            this.loading = false;
         },
-        openAddAccountModal: function() {
+        openAddAccountModal() {
             this.$refs.addAccountModalRef.open();
         },
-        openUnlockAccountModal: function(account) {
+        openUnlockAccountModal(account) {
           this.$refs.openUnlockAccountModalRef.open({ address: account.address })
         }
     },

@@ -1,3 +1,4 @@
+require('../lib/firebase');
 jest.mock('../../../middlewares/workspaceAuth', () => {
     return (req, res, next) => {
         req.query.firebaseUserId = '123';

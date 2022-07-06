@@ -5,8 +5,10 @@ jest.mock('sequelize', () => ({
 }));
 
 require('../mocks/lib/writeLog');
-const { Workspace, User, workspace, user } = require('../mocks/models');
+const { Workspace, User, workspace, user, Explorer, explorer } = require('../mocks/models');
 const db = require('../../lib/firebase');
+
+beforeEach(() => jest.clearAllMocks());
 
 describe('getWorkspaceById', () => {
     it('Should return a workspace', (done) => {
@@ -132,7 +134,7 @@ describe('getWorkspaceContract', () => {
 
     it('Should return null if contract does not exist', async () => {
         const user = await User.findByAuthIdWithWorkspace(1, 'My Workspace');
-        jest.spyOn(user.workspaces[0], 'getContracts').mockResolvedValueOnce([]);
+        jest.spyOn(user.workspaces[0], 'findContractByAddress').mockResolvedValueOnce(null);
 
         const contract = await db.getWorkspaceContract(1, 'My Workspace', '0x123')
         expect(contract).toEqual(null);
@@ -574,5 +576,109 @@ describe('getContractTransactions', () => {
                 expect(transactions).toEqual([{ hash: '0x123' }]);
                 done();
             });
+    });
+});
+
+describe('getContract', () => {
+    it('Should return the contract', (done) => {
+        db.getContract('123', 'hardhat', '0x123')
+            .then((contract) => {
+                expect(contract).toEqual({
+                    id: 10,
+                    address: '0x123'
+                });
+                done();
+            });
+    });
+
+    it('Should return null if the user does not exist', (done) => {
+        jest.spyOn(User, 'findByPk').mockResolvedValueOnce(null);
+        db.getContract('123', 'hardhat', '0x123')
+            .then((contract) => {
+                expect(contract).toEqual(null);
+                done();
+            });
+    });
+
+    it('Should return null if the contract does not exist', (done) => {
+        jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce(null);
+        db.getContract('123', 'hardhat', '0x123')
+            .then((contract) => {
+                expect(contract).toEqual(null);
+                done();
+            });
+    });
+});
+
+describe('getAccounts', () => {
+    it('Should return the account list with the total', (done) => {
+        jest.spyOn(workspace, 'getFilteredAccounts').mockResolvedValueOnce([{ toJSON: () => ({ address: '0x123' }) }]);
+        jest.spyOn(workspace, 'countAccounts').mockResolvedValueOnce(1);
+        db.getAccounts('123', 'hardhat')
+            .then(({ items, total}) => {
+                expect(items).toEqual([{ address: '0x123' }]);
+                expect(total).toEqual(1);
+                done();
+            });
+    });
+});
+
+describe('getPublicExplorerParamsBySlug', () => {
+    it('Should return the explorer', (done) => {
+        db.getPublicExplorerParamsBySlug('ethernal')
+            .then(explorer => {
+                expect(explorer).toEqual({ name: 'Ethernal', slug: 'ethernal' });
+                done();
+            })
+    });
+
+    it('Should return null if the explorer does not exist', (done) => {
+        jest.spyOn(Explorer, 'findBySlug').mockResolvedValueOnce(null);
+        db.getPublicExplorerParamsBySlug('ethernal')
+            .then(explorer => {
+                expect(explorer).toEqual(null);
+                done();
+            })
+    });
+});
+
+describe('getPublicExplorerParamsByDomain', () => {
+    it('Should return the explorer', (done) => {
+        db.getPublicExplorerParamsBySlug('explorer.ethernal.com')
+            .then(explorer => {
+                expect(explorer).toEqual({ name: 'Ethernal', slug: 'ethernal' });
+                done();
+            })
+    });
+
+    it('Should return null if the explorer does not exist', (done) => {
+        jest.spyOn(Explorer, 'findBySlug').mockResolvedValueOnce(null);
+        db.getPublicExplorerParamsBySlug('explorer.ethernal.com')
+            .then(explorer => {
+                expect(explorer).toEqual(null);
+                done();
+            })
+    });
+});
+
+describe('getProcessableTransactions', () => {
+    it('Should return the list of transactions', (done) => {
+        jest.spyOn(db, 'getProcessableTransactions').mockResolvedValueOnce([{ hash: '0x123' }]);
+        db.getProcessableTransactions('123', 'hardhat')
+            .then(transactions => {
+                expect(transactions).toEqual([{ hash: '0x123' }]);
+                done();
+            })
+    });
+});
+
+describe('getFailedProcessableTransactions', () => {
+    it('Should return the list of transactions', (done) => {
+        jest.spyOn(db, 'getFailedProcessableTransactions').mockResolvedValueOnce([{ hash: '0x123' }]);
+        db.getFailedProcessableTransactions('123', 'hardhat')
+            .then(transactions => {
+                expect(transactions).toEqual([{ hash: '0x123' }]);
+                done();
+            })
     });
 });

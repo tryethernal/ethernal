@@ -78,12 +78,14 @@ export default {
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] }
     }),
     mounted: function() {
-        this.getTokens(this.currentOptions);
+        this.pusher.onNewToken(() => this.getTokens(this.currentOptions), this);
     },
     methods: {
         getTokens: function(newOptions) {
             this.loading = true;
-            this.currentOptions = newOptions;
+
+            if (newOptions)
+                this.currentOptions = newOptions;
 
             const options = {
                 page: this.currentOptions.page,

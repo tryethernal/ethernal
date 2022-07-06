@@ -8,7 +8,7 @@
     "test": "jest"
   },
   "engines": {
-    "node": "17.1.x"
+    "node": ">= 16.0.0"
   },
   "author": "Antoine de Chevigné",
   "license": "Apache-2.0",
@@ -21,10 +21,12 @@
     "ethers": "^5.6.4",
     "express": "^4.17.3",
     "firebase-admin": "^10.2.0",
+    "mixpanel": "^0.16.0",
     "pg": "^8.7.3",
     "pusher": "^5.1.0-beta",
     "sequelize": "^6.19.0",
-    "solc": "^0.8.13"
+    "solc": "^0.8.13",
+    "stripe": "^9.8.0"
   },
   "devDependencies": {
     "jest": "^28.1.0",

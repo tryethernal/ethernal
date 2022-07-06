@@ -4,7 +4,7 @@
             <v-alert v-if="removedContract" dense text type="success">Contract at address <b>{{ removedContract }}</b> has been successfully removed.</v-alert>
             <v-alert dense text v-show="!canImport" type="warning">Free plan users are limited to 10 synced contracts. Remove some contracts or <Upgrade-Link @goToBilling="goToBilling" :emit="true">upgrade</Upgrade-Link> to the Premium plan for more.</v-alert>
             <Import-Contract-Modal ref="importContractModal" />
-            <Remove-Contract-Confirmation-Modal @refresh="fetchContracts" ref="removeContractConfirmationModal" />
+            <Remove-Contract-Confirmation-Modal @refresh="getContracts" ref="removeContractConfirmationModal" />
         </template>
         <v-data-table
             :loading="loading"
@@ -18,7 +18,7 @@
                 itemsPerPageOptions: [10, 25, 100]
             }"
             item-key="address"
-            @update:options="fetchContracts">
+            @update:options="getContracts">
             <template v-slot:top v-if="currentWorkspace.isAdmin">
                 <v-toolbar flat dense class="py-0">
                     <v-spacer></v-spacer>
@@ -92,10 +92,13 @@ export default {
     mounted: function() {
         if (this.currentWorkspace.isAdmin)
             this.headers.push({ text: '', value: 'remove' });
+
+        this.pusher.onNewContract(() => this.getContracts(this.currentOptions), this);
     },
     methods: {
-        fetchContracts: function(newOptions) {
+        getContracts: function(newOptions) {
             this.loading = true;
+
             if (newOptions)
                 this.currentOptions = newOptions;
 

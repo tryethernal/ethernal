@@ -26,13 +26,18 @@ export default {
         loading: true,
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] }
     }),
+    mounted: function() {
+        this.pusher.onNewTransaction(() => this.getTransactions(this.currentOptions), this, this.address);
+    },
     methods: {
         onPagination: function(options) {
             this.getTransactions(options);
         },
         getTransactions: function(newOptions) {
             this.loading = true;
-            this.currentOptions = newOptions;
+
+            if (newOptions)
+                this.currentOptions = newOptions;
 
             const options = {
                 page: this.currentOptions.page,

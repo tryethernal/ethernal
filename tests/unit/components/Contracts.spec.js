@@ -3,14 +3,13 @@ import MockHelper from '../MockHelper';
 import Contracts from '@/components/Contracts.vue';
 
 describe('Contracts.vue', () => {
-    let helper, db;
+    let helper;
 
     beforeEach(async () => {
         helper = new MockHelper();
-        db = helper.mocks.admin;
     });
 
-    it('Should show the contracts list', async (done) => {
+    it('Should show the contracts list', async () => {
         const contracts = [
             {
                 address: '0x0',
@@ -23,64 +22,63 @@ describe('Contracts.vue', () => {
             }
         ];
 
-        for (const contract of contracts)
-            await db.collection('contracts')
-                .doc(contract.address)
-                .set(contract);
+        jest.spyOn(helper.mocks.server, 'getContracts')
+            .mockResolvedValue({ data: { items: contracts, total: 2 }});
 
-        const wrapper = helper.mountFn(Contracts);
-        await wrapper.vm.$nextTick();
+        const wrapper = helper.mountFn(Contracts, {
+            stubs: ['Hash-Link', 'Import-Contract-Modal', 'Remove-Contract-Confirmation-Modal']
+        });
+        await new Promise(process.nextTick);
 
-        setTimeout(() => {
-            expect(wrapper.vm.contracts).toStrictEqual(contracts);
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
+        expect(wrapper.vm.contracts).toStrictEqual(contracts);
+        expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should show the loading message when empty contracts list', async (done) => {
-        const wrapper = helper.mountFn(Contracts);
-        await wrapper.vm.$nextTick();
+    it('Should show the loading message when empty contracts list', async () => {
+        jest.spyOn(helper.mocks.server, 'getContracts')
+            .mockResolvedValue({ data: { items: [], total: 0 }});
 
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
+        const wrapper = helper.mountFn(Contracts);
+        await new Promise(process.nextTick);
+
+        expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should display a warning message for free users with 10 contracts', async (done) => {
+    it('Should display a warning message for free users with 10 contracts', async () => {
+        const contracts = []; 
         for (let i = 0; i < 10; i++)
-            await db.collection('contracts')
-                .doc(`Ox${i}`)
-                .set({ address: `0x${i}`, name: `0x${i}`, timestamp: 1633778007 + i });
+            contracts.push({ address: `0x${i}`, name: `0x${i}`, timestamp: 1633778007 + i });
 
-        const wrapper = helper.mountFn(Contracts);
-        await wrapper.vm.$nextTick();
+        jest.spyOn(helper.mocks.server, 'getContracts')
+            .mockResolvedValue({ data: { items: contracts, total: 10 }});
 
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
+        const wrapper = helper.mountFn(Contracts, {
+            stubs: ['Hash-Link'],
+            getters: {
+                user: jest.fn().mockReturnValue({ plan: 'free' })
+            }
+        });
+        await new Promise(process.nextTick);
+
+        expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should not display a warning message for premium users with 10 contracts', async (done) => {
-        helper.getters.user.mockImplementation(() => { return { plan: 'premium' }});
+    it('Should not display a warning message for premium users with 10 contracts', async () => {
+        const contracts = []; 
         for (let i = 0; i < 10; i++)
-            await db.collection('contracts')
-                .doc(`Ox${i}`)
-                .set({ address: `0x${i}`, name: `0x${i}`, timestamp: 1633778007 + i });
+            contracts.push({ address: `0x${i}`, name: `0x${i}`, timestamp: 1633778007 + i });
 
-        const wrapper = helper.mountFn(Contracts);
-        await wrapper.vm.$nextTick();
+        jest.spyOn(helper.mocks.server, 'getContracts')
+            .mockResolvedValue({ data: { items: contracts, total: 10 }});
 
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
-    });
+        const wrapper = helper.mountFn(Contracts, {
+            stubs: ['Hash-Link'],
+            getters: {
+                user: jest.fn().mockReturnValue({ plan: 'premium' })
+            }
+        });
+        await new Promise(process.nextTick);
 
-    afterEach(async (done) => {
-        await helper.clearFirebase();
-        done();
+        expect(wrapper.html()).toMatchSnapshot();
     });
 });
