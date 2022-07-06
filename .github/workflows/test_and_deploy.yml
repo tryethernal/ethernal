@@ -61,6 +61,8 @@ jobs:
 
       - name: Run tests
         run: npm run test:unit
+        env:
+          VUE_APP_API_ROOT_URL: http://localhost:8081
 
   deploy_saas:
     if: startsWith(github.ref, 'refs/tags/v')
