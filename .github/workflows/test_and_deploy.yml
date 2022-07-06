@@ -4,53 +4,6 @@ on: [push, workflow_dispatch]
 
 jobs:
   test_back:
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Cache firebase emulators
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/firebase/emulators
-          key: ${{ runner.os }}-firebase-emulators-${{ hashFiles('~/.cache/firebase/emulators/**') }}
-
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12.9.1
-
-      - name: Setup timezone
-        uses: zcong1993/setup-timezone@master
-        with:
-          timezone: Europe/Paris
-
-      - name: Install deps
-        run: |
-          cd functions
-          npm install -g firebase-tools@10.1.5 firebase-functions
-          npm install
-
-      - name: Setup environment
-        run: |
-          cp functions/tests/fixtures/.runtimeconfig.json ./functions/
-
-      - name: Run tests
-        run: |
-          firebase emulators:exec \
-            'FIREBASE_CONFIG="{\"projectId\": \"ethernal-test\",\"databaseURL\": \"http://localhost:9000/?ns=ethernal-test\"}" \
-            FIRESTORE_EMULATOR_HOST="localhost:8080" \
-            FIREBASE_DATABASE_EMULATOR_HOST="localhost:9000" \
-            GCLOUD_PROJECT=ethernal-test \
-            npm run test --prefix functions/'
-
-  test_front:
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -79,6 +32,31 @@ jobs:
           AUTH_SECRET: 123
           STRIPE_WEBHOOK_SECRET: 123
           STRIPE_SECRET_KEY: 123
+
+  test_front:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.9.1
+
+      - name: Setup timezone
+        uses: zcong1993/setup-timezone@master
+        with:
+          timezone: Europe/Paris
+
+      - name: Install deps
+        run: yarn
+
+      - name: Run tests
+        run: npm run test:unit
 
   deploy_saas:
     if: startsWith(github.ref, 'refs/tags/v')
