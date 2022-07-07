@@ -854,11 +854,11 @@ const updateWorkspaceSettings = async (userId, workspace, settings) => {
 };
 
 const resetWorkspace = async (userId, workspace) => {
-    if (!userId || !workspace) throw '[resetWorkspace] Missing parameter';
+    if (!userId || !String(workspace)) throw '[resetWorkspace] Missing parameter';
 
     try {
-        const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-        if (user.workspaces.length)
+        const user = await User.findByAuthIdWithWorkspace(userId, String(workspace));
+        if (user && user.workspaces.length)
             await user.workspaces[0].reset();
     } catch(error) {
         writeLog({
