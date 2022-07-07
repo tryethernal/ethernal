@@ -67,11 +67,17 @@ jobs:
   deploy_back:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [test_back]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
   deploy_front:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [test_front]
-
     runs-on: ubuntu-latest
 
     steps:
