@@ -68,6 +68,7 @@ class MockHelper {
     initMockStore(initialState, overrideGetters) {
         this.localVue.use(Vuex);
         this.getters = {
+            theme: jest.fn(),
             blockCount: jest.fn().mockReturnValue(2),
             transactionCount: jest.fn().mockReturnValue(2),
             currentWorkspace: jest.fn().mockReturnValue(this.storeState.currentWorkspace),
