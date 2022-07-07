@@ -8,16 +8,16 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
       <div class="v-alert__content">Free plan users are limited to 10 synced contracts. Remove some contracts or <a>upgrade</a> to the Premium plan for more.</div>
     </div>
   </div>
-  <div role="dialog" class="v-dialog__container">
+  <div class="v-dialog__container">
     <!---->
   </div>
-  <div role="dialog" class="v-dialog__container">
+  <div class="v-dialog__container">
     <!---->
   </div>
   <div class="v-data-table v-data-table--has-top v-data-table--has-bottom theme--light">
     <header class="py-0 v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px;">
       <div class="v-toolbar__content" style="height: 48px;">
-        <div class="spacer"></div> <button type="button" class="mr-2 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--small primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-import theme--light" style="font-size: 16px;"></i>Import Contract
+        <div class="spacer"></div> <button type="button" class="mr-2 v-btn v-btn--has-bg theme--light v-size--small primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-import theme--light" style="font-size: 16px;"></i>Import Contract
                 </span></button>
       </div>
     </header>
@@ -47,7 +47,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start">0x0</td>
             <td class="text-start"><span>2021-10-09 1:13:27 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -56,7 +56,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start">0x1</td>
             <td class="text-start"><span>2021-10-09 1:13:28 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -65,7 +65,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start">0x2</td>
             <td class="text-start"><span>2021-10-09 1:13:29 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -74,7 +74,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start">0x3</td>
             <td class="text-start"><span>2021-10-09 1:13:30 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -83,7 +83,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start">0x4</td>
             <td class="text-start"><span>2021-10-09 1:13:31 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -92,7 +92,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start">0x5</td>
             <td class="text-start"><span>2021-10-09 1:13:32 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -101,7 +101,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start">0x6</td>
             <td class="text-start"><span>2021-10-09 1:13:33 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -110,7 +110,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start">0x7</td>
             <td class="text-start"><span>2021-10-09 1:13:34 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -119,7 +119,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start">0x8</td>
             <td class="text-start"><span>2021-10-09 1:13:35 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -128,7 +128,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
             <td class="text-start">0x9</td>
             <td class="text-start"><span>2021-10-09 1:13:36 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
         </tbody>
       </table>
@@ -153,8 +153,8 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
         </div>
       </div>
       <div class="v-data-footer__pagination">1-10 of 10</div>
-      <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-      <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
+      <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
+      <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
     </div>
   </div>
 </div>
@@ -168,16 +168,16 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
       <div class="v-alert__content">Free plan users are limited to 10 synced contracts. Remove some contracts or <a>upgrade</a> to the Premium plan for more.</div>
     </div>
   </div>
-  <div role="dialog" class="v-dialog__container">
+  <div class="v-dialog__container">
     <!---->
   </div>
-  <div role="dialog" class="v-dialog__container">
+  <div class="v-dialog__container">
     <!---->
   </div>
   <div class="v-data-table v-data-table--has-top v-data-table--has-bottom theme--light">
     <header class="py-0 v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px;">
       <div class="v-toolbar__content" style="height: 48px;">
-        <div class="spacer"></div> <button type="button" class="mr-2 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--small primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-import theme--light" style="font-size: 16px;"></i>Import Contract
+        <div class="spacer"></div> <button type="button" class="mr-2 v-btn v-btn--has-bg theme--light v-size--small primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-import theme--light" style="font-size: 16px;"></i>Import Contract
                 </span></button>
       </div>
     </header>
@@ -207,7 +207,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start">0x0</td>
             <td class="text-start"><span>2021-10-09 1:13:27 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -216,7 +216,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start">0x1</td>
             <td class="text-start"><span>2021-10-09 1:13:28 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -225,7 +225,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start">0x2</td>
             <td class="text-start"><span>2021-10-09 1:13:29 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -234,7 +234,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start">0x3</td>
             <td class="text-start"><span>2021-10-09 1:13:30 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -243,7 +243,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start">0x4</td>
             <td class="text-start"><span>2021-10-09 1:13:31 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -252,7 +252,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start">0x5</td>
             <td class="text-start"><span>2021-10-09 1:13:32 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -261,7 +261,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start">0x6</td>
             <td class="text-start"><span>2021-10-09 1:13:33 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -270,7 +270,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start">0x7</td>
             <td class="text-start"><span>2021-10-09 1:13:34 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -279,7 +279,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start">0x8</td>
             <td class="text-start"><span>2021-10-09 1:13:35 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -288,7 +288,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
             <td class="text-start">0x9</td>
             <td class="text-start"><span>2021-10-09 1:13:36 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
         </tbody>
       </table>
@@ -313,8 +313,8 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
         </div>
       </div>
       <div class="v-data-footer__pagination">1-10 of 10</div>
-      <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-      <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
+      <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
+      <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
     </div>
   </div>
 </div>
@@ -333,7 +333,7 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
   <div class="v-data-table v-data-table--has-top v-data-table--has-bottom theme--light">
     <header class="py-0 v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px;">
       <div class="v-toolbar__content" style="height: 48px;">
-        <div class="spacer"></div> <button type="button" class="mr-2 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--small primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-import theme--light" style="font-size: 16px;"></i>Import Contract
+        <div class="spacer"></div> <button type="button" class="mr-2 v-btn v-btn--has-bg theme--light v-size--small primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-import theme--light" style="font-size: 16px;"></i>Import Contract
                 </span></button>
       </div>
     </header>
@@ -363,7 +363,7 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
             <td class="text-start">My Contract</td>
             <td class="text-start"><span>2021-10-09 1:13:27 PM</span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -372,7 +372,7 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
             <td class="text-start">Another Contract</td>
             <td class="text-start"></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
         </tbody>
       </table>
@@ -397,8 +397,8 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
         </div>
       </div>
       <div class="v-data-footer__pagination">1-2 of 2</div>
-      <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-      <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
+      <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
+      <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
     </div>
   </div>
 </div>
@@ -412,16 +412,16 @@ exports[`Contracts.vue Should show the loading message when empty contracts list
       <div class="v-alert__content">Free plan users are limited to 10 synced contracts. Remove some contracts or <a>upgrade</a> to the Premium plan for more.</div>
     </div>
   </div>
-  <div role="dialog" class="v-dialog__container">
+  <div class="v-dialog__container">
     <!---->
   </div>
-  <div role="dialog" class="v-dialog__container">
+  <div class="v-dialog__container">
     <!---->
   </div>
   <div class="v-data-table v-data-table--has-top v-data-table--has-bottom theme--light">
     <header class="py-0 v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px;">
       <div class="v-toolbar__content" style="height: 48px;">
-        <div class="spacer"></div> <button type="button" class="mr-2 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--small primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-import theme--light" style="font-size: 16px;"></i>Import Contract
+        <div class="spacer"></div> <button type="button" class="mr-2 v-btn v-btn--has-bg theme--light v-size--small primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-import theme--light" style="font-size: 16px;"></i>Import Contract
                 </span></button>
       </div>
     </header>
@@ -471,8 +471,8 @@ exports[`Contracts.vue Should show the loading message when empty contracts list
         </div>
       </div>
       <div class="v-data-footer__pagination">–</div>
-      <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-      <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
+      <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
+      <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
     </div>
   </div>
 </div>

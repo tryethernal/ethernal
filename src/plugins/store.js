@@ -14,7 +14,8 @@ export default new Vuex.Store({
             slug: null,
             token: null,
             chainId: null,
-            domain: null
+            domain: null,
+            theme: 'light'
         },
         currentWorkspace: {
             userId: '',
@@ -28,11 +29,7 @@ export default new Vuex.Store({
                 gas: null
             },
         },
-        connected: false,
-        stats: {
-            transactionCount: 0,
-            blockCount: 0
-        }
+        connected: false
     },
     mutations: {
         SET_USER(state, data) {
@@ -55,12 +52,6 @@ export default new Vuex.Store({
         },
         SET_ONBOARDED_STATUS(state, status) {
             state.user = { ...state.user, onboarded: status };
-        },
-        SET_TRANSACTION_COUNT(state, count) {
-            state.stats.transactionCount = count;
-        },
-        SET_BLOCK_COUNT(state, count) {
-            state.stats.blockCount = count
         },
         SET_PUBLIC_EXPLORER_SLUG(state, slug) {
             state.publicExplorer.slug = slug;
@@ -85,12 +76,6 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        updateTransactionCount({ commit }, count) {
-            commit('SET_TRANSACTION_COUNT', count);
-        },
-        updateBlockCount({ commit }, count) {
-            commit('SET_BLOCK_COUNT', count);
-        },
         updateUser({ commit }, user) {
             if (user) {
                 commit('SET_USER', sanitize({
@@ -140,11 +125,10 @@ export default new Vuex.Store({
     },
     getters: {
         firebaseIdToken: state => state.user.firebaseIdToken || '',
+        theme: state => state.publicExplorer.theme,
         isUserLoggedIn: state => !!state.user.uid,
         isPublicExplorer: state => !!state.publicExplorer.slug || !!state.publicExplorer.domain,
         publicExplorer: state => state.publicExplorer,
-        transactionCount: state => state.stats.transactionCount,
-        blockCount: state => state.stats.blockCount,
         user: state => {
             return { ...state.user, plan: state.user.plan || 'free' };
         },

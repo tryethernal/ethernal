@@ -8,7 +8,7 @@ exports[`ContractWriteMethod.vue Should display only the error message if the tx
     <div style="display: none;">
       Tx: <a href="/transaction/null" target="_blank"></a></div>
     <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
           <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
         </svg>
         <div class="v-progress-circular__info"></div>
@@ -28,13 +28,13 @@ exports[`ContractWriteMethod.vue Should display only the error message if the tx
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="input-109" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-109" type="number"></div>
         </div>
       </div>
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -46,7 +46,7 @@ exports[`ContractWriteMethod.vue Should display only the error message if there 
     <div style="display: none;">
       Tx: <a href="/transaction/null" target="_blank"></a></div>
     <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
           <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
         </svg>
         <div class="v-progress-circular__info"></div>
@@ -66,13 +66,13 @@ exports[`ContractWriteMethod.vue Should display only the error message if there 
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="input-98" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-98" type="number"></div>
         </div>
       </div>
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -84,7 +84,7 @@ exports[`ContractWriteMethod.vue Should display only the error message with the 
     <div style="">
       Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
     <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
           <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
         </svg>
         <div class="v-progress-circular__info"></div>
@@ -104,13 +104,13 @@ exports[`ContractWriteMethod.vue Should display only the error message with the 
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="input-74" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-74" type="number"></div>
         </div>
       </div>
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -122,7 +122,7 @@ exports[`ContractWriteMethod.vue Should display only the tx hash when it succeed
     <div style="">
       Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
     <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
           <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
         </svg>
         <div class="v-progress-circular__info"></div>
@@ -142,13 +142,13 @@ exports[`ContractWriteMethod.vue Should display only the tx hash when it succeed
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="input-63" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-63" type="number"></div>
         </div>
       </div>
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -160,7 +160,7 @@ exports[`ContractWriteMethod.vue Should display the UI to interact with a method
     <div style="display: none;">
       Tx: <a href="/transaction/null" target="_blank"></a></div>
     <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
           <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
         </svg>
         <div class="v-progress-circular__info"></div>
@@ -180,13 +180,13 @@ exports[`ContractWriteMethod.vue Should display the UI to interact with a method
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="input-19" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-19" type="number"></div>
         </div>
       </div>
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -197,7 +197,7 @@ exports[`ContractWriteMethod.vue Should display the formatted error message with
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
-          <legend style="width: -24px;"><span>​</span></legend>
+          <legend style="width: -24px;"><span class="notranslate">​</span></legend>
         </fieldset>
         <div class="v-text-field__slot"><label for="input-81" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">address to</label><input id="input-81" type="text"></div>
       </div>
@@ -207,7 +207,7 @@ exports[`ContractWriteMethod.vue Should display the formatted error message with
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
-          <legend style="width: -24px;"><span>​</span></legend>
+          <legend style="width: -24px;"><span class="notranslate">​</span></legend>
         </fieldset>
         <div class="v-text-field__slot"><label for="input-82" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">uint256 amount</label><input id="input-82" type="text"></div>
       </div>
@@ -218,7 +218,7 @@ exports[`ContractWriteMethod.vue Should display the formatted error message with
     <div style="">
       Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
     <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
           <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
         </svg>
         <div class="v-progress-circular__info"></div>
@@ -238,13 +238,13 @@ exports[`ContractWriteMethod.vue Should display the formatted error message with
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="input-87" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-87" type="number"></div>
         </div>
       </div>
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -256,7 +256,7 @@ exports[`ContractWriteMethod.vue Should display the tx hash and status when it s
     <div style="">
       Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
     <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
           <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
         </svg>
         <div class="v-progress-circular__info"></div>
@@ -276,13 +276,13 @@ exports[`ContractWriteMethod.vue Should display the tx hash and status when it s
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="input-52" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-52" type="number"></div>
         </div>
       </div>
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -293,7 +293,7 @@ exports[`ContractWriteMethod.vue Should handle array input properly 1`] = `
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
-          <legend style="width: -24px;"><span>​</span></legend>
+          <legend style="width: -24px;"><span class="notranslate">​</span></legend>
         </fieldset>
         <div class="v-text-field__slot"><label for="input-36" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">uint256[] values</label><input id="input-36" type="text"></div>
       </div>
@@ -304,7 +304,7 @@ exports[`ContractWriteMethod.vue Should handle array input properly 1`] = `
     <div style="">
       Tx: <a href="/transaction/0xabcd" target="_blank">0xabcd</a></div>
     <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
           <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
         </svg>
         <div class="v-progress-circular__info"></div>
@@ -324,13 +324,13 @@ exports[`ContractWriteMethod.vue Should handle array input properly 1`] = `
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="input-41" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-41" type="number"></div>
         </div>
       </div>
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -341,7 +341,7 @@ exports[`ContractWriteMethod.vue Should make the UI unavailable if not active fl
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
-          <legend style="width: 0px;"><span>​</span></legend>
+          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
         </fieldset>
         <div class="v-text-field__slot"><label for="input-25" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">uint256[] values</label><input disabled="disabled" id="input-25" type="text"></div>
       </div>
@@ -352,7 +352,7 @@ exports[`ContractWriteMethod.vue Should make the UI unavailable if not active fl
     <div style="display: none;">
       Tx: <a href="/transaction/null" target="_blank"></a></div>
     <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
           <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
         </svg>
         <div class="v-progress-circular__info"></div>
@@ -372,13 +372,13 @@ exports[`ContractWriteMethod.vue Should make the UI unavailable if not active fl
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="input-30" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-30" type="number"></div>
         </div>
       </div>
     </div>
-  </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--depressed v-btn--disabled v-btn--flat v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
+  </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -390,7 +390,7 @@ exports[`ContractWriteMethod.vue Should send the transaction with Metamask if pu
     <div style="">
       Tx: <a href="/transaction/0x1234" target="_blank">0x1234</a></div>
     <div style="display: none;">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
           <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
         </svg>
         <div class="v-progress-circular__info"></div>
@@ -410,12 +410,12 @@ exports[`ContractWriteMethod.vue Should send the transaction with Metamask if pu
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="input-8" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-8" type="number"></div>
         </div>
       </div>
     </div>
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;

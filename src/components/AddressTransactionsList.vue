@@ -3,7 +3,6 @@
         <Transactions-List
             :transactions="transactions"
             :loading="loading"
-            :total="transactionCount"
             :currentAddress="address"
             :sortBy="currentOptions.sortBy[0]"
             @pagination="onPagination"

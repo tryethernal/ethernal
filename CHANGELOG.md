@@ -6,6 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.3] - 2022-06-07
+### Changed
+- Updated ethers.js to 5.6.8
+
+## [1.12.2] - 2022-05-17
+### Fixed
+- Check if error field is present before accessing it when write call fails
+
+## [1.12.1] - 2022-05-06
+- Removing total count in pagination for blocks & transactions (Firestore optimization)
+- [Public Explorer] Improve favicon customization
+
+## [1.12.0] - 2022-05-02
+### Added
+- [Public Explorer] Customization of favicon & page title
+- [Public Explorer] Fixed theming issue on buttons
+
+## [1.11.12] - 2022-04-16
+### Fixed
+- Unit tests
+
+## [1.11.11] - 2022-04-15
+### Fixed
+- Aray parsing for fixed sized array parameters in functions
+
 ## [1.11.10] - 2022-04-06
 ### Fixed
 - Transaction error formatting

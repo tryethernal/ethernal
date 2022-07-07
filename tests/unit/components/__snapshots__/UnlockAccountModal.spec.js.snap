@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`UnlockAccountModal.vue Should display a warning if address mismatch 1`] = `
-<div role="dialog" class="v-dialog__container">
-  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 430px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 430px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Unlock Account</div>
           <div class="v-card__text">
@@ -24,7 +24,7 @@ exports[`UnlockAccountModal.vue Should display a warning if address mismatch 1`]
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
-                    <legend style="width: -24px;"><span>​</span></legend>
+                    <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                   </fieldset>
                   <div class="v-text-field__slot"><label for="privateKey" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Key*</label><input required="required" id="privateKey" type="text"></div>
                 </div>
@@ -37,7 +37,7 @@ exports[`UnlockAccountModal.vue Should display a warning if address mismatch 1`]
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="unlockAccount"><span class="v-btn__content">Unlock</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="unlockAccount"><span class="v-btn__content">Unlock</span></button>
           </div>
         </div>
       </div>
@@ -47,10 +47,10 @@ exports[`UnlockAccountModal.vue Should display a warning if address mismatch 1`]
 `;
 
 exports[`UnlockAccountModal.vue Should display a warning if private key format is incorrect 1`] = `
-<div role="dialog" class="v-dialog__container">
-  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 430px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 430px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Unlock Account</div>
           <div class="v-card__text">
@@ -70,7 +70,7 @@ exports[`UnlockAccountModal.vue Should display a warning if private key format i
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
-                    <legend style="width: -24px;"><span>​</span></legend>
+                    <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                   </fieldset>
                   <div class="v-text-field__slot"><label for="privateKey" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Key*</label><input required="required" id="privateKey" type="text"></div>
                 </div>
@@ -83,7 +83,7 @@ exports[`UnlockAccountModal.vue Should display a warning if private key format i
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="unlockAccount"><span class="v-btn__content">Unlock</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="unlockAccount"><span class="v-btn__content">Unlock</span></button>
           </div>
         </div>
       </div>
@@ -93,10 +93,10 @@ exports[`UnlockAccountModal.vue Should display a warning if private key format i
 `;
 
 exports[`UnlockAccountModal.vue Should let you unlock with a private key 1`] = `
-<div role="dialog" class="v-dialog__container">
-  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 430px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 430px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Unlock Account</div>
           <div class="v-card__text">
@@ -116,7 +116,7 @@ exports[`UnlockAccountModal.vue Should let you unlock with a private key 1`] = `
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
-                    <legend style="width: -24px;"><span>​</span></legend>
+                    <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                   </fieldset>
                   <div class="v-text-field__slot"><label for="privateKey" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Key*</label><input required="required" id="privateKey" type="text"></div>
                 </div>
@@ -129,7 +129,7 @@ exports[`UnlockAccountModal.vue Should let you unlock with a private key 1`] = `
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="unlockAccount"><span class="v-btn__content">Unlock</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="unlockAccount"><span class="v-btn__content">Unlock</span></button>
           </div>
         </div>
       </div>

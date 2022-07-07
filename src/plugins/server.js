@@ -203,6 +203,7 @@ const serverFunctions = {
 
             return pendingTx;
         } catch(error) {
+            console.log(error)
             const parsedError = JSON.parse(JSON.stringify(error));
 
             let errorData;
