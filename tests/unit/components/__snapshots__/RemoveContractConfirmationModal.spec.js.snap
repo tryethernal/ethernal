@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`RemoveContractConfirmationModal.vue Should display an error message if something is wrong 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+<div role="dialog" class="v-dialog__container">
+  <transition-stub name="dialog-transition">
+    <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+      <div class="v-dialog v-dialog--active" style="max-width: 600px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Remove contract</div>
           <div class="v-card__text">
@@ -23,20 +23,20 @@ exports[`RemoveContractConfirmationModal.vue Should display an error message if 
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="removeContract"><span class="v-btn__content">Remove</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--contained theme--light v-size--default primary" id="removeContract"><span class="v-btn__content">Remove</span></button>
           </div>
         </div>
       </div>
-    </transition-stub>
-  </div>
+    </div>
+  </transition-stub>
 </div>
 `;
 
 exports[`RemoveContractConfirmationModal.vue Should display the modal 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+<div role="dialog" class="v-dialog__container">
+  <transition-stub name="dialog-transition">
+    <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+      <div class="v-dialog v-dialog--active" style="max-width: 600px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Remove contract</div>
           <div class="v-card__text">
@@ -51,11 +51,11 @@ exports[`RemoveContractConfirmationModal.vue Should display the modal 1`] = `
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="removeContract"><span class="v-btn__content">Remove</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--contained theme--light v-size--default primary" id="removeContract"><span class="v-btn__content">Remove</span></button>
           </div>
         </div>
       </div>
-    </transition-stub>
-  </div>
+    </div>
+  </transition-stub>
 </div>
 `;

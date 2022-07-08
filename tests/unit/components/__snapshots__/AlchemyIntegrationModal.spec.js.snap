@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`AlchemyIntegrationModal.vue Should display a message if you are not in an Alchemy workspace 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 700px;">
+<div role="dialog" class="v-dialog__container">
+  <transition-stub name="dialog-transition">
+    <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+      <div class="v-dialog v-dialog--active v-dialog--persistent" style="max-width: 700px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Manage Alchemy Integration</div>
           <div class="v-card__text">
@@ -19,20 +19,20 @@ exports[`AlchemyIntegrationModal.vue Should display a message if you are not in 
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button>
           </div>
         </div>
       </div>
-    </transition-stub>
-  </div>
+    </div>
+  </transition-stub>
 </div>
 `;
 
 exports[`AlchemyIntegrationModal.vue Should let you disable a webhook 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 700px;">
+<div role="dialog" class="v-dialog__container">
+  <transition-stub name="dialog-transition">
+    <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+      <div class="v-dialog v-dialog--active v-dialog--persistent" style="max-width: 700px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Manage Alchemy Integration</div>
           <div class="v-card__text">
@@ -59,7 +59,7 @@ exports[`AlchemyIntegrationModal.vue Should let you disable a webhook 1`] = `
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <fieldset aria-hidden="true">
-                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                      <legend style="width: 0px;"><span>​</span></legend>
                     </fieldset>
                     <div class="v-text-field__slot"><input id="webhook" readonly="readonly" type="text"></div>
                     <div class="v-input__append-inner">
@@ -71,20 +71,20 @@ exports[`AlchemyIntegrationModal.vue Should let you disable a webhook 1`] = `
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button>
           </div>
         </div>
       </div>
-    </transition-stub>
-  </div>
+    </div>
+  </transition-stub>
 </div>
 `;
 
 exports[`AlchemyIntegrationModal.vue Should let you enable a webhook 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 700px;">
+<div role="dialog" class="v-dialog__container">
+  <transition-stub name="dialog-transition">
+    <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+      <div class="v-dialog v-dialog--active v-dialog--persistent" style="max-width: 700px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Manage Alchemy Integration</div>
           <div class="v-card__text">
@@ -111,7 +111,7 @@ exports[`AlchemyIntegrationModal.vue Should let you enable a webhook 1`] = `
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <fieldset aria-hidden="true">
-                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                      <legend style="width: 0px;"><span>​</span></legend>
                     </fieldset>
                     <div class="v-text-field__slot"><input id="webhook" readonly="readonly" type="text"></div>
                     <div class="v-input__append-inner">
@@ -123,11 +123,11 @@ exports[`AlchemyIntegrationModal.vue Should let you enable a webhook 1`] = `
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button>
           </div>
         </div>
       </div>
-    </transition-stub>
-  </div>
+    </div>
+  </transition-stub>
 </div>
 `;

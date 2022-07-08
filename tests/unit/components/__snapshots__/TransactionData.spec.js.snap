@@ -4,15 +4,15 @@ exports[`TransactionData.vue Should display instructions if there is no ABI 1`] 
 <div>
   <div class="text-right"><a href="#/transaction/0xb750fb9dd193bb4a46ea5426837c469815d2494abd68a94b1c2c190f3569c5b8" class="">0xb750fb9dd193b...</a>
     <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--vertical theme--light"> <a href="#/block/12695880" class="">12695880</a>
-    <hr role="separator" aria-orientation="vertical" class="ml-2 v-divider v-divider--vertical theme--light"> <button type="button" class="primary--text v-btn v-btn--icon v-btn--round v-btn--text theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate link mdi mdi-reload theme--light" style="font-size: 16px;"></i></span></button>
+    <hr role="separator" aria-orientation="vertical" class="ml-2 v-divider v-divider--vertical theme--light"> <button type="button" class="primary--text v-btn v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate link mdi mdi-reload theme--light" style="font-size: 16px;"></i></span></button>
   </div>
   <!---->
   <h3 class="mb-2">Called Function</h3>
-  <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+  <div class="my-2 v-card v-card--outlined v-sheet theme--light">
     <div class="v-card__text"><i>Upload contract artifact <a href="#/address/0xc00e94cb662c3520282e6f5717214004a7f26888?tab=contract" class="">here</a> to decode function parameters.</i></div>
   </div>
   <h3 class="mb-2">Emitted Events</h3>
-  <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+  <div class="my-2 v-card v-card--outlined v-sheet theme--light">
     <div class="v-card__text"><i>Upload contract artifact <a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888?tab=contract" class="">here</a> to decode events data.</i></div>
   </div>
 </div>
@@ -22,7 +22,7 @@ exports[`TransactionData.vue Should display transaction data 1`] = `
 <div>
   <div class="text-right"><a href="#/transaction/0xb750fb9dd193bb4a46ea5426837c469815d2494abd68a94b1c2c190f3569c5b8" class="">0xb750fb9dd193b...</a>
     <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--vertical theme--light"> <a href="#/block/12695880" class="">12695880</a>
-    <hr role="separator" aria-orientation="vertical" class="ml-2 v-divider v-divider--vertical theme--light"> <button type="button" class="primary--text v-btn v-btn--icon v-btn--round v-btn--text theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate link mdi mdi-reload theme--light" style="font-size: 16px;"></i></span></button>
+    <hr role="separator" aria-orientation="vertical" class="ml-2 v-divider v-divider--vertical theme--light"> <button type="button" class="primary--text v-btn v-btn--flat v-btn--icon v-btn--round v-btn--text theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate link mdi mdi-reload theme--light" style="font-size: 16px;"></i></span></button>
   </div>
   <!---->
   <h3 class="mb-2">Called Function</h3>

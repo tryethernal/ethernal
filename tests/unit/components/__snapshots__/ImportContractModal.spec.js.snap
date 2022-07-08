@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ImportContractModal.vue Should let the user import a non verified mainnet contract 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+<div role="dialog" class="v-dialog__container">
+  <transition-stub name="dialog-transition">
+    <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+      <div class="v-dialog v-dialog--active" style="max-width: 600px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Import a third-party contract</div>
           <div class="v-card__text">
@@ -31,20 +31,20 @@ exports[`ImportContractModal.vue Should let the user import a non verified mainn
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span></button>
           </div>
         </div>
       </div>
-    </transition-stub>
-  </div>
+    </div>
+  </transition-stub>
 </div>
 `;
 
 exports[`ImportContractModal.vue Should let the user import a verified mainnet contract 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+<div role="dialog" class="v-dialog__container">
+  <transition-stub name="dialog-transition">
+    <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+      <div class="v-dialog v-dialog--active" style="max-width: 600px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Import a third-party contract</div>
           <div class="v-card__text">
@@ -71,20 +71,20 @@ exports[`ImportContractModal.vue Should let the user import a verified mainnet c
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span></button>
           </div>
         </div>
       </div>
-    </transition-stub>
-  </div>
+    </div>
+  </transition-stub>
 </div>
 `;
 
 exports[`ImportContractModal.vue Should not warn the user if he is on a premium plan and has already 10 contracts 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+<div role="dialog" class="v-dialog__container">
+  <transition-stub name="dialog-transition">
+    <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+      <div class="v-dialog v-dialog--active" style="max-width: 600px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Import a third-party contract</div>
           <div class="v-card__text">
@@ -111,20 +111,20 @@ exports[`ImportContractModal.vue Should not warn the user if he is on a premium 
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span></button>
           </div>
         </div>
       </div>
-    </transition-stub>
-  </div>
+    </div>
+  </transition-stub>
 </div>
 `;
 
 exports[`ImportContractModal.vue Should warn the user if he is on a free plan and has already 10 contracts 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+<div role="dialog" class="v-dialog__container">
+  <transition-stub name="dialog-transition">
+    <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+      <div class="v-dialog v-dialog--active" style="max-width: 600px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Import a third-party contract</div>
           <div class="v-card__text">
@@ -155,11 +155,11 @@ exports[`ImportContractModal.vue Should warn the user if he is on a free plan an
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--text theme--light v-size--default" id="importContract"><span class="v-btn__content">Import</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--text theme--light v-size--default" id="importContract"><span class="v-btn__content">Import</span></button>
           </div>
         </div>
       </div>
-    </transition-stub>
-  </div>
+    </div>
+  </transition-stub>
 </div>
 `;

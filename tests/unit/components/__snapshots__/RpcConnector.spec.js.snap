@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`RpcConnector.vue Should display the correct info 1`] = `
-<header class="px-5 color--text v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px; border-bottom: thin solid rgba(0, 0, 0, 0.12);">
+<header class="px-5 color--text v-sheet v-sheet--tile theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px; border-bottom: thin solid rgba(0, 0, 0, 0.12);">
   <div class="v-toolbar__content" style="height: 48px;">
     Workspace: Hardhat (Ethereum)
     <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--inset v-divider--vertical theme--light">
@@ -12,7 +12,7 @@ exports[`RpcConnector.vue Should display the correct info 1`] = `
     </div>
     <div>
       <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--inset v-divider--vertical theme--light">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
           <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
         </svg>
         <div class="v-progress-circular__info"></div>

@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`AddTrackedKeyModal.vue Should let you add a tracking key 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div class="v-dialog" style="transform-origin: center center; max-width: 430px; display: none;">
+<div role="dialog" class="v-dialog__container">
+  <transition-stub name="dialog-transition">
+    <div role="document" class="v-dialog__content" style="z-index: 202;">
+      <div class="v-dialog" style="max-width: 430px; display: none;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Add key to track</div>
           <div class="v-card__text">
@@ -22,11 +22,11 @@ exports[`AddTrackedKeyModal.vue Should let you add a tracking key 1`] = `
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--disabled v-btn--text theme--light v-size--default" id="addKey" disabled="disabled"><span class="v-btn__content">Add</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--disabled v-btn--flat v-btn--text theme--light v-size--default" id="addKey" disabled="disabled"><span class="v-btn__content">Add</span></button>
           </div>
         </div>
       </div>
-    </transition-stub>
-  </div>
+    </div>
+  </transition-stub>
 </div>
 `;

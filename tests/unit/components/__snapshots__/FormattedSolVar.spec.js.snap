@@ -21,24 +21,25 @@ exports[`FormattedSolVar.vue Should display formatted json 1`] = `
     string: 
     <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-         <span><span><span><div class="vjs-tree"><div><div><div class="vjs-tree__node"><!----><!----><span><span class="vjs-tree__brackets">{</span>
-<!---->
+         <span><span><span><div class="vjs-tree"><div><div><div class="vjs-tree__node"><!---->  <!----> <span><span class="vjs-tree__brackets">
+  {
+</span>
 <!----></span></div>
 <div class="vjs-tree__node">
   <!---->
-  <div class="vjs-tree__indent has-line"></div><span class="vjs-key">"name":</span><span><span class="vjs-value vjs-value__string">"Ethernal"</span><span>,</span>
+  <div class="vjs-tree__indent has-line"></div> <span class="vjs-key">"name":</span> <span><span class="vjs-value vjs-value__string">"Ethernal",</span>
   <!----></span>
 </div>
 <div class="vjs-tree__node">
   <!---->
-  <div class="vjs-tree__indent has-line"></div><span class="vjs-key">"symbol":</span><span><span class="vjs-value vjs-value__string">"ETL"</span>
-  <!---->
+  <div class="vjs-tree__indent has-line"></div> <span class="vjs-key">"symbol":</span> <span><span class="vjs-value vjs-value__string">"ETL"</span>
   <!----></span>
 </div>
 <div class="vjs-tree__node">
   <!---->
-  <!----><span><span class="vjs-tree__brackets">}</span>
-  <!---->
+  <!----> <span><span class="vjs-tree__brackets">
+  }
+</span>
   <!----></span>
 </div>
 </div>

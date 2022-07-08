@@ -11,79 +11,79 @@ exports[`Billing.vue Should display the button to manage the subscription when t
   </div>
   <div class="row">
     <div class="col col-4">
-      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+      <div class="mb-4 v-card v-card--outlined v-sheet theme--light" style="height: 100%;">
         <div class="v-card__title">
           Free Plan
           <div class="spacer"></div>
           <!---->
         </div>
         <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-        <div role="list" class="v-list v-sheet theme--light v-list--dense">
+        <div role="list" class="v-list v-sheet v-sheet--tile theme--light v-list--dense">
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
             <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
             10 contracts
-            <span class="v-tooltip v-tooltip--top"><!----></span>
+            <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
             <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
             1 workspace
-            <span class="v-tooltip v-tooltip--top"><!----></span>
+            <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span>
           </div>
         </div>
       </div>
     </div>
     <div class="col col-4">
-      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+      <div class="mb-4 v-card v-card--outlined v-sheet theme--light" style="height: 100%;">
         <div class="v-card__title">
           Premium Plan - $20/month
           <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current Plan</span></span>
         </div>
         <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-        <div role="list" class="v-list v-sheet theme--light v-list--dense">
+        <div role="list" class="v-list v-sheet v-sheet--tile theme--light v-list--dense">
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
             <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
             Unlimited contracts
-            <span class="v-tooltip v-tooltip--top"><!----></span>
+            <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
             <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
             Unlimited workspaces
-            <span class="v-tooltip v-tooltip--top"><!----></span>
+            <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
             <!---->
 
-            <span class="v-tooltip v-tooltip--top"><!----></span>
+            <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span>
           </div>
         </div>
-        <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Manage Subscription</span></button></div>
+        <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--contained theme--light v-size--default primary"><span class="v-btn__content">Manage Subscription</span></button></div>
       </div>
     </div>
     <div class="col col-4">
-      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+      <div class="mb-4 v-card v-card--outlined v-sheet theme--light" style="height: 100%;">
         <div class="v-card__title">
           Custom Plan
           <div class="spacer"></div>
         </div>
         <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-        <div role="list" class="v-list v-sheet theme--light v-list--dense">
+        <div role="list" class="v-list v-sheet v-sheet--tile theme--light v-list--dense">
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Custom team pricing (starting at 5 seats)</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Custom team pricing (starting at 5 seats)</span> <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Custom on-premise deployment</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Custom on-premise deployment</span> <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Payment in crypto</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Payment in crypto</span> <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span>
           </div>
         </div>
-        <div class="v-card__actions justify-center d-flex flex-column"><a href="mailto:contact@tryethernal.com?subject=Custom+Ethernal+Subscription" target="blank" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Contact Us</span></a> <small>Or ping @antoinedc on <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a></small></div>
+        <div class="v-card__actions justify-center d-flex flex-column"><a href="mailto:contact@tryethernal.com?subject=Custom+Ethernal+Subscription" target="blank" class="v-btn v-btn--contained theme--light v-size--default primary"><span class="v-btn__content">Contact Us</span></a> <small>Or ping @antoinedc on <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a></small></div>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
+      <div class="v-card v-card--outlined v-sheet theme--light">
         <div class="v-card__text">
           All plans include unlimited blocks/transactions/accounts synchronization, Ganache/Hardhat/Brownie integration, and all Ethernal features.
         </div>
@@ -104,79 +104,79 @@ exports[`Billing.vue Should display the button to start the subscription when th
   </div>
   <div class="row">
     <div class="col col-4">
-      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+      <div class="mb-4 v-card v-card--outlined v-sheet theme--light" style="height: 100%;">
         <div class="v-card__title">
           Free Plan
           <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current Plan</span></span>
         </div>
         <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-        <div role="list" class="v-list v-sheet theme--light v-list--dense">
+        <div role="list" class="v-list v-sheet v-sheet--tile theme--light v-list--dense">
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
             <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
             10 contracts
-            <span class="v-tooltip v-tooltip--top"><!----></span>
+            <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
             <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
             1 workspace
-            <span class="v-tooltip v-tooltip--top"><!----></span>
+            <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span>
           </div>
         </div>
       </div>
     </div>
     <div class="col col-4">
-      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+      <div class="mb-4 v-card v-card--outlined v-sheet theme--light" style="height: 100%;">
         <div class="v-card__title">
           Premium Plan - $20/month
           <div class="spacer"></div>
           <!---->
         </div>
         <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-        <div role="list" class="v-list v-sheet theme--light v-list--dense">
+        <div role="list" class="v-list v-sheet v-sheet--tile theme--light v-list--dense">
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
             <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
             Unlimited contracts
-            <span class="v-tooltip v-tooltip--top"><!----></span>
+            <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
             <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
             Unlimited workspaces
-            <span class="v-tooltip v-tooltip--top"><!----></span>
+            <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
             <!---->
 
-            <span class="v-tooltip v-tooltip--top"><!----></span>
+            <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span>
           </div>
         </div>
-        <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Subscribe</span></button></div>
+        <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--contained theme--light v-size--default primary"><span class="v-btn__content">Subscribe</span></button></div>
       </div>
     </div>
     <div class="col col-4">
-      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+      <div class="mb-4 v-card v-card--outlined v-sheet theme--light" style="height: 100%;">
         <div class="v-card__title">
           Custom Plan
           <div class="spacer"></div>
         </div>
         <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-        <div role="list" class="v-list v-sheet theme--light v-list--dense">
+        <div role="list" class="v-list v-sheet v-sheet--tile theme--light v-list--dense">
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Custom team pricing (starting at 5 seats)</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Custom team pricing (starting at 5 seats)</span> <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Custom on-premise deployment</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Custom on-premise deployment</span> <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Payment in crypto</span> <span class="v-tooltip v-tooltip--top"><!----></span>
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Payment in crypto</span> <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span>
           </div>
         </div>
-        <div class="v-card__actions justify-center d-flex flex-column"><a href="mailto:contact@tryethernal.com?subject=Custom+Ethernal+Subscription" target="blank" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Contact Us</span></a> <small>Or ping @antoinedc on <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a></small></div>
+        <div class="v-card__actions justify-center d-flex flex-column"><a href="mailto:contact@tryethernal.com?subject=Custom+Ethernal+Subscription" target="blank" class="v-btn v-btn--contained theme--light v-size--default primary"><span class="v-btn__content">Contact Us</span></a> <small>Or ping @antoinedc on <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a></small></div>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
+      <div class="v-card v-card--outlined v-sheet theme--light">
         <div class="v-card__text">
           All plans include unlimited blocks/transactions/accounts synchronization, Ganache/Hardhat/Brownie integration, and all Ethernal features.
         </div>

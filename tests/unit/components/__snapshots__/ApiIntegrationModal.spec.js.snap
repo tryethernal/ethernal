@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ApiIntegrationModal.vue Should let you disable the API 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 700px;">
+<div role="dialog" class="v-dialog__container">
+  <transition-stub name="dialog-transition">
+    <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+      <div class="v-dialog v-dialog--active v-dialog--persistent" style="max-width: 700px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Manage API</div>
           <div class="v-card__text">
@@ -30,7 +30,7 @@ exports[`ApiIntegrationModal.vue Should let you disable the API 1`] = `
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
-                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    <legend style="width: 0px;"><span>​</span></legend>
                   </fieldset>
                   <div class="v-text-field__slot"><input id="token" readonly="readonly" type="text"></div>
                   <div class="v-input__append-inner">
@@ -41,20 +41,20 @@ exports[`ApiIntegrationModal.vue Should let you disable the API 1`] = `
             </div> <input type="hidden" id="copyElement" value="">
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button>
           </div>
         </div>
       </div>
-    </transition-stub>
-  </div>
+    </div>
+  </transition-stub>
 </div>
 `;
 
 exports[`ApiIntegrationModal.vue Should let you enable the API 1`] = `
-<div class="v-dialog__container">
-  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
-    <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 700px;">
+<div role="dialog" class="v-dialog__container">
+  <transition-stub name="dialog-transition">
+    <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+      <div class="v-dialog v-dialog--active v-dialog--persistent" style="max-width: 700px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Manage API</div>
           <div class="v-card__text">
@@ -80,7 +80,7 @@ exports[`ApiIntegrationModal.vue Should let you enable the API 1`] = `
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
-                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    <legend style="width: 0px;"><span>​</span></legend>
                   </fieldset>
                   <div class="v-text-field__slot"><input id="token" readonly="readonly" type="text"></div>
                   <div class="v-input__append-inner">
@@ -91,11 +91,11 @@ exports[`ApiIntegrationModal.vue Should let you enable the API 1`] = `
             </div> <input type="hidden" id="copyElement" value="123456abcdef">
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button>
           </div>
         </div>
       </div>
-    </transition-stub>
-  </div>
+    </div>
+  </transition-stub>
 </div>
 `;

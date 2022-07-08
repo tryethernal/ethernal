@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TransactionEvent.vue Should display transaction event 1`] = `
-<div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+<div class="my-2 v-card v-card--outlined v-sheet theme--light">
   <div class="v-card__text"><span><hash-link-stub notcopiable="true" withname="true" hash="0xc00e94Cb662C3520282E6f5717214004A7f26888" type="address"></hash-link-stub>.Transfer(
 </span>
     <div style="white-space: pre;">
@@ -18,7 +18,7 @@ exports[`TransactionEvent.vue Should display transaction event 1`] = `
 `;
 
 exports[`TransactionEvent.vue Should display transaction event for a proxied contract 1`] = `
-<div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+<div class="my-2 v-card v-card--outlined v-sheet theme--light">
   <div class="v-card__text"><span><hash-link-stub notcopiable="true" withname="true" hash="0xc00e94Cb662C3520282E6f5717214004A7f26888" type="address"></hash-link-stub>.Transfer(
 </span>
     <div style="white-space: pre;">
@@ -35,7 +35,7 @@ exports[`TransactionEvent.vue Should display transaction event for a proxied con
 `;
 
 exports[`TransactionEvent.vue Should display warning if no ABI 1`] = `
-<div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+<div class="my-2 v-card v-card--outlined v-sheet theme--light">
   <div class="v-card__text"><i>Upload contract artifact <a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888?tab=contract" class="">here</a> to decode events data.</i></div>
 </div>
 `;

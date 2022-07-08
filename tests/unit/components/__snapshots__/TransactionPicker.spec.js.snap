@@ -1,17 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TransactionPicker.vue Should display a message if no transactions 1`] = `
-<div class="v-card v-sheet v-sheet--outlined theme--light">
+<div class="v-card v-card--outlined v-sheet theme--light">
   <div class="v-card__text"><i>No transactions here yet.</i></div>
 </div>
 `;
 
 exports[`TransactionPicker.vue Should display the picker 1`] = `
-<div class="v-card v-sheet v-sheet--outlined theme--light">
+<div class="v-card v-card--outlined v-sheet theme--light">
   <div class="v-card__text">
-    <div role="list" class="v-list v-sheet theme--light v-list--three-line">
+    <div role="list" class="v-list v-sheet v-sheet--tile theme--light v-list--three-line">
       <div role="listbox" class="v-item-group theme--light v-list-item-group">
-        <div tabindex="0" role="option" aria-selected="true" class="v-list-item primary--text v-list-item--active v-list-item--link theme--light">
+        <div tabindex="0" role="listitem" aria-selected="true" class="v-list-item primary--text v-list-item--active v-list-item--link theme--light">
           <div class="v-list-item__content">
             <div class="v-list-item__title">0xb750fb9dd193b...</div>
             <div class="v-list-item__subtitle">
