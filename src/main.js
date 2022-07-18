@@ -27,7 +27,7 @@ if (isEthernalDomain) {
     const domain = splits[splits.length - 2];
     const publicExplorerSlug = splits.slice(0, splits.indexOf(domain)).join('.');
     console.log(publicExplorerSlug)
-    if (publicExplorerSlug != 'app')
+    if (!publicExplorerSlug.endsWith('app'))
         store.dispatch('updatePublicExplorerSlug', publicExplorerSlug);
 }
 else {
