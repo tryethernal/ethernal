@@ -186,7 +186,7 @@ export default {
 
             document.title = name;
         },
-        setupPublicExplorer: function(data) {
+        setupPublicExplorer: function({ data }) {
             if (!data)
                 return;
 
