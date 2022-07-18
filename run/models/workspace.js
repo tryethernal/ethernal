@@ -151,39 +151,41 @@ module.exports = (sequelize, DataTypes) => {
                 }), { transaction: sequelizeTransaction });
 
                 const receipt = transaction.receipt;
-                const storedReceipt = await storedTx.createReceipt(sanitize({
-                    workspaceId: storedTx.workspaceId,
-                    blockHash: receipt.blockHash,
-                    blockNumber: receipt.blockNumber,
-                    byzantium: receipt.byzantium,
-                    confirmations: receipt.confirmations,
-                    contractAddress: receipt.contractAddress,
-                    cumulativeGasUsed: receipt.cumulativeGasUsed,
-                    from: receipt.from,
-                    gasUsed: receipt.gasUsed,
-                    logsBloom: receipt.logsBloom,
-                    status: receipt.status,
-                    to: receipt.to,
-                    transactionHash: receipt.transactionHash,
-                    transactionIndex: receipt.transactionIndex,
-                    type_: receipt.type,
-                    raw: receipt
-                }), { transaction: sequelizeTransaction });
-
-                for (let i = 0; i < receipt.logs.length; i++) {
-                    const log = receipt.logs[i];
-                    await storedReceipt.createLog(sanitize({
+                if (receipt) {
+                    const storedReceipt = await storedTx.createReceipt(sanitize({
                         workspaceId: storedTx.workspaceId,
-                        address: log.address,
-                        blockHash: log.blockHash,
-                        blockNumber: log.blockNumber,
-                        data: log.data,
-                        logIndex: log.logIndex,
-                        topics: log.topics,
-                        transactionHash: log.transactionHash,
-                        transactionIndex: log.transactionIndex,
-                        raw: log
+                        blockHash: receipt.blockHash,
+                        blockNumber: receipt.blockNumber,
+                        byzantium: receipt.byzantium,
+                        confirmations: receipt.confirmations,
+                        contractAddress: receipt.contractAddress,
+                        cumulativeGasUsed: receipt.cumulativeGasUsed,
+                        from: receipt.from,
+                        gasUsed: receipt.gasUsed,
+                        logsBloom: receipt.logsBloom,
+                        status: receipt.status,
+                        to: receipt.to,
+                        transactionHash: receipt.transactionHash,
+                        transactionIndex: receipt.transactionIndex,
+                        type_: receipt.type,
+                        raw: receipt
                     }), { transaction: sequelizeTransaction });
+
+                    for (let i = 0; i < receipt.logs.length; i++) {
+                        const log = receipt.logs[i];
+                        await storedReceipt.createLog(sanitize({
+                            workspaceId: storedTx.workspaceId,
+                            address: log.address,
+                            blockHash: log.blockHash,
+                            blockNumber: log.blockNumber,
+                            data: log.data,
+                            logIndex: log.logIndex,
+                            topics: log.topics,
+                            transactionHash: log.transactionHash,
+                            transactionIndex: log.transactionIndex,
+                            raw: log
+                        }), { transaction: sequelizeTransaction });
+                    }
                 }
 
                 return storedTx;
