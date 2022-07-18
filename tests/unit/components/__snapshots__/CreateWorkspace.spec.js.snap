@@ -15,7 +15,7 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Brave 1`] = 
         </div>
       </div>
       <!----> <a id="detectServers" href="#">Detect Networks</a>&nbsp;
-      <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i>
+      <span class="v-tooltip v-tooltip--top"><!----></span><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i>
       <ul style="display: none;"></ul>
       <div style="display: none;">
         No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave &amp; Safari 👀!).
@@ -35,9 +35,9 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Brave 1`] = 
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="workspaceName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" placeholder="My Ethereum Project" type="text"></div>
+          <div class="v-text-field__slot"><label for="workspaceName" class="v-label theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" type="text"></div>
         </div>
       </div>
     </div>
@@ -45,37 +45,35 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Brave 1`] = 
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" placeholder="ws://localhost:8545" type="text"></div>
+          <div class="v-text-field__slot"><label for="workspaceServer" class="v-label theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" type="text"></div>
         </div>
       </div>
     </div>
     <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
       <div class="v-input__control">
-        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-96" class="v-input__slot">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-79" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-select__slot"><label for="input-96" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
+          <div class="v-select__slot"><label for="input-79" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
-              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-96" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-79" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
             </div>
             <div class="v-input__append-inner">
               <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
             </div><input type="hidden" value="ethereum">
           </div>
           <div class="v-menu">
-            <transition-stub name="v-menu-transition">
-              <!---->
-            </transition-stub>
+            <!---->
           </div>
         </div>
       </div>
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--contained v-btn--disabled theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;
@@ -94,7 +92,7 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Safari 1`] =
           </div>
         </div>
       </div> <a id="detectServers" href="#">Detect Networks</a>&nbsp;
-      <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
+      <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
       <ul style="display: none;"></ul>
       <div style="display: none;">
         No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave &amp; Safari 👀!).
@@ -114,9 +112,9 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Safari 1`] =
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="workspaceName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" placeholder="My Ethereum Project" type="text"></div>
+          <div class="v-text-field__slot"><label for="workspaceName" class="v-label theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" type="text"></div>
         </div>
       </div>
     </div>
@@ -124,35 +122,33 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Safari 1`] =
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" placeholder="ws://localhost:8545" type="text"></div>
+          <div class="v-text-field__slot"><label for="workspaceServer" class="v-label theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" type="text"></div>
         </div>
       </div>
     </div>
     <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
       <div class="v-input__control">
-        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-121" class="v-input__slot">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-100" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-select__slot"><label for="input-121" class="v-label theme--light" style="left: 0px; position: absolute;">Chain</label>
-            <div class="v-select__selections"><input required="required" id="input-121" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+          <div class="v-select__slot"><label for="input-100" class="v-label theme--light" style="left: 0px; position: absolute;">Chain</label>
+            <div class="v-select__selections"><input required="required" id="input-100" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
             <div class="v-input__append-inner">
               <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
             </div><input type="hidden" value="ethereum">
           </div>
           <div class="v-menu">
-            <transition-stub name="v-menu-transition">
-              <!---->
-            </transition-stub>
+            <!---->
           </div>
         </div>
       </div>
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--contained v-btn--disabled theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;
@@ -171,7 +167,7 @@ exports[`CreateWorkspace.vue Should display a warning if trying to connect to an
           </div>
         </div>
       </div> <a id="detectServers" href="#">Detect Networks</a>&nbsp;
-      <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i>
+      <span class="v-tooltip v-tooltip--top"><!----></span><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i>
       <ul style="display: none;"></ul>
       <div style="display: none;">
         No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave &amp; Safari 👀!).
@@ -191,9 +187,9 @@ exports[`CreateWorkspace.vue Should display a warning if trying to connect to an
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="workspaceName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" placeholder="My Ethereum Project" type="text"></div>
+          <div class="v-text-field__slot"><label for="workspaceName" class="v-label theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" type="text"></div>
         </div>
       </div>
     </div>
@@ -201,37 +197,35 @@ exports[`CreateWorkspace.vue Should display a warning if trying to connect to an
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" placeholder="ws://localhost:8545" type="text"></div>
+          <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" type="text"></div>
         </div>
       </div>
     </div>
     <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
       <div class="v-input__control">
-        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-144" class="v-input__slot">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-119" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-select__slot"><label for="input-144" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
+          <div class="v-select__slot"><label for="input-119" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
-              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-144" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-119" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
             </div>
             <div class="v-input__append-inner">
               <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
             </div><input type="hidden" value="ethereum">
           </div>
           <div class="v-menu">
-            <transition-stub name="v-menu-transition">
-              <!---->
-            </transition-stub>
+            <!---->
           </div>
         </div>
       </div>
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--contained v-btn--disabled theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;
@@ -246,7 +240,7 @@ exports[`CreateWorkspace.vue Should display a warning message if user has alread
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--contained v-btn--disabled theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;
@@ -265,7 +259,7 @@ exports[`CreateWorkspace.vue Should display an error if it cannot connect to the
           </div>
         </div>
       </div> <a id="detectServers" href="#">Detect Networks</a>&nbsp;
-      <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i>
+      <span class="v-tooltip v-tooltip--top"><!----></span><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i>
       <ul style="display: none;"></ul>
       <div style="display: none;">
         No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave &amp; Safari 👀!).
@@ -285,9 +279,9 @@ exports[`CreateWorkspace.vue Should display an error if it cannot connect to the
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="workspaceName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" placeholder="My Ethereum Project" type="text"></div>
+          <div class="v-text-field__slot"><label for="workspaceName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" type="text"></div>
         </div>
       </div>
     </div>
@@ -295,37 +289,35 @@ exports[`CreateWorkspace.vue Should display an error if it cannot connect to the
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" placeholder="ws://localhost:8545" type="text"></div>
+          <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" type="text"></div>
         </div>
       </div>
     </div>
     <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
       <div class="v-input__control">
-        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-75" class="v-input__slot">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-62" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-select__slot"><label for="input-75" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
+          <div class="v-select__slot"><label for="input-62" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
-              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-75" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-62" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
             </div>
             <div class="v-input__append-inner">
               <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
             </div><input type="hidden" value="ethereum">
           </div>
           <div class="v-menu">
-            <transition-stub name="v-menu-transition">
-              <!---->
-            </transition-stub>
+            <!---->
           </div>
         </div>
       </div>
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" class="v-btn v-btn--contained theme--light v-size--default primary" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;
@@ -344,7 +336,7 @@ exports[`CreateWorkspace.vue Should display locally running networks 1`] = `
           </div>
         </div>
       </div> <a id="detectServers" href="#">Detect Networks</a>&nbsp;
-      <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i>
+      <span class="v-tooltip v-tooltip--top"><!----></span><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i>
       <ul style="">
         <li>
           http://127.0.0.1:8545&nbsp;<a href="#" id="serverDetected-0">Use</a></li>
@@ -367,9 +359,9 @@ exports[`CreateWorkspace.vue Should display locally running networks 1`] = `
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="workspaceName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" placeholder="My Ethereum Project" type="text"></div>
+          <div class="v-text-field__slot"><label for="workspaceName" class="v-label theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" type="text"></div>
         </div>
       </div>
     </div>
@@ -377,37 +369,35 @@ exports[`CreateWorkspace.vue Should display locally running networks 1`] = `
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" placeholder="ws://localhost:8545" type="text"></div>
+          <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" type="text"></div>
         </div>
       </div>
     </div>
     <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
       <div class="v-input__control">
-        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-190" class="v-input__slot">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-157" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-select__slot"><label for="input-190" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
+          <div class="v-select__slot"><label for="input-157" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
-              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-190" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-157" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
             </div>
             <div class="v-input__append-inner">
               <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
             </div><input type="hidden" value="ethereum">
           </div>
           <div class="v-menu">
-            <transition-stub name="v-menu-transition">
-              <!---->
-            </transition-stub>
+            <!---->
           </div>
         </div>
       </div>
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--contained v-btn--disabled theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;
@@ -426,7 +416,7 @@ exports[`CreateWorkspace.vue Should not allow multiple workspaces with the same 
           </div>
         </div>
       </div> <a id="detectServers" href="#">Detect Networks</a>&nbsp;
-      <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i>
+      <span class="v-tooltip v-tooltip--top"><!----></span><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i>
       <ul style="display: none;"></ul>
       <div style="display: none;">
         No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave &amp; Safari 👀!).
@@ -446,9 +436,9 @@ exports[`CreateWorkspace.vue Should not allow multiple workspaces with the same 
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="workspaceName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" placeholder="My Ethereum Project" type="text"></div>
+          <div class="v-text-field__slot"><label for="workspaceName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" type="text"></div>
         </div>
       </div>
     </div>
@@ -456,37 +446,35 @@ exports[`CreateWorkspace.vue Should not allow multiple workspaces with the same 
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" placeholder="ws://localhost:8545" type="text"></div>
+          <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" type="text"></div>
         </div>
       </div>
     </div>
     <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
       <div class="v-input__control">
-        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-213" class="v-input__slot">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-176" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-select__slot"><label for="input-213" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
+          <div class="v-select__slot"><label for="input-176" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
-              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-213" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-176" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
             </div>
             <div class="v-input__append-inner">
               <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
             </div><input type="hidden" value="ethereum">
           </div>
           <div class="v-menu">
-            <transition-stub name="v-menu-transition">
-              <!---->
-            </transition-stub>
+            <!---->
           </div>
         </div>
       </div>
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" class="v-btn v-btn--contained theme--light v-size--default primary" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;
@@ -505,7 +493,7 @@ exports[`CreateWorkspace.vue Should not display a warning if trying to connect t
           </div>
         </div>
       </div> <a id="detectServers" href="#">Detect Networks</a>&nbsp;
-      <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub></span><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i>
+      <span class="v-tooltip v-tooltip--top"><!----></span><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i>
       <ul style="display: none;"></ul>
       <div style="display: none;">
         No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave &amp; Safari 👀!).
@@ -525,9 +513,9 @@ exports[`CreateWorkspace.vue Should not display a warning if trying to connect t
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="workspaceName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" placeholder="My Ethereum Project" type="text"></div>
+          <div class="v-text-field__slot"><label for="workspaceName" class="v-label theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" type="text"></div>
         </div>
       </div>
     </div>
@@ -535,37 +523,35 @@ exports[`CreateWorkspace.vue Should not display a warning if trying to connect t
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" placeholder="ws://localhost:8545" type="text"></div>
+          <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" type="text"></div>
         </div>
       </div>
     </div>
     <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
       <div class="v-input__control">
-        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-167" class="v-input__slot">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-138" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-select__slot"><label for="input-167" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
+          <div class="v-select__slot"><label for="input-138" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
-              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-167" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+              <div class="v-select__selection v-select__selection--comma">Ethereum</div><input required="required" id="input-138" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
             </div>
             <div class="v-input__append-inner">
               <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
             </div><input type="hidden" value="ethereum">
           </div>
           <div class="v-menu">
-            <transition-stub name="v-menu-transition">
-              <!---->
-            </transition-stub>
+            <!---->
           </div>
         </div>
       </div>
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--contained v-btn--disabled theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;
@@ -584,7 +570,7 @@ exports[`CreateWorkspace.vue Should not display a warning message if user has al
           </div>
         </div>
       </div> <a id="detectServers" href="#">Detect Networks</a>&nbsp;
-      <span class="v-tooltip v-tooltip--top"><transition-stub name="fade-transition"><!----></transition-stub><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
+      <span class="v-tooltip v-tooltip--top"><!----><i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle-outline theme--light" style="font-size: 16px;"></i></span>
       <ul style="display: none;"></ul>
       <div style="display: none;">
         No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave &amp; Safari 👀!).
@@ -604,9 +590,9 @@ exports[`CreateWorkspace.vue Should not display a warning message if user has al
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="workspaceName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" placeholder="My Ethereum Project" type="text"></div>
+          <div class="v-text-field__slot"><label for="workspaceName" class="v-label theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" type="text"></div>
         </div>
       </div>
     </div>
@@ -614,35 +600,33 @@ exports[`CreateWorkspace.vue Should not display a warning message if user has al
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" placeholder="ws://localhost:8545" type="text"></div>
+          <div class="v-text-field__slot"><label for="workspaceServer" class="v-label theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" type="text"></div>
         </div>
       </div>
     </div>
     <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
       <div class="v-input__control">
-        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-28" class="v-input__slot">
+        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-23" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-select__slot"><label for="input-28" class="v-label theme--light" style="left: 0px; position: absolute;">Chain</label>
-            <div class="v-select__selections"><input required="required" id="input-28" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+          <div class="v-select__slot"><label for="input-23" class="v-label theme--light" style="left: 0px; position: absolute;">Chain</label>
+            <div class="v-select__selections"><input required="required" id="input-23" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
             <div class="v-input__append-inner">
               <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
             </div><input type="hidden" value="ethereum">
           </div>
           <div class="v-menu">
-            <transition-stub name="v-menu-transition">
-              <!---->
-            </transition-stub>
+            <!---->
           </div>
         </div>
       </div>
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--contained v-btn--disabled theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;

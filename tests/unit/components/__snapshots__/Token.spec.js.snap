@@ -3,7 +3,7 @@
 exports[`Token.vue Should show the balances of tracked addresses 1`] = `
 <div class="container container--fluid">
   <h4>Balances</h4>
-  <div class="mb-4 v-card v-card--outlined v-sheet theme--light">
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
     <div class="v-card__text">
       Add an address on the <a href="#/accounts" class="">accounts</a> page to track its balance.
       <pre>{

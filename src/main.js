@@ -23,7 +23,10 @@ Vue.use(serverPlugin, { store: store });
 const isEthernalDomain = window.location.host.endsWith(process.env.VUE_APP_MAIN_DOMAIN);
 
 if (isEthernalDomain) {
-    const publicExplorerSlug = window.location.host.split('.')[0];
+    const splits = window.location.host.split('.');
+    const domain = splits[splits.length - 2];
+    const publicExplorerSlug = splits.slice(0, splits.indexOf(domain)).join('.');
+    console.log(publicExplorerSlug)
     if (publicExplorerSlug != 'app')
         store.dispatch('updatePublicExplorerSlug', publicExplorerSlug);
 }

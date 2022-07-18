@@ -24,7 +24,7 @@ exports[`Block.vue Should show the block component 1`] = `
     </div>
   </div>
   <h4>Transactions</h4>
-  <div class="v-card v-card--outlined v-sheet theme--light">
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
     <transactions-list-stub transactions="[object Object]"></transactions-list-stub>
   </div>
 </div>

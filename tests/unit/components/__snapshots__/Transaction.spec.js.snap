@@ -8,16 +8,14 @@ exports[`Transaction.vue Should display parsed error messages 1`] = `
     </div>
     <div class="spacer"></div>
     <div align="right" class="col">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px; display: none;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px; display: none;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
           <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
         </svg>
         <div class="v-progress-circular__info"></div>
       </div>
       <div class="v-menu">
-        <transition-stub name="v-menu-transition">
-          <!---->
-        </transition-stub>
-      </div><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--default" role="button" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-dots-vertical theme--light"></i></span></button>
+        <!---->
+      </div><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default" role="button" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-dots-vertical theme--light"></i></span></button>
     </div>
   </div> <span><span class="error v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-alert-circle theme--light" style="font-size: 16px;"></i>
                 Transaction Failed
@@ -26,7 +24,7 @@ exports[`Transaction.vue Should display parsed error messages 1`] = `
   <div class="row mt-2">
     <div class="col">
       <div class="text-overline">Error Message</div>
-      <div class="v-card v-card--outlined v-sheet theme--light">
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text" style="white-space: pre-wrap;">
           Error
         </div>
@@ -96,16 +94,14 @@ exports[`Transaction.vue Should display raw error messages 1`] = `
     </div>
     <div class="spacer"></div>
     <div align="right" class="col">
-      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px; display: none;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px; display: none;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
           <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
         </svg>
         <div class="v-progress-circular__info"></div>
       </div>
       <div class="v-menu">
-        <transition-stub name="v-menu-transition">
-          <!---->
-        </transition-stub>
-      </div><button type="button" class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--default" role="button" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-dots-vertical theme--light"></i></span></button>
+        <!---->
+      </div><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default" role="button" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-dots-vertical theme--light"></i></span></button>
     </div>
   </div> <span><span class="error v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-alert-circle theme--light" style="font-size: 16px;"></i>
                 Transaction Failed
@@ -114,7 +110,7 @@ exports[`Transaction.vue Should display raw error messages 1`] = `
   <div class="row mt-2">
     <div class="col">
       <div class="text-overline">Error Message</div>
-      <div class="v-card v-card--outlined v-sheet theme--light">
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text"><b>Couldn't parse error message. Raw data:</b>
           <div class="mt-1" style="white-space: pre-wrap;">
             "{\\"message\\":\\"this is an error\\"}"
