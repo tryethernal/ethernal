@@ -301,6 +301,7 @@ export default {
     },
     watch: {
         '$store.getters.user': function(user, previousUser) {
+            console.log(this.isPublicExplorer);
             if (!previousUser.uid && !!user.uid && !this.isPublicExplorer) {
                 this.initPrivateExplorer();
             }
