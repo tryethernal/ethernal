@@ -26,7 +26,7 @@ if (isEthernalDomain) {
     const splits = window.location.host.split('.');
     const domain = splits[splits.length - 2];
     const publicExplorerSlug = splits.slice(0, splits.indexOf(domain)).join('.');
-    console.log(publicExplorerSlug)
+
     if (!publicExplorerSlug.endsWith('app') || publicExplorerSlug == process.env.VUE_APP_STAGING_DOMAIN)
         store.dispatch('updatePublicExplorerSlug', publicExplorerSlug);
 }
@@ -50,9 +50,6 @@ new Vue({
             var currentPath = this.$router.currentRoute.path;
 
             store.dispatch('updateUser', user);
-
-            if (user)
-                store.dispatch('updateCurrentWorkspace', { firebaseUserId: user.uid });
 
             const isPublicExplorer = store.getters.isPublicExplorer;
             if (currentPath != '/auth' && !user && !isPublicExplorer) {
