@@ -24,7 +24,7 @@ module.exports = async (req, res, next) => {
             return res.sendStatus(400);
 
         if (workspace.public || (firebaseUser && data.firebaseUserId == firebaseUser.user_id)) {
-            req.query.firebaseUserId = firebaseUser.user_id;
+            req.query.firebaseUserId = data.firebaseUserId;
             req.query.workspace = workspace;
             next();
         }

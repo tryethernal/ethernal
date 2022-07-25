@@ -200,7 +200,7 @@ export default {
                     const lightTheme = data.themes.light || {};
                     const darkTheme = data.themes.dark || {};
                     const font = data.themes.font;
-                    this.$vuetify.theme.dark = data.themes.default == 'dark'
+                    this.$vuetify.theme.dark = data.themes.default == 'dark';
 
                     if (data.themes.logo)
                         this.logo = data.themes.logo;
@@ -301,7 +301,7 @@ export default {
     },
     watch: {
         '$store.getters.user': function(user, previousUser) {
-            if (!previousUser.uid && !!user.uid) {
+            if (!previousUser.uid && !!user.uid && !this.isPublicExplorer) {
                 this.initPrivateExplorer();
             }
             if (!user.uid && !this.isPublicExplorer) {

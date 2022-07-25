@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
         if (data.domain)
             explorer = await db.getPublicExplorerParamsByDomain(data.domain);
         else
-            explorer = await db.getPublicExplorerParamsBySlug(data.domain);
+            explorer = await db.getPublicExplorerParamsBySlug(data.slug);
 
         if (explorer)
             res.status(200).json(explorer);
