@@ -1,4 +1,6 @@
 import MockHelper from '../MockHelper';
+import '../mocks/db';
+import { auth } from '@/plugins/firebase';
 
 import RpcConnector from '@/components/RpcConnector.vue';
 
@@ -9,36 +11,33 @@ describe('RpcConnector.vue', () => {
         helper = new MockHelper();
     });
 
-    it('Should display the correct info', (done) => {
-        const getAccountsMock = jest.spyOn(helper.mocks.server, 'getAccounts');
-        const onNewContractMock = jest.spyOn(helper.mocks.db, 'onNewContract');
-        const processContractMock = jest.spyOn(helper.mocks.server, 'processContracts');
+    it('Should display the correct info', () => {
+        auth.mockReturnValue({ currentUser: { id: '1' }});
+        jest.spyOn(helper.mocks.server, 'getBlocks').mockResolvedValue({ data: { items: [] }});
+
+        const onNewContractMock = jest.spyOn(helper.mocks.pusher, 'onNewContract');
+        const processContractMock = jest.spyOn(helper.mocks.server, 'processContracts').mockResolvedValue();
         const wrapper = helper.mountFn(RpcConnector);
 
-        expect(getAccountsMock).toHaveBeenCalled();
         expect(onNewContractMock).toHaveBeenCalled();
         expect(processContractMock).toHaveBeenCalled();
         expect(wrapper.html()).toMatchSnapshot();
-
-        done();
     });
 
-    it('Should not do private operations when in public explorer mode', (done) => {
-        helper.getters.isPublicExplorer.mockImplementation(() => true);
+    it('Should not do private operations when in public explorer mode', () => {
+        auth.mockReturnValue({ currentUser: { id: '1' }});
+        jest.spyOn(helper.mocks.server, 'getBlocks').mockResolvedValue({ data: { items: [] }});
 
         const getAccountsMock = jest.spyOn(helper.mocks.server, 'getAccounts');
-        const onNewContractMock = jest.spyOn(helper.mocks.db, 'onNewContract');
-        const processContractMock = jest.spyOn(helper.mocks.server, 'processContracts');
-        const wrapper = helper.mountFn(RpcConnector);
+        const onNewContractMock = jest.spyOn(helper.mocks.pusher, 'onNewContract');
+        const processContractMock = jest.spyOn(helper.mocks.server, 'processContracts').mockResolvedValue();
+        const wrapper = helper.mountFn(RpcConnector, {
+            getters: {
+                isPublicExplorer: jest.fn().mockReturnValue(true)
+            }
+        });
 
-        expect(getAccountsMock).not.toHaveBeenCalled();
         expect(onNewContractMock).not.toHaveBeenCalled();
         expect(processContractMock).not.toHaveBeenCalled();
-
-        done();
-    });
-
-    afterEach(async () => {
-        await helper.clearFirebase();
     });
 });

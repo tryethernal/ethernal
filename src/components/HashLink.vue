@@ -16,6 +16,7 @@
     </span>
 </template>
 <script>
+const { sanitize } = require('../lib/utils');
 
 export default {
     name: 'HashLink',
@@ -37,15 +38,20 @@ export default {
                     if (hash == '0x0000000000000000000000000000000000000000')
                         return this.contractName = 'Black Hole';
 
-                    this.db.collection('contracts').doc(hash.toLowerCase())
-                        .get()
-                        .then((contractDoc) => {
-                            if (contractDoc.exists) {
-                                this.token = contractDoc.data().token;
-                                this.contractName = contractDoc.data().name;
-                                this.verified = contractDoc.data().verificationStatus == 'success';
-                            }
-                        });
+                    this.server.getContract(hash)
+                        .then(({ data }) => {
+                            const contract = data;
+                            if (!contract) return;
+
+                            if (contract.tokenName || contract.tokenSymbol)
+                                this.token = sanitize({
+                                    name: contract.tokenName,
+                                    symbol: contract.tokenSymbol
+                                });
+                            this.verified = !!contract.verifiedStatus;
+                            this.contractName = contract.name;
+
+                        })
             }
         }
     },

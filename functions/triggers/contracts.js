@@ -1,9 +1,7 @@
 const functions = require('firebase-functions');
 const ethers = require('ethers');
-
-const { getContractByHashedBytecode, getWorkspaceByName, storeContractData, getContractTransactions } = require('../lib/firebase');
+let db, transactionsLib;
 const { sanitize } = require('../lib/utils');
-const { processTransactions } = require('../lib/transactions');
 const { isErc20 } = require('../lib/contract');
 const axios = require('axios');
 
@@ -58,7 +56,7 @@ const findLocalMetadata = async (context, contract) => {
     if (!contract.hashedBytecode)
         return {};
 
-    const matchingContract = await getContractByHashedBytecode(
+    const matchingContract = await db.getContractByHashedBytecode(
         context.params.userId,
         context.params.workspaceName,
         contract.hashedBytecode,
@@ -112,13 +110,13 @@ const findScannerMetadata = async (workspace, contract) => {
         return {};
 };
 
-exports.processContract = async (snap, context) => {
+const processContract = async (snap, context) => {
     try {
         let scannerMetadata = {}, tokenPatterns = [];
         const newSnap = snap.after ? snap.after : snap;
 
         const contract = { ...newSnap.data(), address: newSnap.id };
-        const workspace = await getWorkspaceByName(context.params.userId, context.params.workspaceName);
+        const workspace = await db.getWorkspaceByName(context.params.userId, context.params.workspaceName);
 
         const localMetadata = await findLocalMetadata(context, contract);
         if (!localMetadata.name || !localMetadata.abi)
@@ -131,10 +129,10 @@ exports.processContract = async (snap, context) => {
         });
 
         if (metadata.proxy)
-            storeContractData(context.params.userId, context.params.workspaceName, metadata.proxy, { address: metadata.proxy });
+            db.storeContractData(context.params.userId, context.params.workspaceName, metadata.proxy, { address: metadata.proxy });
 
         if (metadata.name || metadata.abi) {
-            await storeContractData(
+            await db.storeContractData(
                 context.params.userId,
                 context.params.workspaceName,
                 contract.address, 
@@ -144,16 +142,23 @@ exports.processContract = async (snap, context) => {
 
         if (workspace.public) { 
             const tokenInfo = await fetchTokenInfo(workspace.rpcServer, contract.address, metadata.abi);
-            await storeContractData(context.params.userId, workspace.name, contract.address, sanitize({
+            await db.storeContractData(context.params.userId, workspace.name, contract.address, sanitize({
                 patterns: tokenInfo.patterns,
                 processed: true,
                 token: tokenInfo.tokenData
             }));
         }
 
-        const transactions = await getContractTransactions(context.params.userId, context.params.workspaceName, contract.address);
-        await processTransactions(context.params.userId, context.params.workspaceName, transactions);
+        const transactions = await db.getContractTransactions(context.params.userId, context.params.workspaceName, contract.address);
+        await transactionsLib.processTransactions(context.params.userId, context.params.workspaceName, transactions);
     } catch (error) {
         console.log(error);
     }
 };
+
+module.exports = (loadedDb) => {
+    db = db || loadedDb;
+    transactionsLib = transactionsLib || require('../lib/transactions')(db);
+
+    return processContract
+}

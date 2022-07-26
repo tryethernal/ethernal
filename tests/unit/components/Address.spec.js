@@ -1,307 +1,182 @@
+import flushPromises from 'flush-promises';
 import MockHelper from '../MockHelper';
 import ethereum from '../mocks/ethereum';
 
-import detectEthereumProvider from '@metamask/detect-provider';
 jest.mock('@metamask/detect-provider');
+import detectEthereumProvider from '@metamask/detect-provider';
 
 import AmalfiContract from '../fixtures/AmalfiContract.json';
 
 import Address from '@/components/Address.vue';
 
+let helper;
+
 describe('Address.vue', () => {
-    let helper, $route;
 
     beforeEach(() => {
-        helper = new MockHelper({}, $route);
+        helper = new MockHelper({});
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValue({ data: { address: '0x123' }});
+        jest.spyOn(helper.mocks.server, 'getAccountBalance')
+            .mockResolvedValue('10000');
+        jest.spyOn(helper.mocks.server, 'getAccounts')
+            .mockResolvedValue({ data: { items: [] }});
+        jest.spyOn(helper.mocks.db, 'contractStorage')
+            .mockReturnValue({
+                once: jest.fn().mockResolvedValue()
+            });
+        jest.spyOn(helper.mocks.server, 'getAddressTransactions')
+            .mockResolvedValue({ data: { items: [] }});
     });
 
-    it('Should not display the "Remove Contract" button & storage tab on contract page if in public explorer mode and not admin', async (done) => {
-        helper.getters.isPublicExplorer.mockImplementation(() => true);
-        helper.storeState.currentWorkspace.isAdmin = false;
-        
-        await helper.mocks.admin.collection('contracts').doc('123').set({ address: '123' });
-        
+    it('Should not display the storage tab on contract page if in public explorer mode', async () => {
         const wrapper = helper.mountFn(Address, {
             propsData: {
-                hash: '123'
-            }
-        });
-
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1000);
-    });
-
-    it('Should not display the storage tab on contract page if in public explorer mode', async (done) => {
-        helper.getters.isPublicExplorer.mockImplementation(() => true);
-
-        await helper.mocks.admin.collection('contracts').doc('123').set({ address: '123' });
-        
-        const wrapper = helper.mountFn(Address, {
-            propsData: {
-                hash: '123'
-            }
-        });
-
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1000);
-    });
-
-    it('Should sync the balance when loaded', async (done) => {
-        const wrapper = helper.mountFn(Address, {
-            propsData: {
-                hash: '123'
-            }
-        });
-        await wrapper.vm.$nextTick();
-
-        expect(wrapper.vm.balance).toBe('10000');
-        expect(wrapper.html()).toMatchSnapshot();
-        done();
-    });
-
-    it('Should show the transactions for this address', async (done) => {
-        const db = helper.mocks.admin;
-        const transaction1 = {
-            hash: '0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0',
-            timestamp: '1621548462',
-            from: '0x1',
-            to: '123',
-            blockNumber: 1,
-            value: '0'
-        };
-
-        const transaction2 = {
-            hash: '0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1',
-            timestamp: '1621548462',
-            from: '0x2',
-            to: '123',
-            blockNumber: 1,
-            value: '0'
-        };        
-
-        await db.collection('transactions')
-            .doc(transaction1.hash)
-            .set(transaction1);
-
-        await db.collection('transactions')
-            .doc(transaction2.hash)
-            .set(transaction2);
-
-        const wrapper = helper.mountFn(Address, {
-            propsData: {
-                hash: '123'
-            }
-        });
-        
-        setTimeout(() => {
-            expect(wrapper.vm.transactionsTo.length).toBe(2);
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1000);
-    });
-
-    it('Should show the transactions for a checksumed address', async (done) => {
-        const db = helper.mocks.admin;
-        const transaction1 = {
-            hash: '0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0',
-            timestamp: '1621548462',
-            from: '0x1',
-            to: '0xf134326143d2c83f173300463bae70cb9582d896',
-            blockNumber: 1,
-            value: '0'
-        };
-
-        const transaction2 = {
-            hash: '0x0abc16784486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef1',
-            timestamp: '1621548462',
-            from: '0x2',
-            to: '0xf134326143d2c83f173300463bae70cb9582d896',
-            blockNumber: 1,
-            value: '0'
-        };        
-
-        await db.collection('transactions')
-            .doc(transaction1.hash)
-            .set(transaction1);
-
-        await db.collection('transactions')
-            .doc(transaction2.hash)
-            .set(transaction2);
-
-        const wrapper = helper.mountFn(Address, {
-            propsData: {
-                hash: '0xf134326143d2c83F173300463Bae70CB9582D896'
-            }
-        });
-        
-        setTimeout(() => {
-            expect(wrapper.vm.transactionsTo.length).toBe(2);
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1000);
-    });
-
-    it('Should display extra tabs for contracts addresses', async (done) => {
-        const db = helper.mocks.admin;
-        await db.collection('contracts').doc('123').set({ address: '123' });
-
-        const wrapper = helper.mountFn(Address, {
-            propsData: {
-                hash: '123'
-            }
-        });
-        
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1000);
-    });
-
-    it('Should display the contract interaction interface under the contract tab if there is an ABI & it is a public explorer', async (done) => {
-        const db = helper.mocks.admin;
-        helper.getters.isPublicExplorer.mockImplementation(() => true);
-        helper.storeState.currentWorkspace.isAdmin = false;
-        
-        detectEthereumProvider.mockImplementation(function() {
-            return new Promise((resolve) => resolve(window.ethereum));
-        });
-
-        await db.collection('contracts').doc('123').set({ name: 'Amalfi', address: '123', abi: AmalfiContract.artifact.abi });
-
-        const wrapper = helper.mountFn(Address, {
-            propsData: {
-                hash: '123'
-            }
-        });
-
-        await wrapper.vm.$nextTick();
-
-        setTimeout(async () => {
-            await wrapper.find('#contractTab').trigger('click');
-            await wrapper.vm.$nextTick();
-
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
-    });
-
-    it('Should display the "Edit" button under the contract tab if there is an ABI & it is a public explorer & as admin', async (done) => {
-        const db = helper.mocks.admin;
-        helper.getters.isPublicExplorer.mockImplementation(() => true);
-
-        detectEthereumProvider.mockImplementation(function() {
-            return new Promise((resolve) => resolve(window.ethereum));
-        });
-
-        await db.collection('contracts').doc('123').set({ name: 'Amalfi', address: '123', abi: AmalfiContract.artifact.abi });
-
-        const wrapper = helper.mountFn(Address, {
-            propsData: {
-                hash: '123'
-            }
-        });
-
-        setTimeout(async () => {
-            await wrapper.find('#contractTab').trigger('click');
-            await wrapper.vm.$nextTick();
-
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
-    });
-
-    it('Should display the contract interaction interface under the contract tab if there is an ABI', async (done) => {
-        const db = helper.mocks.admin;
-        await db.collection('contracts').doc('123').set({ name: 'Amalfi', address: '123', abi: AmalfiContract.artifact.abi });
-        
-        const wrapper = helper.mountFn(Address, {
-            propsData: {
-                hash: '123'
-            }
-        });
-
-        setTimeout(async () => {
-            await wrapper.find('#contractTab').trigger('click');
-            await wrapper.vm.$nextTick();
-
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
-    });
-
-    it('Should say the contract is verified if it is a public explorer', async (done) => {
-        const db = helper.mocks.admin;
-        helper.getters.isPublicExplorer.mockImplementation(() => true);
-
-        detectEthereumProvider.mockImplementation(function() {
-            return new Promise((resolve) => resolve(window.ethereum));
-        });
-
-        await db.collection('contracts').doc('123').set({ name: 'Amalfi', address: '123', abi: AmalfiContract.artifact.abi, verificationStatus: 'success' });
-
-        const wrapper = helper.mountFn(Address, {
-            propsData: {
-                hash: '123'
-            }
-        });
-
-        setTimeout(async () => {
-            await wrapper.find('#contractTab').trigger('click');
-            await wrapper.vm.$nextTick();
-
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
-    });
-
-    it('Should display the contract storage structure', async (done) => {
-        const db = helper.mocks.admin;
-        await db.collection('contracts').doc('123').set({ name: 'Amalfi', address: '123', abi: AmalfiContract.artifact.abi });
-
-        await db.contractStorage('123/artifact').set(AmalfiContract.artifact);
-        for (const dependency in AmalfiContract.dependencies)
-            await db.contractStorage(`123/dependencies/${dependency}`).set(JSON.stringify(AmalfiContract.dependencies[dependency]));
-
-        const transaction = {
-            hash: '0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0',
-            timestamp: '1621548462',
-            from: '0x1',
-            to: '123',
-            blockNumber: 1,
-            gasPrice: 1,
-            value: '0',
-            receipt: {
-                logs: [],
-                gasUsed: 10
+                hash: '0x123'
             },
-            functionSignature: 'transfer(address dst, uint256 rawamount)',
-            data: '0xba118f63000000000000000000000000eb4220df353ecf892314f341d36868924221dc6f0000000000000000000000000000000000000000000000000000000576223549'
-        };
-
-        await db.collection('transactions')
-            .doc(transaction.hash)
-            .set(transaction);
-
-        const wrapper = helper.mountFn(Address, {
-            propsData: {
-                hash: '123'
+            stubs: ['Address-Transactions-List'],
+            getters: {
+                isPublicExplorer: jest.fn().mockReturnValue(true),
+                currentWorkspace: jest.fn().mockReturnValue({
+                    isAdmin: false,
+                    settings: {}
+                })
             }
         });
 
-        setTimeout(async () => {
-            await wrapper.find('#storageTab').trigger('click');
-            await wrapper.vm.$nextTick();
-            await wrapper.find('div[role="listitem"][tabindex="0"]').trigger('click');
-            await wrapper.vm.$nextTick();
-            done();
-        }, 1500);
+        await new Promise(process.nextTick);
+
+        expect(wrapper.html()).toMatchSnapshot();
     });
 
-    afterEach(async () => {
-        await helper.clearFirebase();
+    it('Should sync the balance when loaded', async () => {
+        const wrapper = helper.mountFn(Address, {
+            propsData: {
+                hash: '0x123'
+            },
+            stubs: ['Address-Transactions-List']
+        });
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.vm.balance).toEqual('10000');
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should display the contract interaction interface under the contract tab if there is an ABI & it is a public explorer', async () => {
+        detectEthereumProvider.mockResolvedValue(window.ethereum);
+
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValue({ data: { address: '0x123', name: 'Amalfi', abi: AmalfiContract.artifact.abi }});
+
+        const wrapper = helper.mountFn(Address, {
+            propsData: {
+                hash: '0x123'
+            },
+            stubs: ['Address-Transactions-List'],
+            getters: {
+                chain: jest.fn().mockReturnValue('ethereum'),
+                isPublicExplorer: jest.fn().mockReturnValue(true),
+                currentWorkspace: jest.fn(() => ({
+                    isAdmin: false,
+                    settings: {}
+                }))
+            }
+        });
+
+        await wrapper.vm.$nextTick();
+
+        await wrapper.find('#contractTab').trigger('click');
+        await wrapper.vm.$nextTick();
+        
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should display the "Edit" button under the contract tab if there is an ABI & it is a public explorer & as admin', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValue({ data: { address: '0x123', name: 'Amalfi', abi: AmalfiContract.artifact.abi }});
+
+        detectEthereumProvider.mockResolvedValue(window.ethereum);
+
+        const wrapper = helper.mountFn(Address, {
+            propsData: {
+                hash: '0x123'
+            },
+            stubs: ['Address-Transactions-List'],
+            getters: {
+                isPublicExplorer: jest.fn().mockReturnValue(false),
+                currentWorkspace: jest.fn(() => ({
+                    isAdmin: true,
+                    settings: {}
+                }))
+            }
+        });
+
+        await wrapper.vm.$nextTick();
+
+        await wrapper.find('#contractTab').trigger('click');
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should say the contract is verified if it is a public explorer', async () => {
+        detectEthereumProvider.mockResolvedValue(window.ethereum);
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValue({ data: { address: '0x123', name: 'Amalfi', abi: AmalfiContract.artifact.abi, verificationStatus: 'success' }});
+
+        const wrapper = helper.mountFn(Address, {
+            propsData: {
+                hash: '0x123'
+            },
+            stubs: ['Address-Transactions-List'],
+            getters: {
+                isPublicExplorer: jest.fn().mockReturnValue(false),
+                currentWorkspace: jest.fn(() => ({
+                    isAdmin: true,
+                    settings: {}
+                }))
+            }
+        });
+        await wrapper.vm.$nextTick();
+
+        await wrapper.find('#contractTab').trigger('click');
+        await wrapper.vm.$nextTick();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should display the contract storage structure', async () => {
+        const storedDependencies = {};
+        for (const dependency in AmalfiContract.dependencies)
+            storedDependencies[dependency] = JSON.stringify(AmalfiContract.dependencies[dependency]);
+
+        jest.spyOn(helper.mocks.db, 'contractStorage')
+            .mockReturnValue({
+                once: jest.fn((_, cb) => {
+                        cb({
+                            val: () => ({
+                                artifact: AmalfiContract.artifact,
+                                dependencies: storedDependencies
+                            })
+                        })
+                        return new Promise(resolve => resolve());
+                    })
+            });
+        jest.spyOn(helper.mocks.server, 'getStructure')
+            .mockResolvedValue({"data":{},"structure":{"nodes":[{"path":["_balances"],"label":"mapping(address => uint256) _balances:","key":"_balances","children":[],"index":1},{"path":["_allowances"],"label":"mapping(address => mapping(address => uint256)) _allowances:","key":"_allowances","children":[],"index":1},{"path":["_totalSupply"],"label":"uint256 _totalSupply;","key":"_totalSupply","children":null,"index":1},{"path":["_name"],"label":"string _name;","key":"_name","children":null,"index":1},{"path":["_symbol"],"label":"string _symbol;","key":"_symbol","children":null,"index":1},{"path":["_owner"],"label":"","key":"_owner","children":null,"index":1},{"path":["TOKEN_NAME"],"label":"string TOKEN_NAME;","key":"TOKEN_NAME","children":null,"index":1},{"path":["TOKEN_SYMBOL"],"label":"string TOKEN_SYMBOL;","key":"TOKEN_SYMBOL","children":null,"index":1},{"path":["val"],"label":"uint256 val;","key":"val","children":null,"index":1},{"path":["TOTAL_SUPPLY"],"label":"uint256 TOTAL_SUPPLY;","key":"TOTAL_SUPPLY","children":null,"index":1},{"path":["test"],"label":"","key":"test","children":null,"index":1},{"path":["testBugBytes"],"label":"","key":"testBugBytes","children":null,"index":1}],"index":0,"variables":[{"name":"_balances","class":{"typeClass":"contract","kind":"native","id":"shimmedcompilation:650","typeName":"ERC20","contractKind":"contract","payable":false},"value":{"type":{"typeClass":"mapping","keyType":{"typeClass":"address","kind":"general","typeHint":"address"},"valueType":{"typeClass":"uint","bits":256,"typeHint":"uint256"},"location":"storage"},"kind":"value","value":[]}},{"name":"_allowances","class":{"typeClass":"contract","kind":"native","id":"shimmedcompilation:650","typeName":"ERC20","contractKind":"contract","payable":false},"value":{"type":{"typeClass":"mapping","keyType":{"typeClass":"address","kind":"general","typeHint":"address"},"valueType":{"typeClass":"mapping","keyType":{"typeClass":"address","kind":"general","typeHint":"address"},"valueType":{"typeClass":"uint","bits":256,"typeHint":"uint256"},"location":"storage"},"location":"storage"},"kind":"value","value":[]}},{"name":"_totalSupply","class":{"typeClass":"contract","kind":"native","id":"shimmedcompilation:650","typeName":"ERC20","contractKind":"contract","payable":false},"value":{"type":{"typeClass":"uint","bits":256,"typeHint":"uint256"},"kind":"value","value":{"asBN":{"negative":0,"words":[0,8778408,16443095,330872],"length":4,"red":null},"rawAsBN":{"negative":0,"words":[0,8778408,16443095,330872],"length":4,"red":null}}}},{"name":"_name","class":{"typeClass":"contract","kind":"native","id":"shimmedcompilation:650","typeName":"ERC20","contractKind":"contract","payable":false},"value":{"type":{"typeClass":"string","location":"storage","typeHint":"string"},"kind":"value","value":{"kind":"valid","asString":"Example ERC20 Token"}}},{"name":"_symbol","class":{"typeClass":"contract","kind":"native","id":"shimmedcompilation:650","typeName":"ERC20","contractKind":"contract","payable":false},"value":{"type":{"typeClass":"string","location":"storage","typeHint":"string"},"kind":"value","value":{"kind":"valid","asString":"XMPL"}}},{"name":"_owner","class":{"typeClass":"contract","kind":"native","id":"shimmedcompilation:104","typeName":"Ownable","contractKind":"contract","payable":false},"value":{"type":{"typeClass":"address","kind":"general","typeHint":"address"},"kind":"value","value":{"asAddress":"0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266","rawAsHex":"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"}}},{"name":"TOKEN_NAME","class":{"typeClass":"contract","kind":"native","id":"shimmedcompilation:2535","typeName":"ExampleERC20","contractKind":"contract","payable":false},"value":{"type":{"typeClass":"string","location":"storage","typeHint":"string"},"kind":"value","value":{"kind":"valid","asString":"Example ERC20 Token"}}},{"name":"TOKEN_SYMBOL","class":{"typeClass":"contract","kind":"native","id":"shimmedcompilation:2535","typeName":"ExampleERC20","contractKind":"contract","payable":false},"value":{"type":{"typeClass":"string","location":"storage","typeHint":"string"},"kind":"value","value":{"kind":"valid","asString":"XMPL"}}},{"name":"val","class":{"typeClass":"contract","kind":"native","id":"shimmedcompilation:2535","typeName":"ExampleERC20","contractKind":"contract","payable":false},"value":{"type":{"typeClass":"uint","bits":256,"typeHint":"uint256"},"kind":"value","value":{"asBN":{"negative":0,"words":[0],"length":1,"red":null},"rawAsBN":{"negative":0,"words":[0],"length":1,"red":null}}}},{"name":"TOTAL_SUPPLY","class":{"typeClass":"contract","kind":"native","id":"shimmedcompilation:2535","typeName":"ExampleERC20","contractKind":"contract","payable":false},"value":{"type":{"typeClass":"uint","bits":256,"typeHint":"uint256"},"kind":"value","value":{"asBN":{"negative":0,"words":[0,8778408,16443095,330872],"length":4,"red":null},"rawAsBN":{"negative":0,"words":[0,8778408,16443095,330872],"length":4,"red":null}}}},{"name":"test","class":{"typeClass":"contract","kind":"native","id":"shimmedcompilation:2535","typeName":"ExampleERC20","contractKind":"contract","payable":false},"value":{"type":{"typeClass":"bytes","kind":"static","length":32,"typeHint":"bytes32"},"kind":"value","value":{"asHex":"0x0000000000000000000000000000000000000000000000000000000000000000","rawAsHex":"0x0000000000000000000000000000000000000000000000000000000000000000"}}},{"name":"testBugBytes","class":{"typeClass":"contract","kind":"native","id":"shimmedcompilation:2535","typeName":"ExampleERC20","contractKind":"contract","payable":false},"value":{"type":{"typeClass":"bytes","kind":"dynamic","location":"storage","typeHint":"bytes"},"kind":"value","value":{"asHex":"0x"}}}]}})
+
+        const wrapper = helper.mountFn(Address, {
+            propsData: {
+                hash: '0x123'
+            },
+            stubs: ['Address-Transactions-List']
+        });
+
+        await wrapper.vm.$nextTick();
+
+        await wrapper.find('#storageTab').trigger('click');        
+        await wrapper.vm.$nextTick();
+        
+        expect(wrapper.html()).toMatchSnapshot();
     });
 });
