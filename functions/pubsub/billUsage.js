@@ -9,7 +9,7 @@ module.exports = async function(message) {
         const userId = payload.userId;
         const timestamp = payload.timestamp;
 
-        const user = (await getUser(userId)).data();
+        const user = await getUser(userId);
 
         if (!user || !user.explorerSubscriptionId) return;
 

@@ -48,6 +48,24 @@
           "function": "api"
         }
       ]
+    },
+    {
+      "target": "tasks",
+      "public": "public",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "/api/**",
+          "run": {
+            "serviceId": "tasks",
+            "region": "us-central1"
+          }
+        }
+      ]
     }
   ]
 }

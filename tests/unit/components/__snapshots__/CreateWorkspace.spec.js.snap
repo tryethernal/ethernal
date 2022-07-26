@@ -35,7 +35,7 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Brave 1`] = 
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="workspaceName" class="v-label theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" type="text"></div>
         </div>
@@ -45,7 +45,7 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Brave 1`] = 
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="workspaceServer" class="v-label theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" type="text"></div>
         </div>
@@ -55,7 +55,7 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Brave 1`] = 
       <div class="v-input__control">
         <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-79" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-select__slot"><label for="input-79" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
@@ -73,7 +73,7 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Brave 1`] = 
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;
@@ -112,7 +112,7 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Safari 1`] =
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="workspaceName" class="v-label theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" type="text"></div>
         </div>
@@ -122,7 +122,7 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Safari 1`] =
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="workspaceServer" class="v-label theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" type="text"></div>
         </div>
@@ -132,7 +132,7 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Safari 1`] =
       <div class="v-input__control">
         <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-100" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-select__slot"><label for="input-100" class="v-label theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections"><input required="required" id="input-100" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
@@ -148,7 +148,7 @@ exports[`CreateWorkspace.vue Should display a warning if browser is Safari 1`] =
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;
@@ -187,7 +187,7 @@ exports[`CreateWorkspace.vue Should display a warning if trying to connect to an
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="workspaceName" class="v-label theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" type="text"></div>
         </div>
@@ -197,7 +197,7 @@ exports[`CreateWorkspace.vue Should display a warning if trying to connect to an
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" type="text"></div>
         </div>
@@ -207,7 +207,7 @@ exports[`CreateWorkspace.vue Should display a warning if trying to connect to an
       <div class="v-input__control">
         <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-119" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-select__slot"><label for="input-119" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
@@ -225,7 +225,7 @@ exports[`CreateWorkspace.vue Should display a warning if trying to connect to an
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;
@@ -240,7 +240,7 @@ exports[`CreateWorkspace.vue Should display a warning message if user has alread
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;
@@ -279,7 +279,7 @@ exports[`CreateWorkspace.vue Should display an error if it cannot connect to the
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="workspaceName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" type="text"></div>
         </div>
@@ -289,7 +289,7 @@ exports[`CreateWorkspace.vue Should display an error if it cannot connect to the
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" type="text"></div>
         </div>
@@ -299,7 +299,7 @@ exports[`CreateWorkspace.vue Should display an error if it cannot connect to the
       <div class="v-input__control">
         <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-62" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-select__slot"><label for="input-62" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
@@ -317,7 +317,7 @@ exports[`CreateWorkspace.vue Should display an error if it cannot connect to the
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;
@@ -359,7 +359,7 @@ exports[`CreateWorkspace.vue Should display locally running networks 1`] = `
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="workspaceName" class="v-label theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" type="text"></div>
         </div>
@@ -369,7 +369,7 @@ exports[`CreateWorkspace.vue Should display locally running networks 1`] = `
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" type="text"></div>
         </div>
@@ -379,7 +379,7 @@ exports[`CreateWorkspace.vue Should display locally running networks 1`] = `
       <div class="v-input__control">
         <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-157" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-select__slot"><label for="input-157" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
@@ -397,7 +397,7 @@ exports[`CreateWorkspace.vue Should display locally running networks 1`] = `
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;
@@ -436,7 +436,7 @@ exports[`CreateWorkspace.vue Should not allow multiple workspaces with the same 
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="workspaceName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" type="text"></div>
         </div>
@@ -446,7 +446,7 @@ exports[`CreateWorkspace.vue Should not allow multiple workspaces with the same 
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" type="text"></div>
         </div>
@@ -456,7 +456,7 @@ exports[`CreateWorkspace.vue Should not allow multiple workspaces with the same 
       <div class="v-input__control">
         <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-176" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-select__slot"><label for="input-176" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
@@ -474,7 +474,7 @@ exports[`CreateWorkspace.vue Should not allow multiple workspaces with the same 
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" class="v-btn v-btn--contained v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;
@@ -513,7 +513,7 @@ exports[`CreateWorkspace.vue Should not display a warning if trying to connect t
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="workspaceName" class="v-label theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" type="text"></div>
         </div>
@@ -523,7 +523,7 @@ exports[`CreateWorkspace.vue Should not display a warning if trying to connect t
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="workspaceServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" type="text"></div>
         </div>
@@ -533,7 +533,7 @@ exports[`CreateWorkspace.vue Should not display a warning if trying to connect t
       <div class="v-input__control">
         <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-138" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: -24px;"><span>​</span></legend>
+            <legend style="width: -24px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-select__slot"><label for="input-138" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections">
@@ -551,7 +551,7 @@ exports[`CreateWorkspace.vue Should not display a warning if trying to connect t
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;
@@ -590,7 +590,7 @@ exports[`CreateWorkspace.vue Should not display a warning message if user has al
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="workspaceName" class="v-label theme--light" style="left: 0px; position: absolute;">Name*</label><input required="required" id="workspaceName" type="text"></div>
         </div>
@@ -600,7 +600,7 @@ exports[`CreateWorkspace.vue Should not display a warning message if user has al
       <div class="v-input__control">
         <div class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-text-field__slot"><label for="workspaceServer" class="v-label theme--light" style="left: 0px; position: absolute;">RPC Server*</label><input required="required" id="workspaceServer" type="text"></div>
         </div>
@@ -610,7 +610,7 @@ exports[`CreateWorkspace.vue Should not display a warning message if user has al
       <div class="v-input__control">
         <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-23" class="v-input__slot">
           <fieldset aria-hidden="true">
-            <legend style="width: 0px;"><span>​</span></legend>
+            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
           <div class="v-select__slot"><label for="input-23" class="v-label theme--light" style="left: 0px; position: absolute;">Chain</label>
             <div class="v-select__selections"><input required="required" id="input-23" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
@@ -626,7 +626,7 @@ exports[`CreateWorkspace.vue Should not display a warning message if user has al
     </div>
   </div>
   <div class="v-card__actions">
-    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
+    <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default" id="createWorkspace"><span class="v-btn__content">Create</span></button>
   </div>
 </div>
 `;

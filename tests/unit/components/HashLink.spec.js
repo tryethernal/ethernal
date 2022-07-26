@@ -1,3 +1,4 @@
+import flushPromises from 'flush-promises';
 import MockHelper from '../MockHelper';
 
 import HashLink from '@/components/HashLink.vue';
@@ -9,11 +10,9 @@ describe('HashLink.vue', () => {
         helper = new MockHelper();
     });
 
-    it('Should display the token name if symbol but flag withTokenName', async (done) => {
-        await helper.mocks.admin
-            .collection('contracts')
-            .doc('0x123')
-            .set({ name: 'My Contract', token: { name: 'Ethernal', symbol: 'ETL', decimals: 18 }});
+    it('Should display the token name if symbol but flag withTokenName', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+             .mockResolvedValue({ data: { name: 'My Contract', tokenName: 'Ethernal', tokenSymbol: 'ETL' }});
 
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
@@ -23,19 +22,14 @@ describe('HashLink.vue', () => {
                 withTokenName: true
             }
         });
+        await flushPromises();
 
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
-
+        expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should display the token name if available & no token symbol', async (done) => {
-        await helper.mocks.admin
-            .collection('contracts')
-            .doc('0x123')
-            .set({ name: 'My Contract', token: { name: 'Ethernal', decimals: 18 }});
+    it('Should display the token name if available & no token symbol', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+             .mockResolvedValue({ data: { name: 'My Contract', tokenName: 'Ethernal' }});
 
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
@@ -44,19 +38,14 @@ describe('HashLink.vue', () => {
                 withName: true
             }
         });
+        await flushPromises();
 
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
-
+        expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should display the token symbol if available', async (done) => {
-        await helper.mocks.admin
-            .collection('contracts')
-            .doc('0x123')
-            .set({ name: 'My Contract', token: { name: 'Ethernal', symbol: 'ETL', decimals: 18 }});
+    it('Should display the token symbol if available', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+             .mockResolvedValue({ data: { name: 'My Contract', tokenSymbol: 'ETL' }});
 
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
@@ -65,18 +54,14 @@ describe('HashLink.vue', () => {
                 withName: true
             }
         });
+        await flushPromises();
 
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
+        expect(wrapper.html()).toMatchSnapshot();
     })
 
-    it('Should display the contract name when no token', async (done) => {
-        await helper.mocks.admin
-            .collection('contracts')
-            .doc('0x123')
-            .set({ name: 'My Contract' });
+    it('Should display the contract name when no token', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+             .mockResolvedValue({ data: { name: 'My Contract' }});
 
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
@@ -85,14 +70,12 @@ describe('HashLink.vue', () => {
                 withName: true
             }
         });
+        await flushPromises();
 
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
+        expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should display the name for the 0x0 address', (done)=> {
+    it('Should display the name for the 0x0 address', () => {
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
                 type: 'address',
@@ -102,11 +85,12 @@ describe('HashLink.vue', () => {
         });
 
         expect(wrapper.html()).toMatchSnapshot();
-                
-        done();
     });
 
-    it('Should not be copiable if the notCopiable flag is passed', (done)=> {
+    it('Should not be copiable if the notCopiable flag is passed', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+             .mockResolvedValue({});
+
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
                 type: 'address',
@@ -114,13 +98,15 @@ describe('HashLink.vue', () => {
                 notCopiable: true
             }
         });
+        await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
-                
-        done();
     });
 
-    it('Should display a shortened link to the address', (done) => {
+    it('Should display a shortened link to the address', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+             .mockResolvedValue({});
+
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
                 type: 'address',
@@ -128,13 +114,15 @@ describe('HashLink.vue', () => {
                 fullHash: false
             }
         });
+        await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
-                
-        done();
     });
 
-    it('Should display a full link to the address', (done) => {
+    it('Should display a full link to the address', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+             .mockResolvedValue({});
+
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
                 type: 'address',
@@ -142,13 +130,12 @@ describe('HashLink.vue', () => {
                 fullHash: true
             }
         });
+        await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
-                
-        done();
     });
 
-    it('Should not display anything if no hash provided', (done) => {
+    it('Should not display anything if no hash provided', () => {
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
                 type: 'address',
@@ -157,11 +144,5 @@ describe('HashLink.vue', () => {
         });
 
         expect(wrapper.html()).toMatchSnapshot();
-                
-        done();
-    });
-
-    afterEach(async () => {
-        await helper.clearFirebase();
     });
 });

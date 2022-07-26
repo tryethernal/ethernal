@@ -18,7 +18,7 @@
             </v-card>
         </template>
         <h3 class="mb-2">Called Function</h3>
-        <Transaction-Function-Call :data="transaction.data" :value="transaction.value" :abi="abi" :to="transaction.to" />
+        <Transaction-Function-Call :data="transaction.data" :value="transaction.value" :abi="transaction.contract && transaction.contract.abi" :to="transaction.to" />
         <h3 class="mb-2" v-if="transaction.receipt.logs.length > 0">Emitted Events</h3>
         <Transaction-Event v-for="(log, idx) in transaction.receipt.logs" :log="log" :key="idx" />
     </div>

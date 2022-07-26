@@ -50,6 +50,7 @@ export default {
         connectMetamask: function() {
             this.loading = true;
             const promises = [];
+
             promises.push(this.ethereum.request({ method: 'eth_requestAccounts' }).then((accounts) => this.connectedAccount = accounts[0]));
             promises.push(this.ethereum.request({ method: 'eth_chainId'}).then((chainId) => this.chainId = chainId));
             Promise.all(promises).finally(() => this.loading = false);

@@ -42,18 +42,18 @@ export default {
         loading: false
     }),
     methods: {
-        open: function() {
+        open() {
             this.dialog = true;
             return new Promise((resolve, reject) => {
                 this.resolve = resolve;
                 this.reject = reject;
             })
         },
-        close: function() {
+        close() {
             this.resolve();
             this.reset();
         },
-        unlockAccount: function(privateKey, accountAddress) {
+        unlockAccount(privateKey, accountAddress) {
             try {
                 this.loading = true;
                 this.errorMessage = null;
@@ -89,7 +89,7 @@ export default {
                     console.log(error);
             }
         },
-        reset: function() {
+        reset() {
             this.privateKey = null;
             this.dialog = false;
             this.resolve = null;

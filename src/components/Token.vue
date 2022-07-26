@@ -54,11 +54,12 @@ export default {
         },
         fetchBalances: function() {
             this.loading = true;
-            this.$bind('accounts', this.db.collection('accounts'))
-            .then(() => {
+            this.server.getAccounts({ page: -1 })
+            .then(({ data: { items }}) => {
+                this.accounts = items.map(i => i.address);
                 const promises = [];
                 for (let i = 0; i < this.accounts.length; i++)
-                    promises.push(this.fetchBalance(this.accounts[i].id));
+                    promises.push(this.fetchBalance(this.accounts[i]));
 
                 Promise.all(promises).finally(() => this.loading = false);
             })

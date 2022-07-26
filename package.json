@@ -5,8 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit --forceExit --runInBand",
-    "test:unit:update": "vue-cli-service test:unit --forceExit --runInBand -u",
+    "test:unit": "vue-cli-service test:unit",
+    "test:unit:update": "vue-cli-service test:unit -u",
     "lint": "vue-cli-service lint",
     "dev": "firebase emulators:start --import=./firebase-emulator --export-on-exit & vue-cli-service serve"
   },
@@ -30,6 +30,7 @@
     "ipaddr.js": "^2.0.0",
     "logrocket": "^1.0.14",
     "momentjs": "^2.0.0",
+    "pusher-js": "^7.1.1-beta",
     "stripe": "^8.176.0",
     "v-stripe-elements": "^1.2.0",
     "vue": "^2.6.11",
@@ -37,7 +38,7 @@
     "vue-moment": "^4.1.0",
     "vue-router": "^3.4.9",
     "vuefire": "^2.2.5",
-    "vuetify": "^2.2.11",
+    "vuetify": "^2.3.9",
     "vuex": "^3.6.0",
     "vuexfire": "^3.2.5",
     "web3": "^1.3.1",
