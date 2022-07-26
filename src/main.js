@@ -47,16 +47,19 @@ new Vue({
                 LogRocket.init(process.env.VUE_APP_LOGROCKET_ID);
             }
 
-            var currentPath = this.$router.currentRoute.path;
+            const currentPath = this.$router.currentRoute.path;
+            const isPublicExplorer = store.getters.isPublicExplorer;
 
             store.dispatch('updateUser', user);
+            if (user && !isPublicExplorer)
+                store.dispatch('updateCurrentWorkspace', { firebaseUserId: user.uid });
 
-            const isPublicExplorer = store.getters.isPublicExplorer;
+
             if (currentPath != '/auth' && !user && !isPublicExplorer) {
                 return this.$router.push('/auth');
             }
             if (currentPath == '/auth' && user) {
-                var queryParams = { ...this.$route.query };
+                const queryParams = { ...this.$route.query };
                 delete queryParams.next;
                 return this.$router.push({ path: this.$route.query.next || '/transactions', query: queryParams});
             }

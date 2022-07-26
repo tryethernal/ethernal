@@ -141,7 +141,7 @@ export default {
                 }
 
                 this.server.callContractWriteMethod(this.contract, this.signature, options, processedParams, this.currentWorkspace.rpcServer, shouldTrace)
-                    .then(({ pendingTx }) => {
+                    .then((pendingTx) => {
                         this.result.txHash = pendingTx.hash;
 
                         if (typeof pendingTx.wait === 'function') {

@@ -7,8 +7,7 @@
         :sort-desc="true"
         :headers="headers"
         :footer-props="{
-            itemsPerPageOptions: [10, 25, 100],
-            'page-text': ''
+            itemsPerPageOptions: [10, 25, 100]
         }"
         item-key="hash"
         @update:options="onPagination">

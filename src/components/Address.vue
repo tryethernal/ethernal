@@ -73,6 +73,7 @@
                                             label="Select from address"
                                             v-model="callOptions.from"
                                             item-text="address"
+                                            item-value="address"
                                             :items="accounts">
                                             <template v-slot:item="{ item }">
                                                 <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
@@ -350,7 +351,7 @@ export default {
             this.server.getAccounts({ page: -1 }).then(({ data: { items }}) => {
                 this.accounts = items;
                 if (!this.callOptions.from)
-                    this.callOptions.from = this.accounts[0];
+                    this.callOptions.from = this.accounts[0].address;
             });
 
             if (!this.isPublicExplorer)
