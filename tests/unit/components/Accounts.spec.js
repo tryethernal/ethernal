@@ -1,58 +1,58 @@
 import MockHelper from '../MockHelper';
+import flushPromises from 'flush-promises'
 
 import Accounts from '@/components/Accounts.vue';
 
+const helper = new MockHelper();
+
 describe('Accounts.vue', () => {
-    let helper, db;
+    beforeEach(() => jest.clearAllMocks());
 
-    beforeEach(async () => {
-        helper = new MockHelper();
-        db = helper.mocks.admin;
-        await db.collection('accounts').doc('0x1234').set({ address: '0x1234', balance: 1234 });
-        await db.collection('accounts').doc('0x1235').set({ address: '0x1235', balance: 1234, privateKey: '1234' });
-    });
-
-    it('Should load stored accounts & sync balances', async (done) => {
-        const mockSyncAccount = jest.spyOn(Accounts.methods, 'syncAccount');
+    it('Should load stored accounts & sync balances', async () => {
+        jest.spyOn(helper.mocks.server, 'getRpcAccounts')
+            .mockResolvedValue(['0x123']);
+        jest.spyOn(helper.mocks.server, 'getAccounts')
+            .mockResolvedValue({ data: { total: 1, items: [{ address: '0x123' }]}});
+        jest.spyOn(helper.mocks.server, 'getAccountBalance')
+            .mockResolvedValue('1000');
         
-        const wrapper = helper.mountFn(Accounts);
-
-        // No idea how to wait for execution of promises returned by mounted fn
-        // It is just a $bind, no network request, so 1s should always be enough
-        setTimeout(() => {
-            expect(wrapper.vm.accounts.length).toBe(2);
-            expect(mockSyncAccount.mock.calls.length).toBe(2);
-            done();
-        }, 1000);
+        const wrapper = helper.mountFn(Accounts, { stubs: ['Hash-Link'] });
+        await flushPromises();
+        
+        expect(wrapper.vm.accounts.length).toEqual(1);
+        expect(wrapper.vm.accounts[0]).toEqual({ address: '0x123', balance: '1000' });
     });
 
-    it('Should resyncs all accounts when clicking on the "Resync" button', async (done) => {
-        const mockSyncAccount = jest.spyOn(Accounts.methods, 'syncAccount');
+    it('Should resync all accounts when clicking on the "Resync" button', async () => {
+        jest.spyOn(helper.mocks.server, 'getAccounts')
+            .mockResolvedValue({ data: { total: 1, items: [{ address: '0x123' }]}});
+        const getRpcAccountsMock = jest.spyOn(helper.mocks.server, 'getRpcAccounts')
+            .mockResolvedValue(['0x123']);
+        const getAccountBalanceMock = jest.spyOn(helper.mocks.server, 'getAccountBalance')
+            .mockResolvedValue('1000');
 
-        const wrapper = helper.mountFn(Accounts);
+        const wrapper = helper.mountFn(Accounts, { stubs: ['Hash-Link'] });
+        await wrapper.find('#resyncAllAccounts').trigger('click');
 
-        setTimeout(async () => {
-            await wrapper.find('#resyncAllAccounts').trigger('click');
-            expect(mockSyncAccount.mock.calls.length).toBe(4);
-            done();
-        }, 1000);
+        await setTimeout(() => {
+            expect(getRpcAccountsMock).toHaveBeenCalledTimes(1);
+            expect(getAccountBalanceMock).toHaveBeenCalledTimes(2);
+        }, 2000);
     });
 
-    it('Should sync the balance when syncing account', async (done) => {
-        const mockSyncBalance = jest.spyOn(helper.mocks.server, 'syncBalance');
-        const wrapper = helper.mountFn(Accounts);
-        await wrapper.vm.$nextTick();
+    it('Should load accounts if none are stored', async () => {
+        jest.spyOn(helper.mocks.server, 'getAccounts')
+            .mockResolvedValue({ data: { total: 0, items: []}});
+        const getRpcAccountsMock = jest.spyOn(helper.mocks.server, 'getRpcAccounts')
+            .mockResolvedValue(['0x123']);
+        jest.spyOn(helper.mocks.server, 'getAccountBalance')
+            .mockResolvedValue('1000');
 
-        wrapper.vm.syncAccount('0x1234');
+        const wrapper = helper.mountFn(Accounts, { stubs: ['Hash-Link'] });
+        await flushPromises();
 
-        await wrapper.vm.$nextTick();
-
-        expect(mockSyncBalance).toHaveBeenCalled();
-
-        done();
-    });
-
-    afterEach(async () => {
-        await helper.clearFirebase();
+        expect(wrapper.vm.accounts.length).toEqual(1);
+        expect(wrapper.vm.accounts[0]).toEqual({ address: '0x123', balance: '1000' });
+        expect(getRpcAccountsMock).toHaveBeenCalledTimes(1);
     });
 });

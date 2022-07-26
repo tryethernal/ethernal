@@ -16,13 +16,13 @@
                             <v-card-text>
                                 <v-text-field
                                     outlined
-                                    v-model="currentRpcServer"
+                                    v-model="settings.rpcServer"
                                     hide-details="auto"
                                     id="rpcServer"
                                     label="RPC Server">
                                 </v-text-field>
                                 You will need to restart the CLI or the Hardhat node for a server change to take effect.
-                                <v-select id="chain" class="mt-3" outlined required label="Chain" v-model="currentChain" :items="availableChains" hide-details="auto"></v-select>
+                                <v-select id="chain" class="mt-3" item-text="label" item-value="slug" outlined required label="Chain" v-model="settings.chain" :items="availableChains" hide-details="auto"></v-select>
                                 <v-row class="mt-2 pb-1 mr-2">
                                     <v-spacer></v-spacer>
                                     <v-btn id="updateOptions" :loading="loading" depressed color="primary" class="mt-1" @click="update()">Update</v-btn>
@@ -40,15 +40,15 @@
                                     label="Default From Account"
                                     hide-details="auto"
                                     v-model="settings.defaultAccount"
-                                    :item-text="'id'"
+                                    item-text="address"
                                     :items="accounts">
                                     <template v-slot:item="{ item }">
                                         <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
-                                        {{ item.id }}
+                                        {{ item.address }}
                                     </template>
                                     <template v-slot:selection="{ item }">
                                         <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
-                                        {{ item.id }}
+                                        {{ item.address }}
                                     </template>
                                 </v-select>
                                 <v-text-field
@@ -86,7 +86,7 @@
                                     :items="integrations.items"
                                     :headers="integrations.headers">
                                     <template v-slot:item.status="{ item }">
-                                        {{ isIntegrationEnabled(item.slug) ? 'Enabled' : 'Disabled' }}
+                                        {{ settings[item.setting] ? 'Enabled' : 'Disabled' }}
                                     </template>
                                     <template v-slot:item.actions="{ item }">
                                         <v-btn color="primary" @click="callFunction(item.action)">Manage</v-btn>
@@ -112,7 +112,7 @@
                                         </v-toolbar>
                                     </template>
                                     <template v-slot:item.actions="{ item }">
-                                        <v-icon :id="`switchTo-${item.id}`" @click="switchWorkspace(item.id)">mdi-swap-horizontal</v-icon>
+                                        <v-icon :id="`switchTo-${item.id}`" @click="switchWorkspace(item.name)">mdi-swap-horizontal</v-icon>
                                     </template>
                                 </v-data-table>
                             </v-card-text>
@@ -131,7 +131,7 @@
                                             :items="advancedOptionsDesc[0].choices"
                                             item-text="label"
                                             item-value="slug"
-                                            v-model="advancedOptions.tracing">
+                                            v-model="settings.tracing">
                                         </v-select>
                                     </v-col>
                                 </v-row>
@@ -236,11 +236,13 @@ export default {
                 {
                     name: 'Alchemy',
                     slug: 'alchemy',
+                    setting: 'alchemyIntegrationEnabled',
                     action:  'openAlchemyIntegrationModal'
                 },
                 {
                     name: 'API',
                     slug: 'api',
+                    setting: 'apiEnabled',
                     action: 'openApiIntegrationModal'
                 }
             ]
@@ -248,7 +250,7 @@ export default {
         workspacesDataTableHeaders: [
             {
                 text: 'Name',
-                value: 'id'
+                value: 'name'
             },
             {
                 text: 'RPC Server',
@@ -259,33 +261,50 @@ export default {
                 value: 'actions'
             }
         ],
-        availableChains: [],
-        currentChain: null,
-        currentRpcServer: null,
+        availableChains: [
+            { label: 'Ethereum', slug: 'ethereum' },
+            { label: 'Matic', slug: 'matic' },
+            { label: 'BSC', slug: 'bsc' },
+            { label: 'Avalanche', slug: 'avalanche' }
+        ],
         settings: {},
-        advancedOptions: {},
         workspaces: [],
         accounts: [],
         loading: false,
         updateSuccess: false,
         updateError: false,
-        optionsLoader: true,
+        optionsLoader: false,
         loadingWorkspaces: true,
         resetWorkspaceLoading: false,
-        advancedOptionsLoading: true,
+        advancedOptionsLoading: false,
         errorMessage: null
     }),
     mounted: function() {
         if (!this.tab)
             this.tab = 'workspace';
 
-        this.$bind('workspaces', this.db.workspaces()).then(() => this.loadingWorkspaces = false);
-        this.$bind('settings', this.db.settings()).finally(() => this.optionsLoader = false);
-        this.$bind('advancedOptions', this.db.advancedOptions()).finally(() => this.advancedOptionsLoading = false);
-        this.$bind('accounts', this.db.collection('accounts'));
-        this.currentRpcServer = this.currentWorkspace.rpcServer;
-        this.availableChains = Object.values(this.chains).map((chain) => ({ text: chain.name, value: chain.slug }));
-        this.currentChain = this.chain.slug;
+        this.server.getWorkspaces()
+            .then(({ data }) => this.workspaces = data)
+            .catch(console.log)
+            .finally(() => this.loadingWorkspaces = false);
+
+        this.server.getAccounts({ page: -1 })
+            .then(({ data: { items } }) => this.accounts = items)
+            .catch(console.log);
+
+        this.settings = {
+            workspaceId: this.currentWorkspace.id,
+            alchemyIntegrationEnabled: this.currentWorkspace.alchemyIntegrationEnabled,
+            apiEnabled: this.currentWorkspace.apiEnabled,
+            chain: this.currentWorkspace.chain,
+            defaultAccount: this.currentWorkspace.defaultAccount,
+            gasLimit: this.currentWorkspace.gasLimit,
+            gasPrice: this.currentWorkspace.gasPrice,
+            name: this.currentWorkspace.name,
+            networkId: this.currentWorkspace.networkId,
+            rpcServer: this.currentWorkspace.rpcServer,
+            tracing: this.currentWorkspace.tracing
+        };
     },
     methods: {
         updateAdvancedOptions: function() {
@@ -293,11 +312,10 @@ export default {
             this.updateSuccess = false;
             this.updateError = false;
 
-            this.server.updateWorkspaceSettings(this.currentWorkspace.name, { advancedOptions: this.advancedOptions })
+            this.server.updateWorkspaceSettings(this.currentWorkspace.name, { advancedOptions: { tracing: this.settings.tracing }})
                 .then(() => {
                     this.updateSuccess = true;
-                    this.currentWorkspace.advancedOptions = this.advancedOptions;
-                    this.$store.dispatch('updateCurrentWorkspace', this.currentWorkspace);
+                    this.$store.dispatch('updateCurrentWorkspace', this.settings);
                 })
                 .catch(() => this.updateError = true)
                 .finally(() => this.advancedOptionsLoading = false);
@@ -308,18 +326,23 @@ export default {
             this.updateError = false;
             this.errorMessage = null;
 
-            this.server.initRpcServer(this.currentRpcServer)
+            this.server.initRpcServer(this.settings.rpcServer)
                 .then(() => {
-                    this.server.updateWorkspaceSettings(this.currentWorkspace.name, { rpcServer: this.currentRpcServer, chain: this.currentChain, settings: this.settings })
-                        .then(() => {
-                            this.updateSuccess = true;
-                            this.currentWorkspace.settings = this.settings;
-                            this.currentWorkspace.chain = this.currentChain;
-                            this.currentWorkspace.rpcServer = this.currentRpcServer;
-                            this.$store.dispatch('updateCurrentWorkspace', this.currentWorkspace);
-                        })
-                        .catch(() => this.updateError = true)
-                        .finally(() => this.loading = false);
+                    this.server.updateWorkspaceSettings(this.currentWorkspace.name, {
+                        rpcServer: this.settings.rpcServer,
+                        chain: this.settings.chain,
+                        settings: {
+                            defaultAccount: this.settings.defaultAccount,
+                            gasLimit: this.settings.gasLimit,
+                            gasPrice: this.settings.gasPrice
+                        }
+                    })
+                    .then(() => {
+                        this.updateSuccess = true;
+                        this.$store.dispatch('updateCurrentWorkspace', this.settings);
+                    })
+                    .catch(() => this.updateError = true)
+                    .finally(() => this.loading = false);
                 })
                 .catch((error) => {
                     this.errorMessage = error.reason;
@@ -343,26 +366,21 @@ export default {
         },
         openAlchemyIntegrationModal: function() {
             this.$refs.alchemyIntegrationModal.open({
-                enabled: this.isIntegrationEnabled('alchemy')
+                enabled: this.settings.alchemyIntegrationEnabled
             })
-            .then(() => {
-                this.currentWorkspace.settings = this.settings;
-                this.$store.dispatch('updateCurrentWorkspace', this.currentWorkspace);
+            .then((isAlchemyIntegrationEnabled) => {
+                this.settings.alchemyIntegrationEnabled = isAlchemyIntegrationEnabled;
+                this.$store.dispatch('updateCurrentWorkspace', this.settings);
             })
         },
         openApiIntegrationModal: function() {
             this.$refs.apiIntegrationModal.open({
-                enabled: this.isIntegrationEnabled('api')
+                enabled: this.settings.apiEnabled
             })
-            .then(() => {
-                this.currentWorkspace.settings = this.settings;
-                this.$store.dispatch('updateCurrentWorkspace', this.currentWorkspace);
+            .then((isApiEnabled) => {
+                this.settings.apiEnabled = isApiEnabled;
+                this.$store.dispatch('updateCurrentWorkspace', this.settings);
             });
-        },
-        isIntegrationEnabled: function(slug) {
-            return this.currentWorkspace.settings.integrations ?
-                this.currentWorkspace.settings.integrations.indexOf(slug) > -1 :
-                false;
         },
         resetWorkspace: function() {
             if (confirm(`Are you sure you want to reset the workspace ${this.currentWorkspace.name}? This action is definitive.`)) {

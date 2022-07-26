@@ -10,7 +10,6 @@ describe('TransactionsList.vue', () => {
     });
 
     it('Should display the list', async (done) => {
-        const db = helper.mocks.admin;
         const transaction1 = {
             hash: '0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0',
             timestamp: '1621548462',
@@ -28,7 +27,15 @@ describe('TransactionsList.vue', () => {
             to: 'Ox1',
             blockNumber: 1,
             value: '0'
-        };        
+        };
+
+        jest.spyOn(helper.mocks.server, 'getTransactions')
+            .mockResolvedValue({
+                data: {
+                    items: [transaction1, transaction2],
+                    total: 2
+                }
+            }); 
 
         const wrapper = helper.mountFn(TransactionsList, {
             propsData: {
@@ -36,24 +43,26 @@ describe('TransactionsList.vue', () => {
                 currentAddress: '0x123',
                 loading: false
             }
-        })
+        });
+        await new Promise(process.nextTick);
 
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1000);
+        expect(wrapper.html()).toMatchSnapshot();
+        done();
     });
 
     it('Should display a message if no transactions', async (done) => {
-        const wrapper = helper.mountFn(TransactionsList)
+        jest.spyOn(helper.mocks.server, 'getTransactions')
+            .mockResolvedValue({
+                data: {
+                    items: [],
+                    total: 0
+                }
+            });
 
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1000);
-    });
+        const wrapper = helper.mountFn(TransactionsList);
+        await new Promise(process.nextTick);
 
-    afterEach(async () => {
-        await helper.clearFirebase();
+        expect(wrapper.html()).toMatchSnapshot();
+        done();
     });
 });

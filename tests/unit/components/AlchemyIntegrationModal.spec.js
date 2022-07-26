@@ -61,8 +61,4 @@ describe('AlchemyIntegrationModal.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
         done();
     });
-
-    afterEach(async () => {
-        await helper.clearFirebase();
-    });
 });
