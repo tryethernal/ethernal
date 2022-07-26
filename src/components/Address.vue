@@ -40,12 +40,12 @@
                                     <v-icon class="success--text mr-1" small>mdi-check-circle</v-icon>Verified contract.
                                 </div>
                                 Artifact for "<b>{{ contract.name }}</b>" has been uploaded.<span v-if="currentWorkspace.isAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
-                                <div v-if="Object.keys(contract.dependencies).length" class="mb-1 mt-2">
+                                <div v-if="contract.dependencies && Object.keys(contract.dependencies).length" class="mb-1 mt-2">
                                     <h5>Dependencies:</h5>
                                     {{ Object.keys(contract.dependencies).join(', ') }}
                                 </div>
                             </v-card-text>
-                            <v-card-text v-if="!contract.name && currentWorkspace.isAdmin">
+                            <v-card-text v-if="(!contract.name || !contract.abi) && currentWorkspace.isAdmin">
                                 <i>Upload an artifact to read contract storage and interact with it.</i><br />
                                 For Truffle projects, use our <a href="https://www.npmjs.com/package/ethernal" target="_blank">CLI</a>.<br />
                                 For Hardhat project, use our <a href="https://github.com/antoinedc/hardhat-ethernal" target="_blank">plugin</a>.<br />
@@ -72,15 +72,16 @@
                                             dense
                                             label="Select from address"
                                             v-model="callOptions.from"
-                                            :item-text="'id'"
+                                            item-text="address"
+                                            item-value="address"
                                             :items="accounts">
                                             <template v-slot:item="{ item }">
                                                 <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
-                                                {{ item.id }}
+                                                {{ item.address }}
                                             </template>
                                             <template v-slot:selection="{ item }">
                                                 <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
-                                                {{ item.id }}
+                                                {{ item.address }}
                                             </template>
                                         </v-select>
                                         <v-text-field
@@ -115,7 +116,7 @@
                         <v-card-text v-if="contract.abi">
                             <v-row v-for="(method, methodIdx) in contractReadMethods" :key="methodIdx" class="pb-4">
                                 <v-col cols="5">
-                                    <Contract-Read-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="{ ...callOptions, from: callOptions.from }" />
+                                    <Contract-Read-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="callOptions" />
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -132,7 +133,7 @@
                         <v-card-text v-if="contract.abi">
                             <v-row v-for="(method, methodIdx) in contractWriteMethods" :key="methodIdx" class="pb-4">
                                 <v-col cols="5">
-                                    <Contract-Write-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="{ ...callOptions, from: callOptions.from }" />
+                                    <Contract-Write-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="callOptions" />
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -347,38 +348,44 @@ export default {
                 });
         },
         bindTheStuff: function(hash) {
-            this.$bind('accounts', this.db.collection('accounts'));
+            this.server.getAccounts({ page: -1 }).then(({ data: { items }}) => {
+                this.accounts = items;
+                if (!this.callOptions.from)
+                    this.callOptions.from = this.accounts[0].address;
+            });
+
             if (!this.isPublicExplorer)
-                this.$bind('transactionsTo', this.db.collection('transactions').where('to', '==', hash).orderBy('blockNumber', 'desc'));
+                this.server.getAddressTransactions(hash)
+                    .then(({ data: { items }}) => {
+                        this.transactionsTo = items;
+                    });
+
             this.contractLoader = true;
 
-            this.db.collection('contracts').doc(hash).withConverter({ fromFirestore: this.db.contractSerializer }).get().then((doc) => {
-                if (!doc.exists) {
-                    return;
-                }
+            this.server.getContract(hash)
+                .then(({ data }) => {
+                    this.contract = data;
+                    if (this.contract.abi)
+                        this.contractInterface = new ethers.utils.Interface(this.contract.abi);
 
-                this.contract = doc.data();
+                    if (this.isPublicExplorer)
+                        return this.contractLoader = false;
 
-                if (this.contract.abi)
-                    this.contractInterface = new ethers.utils.Interface(this.contract.abi);
-
-                if (this.isPublicExplorer)
-                    return this.contractLoader = false;
-
-                this.db.contractStorage(hash).once('value', (snapshot) => {
-                    if (snapshot.val()) {
-                        this.contract.artifact = snapshot.val().artifact;
-                        const dependencies = {};
-                        Object.keys(snapshot.val().dependencies).forEach((dep) => dependencies[dep] = JSON.parse(snapshot.val().dependencies[dep]));
-                        this.contract = { ...this.contract, dependencies: dependencies, watchedPaths: this.contract.watchedPaths };
-                        this.decodeContract();
-                    }
-                    else {
-                        this.storageLoader = false;
-                    }
+                    this.db.contractStorage(hash).once('value', (snapshot) => {
+                        if (snapshot.val()) {
+                            this.contract.artifact = snapshot.val().artifact;
+                            const dependencies = {};
+                            Object.keys(snapshot.val().dependencies).forEach((dep) => dependencies[dep] = JSON.parse(snapshot.val().dependencies[dep]));
+                            this.contract = { ...this.contract, dependencies: dependencies, watchedPaths: this.contract.watchedPaths };
+                            this.decodeContract();
+                        }
+                        else {
+                            this.storageLoader = false;
+                        }
+                    })
+                    .finally(() => this.contractLoader = false);
                 })
-                .finally(() => this.contractLoader = false);
-            })
+                .catch(console.log);
         }
     },
     watch: {

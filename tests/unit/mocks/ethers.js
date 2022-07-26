@@ -36,9 +36,7 @@ export const ethers = jest.mock('ethers', () => {
                 resolve({ gasLimit: 1000 });
             })
         },
-        getSigner: () => {
-            return '0x123';
-        },
+        getSigner: jest.fn().mockReturnValue('0x123'),
         getTransaction: () => {
             return new Promise((resolve) => {
                 resolve({ to: '0xabcd' })
@@ -47,9 +45,9 @@ export const ethers = jest.mock('ethers', () => {
     };
     const ethers = jest.fn(() => provider);
     const providers = {
-        JsonRpcProvider: jest.fn(() => { return provider }),
-        WebSocketProvider: jest.fn(() => { return provider }),
-        Web3Provider: jest.fn(() => { return provider })
+        JsonRpcProvider: function() { return provider },
+        WebSocketProvider: function() { return provider },
+        Web3Provider: function() { return provider }
     };
     const wallet = function() { return { address: '0x123' }};
     let counter = 0;

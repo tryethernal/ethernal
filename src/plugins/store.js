@@ -1,6 +1,7 @@
 import LogRocket from 'logrocket';
 import Vue from 'vue';
 import Vuex from 'vuex';
+const { sanitize } = require('../lib/utils');
 
 Vue.use(Vuex);
 
@@ -17,10 +18,10 @@ export default new Vuex.Store({
             theme: 'light'
         },
         currentWorkspace: {
-            userId: null,
+            userId: '',
             networkId: null,
             rpcServer: null,
-            name: null,
+            name: '',
             isAdmin: null,
             settings: {
                 defaultAccount: null,
@@ -66,12 +67,24 @@ export default new Vuex.Store({
                 ...state.publicExplorer,
                 domain: domain
             }
+        },
+        SET_FIREBASE_ID_TOKEN(state, token) {
+            state.user = {
+                ...state.user,
+                firebaseIdToken: token
+            }
         }
     },
     actions: {
         updateUser({ commit }, user) {
             if (user) {
-                commit('SET_USER', { uid: user.uid, email: user.email, loggedIn: true });
+                commit('SET_USER', sanitize({
+                    uid: user.uid,
+                    email: user.email,
+                    loggedIn: true,
+                    id: user.id,
+                    plan: user.plan
+                }));
                 if (process.env.VUE_APP_ENABLE_ANALYTICS)
                     LogRocket.identify(user.uid, { email: user.email });
             }
@@ -105,9 +118,13 @@ export default new Vuex.Store({
         },
         updatePublicExplorerDomain({ commit }, domain) {
             commit('SET_PUBLIC_EXPLORER_DOMAIN', domain);
+        },
+        updateFirebaseIdToken({ commit }, token) {
+            commit('SET_FIREBASE_ID_TOKEN', token);
         }
     },
     getters: {
+        firebaseIdToken: state => state.user.firebaseIdToken || '',
         theme: state => state.publicExplorer.theme,
         isUserLoggedIn: state => !!state.user.uid,
         isPublicExplorer: state => !!state.publicExplorer.slug || !!state.publicExplorer.domain,

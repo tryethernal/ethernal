@@ -1,3 +1,4 @@
+import flushPromises from 'flush-promises';
 import MockHelper from '../MockHelper';
 
 import OnboardingModal from '@/components/OnboardingModal.vue';
@@ -10,35 +11,38 @@ describe('OnboardingModal.vue', () => {
     });
 
     it('Should let the user create a new workspace', async (done) => {
-        const name = 'Hardhat';
-        const rpcServer = 'https://127.0.0.1';
+        jest.spyOn(helper.mocks.server, 'createWorkspace').mockResolvedValue({ data: {
+            workspace: {
+                rpcServer: 'https://127.0.0.1',
+                networkId: 1,
+                settings: {
+                    gasLimit: 1234567
+                },
+            },
+            name: 'Hardhat'
+        }});
 
         const wrapper = helper.mountFn(OnboardingModal);
 
         await wrapper.setData({ dialog: true });
 
-        await wrapper.find('#workspaceName').setValue(name);
-        await wrapper.find('#workspaceServer').setValue(rpcServer);
+        await wrapper.find('#workspaceName').setValue('Hardhat');
+        await wrapper.find('#workspaceServer').setValue('https://127.0.0.1');
 
         await wrapper.find('#createWorkspace').trigger('click');
 
-        await wrapper.vm.$nextTick();
+        await flushPromises();
         
         expect(helper.actions.updateCurrentWorkspace).toHaveBeenCalledWith(expect.anything(), {
             chain: 'ethereum',
-            rpcServer: rpcServer,
+            rpcServer: 'https://127.0.0.1',
             networkId: 1,
             settings: {
                 gasLimit: 1234567
             },
-            defaultAccount: '0x2D481eeb2bA97955CD081Cf218f453A817259AB1',
-            name: name
+            name: 'Hardhat'
         });
         
         done();
-    });
-
-    afterEach(async () => {
-        await helper.clearFirebase();
     });
 });

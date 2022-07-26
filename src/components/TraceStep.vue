@@ -11,9 +11,8 @@
                         |<br>
                         |-->
                     </span>
-                    <v-chip small class="primary mr-2">
-                        {{ this.step.op }}
-                    </v-chip>
+                    <v-chip small class="primary mr-2">{{ this.step.op }}</v-chip>
+                    <v-chip v-if="this.step.contract.proxyContract" small class="primary mr-2">PROXY</v-chip>
                     <Hash-Link :type="'address'" :hash="step.address" :notCopiable="true" :fullHash="true" :withName="true" /><span v-if="transactionDescription">.{{ transactionDescription.functionFragment.name }}(</span>
                     <template v-if="transactionDescription">
                         <div v-for="(input, index) in transactionDescription.functionFragment.inputs" :key="`in-${index}`">
@@ -54,15 +53,12 @@ export default {
     data: () => ({
         transactionDescription: null,
         jsonInterface: null,
-        contract: null,
-        outputs: null
+        outputs: null,
+        calledContract: null,
+        proxyContract: null
     }),
     methods: {
         zeroXify: function(input) { return input.startsWith('0x') ? input : `0x${input}` },
-        decodeInput: function() {
-            this.jsonInterface = new ethers.utils.Interface(this.contract.abi);
-            this.transactionDescription = this.jsonInterface.parseTransaction({ data: this.zeroXify(this.step.input) });
-        },
         decodeOutput: function(index) {
             if (!this.step.returnData) return '';
             return this.jsonInterface.decodeFunctionResult(this.transactionDescription.functionFragment, this.zeroXify(this.step.returnData))[index];
@@ -74,11 +70,9 @@ export default {
             handler() {
                 if (this.step.input && this.step.contract.abi) {
                     try {
-                        this.contract = this.step.contract;
-                        if (this.contract.proxy)
-                            this.$bind('contract', this.db.collection('contracts').doc(this.contract.proxy)).then(this.decodeInput);
-                        else
-                            this.decodeInput();
+                        const contract = this.step.contract.proxyContract ? this.step.contract.proxyContract : this.step.contract;
+                        this.jsonInterface = new ethers.utils.Interface(contract.abi);
+                        this.transactionDescription = this.jsonInterface.parseTransaction({ data: this.zeroXify(this.step.input) });
                     } catch(_error) {
                         console.log(_error)
                     }

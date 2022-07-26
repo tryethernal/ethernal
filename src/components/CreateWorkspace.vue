@@ -89,13 +89,12 @@ export default {
 
                 const workspace = await this.server.initRpcServer(rpcServer);
 
-                const result = await this.server.createWorkspace(name, { ...workspace, chain: this.chain });
-
-                if (!result.data.success) {
-                    throw 'Error while creating workspace';
-                }
-
-                this.$emit('workspaceCreated', { workspace: workspace, name: name, chain: this.chain });
+                this.server.createWorkspace(name, { ...workspace, chain: this.chain })
+                    .then(({ data }) => {
+                        this.$emit('workspaceCreated', { workspace: data.workspace, name: name, chain: this.chain });
+                    })
+                    .catch(() => { throw 'Error while creating workspace' })
+                    .finally(() => this.loading = false);
             } catch(error) {
                 console.log(error);
                 this.loading = false;
@@ -109,8 +108,6 @@ export default {
                     return this.errorMessage = "Can't connect to the server";
                 }
                 this.errorMessage = error.message ? error.message : error;
-            } finally {
-                this.loading = false;
             }
         },
         detectNetwork: function() {
