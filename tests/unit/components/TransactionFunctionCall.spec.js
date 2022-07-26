@@ -1,3 +1,4 @@
+import flushPromises from 'flush-promises';
 import MockHelper from '../MockHelper';
 
 import TransactionFunctionCall from '@/components/TransactionFunctionCall.vue';
@@ -33,7 +34,7 @@ describe('TransactionFunctionCall.vue', () => {
             }
         });
 
-        await wrapper.vm.$nextTick();
+        await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
         done();
     });
@@ -47,7 +48,7 @@ describe('TransactionFunctionCall.vue', () => {
                 to: Transaction.to
             }
         });
-        await wrapper.vm.$nextTick();
+        await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
         done();
     });
@@ -60,12 +61,8 @@ describe('TransactionFunctionCall.vue', () => {
                 to: Transaction.to
             }
         });
-        await wrapper.vm.$nextTick();
+        await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
         done();
-    });
-
-    afterEach(async () => {
-        await helper.clearFirebase();
     });
 });

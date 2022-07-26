@@ -1,128 +1,95 @@
-import Storage from '../fixtures/Storage.json';
-import DecodedStorageData from '../fixtures/DecodedStorageData.json';
+jest.mock('@/plugins/server', () => ({
+    serverPlugin: {
+        install(Vue) {
+            Vue.prototype.server = {
+                processFailedTransactions: jest.fn,
+                getRpcAccounts: jest.fn(),
+                getAccounts: jest.fn().mockResolvedValue({ data: { items: [] }}),
+                getAccountBalance: jest.fn(),
+                getContract: jest.fn().mockResolvedValue({ data: {} }),
+                storeAccountPrivateKey: jest.fn().mockResolvedValue(),
+                impersonateAccount: jest.fn(),
+                getAddressTransactions: jest.fn(),
+                getBlock: jest.fn(),
+                getBlocks: jest.fn(),
+                callContractReadMethod: jest.fn(),
+                getContracts: jest.fn(),
+                createWorkspace: jest.fn(),
+                initRpcServer: jest.fn().mockResolvedValue(),
+                removeContract: jest.fn(),
+                decodeData: jest.fn(),
+                getStructure: jest.fn(),
+                processContracts: jest.fn(),
+                getProcessableTransactions: jest.fn().mockResolvedValue({ data: {} }),
+                getFailedProcessableTransactions: jest.fn().mockResolvedValue({ data: {} }),
+                processTransactions: jest.fn().mockResolvedValue(),
+                processFailedTransactions: jest.fn().mockResolvedValue(),
+                getWorkspaces: jest.fn().mockResolvedValue({ data: [] }),
+                updateWorkspaceSettings: jest.fn().mockResolvedValue(),
+                getTransaction: jest.fn().mockResolvedValue(),
+                getTransactions: jest.fn(),
 
-export default {
+                syncTransactionData: function() {
+                    return new Promise((resolve) => resolve(true))
+                },
 
-    processFailedTransactions: jest.fn,
+                resetWorkspace: function() {
+                    return new Promise((resolve) => resolve(true));
+                },
 
-    syncTransactionData: function() {
-        return new Promise((resolve) => resolve(true))
-    },
+                importContract: function() {
+                    return new Promise((resolve) => resolve({ data: { success: true, contractIsVerified: true }}));
+                },
 
-    processContracts: function() {
-        return new Promise((resolve) => resolve(true));
-    },
+                syncContractData: () => {
+                    return new Promise((resolve) => resolve(true));
+                },
 
-    removeContract: function() {
-        return new Promise((resolve) => resolve(true));
-    },
+                setCurrentWorkspace: () => {
+                    return new Promise((resolve) => resolve(true));
+                },
 
-    decodeData: function() {
-        return new Promise((resolve) => resolve(DecodedStorageData));
-    },
+                searchForLocalChains: () => {
+                    return new Promise((resolve) => resolve(['http://127.0.0.1:8545']));
+                },
 
-    getStructure: function() {
-        return new Promise((resolve) => resolve(Storage));
-    },
+                getAccount: () => {
+                    return new Promise((resolve) => resolve({ data: { address: '0x1234', privateKey: null }}));
+                },
 
-    resetWorkspace: function() {
-        return new Promise((resolve) => resolve(true));
-    },
+                callContractWriteMethod: jest.fn(() => {
+                    const pendingTx = {
+                        hash: '0xabcd',
+                        wait: () => new Promise((resolve) => resolve({ status: true }))
+                    }
 
-    updateWorkspaceSettings: function() {
-        return new Promise((resolve) => resolve(true));
-    },
+                    return new Promise((resolve) => resolve(pendingTx));
+                }),
 
-    importContract: function() {
-        return new Promise((resolve) => resolve({ data: { success: true, contractIsVerified: true }}));
-    },
+                enableWorkspaceApi: () => {
+                    return new Promise((resolve) => resolve({ data: { token: '123456abcdef' }}));
+                },
 
-    syncContractData: () => {
-        return new Promise((resolve) => resolve(true));
-    },
+                disableWorkspaceApi: () => {
+                    return new Promise((resolve) => resolve({ success: true }));
+                },
 
-    setCurrentWorkspace: () => {
-        return new Promise((resolve) => resolve(true));
-    },
+                getWorkspaceApiToken: () => {
+                    return new Promise((resolve) => resolve({ data: { token: '123456abcdef' }}));
+                },
 
-    searchForLocalChains: () => {
-        return new Promise((resolve) => resolve(['http://127.0.0.1:8545']));
-    },
+                enableAlchemyWebhook: () => {
+                    return new Promise((resolve) => resolve({ data: { token: '123456abcdef' }}));
+                },
 
-    getAccount: () => {
-        return new Promise((resolve) => resolve({ data: { address: '0x1234', privateKey: null }}));
-    },
+                disableAlchemyWebhook: () => {
+                    return new Promise((resolve) => resolve({ success: true }));
+                },
 
-    callContractWriteMethod: jest.fn(() => {
-        const pendingTx = {
-            hash: '0xabcd',
-            wait: () => new Promise((resolve) => resolve({ status: true }))
+                syncBalance: () => {
+                    return new Promise((resolve) => resolve({ success: true }));
+                }
+            }
         }
-
-        return new Promise((resolve) => resolve({ pendingTx: pendingTx }));
-    }),
-
-    callContractReadMethod: jest.fn(() => {
-        return new Promise((resolve, reject) => {
-            resolve([true]);
-        });
-    }),
-
-    createWorkspace: () => {
-        return new Promise((resolve) => {
-            resolve({ data: { success: true }});
-        });
-    },
-
-    enableWorkspaceApi: () => {
-        return new Promise((resolve) => resolve({ data: { token: '123456abcdef' }}));
-    },
-
-    disableWorkspaceApi: () => {
-        return new Promise((resolve) => resolve({ success: true }));
-    },
-
-    getWorkspaceApiToken: () => {
-        return new Promise((resolve) => resolve({ data: { token: '123456abcdef' }}));
-    },
-
-    enableAlchemyWebhook: () => {
-        return new Promise((resolve) => resolve({ data: { token: '123456abcdef' }}));
-    },
-
-    disableAlchemyWebhook: () => {
-        return new Promise((resolve) => resolve({ success: true }));
-    },
-
-    getAccounts: () => {
-        return new Promise((resolve) => resolve(['0x1234', '0x1235']));
-    },
-
-    syncBalance: () => {
-        return new Promise((resolve) => resolve({ success: true }));
-    },
-
-    getAccountBalance: () => {
-        return new Promise((resolve) => resolve(10000));
-    },
-
-    storeAccountPrivateKey: () => {
-        return new Promise((resolve) => resolve({ success: true }));
-    },
-
-    impersonateAccount: () => {
-        return new Promise((resolve) => resolve(true));
-    },
-    
-    initRpcServer: (rpcServer, localNetwork) => {
-        return new Promise((resolve) => resolve({
-            rpcServer: rpcServer,
-            networkId: 1,
-            settings: {
-                gasLimit: 1234567
-            },
-            defaultAccount: '0x2D481eeb2bA97955CD081Cf218f453A817259AB1',
-            localNetwork: localNetwork
-        }))
     }
-}
+}));

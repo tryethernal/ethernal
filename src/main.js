@@ -23,8 +23,11 @@ Vue.use(serverPlugin, { store: store });
 const isEthernalDomain = window.location.host.endsWith(process.env.VUE_APP_MAIN_DOMAIN);
 
 if (isEthernalDomain) {
-    const publicExplorerSlug = window.location.host.split('.')[0];
-    if (publicExplorerSlug != 'app')
+    const splits = window.location.host.split('.');
+    const domain = splits[splits.length - 2];
+    const publicExplorerSlug = splits.slice(0, splits.indexOf(domain)).join('.');
+
+    if (!publicExplorerSlug.endsWith('app') || publicExplorerSlug == process.env.VUE_APP_STAGING_DOMAIN)
         store.dispatch('updatePublicExplorerSlug', publicExplorerSlug);
 }
 else {
@@ -44,15 +47,19 @@ new Vue({
                 LogRocket.init(process.env.VUE_APP_LOGROCKET_ID);
             }
 
-            var currentPath = this.$router.currentRoute.path;
+            const currentPath = this.$router.currentRoute.path;
+            const isPublicExplorer = store.getters.isPublicExplorer;
 
             store.dispatch('updateUser', user);
-            const isPublicExplorer = store.getters.isPublicExplorer;
+            if (user && !isPublicExplorer)
+                store.dispatch('updateCurrentWorkspace', { firebaseUserId: user.uid });
+
+
             if (currentPath != '/auth' && !user && !isPublicExplorer) {
                 return this.$router.push('/auth');
             }
             if (currentPath == '/auth' && user) {
-                var queryParams = { ...this.$route.query };
+                const queryParams = { ...this.$route.query };
                 delete queryParams.next;
                 return this.$router.push({ path: this.$route.query.next || '/transactions', query: queryParams});
             }

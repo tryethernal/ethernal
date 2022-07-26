@@ -1,53 +1,34 @@
+import flushPromises from 'flush-promises';
 import MockHelper from '../MockHelper';
 
 import Block from '@/components/Block.vue';
 
 describe('Block.vue', () => {
-    let helper, db;
+    let helper;
 
     beforeEach(async () => {
         helper = new MockHelper();
     });
 
-    it('Should show the block component', async (done) => {
-        const db = helper.mocks.admin;
-        const blockData = {
-            number: '1',
+    it('Should show the block component', async () => {
+        const block = {
+            number: 1,
             gasLimit: '1000000000',
             timestamp: '1621548462',
-            hash: '0x98c6edb3bb1124680a97661c1f5794d60617abb57bd1e611d81fc5b941f36d30'
-        };
-        const transactionData = {
-            hash: '0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0',
-            timestamp: '1621548462',
-            from: '0x0',
-            to: 'Ox1',
-            blockNumber: 1,
-            value: '0',
-            data: '0xa9059cbb000000000000000000000000c00e94cb662c3520282e6f5717214004a7f268880000000000000000000000000000000000000000000000000000000000000001'
+            hash: '0x98c6edb3bb1124680a97661c1f5794d60617abb57bd1e611d81fc5b941f36d30',
+            transactions: [{ id: 1 }]
         };
 
-        await db.collection('blocks')
-            .doc(blockData.number)
-            .set(blockData);
+        jest.spyOn(helper.mocks.server, 'getBlock')
+            .mockResolvedValue({ data: block });
 
-        await db.collection('transactions')
-            .doc(transactionData.hash)
-            .set(transactionData);
+        const wrapper = helper.mountFn(Block, {
+            propsData: { number: 1 },
+            stubs: ['Transactions-List']
+        });
+        await flushPromises();
 
-        const wrapper = helper.mountFn(Block, { propsData: { number: '1' }});
-        await wrapper.vm.$nextTick();
-
-        setTimeout(() => {
-            expect(wrapper.vm.block).toEqual(blockData);
-            expect(wrapper.vm.transactions.length).toBe(1);
-            expect(wrapper.html()).toMatchSnapshot();
-
-            done();
-        }, 1500);
-    });
-
-    afterEach(async () => {
-        await helper.clearFirebase();
+        expect(wrapper.vm.block).toEqual(block);
+        expect(wrapper.html()).toMatchSnapshot();
     });
 });

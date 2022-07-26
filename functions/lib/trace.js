@@ -1,13 +1,12 @@
 const ethers = require('ethers');
-const { canUserSyncContract, storeContractData, getContractRef, storeTrace } = require('./firebase');
 const { sanitize } = require('./utils');
 
-exports.processTrace = async (userId, workspace, transactionHash, steps) => {
+exports.processTrace = async (userId, workspace, transactionHash, steps, db) => {
     const trace = [];
     for (const step of steps) {
         if (['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2'].indexOf(step.op.toUpperCase()) > -1) {
             let contractRef;
-            const canSync = await canUserSyncContract(userId, workspace);
+            const canSync = await db.canUserSyncContract(userId, workspace);
 
             if (canSync) {
                 const contractData = sanitize({
@@ -15,14 +14,14 @@ exports.processTrace = async (userId, workspace, transactionHash, steps) => {
                     hashedBytecode: step.contractHashedBytecode
                 });
 
-                await storeContractData(userId, workspace, step.address, contractData);
-                contractRef = getContractRef(userId, workspace, step.address);
+                await db.storeContractData(userId, workspace, step.address, contractData);
+                contractRef = db.getContractRef(userId, workspace, step.address);
             }
 
             trace.push(sanitize({ ...step, contract: contractRef }));
         }
     }
-    await storeTrace(userId, workspace, transactionHash, trace);
+    await db.storeTrace(userId, workspace, transactionHash, trace);
 };
 
 exports.parseTrace = async (from, trace, provider) => {

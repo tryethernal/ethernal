@@ -1,62 +1,21 @@
 const fs = require('fs');
-import { mount, createLocalVue } from '@vue/test-utils';
-const firebase = require("@firebase/rules-unit-testing");
+import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
 import Vuex from 'vuex';
 import Vuetify from 'vuetify';
 import VueRouter from 'vue-router';
-import { firestorePlugin } from 'vuefire';
 
-import { dbPlugin } from '@/plugins/firebase';
-import { serverPlugin } from '@/plugins/server';
-import dbMocks from './mocks/db';
-import serverMocks from './mocks/server';
+require('./mocks/db');
+require('./mocks/server');
+require('./mocks/pusher');
+const { dbPlugin } = require('@/plugins/firebase');
+const { serverPlugin } = require('@/plugins/server');
+const { pusherPlugin } = require('@/plugins/pusher');
 
 class MockHelper {
 
     constructor(initialStoreState = {}, mockDb = true, mockServer = true) {
-        this.projectId = `ethernal-${Math.floor(Math.random() * 10000000)}`;
-
         this.localVue = createLocalVue();
 
-        this.mockFirebase();
-        this.initMockStore(initialStoreState);
-        this.initPlugins();
-        this.initMocks(mockDb, mockServer);
-    }
-
-    mountFn(component, options = {}) {
-        return mount(component, {
-            store: this.store,
-            localVue: this.localVue,
-            vuetify: this.vuetify,
-            mocks: this.mocks,
-            router: this.router,
-            ...options
-        });
-    }
-
-    initMocks(mockDb, mockServer) {
-        this.mocks = {}
-        if (mockDb) this.mocks['db'] = dbMocks.init(this.firebase);
-        if (mockServer) this.mocks['server'] = serverMocks;
-        this.mocks['admin'] = dbMocks.init(this.admin);
-    }
-
-    initPlugins() {
-        this.vuetify = new Vuetify();
-        this.router = new VueRouter();
-        this.localVue.use(VueRouter);
-        this.localVue.use(dbPlugin, { store: this.store });
-        this.localVue.use(serverPlugin, { store: this.store });
-        this.localVue.use(firestorePlugin);
-    }
-
-    updateStoreState(key, value) {
-        this.storeState[key] = value;
-    }
-
-    initMockStore(initialState) {
-        this.localVue.use(Vuex);
         this.storeState = {
             user: {},
             currentWorkspace: {
@@ -64,17 +23,55 @@ class MockHelper {
                 chain: 'ethereum',
                 networkId: null,
                 rpcServer: null,
-                localNetwork: true,
                 name: 'Hardhat',
                 settings: {}
             },
-            ...initialState
+            ...initialStoreState
         };
+        this.initPlugins();
+    }
 
+    mountFn(component, options = { getters: {}}) {
+        this.initMockStore();
+        const getters = { ...this.getters, ...options.getters };
+        const actions = this.actions;
+        const store = new Vuex.Store({ getters, actions });
+
+        return mount(component, {
+            store,
+            localVue: this.localVue,
+            vuetify: this.vuetify,
+            router: this.router,
+            ...options
+        });
+    }
+
+    initPlugins() {
+        this.vuetify = new Vuetify();
+        this.router = new VueRouter();
+        this.localVue.use(VueRouter);
+        this.localVue.use(dbPlugin);
+        this.localVue.use(serverPlugin);
+        this.localVue.use(pusherPlugin);
+
+        this.mocks = {
+            db: this.localVue.prototype.db,
+            server: this.localVue.prototype.server,
+            pusher: this.localVue.prototype.pusher
+        };
+    }
+
+    updateStoreState(key, value) {
+        this.storeState[key] = value;
+    }
+
+    initMockStore(initialState, overrideGetters) {
+        this.localVue.use(Vuex);
         this.getters = {
+            theme: jest.fn(),
             blockCount: jest.fn().mockReturnValue(2),
             transactionCount: jest.fn().mockReturnValue(2),
-            currentWorkspace: jest.fn(() => this.storeState.currentWorkspace),
+            currentWorkspace: jest.fn().mockReturnValue(this.storeState.currentWorkspace),
             user: jest.fn(() => {
                 return { ...this.storeState.user, plan: this.storeState.user.plan || 'free' }
             }),
@@ -99,7 +96,8 @@ class MockHelper {
             }),
             currentBlock: jest.fn(() => {
                 return { number: 2 };
-            })
+            }),
+            ...overrideGetters
         };
 
         this.actions = {
@@ -108,45 +106,6 @@ class MockHelper {
             updateBlockCount: jest.fn(),
             updateCurrentBlock: jest.fn()
         };
-
-        this.store = new Vuex.Store({ getters: this.getters, actions: this.actions });
-    }
-
-    mockFirebase() {
-        this.firebase = firebase.initializeTestApp({
-            projectId: this.projectId,
-            databaseName: `rtdb-${this.projectId}`,
-            auth: { uid: '123' }
-        });
-        firebase.loadFirestoreRules({
-            projectId: this.projectId,
-            rules: fs.readFileSync('./firestore.rules.test', 'utf8')
-        })
-        this.admin = firebase.initializeAdminApp({
-            projectId: this.projectId,
-            databaseName: `rtdb-${this.projectId}`,
-        });
-        this.firebase.auth = jest.fn(() => {
-            return {
-                currentUser: {
-                    uid: '123',
-                    metadata: {
-                        creationTime: new Date()
-                    }
-                }
-            }
-        });
-    }
-
-    clearFirebase() {
-        jest.clearAllMocks();
-        const promises = [];
-        promises.push(firebase.clearFirestoreData({ projectId: this.projectId }));
-        firebase.apps().map((app) => {
-            if (app.options_.projectId == this.projectId)
-                promises.push(app.delete());
-        });
-        return Promise.all(promises);
     }
 }
 

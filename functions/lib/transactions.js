@@ -1,8 +1,44 @@
 const ethers = require('ethers');
-let { storeFailedTransactionError, storeContractData, getContractData, storeTransactionMethodDetails, storeTransactionTokenTransfers, getWorkspaceByName, storeTokenBalanceChanges } = require('./firebase');
+let db;
 const { getFunctionSignatureForTransaction } = require('./utils');
 let { getTokenTransfers, getTransactionMethodDetails } = require('./abi');
 let { getProvider, ContractConnector, Tracer } = require('./rpc');
+
+const _getFunctionSignatureForTransaction = (transaction, abi) => {
+    try {
+        if (!transaction || !abi)
+            return null;
+
+        var jsonInterface = new ethers.utils.Interface(abi);
+
+        var parsedTransactionData = jsonInterface.parseTransaction(transaction);
+        var fragment = parsedTransactionData.functionFragment;
+
+        return `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')'
+    } catch(error) {
+        if (error.code == 'INVALID_ARGUMENT')
+            return '';
+    }
+};
+
+const getTxSynced = async (uid, workspace, transaction, receipt, timestamp) => {
+    const sTransactionReceipt = receipt ? _stringifyBns(_sanitize(receipt)) : null;
+    const sTransaction = _stringifyBns(_sanitize(transaction));
+
+    let contractAbi = null;
+    
+    if (sTransactionReceipt && transaction.to && transaction.data != '0x') {
+        const contractData = await db.getContractData(uid, workspace, transaction.to);
+        contractAbi = contractData ? contractData.abi : null
+    }
+
+    return _sanitize({
+       ...sTransaction,
+        receipt: sTransactionReceipt,
+        timestamp: timestamp,
+        functionSignature: contractAbi ? _getFunctionSignatureForTransaction(transaction, contractAbi) : null
+    });
+};
 
 let getBalanceChange = async (address, token, blockNumber, rpcServer) => {
     let currentBalance = ethers.BigNumber.from('0');
@@ -50,55 +86,55 @@ let getBalanceChange = async (address, token, blockNumber, rpcServer) => {
     };
 }
 
-exports.processTransactions = async (userId, workspaceName, transactions) => {
+const processTransactions = async (userId, workspaceName, transactions) => {
     for (let i = 0; i < transactions.length; i++) {
         let contract, tokenTransfers;
         const transaction = transactions[i];
 
         if (transaction.to)
-            contract = await getContractData(userId, workspaceName, transaction.to);
+            contract = await db.getContractData(userId, workspaceName, transaction.to);
 
         if (contract && contract.proxy)
-            contract = await getContractData(userId, workspaceName, contract.proxy);
+            contract = await db.getContractData(userId, workspaceName, contract.proxy);
 
         if (contract && contract.abi) {
             try {
                 const transactionMethodDetails = getTransactionMethodDetails(transaction, contract.abi);
-                await storeTransactionMethodDetails(userId, workspaceName, transaction.hash, transactionMethodDetails);
+                await db.storeTransactionMethodDetails(userId, workspaceName, transaction.hash, transactionMethodDetails);
             } catch(error) {
                 console.log(error)
-                await storeTransactionMethodDetails(userId, workspaceName, transaction.hash, null);
+                await db.storeTransactionMethodDetails(userId, workspaceName, transaction.hash, null);
             }
         }
         else
-            await storeTransactionMethodDetails(userId, workspaceName, transaction.hash, null);
+            await db.storeTransactionMethodDetails(userId, workspaceName, transaction.hash, null);
 
-        const workspace = await getWorkspaceByName(userId, workspaceName);
+        const workspace = await db.getWorkspaceByName(userId, workspaceName);
 
         try {
             tokenTransfers = getTokenTransfers(transaction);
-            await storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, tokenTransfers);
+            await db.storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, tokenTransfers);
 
             if (workspace.public) {
                 for (let i = 0; i < tokenTransfers.length; i++) {
-                    await storeContractData(userId, workspaceName, tokenTransfers[i].token, { address: tokenTransfers[i].token })
+                    await db.storeContractData(userId, workspaceName, tokenTransfers[i].token, { address: tokenTransfers[i].token })
                 }
             }
         } catch(error) {
             console.log(error)
-            await storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, []);
+            await db.storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, []);
         }
 
         if (workspace.public) {
             try {
-                const tracer = new Tracer(workspace.rpcServer);
+                const tracer = new Tracer(workspace.rpcServer, db);
                 await tracer.process(transaction);
                 await tracer.saveTrace(userId, workspaceName);
             } catch(error) {
                 console.log(error);
             }
-            let errorObject;
 
+            let errorObject;
             if (transaction.receipt && transaction.receipt.status == 0) {
                 try {
                     const provider = getProvider(workspace.rpcServer);
@@ -118,7 +154,7 @@ exports.processTransactions = async (userId, workspaceName, transactions) => {
                 }
 
                 if (errorObject)
-                    await storeFailedTransactionError(userId, workspaceName, transaction.hash, errorObject);
+                    await db.storeFailedTransactionError(userId, workspaceName, transaction.hash, errorObject);
             }
         }
 
@@ -143,7 +179,17 @@ exports.processTransactions = async (userId, workspaceName, transactions) => {
             }
 
             if (Object.keys(tokenBalanceChanges).length)
-                await storeTokenBalanceChanges(userId, workspace.name, transaction.hash, tokenBalanceChanges);
+                await db.storeTokenBalanceChanges(userId, workspace.name, transaction.hash, tokenBalanceChanges);
         }
     }
 };
+
+module.exports = (loadedDb) => {
+    db = db || loadedDb;
+
+    return {
+        getFunctionSignatureForTransaction: _getFunctionSignatureForTransaction,
+        getTxSynced: getTxSynced,
+        processTransactions: processTransactions
+    };
+}

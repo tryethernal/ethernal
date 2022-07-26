@@ -119,22 +119,24 @@ export default {
     mounted: function() {
         if (this.justUpgraded) {
             this.subscriptionButtonLoading = true;
-            this.db.currentUser().onSnapshot((doc) => {
-                const updatedUser = doc.data();
-                if (updatedUser.plan == 'premium') {
-                    this.$store.dispatch('updateUserPlan', { plan: updatedUser.plan });
+            this.pusher.onUserUpdated((user) => {
+                console.log(user)
+                if (user.plan == 'premium') {
+                    this.$store.dispatch('updateUserPlan', { plan: 'premium' });
                     this.subscriptionButtonLoading = false;
                 }
-            })
+            }, this);
         }
     },
     methods: {
         openStripePortal: function() {
             this.subscriptionButtonLoading = true;
-            this.server.createStripePortalSession().then(({ data }) => {
-                document.location.href = data.url;
-            })
-            .catch(() => this.subscriptionButtonLoading = false );
+            this.server.createStripePortalSession()
+                .then(({ data }) => {
+                    console.log(data)
+                    document.location.href = data.url
+                })
+                .catch(() => this.subscriptionButtonLoading = false );
         },
         subscribeToPlan: function(plan) {
             this.subscriptionButtonLoading = true;
