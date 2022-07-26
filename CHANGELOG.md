@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2022-07-26
+### Changed
+- Postgres replaces Firestore as the main datastore. RTDB is still kept for now to store contracts AST, but will be removed evenutally.
+- Pusher is used for realtime updates. That means that you'll need to create an account if you want to self-host
+
 ## [1.12.3] - 2022-06-07
 ### Changed
 - Updated ethers.js to 5.6.8
