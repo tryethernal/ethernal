@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ImportContractModal.vue Should let the user import a non verified mainnet contract 1`] = `
-<div role="dialog" class="v-dialog__container">
-  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Import a third-party contract</div>
           <div class="v-card__text">
@@ -31,7 +31,7 @@ exports[`ImportContractModal.vue Should let the user import a non verified mainn
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--flat v-btn--loading v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span></button>
           </div>
         </div>
       </div>
@@ -41,10 +41,10 @@ exports[`ImportContractModal.vue Should let the user import a non verified mainn
 `;
 
 exports[`ImportContractModal.vue Should let the user import a verified mainnet contract 1`] = `
-<div role="dialog" class="v-dialog__container">
-  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Import a third-party contract</div>
           <div class="v-card__text">
@@ -71,7 +71,7 @@ exports[`ImportContractModal.vue Should let the user import a verified mainnet c
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--flat v-btn--loading v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span></button>
           </div>
         </div>
       </div>
@@ -81,10 +81,10 @@ exports[`ImportContractModal.vue Should let the user import a verified mainnet c
 `;
 
 exports[`ImportContractModal.vue Should not warn the user if he is on a premium plan and has already 10 contracts 1`] = `
-<div role="dialog" class="v-dialog__container">
-  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Import a third-party contract</div>
           <div class="v-card__text">
@@ -111,7 +111,7 @@ exports[`ImportContractModal.vue Should not warn the user if he is on a premium 
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--flat v-btn--loading v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span></button>
           </div>
         </div>
       </div>
@@ -121,10 +121,10 @@ exports[`ImportContractModal.vue Should not warn the user if he is on a premium 
 `;
 
 exports[`ImportContractModal.vue Should warn the user if he is on a free plan and has already 10 contracts 1`] = `
-<div role="dialog" class="v-dialog__container">
-  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Import a third-party contract</div>
           <div class="v-card__text">
@@ -155,7 +155,7 @@ exports[`ImportContractModal.vue Should warn the user if he is on a free plan an
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--flat v-btn--text theme--light v-size--default" id="importContract"><span class="v-btn__content">Import</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--text theme--light v-size--default" id="importContract"><span class="v-btn__content">Import</span></button>
           </div>
         </div>
       </div>

@@ -17,19 +17,20 @@ describe('RemoveContractConfirmationModal.vue', () => {
     });
 
     it('Should display an error message if something is wrong', async (done) => {
-        helper.mocks.server.removeContract = () => {
-            return new Promise((_, reject) => reject({ message: 'There is an error'}));
-        };
+        jest.spyOn(helper.mocks.server, 'removeContract').mockRejectedValue({ message: 'There is an error' });
+
         const wrapper = helper.mountFn(RemoveContractConfirmationModal);
         await wrapper.setData({ dialog: true, workspace: 'hardhat', address: '0x123' });
 
         await wrapper.find('#removeContract').trigger('click');
         await wrapper.vm.$nextTick();
+        
         expect(wrapper.html()).toMatchSnapshot();
         done();
     });
 
     it('Should call the removal function', async (done) => {
+        jest.spyOn(helper.mocks.server, 'removeContract').mockResolvedValue();
         const wrapper = helper.mountFn(RemoveContractConfirmationModal);
         await wrapper.setData({ dialog: true, workspace: 'hardhat', address: '0x123' });
 
@@ -41,8 +42,4 @@ describe('RemoveContractConfirmationModal.vue', () => {
         expect(removeContractSpy).toHaveBeenCalled();
         done();
     });
-
-    afterEach(async () => {
-        await helper.clearFirebase();
-    });    
 });

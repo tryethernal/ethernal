@@ -26,7 +26,6 @@
 </template>
 
 <script>
-const ethers = require('ethers');
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
 
@@ -47,29 +46,38 @@ export default Vue.extend({
         this.page = this.$route.path;
         this.isFeedbackFishEnabled = !!process.env.VUE_APP_FEEDBACK_FISH_PID;
 
+        this.server.getBlocks({ page: 1, itemsPerPage: 1 }).then(({ data: { items }}) => {
+            if (items.length) {
+                this.$store.dispatch('updateCurrentBlock', items[0]);
+            }
+        });
+
         if (!this.isPublicExplorer) {
-            this.server.getAccounts().then((data) => data.forEach(this.syncAccount));
             this.processContracts();
-            this.db.onNewContract(this.processContracts);
-            this.db.onNewProcessableTransactions(this.server.processTransactions);
-            this.db.onNewFailedTransactions(this.server.processFailedTransactions);
+            this.processTransactions();
+            this.processFailedTransactions();
+            this.pusher.onNewContract(this.processContracts, this);
+            this.pusher.onNewProcessableTransactions((transaction) => this.server.processTransactions(this.currentWorkspace, [transaction]), this);
+            this.pusher.onNewFailedTransactions((transaction) => this.server.processFailedTransactions([transaction], this.currentWorkspace), this);
         }
-        this.db.onNewBlock((block) => this.$store.dispatch('updateCurrentBlock', block));
+        this.pusher.onNewBlock((block) => this.$store.dispatch('updateCurrentBlock', block), this);
     },
     methods: {
-        syncAccount: function(account) {
-            const lowercasedAccount = account.toLowerCase();
-            this.server
-                .getAccountBalance(lowercasedAccount)
-                .then((data) => {
-                    this.server.syncBalance(this.currentWorkspace.name, lowercasedAccount, ethers.BigNumber.from(data).toString());
-                });
-        },
         processContracts: function() {
             this.processingContracts = true;
             this.server.processContracts(this.currentWorkspace.name)
                 .catch(console.log)
                 .finally(() => this.processingContracts = false );
+        },
+        processTransactions: function() {
+            this.server.getProcessableTransactions()
+                .then(({ data }) => this.server.processTransactions(this.currentWorkspace, data))
+                .catch(console.log);
+        },
+        processFailedTransactions: function() {
+            this.server.getFailedProcessableTransactions()
+                .then(({ data }) => this.server.processFailedTransactions(data, this.currentWorkspace))
+                .catch(console.log);
         }
     },
     computed: {

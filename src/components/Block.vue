@@ -23,7 +23,7 @@
         </v-row>
         <h4>Transactions</h4>
         <v-card outlined>
-            <Transactions-List :transactions="transactions" :loading="loadingTx" />
+            <Transactions-List :count="block.transactions && block.transactions.length" :transactions="block.transactions" :loading="loading" />
         </v-card>
     </v-container>
 </template>
@@ -41,20 +41,14 @@ export default {
         block: {
             gasLimit: 0
         },
-        transactions: [],
-        contract: {
-            abi: {}
-        },
-        loadingTx: true
+        loading: true
     }),
-    watch: {
-        number: {
-            immediate: true,
-            handler(number) {
-                this.$bind('block', this.db.collection('blocks').doc(number));
-                this.$bind('transactions', this.db.collection('transactions').where('blockNumber', '==', parseInt(number))).then(() => this.loadingTx = false);
-            }
-        }
+    mounted: function() {
+        this.loading = true;
+        this.server.getBlock(this.number, true)
+            .then(({ data }) => this.block = data)
+            .catch(console.log)
+            .finally(() => this.loading = false);
     }
 }
 </script>

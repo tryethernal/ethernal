@@ -1,3 +1,4 @@
+import flushPromises from 'flush-promises';
 import MockHelper from '../MockHelper';
 
 import Tokens from '@/components/Tokens.vue';
@@ -5,24 +6,27 @@ import Tokens from '@/components/Tokens.vue';
 describe('Tokens.vue', () => {
     let helper;
 
-    beforeEach(async () => {
+    beforeEach(() => {
         helper = new MockHelper();
-        await helper.mocks.admin.collection('contracts').doc('0x123')
-            .set({ timestamp: '1636557049', address: '0x123', contractName: 'Ethernal Token', token: { name: 'Ethernal', symbol: 'ETL', decimals: 18 }, patterns: ['erc20'] });
-        await helper.mocks.admin.collection('contracts').doc('0x124')
-            .set({ timestamp: '1636557049', address: '0x124', contractName: 'USD Coin', token: { name: 'USDC', symbol: 'USDC', decimals: 6 }, patterns: ['erc20', 'proxy'] });
     });
 
     it('Should display token contracts', async (done) => {
-        const wrapper = helper.mountFn(Tokens);
+        jest.spyOn(helper.mocks.server, 'getContracts')
+            .mockResolvedValue({
+                data: {
+                    items: [
+                        { timestamp: '1636557049', address: '0x123', contractName: 'Ethernal Token', tokenName: 'Ethernal', tokenSymbol: 'ETL', tokenDecimals: 18, patterns: ['erc20'] },
+                        { timestamp: '1636557049', address: '0x124', contractName: 'USD Coin', tokenName: 'USDC', tokenSymbol: 'USDC', tokenDecimals: 6, patterns: ['erc20', 'proxy'] }
+                    ]
+                }
+            });
 
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
-    });
+        const wrapper = helper.mountFn(Tokens, {
+            stubs: ['Hash-Link']
+        });
+        await new Promise(process.nextTick);
 
-    afterEach(async () => {
-        await helper.clearFirebase();
+        expect(wrapper.html()).toMatchSnapshot();
+        done();
     });
 });
