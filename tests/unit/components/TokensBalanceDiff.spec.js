@@ -1,4 +1,5 @@
 const ethers = require('ethers');
+import flushPromises from 'flush-promises';
 import MockHelper from '../MockHelper';
 
 import TokensBalanceDiff from '@/components/TokensBalanceDiff.vue';
@@ -27,20 +28,18 @@ describe('TokensBalanceDiff.vue', () => {
                     }
                 ],
                 blockNumber: '2'
-            }
+            },
+            stubs: ['Hash-Link']
         });
+        await flushPromises();
 
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
+        expect(wrapper.html()).toMatchSnapshot();
+        done();
     });
 
     it('Should display formatted token balances difference', async (done) => {
-        await helper.mocks.admin
-            .collection('contracts')
-            .doc('0xdc64a140aa3e981100a9beca4e685f962f0cf6c9')
-            .set({ token: { decimals: 18, symbol: 'ETL', name: 'Ethernal' }});
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValue({ data: { tokenDecimals: 10, tokenSymbol: 'ETL', tokenName: 'Ethernal' }});
 
         const wrapper = helper.mountFn(TokensBalanceDiff, {
             propsData: {
@@ -60,14 +59,12 @@ describe('TokensBalanceDiff.vue', () => {
                     }
                 ],
                 blockNumber: '2'
-            }
+            },
+            stubs: ['Hash-Link']
         });
+        await flushPromises();
 
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
+        expect(wrapper.html()).toMatchSnapshot();
+        done();
     });
-
-    afterEach(() => helper.clearFirebase());
 });

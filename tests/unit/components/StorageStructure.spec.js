@@ -1,4 +1,5 @@
 import MockHelper from '../MockHelper';
+import flushPromises from 'flush-promises';
 
 import StorageStructure from '@/components/StorageStructure.vue';
 import StorageProp from '../fixtures/StorageProp.json';
@@ -15,12 +16,10 @@ describe('StorageStructure.vue', () => {
             propsData: {
                 storage: StorageProp
             }
-        })
+        });
+        await flushPromises();
+
         expect(wrapper.html()).toMatchSnapshot();
         done();
-    });
-
-    afterEach(async () => {
-        await helper.clearFirebase();
     });
 });

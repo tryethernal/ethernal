@@ -74,17 +74,12 @@ export default {
             { text: 'Change', value: 'change' }
         );
         for (let i = 0; i < this.balanceChanges.length; i++) {
-            this.db
-                .collection('contracts')
-                .doc(this.token)
-                .get()
-                .then(doc => {
-                    const data = doc.data();
+            this.server.getContract(this.token)
+                .then(({ data }) => {
+                    const contract = data;
+                    if (!contract || !contract.tokenDecimals) return;
 
-                    if (!data) return;
-
-                    if (data.token && data.token.decimals)
-                        this.$set(this.decimals, this.balanceChanges[i].address, data.token.decimals);
+                    this.$set(this.decimals, this.balanceChanges[i].address, contract.tokenDecimals);
                 });
         }
     },

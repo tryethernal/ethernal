@@ -3,14 +3,13 @@ import MockHelper from '../MockHelper';
 import Blocks from '@/components/Blocks.vue';
 
 describe('Blocks.vue', () => {
-    let helper, db, blocks, transaction;
+    let helper, blocks;
 
     beforeEach(() => {
         helper = new MockHelper();
-        db = helper.mocks.admin;
     });
 
-    it('Should show the blocks list', async (done) => {
+    it('Should show the blocks list', async () => {
         const blocks = [
             {
                 number: '2',
@@ -36,33 +35,23 @@ describe('Blocks.vue', () => {
             }
         ];
 
-        for (const block of blocks)
-            await db.collection('blocks')
-                .doc(block.number)
-                .set(block);
+        jest.spyOn(helper.mocks.server, 'getBlocks')
+            .mockResolvedValue({ data: { items: blocks, blockCount: 2 }});
 
         const wrapper = helper.mountFn(Blocks);
-        await wrapper.vm.$nextTick();
+        await new Promise(process.nextTick);
 
-        setTimeout(() => {
-            expect(wrapper.vm.blocks).toEqual(blocks);
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
+        expect(wrapper.vm.blocks).toEqual(blocks);
+        expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('should show the loading message when empty blocks list', async (done) => {
-        helper.getters.blockCount.mockReturnValue(0);
+    it('should show the loading message when empty blocks list', async () => {
+        jest.spyOn(helper.mocks.server, 'getBlocks')
+            .mockResolvedValue({ data: { items: [], blockCount: 0 }});
+
         const wrapper = helper.mountFn(Blocks);
-        await wrapper.vm.$nextTick();
+        await new Promise(process.nextTick);
 
-        setTimeout(() => {
-            expect(wrapper.html()).toMatchSnapshot();
-            done();
-        }, 1500);
-    });
-
-    afterEach(async () => {
-        await helper.clearFirebase();
+        expect(wrapper.html()).toMatchSnapshot();
     });
 });

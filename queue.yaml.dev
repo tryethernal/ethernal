@@ -1,4 +1,11 @@
 queue:
-- name: block-sync
-- name: batch-block-sync
-- name: transaction-sync
+- name: cloudFunctionBlockSync
+- name: cloudRunBlockSync
+- name: cloudFunctionTransactionSync
+- name: cloudFunctionBatchBlockSync
+- name: contractVerification
+- name: transactionProcessing
+- name: migration
+- name: contractProcessing
+- name: transactionSync
+- name: blockSync

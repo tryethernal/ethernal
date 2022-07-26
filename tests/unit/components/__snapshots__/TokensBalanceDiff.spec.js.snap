@@ -1,9 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TokensBalanceDiff.vue Should display formatted token balances difference 1`] = `
-<div><span><!----> <a href="#/address/0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" class="">ETL</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" value="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9"></span>
-  <!----></span><br>
+<div>
+  <hash-link-stub withname="true" hash="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" type="address"></hash-link-stub><br>
   <div class="v-data-table theme--light">
     <div class="v-data-table__wrapper">
       <table>
@@ -23,9 +22,8 @@ exports[`TokensBalanceDiff.vue Should display formatted token balances differenc
         </thead>
         <tbody>
           <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" class="">0xf39fd6e5...92266</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" value="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"></span>
-              <!----></span>
+            <td class="text-start">
+              <hash-link-stub hash="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" type="address"></hash-link-stub>
             </td>
             <td class="text-start"><span>
                 99999999880 
@@ -41,9 +39,8 @@ exports[`TokensBalanceDiff.vue Should display formatted token balances differenc
             </td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/0x2d481eeb2ba97955cd081cf218f453a817259ab1" class="">0x2d481eeb...59ab1</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x2d481eeb2ba97955cd081cf218f453a817259ab1" value="0x2d481eeb2ba97955cd081cf218f453a817259ab1"></span>
-              <!----></span>
+            <td class="text-start">
+              <hash-link-stub hash="0x2d481eeb2ba97955cd081cf218f453a817259ab1" type="address"></hash-link-stub>
             </td>
             <td class="text-start"><span>
                 120 
@@ -66,9 +63,8 @@ exports[`TokensBalanceDiff.vue Should display formatted token balances differenc
 `;
 
 exports[`TokensBalanceDiff.vue Should display token balances difference 1`] = `
-<div><span><!----> <a href="#/address/0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" class="">0xdc64a140...cf6c9</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" value="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9"></span>
-  <!----></span><br>
+<div>
+  <hash-link-stub withname="true" hash="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" type="address"></hash-link-stub><br>
   <div class="v-data-table theme--light">
     <div class="v-data-table__wrapper">
       <table>
@@ -88,9 +84,8 @@ exports[`TokensBalanceDiff.vue Should display token balances difference 1`] = `
         </thead>
         <tbody>
           <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" class="">0xf39fd6e5...92266</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" value="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"></span>
-              <!----></span>
+            <td class="text-start">
+              <hash-link-stub hash="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" type="address"></hash-link-stub>
             </td>
             <td class="text-start"><span>
                 99999999880000000000000000000
@@ -106,9 +101,8 @@ exports[`TokensBalanceDiff.vue Should display token balances difference 1`] = `
             </td>
           </tr>
           <tr class="">
-            <td class="text-start"><span><!----> <a href="#/address/0x2d481eeb2ba97955cd081cf218f453a817259ab1" class="">0x2d481eeb...59ab1</a> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x2d481eeb2ba97955cd081cf218f453a817259ab1" value="0x2d481eeb2ba97955cd081cf218f453a817259ab1"></span>
-              <!----></span>
+            <td class="text-start">
+              <hash-link-stub hash="0x2d481eeb2ba97955cd081cf218f453a817259ab1" type="address"></hash-link-stub>
             </td>
             <td class="text-start"><span>
                 120000000000000000000

@@ -7,7 +7,7 @@ exports[`ContractReadMethod.vue Should display a generic error message if the fu
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
-          <legend style="width: 0px;"><span>​</span></legend>
+          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
         </fieldset>
         <div class="v-text-field__slot"><label for="input-72" class="v-label theme--light" style="left: 0px; position: absolute;">address</label><input id="input-72" type="text"></div>
       </div>
@@ -17,7 +17,7 @@ exports[`ContractReadMethod.vue Should display a generic error message if the fu
   <div id="call" style="display: none;"></div>
   <div id="call" class="grey lighten-3 pa-2" style="">
     Error while calling the method
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -28,7 +28,7 @@ exports[`ContractReadMethod.vue Should display the UI to interact with a method 
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
-          <legend style="width: 0px;"><span>​</span></legend>
+          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
         </fieldset>
         <div class="v-text-field__slot"><label for="input-4" class="v-label theme--light" style="left: 0px; position: absolute;">address</label><input id="input-4" type="text"></div>
       </div>
@@ -38,7 +38,7 @@ exports[`ContractReadMethod.vue Should display the UI to interact with a method 
   <div id="call" style="display: none;"></div>
   <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -49,7 +49,7 @@ exports[`ContractReadMethod.vue Should display the error message if one is retur
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
-          <legend style="width: 0px;"><span>​</span></legend>
+          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
         </fieldset>
         <div class="v-text-field__slot"><label for="input-65" class="v-label theme--light" style="left: 0px; position: absolute;">address</label><input id="input-65" type="text"></div>
       </div>
@@ -59,7 +59,7 @@ exports[`ContractReadMethod.vue Should display the error message if one is retur
   <div id="call" style="display: none;"></div>
   <div id="call" class="grey lighten-3 pa-2" style="">
     Wrong parameters
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg v-btn--loading theme--light v-size--default primary"><span class="v-btn__content">Query</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -78,7 +78,7 @@ exports[`ContractReadMethod.vue Should display the result even if it is not an a
   </div>
   <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg v-btn--loading theme--light v-size--default primary"><span class="v-btn__content">Query</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -97,7 +97,7 @@ exports[`ContractReadMethod.vue Should handle big number results 1`] = `
   </div>
   <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg v-btn--loading theme--light v-size--default primary"><span class="v-btn__content">Query</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -123,7 +123,7 @@ exports[`ContractReadMethod.vue Should handle multiple results 1`] = `
   </div>
   <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg v-btn--loading theme--light v-size--default primary"><span class="v-btn__content">Query</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -134,7 +134,7 @@ exports[`ContractReadMethod.vue Should return the result when interacting with t
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
-          <legend style="width: 0px;"><span>​</span></legend>
+          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
         </fieldset>
         <div class="v-text-field__slot"><label for="input-21" class="v-label theme--light" style="left: 0px; position: absolute;">address</label><input id="input-21" type="text"></div>
       </div>
@@ -154,7 +154,7 @@ exports[`ContractReadMethod.vue Should return the result when interacting with t
   </div>
   <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg v-btn--loading theme--light v-size--default primary"><span class="v-btn__content">Query</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -165,7 +165,7 @@ exports[`ContractReadMethod.vue Should work when input is any array 1`] = `
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
-          <legend style="width: -24px;"><span>​</span></legend>
+          <legend style="width: -24px;"><span class="notranslate">​</span></legend>
         </fieldset>
         <div class="v-text-field__slot"><label for="input-10" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">uint256[] values</label><input id="input-10" type="text"></div>
       </div>
@@ -198,7 +198,7 @@ exports[`ContractReadMethod.vue Should work when input is any array 1`] = `
   </div>
   <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg v-btn--loading theme--light v-size--default primary"><span class="v-btn__content">Query</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;
 
@@ -209,7 +209,7 @@ exports[`ContractReadMethod.vue Should work when it is in public explorer mode 1
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
-          <legend style="width: 0px;"><span>​</span></legend>
+          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
         </fieldset>
         <div class="v-text-field__slot"><label for="input-30" class="v-label theme--light" style="left: 0px; position: absolute;">address</label><input id="input-30" type="text"></div>
       </div>
@@ -229,6 +229,6 @@ exports[`ContractReadMethod.vue Should work when it is in public explorer mode 1
   </div>
   <div id="call" class="grey lighten-3 pa-2" style="display: none;">
 
-  </div> <button type="button" class="mt-1 v-btn v-btn--depressed v-btn--flat v-btn--has-bg v-btn--loading theme--light v-size--default primary"><span class="v-btn__content">Query</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+  </div> <button type="button" class="mt-1 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Query</span></button>
 </div>
 `;

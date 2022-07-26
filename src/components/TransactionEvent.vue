@@ -30,18 +30,12 @@ export default {
         contract: null
     }),
     mounted: function() {
-        this.$bind('contract', this.db.collection('contracts').doc(this.log.address.toLowerCase()))
-            .then(() => {
-                if (this.contract.proxy)
-                    this.$bind('contract', this.db.collection('contracts').doc(this.contract.proxy)).then(this.decodeLog);
-                else
-                    this.decodeLog();
+        this.server.getContract(this.log.address)
+            .then(({ data }) => {
+                this.contract = data.proxyContract || data;
+                if (this.contract && this.contract.abi)
+                    this.parsedLog = decodeLog(this.log, this.contract.abi);
             });
-    },
-    methods: {
-        decodeLog: function() {
-            this.parsedLog = decodeLog(this.log, this.contract.abi);
-        }
     }
 }
 </script>

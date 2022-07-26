@@ -4,13 +4,14 @@
             :transactions="transactions"
             :loading="loading"
             :sortBy="currentOptions.sortBy[0]"
-            @pagination="onPagination" />
+            :count="transactionCount"
+            @pagination="onPagination"
+            @update:options="getTransactions" />
     </v-container>
 </template>
 
 <script>
 import TransactionsList from './TransactionsList';
-import { getPaginatedQuery } from '@/lib/utils';
 
 export default {
     name: 'Transactions',
@@ -19,30 +20,37 @@ export default {
     },
     data: () => ({
         transactions: [],
+        transactionCount: 0,
         loading: true,
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] }
     }),
     mounted: function() {
-        const sortDirection = this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc';
-        this.$bind('transactions',
-            this.db.collection('transactions')
-                .orderBy(this.currentOptions.sortBy[0], sortDirection)
-                .limit(this.currentOptions.itemsPerPage)
-        ).then(() => this.loading = false);
+        this.pusher.onNewTransaction(() => this.getTransactions(this.currentOptions), this);
     },
     methods: {
         onPagination: function(options) {
-            if (!this.transactions.length) return;
+            this.getTransactions(options);
+        },
+        getTransactions: function(newOptions) {
             this.loading = true;
-            const query = getPaginatedQuery(
-                this.db.collection('transactions'),
-                this.transactions,
-                this.currentOptions,
-                options
-            );
-            this.$bind('transactions', query, { reset: false }).then(() => this.loading = false);
-            this.currentOptions = options;
-        }
+
+            if (newOptions)
+                this.currentOptions = newOptions;
+
+            const options = {
+                page: this.currentOptions.page,
+                itemsPerPage: this.currentOptions.itemsPerPage,
+                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
+            };
+
+            this.server.getTransactions(options)
+                .then(({ data }) => {
+                    this.transactions = data.items;
+                    this.transactionCount = data.total;
+                })
+                .catch(console.log)
+                .finally(() => this.loading = false);
+        },
     }
 }
 </script>

@@ -3,15 +3,14 @@ import MockHelper from '../MockHelper';
 import AddAccountModal from '@/components/AddAccountModal.vue';
 import flushPromises from 'flush-promises';
 
-describe('AddAccountModal.vue', () => {
-    let helper;
+const helper = new MockHelper();
 
-    beforeEach(() => {
-        helper = new MockHelper();
-    });
+describe('AddAccountModal.vue', () => {
+    beforeEach(() => jest.clearAllMocks());
 
     it('Should be able to add an account from a valid private key', async (done) => {
-        const storeAccountPrivateKeyMock = jest.spyOn(helper.mocks.server, 'storeAccountPrivateKey');
+        const storeAccountPrivateKeyMock = jest.spyOn(helper.mocks.server, 'storeAccountPrivateKey')
+            .mockResolvedValue({ success: true });
         const wrapper = helper.mountFn(AddAccountModal);
 
         await wrapper.setData({ dialog: true });
@@ -19,15 +18,16 @@ describe('AddAccountModal.vue', () => {
         await wrapper.find('#submitAccount').trigger('click');
 
         await setTimeout(() => {
-            expect(storeAccountPrivateKeyMock).toHaveBeenCalled();
-            expect(wrapper.vm.loading).toBe(false);
+            expect(storeAccountPrivateKeyMock).toHaveBeenCalledTimes(1);
             expect(wrapper.html()).toMatchSnapshot();
             done();
         }, 1500);
     });
 
     it('Should be able to add an account from an address', async (done) => {
-        const impersonateAccountMock = jest.spyOn(helper.mocks.server, 'impersonateAccount');
+        const impersonateAccountMock = jest.spyOn(helper.mocks.server, 'impersonateAccount')
+            .mockResolvedValue(true);
+
         const wrapper = helper.mountFn(AddAccountModal);
 
         await wrapper.setData({ dialog: true });
@@ -35,8 +35,7 @@ describe('AddAccountModal.vue', () => {
         await wrapper.find('#submitAccount').trigger('click');
 
         await setTimeout(() => {
-            expect(impersonateAccountMock).toHaveBeenCalled();
-            expect(wrapper.vm.loading).toBe(false);
+            expect(impersonateAccountMock).toHaveBeenCalledTimes(1);
             expect(wrapper.html()).toMatchSnapshot();
             done();
         }, 1500);
@@ -53,9 +52,5 @@ describe('AddAccountModal.vue', () => {
             expect(wrapper.html()).toMatchSnapshot();
             done();
         }, 1500);
-    });
-
-    afterEach(async () => {
-        await helper.clearFirebase();
     });
 });
