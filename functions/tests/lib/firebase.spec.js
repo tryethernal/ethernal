@@ -7,9 +7,7 @@ const {
     storeContractArtifact,
     storeContractDependencies,
     getContractData,
-    getUserByKey,
     getWorkspaceByName,
-    storeApiKey,
     getUser,
     addIntegration,
     removeIntegration,
@@ -258,28 +256,6 @@ describe('removeIntegration', () => {
     });
 });
 
-describe('getUserByKey', () => {
-    it('Should return user data', async () => {
-        await helper.firestore
-            .collection('users')
-            .doc('123')
-            .set({ apiKey: '123', currentWorkspace: 'hardhat' });
-
-        const result = await getUserByKey('123');
-
-        expect(result).toEqual({
-            apiKey: '123',
-            currentWorkspace: 'hardhat',
-            uid: '123'
-        });
-    });
-
-    it('Should return null if no user', async () => {
-        const result = await getUserByKey('123');
-        expect(result).toBeNull();
-    });
-});
-
 describe('createWorkspace', () => {
     it('Should create a new workspace', async () => {
         await createWorkspace('123', 'Ganache', { localNetwork: true, settings: { gasLimit: 1234 }});
@@ -297,24 +273,6 @@ describe('createWorkspace', () => {
                 gasLimit: 1234
             }
         });
-    });
-});
-
-describe('storeApiKey', () => {
-    it('Should store the api key', async () => {
-        await helper.firestore
-            .collection('users')
-            .doc('123')
-            .set({ currentWorkspace: 'hardhat' });
-
-        await storeApiKey('123', 'abcdef');
-
-        const userRef = await helper.firestore
-            .collection('users')
-            .doc('123')
-            .get();
-
-        expect(userRef.data().apiKey).toEqual('abcdef');
     });
 });
 

@@ -130,6 +130,8 @@
 <script>
 import WebFont from 'webfontloader';
 import Vue from 'vue';
+import store from './plugins/store';
+import { pusherPlugin } from './plugins/pusher';
 import { mapGetters } from 'vuex';
 import { auth } from './plugins/firebase';
 import RpcConnector from './components/RpcConnector';
@@ -170,10 +172,10 @@ export default {
         },
         initPublicExplorer: function() {
             if (this.publicExplorer.domain)
-                this.db.getPublicExplorerParamsByDomain(this.publicExplorer.domain)
+                this.server.getPublicExplorerByDomain(this.publicExplorer.domain)
                     .then(this.setupPublicExplorer);
             else
-                this.db.getPublicExplorerParamsBySlug(this.publicExplorer.slug)
+                this.server.getPublicExplorerBySlug(this.publicExplorer.slug)
                     .then(this.setupPublicExplorer);
         },
         updateTabInfo: function(logo, name) {
@@ -184,7 +186,7 @@ export default {
 
             document.title = name;
         },
-        setupPublicExplorer: function(data) {
+        setupPublicExplorer: function({ data }) {
             if (!data)
                 return;
 
@@ -198,7 +200,7 @@ export default {
                     const lightTheme = data.themes.light || {};
                     const darkTheme = data.themes.dark || {};
                     const font = data.themes.font;
-                    this.$vuetify.theme.dark = data.themes.default == 'dark'
+                    this.$vuetify.theme.dark = data.themes.default == 'dark';
 
                     if (data.themes.logo)
                         this.logo = data.themes.logo;
@@ -243,19 +245,21 @@ export default {
                 }
 
                 this.initWorkspace({
-                    userId: data.userId,
-                    name: data.workspace,
+                    firebaseUserId: data.admin.firebaseUserId,
+                    name: data.workspace.name,
                     networkId: data.chainId,
-                    rpcServer: data.rpcServer
+                    rpcServer: data.rpcServer,
+                    id: data.workspaceId
                 });
             });
         },
         initWorkspace: function(data) {
-            if (!data.userId || !data.name) return;
-            const isAdmin = !!auth().currentUser && auth().currentUser.uid == data.userId;
+            if (!data.firebaseUserId || !data.name) return;
+            const isAdmin = !!auth().currentUser && auth().currentUser.uid == data.firebaseUserId;
             this.$store.dispatch('updateOnboardedStatus', true);
             this.$store.dispatch('updateCurrentWorkspace', { isAdmin: isAdmin, ...data })
                 .then(() => {
+                    Vue.use(pusherPlugin, { store: store });
                     this.appBarComponent = 'rpc-connector';
                     this.routerComponent = 'router-view';
                     if (!this.publicExplorer)
@@ -263,44 +267,47 @@ export default {
                 });
         },
         initPrivateExplorer: function() {
-            this.db.currentUser().get().then(userQuery => {
-                const user = userQuery.data();
-                if (!user && !this.isPublicExplorer) {
-                    this.server.createUser(auth().currentUser.uid).then(this.launchOnboarding);
-                }
-                else {
-                    if (this.isPublicExplorer) return;
-
-                    this.$store.dispatch('updateUserPlan', { uid: auth().currentUser.uid, plan: user.plan, email: auth().currentUser.email });
-
-                    if (user.currentWorkspace) {
-                        user.currentWorkspace.get().then((workspaceQuery) => this.initWorkspace({ ...workspaceQuery.data(), name: workspaceQuery.id, userId: this.user.uid }));
+            const firebaseUserId = auth().currentUser.uid;
+            this.$store.dispatch('updateUser', { uid: firebaseUserId, email: auth().currentUser.email });
+            this.db.getIdToken(true).then((token) => {
+                this.$store.dispatch('updateFirebaseIdToken', token);
+                this.server.getCurrentUser().then(({ data }) => {
+                    const user = data;
+                    if (!user && !this.isPublicExplorer) {
+                        this.server.createUser(firebaseUserId).then(this.launchOnboarding);
                     }
                     else {
-                        this.db.workspaces().get().then(wsQuery => {
-                            const workspaces = []
-                            wsQuery.forEach((ws) => workspaces.push({ ...ws.data(), name: ws.id }));
+                        if (this.isPublicExplorer) return;
 
-                            if (workspaces.length) {
-                                this.server.setCurrentWorkspace(workspaces[0].name)
-                                    .then(() => this.initWorkspace({ ...workspaces[0], userId: this.user.uid }));
-                            }
-                            else {
-                                this.launchOnboarding();
-                            }
+                        this.db.getIdToken(true).then((token) => {
+                            this.$store.dispatch('updateFirebaseIdToken', token);
                         });
+
+                        this.$store.dispatch('updateUser', { plan: user.plan, id: user.id });
+
+                        if (user.currentWorkspace)
+                            this.initWorkspace({ ...user.currentWorkspace, firebaseUserId: firebaseUserId });
+                        else {
+                            if (user.workspaces.length > 0)
+                                this.server.setCurrentWorkspace(user.workspaces[0].name)
+                                    .then(() => this.initWorkspace({ ...user.workspaces[0], firebaseUserId: firebaseUserId }));
+                            else
+                                this.launchOnboarding();
+                        }
                     }
-                }
+                });
             });
         }
     },
     watch: {
         '$store.getters.user': function(user, previousUser) {
-            if (!previousUser.uid && !!user.uid) {
+            if (!previousUser.uid && !!user.uid && !this.isPublicExplorer) {
                 this.initPrivateExplorer();
             }
-            if (!user.uid && !this.isPublicExplorer)
+            if (!user.uid && !this.isPublicExplorer) {
+                Vue.use(pusherPlugin, { store: store });
                 this.routerComponent = 'router-view';
+            }
         }
     },
     computed: {

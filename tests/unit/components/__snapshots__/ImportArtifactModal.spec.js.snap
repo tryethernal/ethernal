@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ImportArtifactModal.vue Should let the user edit the name and ABI when parameters are valid 1`] = `
-<div role="dialog" class="v-dialog__container">
-  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Update Contract Metadata</div>
           <div class="v-card__text">
@@ -19,7 +19,7 @@ exports[`ImportArtifactModal.vue Should let the user edit the name and ABI when 
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <fieldset aria-hidden="true">
-                      <legend style="width: -24px;"><span>​</span></legend>
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
                     <div class="v-text-field__slot"><label for="contractName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Contract Name</label><input primary="" id="contractName" type="text"></div>
                   </div>
@@ -29,7 +29,7 @@ exports[`ImportArtifactModal.vue Should let the user edit the name and ABI when 
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <fieldset aria-hidden="true">
-                      <legend style="width: -24px;"><span>​</span></legend>
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
                     <div class="v-text-field__slot"><label for="contractAbi" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">ABI</label><textarea primary="" id="contractAbi" rows="5"></textarea></div>
                   </div>
@@ -40,7 +40,7 @@ exports[`ImportArtifactModal.vue Should let the user edit the name and ABI when 
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--flat v-btn--loading v-btn--text theme--light v-size--default primary--text" id="updateContract"><span class="v-btn__content">Update</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="updateContract"><span class="v-btn__content">Update</span></button>
           </div>
         </div>
       </div>
@@ -50,10 +50,10 @@ exports[`ImportArtifactModal.vue Should let the user edit the name and ABI when 
 `;
 
 exports[`ImportArtifactModal.vue Should let the user upload a file containing contract metadata 1`] = `
-<div role="dialog" class="v-dialog__container">
-  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Update Contract Metadata</div>
           <div class="v-card__text">
@@ -68,7 +68,7 @@ exports[`ImportArtifactModal.vue Should let the user upload a file containing co
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <fieldset aria-hidden="true">
-                      <legend style="width: -24px;"><span>​</span></legend>
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
                     <div class="v-text-field__slot"><label for="contractName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Contract Name</label><input primary="" id="contractName" type="text"></div>
                   </div>
@@ -78,7 +78,7 @@ exports[`ImportArtifactModal.vue Should let the user upload a file containing co
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <fieldset aria-hidden="true">
-                      <legend style="width: -24px;"><span>​</span></legend>
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
                     <div class="v-text-field__slot"><label for="contractAbi" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">ABI</label><textarea primary="" id="contractAbi" rows="5"></textarea></div>
                   </div>
@@ -89,7 +89,7 @@ exports[`ImportArtifactModal.vue Should let the user upload a file containing co
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--flat v-btn--loading v-btn--text theme--light v-size--default primary--text" id="updateContract"><span class="v-btn__content">Update</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="updateContract"><span class="v-btn__content">Update</span></button>
           </div>
         </div>
       </div>
@@ -99,10 +99,10 @@ exports[`ImportArtifactModal.vue Should let the user upload a file containing co
 `;
 
 exports[`ImportArtifactModal.vue Should warn the user if the ABI is not valid 1`] = `
-<div role="dialog" class="v-dialog__container">
-  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Update Contract Metadata</div>
           <div class="v-card__text">
@@ -117,7 +117,7 @@ exports[`ImportArtifactModal.vue Should warn the user if the ABI is not valid 1`
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <fieldset aria-hidden="true">
-                      <legend style="width: -24px;"><span>​</span></legend>
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
                     <div class="v-text-field__slot"><label for="contractName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Contract Name</label><input primary="" id="contractName" type="text"></div>
                   </div>
@@ -127,7 +127,7 @@ exports[`ImportArtifactModal.vue Should warn the user if the ABI is not valid 1`
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <fieldset aria-hidden="true">
-                      <legend style="width: -24px;"><span>​</span></legend>
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
                     <div class="v-text-field__slot"><label for="contractAbi" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">ABI</label><textarea primary="" id="contractAbi" rows="5"></textarea></div>
                   </div>
@@ -138,7 +138,7 @@ exports[`ImportArtifactModal.vue Should warn the user if the ABI is not valid 1`
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text" id="updateContract"><span class="v-btn__content">Update</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="updateContract"><span class="v-btn__content">Update</span></button>
           </div>
         </div>
       </div>
@@ -148,10 +148,10 @@ exports[`ImportArtifactModal.vue Should warn the user if the ABI is not valid 1`
 `;
 
 exports[`ImportArtifactModal.vue Should warn the user if the ABI is not valid json 1`] = `
-<div role="dialog" class="v-dialog__container">
-  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Update Contract Metadata</div>
           <div class="v-card__text">
@@ -166,7 +166,7 @@ exports[`ImportArtifactModal.vue Should warn the user if the ABI is not valid js
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <fieldset aria-hidden="true">
-                      <legend style="width: -24px;"><span>​</span></legend>
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
                     <div class="v-text-field__slot"><label for="contractName" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Contract Name</label><input primary="" id="contractName" type="text"></div>
                   </div>
@@ -176,7 +176,7 @@ exports[`ImportArtifactModal.vue Should warn the user if the ABI is not valid js
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <fieldset aria-hidden="true">
-                      <legend style="width: -24px;"><span>​</span></legend>
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
                     <div class="v-text-field__slot"><label for="contractAbi" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">ABI</label><textarea primary="" id="contractAbi" rows="5"></textarea></div>
                   </div>
@@ -187,7 +187,7 @@ exports[`ImportArtifactModal.vue Should warn the user if the ABI is not valid js
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text" id="updateContract"><span class="v-btn__content">Update</span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="updateContract"><span class="v-btn__content">Update</span></button>
           </div>
         </div>
       </div>
@@ -197,10 +197,10 @@ exports[`ImportArtifactModal.vue Should warn the user if the ABI is not valid js
 `;
 
 exports[`ImportArtifactModal.vue Should warn the user if the file is invalid 1`] = `
-<div role="dialog" class="v-dialog__container">
-  <div role="document" tabindex="0" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Update Contract Metadata</div>
           <div class="v-card__text">
@@ -215,7 +215,7 @@ exports[`ImportArtifactModal.vue Should warn the user if the file is invalid 1`]
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <fieldset aria-hidden="true">
-                      <legend style="width: 0px;"><span>​</span></legend>
+                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                     </fieldset>
                     <div class="v-text-field__slot"><label for="contractName" class="v-label theme--light" style="left: 0px; position: absolute;">Contract Name</label><input primary="" id="contractName" type="text"></div>
                   </div>
@@ -225,7 +225,7 @@ exports[`ImportArtifactModal.vue Should warn the user if the file is invalid 1`]
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <fieldset aria-hidden="true">
-                      <legend style="width: 0px;"><span>​</span></legend>
+                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                     </fieldset>
                     <div class="v-text-field__slot"><label for="contractAbi" class="v-label theme--light" style="left: 0px; position: absolute;">ABI</label><textarea primary="" id="contractAbi" rows="5"></textarea></div>
                   </div>
@@ -236,7 +236,7 @@ exports[`ImportArtifactModal.vue Should warn the user if the file is invalid 1`]
             </div>
           </div>
           <div class="v-card__actions">
-            <div class="spacer"></div> <button type="button" class="v-btn v-btn--flat v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--flat v-btn--loading v-btn--text theme--light v-size--default primary--text" id="updateContract"><span class="v-btn__content">Update</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button>
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="updateContract"><span class="v-btn__content">Update</span></button>
           </div>
         </div>
       </div>

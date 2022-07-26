@@ -3,19 +3,8 @@ const { parseTrace, processTrace } = require('./trace');
 
 let getProvider = function(url) {
     const rpcServer = new URL(url);
-    var urlInfo;
-    var provider = ethers.providers.WebSocketProvider;
 
-    if (rpcServer.username != '' && rpcServer.password != '') {
-        urlInfo = {
-            url: `${rpcServer.origin}${rpcServer.pathName ? rpcServer.pathName : ''}`,
-            user: rpcServer.username,
-            password: rpcServer.password
-        };
-    }
-    else {
-        urlInfo = rpcServer.href;
-    }
+    let provider = ethers.providers.WebSocketProvider;
 
     if (rpcServer.protocol == 'http:' || rpcServer.protocol == 'https:') {
         provider = ethers.providers.JsonRpcProvider;
@@ -24,7 +13,7 @@ let getProvider = function(url) {
         provider = ethers.providers.WebSocketProvider;
     }
 
-    return new provider(urlInfo);
+    return new provider(url);
 };
 
 class ProviderConnector {
@@ -43,9 +32,10 @@ class ProviderConnector {
 }
 
 class Tracer {
-    constructor(server) {
+    constructor(server, dbInstance) {
         if (!server) throw '[Tracer] Missing parameter';
         this.provider = getProvider(server);
+        this.db = dbInstance;
     }
 
     async process(transaction) {
@@ -63,7 +53,7 @@ class Tracer {
 
     async saveTrace(userId, workspace) {
         try {
-            await processTrace(userId, workspace, this.transaction.hash, this.parsedTrace);
+            await processTrace(userId, workspace, this.transaction.hash, this.parsedTrace, this.db);
         } catch(error) {
             console.log(error);
         }

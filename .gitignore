@@ -33,3 +33,5 @@ get-pip.py
 *.log
 .firebase/*.cache
 output.js
+
+run/helm_chart_values/pgbouncer-values.yaml

@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 const Web3 = require('web3');
 const Decoder = require('@truffle/decoder');
+const axios = require('axios');
 
 import { Storage } from '../lib/storage';
 import { functions } from './firebase';
@@ -25,7 +26,7 @@ const serverFunctions = {
     },
     _getWeb3Provider: function(url) {
         const rpcServer = new URL(url);
-        var provider;
+        let provider;
         if (rpcServer.protocol == 'http:' || rpcServer.protocol == 'https:') {
             provider = Web3.providers.HttpProvider;
         }
@@ -36,20 +37,7 @@ const serverFunctions = {
     },
     _getProvider: function(url) {
         const rpcServer = new URL(url);
-        var urlInfo;
-        var provider = ethers.providers.WebSocketProvider;
-
-        if (rpcServer.username != '' && rpcServer.password != '') {
-            urlInfo = {
-                url: `${rpcServer.origin}${rpcServer.pathName ? rpcServer.pathName : ''}`,
-                user: rpcServer.username,
-                password: rpcServer.password
-            };
-        }
-        else {
-            urlInfo = rpcServer.href;
-        }
-
+        let provider;
         if (rpcServer.protocol == 'http:' || rpcServer.protocol == 'https:') {
             provider = ethers.providers.JsonRpcProvider;
         }
@@ -57,7 +45,7 @@ const serverFunctions = {
             provider = ethers.providers.WebSocketProvider;
         }
 
-        return new provider(urlInfo);
+        return new provider(url);
     },
     _fetchTokenInfo: async function(contract, rpcServer) {
         let decimals = [], symbol = [], name = [];
@@ -109,7 +97,7 @@ const serverFunctions = {
             throw { reason: reason };
         }
     },
-    getAccounts: async function(data) {
+    getRpcAccounts: async function(data) {
         try {
             const rpcProvider = new serverFunctions._getProvider(data.rpcServer);
             const accounts = await rpcProvider.listAccounts();
@@ -178,6 +166,7 @@ const serverFunctions = {
             });
 
             if (data.options.pkey) {
+                console.log(data.options.pkey)
                 signer = new ethers.Wallet(data.options.pkey, provider);
             }
             else {
@@ -212,15 +201,7 @@ const serverFunctions = {
 
             const pendingTx = await contract[data.method](...Object.values(data.params), options);
 
-            let trace = null;
-
-            if (data.shouldTrace)
-                trace = await serverFunctions.traceTransaction(data.rpcServer, pendingTx.hash);
-
-            return sanitize({
-                pendingTx: pendingTx,
-                trace: trace
-            });
+            return pendingTx;
         } catch(error) {
             console.log(error)
             const parsedError = JSON.parse(JSON.stringify(error));
@@ -312,10 +293,7 @@ const serverFunctions = {
                 currentBalance = res[0];
             else
                 throw 'Not a big number result'
-        } catch(_error) {
-            console.log(_error)
-            return null;
-        }
+        } catch(_error) {/* */}
 
         if (block > 1) {
             try {
@@ -326,14 +304,12 @@ const serverFunctions = {
                     params: { 0: account },
                     rpcServer: rpcServer
                 });
+
                 if (ethers.BigNumber.isBigNumber(res[0]))
                     previousBalance = res[0];
                 else
                     throw 'Not a big number result'
-            } catch(_error) {
-                console.log(_error)
-                return null;
-            }
+            } catch(_error) {/* */}
         }
 
         return {
@@ -364,13 +340,213 @@ const serverFunctions = {
 
 export const serverPlugin = {
     install(Vue, options) {
-        var store = options.store;
+        const store = options.store;
 
-        var _rpcServer = function() {
+        const _rpcServer = function() {
             return store.getters.currentWorkspace.rpcServer;
         };
 
         Vue.prototype.server = {
+            getBlocks(options) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/blocks`;
+                return axios.get(resource, { params });
+            },
+
+            getBlock(number, withTransactions = true) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    withTransactions: withTransactions
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/blocks/${number}`;
+                return axios.get(resource, { params });
+            },
+
+            getTransactions(options) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions`;
+                return axios.get(resource, { params });
+            },
+
+            getTransaction(hash) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${hash}`;
+                return axios.get(resource, { params });
+            },
+
+            getContracts(options) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts`;
+                return axios.get(resource, { params });
+            },
+
+            getContract(address) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}`;
+                return axios.get(resource, { params });
+            },
+
+            getAddressTransactions(address, options) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/addresses/${address}/transactions`;
+                return axios.get(resource, { params });
+            },
+
+            getAccounts(options) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/accounts`;
+                return axios.get(resource, { params });
+            },
+
+            getCurrentUser() {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/me`;
+                return axios.get(resource, { params });
+            },
+
+            // setCurrentWorkspace(workspace) {
+            //     const data = {
+            //         firebaseAuthToken: store.getters.firebaseIdToken,
+            //         firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+            //         workspace: workspace
+            //     };
+            //     const resource = `${process.env.VUE_APP_API_ROOT}/api/users/me/setCurrentWorkspace`;
+            //     return axios.post(resource, { data });
+            // },
+
+            getPublicExplorerByDomain(domain) {
+                const params = {
+                    domain: domain
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers`;
+                return axios.get(resource, { params });
+            },
+
+            getPublicExplorerBySlug(slug) {
+                const params = {
+                    slug: slug
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers`;
+                return axios.get(resource, { params });
+            },
+
+            getProcessableTransactions() {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/processable`;
+                return axios.get(resource, { params });
+            },
+
+            getFailedProcessableTransactions() {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/failedProcessable`;
+                return axios.get(resource, { params });
+            },
+
+            // createWorkspace(name, workspaceData) {
+            //     const data = {
+            //         firebaseAuthToken: store.getters.firebaseIdToken,
+            //         firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+            //         data: {
+            //             name: name,
+            //             workspaceData: workspaceData
+            //         }
+            //     };
+            //     const resource = `${process.env.VUE_APP_API_ROOT}/api/workspaces`;
+            //     return axios.post(resource, { data });
+            // },
+
+            getWorkspaces() {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/workspaces`;
+                return axios.get(resource, { params });
+            },
+
+            syncBalance(address, balance) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    balance: balance
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/accounts/${address}/syncBalance`;
+                return axios.post(resource, { data });
+            },
+
+            createStripeCheckoutSession(plan) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    plan: plan
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/createCheckoutSession`;
+                return axios.post(resource, { data });
+            },
+
+            createStripePortalSession() {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/createPortalSession`;
+                return axios.post(resource, { data });
+            },
+
+            setCurrentWorkspace: function(workspace) {
+                return functions.httpsCallable('setCurrentWorkspace')({ name: workspace });
+            },
             getProductRoadToken: function() {
                 return functions.httpsCallable('getProductRoadToken')();
             },
@@ -386,23 +562,11 @@ export const serverPlugin = {
             removeContract: function(workspace, address) {
                 return functions.httpsCallable('removeContract')({ workspace: workspace, address: address });
             },
-            createStripePortalSession: function() {
-                return functions.httpsCallable('createStripePortalSession')();
-            },
-            createStripeCheckoutSession: function(plan) {
-                return functions.httpsCallable('createStripeCheckoutSession')({ plan: plan });
-            },
             resetWorkspace: function(name) {
                 return functions.httpsCallable('resetWorkspace')({ workspace: name })
             },
             updateWorkspaceSettings: function(workspace, settings) {
                 return functions.httpsCallable('updateWorkspaceSettings')({ workspace: workspace, settings: settings });
-            },
-            setCurrentWorkspace: function(name) {
-                return functions.httpsCallable('setCurrentWorkspace')({ name: name });
-            },
-            syncBalance: function(workspace, account, balance) {
-                return functions.httpsCallable('syncBalance')({ workspace: workspace, account: account, balance: balance });
             },
             createWorkspace: function(name, data) {
                 return functions.httpsCallable('createWorkspace')({ name: name, workspaceData: data });
@@ -452,7 +616,7 @@ export const serverPlugin = {
                     for (let i = 0; i < transactions.length; i++) {
                         const transaction = transactions[i];
 
-                        if (transaction.receipt.status === 0) {
+                        if (transaction.receipt.status === 0 || transaction.receipt.status === false) {
                             serverFunctions.fetchErrorData(transaction, workspace.rpcServer)
                                 .then((result) => {
                                     return functions.httpsCallable('syncFailedTransactionError')({ workspace: workspace.name, transaction: transaction.hash, error: result });
@@ -491,7 +655,7 @@ export const serverPlugin = {
                         }
 
                         if (Object.keys(tokenBalanceChanges).length)
-                            return functions.httpsCallable('syncTokenBalanceChanges')({ workspace: workspace.name, transaction: transaction.hash, tokenBalanceChanges: tokenBalanceChanges });
+                            functions.httpsCallable('syncTokenBalanceChanges')({ workspace: workspace.name, transaction: transaction.hash, tokenBalanceChanges: tokenBalanceChanges });
                     }
                 } catch(error) {
                     console.log(error);
@@ -514,6 +678,7 @@ export const serverPlugin = {
                     for (var i = 0; i < endpoints.length; i++) {
                         const web3Rpc = new Web3(serverFunctions._getWeb3Provider(endpoints[i]));
                         var networkId = await web3Rpc.eth.net.getId().catch(() => {});
+                        console.log(networkId)
                         if (networkId) {
                             res.push(endpoints[i])
                         }
@@ -532,14 +697,6 @@ export const serverPlugin = {
                         .catch(reject)
                 });
             },
-            getAccounts: function() {
-                return new Promise((resolve, reject) => {
-                    serverFunctions
-                        .getAccounts({ rpcServer: _rpcServer() })
-                        .then(resolve)
-                        .catch(reject)
-                });
-            },
             getAccountBalance: function(account) {
                 return new Promise((resolve, reject) => {
                     serverFunctions
@@ -552,6 +709,14 @@ export const serverPlugin = {
                 return new Promise((resolve, reject) => {
                     serverFunctions
                         .initRpcServer({ rpcServer: rpcServer })
+                        .then(resolve)
+                        .catch(reject)
+                });
+            },
+            getRpcAccounts: function(rpcServer) {
+                return new Promise((resolve, reject) => {
+                    serverFunctions
+                        .getRpcAccounts({ rpcServer: rpcServer })
                         .then(resolve)
                         .catch(reject)
                 });

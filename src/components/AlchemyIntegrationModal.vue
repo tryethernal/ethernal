@@ -74,7 +74,7 @@ export default {
             })
         },
         close: function() {
-            this.resolve(false);
+            this.resolve(!!this.token);
             this.reset();
         },
         reset: function() {

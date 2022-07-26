@@ -1,3 +1,4 @@
+import flushPromises from 'flush-promises';
 import MockHelper from '../MockHelper';
 
 import TraceStep from '@/components/TraceStep.vue';
@@ -10,17 +11,14 @@ describe('TraceStep.vue', () => {
         helper = new MockHelper();
     });
 
-    it('Should display the formatted step', async (done) => {
+    it('Should display the formatted step', () => {
         const wrapper = helper.mountFn(TraceStep, {
             propsData: {
                 step: TraceStepProp
-            }
+            },
+            stubs: ['Hash-Link']
         });
-        expect(wrapper.html()).toMatchSnapshot();
-        done();
-    });
 
-    afterEach(async () => {
-        await helper.clearFirebase();
+        expect(wrapper.html()).toMatchSnapshot();
     });
 });

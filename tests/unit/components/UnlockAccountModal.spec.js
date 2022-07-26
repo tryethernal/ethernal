@@ -16,12 +16,13 @@ describe('UnlockAccountModal.vue', () => {
     });
 
     it('Should let you unlock with a private key', async (done) => {
+        jest.spyOn(ethers, 'Wallet').mockImplementation(() => { return { address: '0x123' }});
         const wrapper = helper.mountFn(UnlockAccountModal);
 
         await wrapper.setData({ options: { address: '0x123' }, dialog: true });
         await wrapper.find('#privateKey').setValue('0x456');
         await wrapper.find('#unlockAccount').trigger('click');
-        await wrapper.vm.$nextTick();
+        await new Promise(process.nextTick);
 
         expect(wrapper.vm.successMessage).toBe('Account unlocked.')
         expect(wrapper.html()).toMatchSnapshot();
@@ -30,13 +31,13 @@ describe('UnlockAccountModal.vue', () => {
     });
 
     it('Should display a warning if address mismatch', async (done) => {
-        ethers.Wallet.mockImplementation(() => { return { address: '0xabc' }});
+        jest.spyOn(ethers, 'Wallet').mockImplementation(() => { return { address: '0xabc' }});
         const wrapper = helper.mountFn(UnlockAccountModal);
 
         await wrapper.setData({ options: { address: '0x123' }, dialog: true });
         await wrapper.find('#privateKey').setValue('0x456');
         await wrapper.find('#unlockAccount').trigger('click');
-        await wrapper.vm.$nextTick();
+        await new Promise(process.nextTick);
 
         expect(wrapper.vm.errorMessage).toBe(`Private key doesn't match the address.`);
         expect(wrapper.html()).toMatchSnapshot();
@@ -45,21 +46,17 @@ describe('UnlockAccountModal.vue', () => {
     });
 
     it('Should display a warning if private key format is incorrect', async (done) => {
-        ethers.Wallet.mockImplementation(() => { throw { code: 'INVALID_ARGUMENT' }});
+        jest.spyOn(ethers, 'Wallet').mockImplementation(() => { throw { code: 'INVALID_ARGUMENT' }});
         const wrapper = helper.mountFn(UnlockAccountModal);
 
         await wrapper.setData({ options: { address: '0x123' }, dialog: true });
         await wrapper.find('#privateKey').setValue('ethernal');
         await wrapper.find('#unlockAccount').trigger('click');
-        await wrapper.vm.$nextTick();
+        await new Promise(process.nextTick);
 
         expect(wrapper.vm.errorMessage).toBe(`Invalid private key.`);
         expect(wrapper.html()).toMatchSnapshot();
 
         done();
     });    
-
-    afterEach(async () => {
-        await helper.clearFirebase();
-    });
 });
