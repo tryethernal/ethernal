@@ -5,6 +5,7 @@
             :loading="loading"
             :currentAddress="address"
             :sortBy="currentOptions.sortBy[0]"
+            :count="transactionCount"
             @pagination="onPagination"
             @update:options="getTransactions" />
     </v-container>

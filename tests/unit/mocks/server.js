@@ -63,7 +63,7 @@ jest.mock('@/plugins/server', () => ({
                         wait: () => new Promise((resolve) => resolve({ status: true }))
                     }
 
-                    return new Promise((resolve) => resolve({ pendingTx: pendingTx }));
+                    return new Promise((resolve) => resolve(pendingTx));
                 }),
 
                 enableWorkspaceApi: () => {

@@ -51,6 +51,7 @@ const getWorkspaceContractById = async (workspaceId, contractId) => {
 const getWorkspaceBlock = async (workspaceId, number, withTransactions) => {
     try {
         const workspace = await Workspace.findByPk(workspaceId);
+
         const blocks = withTransactions ?
             await workspace.getBlocks({
                 where: { number: number },
@@ -61,6 +62,7 @@ const getWorkspaceBlock = async (workspaceId, number, withTransactions) => {
                 }
             }) :
             await workspace.getBlocks({ where: { number: number }});
+
         return blocks[0].toJSON();
     } catch(error) {
         writeLog({

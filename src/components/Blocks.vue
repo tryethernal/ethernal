@@ -6,9 +6,9 @@
             :sort-by="currentOptions.sortBy[0]"
             :must-sort="true"
             :sort-desc="true"
+            :server-items-length="blockCount"
             :footer-props="{
-                itemsPerPageOptions: [10, 25, 100],
-                'page-text': ''
+                itemsPerPageOptions: [10, 25, 100]
             }"
             :headers="headers"
             @update:options="getBlocks">

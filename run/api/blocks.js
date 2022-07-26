@@ -46,7 +46,7 @@ router.post('/', authMiddleware, async (req, res) => {
         var syncedBlock = stringifyBns(sanitize(block));
 
         const storedBlock = await db.storeBlock(data.uid, data.workspace, syncedBlock);
-        // TODO: Bill usage for if empty block
+        // TODO: Bill usage if empty block
 
         res.sendStatus(200);
     } catch(error) {

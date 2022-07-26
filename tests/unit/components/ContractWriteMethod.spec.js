@@ -109,7 +109,7 @@ describe('ContractWriteMethod.vue', () => {
 
     it('Should display only the tx hash when it succeeds without a receipt', async () => {
         jest.spyOn(helper.mocks.server, 'callContractWriteMethod')
-            .mockResolvedValue({ pendingTx: { hash: '0xabcd' }});
+            .mockResolvedValue({ hash: '0xabcd' });
 
         const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
 

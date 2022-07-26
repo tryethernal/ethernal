@@ -23,7 +23,7 @@
         </v-row>
         <h4>Transactions</h4>
         <v-card outlined>
-            <Transactions-List :transactions="block.transactions" :loading="loading" />
+            <Transactions-List :count="block.transactions && block.transactions.length" :transactions="block.transactions" :loading="loading" />
         </v-card>
     </v-container>
 </template>
