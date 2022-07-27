@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2022-07-27
+### Fixed
+- Default contract call options
+
 ## [2.0.0] - 2022-07-26
 ### Changed
 - Postgres replaces Firestore as the main datastore. RTDB is still kept for now to store contracts AST, but will be removed evenutally.
