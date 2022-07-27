@@ -235,6 +235,29 @@ module.exports = (sequelize, DataTypes) => {
             return this.createAccount(newAccount);
     }
 
+    findContractByText(text) {
+        return this.getContracts({
+            attributes: ['id', 'address', 'name', 'tokenName', 'tokenSymbol', 'patterns', 'verificationStatus'],
+            where: {
+                [Op.or]: [
+                    { name: { [Op.substring]: text } },
+                    { tokenName: { [Op.substring]: text } },
+                    { tokenSymbol: { [Op.substring]: text } },
+                ]
+            }
+        })
+    }
+
+    async findBlockByHash(hash) {
+        const blocks = await this.getBlocks({
+            where: {
+                hash: hash
+            }
+        });
+
+        return blocks.length ? blocks[0] : null;
+    }
+
     async findTransaction(hash) {
         const transactions = await this.getTransactions({
             where: {
@@ -307,14 +330,20 @@ module.exports = (sequelize, DataTypes) => {
             ]
         });
 
-        return transactions.length ? transactions[0] :  null;
+        return transactions.length ? transactions[0] : null;
     }
 
-    async findBlockByNumber(number) {
+    async findBlockByNumber(number, withTransactions = false) {
+        const include = withTransactions ? [{
+            model: sequelize.models.Transaction,
+            attributes: ['id', 'from', 'to', 'hash'],
+            as: 'transactions'
+        }] : [];
         const blocks = await this.getBlocks({
             where: {
                 number: number
-            }
+            },
+            include: include
         });
         return blocks[0];
     }
