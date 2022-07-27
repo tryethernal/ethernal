@@ -272,9 +272,9 @@ export default {
     created: function() {
         this.server.getAccountBalance(this.lowerHash).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
 
-        this.callOptions.from = this.currentWorkspace.settings.defaultAccount;
-        this.callOptions.gasLimit = this.currentWorkspace.settings.gasLimit;
-        this.callOptions.gasPrice = this.currentWorkspace.settings.gasPrice;
+        this.callOptions.from = this.currentWorkspace.defaultAccount;
+        this.callOptions.gasLimit = this.currentWorkspace.gasLimit;
+        this.callOptions.gasPrice = this.currentWorkspace.gasPrice;
 
         if (!this.tab) {
             this.tab = 'transactions';
