@@ -48,7 +48,7 @@ export default {
                                     name: contract.tokenName,
                                     symbol: contract.tokenSymbol
                                 });
-                            this.verified = !!contract.verifiedStatus;
+                            this.verified = contract.verificationStatus == 'success';
                             this.contractName = contract.name;
 
                         })
