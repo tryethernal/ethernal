@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.2] - 2022-07-28
+### Fixed
+- Error was thrown when loading contract page with no accounts available
+- Contract verification was not shown in UI
+
 ## [2.0.1] - 2022-07-27
 ### Fixed
 - Default contract call options
