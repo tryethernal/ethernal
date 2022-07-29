@@ -9,8 +9,8 @@ module.exports = ({ logName = 'app', severity = 'WARNING', functionName, error, 
     if (isProductionEnvironment) {
         logging = logging || new Logging({ projectId });
         const logger = logging.log(logName);
-        const message = error.message || '';
-        const stackTrace = error.stack || {}
+        const message = error && error.message || '';
+        const stackTrace = error && error.stack || {}
         return logger.write(
             logger.entry({
                 severity: severity,

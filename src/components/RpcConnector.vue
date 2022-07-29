@@ -5,14 +5,42 @@
             <v-row v-show="showSearchBar">
                 <v-col cols="12">
                     <v-autocomplete hide-details="auto" dense class="ml-2" append-icon=""
-                        v-model="model"
                         :items="searchItems"
                         :loading="isSearchLoading"
                         :search-input.sync="search"
-                        item-text="hash"
+                        hide-no-data
+                        hide-selected
+                        no-filter
+                        autofocus
                         return-object>
                         <template v-slot:item="data">
-                            {{ data.item.blockNumber }}
+                            <v-list-item-content v-show="data.item.type == 'transaction'">
+                                <v-list-item-title>Transaction</v-list-item-title>
+                                <v-list-item-subtitle>{{ data.item.data.hash }}</v-list-item-subtitle>
+                            </v-list-item-content>
+
+                            <v-list-item-content v-show="data.item.type == 'block'">
+                                <v-list-item-title>Block #{{ data.item.data.number }}</v-list-item-title>
+                                <v-list-item-subtitle>Hash: {{ data.item.data.hash }}</v-list-item-subtitle>
+                                <v-list-item-subtitle>Transactions count: {{ data.item.data.transactionsCount }}</v-list-item-subtitle>
+                            </v-list-item-content>
+
+                            <v-list-item-content v-show="data.item.type == 'contract'">
+                                <v-list-item-title>Contract</v-list-item-title>
+                                <v-list-item-subtitle v-if="data.item.data.name">{{ data.item.data.name }} - {{ data.item.data.address }}</v-list-item-subtitle>
+                                <v-list-item-subtitle v-else>{{ data.item.data.address }}</v-list-item-subtitle>
+
+                                <v-divider v-if="data.item.data.tokenSymbol || data.item.data.tokenName" class="my-2"></v-divider>
+
+                                <v-list-item-title v-if="data.item.data.tokenSymbol || data.item.data.tokenName">Token Info</v-list-item-title>
+                                <v-list-item-subtitle v-if="data.item.data.tokenSymbol">Symbol: {{ data.item.data.tokenSymbol }}</v-list-item-subtitle>
+                                <v-list-item-subtitle v-if="data.item.data.tokenName">Name: {{ data.item.data.tokenName }}</v-list-item-subtitle>
+                                <v-list-item-subtitle v-if="data.item.data.patterns.length">
+                                    <v-chip v-for="(pattern, idx) in data.item.data.patterns" :key="idx" x-small class="success mr-2">
+                                        {{ formatContractPattern(pattern) }}
+                                    </v-chip>
+                                </v-list-item-subtitle>
+                            </v-list-item-content>
                         </template>
                     </v-autocomplete>
                 </v-col>
@@ -53,6 +81,7 @@ import { mapGetters } from 'vuex';
 
 import { auth } from '../plugins/firebase.js';
 import { bus } from '../bus.js';
+import { formatContractPattern } from '@/lib/utils';
 
 export default Vue.extend({
     name: 'RpcConnector',
@@ -61,6 +90,7 @@ export default Vue.extend({
         searchItems: [],
         isSearchLoading: false,
         search: null,
+        searchType: null,
         showSearchBar: false,
         processingContracts: false,
         page: null,
@@ -90,6 +120,10 @@ export default Vue.extend({
         this.pusher.onNewBlock((block) => this.$store.dispatch('updateCurrentBlock', block), this);
     },
     methods: {
+        formatContractPattern,
+        getItemText: function(val) {
+            return String(val.data.id);
+        },
         processContracts: function() {
             this.processingContracts = true;
             this.server.processContracts(this.currentWorkspace.name)
@@ -109,21 +143,23 @@ export default Vue.extend({
     },
     watch: {
         search: function(val) {
-            if (!val || this.isSearchLoading) return;
+            if (!val) return this.searchItems = [];
+            if (val === this.model) return;
+
             this.isSearchLoading = true;
-            let searchType = 'text';
+            this.searchType = 'text';
             if (val.startsWith('0x')) {
                 if (val.length == 66) {
-                    searchType = 'hash';
+                    this.searchType = 'hash';
                 }
                 else if (val.length == 42) {
-                    searchType = 'address';
+                    this.searchType = 'address';
                 }
             }
             else if (!isNaN(parseFloat(val)) && parseFloat(val) % 1 === 0) {
-                searchType = 'number';
+                this.searchType = 'number';
             }
-            this.server.search(searchType, val)
+            this.server.search(this.searchType, val)
                 .then(({ data }) => {
                     console.log(data);
                     this.searchItems = data;

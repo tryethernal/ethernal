@@ -1,5 +1,6 @@
 const { enqueueTask } = require('./tasks');
 const { sanitize } = require('./utils');
+const writeLog = require('./writeLog');
 
 let compiler;
 
@@ -82,7 +83,15 @@ module.exports = async function(db, payload) {
 
         const deploymentTx = await db.getContractDeploymentTxByAddress(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress);
         const deployedRuntimeBytecode = deploymentTx.data;
-
+        writeLog({
+            functionName: 'api.contracts.verify',
+            extra: {
+                compiledRuntimeBytecode: compiledRuntimeBytecode,
+                deployedRuntimeBytecode: deployedRuntimeBytecode,
+                equalBytecodes: compiledRuntimeBytecode === deployedRuntimeBytecode,
+                payload: payload
+            }
+        });
         if (compiledRuntimeBytecode === deployedRuntimeBytecode) {
             console.log('Verification succeeded!');
             await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'success');
@@ -98,6 +107,14 @@ module.exports = async function(db, payload) {
         }
     } catch(error) {
         console.log(error);
+        writeLog({
+            functionName: 'api.contracts.verify',
+            error: error,
+            extra: {
+                error: error,
+                payload: payload
+            }
+        });
         await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'failed');
         await updateFirestoreContract(user.firebaseUserId, workspace.name, contractAddress, { verificationStatus: 'failed' });
         return {

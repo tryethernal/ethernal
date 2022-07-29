@@ -16,7 +16,10 @@ const searchForAddress = async (workspaceId, address) => {
     try {
         const workspace = await Workspace.findByPk(workspaceId);
         const contract = await workspace.findContractByAddress(address);
-        return contract ? [contract.toJSON()] : [];
+        return contract ? [{
+            type: 'contract',
+            data: contract.toJSON()
+        }] : [];
     } catch(error) {
         writeLog({
             functionName: 'firebase.searchForAddress',
@@ -39,10 +42,16 @@ const searchForHash = async (workspaceId, hash) => {
         const workspace = await Workspace.findByPk(workspaceId);
         const transaction = await workspace.findTransaction(hash);
         if (transaction)
-            return [transaction.toJSON()];
+            return [{
+                type: 'transaction',
+                data: transaction.toJSON()
+            }];
         else {
             const block = await workspace.findBlockByHash(hash);
-            return block ? [block.toJSON()] : [];
+            return block ? [{
+                type: 'block',
+                data: block.toJSON()
+            }] : [];
         }
     } catch(error) {
         writeLog({
@@ -65,7 +74,10 @@ const searchForNumber = async (workspaceId, number) => {
     try {
         const workspace = await Workspace.findByPk(workspaceId);
         const block = await workspace.findBlockByNumber(number, true);
-        return block ? [block.toJSON()] : [];
+        return block ? [{
+            type: 'block',
+            data: block.toJSON()
+        }] : [];
     } catch(error) {
         writeLog({
             functionName: 'firebase.searchForNumber',
@@ -87,7 +99,10 @@ const searchForText = async (workspaceId, text) => {
     try {
         const workspace = await Workspace.findByPk(workspaceId);
         const contracts = await workspace.findContractByText(text);
-        return contracts.map(c => c.toJSON());
+        return contracts.map(c => ({
+            type: 'contract',
+            data: c.toJSON()
+        }));
     } catch(error) {
         writeLog({
             functionName: 'firebase.searchForText',
