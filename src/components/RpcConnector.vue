@@ -5,36 +5,40 @@
             <v-row v-show="showSearchBar">
                 <v-col cols="12">
                     <v-autocomplete hide-details="auto" dense class="ml-2" append-icon=""
-                        :items="searchItems"
+                        v-model="searchSelectedItem"
+                        :items="orderedItems"
                         :loading="isSearchLoading"
                         :search-input.sync="search"
+                        :item-text="getItemText"
                         hide-no-data
-                        hide-selected
                         no-filter
                         autofocus
-                        return-object>
+                        return-object
+                        @blur="showSearchBar=false"
+                        @change="clearSearchBar()">
                         <template v-slot:item="data">
-                            <v-list-item-content v-show="data.item.type == 'transaction'">
-                                <v-list-item-title>Transaction</v-list-item-title>
+                            <v-list-item-content v-if="data.item.type == 'address'">
+                                <v-list-item-subtitle>{{ data.item.data.address }}</v-list-item-subtitle>
+                            </v-list-item-content>
+
+                            <v-list-item-content v-if="data.item.type == 'transaction'">
                                 <v-list-item-subtitle>{{ data.item.data.hash }}</v-list-item-subtitle>
                             </v-list-item-content>
 
-                            <v-list-item-content v-show="data.item.type == 'block'">
-                                <v-list-item-title>Block #{{ data.item.data.number }}</v-list-item-title>
+                            <v-list-item-content v-if="data.item.type == 'block'">
+                                <v-list-item-subtitle>#{{ data.item.data.number }}</v-list-item-subtitle>
                                 <v-list-item-subtitle>Hash: {{ data.item.data.hash }}</v-list-item-subtitle>
                                 <v-list-item-subtitle>Transactions count: {{ data.item.data.transactionsCount }}</v-list-item-subtitle>
                             </v-list-item-content>
 
-                            <v-list-item-content v-show="data.item.type == 'contract'">
-                                <v-list-item-title>Contract</v-list-item-title>
-                                <v-list-item-subtitle v-if="data.item.data.name">{{ data.item.data.name }} - {{ data.item.data.address }}</v-list-item-subtitle>
+                            <v-list-item-content v-if="data.item.type == 'contract'">
+                                <v-list-item-subtitle v-if="data.item.data.name">{{ data.item.data.name }}</v-list-item-subtitle>
                                 <v-list-item-subtitle v-else>{{ data.item.data.address }}</v-list-item-subtitle>
+                                <br>
 
-                                <v-divider v-if="data.item.data.tokenSymbol || data.item.data.tokenName" class="my-2"></v-divider>
-
-                                <v-list-item-title v-if="data.item.data.tokenSymbol || data.item.data.tokenName">Token Info</v-list-item-title>
-                                <v-list-item-subtitle v-if="data.item.data.tokenSymbol">Symbol: {{ data.item.data.tokenSymbol }}</v-list-item-subtitle>
-                                <v-list-item-subtitle v-if="data.item.data.tokenName">Name: {{ data.item.data.tokenName }}</v-list-item-subtitle>
+                                <v-list-item-subtitle v-if="data.item.data.name">Address: <b>{{ data.item.data.address }}</b></v-list-item-subtitle>
+                                <v-list-item-subtitle v-if="data.item.data.tokenSymbol">Token Symbol: <b>{{ data.item.data.tokenSymbol }}</b></v-list-item-subtitle>
+                                <v-list-item-subtitle v-if="data.item.data.tokenName">Token Name: <b>{{ data.item.data.tokenName }}</b></v-list-item-subtitle>
                                 <v-list-item-subtitle v-if="data.item.data.patterns.length">
                                     <v-chip v-for="(pattern, idx) in data.item.data.patterns" :key="idx" x-small class="success mr-2">
                                         {{ formatContractPattern(pattern) }}
@@ -86,7 +90,7 @@ import { formatContractPattern } from '@/lib/utils';
 export default Vue.extend({
     name: 'RpcConnector',
     data: () => ({
-        model: null,
+        searchSelectedItem: null,
         searchItems: [],
         isSearchLoading: false,
         search: null,
@@ -121,8 +125,12 @@ export default Vue.extend({
     },
     methods: {
         formatContractPattern,
-        getItemText: function(val) {
-            return String(val.data.id);
+        clearSearchBar: function() {
+            this.search = null;
+            this.showSearchBar = false;
+        },
+        getItemText: function() {
+            return this.search;
         },
         processContracts: function() {
             this.processingContracts = true;
@@ -142,9 +150,25 @@ export default Vue.extend({
         }
     },
     watch: {
+        searchSelectedItem: function(item) {
+            console.log(item.data)
+            switch(item.type) {
+                case 'address':
+                case 'contract':
+                    this.$router.push(`/address/${item.data.address}`);
+                    break;
+                case 'transaction':
+                    this.$router.push(`/transaction/${item.data.hash}`);
+                    break;
+                case 'block':
+                    this.$router.push(`/block/${item.data.number}`);
+                    break;
+            }
+
+        },
         search: function(val) {
             if (!val) return this.searchItems = [];
-            if (val === this.model) return;
+            if (val === this.model || typeof val == 'object') return;
 
             this.isSearchLoading = true;
             this.searchType = 'text';
@@ -163,6 +187,8 @@ export default Vue.extend({
                 .then(({ data }) => {
                     console.log(data);
                     this.searchItems = data;
+                    if (this.searchType == 'address' && !data.length)
+                        this.searchItems.push({ type: 'address', data: { address: val }});
                 })
                 .catch(console.log)
                 .finally(() => this.isSearchLoading = false);
@@ -175,7 +201,42 @@ export default Vue.extend({
             'user',
             'isPublicExplorer',
             'currentBlock'
-        ])
+        ]),
+        orderedItems: function() {
+            const items = {
+                'transaction': [],
+                'block': [],
+                'contract': [],
+                'address': []
+            };
+
+            this.searchItems.forEach(item => items[item.type].push(item));
+
+            const result = [];
+
+            if (items.address.length)
+                result.push({ header: 'Address' }, ...items.address);
+
+            if (result.length && (items.transaction.length || items.block.length || items.contract.length))
+                result.push({ divider: true });
+
+            if (items.transaction.length)
+                result.push({ header: 'Transactions' }, ...items.transaction);
+
+            if (result.length && (items.block.length || items.contract.length))
+                result.push({ divider: true });
+
+            if (items.block.length)
+                result.push({ header: 'Blocks' }, ...items.block);
+
+            if (result.length && items.contract.length)
+                result.push({ divider: true });
+
+            if (items.contract.length)
+                result.push({ header: 'Contracts' }, ...items.contract);
+
+            return result;
+        }
     }
 });
 </script>

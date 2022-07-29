@@ -240,9 +240,9 @@ module.exports = (sequelize, DataTypes) => {
             attributes: ['id', 'address', 'name', 'tokenName', 'tokenSymbol', 'patterns', 'verificationStatus'],
             where: {
                 [Op.or]: [
-                    { name: { [Op.substring]: text } },
-                    { tokenName: { [Op.substring]: text } },
-                    { tokenSymbol: { [Op.substring]: text } },
+                    { name: { [Op.iLike]: `%${text}%` } },
+                    { tokenName: { [Op.iLike]: `%${text}%` } },
+                    { tokenSymbol: { [Op.iLike]: `%${text}%` } },
                 ]
             }
         })
