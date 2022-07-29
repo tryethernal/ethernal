@@ -35,23 +35,25 @@
                         <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
                         <template v-if="!contractLoader">
                             <Import-Artifact-Modal ref="importArtifactModal" v-if="currentWorkspace.isAdmin" />
-                            <v-card-text v-if="contract.name && contract.abi">
+                            <v-card-text v-if="contract.name || contract.abi">
                                 <div class="mb-1 success--text" v-if="contract.verificationStatus == 'success'">
                                     <v-icon class="success--text mr-1" small>mdi-check-circle</v-icon>Verified contract.
                                 </div>
-                                Artifact for "<b>{{ contract.name }}</b>" has been uploaded.<span v-if="currentWorkspace.isAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
-                                <div v-if="contract.dependencies && Object.keys(contract.dependencies).length" class="mb-1 mt-2">
-                                    <h5>Dependencies:</h5>
-                                    {{ Object.keys(contract.dependencies).join(', ') }}
-                                </div>
+                                <template v-if="contract.name && contract.abi">
+                                    Artifact for "<b>{{ contract.name }}</b>" has been uploaded.<span v-if="currentWorkspace.isAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
+                                    <div v-if="contract.dependencies && Object.keys(contract.dependencies).length" class="mb-1 mt-2">
+                                        <h5>Dependencies:</h5>
+                                        {{ Object.keys(contract.dependencies).join(', ') }}
+                                    </div>
+                                </template>
                             </v-card-text>
-                            <v-card-text v-if="(!contract.name || !contract.abi) && currentWorkspace.isAdmin">
+                            <v-card-text v-if="(!contract.name || !contract.abi) && currentWorkspace.isAdmin && contract.verificationStatus != 'success'">
                                 <i>Upload an artifact to read contract storage and interact with it.</i><br />
                                 For Truffle projects, use our <a href="https://www.npmjs.com/package/ethernal" target="_blank">CLI</a>.<br />
                                 For Hardhat project, use our <a href="https://github.com/antoinedc/hardhat-ethernal" target="_blank">plugin</a>.<br />
                                 Or you can manually edit contract metadata (name & ABI) <a href="#" @click.stop="openImportArtifactModal()">here</a>.
                             </v-card-text>
-                            <v-card-text v-if="!contract.name && !currentWorkspace.isAdmin">
+                            <v-card-text v-if="!contract.name && !contract.abi && !currentWorkspace.isAdmin">
                                 This contract hasn't been verified yet.
                             </v-card-text>
                         </template>
@@ -350,7 +352,7 @@ export default {
         bindTheStuff: function(hash) {
             this.server.getAccounts({ page: -1 }).then(({ data: { items }}) => {
                 this.accounts = items;
-                if (!this.callOptions.from)
+                if (!this.callOptions.from && this.accounts.length)
                     this.callOptions.from = this.accounts[0].address;
             });
 
