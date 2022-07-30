@@ -10,6 +10,7 @@
                         :loading="isSearchLoading"
                         :search-input.sync="search"
                         :item-text="getItemText"
+                        item-value="data.id"
                         hide-no-data
                         no-filter
                         autofocus
@@ -183,6 +184,8 @@ export default Vue.extend({
             else if (!isNaN(parseFloat(val)) && parseFloat(val) % 1 === 0) {
                 this.searchType = 'number';
             }
+
+            if (this.searchType == 'text' && val.length < 3) return;
             this.server.search(this.searchType, val)
                 .then(({ data }) => {
                     console.log(data);
@@ -204,10 +207,10 @@ export default Vue.extend({
         ]),
         orderedItems: function() {
             const items = {
+                'address': [],
                 'transaction': [],
                 'block': [],
-                'contract': [],
-                'address': []
+                'contract': []
             };
 
             this.searchItems.forEach(item => items[item.type].push(item));
