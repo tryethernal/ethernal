@@ -1,8 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`RpcConnector.vue Should display the correct info 1`] = `
-<header class="px-5 color--text v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px; border-bottom: thin solid rgba(0, 0, 0, 0.12);">
-  <div class="v-toolbar__content" style="height: 48px;">
+<header class="pl-3 p-5 color--text v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px; border-bottom: thin solid rgba(0, 0, 0, 0.12);">
+  <div class="v-toolbar__content" style="height: 48px;"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-magnify theme--light"></button>
+    <transition-stub name="slide-x-transition">
+      <div class="row" style="display: none;">
+        <div class="col col-12">
+          <div class="v-input ml-2 v-input--hide-details v-input--dense theme--light v-text-field v-select v-autocomplete">
+            <div class="v-input__control">
+              <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-8" class="v-input__slot">
+                <div class="v-select__slot"><input autofocus="autofocus" id="input-8" type="text" autocomplete="off"><input type="hidden"></div>
+                <div class="v-menu">
+                  <!---->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+    <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--inset v-divider--vertical theme--light">
     Workspace: Hardhat (Ethereum)
     <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--inset v-divider--vertical theme--light">
 
