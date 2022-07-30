@@ -167,7 +167,7 @@ describe(`POST ${BASE_URL}/:address/verify`, () => {
             });
     });
 
-    it('Should return 400 if contract has already been verified', (done) => {
+    xit('Should return 400 if contract has already been verified', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ userId: 1, workspaceId: 1 });
         jest.spyOn(db, 'getContract').mockResolvedValueOnce({ address: '0x123', verificationStatus: 'success' });
 
@@ -185,7 +185,7 @@ describe(`POST ${BASE_URL}/:address/verify`, () => {
             });
     });
 
-    it('Should return 400 if contract is already being verified', (done) => {
+    xit('Should return 400 if contract is already being verified', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ userId: 1, workspaceId: 1 });
         jest.spyOn(db, 'getContract').mockResolvedValueOnce({ address: '0x123' });
         processContractVerification.mockResolvedValueOnce({ verificationSucceded: false, reason: 'Wrong code' });
