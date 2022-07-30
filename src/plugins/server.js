@@ -351,7 +351,7 @@ export const serverPlugin = {
                 const params = {
                     firebaseAuthToken: store.getters.firebaseIdToken,
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspaceId: store.getters.currentWorkspace.id,
+                    workspace: store.getters.currentWorkspace.name,
                     type: type,
                     query: query
                 };
