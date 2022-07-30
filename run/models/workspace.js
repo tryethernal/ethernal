@@ -235,7 +235,7 @@ module.exports = (sequelize, DataTypes) => {
             return this.createAccount(newAccount);
     }
 
-    findContractByText(text) {
+    findContractsByText(text) {
         return this.getContracts({
             attributes: ['id', 'address', 'name', 'tokenName', 'tokenSymbol', 'patterns', 'verificationStatus'],
             where: {

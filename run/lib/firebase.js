@@ -98,7 +98,7 @@ const searchForText = async (workspaceId, text) => {
 
     try {
         const workspace = await Workspace.findByPk(workspaceId);
-        const contracts = await workspace.findContractByText(text);
+        const contracts = await workspace.findContractsByText(text);
         return contracts.map(c => ({
             type: 'contract',
             data: c.toJSON()
