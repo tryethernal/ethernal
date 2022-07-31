@@ -78,7 +78,9 @@ const workspace = {
     getFilteredAccounts: jest.fn(),
     countAccounts: jest.fn(),
     getProcessableTransactions: jest.fn(),
-    getFailedProcessableTransactions: jest.fn()
+    getFailedProcessableTransactions: jest.fn(),
+    findContractsByText: jest.fn().mockResolvedValue([contract1, contract2]),
+    findBlockByHash: jest.fn().mockResolvedValue(block1)
 };
 
 const Workspace = {

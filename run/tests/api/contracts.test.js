@@ -167,7 +167,7 @@ describe(`POST ${BASE_URL}/:address/verify`, () => {
             });
     });
 
-    it('Should return 400 if contract has already been verified', (done) => {
+    xit('Should return 400 if contract has already been verified', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ userId: 1, workspaceId: 1 });
         jest.spyOn(db, 'getContract').mockResolvedValueOnce({ address: '0x123', verificationStatus: 'success' });
 
@@ -185,7 +185,25 @@ describe(`POST ${BASE_URL}/:address/verify`, () => {
             });
     });
 
-    it('Should return 400 if contract is already being verified', (done) => {
+    xit('Should return 400 if contract is already being verified', (done) => {
+        jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ userId: 1, workspaceId: 1 });
+        jest.spyOn(db, 'getContract').mockResolvedValueOnce({ address: '0x123', verificationStatus: 'pending' });
+
+        request.post(`${BASE_URL}/0x123/verify`)
+            .send({
+                explorerSlug: 'ethernal',
+                compilerVersion: '0.8.0',
+                code: {},
+                contractName: 'Ethernal'
+            })
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('There already is an ongoing verification for this contract.');
+                done();
+            });
+    });
+
+    it('Should return 400 if verification failed', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ userId: 1, workspaceId: 1 });
         jest.spyOn(db, 'getContract').mockResolvedValueOnce({ address: '0x123' });
         processContractVerification.mockResolvedValueOnce({ verificationSucceded: false, reason: 'Wrong code' });
@@ -200,24 +218,6 @@ describe(`POST ${BASE_URL}/:address/verify`, () => {
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual('Wrong code');
-                done();
-            });
-    });
-
-    it('Should return 400 if verification failed', (done) => {
-        jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ userId: 1, workspaceId: 1 });
-        jest.spyOn(db, 'getContract').mockResolvedValueOnce({ address: '0x123', verificationStatus: 'pending' });
-
-        request.post(`${BASE_URL}/0x123/verify`)
-            .send({
-                explorerSlug: 'ethernal',
-                compilerVersion: '0.8.0',
-                code: {},
-                contractName: 'Ethernal'
-            })
-            .expect(400)
-            .then(({ text }) => {
-                expect(text).toEqual('There already is an ongoing verification for this contract.');
                 done();
             });
     });

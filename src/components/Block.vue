@@ -43,12 +43,17 @@ export default {
         },
         loading: true
     }),
-    mounted: function() {
-        this.loading = true;
-        this.server.getBlock(this.number, true)
-            .then(({ data }) => this.block = data)
-            .catch(console.log)
-            .finally(() => this.loading = false);
+    watch: {
+        number: {
+            immediate: true,
+            handler(number) {
+                this.loading = true;
+                this.server.getBlock(number, true)
+                    .then(({ data }) => this.block = data)
+                    .catch(console.log)
+                    .finally(() => this.loading = false);
+            }
+        }
     }
 }
 </script>

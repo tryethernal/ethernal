@@ -11,6 +11,7 @@ const addresses = require('./addresses');
 const pusher = require('./pusher');
 const explorers = require('./explorers');
 const stripe = require('./stripe');
+const search = require('./search');
 
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
@@ -23,5 +24,6 @@ router.use('/addresses', addresses);
 router.use('/pusher', pusher);
 router.use('/explorers', explorers);
 router.use('/stripe', stripe);
+router.use('/search', search);
 
 module.exports = router;
