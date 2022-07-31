@@ -10,13 +10,107 @@ const db = require('../../lib/firebase');
 
 beforeEach(() => jest.clearAllMocks());
 
-describe('getWorkspaceById', () => {
-    it('Should return a workspace', (done) => {
-        db.getWorkspaceById(1)
-            .then(workspace => {
-                expect(workspace).toEqual({ id: 1, name: 'My Workspace' });
+describe('searchForAddress', (done) => {
+    it('Should return found contracts', (done) => {
+        db.searchForAddress(1, '0x123')
+            .then(contracts => {
+                expect(contracts).toEqual([
+                    { type: 'contract', data: { id: 10, address: '0x123' }}
+                ]);
                 done();
             });
+    });
+
+    it('Should return an empty array of contracts', (done) => {
+        jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce(null);
+
+        db.searchForAddress(1, '0x123')
+            .then(contracts => {
+                expect(contracts).toEqual([]);
+                done();
+            });
+    });
+});
+
+describe('searchForHash', () => {
+    it('Should return transaction if hash matches', (done) => {
+        db.searchForHash(1, '0x123')
+            .then(transactions => {
+                expect(transactions).toEqual([
+                    { type: 'transaction', data: { hash: '0x123' }}
+                ]);
+                done();
+            });
+    });
+
+    it('Should return block if hash matches', (done) => {
+        jest.spyOn(workspace, 'findTransaction').mockResolvedValueOnce(null);
+
+        db.searchForHash(1, '0x123')
+            .then(blocks => {
+                expect(blocks).toEqual([
+                    { type: 'block', data: { number: 1 }}
+                ]);
+                done();
+            });
+    });
+
+    it('Should return an empty array if no match', (done) => {
+        jest.spyOn(workspace, 'findTransaction').mockResolvedValueOnce(null);
+        jest.spyOn(workspace, 'findBlockByHash').mockResolvedValueOnce(null);
+        db.searchForHash(1, '0x123')
+            .then(blocks => {
+                expect(blocks).toEqual([]);
+                done();
+            });
+    });
+});
+
+describe('searchForNumber', () => {
+    it('Should return an array of blocks', (done) => {
+        const block = {
+            toJSON: jest.fn().mockReturnValue({ number: 1 })
+        };
+        jest.spyOn(workspace, 'findBlockByNumber').mockResolvedValueOnce(block);
+
+        db.searchForNumber(1, 2)
+            .then(blocks => {
+                expect(blocks).toEqual([
+                    { type: 'block', data: { number: 1 }}
+                ]);
+                done();
+            })
+    });
+
+    it('Should return an empty array if no block', (done) => {
+        jest.spyOn(workspace, 'findBlockByNumber').mockResolvedValueOnce(null);
+        db.searchForNumber(1, 2)
+            .then(blocks => {
+                expect(blocks).toEqual([]);
+                done();
+            })
+    });
+});
+
+describe('searchForText', () => {
+    it('Should return an array of contracts', (done) => {
+        db.searchForText(1, 'xmpl')
+            .then(contracts => {
+                expect(contracts).toEqual([
+                    { type: 'contract', data: { id: 10, address: '0x123' }},
+                    { type: 'contract', data: { id: 11, address: '0xabcd' }}
+                ]);
+                done();
+            })
+    });
+
+    it('Should return an empty array if no contract', (done) => {
+        jest.spyOn(workspace, 'findContractsByText').mockResolvedValueOnce(null);
+        db.searchForNumber(1, 2)
+            .then(contracts => {
+                expect(contracts).toEqual([]);
+                done();
+            })
     });
 });
 
