@@ -10,6 +10,114 @@ const Workspace = models.Workspace;
 const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 
+const searchForAddress = async (workspaceId, address) => {
+    if (!workspaceId || !address) throw '[searchForAddress] Missing parameter';
+
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const contract = await workspace.findContractByAddress(address);
+        return contract ? [{
+            type: 'contract',
+            data: contract.toJSON()
+        }] : [];
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.searchForAddress',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                address: address
+            }
+        });
+        throw error;
+    }
+};
+
+const searchForHash = async (workspaceId, hash) => {
+    if (!workspaceId || !hash) throw '[searchForHash] Missing parameter';
+
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const transaction = await workspace.findTransaction(hash);
+        if (transaction)
+            return [{
+                type: 'transaction',
+                data: transaction.toJSON()
+            }];
+        else {
+            const block = await workspace.findBlockByHash(hash);
+            return block ? [{
+                type: 'block',
+                data: block.toJSON()
+            }] : [];
+        }
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.searchForHash',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                hash: hash
+            }
+        });
+        throw error;
+    }
+};
+
+const searchForNumber = async (workspaceId, number) => {
+    if (!workspaceId || !number) throw '[searchForNumber] Missing parameter';
+
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const block = await workspace.findBlockByNumber(number, true);
+        return block ? [{
+            type: 'block',
+            data: block.toJSON()
+        }] : [];
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.searchForNumber',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                block: number
+            }
+        });
+        throw error;
+    }
+};
+
+const searchForText = async (workspaceId, text) => {
+    if (!workspaceId || !text) throw '[searchForText] Missing parameter';
+
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const contracts = await workspace.findContractsByText(text);
+        return contracts.map(c => ({
+            type: 'contract',
+            data: c.toJSON()
+        }));
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.searchForText',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                text: text
+            }
+        });
+        throw error;
+    }
+};
+
 const getWorkspaceById = async (workspaceId) => {
     try {
         const workspace = await Workspace.findByPk(workspaceId);
@@ -1199,5 +1307,9 @@ module.exports = {
     getAccounts: getAccounts,
     getPublicExplorerParamsByDomain: getPublicExplorerParamsByDomain,
     getProcessableTransactions: getProcessableTransactions,
-    getFailedProcessableTransactions: getFailedProcessableTransactions
+    getFailedProcessableTransactions: getFailedProcessableTransactions,
+    searchForAddress: searchForAddress,
+    searchForHash: searchForHash,
+    searchForNumber: searchForNumber,
+    searchForText: searchForText
 };

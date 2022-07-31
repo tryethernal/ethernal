@@ -347,6 +347,19 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            search(type, query) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    type: type,
+                    query: query
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/search`;
+                return axios.get(resource, { params });
+            },
+
             getBlocks(options) {
                 const params = {
                     firebaseAuthToken: store.getters.firebaseIdToken,

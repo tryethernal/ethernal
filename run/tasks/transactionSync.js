@@ -34,7 +34,7 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
         //     await publish('bill-usage', { userId: data.userId, timestamp: data.timestamp });
 
         if (!txSynced.to && sTransactionReceipt) {
-            const canSync = await db.canUserSyncContract(data.userId, data.workspace);
+            const canSync = await db.canUserSyncContract(data.userId, data.workspace, sTransactionReceipt.contractAddress);
             if (canSync)
                 await db.storeContractData(data.userId, data.workspace, sTransactionReceipt.contractAddress, {
                     address: sTransactionReceipt.contractAddress,

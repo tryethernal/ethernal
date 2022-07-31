@@ -350,17 +350,18 @@ export default {
                 });
         },
         bindTheStuff: function(hash) {
-            this.server.getAccounts({ page: -1 }).then(({ data: { items }}) => {
-                this.accounts = items;
-                if (!this.callOptions.from && this.accounts.length)
-                    this.callOptions.from = this.accounts[0].address;
-            });
+            if (!this.isPublicExplorer) {
+                this.server.getAccounts({ page: -1 }).then(({ data: { items }}) => {
+                    this.accounts = items;
+                    if (!this.callOptions.from && this.accounts.length)
+                        this.callOptions.from = this.accounts[0].address;
+                });
 
-            if (!this.isPublicExplorer)
                 this.server.getAddressTransactions(hash)
                     .then(({ data: { items }}) => {
                         this.transactionsTo = items;
                     });
+            }
 
             this.contractLoader = true;
 
