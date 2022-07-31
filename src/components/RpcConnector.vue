@@ -1,27 +1,82 @@
 <template>
-    <v-toolbar style="border-bottom: thin solid rgba(0, 0, 0, 0.12)" dense flat class="px-5 color--text">
-        <template v-if="isPublicExplorer">
-            {{ chain.name }}
+    <v-toolbar style="border-bottom: thin solid rgba(0, 0, 0, 0.12)" dense flat class="pl-3 p-5 color--text">
+        <v-icon @click="showSearchBar = !showSearchBar">mdi-magnify</v-icon>
+        <v-slide-x-transition>
+            <v-row v-show="showSearchBar">
+                <v-col cols="12">
+                    <v-autocomplete hide-details="auto" dense class="ml-2" append-icon=""
+                        v-model="searchSelectedItem"
+                        :items="orderedItems"
+                        :loading="isSearchLoading"
+                        :search-input.sync="search"
+                        :item-text="getItemText"
+                        item-value="data.id"
+                        hide-no-data
+                        no-filter
+                        autofocus
+                        return-object
+                        @blur="showSearchBar=false"
+                        @change="clearSearchBar()">
+                        <template v-slot:item="data">
+                            <v-list-item-content v-if="data.item.type == 'address'">
+                                <v-list-item-subtitle>{{ data.item.data.address }}</v-list-item-subtitle>
+                            </v-list-item-content>
+
+                            <v-list-item-content v-if="data.item.type == 'transaction'">
+                                <v-list-item-subtitle>{{ data.item.data.hash }}</v-list-item-subtitle>
+                            </v-list-item-content>
+
+                            <v-list-item-content v-if="data.item.type == 'block'">
+                                <v-list-item-subtitle>#{{ data.item.data.number }}</v-list-item-subtitle>
+                                <v-list-item-subtitle>Hash: {{ data.item.data.hash }}</v-list-item-subtitle>
+                                <v-list-item-subtitle>Transactions count: {{ data.item.data.transactionsCount }}</v-list-item-subtitle>
+                            </v-list-item-content>
+
+                            <v-list-item-content v-if="data.item.type == 'contract'">
+                                <v-list-item-subtitle v-if="data.item.data.name">{{ data.item.data.name }}</v-list-item-subtitle>
+                                <v-list-item-subtitle v-else>{{ data.item.data.address }}</v-list-item-subtitle>
+                                <br>
+
+                                <v-list-item-subtitle v-if="data.item.data.name">Address: <b>{{ data.item.data.address }}</b></v-list-item-subtitle>
+                                <v-list-item-subtitle v-if="data.item.data.tokenSymbol">Token Symbol: <b>{{ data.item.data.tokenSymbol }}</b></v-list-item-subtitle>
+                                <v-list-item-subtitle v-if="data.item.data.tokenName">Token Name: <b>{{ data.item.data.tokenName }}</b></v-list-item-subtitle>
+                                <v-list-item-subtitle v-if="data.item.data.patterns.length">
+                                    <v-chip v-for="(pattern, idx) in data.item.data.patterns" :key="idx" x-small class="success mr-2">
+                                        {{ formatContractPattern(pattern) }}
+                                    </v-chip>
+                                </v-list-item-subtitle>
+                            </v-list-item-content>
+                        </template>
+                    </v-autocomplete>
+                </v-col>
+            </v-row>
+        </v-slide-x-transition>
+        <template>
+            <template v-if="isPublicExplorer">
+                <v-divider vertical inset class="mx-2"></v-divider>
+                {{ chain.name }}
+            </template>
+            <template v-else>
+                <v-divider vertical inset class="mx-2"></v-divider>
+                Workspace: {{ currentWorkspace.name }} ({{ chain.name }})
+            </template>
+            <template v-if="!isPublicExplorer">
+                <v-divider vertical inset class="mx-2"></v-divider>
+                {{ currentWorkspace.rpcServer }}
+            </template>
+            <div v-show="currentBlock.number">
+                <v-divider vertical inset class="mx-2"></v-divider>
+                Latest Block: <router-link :to="'/block/' + currentBlock.number">{{ currentBlock.number }}</router-link>
+            </div>
+            <div v-show="processingContracts">
+                <v-divider vertical inset class="mx-2"></v-divider>
+                <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
+            </div>
+            <v-spacer></v-spacer>
+            <a class="ml-4" v-if="isFeedbackFishEnabled" data-feedback-fish :data-feedback-fish-userid="user.email" :data-feedback-fish-page="page">
+                <v-icon color="primary" class="mr-1">mdi-comment-quote</v-icon>Feedback?
+            </a>
         </template>
-        <template v-else>
-            Workspace: {{ currentWorkspace.name }} ({{ chain.name }})
-        </template>
-        <template v-if="!isPublicExplorer">
-            <v-divider vertical inset class="mx-2"></v-divider>
-            {{ currentWorkspace.rpcServer }}
-        </template>
-        <div v-show="currentBlock.number">
-            <v-divider vertical inset class="mx-2"></v-divider>
-            Latest Block: <router-link :to="'/block/' + currentBlock.number">{{ currentBlock.number }}</router-link>
-        </div>
-        <div v-show="processingContracts">
-            <v-divider vertical inset class="mx-2"></v-divider>
-            <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
-        </div>
-        <v-spacer></v-spacer>
-        <a v-if="isFeedbackFishEnabled" data-feedback-fish :data-feedback-fish-userid="user.email" :data-feedback-fish-page="page">
-            <v-icon color="primary" class="mr-1">mdi-comment-quote</v-icon>Feedback?
-        </a>
     </v-toolbar>
 </template>
 
@@ -31,10 +86,17 @@ import { mapGetters } from 'vuex';
 
 import { auth } from '../plugins/firebase.js';
 import { bus } from '../bus.js';
+import { formatContractPattern } from '@/lib/utils';
 
 export default Vue.extend({
     name: 'RpcConnector',
     data: () => ({
+        searchSelectedItem: null,
+        searchItems: [],
+        isSearchLoading: false,
+        search: null,
+        searchType: null,
+        showSearchBar: false,
         processingContracts: false,
         page: null,
         isFeedbackFishEnabled: false,
@@ -63,6 +125,14 @@ export default Vue.extend({
         this.pusher.onNewBlock((block) => this.$store.dispatch('updateCurrentBlock', block), this);
     },
     methods: {
+        formatContractPattern,
+        clearSearchBar: function() {
+            this.search = null;
+            this.showSearchBar = false;
+        },
+        getItemText: function() {
+            return this.search;
+        },
         processContracts: function() {
             this.processingContracts = true;
             this.server.processContracts(this.currentWorkspace.name)
@@ -80,6 +150,53 @@ export default Vue.extend({
                 .catch(console.log);
         }
     },
+    watch: {
+        searchSelectedItem: function(item) {
+            console.log(item.data)
+            switch(item.type) {
+                case 'address':
+                case 'contract':
+                    this.$router.push(`/address/${item.data.address}`);
+                    break;
+                case 'transaction':
+                    this.$router.push(`/transaction/${item.data.hash}`);
+                    break;
+                case 'block':
+                    this.$router.push(`/block/${item.data.number}`);
+                    break;
+            }
+
+        },
+        search: function(val) {
+            if (!val) return this.searchItems = [];
+            if (val === this.model || typeof val == 'object') return;
+
+            this.isSearchLoading = true;
+            this.searchType = 'text';
+            if (val.startsWith('0x')) {
+                if (val.length == 66) {
+                    this.searchType = 'hash';
+                }
+                else if (val.length == 42) {
+                    this.searchType = 'address';
+                }
+            }
+            else if (!isNaN(parseFloat(val)) && parseFloat(val) % 1 === 0) {
+                this.searchType = 'number';
+            }
+
+            if (this.searchType == 'text' && val.length < 3) return;
+            this.server.search(this.searchType, val)
+                .then(({ data }) => {
+                    console.log(data);
+                    this.searchItems = data;
+                    if (this.searchType == 'address' && !data.length)
+                        this.searchItems.push({ type: 'address', data: { address: val }});
+                })
+                .catch(console.log)
+                .finally(() => this.isSearchLoading = false);
+        }
+    },
     computed: {
         ...mapGetters([
             'currentWorkspace',
@@ -87,7 +204,42 @@ export default Vue.extend({
             'user',
             'isPublicExplorer',
             'currentBlock'
-        ])
+        ]),
+        orderedItems: function() {
+            const items = {
+                'address': [],
+                'transaction': [],
+                'block': [],
+                'contract': []
+            };
+
+            this.searchItems.forEach(item => items[item.type].push(item));
+
+            const result = [];
+
+            if (items.address.length)
+                result.push({ header: 'Address' }, ...items.address);
+
+            if (result.length && (items.transaction.length || items.block.length || items.contract.length))
+                result.push({ divider: true });
+
+            if (items.transaction.length)
+                result.push({ header: 'Transactions' }, ...items.transaction);
+
+            if (result.length && (items.block.length || items.contract.length))
+                result.push({ divider: true });
+
+            if (items.block.length)
+                result.push({ header: 'Blocks' }, ...items.block);
+
+            if (result.length && items.contract.length)
+                result.push({ divider: true });
+
+            if (items.contract.length)
+                result.push({ header: 'Contracts' }, ...items.contract);
+
+            return result;
+        }
     }
 });
 </script>

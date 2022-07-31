@@ -93,7 +93,7 @@ router.post('/:address/verify', async (req, res) => {
             console.log(data);
             throw new Error(`[POST /${address}/verify] Missing parameter.`);
         }
-
+        console.log(data)
         const explorer = await db.getPublicExplorerParamsBySlug(data.explorerSlug);
 
         if (!explorer)
@@ -103,10 +103,10 @@ router.post('/:address/verify', async (req, res) => {
 
         if (!contract)
             throw new Error(`Couldn't find contract at address ${address}`);
-        if (contract.verificationStatus == 'success')
-            throw new Error('Contract has already been verified.');
-        if (contract.verificationStatus == 'pending')
-            throw new Error('There already is an ongoing verification for this contract.');
+        // if (contract.verificationStatus == 'success')
+        //     throw new Error('Contract has already been verified.');
+        // if (contract.verificationStatus == 'pending')
+        //     throw new Error('There already is an ongoing verification for this contract.');
 
         const payload = sanitize({
             publicExplorerParams: explorer,

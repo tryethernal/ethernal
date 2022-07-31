@@ -6,7 +6,7 @@ const authMiddleware = require('../middlewares/auth');
 const router = express.Router();
 
 const PLANS = {
-    premium: 'price_1JiLucJG8RHJCKOzPf0PPfS2'
+    premium: 'price_1JlwH8JG8RHJCKOzUJ3nGjT0'
 };
 
 router.post('/createCheckoutSession', authMiddleware, async (req, res) => {
