@@ -3,7 +3,7 @@
 exports[`Address.vue Should display the "Edit" button under the contract tab if there is an ABI & it is a public explorer & as admin 1`] = `
 <div class="container container--fluid">
   <div class="row mb-2">
-    <div class="col col-3">
+    <div class="col-sm-12 col-md-6 col-lg-3 col">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
           Balance: 1e-14 Ether
@@ -11,7 +11,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
       </div>
     </div>
     <div class="spacer"></div>
-    <div class="col col-2 align-self-end">
+    <div class="col-sm-12 col-md-6 col-lg-3 col align-self-end">
       <div class="v-dialog__container">
         <!---->
       </div> <button type="button" class="v-btn v-btn--outlined theme--light v-size--small error--text"><span class="v-btn__content">
@@ -124,7 +124,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
             <div>
               <div class="v-card__text">
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="pb-1 font-weight-bold">_feeBasisPoints</div>
                       <div>=&gt; uint256</div>
@@ -136,7 +136,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="pb-1 font-weight-bold">owner</div>
                       <div>=&gt; address</div>
@@ -148,7 +148,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="pb-1 font-weight-bold">depositsOf</div>
                       <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
@@ -170,7 +170,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="pb-1 font-weight-bold">maturityOf</div>
                       <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
@@ -199,7 +199,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
             <div>
               <div class="v-card__text">
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="font-weight-bold">renounceOwnership</div>
                       <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
@@ -238,7 +238,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="font-weight-bold">transferOwnership</div>
                       <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
@@ -287,7 +287,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="font-weight-bold">setMaturity</div>
                       <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
@@ -346,7 +346,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="font-weight-bold">deposit</div>
                       <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
@@ -395,7 +395,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="font-weight-bold">withdraw</div>
                       <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
@@ -452,7 +452,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
 exports[`Address.vue Should display the contract interaction interface under the contract tab if there is an ABI & it is a public explorer 1`] = `
 <div class="container container--fluid">
   <div class="row mb-2">
-    <div class="col col-3">
+    <div class="col-sm-12 col-md-6 col-lg-3 col">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
           Balance: 1e-14 ether
@@ -521,7 +521,7 @@ exports[`Address.vue Should display the contract interaction interface under the
             <div>
               <div class="v-card__text">
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="pb-1 font-weight-bold">_feeBasisPoints</div>
                       <div>=&gt; uint256</div>
@@ -533,7 +533,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="pb-1 font-weight-bold">owner</div>
                       <div>=&gt; address</div>
@@ -545,7 +545,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="pb-1 font-weight-bold">depositsOf</div>
                       <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
@@ -567,7 +567,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="pb-1 font-weight-bold">maturityOf</div>
                       <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
@@ -596,7 +596,7 @@ exports[`Address.vue Should display the contract interaction interface under the
             <div>
               <div class="v-card__text">
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="font-weight-bold">renounceOwnership</div>
                       <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
@@ -635,7 +635,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="font-weight-bold">transferOwnership</div>
                       <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
@@ -684,7 +684,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="font-weight-bold">setMaturity</div>
                       <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
@@ -743,7 +743,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="font-weight-bold">deposit</div>
                       <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
@@ -792,7 +792,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="font-weight-bold">withdraw</div>
                       <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
@@ -847,7 +847,7 @@ exports[`Address.vue Should display the contract interaction interface under the
 exports[`Address.vue Should display the contract storage structure 1`] = `
 <div class="container container--fluid">
   <div class="row mb-2">
-    <div class="col col-3">
+    <div class="col-sm-12 col-md-6 col-lg-3 col">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
           Balance: 1e-14 Ether
@@ -855,7 +855,7 @@ exports[`Address.vue Should display the contract storage structure 1`] = `
       </div>
     </div>
     <div class="spacer"></div>
-    <div class="col col-2 align-self-end">
+    <div class="col-sm-12 col-md-6 col-lg-3 col align-self-end">
       <div class="v-dialog__container">
         <!---->
       </div> <button type="button" class="v-btn v-btn--outlined theme--light v-size--small error--text"><span class="v-btn__content">
@@ -1047,7 +1047,7 @@ exports[`Address.vue Should display the contract storage structure 1`] = `
 exports[`Address.vue Should not display the storage tab on contract page if in public explorer mode 1`] = `
 <div class="container container--fluid">
   <div class="row mb-2">
-    <div class="col col-3">
+    <div class="col-sm-12 col-md-6 col-lg-3 col">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
           Balance: 1e-14 Ether
@@ -1098,7 +1098,7 @@ exports[`Address.vue Should not display the storage tab on contract page if in p
 exports[`Address.vue Should say the contract is verified if it is a public explorer 1`] = `
 <div class="container container--fluid">
   <div class="row mb-2">
-    <div class="col col-3">
+    <div class="col-sm-12 col-md-6 col-lg-3 col">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
           Balance: 1e-14 Ether
@@ -1106,7 +1106,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
       </div>
     </div>
     <div class="spacer"></div>
-    <div class="col col-2 align-self-end">
+    <div class="col-sm-12 col-md-6 col-lg-3 col align-self-end">
       <div class="v-dialog__container">
         <!---->
       </div> <button type="button" class="v-btn v-btn--outlined theme--light v-size--small error--text"><span class="v-btn__content">
@@ -1220,7 +1220,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
             <div>
               <div class="v-card__text">
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="pb-1 font-weight-bold">_feeBasisPoints</div>
                       <div>=&gt; uint256</div>
@@ -1232,7 +1232,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="pb-1 font-weight-bold">owner</div>
                       <div>=&gt; address</div>
@@ -1244,7 +1244,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="pb-1 font-weight-bold">depositsOf</div>
                       <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
@@ -1266,7 +1266,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="pb-1 font-weight-bold">maturityOf</div>
                       <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
@@ -1295,7 +1295,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
             <div>
               <div class="v-card__text">
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="font-weight-bold">renounceOwnership</div>
                       <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
@@ -1334,7 +1334,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="font-weight-bold">transferOwnership</div>
                       <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
@@ -1383,7 +1383,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="font-weight-bold">setMaturity</div>
                       <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
@@ -1442,7 +1442,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="font-weight-bold">deposit</div>
                       <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
@@ -1491,7 +1491,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
                   </div>
                 </div>
                 <div class="row pb-4">
-                  <div class="col col-5">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
                     <div>
                       <div class="font-weight-bold">withdraw</div>
                       <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
@@ -1548,7 +1548,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
 exports[`Address.vue Should sync the balance when loaded 1`] = `
 <div class="container container--fluid">
   <div class="row mb-2">
-    <div class="col col-3">
+    <div class="col-sm-12 col-md-6 col-lg-3 col">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
           Balance: 1e-14 Ether
@@ -1556,7 +1556,7 @@ exports[`Address.vue Should sync the balance when loaded 1`] = `
       </div>
     </div>
     <div class="spacer"></div>
-    <div class="col col-2 align-self-end">
+    <div class="col-sm-12 col-md-6 col-lg-3 col align-self-end">
       <div class="v-dialog__container">
         <!---->
       </div> <button type="button" class="v-btn v-btn--outlined theme--light v-size--small error--text"><span class="v-btn__content">
