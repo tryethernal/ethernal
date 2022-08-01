@@ -270,7 +270,7 @@ module.exports = (sequelize, DataTypes) => {
             include: [
                 {
                     model: sequelize.models.TransactionReceipt,
-                    attributes: ['gasUsed', 'status'],
+                    attributes: ['gasUsed', 'status', 'contractAddress'],
                     as: 'receipt',
                     include: [
                         {

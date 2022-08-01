@@ -1,5 +1,5 @@
 <template>
-    <v-toolbar style="border-bottom: thin solid rgba(0, 0, 0, 0.12)" dense flat class="pl-3 p-5 color--text">
+    <v-toolbar style="border-bottom: thin solid rgba(0, 0, 0, 0.12);overflow-x:auto; white-space: nowrap;" dense flat class="px-3 color--text">
         <v-icon @click="showSearchBar = !showSearchBar">mdi-magnify</v-icon>
         <v-slide-x-transition>
             <v-row v-show="showSearchBar">
