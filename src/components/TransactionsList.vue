@@ -35,7 +35,7 @@
             <Hash-Link :type="'transaction'" :hash="item.hash" />
         </template>
         <template v-slot:item.method="{ item }">
-            <v-tooltip v-if="item.methodDetails" top :open-delay="150">
+            <v-tooltip v-if="item.methodDetails && Object.keys(item.methodDetails).length" top :open-delay="150">
                 <template v-slot:activator="{ on, attrs }">
                     <v-chip class="primary lighten-1" v-bind="attrs" v-on="on" label small>
                         <span class="color--text methodName">{{ getMethodName(item) }}</span>
