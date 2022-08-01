@@ -29,7 +29,8 @@ exports[`TransactionsList.vue Should display a message if no transactions 1`] = 
       <tbody>
         <tr class="v-data-table__empty-wrapper">
           <td colspan="8">
-            No transactions found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
+            No transactions found
+          </td>
         </tr>
       </tbody>
     </table>

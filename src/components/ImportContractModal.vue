@@ -39,7 +39,6 @@ export default {
         resolve: null,
         reject: null,
         contractAddress: null,
-        contract: null,
         successMessage: null,
         errorMessage: null,
         loading: false,
@@ -74,6 +73,9 @@ export default {
                 .finally(() => this.loading = false);
         },
         reset: function() {
+            this.contractAddress = null;
+            this.successMessage = null;
+            this.errorMessage = null;
             this.loading = false;
             this.dialog = false;
             this.resolve = null;

@@ -9,11 +9,20 @@ exports[`TransactionData.vue Should display instructions if there is no ABI 1`] 
   <!---->
   <h3 class="mb-2">Called Function</h3>
   <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__text"><i>Upload contract artifact <a href="#/address/0xc00e94cb662c3520282e6f5717214004a7f26888?tab=contract" class="">here</a> to decode function parameters.</i></div>
+    <div class="v-card__text"><b>Signature:</b> 0xa9059cbb<br> <b>Data:</b> 0xa9059cbb000000000000000000000000c00e94cb662c3520282e6f5717214004a7f268880000000000000000000000000000000000000000000000000000000000000001
+    </div>
   </div>
   <h3 class="mb-2">Emitted Events</h3>
   <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__text"><i>Upload contract artifact <a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888?tab=contract" class="">here</a> to decode events data.</i></div>
+    <div class="v-card__text"><b>Emitter:</b> <span><!----> <a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <span>
+        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xc00e94Cb662C3520282E6f5717214004A7f26888" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></span>
+      <!----></span><br> <b>Topics:</b>
+      <ul>
+        <li>0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef</li>
+        <li>0x000000000000000000000000e93381fb4c4f14bda253907b18fad305d799241a</li>
+        <li>0x000000000000000000000000c00e94cb662c3520282e6f5717214004a7f26888</li>
+      </ul> <b>Data:</b> 0x0000000000000000000000000000000000000000000000000000000000000001
+    </div>
   </div>
 </div>
 `;
