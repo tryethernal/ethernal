@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-row class="mb-2">
-            <v-col cols="3">
+            <v-col lg="3" md="6" sm="12">
                 <v-card outlined>
                     <v-card-text>
                         Balance: {{ balance | fromWei('ether', chain.token) }}
@@ -9,7 +9,7 @@
                 </v-card>
             </v-col>
             <v-spacer></v-spacer>
-            <v-col align-self="end" cols="2" v-if="isContract && currentWorkspace.isAdmin">
+            <v-col align-self="end" lg="3" md="6" sm="12" v-if="isContract && currentWorkspace.isAdmin">
                 <Remove-Contract-Confirmation-Modal ref="removeContractConfirmationModal" />
                 <v-btn small outlined color="error" @click.stop="openRemoveContractConfirmationModal()">
                     Remove contract
@@ -117,7 +117,7 @@
                     <div v-else>
                         <v-card-text v-if="contract.abi">
                             <v-row v-for="(method, methodIdx) in contractReadMethods" :key="methodIdx" class="pb-4">
-                                <v-col cols="5">
+                                <v-col lg="3" md="6" sm="12">
                                     <Contract-Read-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="callOptions" />
                                 </v-col>
                             </v-row>
@@ -134,7 +134,7 @@
                     <div v-else>
                         <v-card-text v-if="contract.abi">
                             <v-row v-for="(method, methodIdx) in contractWriteMethods" :key="methodIdx" class="pb-4">
-                                <v-col cols="5">
+                                <v-col lg="3" md="6" sm="12">
                                     <Contract-Write-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="callOptions" />
                                 </v-col>
                             </v-row>

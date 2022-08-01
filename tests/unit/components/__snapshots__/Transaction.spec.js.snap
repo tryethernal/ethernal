@@ -42,26 +42,26 @@ exports[`Transaction.vue Should display parsed error messages 1`] = `
     </div>
   </div>
   <div class="row mb-4">
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Gas Used</div> <span>43,713</span>
     </div>
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Gas Price</div>
       59 gwei
     </div>
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Cost</div> <span>0.002579067 Ether</span>
     </div>
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Value</div>
       0 Ether
     </div>
   </div>
   <div class="row mb-4">
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Block</div> <a href="#/block/13012562" class="">13012562</a>
     </div>
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Gas Limit</div>
       1,000
     </div>
@@ -130,26 +130,26 @@ exports[`Transaction.vue Should display raw error messages 1`] = `
     </div>
   </div>
   <div class="row mb-4">
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Gas Used</div> <span>43,713</span>
     </div>
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Gas Price</div>
       59 gwei
     </div>
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Cost</div> <span>0.002579067 Ether</span>
     </div>
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Value</div>
       0 Ether
     </div>
   </div>
   <div class="row mb-4">
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Block</div> <a href="#/block/13012562" class="">13012562</a>
     </div>
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Gas Limit</div>
       1,000
     </div>
@@ -197,26 +197,26 @@ exports[`Transaction.vue Should not display the menu if public explorer 1`] = `
     </div>
   </div>
   <div class="row mb-4">
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Gas Used</div> <span>43,713</span>
     </div>
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Gas Price</div>
       59 gwei
     </div>
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Cost</div> <span>0.002579067 Ether</span>
     </div>
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Value</div>
       0 Ether
     </div>
   </div>
   <div class="row mb-4">
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Block</div> <a href="#/block/13012562" class="">13012562</a>
     </div>
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Gas Limit</div>
       1,000
     </div>

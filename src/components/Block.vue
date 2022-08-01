@@ -6,19 +6,19 @@
             </v-col>
         </v-row>
         <v-row class="mb-4">
-            <v-col cols="2">
+            <v-col lg="2" md="12" sm="12">
                 <v-subheader class="text-overline">Gas Limit</v-subheader>
                 {{ block.gasLimit.toLocaleString() }}
             </v-col>
             <v-divider vertical></v-divider>
-            <v-col cols="2">
+            <v-col lg="2" md="12" sm="12">
                 <v-subheader class="text-overline">Mined On</v-subheader>
                 {{ parseInt(block.timestamp) | moment('YYYY-MM-DD h:mm:ss A') }}
             </v-col>
             <v-divider vertical></v-divider>
-            <v-col cols="2">
+            <v-col lg="8" md="12" sm="12">
                 <v-subheader class="text-overline">Hash</v-subheader>
-                {{ block.hash }}
+                <span style="overflow-wrap: break-word;">{{ block.hash }}</span>
             </v-col>
         </v-row>
         <h4>Transactions</h4>
