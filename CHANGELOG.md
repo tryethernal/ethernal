@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2022-08-01
+### Added
+- Search by address, contract name, token name & symbol, transaction hash, block number & hash
+
 ## [2.0.2] - 2022-07-28
 ### Fixed
 - Error was thrown when loading contract page with no accounts available
