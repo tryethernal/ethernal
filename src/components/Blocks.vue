@@ -13,7 +13,7 @@
             :headers="headers"
             @update:options="getBlocks">
             <template v-slot:no-data>
-                No blocks found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a>
+                No blocks found
             </template>
             <template v-slot:item.number="{ item }">
                 <router-link :to="'/block/' + item.number">{{item.number}}</router-link>

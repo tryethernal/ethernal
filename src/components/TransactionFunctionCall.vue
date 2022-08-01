@@ -8,7 +8,8 @@
             )
         </v-card-text>
          <v-card-text v-else>
-            <i>Upload contract artifact <router-link :to="`/address/${this.to}?tab=contract`">here</router-link> to decode function parameters.</i>
+            <b>Signature:</b> {{ sigHash }}<br>
+            <b>Data:</b> {{ data }}
         </v-card-text>
     </v-card>
 </template>
@@ -38,6 +39,9 @@ export default {
             else
                 return `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')'
         }
+    },
+    computed: {
+        sigHash: function() { return this.data && this.data != '0x' ? this.data.slice(0, 10) : null }
     }
 }
 </script>

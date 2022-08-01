@@ -23,7 +23,8 @@ exports[`TransactionFunctionCall.vue Should display transaction call 1`] = `
 
 exports[`TransactionFunctionCall.vue Should display warning if no ABI 1`] = `
 <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__text"><i>Upload contract artifact <a href="#/address/0xc00e94cb662c3520282e6f5717214004a7f26888?tab=contract" class="">here</a> to decode function parameters.</i></div>
+  <div class="v-card__text"><b>Signature:</b> 0xa9059cbb<br> <b>Data:</b> 0xa9059cbb000000000000000000000000c00e94cb662c3520282e6f5717214004a7f268880000000000000000000000000000000000000000000000000000000000000001
+  </div>
 </div>
 `;
 
