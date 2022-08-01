@@ -8,19 +8,18 @@ exports[`Block.vue Should show the block component 1`] = `
     </div>
   </div>
   <div class="row mb-4">
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-12 col-lg-2 col">
       <div class="v-subheader text-overline theme--light">Gas Limit</div>
       1000000000
     </div>
     <hr role="separator" aria-orientation="vertical" class="v-divider v-divider--vertical theme--light">
-    <div class="col col-2">
+    <div class="col-sm-12 col-md-12 col-lg-2 col">
       <div class="v-subheader text-overline theme--light">Mined On</div>
       2021-05-21 12:07:42 AM
     </div>
     <hr role="separator" aria-orientation="vertical" class="v-divider v-divider--vertical theme--light">
-    <div class="col col-2">
-      <div class="v-subheader text-overline theme--light">Hash</div>
-      0x98c6edb3bb1124680a97661c1f5794d60617abb57bd1e611d81fc5b941f36d30
+    <div class="col-sm-12 col-md-12 col-lg-8 col">
+      <div class="v-subheader text-overline theme--light">Hash</div> <span style="overflow-wrap: break-word;">0x98c6edb3bb1124680a97661c1f5794d60617abb57bd1e611d81fc5b941f36d30</span>
     </div>
   </div>
   <h4>Transactions</h4>

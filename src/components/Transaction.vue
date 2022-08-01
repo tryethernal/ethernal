@@ -73,35 +73,35 @@
                 </v-col>
             </v-row>
             <v-row class="mb-4">
-                <v-col cols="2">
+                <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Gas Used</div>
                     <span v-if="transaction.receipt">{{ parseInt(transaction.receipt.gasUsed).toLocaleString() }}</span>
                     <v-chip small class="grey white--text" v-else>
                         Not Available
                     </v-chip>
                 </v-col>
-                <v-col cols="2">
+                <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Gas Price</div>
                     {{ transaction.gasPrice | fromWei('gwei') }}
                 </v-col>
-                <v-col cols="2">
+                <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Cost</div>
                     <span v-if="transaction.receipt">{{ transaction.receipt.gasUsed * transaction.gasPrice | fromWei('ether', chain.token) }}</span>
                     <v-chip small class="grey white--text" v-else>
                         Not Available
                     </v-chip>
                 </v-col>
-                <v-col cols="2">
+                <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Value</div>
                     {{ transaction.value | fromWei('ether', chain.token) }}
                 </v-col>
             </v-row>
             <v-row class="mb-4">
-                <v-col cols="2">
+                <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Block</div>
                     <router-link :to="'/block/' + transaction.blockNumber">{{ transaction.blockNumber }}</router-link>
                 </v-col>
-                <v-col cols="2">
+                <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Gas Limit</div>
                     {{ parseInt(transaction.block.gasLimit).toLocaleString() }}
                 </v-col>
