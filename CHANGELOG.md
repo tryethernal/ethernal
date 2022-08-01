@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.1] - 2022-08-01
+### Changed
+- Better UI on mobile
+- Import contract modal address field & message is now cleared when closing it
+- Removed some messages that didn't make sense for the public explorer
+- When ABI is not available, display function sig hash & data, and events emitter, topics and data
+
 ## [2.1.0] - 2022-08-01
 ### Added
 - Search by address, contract name, token name & symbol, transaction hash, block number & hash
