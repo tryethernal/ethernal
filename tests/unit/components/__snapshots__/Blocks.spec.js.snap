@@ -96,7 +96,8 @@ exports[`Blocks.vue should show the loading message when empty blocks list 1`] =
         <tbody>
           <tr class="v-data-table__empty-wrapper">
             <td colspan="4">
-              No blocks found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
+              No blocks found
+            </td>
           </tr>
         </tbody>
       </table>

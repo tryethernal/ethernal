@@ -9,7 +9,12 @@
             <span v-if="parsedLog.args.length > 0">{{ ')' }}</span>
         </v-card-text>
         <v-card-text v-else>
-            <i>Upload contract artifact <router-link :to="`/address/${log.address}?tab=contract`">here</router-link> to decode events data.</i>
+            <b>Emitter:</b> <Hash-Link :type="'address'" :hash="log.address"></Hash-Link><br>
+            <b>Topics:</b>
+            <ul>
+                <li v-for="(topic, idx) in log.topics" :key="idx">{{ topic }}</li>
+            </ul>
+            <b>Data:</b> {{ log.data }}
         </v-card-text>
     </v-card>
 </template>
@@ -32,9 +37,11 @@ export default {
     mounted: function() {
         this.server.getContract(this.log.address)
             .then(({ data }) => {
-                this.contract = data.proxyContract || data;
-                if (this.contract && this.contract.abi)
-                    this.parsedLog = decodeLog(this.log, this.contract.abi);
+                if (data) {
+                    this.contract = data.proxyContract || data;
+                    if (this.contract && this.contract.abi)
+                        this.parsedLog = decodeLog(this.log, this.contract.abi);
+                }
             });
     }
 }
