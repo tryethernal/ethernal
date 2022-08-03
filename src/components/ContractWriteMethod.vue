@@ -209,7 +209,7 @@ export default {
                 }
                 else {
                     console.log(error)
-                    this.result.message = 'Error while sending the transaction.'
+                    this.result.message = error.message || 'Error while sending the transaction.';
                 }
                 this.loading = false;
             }

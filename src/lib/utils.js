@@ -50,8 +50,13 @@ export const getProvider = function(rpcServer) {
 };
 
 export const processMethodCallParam = function(param, inputType) {
-    if (inputType.endsWith(']') || inputType == 'tuple')
-        return param.slice(1, param.length - 1).split(',').map(el => el.trim());
+    if (inputType.endsWith(']') || inputType == 'tuple') {
+        try {
+            return JSON.parse(param);
+        } catch(error) {
+            return param.slice(1, param.length - 1).split(',').map(el => el.trim());
+        }
+    }
 
     return param;
 };
