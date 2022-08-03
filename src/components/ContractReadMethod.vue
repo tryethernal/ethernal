@@ -58,8 +58,12 @@ export default {
 
                 const provider = this.isPublicExplorer ? window.ethereum : null;
                 const rpcServer = this.isPublicExplorer ? null : this.currentWorkspace.rpcServer
+                const options = {
+                    ...this.options,
+                    from: this.options.from.address
+                };
 
-                this.server.callContractReadMethod(this.contract, this.signature, this.options, processedParams, rpcServer, provider)
+                this.server.callContractReadMethod(this.contract, this.signature, options, processedParams, rpcServer, provider)
                     .then(res => {
                         this.results = Array.isArray(res) ? this.processResult(res) : this.processResult([res]);
                     })
@@ -82,10 +86,7 @@ export default {
             const processed = [];
             for (let i = 0; i < result.length; i++) {
                 processed.push({
-                    input: {
-                        type: this.method.outputs[i].type,
-                        name: this.method.outputs[i].name
-                    },
+                    input: this.method.outputs[i],
                     value: result[i]
                 })
             }

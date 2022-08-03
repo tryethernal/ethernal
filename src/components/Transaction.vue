@@ -126,7 +126,7 @@
                 </v-col>
             </v-row>
 
-            <v-row v-if="transaction.to">
+            <v-row>
                 <v-col>
                     <Transaction-Data :transaction="transaction" :withoutStorageHeader="true" />
                 </v-col>
