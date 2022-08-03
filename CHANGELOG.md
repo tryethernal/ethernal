@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.4] - 2022-08-03
+### Fixed
+- Bug preventing from calling read methods
+
+### Changed
+- Better display of transactions function calls
+
+### Added
+- Contract creation data is now displayed
+- Events emitted during contract creation are now displayed
+
 ## [2.1.3] - 2022-08-03
 ### Fixed
 - From addresses couldn't be changed in contract pages
