@@ -1,6 +1,6 @@
 <template>
-    <span>
-        {{ inputLabel }}
+    <span :class="`ml-${4 * displayDepth}`">
+        <span v-if="!isArrayEl">{{ inputLabel }}</span>
         <span>
             <template v-if="isFormattable">
                 (<template v-if="formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Raw</a></template>
@@ -9,6 +9,13 @@
             <span v-if="formatted">
                 <span v-if="input.type == 'address'">
                     <Hash-Link :type="'address'" :hash="value" :withName="true" />
+                </span>
+                <span v-else-if="input.type == 'tuple'">
+                    { {{ '\n' }}
+                    <span v-for="(el, idx) in value" :key="idx">
+                        <Formatted-Sol-Var :input="input.components[idx]" :value="el" :depth="displayDepth + 1" />{{ '\n' }}
+                    </span>
+                     <span :class="`ml-${4 * displayDepth}`"> }</span>
                 </span>
                 <span v-else-if="input.type == 'string'">
                     <span v-if="isValueJSON">
@@ -22,9 +29,9 @@
                 <span v-else-if="isInputArray">
                     [{{ '\n' }}
                         <span v-for="(el, idx) in value" :key="idx">
-                            {{ '\t\t' }}<Formatted-Sol-Var :input="{ type: input.type.split('[')[0] }" :value="el" />{{ '\n' }}
+                            <Formatted-Sol-Var :input="input.arrayChildren" :value="el" :depth="displayDepth + 1" :isArrayEl="true" />{{ '\n' }}
                         </span>
-                    ]
+                    <span :class="`ml-${4 * displayDepth}`">]</span>
                 </span>
                 <span v-else>
                     {{ value }}
@@ -41,7 +48,7 @@ import HashLink from './HashLink';
 
 export default {
     name: 'FormattedSolVar',
-    props: ['input', 'value'],
+    props: ['input', 'value', 'depth', 'isArrayEl'],
     components: {
         HashLink,
         VueJsonPretty
@@ -74,8 +81,11 @@ export default {
         }
     },
     computed: {
+        displayDepth: function() {
+            return this.depth ? this.depth : 1;
+        },
         isInputArray: function() {
-            return this.input.type.endsWith(']');
+            return !!this.input.arrayChildren;
         },
         isFormattable: function() {
             return ['address', 'string'].indexOf(this.input.type) > -1;
