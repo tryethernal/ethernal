@@ -354,7 +354,7 @@ export default {
                     if (!items.length) return;
                     this.accounts = items;
 
-                    if (this.currentWorkspace.defaultAccount) {
+                    if (this.currentWorkspace.defaultAccount) {
                         for (let i = 0; i < this.accounts.length; i++)
                             if (this.accounts[i].address == this.currentWorkspace.defaultAccount)
                                 this.callOptions.from = this.accounts[i];
