@@ -21,6 +21,7 @@
             <v-tab id="contractTab" href="#contract" v-if="isContract">Contract</v-tab>
             <v-tab id="storageTab" href="#storage" v-if="isContract && !contract.imported && !isPublicExplorer">Storage</v-tab>
             <v-tab id="tokenTab" href="#token" v-if="isTokenContract &&!isPublicExplorer">Token</v-tab>
+            <v-tab id="balancesTab" href="#balances">Tokens</v-tab>
         </v-tabs>
 
         <v-tabs-items :value="tab">
@@ -204,6 +205,10 @@
                     </v-card>
                 </template>
             </v-tab-item>
+
+            <v-tab-item value="balances">
+                <Token-Balances :address="hash" />
+            </v-tab-item>
         </v-tabs-items>
     </v-container>
 </template>
@@ -223,6 +228,7 @@ import RemoveContractConfirmationModal from './RemoveContractConfirmationModal';
 import AddressTransactionsList from './AddressTransactionsList';
 import Metamask from './Metamask';
 import Token from './Token';
+import TokenBalances from './TokenBalances';
 import UpgradeLink from './UpgradeLink';
 
 import FromWei from '../filters/FromWei';
@@ -241,7 +247,8 @@ export default {
         Token,
         UpgradeLink,
         AddressTransactionsList,
-        Metamask
+        Metamask,
+        TokenBalances
     },
     filters: {
         FromWei
@@ -367,6 +374,7 @@ export default {
 
             this.server.getContract(hash)
                 .then(({ data }) => {
+                    if (!data) return;
                     this.contract = data;
                     if (this.contract.abi)
                         this.contractInterface = new ethers.utils.Interface(this.contract.abi);
