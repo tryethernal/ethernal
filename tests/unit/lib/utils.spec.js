@@ -40,6 +40,12 @@ describe('processMethodCallParam', () => {
         expect(Array.isArray(result)).toBe(true);
     });
 
+    it('Should return a parsed array if input is array of json', () => {
+        const result = processMethodCallParam('[{"targetURI": "blink:polygon:mumbai:0x60Ae865ee4C725cd04353b5AAb364553f56ceF82:0x8635-0x0b","tagStrings": ["#love","#hate"],"recordType":"bookmark","enrich":false } ]', 'tuple[]');
+        expect(Array.isArray(result)).toBe(true);
+        expect(typeof result[0]).toEqual('object');
+    });
+
     it('Should return a javascript array if input is string and array type', () => {
         const result = processMethodCallParam('[1,2]', 'uint256[]');
         expect(Array.isArray(result)).toBe(true);
