@@ -165,24 +165,12 @@ exports[`ContractReadMethod.vue Should work when input is any array 1`] = `
   <div id="call" style="">
     <div class="my-1 v-card v-sheet v-sheet--outlined theme--light">
       <div class="v-card__text py-2 ma-0 px-1">
-        <div style="white-space: pre;"><span>
-    uint256[]: 
-    <span><!----> <span><span>
+        <div style="white-space: pre;"><span class="ml-4"><span>uint256[]: </span> <span><!----> <span><span>
                 [
-
-                    <span>
-                        		<span>
-    uint256: 
-    <span><!----> 1</span></span>
-
-          </span><span>
-                        		<span>
-    uint256: 
-    <span><!----> 2</span></span>
-
-          </span>
-          ]
-          </span></span></span></span></div>
+  1,
+  2
+]
+            </span></span></span></span></div>
       </div>
     </div>
   </div>

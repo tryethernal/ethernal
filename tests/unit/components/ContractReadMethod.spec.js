@@ -33,9 +33,9 @@ describe('ContractReadMethod.vue', () => {
         props.method = {
             "inputs": [
                 {
-                "internalType": "uint256[]",
-                "name": "values",
-                "type": "uint256[]"
+                    "internalType": "uint256[]",
+                    "name": "values",
+                    "type": "uint256[]"
                 }
             ],
             "name": "reproBug",
@@ -61,7 +61,7 @@ describe('ContractReadMethod.vue', () => {
         expect(wrapper.vm.results).toEqual([
             {
                 input: {
-                    internalType: "uint256",
+                    internalType: "uint256[]",
                     name: '',
                     type: 'uint256[]'
                 },
@@ -83,7 +83,6 @@ describe('ContractReadMethod.vue', () => {
         expect(wrapper.vm.results).toEqual([
             {
                 input: {
-                    internalType: "uint256",
                     name: '',
                     type: 'bool'
                 },
@@ -112,7 +111,6 @@ describe('ContractReadMethod.vue', () => {
         expect(wrapper.vm.results).toEqual([
             {
                 input: {
-                    internalType: "uint256",
                     name: '',
                     type: 'bool'
                 },
