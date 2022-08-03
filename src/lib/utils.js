@@ -50,6 +50,7 @@ export const getProvider = function(rpcServer) {
 };
 
 export const processMethodCallParam = function(param, inputType) {
+    console.log(inputType)
     if (inputType.endsWith(']') || inputType == 'tuple') {
         try {
             return JSON.parse(param);
