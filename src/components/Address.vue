@@ -76,8 +76,8 @@
                                             label="Select from address"
                                             v-model="callOptions.from"
                                             item-text="address"
-                                            item-value="address"
-                                            :items="accounts">
+                                            :items="accounts"
+                                            return-object>
                                             <template v-slot:item="{ item }">
                                                 <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
                                                 {{ item.address }}
@@ -281,7 +281,6 @@ export default {
     created: function() {
         this.server.getAccountBalance(this.lowerHash).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
 
-        this.callOptions.from = this.currentWorkspace.defaultAccount;
         this.callOptions.gasLimit = this.currentWorkspace.gasLimit;
         this.callOptions.gasPrice = this.currentWorkspace.gasPrice;
 
@@ -359,9 +358,16 @@ export default {
         bindTheStuff: function(hash) {
             if (!this.isPublicExplorer) {
                 this.server.getAccounts({ page: -1 }).then(({ data: { items }}) => {
+                    if (!items.length) return;
                     this.accounts = items;
-                    if (!this.callOptions.from && this.accounts.length)
-                        this.callOptions.from = this.accounts[0].address;
+
+                    if (this.currentWorkspace.defaultAccount) {
+                        for (let i = 0; i < this.accounts.length; i++)
+                            if (this.accounts[i].address == this.currentWorkspace.defaultAccount)
+                                this.callOptions.from = this.accounts[i];
+                    }
+                    else
+                        this.callOptions.from = this.accounts[0];
                 });
 
                 this.server.getAddressTransactions(hash)
