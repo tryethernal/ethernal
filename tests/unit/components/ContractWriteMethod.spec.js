@@ -18,7 +18,7 @@ describe('ContractWriteMethod.vue', () => {
             contract: DSProxyFactoryContract,
             signature: 'build()',
             options: {
-                from: '0x0',
+                from: { address: '0x0' },
                 gasLimit: '6721975',
                 gasPrice: undefined
             },
@@ -159,7 +159,7 @@ describe('ContractWriteMethod.vue', () => {
             method: TokenContract.abi[1],
             contract: TokenContract,
             options: {
-                from: '0x0',
+                from: { address: '0x0' },
                 gasLimit: '6721975',
                 gasPrice: undefined
             },
