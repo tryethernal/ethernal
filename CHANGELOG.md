@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.2] - 2022-08-03
+### Fixed
+- JSON parameters were not properly handled in contract call methods
+
 ## [2.1.1] - 2022-08-01
 ### Changed
 - Better UI on mobile
