@@ -122,6 +122,9 @@ export default {
                     message: null
                 };
 
+                if (!this.options.from || !this.options.from.address)
+                    throw new Error('You must select a "from" address.');
+
                 var options = sanitize({
                     gasPrice: this.options.gasPrice,
                     gasLimit: this.options.gasLimit,
