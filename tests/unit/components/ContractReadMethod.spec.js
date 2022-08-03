@@ -61,6 +61,7 @@ describe('ContractReadMethod.vue', () => {
         expect(wrapper.vm.results).toEqual([
             {
                 input: {
+                    internalType: "uint256",
                     name: '',
                     type: 'uint256[]'
                 },
@@ -82,6 +83,7 @@ describe('ContractReadMethod.vue', () => {
         expect(wrapper.vm.results).toEqual([
             {
                 input: {
+                    internalType: "uint256",
                     name: '',
                     type: 'bool'
                 },
@@ -110,6 +112,7 @@ describe('ContractReadMethod.vue', () => {
         expect(wrapper.vm.results).toEqual([
             {
                 input: {
+                    internalType: "uint256",
                     name: '',
                     type: 'bool'
                 },
@@ -145,6 +148,7 @@ describe('ContractReadMethod.vue', () => {
         expect(wrapper.vm.results).toEqual([
             {
                 input: {
+                    internalType: "uint256",
                     name: '',
                     type: 'uint256'
                 },
@@ -180,6 +184,7 @@ describe('ContractReadMethod.vue', () => {
         expect(wrapper.vm.results).toEqual([
             {
                 input: {
+                    internalType: "uint256",
                     name: '',
                     type: 'uint256'
                 },
@@ -220,6 +225,7 @@ describe('ContractReadMethod.vue', () => {
         expect(wrapper.vm.results).toEqual([
             {
                 input: {
+                    internalType: "uint256",
                     name: '',
                     type: 'uint256'
                 },
@@ -227,6 +233,7 @@ describe('ContractReadMethod.vue', () => {
             },
             {
                 input: {
+                    internalType: "uint256",
                     name: '',
                     type: 'uint256'
                 },
