@@ -66,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
         });
         if (existingRecords.length > 0)
             return null;
-        console.log(this);
+
         return this.createTokenTransfer(sanitize({
             workspaceId: this.workspaceId,
             dst: tokenTransfer.dst,
