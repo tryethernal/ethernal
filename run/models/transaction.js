@@ -66,8 +66,9 @@ module.exports = (sequelize, DataTypes) => {
         });
         if (existingRecords.length > 0)
             return null;
-
+        console.log(this);
         return this.createTokenTransfer(sanitize({
+            workspaceId: this.workspaceId,
             dst: tokenTransfer.dst,
             src: tokenTransfer.src,
             amount: tokenTransfer.amount,
@@ -97,7 +98,8 @@ module.exports = (sequelize, DataTypes) => {
             address: balanceChange.address,
             currentBalance: balanceChange.currentBalance,
             previousBalance: balanceChange.previousBalance,
-            diff: balanceChange.diff
+            diff: balanceChange.diff,
+            workspaceId: this.workspaceId
         }));
     }
 

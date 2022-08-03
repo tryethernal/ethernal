@@ -21,7 +21,7 @@
             <v-tab id="contractTab" href="#contract" v-if="isContract">Contract</v-tab>
             <v-tab id="storageTab" href="#storage" v-if="isContract && !contract.imported && !isPublicExplorer">Storage</v-tab>
             <v-tab id="tokenTab" href="#token" v-if="isTokenContract &&!isPublicExplorer">Token</v-tab>
-            <v-tab id="balancesTab" href="#balances">Tokens</v-tab>
+            <v-tab id="balancesTab" href="#balances">ERC-20 Tokens</v-tab>
         </v-tabs>
 
         <v-tabs-items :value="tab">

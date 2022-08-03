@@ -9,10 +9,10 @@
                     :sort-desc="true"
                     :headers="headers">
                 <template v-slot:item.token="{ item }">
-                    <Hash-Link :type="'address'" :hash="item.token" :withName="true" />
+                    <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" />
                 </template>
                 <template v-slot:item.currentBalance="{ item }">
-                    {{ item.currentBalance | fromWei('', '', item.tokenContract && item.tokenContract.tokenDecimals) }}
+                    {{ item.currentBalance | fromWei('', '', item.tokenContract && item.tokenContract.tokenDecimals) }} {{ item.tokenContract.tokenSymbol }}
                 </template>
                 </v-data-table>
             </v-card-text>
