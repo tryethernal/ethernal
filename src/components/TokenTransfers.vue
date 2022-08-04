@@ -1,26 +1,24 @@
 <template>
-    <v-data-table
-        :hide-default-footer="transfers.length <= 10"
-        :headers="tableHeaders"
-        :items="transfers">
-        <template v-slot:item.src="{ item }">
-            <Hash-Link :type="'address'" :hash="item.src" :fullHash="true" :withName="true" :withTokenName="true" />
-        </template>
-        <template v-slot:item.dst="{ item }">
-            <Hash-Link :type="'address'" :hash="item.dst" :fullHash="true" :withName="true" :withTokenName="true" />
-        </template>
-        <template v-slot:item.token="{ item }">
-            <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" />
-        </template>
-        <template v-slot:item.amount="{ item }">
-            <span v-if="decimals[item.token]">
-                {{ item.amount | fromWei('ether', symbols[item.token], decimals[item.token]) }}
-            </span>
-            <span v-else>
-                {{ item.amount }}
-            </span>
-        </template>
-    </v-data-table>
+    <div>
+        (<small><a @click="unformatted = !unformatted">Show Unformatted Amounts</a></small>)
+        <v-data-table
+            :hide-default-footer="transfers.length <= 10"
+            :headers="tableHeaders"
+            :items="transfers">
+            <template v-slot:item.src="{ item }">
+                <Hash-Link :type="'address'" :hash="item.src" :fullHash="true" :withName="true" :withTokenName="true" />
+            </template>
+            <template v-slot:item.dst="{ item }">
+                <Hash-Link :type="'address'" :hash="item.dst" :fullHash="true" :withName="true" :withTokenName="true" />
+            </template>
+            <template v-slot:item.token="{ item }">
+                <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" />
+            </template>
+            <template v-slot:item.amount="{ item }">
+                {{ item.amount | fromWei('ether', symbols[item.token], decimals[item.token], unformatted) }}
+            </template>
+        </v-data-table>
+    </div>
 </template>
 <script>
 import HashLink from './HashLink';
@@ -36,6 +34,7 @@ export default {
         FromWei
     },
     data: () => ({
+        unformatted: false,
         tableHeaders: [
             { text: 'From', value: 'src' },
             { text: 'To', value: 'dst' },

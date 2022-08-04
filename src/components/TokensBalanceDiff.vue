@@ -1,6 +1,7 @@
 <template>
     <div>
-        <Hash-Link :type="'address'" :hash="token" :withTokenName="true" :withName="true" /><br>
+        <Hash-Link :type="'address'" :hash="token" :withTokenName="true" :withName="true" />
+        (<small><a @click="unformatted = !unformatted">Show Unformatted Amounts</a></small>)
         <v-data-table
             :hide-default-footer="balanceChanges.length <= 10"
             :headers="tableHeaders"
@@ -9,18 +10,18 @@
                 <Hash-Link :type="'address'" :hash="item.address" />
             </template>
             <template v-slot:item.before="{ item }">
-                {{ item.previousBalance | fromWei('ether', symbols[item.address], decimals[item.address]) }}
+                {{ item.previousBalance | fromWei('ether', symbols[item.address], decimals[item.address], unformatted) }}
             </template>
             <template v-slot:item.now="{ item }">
-                {{ item.currentBalance | fromWei('ether', symbols[item.address], decimals[item.address]) }}
+                {{ item.currentBalance | fromWei('ether', symbols[item.address], decimals[item.address], unformatted) }}
             </template>
             <template v-slot:item.change="{ item }">
                 <span v-if="changeDirection(item.diff) > 0" class="success--text">
-                    +{{ item.diff | fromWei('ether', symbols[item.address], decimals[item.address]) }}
+                    +{{ item.diff | fromWei('ether', symbols[item.address], decimals[item.address], unformatted) }}
                 </span>
                 <span v-if="changeDirection(item.diff) === 0">0</span>
                 <span v-if="changeDirection(item.diff) < 0" class="error--text">
-                    {{ item.diff | fromWei('ether', symbols[item.address], decimals[item.address]) }}
+                    {{ item.diff | fromWei('ether', symbols[item.address], decimals[item.address], unformatted) }}
                 </span>
             </template>
         </v-data-table>
@@ -42,6 +43,7 @@ export default {
         FromWei
     },
     data: () => ({
+        unformatted: false,
         tableHeaders: [],
         newBalances: {},
         decimals: {},
