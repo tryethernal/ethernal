@@ -7,7 +7,7 @@
             <Hash-Link :type="'address'" :hash="item.src" :fullHash="true" :withName="true" :withTokenName="true" />
         </template>
         <template v-slot:item.dst="{ item }">
-            <Hash-Link :type="'address'" :hash="item.dst" :fullHash="true" :withName="true" />
+            <Hash-Link :type="'address'" :hash="item.dst" :fullHash="true" :withName="true" :withTokenName="true" />
         </template>
         <template v-slot:item.token="{ item }">
             <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" />
@@ -45,19 +45,22 @@ export default {
         decimals: {},
         symbols: {}
     }),
-    mounted() {
-        for (let i = 0; i < this.transfers.length; i++) {
-            this.$set(this.symbols, this.transfers[i].token, '');
-            this.server.getContract(this.transfers[i].token)
-                .then(({ data }) => {
-                    const contract = data;
-                    if (!contract) return;
+    watch: {
+        transfers() {
+            for (let i = 0; i < this.transfers.length; i++) {
+                this.$set(this.symbols, this.transfers[i].token, '');
+                this.server.getContract(this.transfers[i].token)
+                    .then(({ data }) => {
+                        const contract = data;
+                        if (!contract) return;
 
-                    if (contract.tokenDecimals)
-                        this.$set(this.decimals, this.transfers[i].token, data.tokenDecimals);
-                    if (contract.tokenSymbol)
-                        this.$set(this.symbols, this.transfers[i].token, data.tokenSymbol);
-                });
+                        if (contract.tokenDecimals)
+                            this.$set(this.decimals, this.transfers[i].token, data.tokenDecimals);
+                        if (contract.tokenSymbol)
+                            this.$set(this.symbols, this.transfers[i].token, data.tokenSymbol);
+                    })
+                    .catch(console.log);
+            }
         }
     }
 }

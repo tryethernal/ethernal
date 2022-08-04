@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Hash-Link :type="'address'" :hash="token" :withName="true" /><br>
+        <Hash-Link :type="'address'" :hash="token" :withTokenName="true" :withName="true" /><br>
         <v-data-table
             :hide-default-footer="balanceChanges.length <= 10"
             :headers="tableHeaders"
@@ -9,38 +9,18 @@
                 <Hash-Link :type="'address'" :hash="item.address" />
             </template>
             <template v-slot:item.before="{ item }">
-                <span v-if="decimals[item.address]">
-                    {{ item.previousBalance | fromWei('ether', '', decimals[item.address]) }}
-                </span>
-                <span v-else>
-                    {{ item.previousBalance }}
-                </span>
+                {{ item.previousBalance | fromWei('ether', symbols[item.address], decimals[item.address]) }}
             </template>
             <template v-slot:item.now="{ item }">
-                <span v-if="decimals[item.address]">
-                    {{ item.currentBalance | fromWei('ether', '', decimals[item.address]) }}
-                </span>
-                <span v-else>
-                    {{ item.currentBalance }}
-                </span>
+                {{ item.currentBalance | fromWei('ether', symbols[item.address], decimals[item.address]) }}
             </template>
             <template v-slot:item.change="{ item }">
                 <span v-if="changeDirection(item.diff) > 0" class="success--text">
-                    <span v-if="decimals[item.address]">
-                        +{{ item.diff | fromWei('ether', '', decimals[item.address]) }}
-                    </span>
-                    <span v-else>
-                        +{{ item.diff }}
-                    </span>
+                    +{{ item.diff | fromWei('ether', symbols[item.address], decimals[item.address]) }}
                 </span>
                 <span v-if="changeDirection(item.diff) === 0">0</span>
                 <span v-if="changeDirection(item.diff) < 0" class="error--text">
-                    <span v-if="decimals[item.address]">
-                        {{ item.diff | fromWei('ether', '', decimals[item.address]) }}
-                    </span>
-                    <span v-else>
-                        {{ item.diff }}
-                    </span>
+                    {{ item.diff | fromWei('ether', symbols[item.address], decimals[item.address]) }}
                 </span>
             </template>
         </v-data-table>
@@ -64,7 +44,8 @@ export default {
     data: () => ({
         tableHeaders: [],
         newBalances: {},
-        decimals: {}
+        decimals: {},
+        symbols: {}
     }),
     mounted: function() {
         this.tableHeaders.push(
@@ -74,12 +55,16 @@ export default {
             { text: 'Change', value: 'change' }
         );
         for (let i = 0; i < this.balanceChanges.length; i++) {
+            this.$set(this.decimals, this.balanceChanges[i].address, '');
+            this.$set(this.symbols, this.balanceChanges[i].address, '');
+
             this.server.getContract(this.token)
                 .then(({ data }) => {
                     const contract = data;
-                    if (!contract || !contract.tokenDecimals) return;
+                    if (!contract) return;
 
                     this.$set(this.decimals, this.balanceChanges[i].address, contract.tokenDecimals);
+                    this.$set(this.symbols, this.balanceChanges[i].address, contract.tokenSymbol);
                 });
         }
     },
@@ -94,9 +79,6 @@ export default {
                 return 0;
             else
                 return -1;
-        },
-        formatAmount: function(amount) {
-            return parseFloat(ethers.utils.formatUnits(ethers.BigNumber.from(amount))).toLocaleString();
         }
     },
     computed: {
