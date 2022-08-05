@@ -137,15 +137,15 @@ exports[`TokensBalanceDiff.vue Should display token balances difference 1`] = `
                 <hash-link-stub hash="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" type="address"></hash-link-stub>
               </td>
               <td class="text-start">
-                99999999880 ether
+                99999999880000000000000000000
               </td>
               <td class="text-start">
-                99999999870 ether
+                99999999870000000000000000000
               </td>
               <td class="text-start">
                 <!---->
                 <!----> <span class="error--text">
-                    -10 ether
+                    -10000000000000000000
                 </span>
               </td>
             </tr>
@@ -154,13 +154,13 @@ exports[`TokensBalanceDiff.vue Should display token balances difference 1`] = `
                 <hash-link-stub hash="0x2d481eeb2ba97955cd081cf218f453a817259ab1" type="address"></hash-link-stub>
               </td>
               <td class="text-start">
-                120 ether
+                120000000000000000000
               </td>
               <td class="text-start">
-                130 ether
+                130000000000000000000
               </td>
               <td class="text-start"><span class="success--text">
-                    +10 ether
+                    +10000000000000000000
                 </span>
                 <!---->
                 <!---->

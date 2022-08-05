@@ -6,7 +6,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
     <div class="col-sm-12 col-md-6 col-lg-3 col">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
-          Balance: 1e-14 Ether
+          Balance: 0.00000000000001 Ether
         </div>
       </div>
     </div>
@@ -457,7 +457,7 @@ exports[`Address.vue Should display the contract interaction interface under the
     <div class="col-sm-12 col-md-6 col-lg-3 col">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
-          Balance: 1e-14 ether
+          Balance: 0.00000000000001 ether
         </div>
       </div>
     </div>
@@ -854,7 +854,7 @@ exports[`Address.vue Should display the contract storage structure 1`] = `
     <div class="col-sm-12 col-md-6 col-lg-3 col">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
-          Balance: 1e-14 Ether
+          Balance: 0.00000000000001 Ether
         </div>
       </div>
     </div>
@@ -1056,7 +1056,7 @@ exports[`Address.vue Should not display the storage tab on contract page if in p
     <div class="col-sm-12 col-md-6 col-lg-3 col">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
-          Balance: 1e-14 Ether
+          Balance: 0.00000000000001 Ether
         </div>
       </div>
     </div>
@@ -1109,7 +1109,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
     <div class="col-sm-12 col-md-6 col-lg-3 col">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
-          Balance: 1e-14 Ether
+          Balance: 0.00000000000001 Ether
         </div>
       </div>
     </div>
@@ -1561,7 +1561,7 @@ exports[`Address.vue Should sync the balance when loaded 1`] = `
     <div class="col-sm-12 col-md-6 col-lg-3 col">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
-          Balance: 1e-14 Ether
+          Balance: 0.00000000000001 Ether
         </div>
       </div>
     </div>
