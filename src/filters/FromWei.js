@@ -1,14 +1,19 @@
 const Web3 = require('web3');
+const ethers = require('ethers');
 const web3 = new Web3();
 
-export default function (amount = 0, to = 'ether', nativeToken = 'ether', decimals, unformatted = false) {
-    if (unformatted) return amount;
-    const ethAmount = parseFloat(web3.utils.fromWei(amount.toString(), to).toLocaleString());
+const BigNumber = ethers.BigNumber;
+const formatUnits = ethers.utils.formatUnits;
+const commify = ethers.utils.commify;
 
-    const roundedAmount = decimals ? parseFloat(ethAmount.toFixed(decimals)).toLocaleString() : ethAmount;
+export default function (amount = 0, to = 'ether', nativeToken = 'ether', decimals = 18, unformatted = false) {
+    if (unformatted) return amount;
+
+    const ethAmount = BigNumber.from(String(amount));
+    const roundedAmount = formatUnits(ethAmount, decimals)
 
     if (to == 'ether' && nativeToken != 'ether')
-        return `${roundedAmount} ${nativeToken}`;
+        return `${commify(roundedAmount)} ${nativeToken}`;
     else
         return `${roundedAmount} ${to}`;
 }

@@ -226,7 +226,6 @@ import ImportArtifactModal from './ImportArtifactModal';
 import RemoveContractConfirmationModal from './RemoveContractConfirmationModal';
 import AddressTransactionsList from './AddressTransactionsList';
 import Metamask from './Metamask';
-import Token from './Token';
 import TokenBalances from './TokenBalances';
 import UpgradeLink from './UpgradeLink';
 
@@ -243,7 +242,6 @@ export default {
         ContractWriteMethod,
         ImportArtifactModal,
         RemoveContractConfirmationModal,
-        Token,
         UpgradeLink,
         AddressTransactionsList,
         Metamask,

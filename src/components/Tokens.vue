@@ -49,20 +49,12 @@ export default {
                 value: 'address'
             },
             {
-                text: 'Contract Name',
-                value: 'contractName'
-            },
-            {
                 text: 'Token Name',
                 value: 'tokenName'
             },
             {
                 text: 'Token Symbol',
                 value: 'tokenSymbol'
-            },
-            {
-                text: 'Deployed On',
-                value: 'timestamp'
             },
             {
                 text: '',

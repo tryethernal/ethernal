@@ -24,7 +24,11 @@ export const getProvider = function(rpcServer) {
 
 export const processMethodCallParam = function(param, inputType) {
     if (inputType.endsWith(']') || inputType == 'tuple')
-        return JSON.parse(param);
+        try {
+            return JSON.parse(param);
+        } catch(_error) {
+            return param.slice(1, param.length - 1).split(',').map(el => el.trim());
+        }
     return param;
 };
 
