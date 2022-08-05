@@ -10,16 +10,12 @@ exports[`Tokens.vue Should display token contracts 1`] = `
           <col class="">
           <col class="">
           <col class="">
-          <col class="">
-          <col class="">
         </colgroup>
         <thead class="v-data-table-header">
           <tr>
             <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Contract Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Contract Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Token Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Token Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Token Symbol: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Token Symbol</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Deployed On: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Deployed On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
           </tr>
         </thead>
@@ -29,15 +25,11 @@ exports[`Tokens.vue Should display token contracts 1`] = `
               <hash-link-stub hash="0x123" type="address"></hash-link-stub>
             </td>
             <td class="text-start">
-
-            </td>
-            <td class="text-start">
               Ethernal
             </td>
             <td class="text-start">
               ETL
             </td>
-            <td class="text-start"><span>2021-11-10 4:10:49 PM</span></td>
             <td class="text-start"><span class="success mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">
                 ERC 20
             </span></span></td>
@@ -47,15 +39,11 @@ exports[`Tokens.vue Should display token contracts 1`] = `
               <hash-link-stub hash="0x124" type="address"></hash-link-stub>
             </td>
             <td class="text-start">
-
-            </td>
-            <td class="text-start">
               USDC
             </td>
             <td class="text-start">
               USDC
             </td>
-            <td class="text-start"><span>2021-11-10 4:10:49 PM</span></td>
             <td class="text-start"><span class="success mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">
                 ERC 20
             </span></span><span class="success mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">
@@ -68,10 +56,10 @@ exports[`Tokens.vue Should display token contracts 1`] = `
     <div class="v-data-footer">
       <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
           <div class="v-input__control">
-            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-17" class="v-input__slot">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-15" class="v-input__slot">
               <div class="v-select__slot">
                 <div class="v-select__selections">
-                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-17" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-15" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                 </div>
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>

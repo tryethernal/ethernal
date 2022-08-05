@@ -1,26 +1,31 @@
 <template>
-    <v-data-table
-        :hide-default-footer="transfers.length <= 10"
-        :headers="tableHeaders"
-        :items="transfers">
-        <template v-slot:item.src="{ item }">
-            <Hash-Link :type="'address'" :hash="item.src" :fullHash="true" :withName="true" :withTokenName="true" />
-        </template>
-        <template v-slot:item.dst="{ item }">
-            <Hash-Link :type="'address'" :hash="item.dst" :fullHash="true" :withName="true" />
-        </template>
-        <template v-slot:item.token="{ item }">
-            <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" />
-        </template>
-        <template v-slot:item.amount="{ item }">
-            <span v-if="decimals[item.token]">
-                {{ item.amount | fromWei('ether', symbols[item.token], decimals[item.token]) }}
-            </span>
-            <span v-else>
-                {{ item.amount }}
-            </span>
-        </template>
-    </v-data-table>
+    <v-card outlined>
+        <v-card-text>
+            <v-data-table
+                :hide-default-footer="transfers.length <= 10"
+                :headers="tableHeaders"
+                :items="transfers">
+                <template v-slot:top>
+                    <v-toolbar dense flat>
+                        <v-spacer></v-spacer>
+                        <v-switch v-model="unformatted" label="Unformatted Amounts"></v-switch>
+                    </v-toolbar>
+                </template>
+                <template v-slot:item.src="{ item }">
+                    <Hash-Link :type="'address'" :hash="item.src" :fullHash="true" :withName="true" :withTokenName="true" />
+                </template>
+                <template v-slot:item.dst="{ item }">
+                    <Hash-Link :type="'address'" :hash="item.dst" :fullHash="true" :withName="true" :withTokenName="true" />
+                </template>
+                <template v-slot:item.token="{ item }">
+                    <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" />
+                </template>
+                <template v-slot:item.amount="{ item }">
+                    {{ item.amount | fromWei(decimals[item.token], symbols[item.token], unformatted) }}
+                </template>
+            </v-data-table>
+        </v-card-text>
+    </v-card>
 </template>
 <script>
 import HashLink from './HashLink';
@@ -36,6 +41,7 @@ export default {
         FromWei
     },
     data: () => ({
+        unformatted: false,
         tableHeaders: [
             { text: 'From', value: 'src' },
             { text: 'To', value: 'dst' },
@@ -46,18 +52,31 @@ export default {
         symbols: {}
     }),
     mounted() {
-        for (let i = 0; i < this.transfers.length; i++) {
-            this.$set(this.symbols, this.transfers[i].token, '');
-            this.server.getContract(this.transfers[i].token)
-                .then(({ data }) => {
-                    const contract = data;
-                    if (!contract) return;
+        this.loadContractData();
+    },
+    methods: {
+        loadContractData() {
+            for (let i = 0; i < this.transfers.length; i++) {
+                this.$set(this.symbols, this.transfers[i].token, '');
+                this.$set(this.decimals, this.transfers[i].token, 18);
 
-                    if (contract.tokenDecimals)
-                        this.$set(this.decimals, this.transfers[i].token, data.tokenDecimals);
-                    if (contract.tokenSymbol)
-                        this.$set(this.symbols, this.transfers[i].token, data.tokenSymbol);
-                });
+                this.server.getContract(this.transfers[i].token)
+                    .then(({ data }) => {
+                        const contract = data;
+                        if (!contract) return;
+
+                        if (contract.tokenDecimals)
+                            this.$set(this.decimals, this.transfers[i].token, contract.tokenDecimals);
+                        if (contract.tokenSymbol)
+                            this.$set(this.symbols, this.transfers[i].token, contract.tokenSymbol);
+                    })
+                    .catch(console.log);
+            }
+        }
+    },
+    watch: {
+        transfers() {
+            this.loadContractData();
         }
     }
 }

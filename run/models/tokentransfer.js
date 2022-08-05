@@ -35,7 +35,8 @@ module.exports = (sequelize, DataTypes) => {
             this.setDataValue('token', value.toLowerCase());
         }
     },
-    transactionId: DataTypes.INTEGER
+    transactionId: DataTypes.INTEGER,
+    workspaceId: DataTypes.INTEGER
   }, {
     hooks: {
         async afterSave(tokenTransfer, options) {

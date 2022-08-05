@@ -10,7 +10,7 @@ const db = require('../../lib/firebase');
 
 beforeEach(() => jest.clearAllMocks());
 
-describe('searchForAddress', (done) => {
+describe('searchForAddress', () => {
     it('Should return found contracts', (done) => {
         db.searchForAddress(1, '0x123')
             .then(contracts => {
