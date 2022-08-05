@@ -18,18 +18,18 @@
                     <Hash-Link :type="'address'" :hash="item.address" />
                 </template>
                 <template v-slot:item.before="{ item }">
-                    {{ item.previousBalance | fromWei('ether', symbols[item.address], decimals[item.address], unformatted) }}
+                    {{ item.previousBalance | fromWei(decimals[item.address], symbols[item.address], unformatted) }}
                 </template>
                 <template v-slot:item.now="{ item }">
-                    {{ item.currentBalance | fromWei('ether', symbols[item.address], decimals[item.address], unformatted) }}
+                    {{ item.currentBalance | fromWei(decimals[item.address], symbols[item.address], unformatted) }}
                 </template>
                 <template v-slot:item.change="{ item }">
                     <span v-if="changeDirection(item.diff) > 0" class="success--text">
-                        +{{ item.diff | fromWei('ether', symbols[item.address], decimals[item.address], unformatted) }}
+                        +{{ item.diff | fromWei(decimals[item.address], symbols[item.address], unformatted) }}
                     </span>
                     <span v-if="changeDirection(item.diff) === 0">0</span>
                     <span v-if="changeDirection(item.diff) < 0" class="error--text">
-                        {{ item.diff | fromWei('ether', symbols[item.address], decimals[item.address], unformatted) }}
+                        {{ item.diff | fromWei(decimals[item.address], symbols[item.address], unformatted) }}
                     </span>
                 </template>
             </v-data-table>

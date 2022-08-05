@@ -21,7 +21,7 @@
                     <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" />
                 </template>
                 <template v-slot:item.amount="{ item }">
-                    {{ item.amount | fromWei('ether', symbols[item.token], decimals[item.token], unformatted) }}
+                    {{ item.amount | fromWei(decimals[item.token], symbols[item.token], unformatted) }}
                 </template>
             </v-data-table>
         </v-card-text>
