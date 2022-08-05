@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TransactionFunctionCall.vue Should display transaction call 1`] = `
-<div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+<div class="v-card v-sheet v-sheet--outlined theme--light">
   <div class="v-card__text">
     transfer(
 
@@ -18,14 +18,14 @@ exports[`TransactionFunctionCall.vue Should display transaction call 1`] = `
 `;
 
 exports[`TransactionFunctionCall.vue Should display warning if no ABI 1`] = `
-<div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+<div class="v-card v-sheet v-sheet--outlined theme--light">
   <div class="v-card__text"><b>Signature:</b> 0xa9059cbb<br> <b>Data:</b> 0xa9059cbb000000000000000000000000c00e94cb662c3520282e6f5717214004a7f268880000000000000000000000000000000000000000000000000000000000000001
   </div>
 </div>
 `;
 
 exports[`TransactionFunctionCall.vue Should handle arrays as parameters 1`] = `
-<div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+<div class="v-card v-sheet v-sheet--outlined theme--light">
   <div class="v-card__text">
     reproWriteBug(
 

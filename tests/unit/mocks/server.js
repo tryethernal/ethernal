@@ -28,6 +28,7 @@ jest.mock('@/plugins/server', () => ({
                 updateWorkspaceSettings: jest.fn().mockResolvedValue(),
                 getTransaction: jest.fn().mockResolvedValue(),
                 getTransactions: jest.fn(),
+                getTokenBalances: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))

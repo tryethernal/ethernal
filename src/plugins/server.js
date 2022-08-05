@@ -347,6 +347,16 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            getTokenBalances(address) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/addresses/${address}/balances`;
+                return axios.get(resource, { params });
+            },
+
             search(type, query) {
                 const params = {
                     firebaseAuthToken: store.getters.firebaseIdToken,

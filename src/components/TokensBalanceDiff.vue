@@ -1,50 +1,40 @@
 <template>
-    <div>
-        <Hash-Link :type="'address'" :hash="token" :withName="true" /><br>
-        <v-data-table
-            :hide-default-footer="balanceChanges.length <= 10"
-            :headers="tableHeaders"
-            :items="balanceChanges">
-            <template v-slot:item.address="{ item }">
-                <Hash-Link :type="'address'" :hash="item.address" />
-            </template>
-            <template v-slot:item.before="{ item }">
-                <span v-if="decimals[item.address]">
-                    {{ item.previousBalance | fromWei('ether', '', decimals[item.address]) }}
-                </span>
-                <span v-else>
-                    {{ item.previousBalance }}
-                </span>
-            </template>
-            <template v-slot:item.now="{ item }">
-                <span v-if="decimals[item.address]">
-                    {{ item.currentBalance | fromWei('ether', '', decimals[item.address]) }}
-                </span>
-                <span v-else>
-                    {{ item.currentBalance }}
-                </span>
-            </template>
-            <template v-slot:item.change="{ item }">
-                <span v-if="changeDirection(item.diff) > 0" class="success--text">
-                    <span v-if="decimals[item.address]">
-                        +{{ item.diff | fromWei('ether', '', decimals[item.address]) }}
+    <v-card outlined class="my-2">
+        <v-card-text>
+            <v-data-table
+                :hide-default-footer="balanceChanges.length <= 10"
+                :headers="tableHeaders"
+                :items="balanceChanges">
+                <template v-slot:top>
+                    <v-toolbar dense flat>
+                        <v-toolbar-title>
+                            <small><Hash-Link :type="'address'" :hash="token" :withTokenName="true" :withName="true" /></small>
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-switch v-model="unformatted" label="Unformatted Amounts"></v-switch>
+                    </v-toolbar>
+                </template>
+                <template v-slot:item.address="{ item }">
+                    <Hash-Link :type="'address'" :hash="item.address" />
+                </template>
+                <template v-slot:item.before="{ item }">
+                    {{ item.previousBalance | fromWei(decimals[item.address], symbols[item.address], unformatted) }}
+                </template>
+                <template v-slot:item.now="{ item }">
+                    {{ item.currentBalance | fromWei(decimals[item.address], symbols[item.address], unformatted) }}
+                </template>
+                <template v-slot:item.change="{ item }">
+                    <span v-if="changeDirection(item.diff) > 0" class="success--text">
+                        +{{ item.diff | fromWei(decimals[item.address], symbols[item.address], unformatted) }}
                     </span>
-                    <span v-else>
-                        +{{ item.diff }}
+                    <span v-if="changeDirection(item.diff) === 0">0</span>
+                    <span v-if="changeDirection(item.diff) < 0" class="error--text">
+                        {{ item.diff | fromWei(decimals[item.address], symbols[item.address], unformatted) }}
                     </span>
-                </span>
-                <span v-if="changeDirection(item.diff) === 0">0</span>
-                <span v-if="changeDirection(item.diff) < 0" class="error--text">
-                    <span v-if="decimals[item.address]">
-                        {{ item.diff | fromWei('ether', '', decimals[item.address]) }}
-                    </span>
-                    <span v-else>
-                        {{ item.diff }}
-                    </span>
-                </span>
-            </template>
-        </v-data-table>
-    </div>
+                </template>
+            </v-data-table>
+        </v-card-text>
+    </v-card>
 </template>
 <script>
 const ethers = require('ethers');
@@ -62,29 +52,38 @@ export default {
         FromWei
     },
     data: () => ({
+        unformatted: false,
         tableHeaders: [],
         newBalances: {},
-        decimals: {}
+        decimals: {},
+        symbols: {}
     }),
-    mounted: function() {
+    mounted() {
         this.tableHeaders.push(
             { text: 'Address', value: 'address' },
             { text: `Previous Block (#${this.previousBlockNumber})`, value: 'before' },
             { text: `Tx Block (#${parseInt(this.blockNumber)})`, value: 'now' },
             { text: 'Change', value: 'change' }
         );
-        for (let i = 0; i < this.balanceChanges.length; i++) {
-            this.server.getContract(this.token)
-                .then(({ data }) => {
-                    const contract = data;
-                    if (!contract || !contract.tokenDecimals) return;
-
-                    this.$set(this.decimals, this.balanceChanges[i].address, contract.tokenDecimals);
-                });
-        }
+        this.loadContractData();
     },
     methods: {
-        changeDirection: function(diff) {
+        loadContractData() {
+            for (let i = 0; i < this.balanceChanges.length; i++) {
+                this.$set(this.decimals, this.balanceChanges[i].address, 18);
+                this.$set(this.symbols, this.balanceChanges[i].address, '');
+
+                this.server.getContract(this.token)
+                    .then(({ data }) => {
+                        const contract = data;
+                        if (!contract) return;
+
+                        this.$set(this.decimals, this.balanceChanges[i].address, contract.tokenDecimals);
+                        this.$set(this.symbols, this.balanceChanges[i].address, contract.tokenSymbol);
+                    });
+            }
+        },
+        changeDirection(diff) {
             if (!diff) return 0;
 
             const bigDiff = ethers.BigNumber.from(diff);
@@ -94,9 +93,11 @@ export default {
                 return 0;
             else
                 return -1;
-        },
-        formatAmount: function(amount) {
-            return parseFloat(ethers.utils.formatUnits(ethers.BigNumber.from(amount))).toLocaleString();
+        }
+    },
+    watch: {
+        balanceChanges() {
+            this.loadContractData();
         }
     },
     computed: {

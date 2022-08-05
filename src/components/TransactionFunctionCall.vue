@@ -1,5 +1,5 @@
 <template>
-    <v-card outlined class="my-2">
+    <v-card outlined>
         <v-card-text v-if="parsedTransactionData">
             {{ `${parsedTransactionData.functionFragment.name}(\n` }}
             <div class="ml-4" style="white-space: pre;" v-for="(input, index) in parsedTransactionData.functionFragment.inputs" :key="index">

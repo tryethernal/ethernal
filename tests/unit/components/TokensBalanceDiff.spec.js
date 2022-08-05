@@ -39,7 +39,7 @@ describe('TokensBalanceDiff.vue', () => {
 
     it('Should display formatted token balances difference', async (done) => {
         jest.spyOn(helper.mocks.server, 'getContract')
-            .mockResolvedValue({ data: { tokenDecimals: 10, tokenSymbol: 'ETL', tokenName: 'Ethernal' }});
+            .mockResolvedValue({ data: { tokenDecimals: 18, tokenSymbol: 'ETL', tokenName: 'Ethernal' }});
 
         const wrapper = helper.mountFn(TokensBalanceDiff, {
             propsData: {

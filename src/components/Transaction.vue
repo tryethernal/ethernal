@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <template v-if="transaction">
+        <template v-if="transaction.hash">
             <v-row>
                 <v-col>
                     <h2 class="text-truncate mb-2">Tx {{ transaction.hash }}</h2>
@@ -82,7 +82,7 @@
                 </v-col>
                 <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Gas Price</div>
-                    {{ transaction.gasPrice | fromWei('gwei') }}
+                    {{ transaction.gasPrice | fromWei('gwei', chain.token) }}
                 </v-col>
                 <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Cost</div>
@@ -118,7 +118,6 @@
                 <v-col>
                     <h3 class="mb-2">Balance Changes</h3>
                     <Tokens-Balance-Diff v-for="(token, idx) in Object.keys(transaction.formattedBalanceChanges)"
-                        class="my-6"
                         :token="token"
                         :balanceChanges="transaction.formattedBalanceChanges[token]"
                         :blockNumber="transaction.blockNumber"
@@ -126,11 +125,7 @@
                 </v-col>
             </v-row>
 
-            <v-row>
-                <v-col>
-                    <Transaction-Data :transaction="transaction" :withoutStorageHeader="true" />
-                </v-col>
-            </v-row>
+            <Transaction-Data :transaction="transaction" :withoutStorageHeader="true" />
 
             <v-row class="my-2" v-if="transaction.traceSteps.length">
                 <v-col>
