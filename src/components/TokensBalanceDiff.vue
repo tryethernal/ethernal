@@ -1,31 +1,40 @@
 <template>
-    <div>
-        <Hash-Link :type="'address'" :hash="token" :withTokenName="true" :withName="true" />
-        (<small><a @click="unformatted = !unformatted">Show Unformatted Amounts</a></small>)
-        <v-data-table
-            :hide-default-footer="balanceChanges.length <= 10"
-            :headers="tableHeaders"
-            :items="balanceChanges">
-            <template v-slot:item.address="{ item }">
-                <Hash-Link :type="'address'" :hash="item.address" />
-            </template>
-            <template v-slot:item.before="{ item }">
-                {{ item.previousBalance | fromWei('ether', symbols[item.address], decimals[item.address], unformatted) }}
-            </template>
-            <template v-slot:item.now="{ item }">
-                {{ item.currentBalance | fromWei('ether', symbols[item.address], decimals[item.address], unformatted) }}
-            </template>
-            <template v-slot:item.change="{ item }">
-                <span v-if="changeDirection(item.diff) > 0" class="success--text">
-                    +{{ item.diff | fromWei('ether', symbols[item.address], decimals[item.address], unformatted) }}
-                </span>
-                <span v-if="changeDirection(item.diff) === 0">0</span>
-                <span v-if="changeDirection(item.diff) < 0" class="error--text">
-                    {{ item.diff | fromWei('ether', symbols[item.address], decimals[item.address], unformatted) }}
-                </span>
-            </template>
-        </v-data-table>
-    </div>
+    <v-card outlined>
+        <v-card-text>
+            <v-data-table
+                :hide-default-footer="balanceChanges.length <= 10"
+                :headers="tableHeaders"
+                :items="balanceChanges">
+                <template v-slot:top>
+                    <v-toolbar dense flat>
+                        <v-toolbar-title>
+                            <small><Hash-Link :type="'address'" :hash="token" :withTokenName="true" :withName="true" /></small>
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-switch v-model="unformatted" label="Unformatted Amounts"></v-switch>
+                    </v-toolbar>
+                </template>
+                <template v-slot:item.address="{ item }">
+                    <Hash-Link :type="'address'" :hash="item.address" />
+                </template>
+                <template v-slot:item.before="{ item }">
+                    {{ item.previousBalance | fromWei('ether', symbols[item.address], decimals[item.address], unformatted) }}
+                </template>
+                <template v-slot:item.now="{ item }">
+                    {{ item.currentBalance | fromWei('ether', symbols[item.address], decimals[item.address], unformatted) }}
+                </template>
+                <template v-slot:item.change="{ item }">
+                    <span v-if="changeDirection(item.diff) > 0" class="success--text">
+                        +{{ item.diff | fromWei('ether', symbols[item.address], decimals[item.address], unformatted) }}
+                    </span>
+                    <span v-if="changeDirection(item.diff) === 0">0</span>
+                    <span v-if="changeDirection(item.diff) < 0" class="error--text">
+                        {{ item.diff | fromWei('ether', symbols[item.address], decimals[item.address], unformatted) }}
+                    </span>
+                </template>
+            </v-data-table>
+        </v-card-text>
+    </v-card>
 </template>
 <script>
 const ethers = require('ethers');

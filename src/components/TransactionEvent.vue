@@ -1,5 +1,5 @@
 <template>
-    <v-card outlined class="my-2">
+    <v-card outlined>
         <v-card-text v-if="parsedLog">
             <span v-if="parsedLog.args.length > 0"><Hash-Link :type="'address'" :notCopiable="true" :withName="true" :hash="this.log.address" />{{ `.${parsedLog.name}(\n` }}</span>
             <span v-else>{{ `${ contract.name }.${parsedLog.name}` }}()</span>

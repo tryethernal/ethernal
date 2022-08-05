@@ -8,11 +8,17 @@
                     :sort-by="'currentBalance'"
                     :sort-desc="true"
                     :headers="headers">
+                <template v-slot:top>
+                    <v-toolbar dense flat>
+                        <v-spacer></v-spacer>
+                        <v-switch v-model="unformatted" label="Unformatted Balances"></v-switch>
+                    </v-toolbar>
+                </template>
                 <template v-slot:item.token="{ item }">
                     <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" />
                 </template>
                 <template v-slot:item.currentBalance="{ item }">
-                    {{ item.currentBalance | fromWei('', '', item.tokenContract && item.tokenContract.tokenDecimals) }} {{ item.tokenContract.tokenSymbol }}
+                    {{ item.currentBalance | fromWei('', '', item.tokenContract && item.tokenContract.tokenDecimals, unformatted) }} {{ item.tokenContract.tokenSymbol }}
                 </template>
                 </v-data-table>
             </v-card-text>
@@ -33,6 +39,7 @@ export default {
         FromWei
     },
     data: () => ({
+        unformatted: false,
         loading: false,
         balances: [],
         headers: [

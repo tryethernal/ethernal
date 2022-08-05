@@ -1,24 +1,31 @@
 <template>
-    <div>
-        (<small><a @click="unformatted = !unformatted">Show Unformatted Amounts</a></small>)
-        <v-data-table
-            :hide-default-footer="transfers.length <= 10"
-            :headers="tableHeaders"
-            :items="transfers">
-            <template v-slot:item.src="{ item }">
-                <Hash-Link :type="'address'" :hash="item.src" :fullHash="true" :withName="true" :withTokenName="true" />
-            </template>
-            <template v-slot:item.dst="{ item }">
-                <Hash-Link :type="'address'" :hash="item.dst" :fullHash="true" :withName="true" :withTokenName="true" />
-            </template>
-            <template v-slot:item.token="{ item }">
-                <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" />
-            </template>
-            <template v-slot:item.amount="{ item }">
-                {{ item.amount | fromWei('ether', symbols[item.token], decimals[item.token], unformatted) }}
-            </template>
-        </v-data-table>
-    </div>
+    <v-card outlined>
+        <v-card-text>
+            <v-data-table
+                :hide-default-footer="transfers.length <= 10"
+                :headers="tableHeaders"
+                :items="transfers">
+                <template v-slot:top>
+                    <v-toolbar dense flat>
+                        <v-spacer></v-spacer>
+                        <v-switch v-model="unformatted" label="Unformatted Amounts"></v-switch>
+                    </v-toolbar>
+                </template>
+                <template v-slot:item.src="{ item }">
+                    <Hash-Link :type="'address'" :hash="item.src" :fullHash="true" :withName="true" :withTokenName="true" />
+                </template>
+                <template v-slot:item.dst="{ item }">
+                    <Hash-Link :type="'address'" :hash="item.dst" :fullHash="true" :withName="true" :withTokenName="true" />
+                </template>
+                <template v-slot:item.token="{ item }">
+                    <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" />
+                </template>
+                <template v-slot:item.amount="{ item }">
+                    {{ item.amount | fromWei('ether', symbols[item.token], decimals[item.token], unformatted) }}
+                </template>
+            </v-data-table>
+        </v-card-text>
+    </v-card>
 </template>
 <script>
 import HashLink from './HashLink';
