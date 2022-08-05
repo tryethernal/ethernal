@@ -152,7 +152,6 @@ export default Vue.extend({
     },
     watch: {
         searchSelectedItem: function(item) {
-            console.log(item.data)
             switch(item.type) {
                 case 'address':
                 case 'contract':
@@ -188,7 +187,6 @@ export default Vue.extend({
             if (this.searchType == 'text' && val.length < 3) return;
             this.server.search(this.searchType, val)
                 .then(({ data }) => {
-                    console.log(data);
                     this.searchItems = data;
                     if (this.searchType == 'address' && !data.length)
                         this.searchItems.push({ type: 'address', data: { address: val }});

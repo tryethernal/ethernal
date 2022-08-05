@@ -16,17 +16,11 @@
             <template v-slot:item.address="{ item }">
                 <Hash-Link :type="'address'" :hash="item.address" />
             </template>
-            <template v-slot:item.contractName="{ item }">
-                {{ item.name }}
-            </template>
             <template v-slot:item.tokenName="{ item }">
                 {{ item.tokenName }}
             </template>
             <template v-slot:item.tokenSymbol="{ item }">
                 {{ item.tokenSymbol }}
-            </template>
-            <template v-slot:item.timestamp="{ item }">
-                <span v-if="item.timestamp">{{ parseInt(item.timestamp) | moment('YYYY-MM-DD h:mm:ss A') }}</span>
             </template>
             <template v-slot:item.tags="{ item }">
                 <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" x-small class="success mr-2">
@@ -55,20 +49,12 @@ export default {
                 value: 'address'
             },
             {
-                text: 'Contract Name',
-                value: 'contractName'
-            },
-            {
                 text: 'Token Name',
                 value: 'tokenName'
             },
             {
                 text: 'Token Symbol',
                 value: 'tokenSymbol'
-            },
-            {
-                text: 'Deployed On',
-                value: 'timestamp'
             },
             {
                 text: '',

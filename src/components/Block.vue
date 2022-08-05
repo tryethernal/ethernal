@@ -8,7 +8,7 @@
         <v-row class="mb-4">
             <v-col lg="2" md="12" sm="12">
                 <v-subheader class="text-overline">Gas Limit</v-subheader>
-                {{ block.gasLimit.toLocaleString() }}
+                {{ parseInt(block.gasLimit).toLocaleString() }}
             </v-col>
             <v-divider vertical></v-divider>
             <v-col lg="2" md="12" sm="12">

@@ -1,124 +1,174 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TokensBalanceDiff.vue Should display formatted token balances difference 1`] = `
-<div>
-  <hash-link-stub withname="true" hash="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" type="address"></hash-link-stub><br>
-  <div class="v-data-table theme--light">
-    <div class="v-data-table__wrapper">
-      <table>
-        <colgroup>
-          <col class="">
-          <col class="">
-          <col class="">
-          <col class="">
-        </colgroup>
-        <thead class="v-data-table-header">
-          <tr>
-            <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Previous Block (#1): Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Previous Block (#1)</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Tx Block (#2): Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Tx Block (#2)</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Change: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Change</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="">
-            <td class="text-start">
-              <hash-link-stub hash="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" type="address"></hash-link-stub>
-            </td>
-            <td class="text-start"><span>
-                99999999880 
-            </span></td>
-            <td class="text-start"><span>
-                99999999870 
-            </span></td>
-            <td class="text-start">
-              <!---->
-              <!----> <span class="error--text"><span>
-                    -10 
-                </span></span>
-            </td>
-          </tr>
-          <tr class="">
-            <td class="text-start">
-              <hash-link-stub hash="0x2d481eeb2ba97955cd081cf218f453a817259ab1" type="address"></hash-link-stub>
-            </td>
-            <td class="text-start"><span>
-                120 
-            </span></td>
-            <td class="text-start"><span>
-                130 
-            </span></td>
-            <td class="text-start"><span class="success--text"><span>
-                    +10 
-                </span></span>
-              <!---->
-              <!---->
-            </td>
-          </tr>
-        </tbody>
-      </table>
+<div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__text">
+    <div class="v-data-table v-data-table--has-top theme--light">
+      <header class="v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px;">
+        <div class="v-toolbar__content" style="height: 48px;">
+          <div class="v-toolbar__title"><small>
+              <hash-link-stub withtokenname="true" withname="true" hash="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" type="address"></hash-link-stub>
+            </small></div>
+          <div class="spacer"></div>
+          <div class="v-input theme--light v-input--selection-controls v-input--switch">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <div class="v-input--selection-controls__input"><input aria-checked="false" id="input-31" role="switch" type="checkbox" aria-disabled="false" value="">
+                  <div class="v-input--selection-controls__ripple"></div>
+                  <div class="v-input--switch__track theme--light"></div>
+                  <div class="v-input--switch__thumb theme--light">
+                    <transition-stub name="fab-transition" mode="out-in"></transition-stub>
+                  </div>
+                </div><label for="input-31" class="v-label theme--light" style="left: 0px; position: relative;">Unformatted Amounts</label>
+              </div>
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <div class="v-data-table__wrapper">
+        <table>
+          <colgroup>
+            <col class="">
+            <col class="">
+            <col class="">
+            <col class="">
+          </colgroup>
+          <thead class="v-data-table-header">
+            <tr>
+              <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="Previous Block (#1): Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Previous Block (#1)</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="Tx Block (#2): Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Tx Block (#2)</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="Change: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Change</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="">
+              <td class="text-start">
+                <hash-link-stub hash="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" type="address"></hash-link-stub>
+              </td>
+              <td class="text-start">
+                99,999,999,880 ETL
+              </td>
+              <td class="text-start">
+                99,999,999,870 ETL
+              </td>
+              <td class="text-start">
+                <!---->
+                <!----> <span class="error--text">
+                    -10 ETL
+                </span>
+              </td>
+            </tr>
+            <tr class="">
+              <td class="text-start">
+                <hash-link-stub hash="0x2d481eeb2ba97955cd081cf218f453a817259ab1" type="address"></hash-link-stub>
+              </td>
+              <td class="text-start">
+                120 ETL
+              </td>
+              <td class="text-start">
+                130 ETL
+              </td>
+              <td class="text-start"><span class="success--text">
+                    +10 ETL
+                </span>
+                <!---->
+                <!---->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
 `;
 
 exports[`TokensBalanceDiff.vue Should display token balances difference 1`] = `
-<div>
-  <hash-link-stub withname="true" hash="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" type="address"></hash-link-stub><br>
-  <div class="v-data-table theme--light">
-    <div class="v-data-table__wrapper">
-      <table>
-        <colgroup>
-          <col class="">
-          <col class="">
-          <col class="">
-          <col class="">
-        </colgroup>
-        <thead class="v-data-table-header">
-          <tr>
-            <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Previous Block (#1): Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Previous Block (#1)</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Tx Block (#2): Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Tx Block (#2)</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Change: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Change</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="">
-            <td class="text-start">
-              <hash-link-stub hash="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" type="address"></hash-link-stub>
-            </td>
-            <td class="text-start"><span>
+<div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__text">
+    <div class="v-data-table v-data-table--has-top theme--light">
+      <header class="v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px;">
+        <div class="v-toolbar__content" style="height: 48px;">
+          <div class="v-toolbar__title"><small>
+              <hash-link-stub withtokenname="true" withname="true" hash="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" type="address"></hash-link-stub>
+            </small></div>
+          <div class="spacer"></div>
+          <div class="v-input theme--light v-input--selection-controls v-input--switch">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <div class="v-input--selection-controls__input"><input aria-checked="false" id="input-10" role="switch" type="checkbox" aria-disabled="false" value="">
+                  <div class="v-input--selection-controls__ripple"></div>
+                  <div class="v-input--switch__track theme--light"></div>
+                  <div class="v-input--switch__thumb theme--light">
+                    <transition-stub name="fab-transition" mode="out-in"></transition-stub>
+                  </div>
+                </div><label for="input-10" class="v-label theme--light" style="left: 0px; position: relative;">Unformatted Amounts</label>
+              </div>
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <div class="v-data-table__wrapper">
+        <table>
+          <colgroup>
+            <col class="">
+            <col class="">
+            <col class="">
+            <col class="">
+          </colgroup>
+          <thead class="v-data-table-header">
+            <tr>
+              <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="Previous Block (#1): Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Previous Block (#1)</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="Tx Block (#2): Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Tx Block (#2)</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="Change: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Change</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="">
+              <td class="text-start">
+                <hash-link-stub hash="0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" type="address"></hash-link-stub>
+              </td>
+              <td class="text-start">
                 99999999880000000000000000000
-            </span></td>
-            <td class="text-start"><span>
+              </td>
+              <td class="text-start">
                 99999999870000000000000000000
-            </span></td>
-            <td class="text-start">
-              <!---->
-              <!----> <span class="error--text"><span>
+              </td>
+              <td class="text-start">
+                <!---->
+                <!----> <span class="error--text">
                     -10000000000000000000
-                </span></span>
-            </td>
-          </tr>
-          <tr class="">
-            <td class="text-start">
-              <hash-link-stub hash="0x2d481eeb2ba97955cd081cf218f453a817259ab1" type="address"></hash-link-stub>
-            </td>
-            <td class="text-start"><span>
+                </span>
+              </td>
+            </tr>
+            <tr class="">
+              <td class="text-start">
+                <hash-link-stub hash="0x2d481eeb2ba97955cd081cf218f453a817259ab1" type="address"></hash-link-stub>
+              </td>
+              <td class="text-start">
                 120000000000000000000
-            </span></td>
-            <td class="text-start"><span>
+              </td>
+              <td class="text-start">
                 130000000000000000000
-            </span></td>
-            <td class="text-start"><span class="success--text"><span>
+              </td>
+              <td class="text-start"><span class="success--text">
                     +10000000000000000000
-                </span></span>
-              <!---->
-              <!---->
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                </span>
+                <!---->
+                <!---->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
