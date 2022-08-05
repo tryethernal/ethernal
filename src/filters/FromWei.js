@@ -1,6 +1,4 @@
-const Web3 = require('web3');
 const ethers = require('ethers');
-const web3 = new Web3();
 
 const BigNumber = ethers.BigNumber;
 const formatUnits = ethers.utils.formatUnits;
