@@ -70,7 +70,7 @@ export default {
     methods: {
         loadContractData() {
             for (let i = 0; i < this.balanceChanges.length; i++) {
-                this.$set(this.decimals, this.balanceChanges[i].address, '');
+                this.$set(this.decimals, this.balanceChanges[i].address, 18);
                 this.$set(this.symbols, this.balanceChanges[i].address, '');
 
                 this.server.getContract(this.token)

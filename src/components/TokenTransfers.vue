@@ -58,7 +58,7 @@ export default {
         loadContractData() {
             for (let i = 0; i < this.transfers.length; i++) {
                 this.$set(this.symbols, this.transfers[i].token, '');
-                this.$set(this.decimals, this.transfers[i].token, '');
+                this.$set(this.decimals, this.transfers[i].token, 18);
 
                 this.server.getContract(this.transfers[i].token)
                     .then(({ data }) => {
