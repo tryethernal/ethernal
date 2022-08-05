@@ -44,9 +44,11 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeFindLatestTokenBalances(address) {
+        if (!address)
+            return [];
         const tokenBalanceChanges = await this.getTokenBalanceChanges({
             where: {
-                address: address
+                address: address.toLowerCase()
             },
             order: [['token'], ['transaction', 'blockNumber', 'DESC']],
             include: [

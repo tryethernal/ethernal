@@ -16,8 +16,7 @@ const getAddressLatestTokenBalances = async (workspaceId, address) => {
 
     try {
         const workspace = await Workspace.findByPk(workspaceId);
-        const balances = await workspace.safeFindLatestTokenBalances(address);
-        return balances;
+        return await workspace.safeFindLatestTokenBalances(address);
     } catch(error) {
         writeLog({
             functionName: 'firebase.getAddressLatestTokenBalances',
