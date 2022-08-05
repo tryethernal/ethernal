@@ -58,29 +58,32 @@ export default {
         decimals: {},
         symbols: {}
     }),
-    mounted: function() {
+    mounted() {
         this.tableHeaders.push(
             { text: 'Address', value: 'address' },
             { text: `Previous Block (#${this.previousBlockNumber})`, value: 'before' },
             { text: `Tx Block (#${parseInt(this.blockNumber)})`, value: 'now' },
             { text: 'Change', value: 'change' }
         );
-        for (let i = 0; i < this.balanceChanges.length; i++) {
-            this.$set(this.decimals, this.balanceChanges[i].address, '');
-            this.$set(this.symbols, this.balanceChanges[i].address, '');
-
-            this.server.getContract(this.token)
-                .then(({ data }) => {
-                    const contract = data;
-                    if (!contract) return;
-
-                    this.$set(this.decimals, this.balanceChanges[i].address, contract.tokenDecimals);
-                    this.$set(this.symbols, this.balanceChanges[i].address, contract.tokenSymbol);
-                });
-        }
+        this.loadContractData();
     },
     methods: {
-        changeDirection: function(diff) {
+        loadContractData() {
+            for (let i = 0; i < this.balanceChanges.length; i++) {
+                this.$set(this.decimals, this.balanceChanges[i].address, '');
+                this.$set(this.symbols, this.balanceChanges[i].address, '');
+
+                this.server.getContract(this.token)
+                    .then(({ data }) => {
+                        const contract = data;
+                        if (!contract) return;
+
+                        this.$set(this.decimals, this.balanceChanges[i].address, contract.tokenDecimals);
+                        this.$set(this.symbols, this.balanceChanges[i].address, contract.tokenSymbol);
+                    });
+            }
+        },
+        changeDirection(diff) {
             if (!diff) return 0;
 
             const bigDiff = ethers.BigNumber.from(diff);
@@ -90,6 +93,11 @@ export default {
                 return 0;
             else
                 return -1;
+        }
+    },
+    watch: {
+        balanceChanges() {
+            this.loadContractData();
         }
     },
     computed: {

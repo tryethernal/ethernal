@@ -51,22 +51,32 @@ export default {
         decimals: {},
         symbols: {}
     }),
-    watch: {
-        transfers() {
+    mounted() {
+        this.loadContractData();
+    },
+    methods: {
+        loadContractData() {
             for (let i = 0; i < this.transfers.length; i++) {
                 this.$set(this.symbols, this.transfers[i].token, '');
+                this.$set(this.decimals, this.transfers[i].token, '');
+
                 this.server.getContract(this.transfers[i].token)
                     .then(({ data }) => {
                         const contract = data;
                         if (!contract) return;
 
                         if (contract.tokenDecimals)
-                            this.$set(this.decimals, this.transfers[i].token, data.tokenDecimals);
+                            this.$set(this.decimals, this.transfers[i].token, contract.tokenDecimals);
                         if (contract.tokenSymbol)
-                            this.$set(this.symbols, this.transfers[i].token, data.tokenSymbol);
+                            this.$set(this.symbols, this.transfers[i].token, contract.tokenSymbol);
                     })
                     .catch(console.log);
             }
+        }
+    },
+    watch: {
+        transfers() {
+            this.loadContractData();
         }
     }
 }
