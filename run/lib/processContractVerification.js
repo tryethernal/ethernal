@@ -16,6 +16,7 @@ const updateFirestoreContract = (userId, workspace, address, data) => {
 }
 
 module.exports = async function(db, payload) {
+    const VALID_EVM_VERSIONS = ['homestead', 'tangerineWhistle', 'spuriousDragon', 'byzantium', 'constantinople', 'petersburg', 'istanbul', 'berlin', 'london'];
     const solc = require('solc');
     const linker = require('solc/linker');
     const code = payload.code;
@@ -29,6 +30,9 @@ module.exports = async function(db, payload) {
     const constructorArguments = payload.constructorArguments;
     const publicExplorerParams = payload.publicExplorerParams;
     const contractName = payload.contractName;
+    const optimization = payload.optimization || false;
+    const runs = payload.runs;
+    const evmVersion = payload.evmVersion || 'london';
 
     // Only supports verifying one contract at a time at the moment
     const contractFile = Object.keys(code.sources)[0];
@@ -38,8 +42,10 @@ module.exports = async function(db, payload) {
     if (workspace.userId != user.id)
         throw new Error("Workspace / User mismatch");
 
+    if (VALID_EVM_VERSIONS.indexOf(evmVersion))
+        throw new Error(`Invalid EVM version. Valid versions are: ${VALID_EVM_VERSIONS.join(', ')}`);
+
     try {
-        console.log(publicExplorerParams)
         await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'pending');
         await updateFirestoreContract(user.firebaseUserId, workspace.name, contractAddress, { verificationStatus: 'pending' });
 
@@ -53,13 +59,20 @@ module.exports = async function(db, payload) {
             });
         });
 
+        const optimizer = sanitize({
+            optimization: optimization,
+            runs: runs
+        });
+
         const inputs = {
             language: 'Solidity',
             sources: code.sources,
             settings: {
                 outputSelection: {
                     '*': { '*': ['abi', 'evm.bytecode.object'] }
-                }
+                },
+                optimizer: optimizer,
+                evmVersion: evmVersion
             }
         };
 
