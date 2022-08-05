@@ -44,7 +44,7 @@ exports[`TokenBalances.vue Should display token balances 1`] = `
                   <hash-link-stub withtokenname="true" withname="true" hash="0x123" type="address"></hash-link-stub>
                 </td>
                 <td class="text-start">
-                  99,999,989,989.99 ETL
+                  99,999,989,989.989999 ETL
                 </td>
               </tr>
               <tr class="">
@@ -52,7 +52,7 @@ exports[`TokenBalances.vue Should display token balances 1`] = `
                   <hash-link-stub withtokenname="true" withname="true" hash="0x456" type="address"></hash-link-stub>
                 </td>
                 <td class="text-start">
-                  0 USDC
+                  999,999.899899 USDC
                 </td>
               </tr>
             </tbody>
