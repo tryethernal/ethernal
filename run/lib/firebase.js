@@ -9,6 +9,28 @@ const Transaction = models.Transaction;
 const Workspace = models.Workspace;
 const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
+const TokenBalanceChange = models.TokenBalanceChange;
+
+const getAddressLatestTokenBalances = async (workspaceId, address) => {
+    if (!workspaceId|| !address) throw '[getAddressLatestTokenBalance] Missing parameter';
+
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        return await workspace.safeFindLatestTokenBalances(address);
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.getAddressLatestTokenBalances',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                address: address
+            }
+        });
+        throw error;
+    }
+};
 
 const searchForAddress = async (workspaceId, address) => {
     if (!workspaceId || !address) throw '[searchForAddress] Missing parameter';
@@ -1311,5 +1333,6 @@ module.exports = {
     searchForAddress: searchForAddress,
     searchForHash: searchForHash,
     searchForNumber: searchForNumber,
-    searchForText: searchForText
+    searchForText: searchForText,
+    getAddressLatestTokenBalances: getAddressLatestTokenBalances
 };

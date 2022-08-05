@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.TransactionLog, { foreignKey: 'workspaceId', as: 'logs' });
       Workspace.hasMany(models.Contract, { foreignKey: 'workspaceId', as: 'contracts' });
       Workspace.hasMany(models.Account, { foreignKey: 'workspaceId', as: 'accounts' });
+      Workspace.hasMany(models.TokenBalanceChange, { foreignKey: 'workspaceId', as: 'tokenBalanceChanges' });
     }
 
     static findPublicWorkspaceById(id) {
@@ -40,6 +41,50 @@ module.exports = (sequelize, DataTypes) => {
                 name: name
             }
         });
+    }
+
+    async safeFindLatestTokenBalances(address) {
+        if (!address)
+            return [];
+        const tokenBalanceChanges = await this.getTokenBalanceChanges({
+            where: {
+                address: address.toLowerCase()
+            },
+            order: [['token'], ['transaction', 'blockNumber', 'DESC']],
+            include: [
+                {
+                    model: sequelize.models.Contract,
+                    attributes: ['name', 'tokenName', 'tokenSymbol', 'tokenDecimals', 'address', 'workspaceId'],
+                    as: 'tokenContract',
+                    where: {
+                        [Op.and]: sequelize.where(
+                            sequelize.col("tokenContract.workspaceId"),
+                            Op.eq,
+                            sequelize.col("TokenBalanceChange.workspaceId")
+                        ),
+                        [Op.and]: sequelize.where(
+                            sequelize.col("tokenContract.address"),
+                            Op.eq,
+                            sequelize.col("TokenBalanceChange.token")
+                        ),
+                    },
+                    required: false
+                },
+                {
+                    model: sequelize.models.Transaction,
+                    attributes: ['blockNumber'],
+                    as: 'transaction'
+                }
+            ]
+        });
+
+        const result = {};
+        tokenBalanceChanges.forEach(item => {
+            if (!result[item.token] || result[item.token] && item.blockNumber > result[item.token].blockNumber)
+                result[item.token] = item.toJSON();
+        });
+
+        return Object.values(result);
     }
 
     getFilteredAccounts(page = 1, itemsPerPage = 10, orderBy = 'address', order = 'DESC') {

@@ -69,10 +69,10 @@
             <Hash-Link :type="'address'" :hash="item.to" :withName="true" />
         </template>
         <template v-slot:item.value="{ item }">
-            {{ item.value | fromWei('ether', chain.token, 10) }}
+            {{ item.value | fromWei('ether', chain.token) }}
         </template>
         <template v-slot:item.fee="{ item }">
-            <span v-if="item.receipt">{{ item.gasPrice * (item.gas || item.receipt.gasUsed)  | fromWei('ether', chain.token, 10) }}</span>
+            <span v-if="item.receipt">{{ item.gasPrice * (item.gas || item.receipt.gasUsed)  | fromWei('ether', chain.token) }}</span>
         </template>
     </v-data-table>
 </template>

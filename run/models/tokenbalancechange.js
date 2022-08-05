@@ -1,7 +1,10 @@
 'use strict';
 const {
-  Model
+  Model,
+  Sequelize
 } = require('sequelize');
+const Op = Sequelize.Op;
+
 module.exports = (sequelize, DataTypes) => {
   class TokenBalanceChange extends Model {
     /**
@@ -10,11 +13,25 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      TokenBalanceChange.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'transaction' })
+      TokenBalanceChange.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'transaction' });
+      TokenBalanceChange.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
+      TokenBalanceChange.hasOne(models.Contract, {
+          sourceKey: 'token',
+          foreignKey: 'address',
+          as: 'tokenContract',
+          scope: {
+              [Op.and]: sequelize.where(sequelize.col("TokenBalanceChange.workspaceId"),
+                  Op.eq,
+                  sequelize.col("tokenContract.workspaceId")
+                ),
+               },
+             constraints: false
+          });
     }
   }
   TokenBalanceChange.init({
     transactionId: DataTypes.INTEGER,
+    workspaceId: DataTypes.INTEGER,
     token: {
         type: DataTypes.STRING,
         set(value) {
