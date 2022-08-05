@@ -47,12 +47,25 @@ export default {
             { text: 'Balance', value: 'currentBalance' }
         ]
     }),
-    mounted: function() {
-        this.loading = true;
-        this.server.getTokenBalances(this.address)
-            .then(({ data }) => this.balances = data)
-            .catch(console.log)
-            .finally(() => this.loading = false);
+    mounted() {
+        this.getTokenBalances();
+    },
+    methods: {
+        getTokenBalances() {
+            this.loading = true;
+            this.server.getTokenBalances(this.address)
+                .then(({ data }) => this.balances = data)
+                .catch(console.log)
+                .finally(() => this.loading = false);
+        }
+    },
+    watch: {
+        address: {
+            immediate: true,
+            handler() {
+                this.getTokenBalances();
+            }
+        }
     }
 }
 </script>
