@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0] - 2022-08-08
+### Added
+- ERC-20 token balances are displayed on the address pages
+
+### Changed
+- On token balances/transfers sections, symbols are now always displayed when available
+- Small amounts that were previously displayed as 0 are now entirely displayed
+
+### Fixed
+- Amount formatted with decimals were not always correct 
+
 ## [2.1.4] - 2022-08-03
 ### Fixed
 - Bug preventing from calling read methods
