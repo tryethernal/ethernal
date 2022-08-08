@@ -11,6 +11,93 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const getTransactionVolume = async (workspaceId, from, to) => {
+    if (!workspaceId) throw '[getTotalTxCount] Missing parameter';
+
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const transactions = await workspace.getTransactionVolume(from, to);
+        return transactions;
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.getTransactionVolume',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                from: from,
+                to: to
+            }
+        });
+        throw error;
+    }  
+};
+
+const getActiveWalletCount = async (workspaceId) => {
+    if (!workspaceId) throw '[getTotalTxCount] Missing parameter';
+
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const wallets = await workspace.findActiveWallets();
+        return wallets.length;
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.getActiveWalletCount',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                since: since
+            }
+        });
+        throw error;
+    }  
+};
+
+const getTotalTxCount = async (workspaceId) => {
+    if (!workspaceId) throw '[getTotalTxCount] Missing parameter';
+
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        return await workspace.countTransactions();
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.getTxCount',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                since: since
+            }
+        });
+        throw error;
+    }
+};
+
+const getTxCount = async (workspaceId, since = 0) => {
+    if (!workspaceId) throw '[getTxCount24h] Missing parameter';
+
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        return await workspace.countTransactionsSince(since);
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.getTxCount',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                since: since
+            }
+        });
+        throw error;
+    }
+};
+
 const getAddressLatestTokenBalances = async (workspaceId, address) => {
     if (!workspaceId|| !address) throw '[getAddressLatestTokenBalance] Missing parameter';
 
@@ -1334,5 +1421,9 @@ module.exports = {
     searchForHash: searchForHash,
     searchForNumber: searchForNumber,
     searchForText: searchForText,
-    getAddressLatestTokenBalances: getAddressLatestTokenBalances
+    getAddressLatestTokenBalances: getAddressLatestTokenBalances,
+    getTxCount: getTxCount,
+    getTotalTxCount: getTotalTxCount,
+    getActiveWalletCount: getActiveWalletCount,
+    getTransactionVolume: getTransactionVolume
 };

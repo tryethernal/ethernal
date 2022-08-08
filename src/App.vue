@@ -14,6 +14,15 @@
             </v-list-item>
 
             <v-list dense nav class="side--text">
+                <v-list-item link :to="'/home'" v-if="!isPublicExplorer">
+                    <v-list-item-icon>
+                        <v-icon>mdi-home</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>Home</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
                 <v-list-item link :to="'/accounts'" v-if="!isPublicExplorer">
                     <v-list-item-icon>
                         <v-icon>mdi-account-multiple</v-icon>

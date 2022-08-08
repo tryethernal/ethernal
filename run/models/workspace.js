@@ -43,9 +43,39 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    async getTransactionVolume(from, to) {
+        if (!from || !to) return [];
+        const [res, a] = await sequelize.query(`
+            SELECT
+                TO_TIMESTAMP(timestamp::varchar, 'YYY/MM/DD/HH24:MI:ss'::varchar) AS date
+            FROM transactions`)
+        console.log(res);
+
+        const [transactions, metadata] = await sequelize.query(`
+            SELECT
+                DATE_TRUNC('day'::varchar, TO_TIMESTAMP(timestamp, 'YYY/MM/DD/HH24:MI:ss')) AS date
+            FROM transactions
+            WHERE CAST(timestamp AS INTEGER) >= ${from} AND CAST(timestamp AS INTEGER) < ${to}
+            GROUP BY DATE_TRUNC('day'::varchar, TO_TIMESTAMP(timestamp, 'YYY/MM/DD/HH24:MI:ss'))
+        `);
+
+        return transactions;
+    }
+
+    async findActiveWallets() {
+        const [wallets, metadata] = await sequelize.query(`
+            SELECT DISTINCT
+                UNNEST(STRING_TO_ARRAY(CONCAT(CONCAT("from", ':'), "to"), ':')) AS address 
+           FROM transactions 
+           WHERE "to" IS NOT NULL
+           AND "workspaceId" = ${this.id}
+        `);
+        return wallets;
+    }
+
     async safeFindLatestTokenBalances(address) {
-        if (!address)
-            return [];
+        if (!address) return [];
+
         const tokenBalanceChanges = await this.getTokenBalanceChanges({
             where: {
                 address: address.toLowerCase()
@@ -122,6 +152,16 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    countTransactionsSince(since = 0) {
+        return this.countTransactions({
+            where: {
+                [Op.and]: [
+                     sequelize.literal(`cast(timestamp as integer) >= ${since}`),
+                ]
+            }
+        });
+    }
+
     getFilteredTransactions(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'blockNumber', address) {
         const where = address ? { [Op.or]: [{ to: address.toLowerCase() }, { from: address.toLowerCase() }] } : {};
         return this.getTransactions({
@@ -133,7 +173,7 @@ module.exports = (sequelize, DataTypes) => {
             include: [
                 {
                     model: sequelize.models.TransactionReceipt,
-                    attributes: ['gasUsed', 'status'],
+                    attributes: ['gasUsed', 'status', 'contractAddress'],
                     as: 'receipt'
                 },
                 {
