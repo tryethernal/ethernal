@@ -11,8 +11,31 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const getWalletVolume = async (workspaceId, from, to) => {
+    if (!workspaceId) throw '[getWalletVolume] Missing parameter';
+
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const wallets = await workspace.getWalletVolume(from, to);
+        return wallets;
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.getWalletVolume',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                from: from,
+                to: to
+            }
+        });
+        throw error;
+    }  
+};
+
 const getTransactionVolume = async (workspaceId, from, to) => {
-    if (!workspaceId) throw '[getTotalTxCount] Missing parameter';
+    if (!workspaceId) throw '[getTransactionVolume] Missing parameter';
 
     try {
         const workspace = await Workspace.findByPk(workspaceId);
@@ -1425,5 +1448,6 @@ module.exports = {
     getTxCount: getTxCount,
     getTotalTxCount: getTotalTxCount,
     getActiveWalletCount: getActiveWalletCount,
-    getTransactionVolume: getTransactionVolume
+    getTransactionVolume: getTransactionVolume,
+    getWalletVolume: getWalletVolume
 };

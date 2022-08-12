@@ -4,15 +4,23 @@ module.exports = {
   async up (queryInterface, Sequelize) {
       const transaction = await queryInterface.sequelize.transaction();
       try {
-          await queryInterface.changeColumn('transactions ', 'timestamp', {
-              type: Sequelize.DATE,
-              allowNull: false
-          }, { transaction });
+          await queryInterface.sequelize.query(`
+              ALTER TABLE "transactions"
+              ALTER COLUMN "timestamp" SET NOT NULL;
+              ALTER TABLE "transactions"
+              ALTER COLUMN "timestamp" DROP DEFAULT;
+              ALTER TABLE "transactions"
+              ALTER COLUMN "timestamp" TYPE TIMESTAMP WITH TIME ZONE USING TO_TIMESTAMP(timestamp::INTEGER);`
+            , { transaction });
 
-          await queryInterface.changeColumn('blocks ', 'timestamp', {
-              type: Sequelize.DATE,
-              allowNull: false
-          }, { transaction });
+          await queryInterface.sequelize.query(`
+              ALTER TABLE "blocks"
+              ALTER COLUMN "timestamp" SET NOT NULL;
+              ALTER TABLE "blocks"
+              ALTER COLUMN "timestamp" DROP DEFAULT;
+              ALTER TABLE "blocks"
+              ALTER COLUMN "timestamp" TYPE TIMESTAMP WITH TIME ZONE USING TO_TIMESTAMP(timestamp::INTEGER);`
+            , { transaction });
 
           await transaction.commit();
       } catch(error) {
@@ -25,15 +33,23 @@ module.exports = {
   async down (queryInterface, Sequelize) {
     const transaction = await queryInterface.sequelize.transaction();
       try {
-          await queryInterface.changeColumn('transactions ', 'timestamp', {
-              type: Sequelize.STRING,
-              allowNull: false
-          }, { transaction });
+          await queryInterface.sequelize.query(`
+              ALTER TABLE "transactions"
+              ALTER COLUMN "timestamp" SET NOT NULL;
+              ALTER TABLE "transactions"
+              ALTER COLUMN "timestamp" DROP DEFAULT;
+              ALTER TABLE "transactions"
+              ALTER COLUMN "timestamp" TYPE VARCHAR USING EXTRACT(epoch FROM timestamp);`
+            , { transaction });
 
-          await queryInterface.changeColumn('blocks ', 'timestamp', {
-              type: Sequelize.STRING,
-              allowNull: false
-          }, { transaction });
+          await queryInterface.sequelize.query(`
+              ALTER TABLE "blocks"
+              ALTER COLUMN "timestamp" SET NOT NULL;
+              ALTER TABLE "blocks"
+              ALTER COLUMN "timestamp" DROP DEFAULT;
+              ALTER TABLE "blocks"
+              ALTER COLUMN "timestamp" TYPE VARCHAR USING EXTRACT(epoch FROM timestamp);`
+            , { transaction });
 
           await transaction.commit();
       } catch(error) {

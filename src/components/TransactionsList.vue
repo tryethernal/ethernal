@@ -51,8 +51,8 @@
         </template>
         <template v-slot:item.timestamp="{ item }">
             <div class="my-2">
-                {{ parseInt(item.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
-                <small>{{ moment(item.timestamp * 1000).fromNow() }}</small>
+                {{ moment(item.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
+                <small>{{ moment(item.timestamp).fromNow() }}</small>
             </div>
         </template>
         <template v-slot:item.from="{ item }">

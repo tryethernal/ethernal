@@ -30,7 +30,7 @@
 
             <v-col lg="2" md="6" sm="12">
                 <v-card outlined>
-                    <v-card-subtitle>Active Wallets Count</v-card-subtitle>
+                    <v-card-subtitle>Total Active Wallets Count</v-card-subtitle>
                     <v-card-text class="text-h3" align="center">
                         {{ activeWalletCount }}
                     </v-card-text>
@@ -40,24 +40,13 @@
 
         <v-row>
             <v-col lg="6" md="12" sm="12">
-                <TrendChart
-                    :datasets="[
-                        {
-                            data: transactionVolume,
-                            smooth: true,
-                            fill: true
-                        }
-                    ]"
-                    :grid="{
-                        verticalLines: true,
-                        horizontalLines: true
-                    }"
-                    :labels="{
-                        xLabels: xLabels,
-                        yLabels: 5
-                    }"
-                    :min="0">
-                </TrendChart>
+                <h5>Daily Transaction Volume (14 Days)</h5>
+                <Line-Chart v-if="charts['transactionVolume14Days'].data" :xLabels="charts['transactionVolume14Days'].xLabels" :data="charts['transactionVolume14Days'].data" :tooltipUnit="'tx'" :index="0" />
+            </v-col>
+
+            <v-col lg="6" md="12" sm="12">
+                <h5>Active Wallets Count (14 days)</h5>
+                <Line-Chart v-if="charts['walletVolume14Days'].data" :xLabels="charts['walletVolume14Days'].xLabels" :data="charts['walletVolume14Days'].data" :tooltipUnit="'wallet'" :index="1" />
             </v-col>
         </v-row>
 
@@ -88,38 +77,43 @@
 </template>
 
 <script>
-import Vue from "vue";
-const moment = require('moment');
-import TrendChart from "vue-trend-chart";
 
-Vue.use(TrendChart);
+const moment = require('moment');
 import { mapGetters } from 'vuex';
 
 import TransactionsList from './TransactionsList';
 import BlockList from './BlockList';
+import LineChart from './LineChart';
 
 export default {
-    name: 'Home',
+    name: 'Overview',
     components: {
         TransactionsList,
-        BlockList
+        BlockList,
+        LineChart
     },
     data: () => ({
         globalStatsLoading: false,
         transactionListLoading: false,
         transactionVolumeLoading: false,
+        walletVolumeLoading: false,
         transactionVolume: [],
         transactions: [],
         txCount24h: 0,
         txCountTotal: 0,
         activeWalletCount: 0,
-        xLabels: []
+        charts: {
+            'transactionVolume14Days': {},
+            'walletVolume14Days': {}
+        },
     }),
     mounted() {
         this.getTransactions();
         this.getGlobalStats();
         this.getTransactionVolume();
+        this.getWalletVolume();
         this.pusher.onNewTransaction(() => this.getTransactions(), this);
+        this.chart = this.$refs.chart;
     },
     methods: {
         moment: moment,
@@ -143,19 +137,33 @@ export default {
         },
         getTransactionVolume() {
             this.transactionVolumeLoading = true;
-            const tsNow = moment().unix();
-            const ts14days = moment().subtract(14, 'days').unix();
-            this.server.getTransactionVolume(ts14days, tsNow)
-                .then(({ data }) => this.transactionVolume = data)
+            const date14daysAgo = moment().subtract(14, 'months').format('YYYY-MM-DD');
+            const dateNow = moment().format('YYYY-MM-DD');
+
+            this.server.getTransactionVolume(date14daysAgo, dateNow)
+                .then(({ data }) => {
+                    this.charts['transactionVolume14Days'] = {
+                        xLabels: data.map(t => moment(t.timestamp).format('DD/MM')),
+                        data: data.map(t => parseInt(t.count))
+                    };
+                })
                 .catch(console.log)
                 .finally(() => this.transactionVolumeLoading = false);
-        }
-    },
-    watch: {
-        transactionVolume() {
-            this.xLabels = this.transactionVolume.map(t => moment(new Date(parseInt(t))).format('MM/DD h'))
-            this.transactionVolume.map(t => console.log(new Date(t)))
-            console.log(this.xLabels)
+        },
+        getWalletVolume() {
+            this.walletVolumeLoading = true;
+            const date14daysAgo = moment().subtract(14, 'months').format('YYYY-MM-DD');
+            const dateNow = moment().format('YYYY-MM-DD');
+
+            this.server.getWalletVolume(date14daysAgo, dateNow)
+                .then(({ data }) => {
+                    this.charts['walletVolume14Days'] = {
+                        xLabels: data.map(t => moment(t.timestamp).format('DD/MM')),
+                        data: data.map(t => parseInt(t.count))
+                    };
+                })
+                .catch(console.log)
+                .finally(() => this.walletVolumeLoading = false);
         }
     },
     computed: {

@@ -45,18 +45,14 @@ module.exports = (sequelize, DataTypes) => {
 
     async getTransactionVolume(from, to) {
         if (!from || !to) return [];
-        const [res, a] = await sequelize.query(`
-            SELECT
-                TO_TIMESTAMP(timestamp::varchar, 'YYY/MM/DD/HH24:MI:ss'::varchar) AS date
-            FROM transactions`)
-        console.log(res);
-
         const [transactions, metadata] = await sequelize.query(`
             SELECT
-                DATE_TRUNC('day'::varchar, TO_TIMESTAMP(timestamp, 'YYY/MM/DD/HH24:MI:ss')) AS date
+                timestamp::date,
+                count(1)
             FROM transactions
-            WHERE CAST(timestamp AS INTEGER) >= ${from} AND CAST(timestamp AS INTEGER) < ${to}
-            GROUP BY DATE_TRUNC('day'::varchar, TO_TIMESTAMP(timestamp, 'YYY/MM/DD/HH24:MI:ss'))
+            WHERE timestamp::date >= date '${from}' AND timestamp::date < date '${to}'
+            and "workspaceId" = ${this.id}
+            GROUP BY timestamp::date
         `);
 
         return transactions;
@@ -65,10 +61,31 @@ module.exports = (sequelize, DataTypes) => {
     async findActiveWallets() {
         const [wallets, metadata] = await sequelize.query(`
             SELECT DISTINCT
-                UNNEST(STRING_TO_ARRAY(CONCAT(CONCAT("from", ':'), "to"), ':')) AS address 
-           FROM transactions 
-           WHERE "to" IS NOT NULL
-           AND "workspaceId" = ${this.id}
+                "from" AS address 
+            FROM
+                transactions
+            WHERE
+                "workspaceId" = ${this.id}
+        `);
+        return wallets;
+    }
+
+    async getWalletVolume(from, to) {
+        const [wallets, metadata] = await sequelize.query(`
+                SELECT
+                    timestamp,
+                    COUNT(addresses)
+                    FROM (
+                        SELECT DISTINCT
+                            "from" AS address,
+                            timestamp::date
+                        FROM transactions
+                        WHERE "workspaceId" = ${this.id}
+                        AND timestamp::date >= date '${from}' AND timestamp::date < date '${to}'
+                    ) AS addresses
+                WHERE addresses.address <> ''
+                GROUP BY timestamp
+
         `);
         return wallets;
     }
@@ -155,9 +172,7 @@ module.exports = (sequelize, DataTypes) => {
     countTransactionsSince(since = 0) {
         return this.countTransactions({
             where: {
-                [Op.and]: [
-                     sequelize.literal(`cast(timestamp as integer) >= ${since}`),
-                ]
+                timestamp: { [Op.gte]: since }
             }
         });
     }
