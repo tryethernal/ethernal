@@ -19,7 +19,14 @@
                 <router-link :to="'/block/' + item.number">{{item.number}}</router-link>
             </template>
             <template v-slot:item.timestamp="{ item }">
-                {{ parseInt(item.timestamp) | moment('YYYY-MM-DD h:mm:ss A') }}
+                <v-tooltip top :open-delay="150" color="grey darken-3">
+                    <template v-slot:activator="{ on, attrs }">
+                        <span v-bind="attrs" v-on="on">
+                            {{ moment(item.timestamp) | moment('MM/DD h:mm:ss A') }}
+                        </span>
+                    </template>
+                    {{ moment(item.timestamp).fromNow() }}
+                </v-tooltip>
             </template>
             <template v-slot:item.gasUsed="{ item }">
                 {{ item.gasUsed.toLocaleString()  }}
@@ -32,6 +39,8 @@
 </template>
 
 <script>
+const moment = require('moment');
+
 export default {
     name: 'Blocks',
     data: () => ({
@@ -64,6 +73,7 @@ export default {
         this.pusher.onNewBlock(() => this.getBlocks(this.currentOptions), this);
     },
     methods: {
+        moment: moment,
         getBlocks: function(newOptions) {
             this.loading = true;
 
