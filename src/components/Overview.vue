@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col lg="2" md="12" sm="12">
+            <v-col lg="3" md="12" sm="12">
                 <v-card outlined>
                     <v-card-subtitle>Block Height</v-card-subtitle>
                     <v-card-text class="text-h3" align="center">
@@ -40,13 +40,17 @@
 
         <v-row>
             <v-col lg="6" md="12" sm="12">
-                <h5>Daily Transaction Volume (14 Days)</h5>
-                <Line-Chart v-if="charts['transactionVolume14Days'].data" :xLabels="charts['transactionVolume14Days'].xLabels" :data="charts['transactionVolume14Days'].data" :tooltipUnit="'tx'" :index="0" />
+                <v-card outlined>
+                    <v-card-subtitle>Daily Transaction Volume (14 Days)</v-card-subtitle>
+                    <Line-Chart v-if="charts['transactionVolume14Days'].data" :xLabels="charts['transactionVolume14Days'].xLabels" :data="charts['transactionVolume14Days'].data" :tooltipUnit="'tx'" :index="0" />
+                </v-card>
             </v-col>
 
             <v-col lg="6" md="12" sm="12">
-                <h5>Active Wallets Count (14 days)</h5>
-                <Line-Chart v-if="charts['walletVolume14Days'].data" :xLabels="charts['walletVolume14Days'].xLabels" :data="charts['walletVolume14Days'].data" :tooltipUnit="'wallet'" :index="1" />
+                <v-card outlined>
+                    <v-card-subtitle>Active Wallets Count (14 days)</v-card-subtitle>
+                    <Line-Chart v-if="charts['walletVolume14Days'].data" :xLabels="charts['walletVolume14Days'].xLabels" :data="charts['walletVolume14Days'].data" :tooltipUnit="'wallet'" :index="1" />
+                </v-card>
             </v-col>
         </v-row>
 
@@ -137,7 +141,7 @@ export default {
         },
         getTransactionVolume() {
             this.transactionVolumeLoading = true;
-            const date14daysAgo = moment().subtract(14, 'months').format('YYYY-MM-DD');
+            const date14daysAgo = moment().subtract(14, 'days').format('YYYY-MM-DD');
             const dateNow = moment().format('YYYY-MM-DD');
 
             this.server.getTransactionVolume(date14daysAgo, dateNow)
@@ -152,7 +156,7 @@ export default {
         },
         getWalletVolume() {
             this.walletVolumeLoading = true;
-            const date14daysAgo = moment().subtract(14, 'months').format('YYYY-MM-DD');
+            const date14daysAgo = moment().subtract(14, 'days').format('YYYY-MM-DD');
             const dateNow = moment().format('YYYY-MM-DD');
 
             this.server.getWalletVolume(date14daysAgo, dateNow)

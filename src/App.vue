@@ -14,7 +14,7 @@
             </v-list-item>
 
             <v-list dense nav class="side--text">
-                <v-list-item link :to="'/overview'" v-if="!isPublicExplorer">
+                <v-list-item link :to="'/overview'" v-if="isPublicExplorer">
                     <v-list-item-icon>
                         <v-icon>mdi-chart-box</v-icon>
                     </v-list-item-icon>
