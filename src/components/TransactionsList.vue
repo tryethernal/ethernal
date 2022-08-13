@@ -51,10 +51,10 @@
             <v-tooltip top :open-delay="150" color="grey darken-3">
                 <template v-slot:activator="{ on, attrs }">
                     <span v-bind="attrs" v-on="on">
-                        {{ parseInt(item.timestamp) | moment('MM/DD h:mm:ss A') }}
+                        {{ moment(item.timestamp) | moment('MM/DD h:mm:ss A') }}
                     </span>
                 </template>
-                {{ moment(item.timestamp * 1000).fromNow() }}
+                {{ moment(item.timestamp).fromNow() }}
             </v-tooltip>
         </template>
         <template v-slot:item.from="{ item }">

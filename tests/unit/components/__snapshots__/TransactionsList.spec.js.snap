@@ -96,7 +96,7 @@ exports[`TransactionsList.vue Should display the list 1`] = `
           <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
           <td class="text-start"><a href="#/block/1" class="">1</a></td>
           <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/21 12:07:42 AM
+                    05/06 7:11:26 PM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
           <td class="text-start">
             <!----> <span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <span>
@@ -121,7 +121,7 @@ exports[`TransactionsList.vue Should display the list 1`] = `
           <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1" style="display: none;"><span class="v-chip__content"></span></span></span></td>
           <td class="text-start"><a href="#/block/1" class="">1</a></td>
           <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/21 12:07:42 AM
+                    05/06 7:11:26 PM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
           <td class="text-start">
             <!----> <span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <span>

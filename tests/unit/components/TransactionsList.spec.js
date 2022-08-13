@@ -12,7 +12,7 @@ describe('TransactionsList.vue', () => {
     it('Should display the list', async (done) => {
         const transaction1 = {
             hash: '0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0',
-            timestamp: '1621548462',
+            timestamp: '2022-05-06T17:11:26.000Z',
             from: '0x0',
             to: 'Ox1',
             blockNumber: 1,
@@ -22,7 +22,7 @@ describe('TransactionsList.vue', () => {
 
         const transaction2 = {
             hash: '0x1234',
-            timestamp: '1621548462',
+            timestamp: '2022-05-06T17:11:26.000Z',
             from: '0x0',
             to: 'Ox1',
             blockNumber: 1,

@@ -39,7 +39,16 @@
                 <Hash-Link :type="'address'" :hash="item.address" />
             </template>
             <template v-slot:item.timestamp="{ item }">
-                <span v-if="item.timestamp">{{ parseInt(item.timestamp) | moment('YYYY-MM-DD h:mm:ss A') }}</span>
+                <template v-if="item.timestamp">
+                    <v-tooltip top :open-delay="150" color="grey darken-3">
+                        <template v-slot:activator="{ on, attrs }">
+                            <span v-bind="attrs" v-on="on">
+                                {{ moment(item.timestamp) | moment('MM/DD h:mm:ss A') }}
+                            </span>
+                        </template>
+                        {{ moment(item.timestamp).fromNow() }}
+                    </v-tooltip>
+                </template>
             </template>
             <template v-slot:item.remove="{ item }" v-if="currentWorkspace.isAdmin">
                 <v-btn x-small icon @click="openRemoveContractConfirmationModal(item.address)">
@@ -50,6 +59,7 @@
     </v-container>
 </template>
 <script>
+const moment = require('moment');
 import { mapGetters } from 'vuex';
 import ImportContractModal from './ImportContractModal';
 import HashLink from './HashLink';
@@ -96,6 +106,7 @@ export default {
         this.pusher.onNewContract(() => this.getContracts(this.currentOptions), this);
     },
     methods: {
+        moment: moment,
         getContracts: function(newOptions) {
             this.loading = true;
 
