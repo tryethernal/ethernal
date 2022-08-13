@@ -1,5 +1,6 @@
 <template>
     <v-data-table
+        dense
         :loading="loading"
         :items="blocks"
         :sort-by="currentOptions.sortBy[0]"
@@ -20,7 +21,7 @@
             <router-link :to="'/block/' + item.number">{{item.number}}</router-link>
         </template>
         <template v-slot:item.timestamp="{ item }">
-            <div class="my-2">
+            <div class="my-2 text-left">
                 {{ moment(item.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
                 <small>{{ moment(item.timestamp).fromNow() }}</small>
             </div>

@@ -50,14 +50,14 @@
             </span>
         </template>
         <template v-slot:item.timestamp="{ item }">
-            <div class="my-2">
+            <div class="my-2 text-left">
                 {{ moment(item.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
                 <small>{{ moment(item.timestamp).fromNow() }}</small>
             </div>
         </template>
         <template v-slot:item.from="{ item }">
             <template v-if="light">
-                <div class="my-2">
+                <div class="my-2 text-left">
                     From: <Hash-Link :type="'address'" :hash="item.from" /><br>
                     <span v-if="item.to">To: <Hash-Link :type="'address'" :hash="item.to" :withName="true" /></span>
                     <span v-else-if="item.receipt.contractAddress">Created: <Hash-Link :type="'address'" :hash="item.receipt.contractAddress" :withName="true" /></span>

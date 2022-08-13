@@ -1,6 +1,6 @@
 <template>
 <div>
-    <div v-if="data.length" class="chart">
+    <div v-if="data.length > 1" class="chart">
         <div id="tooltip" role="tooltip" ref="tooltip">
             <template v-if="tooltipData">
                 {{ this.xLabels[tooltipData.index] }} - {{ parseInt(this.data[tooltipData.index]).toLocaleString() }} {{ formattedTooltipUnit }}
@@ -73,23 +73,24 @@ export default {
         tooltipData: null
     }),
     mounted() {
-        if (!this.data.length) return;
+        if (this.data.length < 2) return;
 
-        const chart = document.querySelector('.trend-chart');
+        const chart = this.$el.querySelector('.trend-chart');
         const ref = chart.querySelector(".active-line");
         const tooltip = this.$refs.tooltip;
         this.popper = createPopper(ref, tooltip, {
-            placement: "right",
+            placement: 'right',
             modifiers: [
                 {
                     name: 'offset',
-                    options: {
-                        offset: [0, 8],
-                    },
+                    options: { offset: [0, 8] }
                 },
                 {
-                    name: 'preventOverflow',
-                    options: { boundariesElement: chart }
+                    name: 'flip',
+                    options: {
+                        fallbackPlacements: ['left'],
+                        boundary: chart
+                    }
                 }
             ]
         });
@@ -205,7 +206,7 @@ export default {
     width: 8px;
     height: 8px;
     background: inherit;
-    }
+}
 
 #arrow {
     visibility: hidden;
