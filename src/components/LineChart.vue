@@ -1,35 +1,59 @@
 <template>
-<div class="chart">
-    <div id="tooltip" role="tooltip" ref="tooltip">
-        <template v-if="tooltipData">
-            {{ this.xLabels[tooltipData.index] }} - {{ parseInt(this.data[tooltipData.index]).toLocaleString() }} {{ formattedTooltipUnit }}
-        </template>
-        <div id="arrow" data-popper-arrow></div>
+<div>
+    <div v-if="data.length" class="chart">
+        <div id="tooltip" role="tooltip" ref="tooltip">
+            <template v-if="tooltipData">
+                {{ this.xLabels[tooltipData.index] }} - {{ parseInt(this.data[tooltipData.index]).toLocaleString() }} {{ formattedTooltipUnit }}
+            </template>
+            <div id="arrow" data-popper-arrow></div>
+        </div>
+        <TrendChart
+            ref="chart"
+            class="trend-chart"
+            @mouse-move="onMouseMove"
+            :interactive="true"
+            :datasets="[
+                {
+                    data: data,
+                    smooth: true,
+                    fill: true,
+                    className: 'curve'
+                }
+            ]"
+            :grid="{
+                verticalLines: false,
+                horizontalLines: true
+            }"
+            :labels="{
+                xLabels: xLabels,
+                yLabels: 5,
+                yLabelsTextFormatter: val => parseInt(val).toLocaleString()
+            }"
+            :min="0">
+        </TrendChart>
     </div>
-    <TrendChart
-        ref="chart"
-        class="trend-chart"
-        @mouse-move="onMouseMove"
-        :interactive="true"
-        :datasets="[
-            {
-                data: data,
-                smooth: true,
-                fill: true,
-                className: 'curve'
-            }
-        ]"
-        :grid="{
-            verticalLines: false,
-            horizontalLines: true
-        }"
-        :labels="{
-            xLabels: xLabels,
-            yLabels: 5,
-            yLabelsTextFormatter: val => parseInt(val).toLocaleString()
-        }"
-        :min="0">
-    </TrendChart>
+    <div v-else class="disabled-chart-container">
+        <h6 class="disabled-chart-title">Not enough data to display graph.</h6>
+        <TrendChart
+            class="disabled-chart"
+            :datasets="[
+                {
+                    data: [500, 10000, 5000],
+                    smooth: true,
+                    fill: true,
+                    className: 'curve'
+                }
+            ]"
+            :grid="{
+                verticalLines: false,
+                horizontalLines: true
+            }"
+            :labels="{
+                xLabels: ['09/01', '09/02', '09/03'],
+                yLabels: 3,
+            }"
+            :min="0"></TrendChart>
+    </div>
 </div>
 </template>
 <script>
@@ -49,6 +73,8 @@ export default {
         tooltipData: null
     }),
     mounted() {
+        if (!this.data.length) return;
+
         const chart = document.querySelector('.trend-chart');
         const ref = chart.querySelector(".active-line");
         const tooltip = this.$refs.tooltip;
@@ -109,16 +135,57 @@ export default {
             font-size: 0.7em;
         }
     }
+    .curve {
+        .stroke {
+            stroke: var(--v-primary-base);
+            stroke-width: 1;
+        }
+        .fill {
+          fill: var(--v-primary-base);
+          opacity: 0.2;
+        }
+    }
 }
-.curve {
-    .stroke {
-        stroke: var(--v-primary-base);
-        stroke-width: 1;
+.disabled-chart-container {
+    position: relative
+}
+.disabled-chart-container {
+    .disabled-chart {
+        .grid, .labels {
+            line {
+                stroke: var(--v-primary-base);
+                stroke-width: 0.5;
+                opacity: 0.2;
+            }
+        }
+        .y-labels, .x-labels {
+            .label {
+                color: var(--v-primary-base);
+                font-size: 0.7em;
+                opacity: 0.1;
+            }
+        }
+        .curve {
+            .stroke {
+                stroke: var(--v-primary-base);
+                stroke-width: 1;
+                opacity: 0.1;
+            }
+            .fill {
+              fill: var(--v-primary-base);
+              opacity: 0.05;
+            }
+        }
     }
-    .fill {
-      fill: var(--v-primary-base);
-      opacity: 0.2;
+    .disabled-chart-title {
+        margin: 0;
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        margin-right: -50%;
+        transform: translate(-50%, -50%)
     }
+
 }
 #tooltip {
     background: var(--v-primary-base);

@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col lg="2" md="6" sm="12">
+            <v-col lg="2" md="12" sm="12">
                 <v-card outlined>
                     <v-card-subtitle>Block Height</v-card-subtitle>
                     <v-card-text class="text-h3" align="center">
@@ -10,7 +10,7 @@
                 </v-card>
             </v-col>
 
-            <v-col lg="2" md="6" sm="12">
+            <v-col lg="2" md="12" sm="12">
                 <v-card outlined>
                     <v-card-subtitle>24h Tx Count</v-card-subtitle>
                     <v-card-text class="text-h3" align="center">
@@ -19,7 +19,7 @@
                 </v-card>
             </v-col>
 
-            <v-col lg="2" md="6" sm="12">
+            <v-col lg="2" md="12" sm="12">
                 <v-card outlined>
                     <v-card-subtitle>Total Tx Count</v-card-subtitle>
                     <v-card-text class="text-h3" align="center">
@@ -28,7 +28,7 @@
                 </v-card>
             </v-col>
 
-            <v-col lg="2" md="6" sm="12">
+            <v-col lg="2" md="12" sm="12">
                 <v-card outlined>
                     <v-card-subtitle>Total Active Wallets Count</v-card-subtitle>
                     <v-card-text class="text-h3" align="center">

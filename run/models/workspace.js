@@ -4,6 +4,7 @@ const {
   Sequelize
 } = require('sequelize');
 const { sanitize } = require('../lib/utils');
+const moment = require('moment');
 
 const Op = Sequelize.Op;
 const INTEGRATION_FIELD_MAPPING = {
