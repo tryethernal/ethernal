@@ -33,7 +33,17 @@
 
             <v-col cols="12" sm="6" lg="3">
                 <v-card outlined>
-                    <v-card-subtitle>Total Active Wallets Count</v-card-subtitle>
+                    <v-card-subtitle>
+                        <div style="position: absolute;">Total Active Wallets Count</div>
+                        <div class="text-right">
+                            <v-tooltip left>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-icon v-bind="attrs" v-on="on" small>mdi-information</v-icon>
+                                </template>
+                                An active wallet is an address that has sent at least one transaction.
+                            </v-tooltip>
+                        </div>
+                    </v-card-subtitle>
                     <v-card-text v-if="!globalStatsLoading" class="text-h3" align="center">
                         {{ activeWalletCount }}
                     </v-card-text>
