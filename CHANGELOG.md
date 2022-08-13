@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.1] - 2022-08-13
+### Changed
+- Timestamps are now stored as timestamp with time zone instead of strings
+
 ## [2.2.0] - 2022-08-08
 ### Added
 - ERC-20 token balances are displayed on the address pages
