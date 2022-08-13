@@ -10,7 +10,7 @@ module.exports = {
                 ALTER TABLE "transactions"
                 ALTER COLUMN "timestamp" DROP DEFAULT;
                 ALTER TABLE "transactions"
-                ALTER COLUMN "timestamp" TYPE TIMESTAMP WITH TIME ZONE USING TO_TIMESTAMP(timestamp::INTEGER);`
+                ALTER COLUMN "timestamp" TYPE TIMESTAMP WITH TIME ZONE USING TO_TIMESTAMP(timestamp::BIGINT);`
             , { transaction });
 
             await queryInterface.sequelize.query(`
@@ -19,14 +19,14 @@ module.exports = {
                 ALTER TABLE "blocks"
                 ALTER COLUMN "timestamp" DROP DEFAULT;
                 ALTER TABLE "blocks"
-                ALTER COLUMN "timestamp" TYPE TIMESTAMP WITH TIME ZONE USING TO_TIMESTAMP(timestamp::INTEGER);`
+                ALTER COLUMN "timestamp" TYPE TIMESTAMP WITH TIME ZONE USING TO_TIMESTAMP(timestamp::BIGINT);`
             , { transaction });
 
             await queryInterface.sequelize.query(`
                 ALTER TABLE "contracts"
                 ALTER COLUMN "timestamp" DROP DEFAULT;
                 ALTER TABLE "contracts"
-                ALTER COLUMN "timestamp" TYPE TIMESTAMP WITH TIME ZONE USING TO_TIMESTAMP(timestamp::INTEGER);`
+                ALTER COLUMN "timestamp" TYPE TIMESTAMP WITH TIME ZONE USING TO_TIMESTAMP(timestamp::BIGINT);`
             , { transaction });
 
             await transaction.commit();
