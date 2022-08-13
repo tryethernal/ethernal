@@ -35,7 +35,7 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
             <td class="text-start"><a href="#/block/5" class="">5</a></td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/21 12:07:42 AM
+                    05/06 7:11:26 PM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start">
               <!---->
@@ -57,7 +57,7 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
             <td class="text-start"><a href="#/block/4" class="">4</a></td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/21 12:07:42 AM
+                    05/06 7:11:26 PM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start">
               <!---->
@@ -79,7 +79,7 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
             <td class="text-start"><a href="#/block/3" class="">3</a></td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/21 12:07:42 AM
+                    05/06 7:11:26 PM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start">
               <!---->
@@ -101,7 +101,7 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
             <td class="text-start"><a href="#/block/2" class="">2</a></td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/21 12:07:42 AM
+                    05/06 7:11:26 PM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start">
               <!---->
@@ -123,7 +123,7 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
             <td class="text-start"><a href="#/block/1" class="">1</a></td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/21 12:07:42 AM
+                    05/06 7:11:26 PM
                 </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start">
               <!---->

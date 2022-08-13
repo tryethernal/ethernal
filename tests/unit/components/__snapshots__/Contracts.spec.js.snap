@@ -45,7 +45,9 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
               <hash-link-stub hash="0x0" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x0</td>
-            <td class="text-start"><span>2021-10-09 1:13:27 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -54,7 +56,9 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
               <hash-link-stub hash="0x1" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x1</td>
-            <td class="text-start"><span>2021-10-09 1:13:28 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -63,7 +67,9 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
               <hash-link-stub hash="0x2" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x2</td>
-            <td class="text-start"><span>2021-10-09 1:13:29 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -72,7 +78,9 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
               <hash-link-stub hash="0x3" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x3</td>
-            <td class="text-start"><span>2021-10-09 1:13:30 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -81,7 +89,9 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
               <hash-link-stub hash="0x4" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x4</td>
-            <td class="text-start"><span>2021-10-09 1:13:31 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -90,7 +100,9 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
               <hash-link-stub hash="0x5" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x5</td>
-            <td class="text-start"><span>2021-10-09 1:13:32 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -99,7 +111,9 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
               <hash-link-stub hash="0x6" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x6</td>
-            <td class="text-start"><span>2021-10-09 1:13:33 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -108,7 +122,9 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
               <hash-link-stub hash="0x7" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x7</td>
-            <td class="text-start"><span>2021-10-09 1:13:34 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -117,7 +133,9 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
               <hash-link-stub hash="0x8" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x8</td>
-            <td class="text-start"><span>2021-10-09 1:13:35 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -126,7 +144,9 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
               <hash-link-stub hash="0x9" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x9</td>
-            <td class="text-start"><span>2021-10-09 1:13:36 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -136,10 +156,10 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
     <div class="v-data-footer">
       <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
           <div class="v-input__control">
-            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-95" class="v-input__slot">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-96" class="v-input__slot">
               <div class="v-select__slot">
                 <div class="v-select__selections">
-                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-95" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-96" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                 </div>
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -205,7 +225,9 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
               <hash-link-stub hash="0x0" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x0</td>
-            <td class="text-start"><span>2021-10-09 1:13:27 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -214,7 +236,9 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
               <hash-link-stub hash="0x1" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x1</td>
-            <td class="text-start"><span>2021-10-09 1:13:28 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -223,7 +247,9 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
               <hash-link-stub hash="0x2" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x2</td>
-            <td class="text-start"><span>2021-10-09 1:13:29 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -232,7 +258,9 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
               <hash-link-stub hash="0x3" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x3</td>
-            <td class="text-start"><span>2021-10-09 1:13:30 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -241,7 +269,9 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
               <hash-link-stub hash="0x4" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x4</td>
-            <td class="text-start"><span>2021-10-09 1:13:31 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -250,7 +280,9 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
               <hash-link-stub hash="0x5" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x5</td>
-            <td class="text-start"><span>2021-10-09 1:13:32 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -259,7 +291,9 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
               <hash-link-stub hash="0x6" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x6</td>
-            <td class="text-start"><span>2021-10-09 1:13:33 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -268,7 +302,9 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
               <hash-link-stub hash="0x7" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x7</td>
-            <td class="text-start"><span>2021-10-09 1:13:34 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -277,7 +313,9 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
               <hash-link-stub hash="0x8" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x8</td>
-            <td class="text-start"><span>2021-10-09 1:13:35 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -286,7 +324,9 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
               <hash-link-stub hash="0x9" type="address"></hash-link-stub>
             </td>
             <td class="text-start">0x9</td>
-            <td class="text-start"><span>2021-10-09 1:13:36 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -296,10 +336,10 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
     <div class="v-data-footer">
       <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
           <div class="v-input__control">
-            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-158" class="v-input__slot">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-169" class="v-input__slot">
               <div class="v-select__slot">
                 <div class="v-select__selections">
-                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-158" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-169" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                 </div>
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -361,7 +401,9 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
               <hash-link-stub hash="0x0" type="address"></hash-link-stub>
             </td>
             <td class="text-start">My Contract</td>
-            <td class="text-start"><span>2021-10-09 1:13:27 PM</span></td>
+            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
+                            05/06 7:11:26 PM
+                        </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
             <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
           </tr>
@@ -454,10 +496,10 @@ exports[`Contracts.vue Should show the loading message when empty contracts list
     <div class="v-data-footer">
       <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
           <div class="v-input__control">
-            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-62" class="v-input__slot">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-63" class="v-input__slot">
               <div class="v-select__slot">
                 <div class="v-select__selections">
-                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-62" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-63" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                 </div>
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>

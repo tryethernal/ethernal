@@ -14,7 +14,7 @@ describe('AddressTransactionsList.vue', () => {
             const transaction = {
                 id: i,
                 hash: `0x${i}`,
-                timestamp: '1621548462',
+                timestamp: '2022-05-06T17:11:26.000Z',
                 from: '0x1',
                 to: '0x0',
                 blockNumber: i,
