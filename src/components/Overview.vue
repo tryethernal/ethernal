@@ -5,7 +5,8 @@
                 <v-card outlined>
                     <v-card-subtitle>Block Height</v-card-subtitle>
                     <v-card-text class="text-h3" align="center">
-                        <router-link style="text-decoration: none;" :to="'/block/' + currentBlock.number">{{ currentBlock.number }}</router-link>
+                        <router-link v-if="!globalStatsLoading" style="text-decoration: none;" :to="'/block/' + currentBlock.number">{{ currentBlock.number }}</router-link>
+                        <v-skeleton-loader v-else type="list-item"></v-skeleton-loader>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -13,43 +14,48 @@
             <v-col cols="12" sm="6" lg="3">
                 <v-card outlined>
                     <v-card-subtitle>24h Tx Count</v-card-subtitle>
-                    <v-card-text class="text-h3" align="center">
+                    <v-card-text v-if="!globalStatsLoading" class="text-h3" align="center">
                         {{ txCount24h }}
                     </v-card-text>
+                    <v-skeleton-loader v-else type="list-item"></v-skeleton-loader>
                 </v-card>
             </v-col>
 
             <v-col cols="12" sm="6" lg="3">
                 <v-card outlined>
                     <v-card-subtitle>Total Tx Count</v-card-subtitle>
-                    <v-card-text class="text-h3" align="center">
+                    <v-card-text v-if="!globalStatsLoading" class="text-h3" align="center">
                         {{ txCountTotal }}
                     </v-card-text>
+                    <v-skeleton-loader v-else type="list-item"></v-skeleton-loader>
                 </v-card>
             </v-col>
 
             <v-col cols="12" sm="6" lg="3">
                 <v-card outlined>
                     <v-card-subtitle>Total Active Wallets Count</v-card-subtitle>
-                    <v-card-text class="text-h3" align="center">
+                    <v-card-text v-if="!globalStatsLoading" class="text-h3" align="center">
                         {{ activeWalletCount }}
                     </v-card-text>
+                    <v-skeleton-loader v-else type="list-item"></v-skeleton-loader>
                 </v-card>
             </v-col>
         </v-row>
 
         <v-row>
             <v-col cols="12" md="6">
-                <v-card outlined>
+                <v-card outlined class="px-1">
                     <v-card-subtitle>Daily Transaction Volume (14 Days)</v-card-subtitle>
-                    <Line-Chart v-if="charts['transactionVolume14Days'].data" :xLabels="charts['transactionVolume14Days'].xLabels" :data="charts['transactionVolume14Days'].data" :tooltipUnit="'tx'" :index="0" />
+                    <Line-Chart v-if="!transactionVolumeLoading && charts['transactionVolume14Days'].data" :xLabels="charts['transactionVolume14Days'].xLabels" :data="charts['transactionVolume14Days'].data" :tooltipUnit="'tx'" :index="0" />
+                    <v-skeleton-loader v-else type="image" class="pa-2"></v-skeleton-loader>
                 </v-card>
             </v-col>
 
             <v-col cols="12" md="6">
-                <v-card outlined>
+                <v-card outlined class="px-1">
                     <v-card-subtitle>Active Wallets Count (14 days)</v-card-subtitle>
-                    <Line-Chart v-if="charts['walletVolume14Days'].data" :xLabels="charts['walletVolume14Days'].xLabels" :data="charts['walletVolume14Days'].data" :tooltipUnit="'wallet'" :index="1" />
+                    <Line-Chart v-if="!walletVolumeLoading && charts['walletVolume14Days'].data" :xLabels="charts['walletVolume14Days'].xLabels" :data="charts['walletVolume14Days'].data" :tooltipUnit="'wallet'" :index="1" />
+                    <v-skeleton-loader v-else type="image" class="pa-2"></v-skeleton-loader>
                 </v-card>
             </v-col>
         </v-row>
@@ -122,7 +128,7 @@ export default {
     methods: {
         moment: moment,
         getGlobalStats() {
-            this.globalStatsLoading = false;
+            this.globalStatsLoading = true;
             this.server.getGlobalStats()
                 .then(({ data: { txCount24h, txCountTotal, activeWalletCount }}) => {
                     this.txCount24h = txCount24h;
