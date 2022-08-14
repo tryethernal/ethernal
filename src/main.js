@@ -54,7 +54,6 @@ new Vue({
             if (user && !isPublicExplorer)
                 store.dispatch('updateCurrentWorkspace', { firebaseUserId: user.uid });
 
-
             if (currentPath != '/auth' && !user && !isPublicExplorer) {
                 return this.$router.push('/auth');
             }

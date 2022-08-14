@@ -41,7 +41,7 @@ const routes = [
     { path: '/contracts', component: Contracts, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/tokens', component: Tokens, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/settings', component: Settings, props: true, beforeEnter: redirectIfLoggedOut },
-    { path: '*', redirect: '/transactions' }
+    { path: '*', redirect: '/overview' }
 ];
 
 const router = new VueRouter({
