@@ -87,7 +87,7 @@ const getTotalTxCount = async (workspaceId) => {
         return await workspace.countTransactions();
     } catch(error) {
         writeLog({
-            functionName: 'firebase.getTxCount',
+            functionName: 'firebase.getTotalTxCount',
             error: error,
             extra: {
                 parsedMessage: error.original && error.original.message,

@@ -173,8 +173,12 @@ export default {
     },
     methods: {
         logOut: function() {
+            const isPublicExplorer = this.isPublicExplorer;
             this.$store.dispatch('updateUser', null);
-            auth().signOut();
+            auth().signOut().then(() => {
+                if (isPublicExplorer)
+                    document.location.reload();
+            });
         },
         launchOnboarding: function() {
             this.$refs.onboardingModal.open();

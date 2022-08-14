@@ -97,9 +97,9 @@
 </template>
 
 <script>
-
 const moment = require('moment');
 import { mapGetters } from 'vuex';
+import router from '../plugins/router';
 
 import TransactionsList from './TransactionsList';
 import BlockList from './BlockList';
@@ -111,6 +111,12 @@ export default {
         TransactionsList,
         BlockList,
         LineChart
+    },
+    beforeRouteEnter(to, from, next) {
+        if(router.app.$store.getters.isPublicExplorer)
+            next();
+        else
+            router.push({ path: 'transactions' });
     },
     data: () => ({
         globalStatsLoading: false,
@@ -188,7 +194,8 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'currentBlock'
+            'currentBlock',
+            'isPublicExplorer'
         ])
     }
 }
