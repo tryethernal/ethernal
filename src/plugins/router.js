@@ -10,15 +10,16 @@ import Auth from '../components/Auth.vue';
 import Contracts from '../components/Contracts.vue';
 import Tokens from '../components/Tokens.vue';
 import Settings from '../components/Settings.vue';
+import Overview from '../components/Overview.vue';
 
-var redirectIfLoggedIn = function (to, from, next) {
+const redirectIfLoggedIn = function (to, from, next) {
     if (auth().currentUser) {
         next(to || { path: '/transactions' });
     }
     else next();
 };
 
-var redirectIfLoggedOut = function (to, from, next) {
+const redirectIfLoggedOut = function (to, from, next) {
     const isPublicExplorer = router.app.$store.getters.isPublicExplorer;
     if (!auth().currentUser && !isPublicExplorer) {
         next({ path: '/auth', query: { next: document.location.pathname, ...to.query }});
@@ -29,6 +30,7 @@ var redirectIfLoggedOut = function (to, from, next) {
 const routes = [
     { path: '/auth', component: Auth, beforeEnter: redirectIfLoggedIn },
     { path: '/blocks', component: Blocks, beforeEnter: redirectIfLoggedOut },
+    { path: '/overview', component: Overview, beforeEnter: redirectIfLoggedOut },
     { path: '/block/:number', component: Block, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/transactions', component: Transactions, beforeEnter: redirectIfLoggedOut },
     { path: '/accounts', component: Accounts, beforeEnter: redirectIfLoggedOut },

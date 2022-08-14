@@ -14,6 +14,15 @@
             </v-list-item>
 
             <v-list dense nav class="side--text">
+                <v-list-item link :to="'/overview'" v-if="isPublicExplorer">
+                    <v-list-item-icon>
+                        <v-icon>mdi-chart-box</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>Overview</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
                 <v-list-item link :to="'/accounts'" v-if="!isPublicExplorer">
                     <v-list-item-icon>
                         <v-icon>mdi-account-multiple</v-icon>
@@ -164,8 +173,12 @@ export default {
     },
     methods: {
         logOut: function() {
+            const isPublicExplorer = this.isPublicExplorer;
             this.$store.dispatch('updateUser', null);
-            auth().signOut();
+            auth().signOut().then(() => {
+                if (isPublicExplorer)
+                    document.location.reload();
+            });
         },
         launchOnboarding: function() {
             this.$refs.onboardingModal.open();
