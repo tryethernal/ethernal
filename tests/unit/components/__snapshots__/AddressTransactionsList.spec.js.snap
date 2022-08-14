@@ -34,16 +34,17 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             </td>
             <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
             <td class="text-start"><a href="#/block/5" class="">5</a></td>
-            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/06 7:11:26 PM
-                </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
+            <td class="text-start">
+              <div class="my-2 text-left">
+                05/06 7:11:26 PM<br> <small>3 months ago</small></div>
+            </td>
             <td class="text-start">
               <!---->
               <hash-link-stub type="address" hash="0x1"></hash-link-stub>
             </td>
             <td class="text-start">
               <!---->
-              <hash-link-stub type="address" hash="0x0" withname="true"></hash-link-stub>
+              <hash-link-stub type="address" hash="0x0" withtokenname="true" withname="true"></hash-link-stub>
             </td>
             <td class="text-start">
               0 Ether
@@ -56,16 +57,17 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             </td>
             <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
             <td class="text-start"><a href="#/block/4" class="">4</a></td>
-            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/06 7:11:26 PM
-                </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
+            <td class="text-start">
+              <div class="my-2 text-left">
+                05/06 7:11:26 PM<br> <small>3 months ago</small></div>
+            </td>
             <td class="text-start">
               <!---->
               <hash-link-stub type="address" hash="0x1"></hash-link-stub>
             </td>
             <td class="text-start">
               <!---->
-              <hash-link-stub type="address" hash="0x0" withname="true"></hash-link-stub>
+              <hash-link-stub type="address" hash="0x0" withtokenname="true" withname="true"></hash-link-stub>
             </td>
             <td class="text-start">
               0 Ether
@@ -78,16 +80,17 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             </td>
             <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
             <td class="text-start"><a href="#/block/3" class="">3</a></td>
-            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/06 7:11:26 PM
-                </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
+            <td class="text-start">
+              <div class="my-2 text-left">
+                05/06 7:11:26 PM<br> <small>3 months ago</small></div>
+            </td>
             <td class="text-start">
               <!---->
               <hash-link-stub type="address" hash="0x1"></hash-link-stub>
             </td>
             <td class="text-start">
               <!---->
-              <hash-link-stub type="address" hash="0x0" withname="true"></hash-link-stub>
+              <hash-link-stub type="address" hash="0x0" withtokenname="true" withname="true"></hash-link-stub>
             </td>
             <td class="text-start">
               0 Ether
@@ -100,16 +103,17 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             </td>
             <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
             <td class="text-start"><a href="#/block/2" class="">2</a></td>
-            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/06 7:11:26 PM
-                </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
+            <td class="text-start">
+              <div class="my-2 text-left">
+                05/06 7:11:26 PM<br> <small>3 months ago</small></div>
+            </td>
             <td class="text-start">
               <!---->
               <hash-link-stub type="address" hash="0x1"></hash-link-stub>
             </td>
             <td class="text-start">
               <!---->
-              <hash-link-stub type="address" hash="0x0" withname="true"></hash-link-stub>
+              <hash-link-stub type="address" hash="0x0" withtokenname="true" withname="true"></hash-link-stub>
             </td>
             <td class="text-start">
               0 Ether
@@ -122,16 +126,17 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
             </td>
             <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
             <td class="text-start"><a href="#/block/1" class="">1</a></td>
-            <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
-                    05/06 7:11:26 PM
-                </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
+            <td class="text-start">
+              <div class="my-2 text-left">
+                05/06 7:11:26 PM<br> <small>3 months ago</small></div>
+            </td>
             <td class="text-start">
               <!---->
               <hash-link-stub type="address" hash="0x1"></hash-link-stub>
             </td>
             <td class="text-start">
               <!---->
-              <hash-link-stub type="address" hash="0x0" withname="true"></hash-link-stub>
+              <hash-link-stub type="address" hash="0x0" withtokenname="true" withname="true"></hash-link-stub>
             </td>
             <td class="text-start">
               0 Ether
@@ -144,10 +149,10 @@ exports[`AddressTransactionsList.vue Should display the list 1`] = `
     <div class="v-data-footer">
       <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
           <div class="v-input__control">
-            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-18" class="v-input__slot">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-12" class="v-input__slot">
               <div class="v-select__slot">
                 <div class="v-select__selections">
-                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-18" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-12" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                 </div>
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>

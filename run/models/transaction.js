@@ -9,6 +9,7 @@ const { sanitize } = require('../lib/utils');
 const writeLog = require('../lib/writeLog');
 const { trigger } = require('../lib/pusher');
 let { getTransactionMethodDetails } = require('../lib/abi');
+const moment = require('moment');
 
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
@@ -153,7 +154,12 @@ module.exports = (sequelize, DataTypes) => {
     nonce: DataTypes.INTEGER,
     r: DataTypes.STRING,
     s: DataTypes.STRING,
-    timestamp: DataTypes.STRING,
+    timestamp: {
+        type: DataTypes.DATE,
+        set(value) {
+            this.setDataValue('timestamp', moment.unix(value).format());
+        }
+    },
     to: {
         type: DataTypes.STRING,
         set(value) {
