@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.3.1] - 2022-08-14
+## [2.3.0] - 2022-08-14
 ### Added
 - [Public Explorer] Added an overview page with analytics: Total tx count, 24h tx count, active wallets count, 14 days tx count graph, 14 days active wallet count
 
