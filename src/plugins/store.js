@@ -127,7 +127,7 @@ export default new Vuex.Store({
         firebaseIdToken: state => state.user.firebaseIdToken || '',
         theme: state => state.publicExplorer.theme,
         isUserLoggedIn: state => !!state.user.uid,
-        isPublicExplorer: state => !!state.publicExplorer.slug || !!state.publicExplorer.domain,
+        isPublicExplorer: state => !!state.publicExplorer.slug || !!state.publicExplorer.domain || (state.currentWorkspace.public && state.user.uid == state.currentWorkspace.firebaseUserId),
         publicExplorer: state => state.publicExplorer,
         user: state => {
             return { ...state.user, plan: state.user.plan || 'free' };

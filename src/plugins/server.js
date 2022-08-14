@@ -347,6 +347,40 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            getWalletVolume(from, to) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    from: from,
+                    to: to
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/stats/wallets`;
+                return axios.get(resource, { params });
+            },
+
+            getTransactionVolume(from, to) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    from: from,
+                    to: to
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/stats/transactions`;
+                return axios.get(resource, { params });
+            },
+
+            getGlobalStats() {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/stats/global`;
+                return axios.get(resource, { params });
+            },
+
             getTokenBalances(address) {
                 const params = {
                     firebaseAuthToken: store.getters.firebaseIdToken,

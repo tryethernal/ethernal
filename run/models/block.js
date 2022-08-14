@@ -3,6 +3,7 @@ const {
   Model
 } = require('sequelize');
 const { trigger } = require('../lib/pusher');
+const moment = require('moment');
 
 module.exports = (sequelize, DataTypes) => {
   class Block extends Model {
@@ -27,7 +28,12 @@ module.exports = (sequelize, DataTypes) => {
     nonce: DataTypes.STRING,
     number: DataTypes.INTEGER,
     parentHash: DataTypes.STRING,
-    timestamp: DataTypes.STRING,
+    timestamp: {
+        type: DataTypes.DATE,
+        set(value) {
+            this.setDataValue('timestamp', moment.unix(value).format());
+        }
+    },
     transactionsCount: DataTypes.INTEGER,
     raw: DataTypes.JSON,
     workspaceId: DataTypes.INTEGER

@@ -13,6 +13,7 @@
   "main": "background.js",
   "dependencies": {
     "@metamask/detect-provider": "^1.2.0",
+    "@popperjs/core": "^2.11.5",
     "@truffle/artifactor": "^4.0.93",
     "@truffle/contract": "^4.3.5",
     "@truffle/contract-sources": "^0.1.10",
@@ -37,6 +38,7 @@
     "vue-json-pretty": "^1.8.2",
     "vue-moment": "^4.1.0",
     "vue-router": "^3.4.9",
+    "vue-trend-chart": "^0.15.3",
     "vuefire": "^2.2.5",
     "vuetify": "^2.3.9",
     "vuex": "^3.6.0",

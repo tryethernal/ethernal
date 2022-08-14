@@ -7,6 +7,8 @@
         :sort-desc="true"
         :server-items-length="count"
         :headers="headers"
+        :hide-default-footer="dense"
+        :hide-default-header="dense"
         :footer-props="{
             itemsPerPageOptions: [10, 25, 100]
         }"
@@ -48,25 +50,30 @@
             </span>
         </template>
         <template v-slot:item.timestamp="{ item }">
-            <v-tooltip top :open-delay="150" color="grey darken-3">
-                <template v-slot:activator="{ on, attrs }">
-                    <span v-bind="attrs" v-on="on">
-                        {{ moment(item.timestamp) | moment('MM/DD h:mm:ss A') }}
-                    </span>
-                </template>
-                {{ moment(item.timestamp).fromNow() }}
-            </v-tooltip>
+            <div class="my-2 text-left">
+                {{ moment(item.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
+                <small>{{ moment(item.timestamp).fromNow() }}</small>
+            </div>
         </template>
         <template v-slot:item.from="{ item }">
-            <v-chip x-small class="mr-2" v-if="item.from && item.from === currentAddress">self</v-chip>
-            <Hash-Link :type="'address'" :hash="item.from" />
+            <template v-if="dense">
+                <div class="my-2 text-left">
+                    From: <Hash-Link :type="'address'" :hash="item.from" /><br>
+                    <span v-if="item.to">To: <Hash-Link :type="'address'" :hash="item.to" :withTokenName="true" :withName="true" /></span>
+                    <span v-else-if="item.receipt.contractAddress">Created: <Hash-Link :type="'address'" :hash="item.receipt.contractAddress" :withTokenName="true" :withName="true" /></span>
+                </div>
+            </template>
+            <template v-else>
+                <v-chip x-small class="mr-2" v-if="item.from && item.from === currentAddress">self</v-chip>
+                <Hash-Link :type="'address'" :hash="item.from" />
+            </template>
         </template>
         <template v-slot:item.blockNumber="{ item }">
             <router-link :to="'/block/' + item.blockNumber">{{ item.blockNumber }}</router-link>
         </template>
         <template v-slot:item.to="{ item }">
             <v-chip x-small class="mr-2" v-if="item.to && item.to === currentAddress">self</v-chip>
-            <Hash-Link :type="'address'" :hash="item.to" :withName="true" />
+            <Hash-Link :type="'address'" :hash="item.to" :withTokenName="true" :withName="true" />
         </template>
         <template v-slot:item.value="{ item }">
             {{ item.value | fromWei('ether', chain.token) }}
@@ -85,7 +92,7 @@ import HashLink from './HashLink.vue';
 
 export default {
     name: 'TransactionsList',
-    props: ['transactions', 'currentAddress', 'loading', 'sortBy', 'count'],
+    props: ['transactions', 'currentAddress', 'loading', 'sortBy', 'count', 'dense'],
     components: {
         HashLink
     },
@@ -93,44 +100,64 @@ export default {
         FromWei
     },
     data: () => ({
-        headers: [
-            {
-                text: 'Txn Hash',
-                value: 'hash',
-                align: 'start',
-            },
-            {
-                text: 'Method',
-                value: 'method',
-                sortable: false
-            },
-            {
-                text: 'Block',
-                value: 'blockNumber'
-            },
-            {
-                text: 'Mined On',
-                value: 'timestamp'
-            },
-            {
-                text: 'From',
-                value: 'from'
-            },
-            {
-                text: 'To',
-                value: 'to'
-            },
-            {
-                text: 'Value',
-                value: 'value'
-            },
-            {
-                text: 'Fee',
-                value: 'fee',
-                sortable: false
-            }
-        ],
+        headers: []
     }),
+    mounted() {
+        if (!this.dense)
+            this.headers = [
+                {
+                    text: 'Txn Hash',
+                    value: 'hash',
+                    align: 'start',
+                },
+                {
+                    text: 'Method',
+                    value: 'method',
+                    sortable: false
+                },
+                {
+                    text: 'Block',
+                    value: 'blockNumber'
+                },
+                {
+                    text: 'Mined On',
+                    value: 'timestamp'
+                },
+                {
+                    text: 'From',
+                    value: 'from'
+                },
+                {
+                    text: 'To',
+                    value: 'to'
+                },
+                {
+                    text: 'Value',
+                    value: 'value'
+                },
+                {
+                    text: 'Fee',
+                    value: 'fee',
+                    sortable: false
+                }
+            ]
+        else
+            this.headers = [
+                {
+                    text: 'Txn Hash',
+                    value: 'hash',
+                    align: 'start',
+                },
+                {
+                    text: 'Mined On',
+                    value: 'timestamp'
+                },
+                {
+                    text: 'From',
+                    value: 'from'
+                }
+            ]
+    },
     methods: {
         moment: moment,
         onPagination: function(pagination) {

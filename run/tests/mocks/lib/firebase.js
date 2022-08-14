@@ -48,5 +48,10 @@ jest.mock('../../../lib/firebase', () => ({
     getPublicExplorerParamsByDomain: jest.fn(),
     getPublicExplorerParamsBySlug: jest.fn(),
     searchForNumber: jest.fn(),
-    getAddressLatestTokenBalances: jest.fn()
+    getAddressLatestTokenBalances: jest.fn(),
+    getWalletVolume: jest.fn(),
+    getTransactionVolume: jest.fn(),
+    getTxCount: jest.fn(),
+    getTotalTxCount: jest.fn(),
+    getActiveWalletCount: jest.fn()
 }));

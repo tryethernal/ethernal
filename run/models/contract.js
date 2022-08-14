@@ -6,6 +6,7 @@ const {
 const Op = Sequelize.Op;
 const { enqueueTask } = require('../lib/tasks');
 const { trigger } = require('../lib/pusher');
+const moment = require('moment');
 
 module.exports = (sequelize, DataTypes) => {
   class Contract extends Model {
@@ -54,7 +55,12 @@ module.exports = (sequelize, DataTypes) => {
         }
     },
     processed: DataTypes.BOOLEAN,
-    timestamp: DataTypes.STRING,
+    timestamp: {
+        type: DataTypes.DATE,
+        set(value) {
+            this.setDataValue('timestamp', moment.unix(value).format());
+        }
+    },
     tokenDecimals: DataTypes.INTEGER,
     tokenName: DataTypes.STRING,
     tokenSymbol: DataTypes.STRING,

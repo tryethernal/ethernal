@@ -4,6 +4,7 @@ const {
   Sequelize
 } = require('sequelize');
 const { sanitize } = require('../lib/utils');
+const moment = require('moment');
 
 const Op = Sequelize.Op;
 const INTEGRATION_FIELD_MAPPING = {
@@ -43,9 +44,56 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    async getTransactionVolume(from, to) {
+        if (!from || !to) return [];
+        const [transactions, metadata] = await sequelize.query(`
+            SELECT
+                timestamp::date,
+                count(1)
+            FROM transactions
+            WHERE timestamp::date >= date '${from}' AND timestamp::date < date '${to}'
+            and "workspaceId" = ${this.id}
+            GROUP BY timestamp::date
+        `);
+
+        return transactions;
+    }
+
+    async findActiveWallets() {
+        const [wallets, metadata] = await sequelize.query(`
+            SELECT DISTINCT
+                "from" AS address 
+            FROM
+                transactions
+            WHERE
+                "workspaceId" = ${this.id}
+        `);
+        return wallets;
+    }
+
+    async getWalletVolume(from, to) {
+        const [wallets, metadata] = await sequelize.query(`
+                SELECT
+                    timestamp,
+                    COUNT(addresses)
+                    FROM (
+                        SELECT DISTINCT
+                            "from" AS address,
+                            timestamp::date
+                        FROM transactions
+                        WHERE "workspaceId" = ${this.id}
+                        AND timestamp::date >= date '${from}' AND timestamp::date < date '${to}'
+                    ) AS addresses
+                WHERE addresses.address <> ''
+                GROUP BY timestamp
+
+        `);
+        return wallets;
+    }
+
     async safeFindLatestTokenBalances(address) {
-        if (!address)
-            return [];
+        if (!address) return [];
+
         const tokenBalanceChanges = await this.getTokenBalanceChanges({
             where: {
                 address: address.toLowerCase()
@@ -122,6 +170,14 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    countTransactionsSince(since = 0) {
+        return this.countTransactions({
+            where: {
+                timestamp: { [Op.gte]: since }
+            }
+        });
+    }
+
     getFilteredTransactions(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'blockNumber', address) {
         const where = address ? { [Op.or]: [{ to: address.toLowerCase() }, { from: address.toLowerCase() }] } : {};
         return this.getTransactions({
@@ -133,7 +189,7 @@ module.exports = (sequelize, DataTypes) => {
             include: [
                 {
                     model: sequelize.models.TransactionReceipt,
-                    attributes: ['gasUsed', 'status'],
+                    attributes: ['gasUsed', 'status', 'contractAddress'],
                     as: 'receipt'
                 },
                 {
