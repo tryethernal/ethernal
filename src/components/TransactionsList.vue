@@ -7,8 +7,8 @@
         :sort-desc="true"
         :server-items-length="count"
         :headers="headers"
-        :hide-default-footer="light"
-        :hide-default-header="light"
+        :hide-default-footer="dense"
+        :hide-default-header="dense"
         :footer-props="{
             itemsPerPageOptions: [10, 25, 100]
         }"
@@ -56,11 +56,11 @@
             </div>
         </template>
         <template v-slot:item.from="{ item }">
-            <template v-if="light">
+            <template v-if="dense">
                 <div class="my-2 text-left">
                     From: <Hash-Link :type="'address'" :hash="item.from" /><br>
-                    <span v-if="item.to">To: <Hash-Link :type="'address'" :hash="item.to" :withName="true" /></span>
-                    <span v-else-if="item.receipt.contractAddress">Created: <Hash-Link :type="'address'" :hash="item.receipt.contractAddress" :withName="true" /></span>
+                    <span v-if="item.to">To: <Hash-Link :type="'address'" :hash="item.to" :withTokenName="true" :withName="true" /></span>
+                    <span v-else-if="item.receipt.contractAddress">Created: <Hash-Link :type="'address'" :hash="item.receipt.contractAddress" :withTokenName="true" :withName="true" /></span>
                 </div>
             </template>
             <template v-else>
@@ -73,7 +73,7 @@
         </template>
         <template v-slot:item.to="{ item }">
             <v-chip x-small class="mr-2" v-if="item.to && item.to === currentAddress">self</v-chip>
-            <Hash-Link :type="'address'" :hash="item.to" :withName="true" />
+            <Hash-Link :type="'address'" :hash="item.to" :withTokenName="true" :withName="true" />
         </template>
         <template v-slot:item.value="{ item }">
             {{ item.value | fromWei('ether', chain.token) }}
@@ -92,7 +92,7 @@ import HashLink from './HashLink.vue';
 
 export default {
     name: 'TransactionsList',
-    props: ['transactions', 'currentAddress', 'loading', 'sortBy', 'count', 'light'],
+    props: ['transactions', 'currentAddress', 'loading', 'sortBy', 'count', 'dense'],
     components: {
         HashLink
     },
@@ -103,7 +103,7 @@ export default {
         headers: []
     }),
     mounted() {
-        if (!this.light)
+        if (!this.dense)
             this.headers = [
                 {
                     text: 'Txn Hash',

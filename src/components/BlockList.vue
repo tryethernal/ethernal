@@ -7,8 +7,8 @@
         :must-sort="true"
         :sort-desc="true"
         :server-items-length="blockCount"
-        :hide-default-footer="light"
-        :hide-default-header="light"
+        :hide-default-footer="dense"
+        :hide-default-header="dense"
         :footer-props="{
             itemsPerPageOptions: [10, 25, 100]
         }"
@@ -39,7 +39,7 @@
 const moment = require('moment');
 export default {
     name: 'BlockList',
-    props: ['light'],
+    props: ['dense'],
     data: () => ({
         blocks: [],
         blockCount: 0,
@@ -49,7 +49,7 @@ export default {
     }),
     mounted: function() {
         this.pusher.onNewBlock(() => this.getBlocks(this.currentOptions), this);
-        if (this.light) {
+        if (this.dense) {
             this.headers = [
                 {
                     text: 'Block',

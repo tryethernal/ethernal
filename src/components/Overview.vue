@@ -75,7 +75,7 @@
                 <v-card outlined>
                     <v-card-subtitle>Latest Blocks</v-card-subtitle>
                         <v-card-text>
-                            <Block-List :light="true" />
+                            <Block-List :dense="true" />
                         </v-card-text>
                 </v-card>
             </v-col>
@@ -85,9 +85,9 @@
                     <v-card-subtitle>Latest Transactions</v-card-subtitle>
                         <v-card-text>
                             <Transactions-List
+                                :dense="true"
                                 :transactions="transactions"
                                 :loading="transactionListLoading"
-                                :light="true"
                                 @update:options="getTransactions" />
                         </v-card-text>
                 </v-card>
