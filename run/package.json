@@ -22,6 +22,7 @@
     "express": "^4.17.3",
     "firebase-admin": "^10.2.0",
     "mixpanel": "^0.16.0",
+    "momentjs": "^2.0.0",
     "pg": "^8.7.3",
     "pusher": "^5.1.0-beta",
     "sequelize": "^6.19.0",
