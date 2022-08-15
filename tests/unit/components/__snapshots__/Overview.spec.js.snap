@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Overview.vue Should load the overview page 1`] = `
+<div class="container container--fluid">
+  <div class="row">
+    <div class="col-sm-6 col-lg-3 col-12">
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__subtitle">Block Height</div>
+        <div align="center" class="v-card__text text-h3"><a href="#/block/2" class="" style="text-decoration: none;">2</a></div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3 col-12">
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__subtitle">24h Tx Count</div>
+        <div align="center" class="v-card__text text-h3">
+          10
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3 col-12">
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__subtitle">Total Tx Count</div>
+        <div align="center" class="v-card__text text-h3">
+          100
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3 col-12">
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__subtitle">
+          <div style="position: absolute;">Total Active Wallets Count</div>
+          <div class="text-right"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-information theme--light" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--left"><!----></span></div>
+        </div>
+        <div align="center" class="v-card__text text-h3">
+          5
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-12">
+      <div class="px-1 v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__subtitle">Daily Transaction Volume (14 Days)</div>
+        <line-chart-stub tooltipunit="tx" data="" xlabels="" index="0"></line-chart-stub>
+      </div>
+    </div>
+    <div class="col-md-6 col-12">
+      <div class="px-1 v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__subtitle">Active Wallets Count (14 days)</div>
+        <line-chart-stub tooltipunit="wallet" data="" xlabels="" index="1"></line-chart-stub>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-12">
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__subtitle">Latest Blocks</div>
+        <div class="v-card__text">
+          <block-list-stub dense="true"></block-list-stub>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-12">
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__subtitle">Latest Transactions</div>
+        <div class="v-card__text">
+          <transactions-list-stub dense="true" transactions=""></transactions-list-stub>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
