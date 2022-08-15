@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StatNumber.vue Should show a link 1`] = `
+<div class="v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__subtitle">
+    <div class="">Stat</div>
+    <!---->
+  </div>
+  <div align="center" class="v-card__text text-h3"><a href="#/blocks/1" class="" style="text-decoration: none;">1</a></div>
+</div>
+`;
+
+exports[`StatNumber.vue Should show a number 1`] = `
+<div class="v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__subtitle">
+    <div class="">Stat</div>
+    <!---->
+  </div>
+  <div align="center" class="v-card__text text-h3"><span>
+                1
+            </span></div>
+</div>
+`;
+
+exports[`StatNumber.vue Should show the info tooltip 1`] = `
+<div class="v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__subtitle">
+    <div class="absolute">Stat</div>
+    <div class="text-right"><span class="v-tooltip v-tooltip--left"><!----><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-information theme--light" style="font-size: 16px;"></i></span></div>
+  </div>
+  <div align="center" class="v-card__text text-h3"><span>
+                1
+            </span></div>
+</div>
+`;
+
+exports[`StatNumber.vue Should show the loading skeleton 1`] = `
+<div class="v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__subtitle">
+    <div class="">Stat</div>
+    <!---->
+  </div>
+  <div align="center" class="v-card__text text-h3">
+    <div aria-busy="true" aria-live="polite" role="alert" class="v-skeleton-loader v-skeleton-loader--is-loading theme--light">
+      <div class="v-skeleton-loader__list-item v-skeleton-loader__bone">
+        <div class="v-skeleton-loader__text v-skeleton-loader__bone"></div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
