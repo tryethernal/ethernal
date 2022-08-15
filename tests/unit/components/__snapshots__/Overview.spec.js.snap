@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Overview.vue Should load the overview page 1`] = `
+<div class="container container--fluid">
+  <div class="row">
+    <div class="col-sm-6 col-lg-3 col-12">
+      <stat-number-stub href="/blocks/2" value="2" title="Block Height" type="link"></stat-number-stub>
+    </div>
+    <div class="col-sm-6 col-lg-3 col-12">
+      <stat-number-stub value="10" title="24h Tx Count"></stat-number-stub>
+    </div>
+    <div class="col-sm-6 col-lg-3 col-12">
+      <stat-number-stub value="100" title="Total Tx Count"></stat-number-stub>
+    </div>
+    <div class="col-sm-6 col-lg-3 col-12">
+      <stat-number-stub infotooltip="An active wallet is an address that has sent at least one transaction." value="5" title="Total Active Wallets Count"></stat-number-stub>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-12">
+      <div class="px-1 v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__subtitle">Daily Transaction Volume (14 Days)</div>
+        <line-chart-stub tooltipunit="tx" data="" xlabels="" index="0"></line-chart-stub>
+      </div>
+    </div>
+    <div class="col-md-6 col-12">
+      <div class="px-1 v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__subtitle">Active Wallets Count (14 days)</div>
+        <line-chart-stub tooltipunit="wallet" data="" xlabels="" index="1"></line-chart-stub>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-12">
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__subtitle">Latest Blocks</div>
+        <div class="v-card__text">
+          <block-list-stub dense="true"></block-list-stub>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-12">
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__subtitle">Latest Transactions</div>
+        <div class="v-card__text">
+          <transactions-list-stub dense="true" transactions=""></transactions-list-stub>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
