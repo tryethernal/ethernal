@@ -22,7 +22,7 @@ describe('Overview.vue', () => {
         jest.spyOn(helper.mocks.server, 'getWalletVolume').mockResolvedValue({ data: [] });
 
         const wrapper = helper.mountFn(Overview, {
-            stubs: ['Transactions-List', 'Block-List', 'Line-Chart'],
+            stubs: ['Transactions-List', 'Block-List', 'Line-Chart', 'Stat-Number'],
             getters: {
                 isPublicExplorer: jest.fn().mockReturnValue(true)
             }

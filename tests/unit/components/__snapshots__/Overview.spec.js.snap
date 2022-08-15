@@ -4,37 +4,16 @@ exports[`Overview.vue Should load the overview page 1`] = `
 <div class="container container--fluid">
   <div class="row">
     <div class="col-sm-6 col-lg-3 col-12">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__subtitle">Block Height</div>
-        <div align="center" class="v-card__text text-h3"><a href="#/block/2" class="" style="text-decoration: none;">2</a></div>
-      </div>
+      <stat-number-stub href="/blocks/2" value="2" title="Block Height" type="link"></stat-number-stub>
     </div>
     <div class="col-sm-6 col-lg-3 col-12">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__subtitle">24h Tx Count</div>
-        <div align="center" class="v-card__text text-h3">
-          10
-        </div>
-      </div>
+      <stat-number-stub value="10" title="24h Tx Count"></stat-number-stub>
     </div>
     <div class="col-sm-6 col-lg-3 col-12">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__subtitle">Total Tx Count</div>
-        <div align="center" class="v-card__text text-h3">
-          100
-        </div>
-      </div>
+      <stat-number-stub value="100" title="Total Tx Count"></stat-number-stub>
     </div>
     <div class="col-sm-6 col-lg-3 col-12">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__subtitle">
-          <div style="position: absolute;">Total Active Wallets Count</div>
-          <div class="text-right"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-information theme--light" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--left"><!----></span></div>
-        </div>
-        <div align="center" class="v-card__text text-h3">
-          5
-        </div>
-      </div>
+      <stat-number-stub infotooltip="An active wallet is an address that has sent at least one transaction." value="5" title="Total Active Wallets Count"></stat-number-stub>
     </div>
   </div>
   <div class="row">
