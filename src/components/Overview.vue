@@ -2,53 +2,19 @@
     <v-container fluid>
         <v-row>
             <v-col cols="12" sm="6" lg="3">
-                <v-card outlined>
-                    <v-card-subtitle>Block Height</v-card-subtitle>
-                    <v-card-text class="text-h3" align="center">
-                        <router-link v-if="!globalStatsLoading" style="text-decoration: none;" :to="'/block/' + currentBlock.number">{{ currentBlock.number }}</router-link>
-                        <v-skeleton-loader v-else type="list-item"></v-skeleton-loader>
-                    </v-card-text>
-                </v-card>
+                <Stat-Number :type="'link'" :title="'Block Height'" :value="currentBlock.number" :loading="globalStatsLoading" :href="`/blocks/${currentBlock.number}`" />
             </v-col>
 
             <v-col cols="12" sm="6" lg="3">
-                <v-card outlined>
-                    <v-card-subtitle>24h Tx Count</v-card-subtitle>
-                    <v-card-text v-if="!globalStatsLoading" class="text-h3" align="center">
-                        {{ txCount24h }}
-                    </v-card-text>
-                    <v-skeleton-loader v-else type="list-item"></v-skeleton-loader>
-                </v-card>
+                <Stat-Number :title="'24h Tx Count'" :value="txCount24h" :loading="globalStatsLoading" />
             </v-col>
 
             <v-col cols="12" sm="6" lg="3">
-                <v-card outlined>
-                    <v-card-subtitle>Total Tx Count</v-card-subtitle>
-                    <v-card-text v-if="!globalStatsLoading" class="text-h3" align="center">
-                        {{ txCountTotal }}
-                    </v-card-text>
-                    <v-skeleton-loader v-else type="list-item"></v-skeleton-loader>
-                </v-card>
+                <Stat-Number :title="'Total Tx Count'" :value="txCountTotal" :loading="globalStatsLoading" />
             </v-col>
 
             <v-col cols="12" sm="6" lg="3">
-                <v-card outlined>
-                    <v-card-subtitle>
-                        <div style="position: absolute;">Total Active Wallets Count</div>
-                        <div class="text-right">
-                            <v-tooltip left>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-icon v-bind="attrs" v-on="on" small>mdi-information</v-icon>
-                                </template>
-                                An active wallet is an address that has sent at least one transaction.
-                            </v-tooltip>
-                        </div>
-                    </v-card-subtitle>
-                    <v-card-text v-if="!globalStatsLoading" class="text-h3" align="center">
-                        {{ activeWalletCount }}
-                    </v-card-text>
-                    <v-skeleton-loader v-else type="list-item"></v-skeleton-loader>
-                </v-card>
+                <Stat-Number :title="'Total Active Wallets Count'" :value="activeWalletCount" :loading="globalStatsLoading" :infoTooltip="'An active wallet is an address that has sent at least one transaction.'" />
             </v-col>
         </v-row>
 
@@ -104,13 +70,15 @@ import router from '../plugins/router';
 import TransactionsList from './TransactionsList';
 import BlockList from './BlockList';
 import LineChart from './LineChart';
+import StatNumber from './StatNumber';
 
 export default {
     name: 'Overview',
     components: {
         TransactionsList,
         BlockList,
-        LineChart
+        LineChart,
+        StatNumber
     },
     beforeRouteEnter(to, from, next) {
         if(router.app.$store.getters.isPublicExplorer)
