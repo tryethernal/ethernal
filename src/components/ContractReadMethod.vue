@@ -75,6 +75,7 @@ export default {
                         this.loading = false;
                     })
             } catch(error) {
+                console.log(error);
                 if (error.reason)
                     this.error = `Error: ${error.reason.split('(')[0]}`;
                 else

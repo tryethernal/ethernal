@@ -80,12 +80,11 @@ export default {
             for (let i = 0; i < this.method.inputs.length; i++) {
                 processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
             }
-            const options = sanitize({ ...this.options, value: this.value });
+            const options = sanitize({ ...this.options, from: this.options.from.address, value: this.value });
             const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
 
             const signer = provider.getSigner();
             const contract = new ethers.Contract(this.contract.address, this.contract.abi, signer);
-
             contract.populateTransaction[this.signature](...Object.values(processedParams), options)
                 .then((transaction) => {
                     const params = {
@@ -107,6 +106,7 @@ export default {
                 })
                 .catch((error) => {
                     this.loading = false;
+                    console.log(error);
                     if (error.reason) {
                         this.result.message = `Error: ${error.reason}`;
                     }
