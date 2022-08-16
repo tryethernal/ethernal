@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.1] - 2022-08-16
+### Changed
+- [Public Explorer] Improved contract verification mechanism (add support for evm version, optimizer, runs number)
+
+### Fixed
+- [Public Explorer] Fixed preventing from calling contract methods
+
 ## [2.3.1] - 2022-08-15
 ### Changed
 - Improved test coverage
