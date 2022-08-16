@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.4.1] - 2022-08-16
+## [2.4.0] - 2022-08-16
 ### Changed
 - [Public Explorer] Improved contract verification mechanism (add support for evm version, optimizer, runs number)
 
