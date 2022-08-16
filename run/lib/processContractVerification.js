@@ -30,9 +30,9 @@ module.exports = async function(db, payload) {
     const constructorArguments = payload.constructorArguments;
     const publicExplorerParams = payload.publicExplorerParams;
     const contractName = payload.contractName;
-    const optimization = payload.optimization || false;
+    const optimizer = payload.optimizer || false;
     const runs = payload.runs;
-    const evmVersion = payload.evmVersion || 'london';
+    const evmVersion = payload.evmVersion;
 
     // Only supports verifying one contract at a time at the moment
     const contractFile = Object.keys(code.sources)[0];
@@ -42,8 +42,8 @@ module.exports = async function(db, payload) {
     if (workspace.userId != user.id)
         throw new Error("Workspace / User mismatch");
 
-    if (VALID_EVM_VERSIONS.indexOf(evmVersion))
-        throw new Error(`Invalid EVM version. Valid versions are: ${VALID_EVM_VERSIONS.join(', ')}`);
+    if (evmVersion && VALID_EVM_VERSIONS.indexOf(evmVersion) === -1)
+        throw new Error(`Invalid EVM version "${evmVersion}". Valid versions are: ${VALID_EVM_VERSIONS.join(', ')}.`);
 
     try {
         await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'pending');
@@ -59,11 +59,6 @@ module.exports = async function(db, payload) {
             });
         });
 
-        const optimizer = sanitize({
-            optimization: optimization,
-            runs: runs
-        });
-
         const inputs = {
             language: 'Solidity',
             sources: code.sources,
@@ -71,20 +66,25 @@ module.exports = async function(db, payload) {
                 outputSelection: {
                     '*': { '*': ['abi', 'evm.bytecode.object'] }
                 },
-                optimizer: optimizer,
+                optimizer: {
+                    enabled: optimizer,
+                    runs: optimizer ? runs : undefined
+                },
                 evmVersion: evmVersion
             }
         };
 
         const compiledCode = compiler.compile(JSON.stringify(inputs), { import : function(path) { return imports[path] }});
+        const parsedCompiledCode = JSON.parse(compiledCode);
 
-        if (compiledCode.errors) {
-            for (let error of compiledCode.errors)
-                console.log(error.formattedMessage)
+        if (parsedCompiledCode.errors) {
+            for (let error of parsedCompiledCode.errors)
+                if (error.severity && error.severity != 'warning')
+                    throw error;
         }
 
-        const abi = JSON.parse(compiledCode).contracts[contractFile][contractName].abi;
-        let bytecode = JSON.parse(compiledCode).contracts[contractFile][contractName].evm.bytecode.object;
+        const abi = parsedCompiledCode.contracts[contractFile][contractName].abi;
+        let bytecode = parsedCompiledCode.contracts[contractFile][contractName].evm.bytecode.object;
 
         if (typeof code.libraries == 'object' && Object.keys(code.libraries).length > 0) {
             console.log('Linking bytecode...')
@@ -108,7 +108,7 @@ module.exports = async function(db, payload) {
         if (compiledRuntimeBytecode === deployedRuntimeBytecode) {
             console.log('Verification succeeded!');
             await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'success');
-            await db.storeContractData(user.firebaseUserId, workspace.name, contractAddress, { abi: abi });
+            await db.storeContractData(user.firebaseUserId, workspace.name, contractAddress, { name: contractName, abi: abi });
             await updateFirestoreContract(user.firebaseUserId, workspace.name, contractAddress, { verificationStatus: 'success', abi: abi });
             return {
                 verificationSucceded: true
@@ -119,10 +119,9 @@ module.exports = async function(db, payload) {
             throw new Error("Compiled bytecode doesn't match runtime bytecode. Make sure you uploaded the correct source code, linked all the libraries and provided the constructor arguments.");
         }
     } catch(error) {
-        console.log(error);
         writeLog({
             functionName: 'api.contracts.verify',
-            error: error,
+            error: error.message || error,
             extra: {
                 error: error,
                 payload: payload

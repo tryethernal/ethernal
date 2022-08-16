@@ -4,6 +4,7 @@ node_modules
 screens/
 tests_output/
 firebase-emulator/
+coverage/
 
 functions/report*
 
