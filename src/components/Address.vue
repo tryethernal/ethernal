@@ -289,8 +289,9 @@ export default {
             this.rpcConnectionStatus = true;
     },
     methods: {
-        onRpcConnectionStatusChanged: function(status) {
-            this.rpcConnectionStatus = status;
+        onRpcConnectionStatusChanged: function(data) {
+            this.rpcConnectionStatus = data.isReady;
+            this.callOptions.from = { address: data.account };
         },
         openRemoveContractConfirmationModal: function() {
             this.$refs.removeContractConfirmationModal

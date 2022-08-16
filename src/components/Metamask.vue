@@ -74,7 +74,7 @@ export default {
         },
         emitConnectionStatus: function() {
             const isReady = !!this.connectedAccount && this.isChainValid;
-            this.$emit('rpcConnectionStatusChanged', isReady);
+            this.$emit('rpcConnectionStatusChanged', { isReady: isReady, account: this.connectedAccount });
         }
     },
     watch: {
