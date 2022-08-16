@@ -115,6 +115,9 @@ router.post('/:address/verify', async (req, res) => {
             constructorArguments: data.constructorArguments,
             code: data.code,
             contractName: data.contractName,
+            optimizer: data.optimizer,
+            runs: data.runs,
+            evmVersion: data.evmVersion,
             secret: process.env.AUTH_SECRET
         });
 
