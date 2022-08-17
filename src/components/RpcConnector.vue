@@ -73,7 +73,7 @@
                 <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
             </div>
             <v-spacer></v-spacer>
-            <a class="ml-4" v-if="isFeedbackFishEnabled" data-feedback-fish :data-feedback-fish-userid="user.email" :data-feedback-fish-page="page">
+            <a v-if="isFeedbackEnabled" class="ml-4" data-feedbackfin-button @click="setFeedbackfinMetadata">
                 <v-icon color="primary" class="mr-1">mdi-comment-quote</v-icon>Feedback?
             </a>
         </template>
@@ -99,14 +99,14 @@ export default Vue.extend({
         showSearchBar: false,
         processingContracts: false,
         page: null,
-        isFeedbackFishEnabled: false,
+        isFeedbackEnabled: false,
     }),
     created: function() {
         if (auth().currentUser && !this.isPublicExplorer) {
             bus.$on('syncAccount', this.syncAccount);
         }
         this.page = this.$route.path;
-        this.isFeedbackFishEnabled = !!process.env.VUE_APP_FEEDBACK_FISH_PID;
+        this.isFeedbackEnabled = !!process.env.VUE_APP_ENABLE_FEEDBACK;
 
         this.server.getBlocks({ page: 1, itemsPerPage: 1 }).then(({ data: { items }}) => {
             if (items.length) {
@@ -126,6 +126,15 @@ export default Vue.extend({
     },
     methods: {
         formatContractPattern,
+        setFeedbackfinMetadata() {
+            if (window.feedbackfin) {
+                window.feedbackfin.config.user = {
+                    domain: location.host,
+                    page: location.pathname,
+                    ...window.feedbackfin.config.user
+                };
+            }
+        },
         clearSearchBar: function() {
             this.search = null;
             this.showSearchBar = false;
@@ -241,3 +250,11 @@ export default Vue.extend({
     }
 });
 </script>
+<style lang="scss">
+:root {
+    --feedbackfin-primary-color: var(--v-primary-base);
+}
+#feedbackfin__container {
+    font-family: 'Roboto';
+}
+</style>
