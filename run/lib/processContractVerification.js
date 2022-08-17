@@ -2,8 +2,6 @@ const { enqueueTask } = require('./tasks');
 const { sanitize } = require('./utils');
 const writeLog = require('./writeLog');
 
-let compiler;
-
 const updateFirestoreContract = (userId, workspace, address, data) => {
     return enqueueTask('migration', sanitize({
         userId: userId,
@@ -57,7 +55,7 @@ module.exports = async function(db, payload) {
         await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'pending');
         await updateFirestoreContract(user.firebaseUserId, workspace.name, contractAddress, { verificationStatus: 'pending' });
 
-        compiler = compiler || await new Promise((resolve, reject) => {
+        const compiler = await new Promise((resolve, reject) => {
             solc.loadRemoteVersion(compilerVersion, (err, solc) => {
                 if (err) {
                     console.error(err);
