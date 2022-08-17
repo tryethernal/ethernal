@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.2] - 2022-08-17
+### Changed
+- Fix feedback collector bug
+
 ## [2.4.1] - 2022-08-17
 ### Added
 - Re-introduced feedback collector (new one is open-source). Data collected: message, domain, page, email if you are logged in. This data is stored in Firestore and will only be used internally.
