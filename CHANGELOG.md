@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.3] - 2022-08-17
+### Fixed
+- Actually fixed bug
+
 ## [2.4.2] - 2022-08-17
 ### Changed
 - Fix feedback collector bug
@@ -19,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Public Explorer] Improved contract verification mechanism (add support for evm version, optimizer, runs number)
 
 ### Fixed
-- [Public Explorer] Fixed preventing from calling contract methods
+- [Public Explorer] Fixed preventing from p calling contract methods
 
 ## [2.3.1] - 2022-08-15
 ### Changed
