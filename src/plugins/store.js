@@ -87,6 +87,8 @@ export default new Vuex.Store({
                 }));
                 if (process.env.VUE_APP_ENABLE_ANALYTICS)
                     LogRocket.identify(user.uid, { email: user.email });
+                if (process.env.VUE_APP_ENABLE_FEEDBACK && window.feedbackfin && user.email)
+                    window.feedbackfin.config.user = { email: user.email };
             }
             else {
                 commit('SET_USER', null);
