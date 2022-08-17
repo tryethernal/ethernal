@@ -73,7 +73,7 @@
                 <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
             </div>
             <v-spacer></v-spacer>
-            <a v-if="isFeedbackEnabled" class="ml-4" data-feedbackfin-button @click="setFeedbackfinMetadata">
+            <a v-if="isFeedbackEnabled" class="ml-4" data-feedbackfin-button>
                 <v-icon color="primary" class="mr-1">mdi-comment-quote</v-icon>Feedback?
             </a>
         </template>
@@ -106,7 +106,15 @@ export default Vue.extend({
             bus.$on('syncAccount', this.syncAccount);
         }
         this.page = this.$route.path;
-        this.isFeedbackEnabled = !!process.env.VUE_APP_ENABLE_FEEDBACK;
+
+        if (process.env.VUE_APP_ENABLE_FEEDBACK && window.feedbackfin) {
+            this.isFeedbackEnabled = true;
+            window.feedbackfin.config.user = {
+                domain: location.host,
+                page: location.pathname,
+                ...window.feedbackfin.config.user
+            };
+        }
 
         this.server.getBlocks({ page: 1, itemsPerPage: 1 }).then(({ data: { items }}) => {
             if (items.length) {
@@ -126,15 +134,6 @@ export default Vue.extend({
     },
     methods: {
         formatContractPattern,
-        setFeedbackfinMetadata() {
-            if (window.feedbackfin) {
-                window.feedbackfin.config.user = {
-                    domain: location.host,
-                    page: location.pathname,
-                    ...window.feedbackfin.config.user
-                };
-            }
-        },
         clearSearchBar: function() {
             this.search = null;
             this.showSearchBar = false;
