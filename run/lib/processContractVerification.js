@@ -13,7 +13,15 @@ const updateFirestoreContract = (userId, workspace, address, data) => {
         verificationStatus: data.verificationStatus,
         secret: process.env.AUTH_SECRET
     }), `${process.env.CLOUD_FUNCTIONS_ROOT}/${process.env.GCLOUD_PROJECT}/${process.env.GCLOUD_LOCATION}/syncContractData`)
-}
+};
+
+const stripBytecodeMetadata = (bytecode) => {
+    // Last 2 bytes contains metadata length
+    const metadataLength = parseInt(bytecode.slice(bytecode.length - 4, bytecode.length), 16) * 2;
+
+    // We strip the metadata + the last 2 bytes
+    return bytecode.slice(0, bytecode.length - 4 - metadataLength);
+};
 
 module.exports = async function(db, payload) {
     const VALID_EVM_VERSIONS = ['homestead', 'tangerineWhistle', 'spuriousDragon', 'byzantium', 'constantinople', 'petersburg', 'istanbul', 'berlin', 'london'];
@@ -27,7 +35,7 @@ module.exports = async function(db, payload) {
     const imports = payload.code.imports || {};
     const compilerVersion = payload.compilerVersion;
     const contractAddress = payload.contractAddress;
-    const constructorArguments = payload.constructorArguments;
+    const constructorArguments = payload.constructorArguments || '';
     const publicExplorerParams = payload.publicExplorerParams;
     const contractName = payload.contractName;
     const optimizer = payload.optimizer || false;
@@ -92,20 +100,21 @@ module.exports = async function(db, payload) {
             bytecode = linkedBytecode;
         }
 
-        const compiledRuntimeBytecode = `0x${bytecode}${constructorArguments ? constructorArguments : ''}`;
+        const compiledRuntimeBytecodeWithoutMetadata = `0x${stripBytecodeMetadata(bytecode)}${constructorArguments}`;
 
         const deploymentTx = await db.getContractDeploymentTxByAddress(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress);
-        const deployedRuntimeBytecode = deploymentTx.data;
+        const deployedRuntimeBytecodeWithoutMetadata = stripBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length)) + constructorArguments;
+
         writeLog({
             functionName: 'api.contracts.verify',
             extra: {
-                compiledRuntimeBytecode: compiledRuntimeBytecode,
-                deployedRuntimeBytecode: deployedRuntimeBytecode,
-                equalBytecodes: compiledRuntimeBytecode === deployedRuntimeBytecode,
+                compiledRuntimeBytecodeWithoutMetadata: compiledRuntimeBytecodeWithoutMetadata,
+                deployedRuntimeBytecodeWithoutMetadata: deployedRuntimeBytecodeWithoutMetadata,
+                equalBytecodes: compiledRuntimeBytecodeWithoutMetadata === deployedRuntimeBytecodeWithoutMetadata,
                 payload: payload
             }
         });
-        if (compiledRuntimeBytecode === deployedRuntimeBytecode) {
+        if (compiledRuntimeBytecodeWithoutMetadata === deployedRuntimeBytecodeWithoutMetadata) {
             console.log('Verification succeeded!');
             await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'success');
             await db.storeContractData(user.firebaseUserId, workspace.name, contractAddress, { name: contractName, abi: abi });
