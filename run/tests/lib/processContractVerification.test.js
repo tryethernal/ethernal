@@ -11,7 +11,7 @@ jest.mock('solc', () => ({
                         MyContract: {
                             evm: {
                                 bytecode: {
-                                    object: '1234'
+                                    object: '123412341234123412341234123412340001'
                                 }
                             }
                         }
@@ -23,7 +23,7 @@ jest.mock('solc', () => ({
 }));
 
 jest.mock('solc/linker', () => ({
-    linkBytecode: jest.fn().mockReturnValue('1234abcd')
+    linkBytecode: jest.fn().mockReturnValue('12341234123412341234123412341234abcd0001')
 }));
 
 const processContractVerification = require('../../lib/processContractVerification');
@@ -45,7 +45,7 @@ describe('processContractVerification', () => {
     });
 
     it('Should set the verification status to success if source code is matching', async () => {
-        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x1234' });
+        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x123412341234123412341234123412340001' });
 
         const message = {
             code: {
@@ -82,7 +82,7 @@ describe('processContractVerification', () => {
     });
 
     it('Should set the verification status to failed if source code is not matching', async () => {
-        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x56789' });
+        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x567895678956789567895678956789567895678956789' });
 
         const message = {
             code: {
@@ -114,7 +114,7 @@ describe('processContractVerification', () => {
     });
 
     it('Should link bytecode if libraries are passed', async () => {
-        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x1234abcd' });
+        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x12341234123412341234123412341234abcd0001' });
 
         const message = {
             code: {
@@ -154,7 +154,7 @@ describe('processContractVerification', () => {
     });
 
     it('Should append constructor arguments properly', async () => {
-        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x1234000abcd' });
+        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x123412341234123412341234123412340001000abcd' });
 
         const message = {
             code: {
