@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.4] - 2022-08-18
+### Changed
+- [Public Explorer] Contract verification is now done with partial matches (ie metadata are stripped before checking)
+
 ## [2.4.3] - 2022-08-17
 ### Fixed
 - Actually fixed bug
