@@ -29,6 +29,60 @@ describe('Address.vue', () => {
             .mockResolvedValue({ data: { items: [] }});
     });
 
+    it('Should display the contract verified text if it is a public explorer & contract is not verified', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValue({ data: { address: '0x123', name: 'Amalfi', abi: AmalfiContract.artifact.abi, verificationStatus: 'success' }});
+
+        const wrapper = helper.mountFn(Address, {
+            propsData: {
+                hash: '0x123'
+            },
+            stubs: ['Address-Transactions-List'],
+            getters: {
+                chain: jest.fn().mockReturnValue('ethereum'),
+                isPublicExplorer: jest.fn().mockReturnValue(true),
+                currentWorkspace: jest.fn(() => ({
+                    isAdmin: false,
+                    settings: {}
+                }))
+            }
+        });
+
+        await wrapper.vm.$nextTick();
+
+        await wrapper.find('#codeTab').trigger('click');
+        await wrapper.vm.$nextTick();
+        
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should display the contract verification UI if it is a public explorer & contract is verified', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValue({ data: { address: '0x123', name: 'Amalfi', abi: AmalfiContract.artifact.abi }});
+
+        const wrapper = helper.mountFn(Address, {
+            propsData: {
+                hash: '0x123'
+            },
+            stubs: ['Address-Transactions-List', 'Contract-Verification'],
+            getters: {
+                chain: jest.fn().mockReturnValue('ethereum'),
+                isPublicExplorer: jest.fn().mockReturnValue(true),
+                currentWorkspace: jest.fn(() => ({
+                    isAdmin: false,
+                    settings: {}
+                }))
+            }
+        });
+
+        await wrapper.vm.$nextTick();
+
+        await wrapper.find('#codeTab').trigger('click');
+        await wrapper.vm.$nextTick();
+        
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should not display the storage tab on contract page if in public explorer mode', async () => {
         const wrapper = helper.mountFn(Address, {
             propsData: {

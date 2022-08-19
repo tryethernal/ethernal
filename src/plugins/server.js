@@ -347,6 +347,11 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            verifyContract(address, data) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/verify`;
+                return axios.post(resource, data);
+            },
+
             getWalletVolume(from, to) {
                 const params = {
                     firebaseAuthToken: store.getters.firebaseIdToken,
