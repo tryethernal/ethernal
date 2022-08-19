@@ -207,7 +207,8 @@ export default {
                 name: data.name,
                 token: data.token,
                 chainId: data.chainId,
-                theme: data.themes.default
+                theme: data.themes.default,
+                slug: data.slug
             }).then(() => {
                 if (data.themes) {
                     const lightTheme = data.themes.light || {};

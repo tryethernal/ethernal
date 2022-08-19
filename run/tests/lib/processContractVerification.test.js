@@ -21,6 +21,7 @@ jest.mock('solc', () => ({
         })
     })
 }));
+const solc = require('solc');
 
 jest.mock('solc/linker', () => ({
     linkBytecode: jest.fn().mockReturnValue('12341234123412341234123412341234abcd0001')
@@ -33,6 +34,190 @@ afterEach(() => jest.clearAllMocks());
 describe('processContractVerification', () => {
     jest.spyOn(db, 'getWorkspaceById').mockResolvedValue({ id: 1, userId: 1, name: 'test' });
     jest.spyOn(db, 'getUserById').mockResolvedValue({ id: 1, firebaseUserId: '123' });
+
+    it('Should rethrow compiler errors', async () => {
+        jest.spyOn(solc, 'loadRemoteVersion').mockImplementationOnce((compiler, cb) => {
+            cb(null, {
+                compile: jest.fn().mockReturnValue(JSON.stringify({ errors: [{ severity: 'error', message: 'error' }] }))
+            })
+        });
+
+        const message = {
+            code: {
+                sources: { source: 'source' },
+                imports: { 'Import.sol': { contents: 'import' }}
+            },
+            publicExplorerParams: {
+                userId: 1,
+                workspaceId: 1
+            },
+            contractAddress: '0x123',
+            contractName: 'MyContract'
+        };
+
+        await expect(async () => {
+            await processContractVerification(db, message); 
+        }).rejects.toEqual({ severity: 'error', message: 'error' });
+    });
+
+    it('Should handle imports', async () => {
+        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x123412341234123412341234123412340001' });
+
+        jest.spyOn(solc, 'loadRemoteVersion').mockImplementationOnce((compiler, cb) => {
+            cb(null, {
+                compile: jest.fn((inputs, importsObj) => {
+                    importsObj.import('Import.sol');
+                    return JSON.stringify({
+                        contracts: {
+                            source: {
+                                MyContract: {
+                                    evm: {
+                                        bytecode: {
+                                            object: '123412341234123412341234123412340001'
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                })
+            })
+        });
+
+        const message = {
+            code: {
+                sources: { source: 'source' },
+                imports: { 'Import.sol': { contents: 'import' }}
+            },
+            publicExplorerParams: {
+                userId: 1,
+                workspaceId: 1
+            },
+            contractAddress: '0x123',
+            contractName: 'MyContract'
+        };
+
+        await processContractVerification(db, message); 
+        expect(db.updateContractVerificationStatus).toHaveBeenCalledWith(
+            1,
+            1,
+            '0x123',
+            'success'
+        );
+    });
+
+    it('Should throw an error if imports are missing', async () => {
+        jest.spyOn(solc, 'loadRemoteVersion').mockImplementationOnce((compiler, cb) => {
+            cb(null, {
+                compile: jest.fn((inputs, importsObj) => {
+                    importsObj.import('Import.sol');
+                })
+            })
+        });
+
+        const message = {
+            code: {
+                sources: { source: 'source' },
+                imports: { import: { contents: 'import' }}
+            },
+            publicExplorerParams: {
+                userId: 1,
+                workspaceId: 1
+            },
+            contractAddress: '0x123',
+            contractName: 'MyContract'
+        };
+
+        await expect(async () => {
+            await processContractVerification(db, message); 
+        }).rejects.toEqual(new Error(`Missing following imports: Import.sol`));
+    });
+
+    it('Should throw an error if it cannot load the compiler', async () => {
+        jest.spyOn(solc, 'loadRemoteVersion').mockImplementationOnce((compiler, cb) => {
+            cb(new Error('Invalid compiler'), null);
+        });
+        const message = {
+            code: {
+                sources: { source: 'source' },
+                imports: { import: { contents: 'import' }}
+            },
+            publicExplorerParams: {
+                userId: 1,
+                workspaceId: 1
+            },
+            contractAddress: '0x123',
+            contractName: 'MyContract'
+        };
+
+        await expect(async () => {
+            await processContractVerification(db, message); 
+        }).rejects.toEqual(new Error('Invalid compiler'));
+    });
+
+    it('Should throw an error if evmVersion is invalid', async () => {
+        const message = {
+            code: {
+                sources: { source: 'source' },
+                imports: { import: { contents: 'import' }}
+            },
+            evmVersion: 'paris',
+            publicExplorerParams: {
+                userId: 1,
+                workspaceId: 1
+            },
+            contractAddress: '0x123',
+            contractName: 'MyContract'
+        };
+
+        await expect(async () => {
+            await processContractVerification(db, message); 
+        }).rejects.toEqual(new Error(`Invalid EVM version "paris". Valid versions are: homestead, tangerineWhistle, spuriousDragon, byzantium, constantinople, petersburg, istanbul, berlin, london.`));
+    });
+
+    it('Should throw an error if there is a user / workspace mismatch', async () => {
+        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 1, userId: 2, name: 'test' });
+        
+        const message = {
+            code: {
+                sources: { source: 'source' },
+                imports: { import: { contents: 'import' }}
+            },
+            optimizer: true,
+            runs: -1,
+            publicExplorerParams: {
+                userId: 1,
+                workspaceId: 1
+            },
+            contractAddress: '0x123',
+            contractName: 'MyContract'
+        };
+
+        await expect(async () => {
+            await processContractVerification(db, message); 
+        }).rejects.toEqual(new Error('Workspace / User mismatch'));
+    });
+
+    it('Should throw an error with a negative number of runs', async () => {
+        const message = {
+            code: {
+                sources: { source: 'source' },
+                imports: { import: { contents: 'import' }}
+            },
+            optimizer: true,
+            runs: -1,
+            publicExplorerParams: {
+                userId: 1,
+                workspaceId: 1
+            },
+            contractAddress: '0x123',
+            contractName: 'MyContract'
+        };
+
+        await expect(async () => {
+            await processContractVerification(db, message); 
+        }).rejects.toEqual(new Error('"runs" must be greater than 0.'));
+    });
 
     it('Should throw an error if there is no source code', async () => {
         const message = {
@@ -97,7 +282,10 @@ describe('processContractVerification', () => {
             contractName: 'MyContract'
         };
 
-        await processContractVerification(db, message);
+        await expect(async () => {
+            await processContractVerification(db, message); 
+        }).rejects.toEqual(new Error("Compiled bytecode doesn't match runtime bytecode. Make sure you uploaded the correct source code, linked all the libraries and provided the constructor arguments."));
+
         expect(db.updateContractVerificationStatus).toHaveBeenCalledWith(
             1,
             1,
@@ -192,7 +380,7 @@ describe('processContractVerification', () => {
     });
 
     it('Should set the verification status to failed if there is an error during the process', async () => {
-        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockRejectedValueOnce('Error!');
+        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockRejectedValueOnce(new Error('Error!'));
 
         const message = {
             code: {
@@ -207,7 +395,10 @@ describe('processContractVerification', () => {
             contractName: 'MyContract'
         };
 
-        await processContractVerification(db, message);
+        await expect(async () => {
+            await processContractVerification(db, message); 
+        }).rejects.toEqual(new Error("Error!"));
+
         expect(db.updateContractVerificationStatus).toHaveBeenCalledWith(
             1,
             1,
