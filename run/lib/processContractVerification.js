@@ -109,9 +109,7 @@ module.exports = async function(db, payload) {
 
         if (typeof code.libraries == 'object' && Object.keys(code.libraries).length > 0) {
             console.log('Linking bytecode...')
-            console.log(code.libraries)
             const linkedBytecode = linker.linkBytecode(bytecode, code.libraries);
-            console.log(bytecode == linkedBytecode)
             bytecode = linkedBytecode;
         }
 
