@@ -51,6 +51,9 @@ module.exports = async function(db, payload) {
     if (evmVersion && VALID_EVM_VERSIONS.indexOf(evmVersion) === -1)
         throw new Error(`Invalid EVM version "${evmVersion}". Valid versions are: ${VALID_EVM_VERSIONS.join(', ')}.`);
 
+    if (optimizer && parseInt(runs) < 0)
+        throw new Error('"runs" must be greater than 0.')
+
     try {
         await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'pending');
         await updateFirestoreContract(user.firebaseUserId, workspace.name, contractAddress, { verificationStatus: 'pending' });
@@ -80,7 +83,19 @@ module.exports = async function(db, payload) {
             }
         };
 
-        const compiledCode = compiler.compile(JSON.stringify(inputs), { import : function(path) { return imports[path] }});
+        const missingImports = [];
+        const compiledCode = compiler.compile(JSON.stringify(inputs), { import : function(path) {
+            if (!imports[path]) {
+                missingImports.push(path);
+                return { content: null };
+            }
+            else
+                return imports[path];
+        }});
+
+        if (missingImports.length)
+            throw new Error(`Missing following imports: ${missingImports.join(', ')}`);
+
         const parsedCompiledCode = JSON.parse(compiledCode);
 
         if (parsedCompiledCode.errors) {
@@ -136,9 +151,6 @@ module.exports = async function(db, payload) {
         });
         await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'failed');
         await updateFirestoreContract(user.firebaseUserId, workspace.name, contractAddress, { verificationStatus: 'failed' });
-        return {
-            verificationSucceded: false,
-            reason: error.message
-        };
+        throw error;        
     }
 }
