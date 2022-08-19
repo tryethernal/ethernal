@@ -1,0 +1,185 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ContractVerification.vue Should load the UI & the Solidity releases 1`] = `
+<div class="container container--fluid">
+  <!---->
+  <!---->
+  <form novalidate="novalidate" class="v-form">
+    <h4>Compiler Settings</h4>
+    <div class="mb-2 v-card v-sheet v-sheet--outlined theme--light">
+      <div class="v-card__text">
+        <div class="row">
+          <div class="col col-4">
+            <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
+              <div class="v-input__control">
+                <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-6" class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: -24px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-select__slot"><label for="input-6" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Compiler Version *</label>
+                    <div class="v-select__selections">
+                      <div class="v-select__selection v-select__selection--comma">v0.1.2</div><input id="input-6" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                    </div>
+                    <div class="v-input__append-inner">
+                      <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                    </div><input type="hidden" value="v0.1.2">
+                  </div>
+                  <div class="v-menu">
+                    <!---->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col col-3">
+            <div class="v-input v-input--hide-details v-input--dense theme--light v-input--selection-controls v-input--checkbox">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate v-icon--dense mdi mdi-checkbox-blank-outline theme--light"></i><input aria-checked="false" id="input-9" role="checkbox" type="checkbox" value="">
+                    <div class="v-input--selection-controls__ripple"></div>
+                  </div><label for="input-9" class="v-label theme--light" style="left: 0px; position: relative;">Show nightly builds</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col col-4">
+            <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
+              <div class="v-input__control">
+                <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-11" class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: -24px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-select__slot"><label for="input-11" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">EVM Version *</label>
+                    <div class="v-select__selections">
+                      <div class="v-select__selection v-select__selection--comma">default (compiler default)</div><input id="input-11" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                    </div>
+                    <div class="v-input__append-inner">
+                      <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                    </div><input type="hidden">
+                  </div>
+                  <div class="v-menu">
+                    <!---->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col col-2">
+            <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
+              <div class="v-input__control">
+                <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-14" class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: -24px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-select__slot"><label for="input-14" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Optimization *</label>
+                    <div class="v-select__selections">
+                      <div class="v-select__selection v-select__selection--comma">No</div><input id="input-14" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                    </div>
+                    <div class="v-input__append-inner">
+                      <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                    </div><input type="hidden" value="false">
+                  </div>
+                  <div class="v-menu">
+                    <!---->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col col-2">
+            <div class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined" style="display: none;">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-17" class="v-label theme--light" style="left: 0px; position: absolute;">Runs *</label><input small="" id="input-17" type="number"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h4>Contract</h4>
+    <div class="mb-2 v-card v-sheet v-sheet--outlined theme--light">
+      <div class="v-card__text">
+        <div class="row">
+          <div class="pb-0 col col-4">
+            <div class="v-input v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-19" class="v-label theme--light" style="left: 0px; position: absolute;">Contract Name *</label><input small="" id="input-19" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="pt-0 col col-6">
+            <div class="v-input theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-file-input">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <div class="v-input__prepend-inner">
+                    <div class="v-input__icon v-input__icon--prepend-inner"><i aria-hidden="true" class="v-icon notranslate mdi mdi-paperclip theme--light"></i></div>
+                  </div>
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-22" class="v-label theme--light" style="left: 0px; position: absolute;">Contract Files *</label>
+                    <div class="v-file-input__text v-file-input__text--chips"></div><input accept=".sol" id="input-22" type="file" multiple="multiple">
+                  </div>
+                  <div class="v-input__append-inner">
+                    <div></div>
+                  </div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                  <div class="v-counter theme--light">0 files (0 B in total)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h4>Libraries Linking</h4>
+    <div class="mb-2 v-card v-sheet v-sheet--outlined theme--light">
+      <div class="v-card__text">
+        <div class="row">
+          <div class="col col-2"><button type="button" class="primary v-btn v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Add Library</span></button></div>
+        </div>
+      </div>
+    </div>
+    <h4>Constructor Arguments</h4>
+    <div class="mb-2 v-card v-sheet v-sheet--outlined theme--light">
+      <div class="v-card__text">
+        <div class="v-input v-textarea v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+          <div class="v-input__control">
+            <div class="v-input__slot">
+              <fieldset aria-hidden="true">
+                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+              </fieldset>
+              <div class="v-text-field__slot"><label for="input-29" class="v-label theme--light" style="left: 0px; position: absolute;">Constructor Arguments (ABI Encoded)</label><textarea primary="" id="input-29" rows="3"></textarea></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form> <button type="button" disabled="disabled" class="primary v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Verify</span></button>
+</div>
+`;
