@@ -37,7 +37,7 @@
                         <template v-if="!contractLoader">
                             <Import-Artifact-Modal ref="importArtifactModal" v-if="currentWorkspace.isAdmin" />
                             <v-card-text v-if="contract.name || contract.abi">
-                                <div class="mb-1 success--text" v-if="contract.verificationStatus == 'success'">
+                                <div class="mb-1 success--text" v-if="isVerifiedContract">
                                     <v-icon class="success--text mr-1" small>mdi-check-circle</v-icon>Verified contract.
                                 </div>
                                 <template v-if="contract.name && contract.abi">
@@ -211,8 +211,12 @@
             </v-tab-item>
 
             <v-tab-item value="code">
-                <Contract-Verification :address="hash" />
-                <!-- <Contract-Code :address="hash" v-if="isVerifiedContract" /> -->
+                <Contract-Verification :address="hash" v-if="isUnverifiedContract" />
+                <v-card class="mt-2" outlined v-else>
+                    <v-card-text>
+                        This contract has already been verified. Source code & compilation settings will be added here soon.
+                    </v-card-text>
+                </v-card>
             </v-tab-item>
         </v-tabs-items>
     </v-container>
