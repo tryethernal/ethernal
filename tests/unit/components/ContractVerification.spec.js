@@ -25,6 +25,7 @@ describe('ContractVerification.vue', () => {
                 publicExplorer: jest.fn().mockReturnValue({ slug: 'ethernal' })
             }
         });
+        await wrapper.vm.$nextTick();
         await flushPromises();
         
         expect(wrapper.vm.allCompilerVersions.length).toEqual(2);
