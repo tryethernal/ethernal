@@ -10,7 +10,7 @@ exports[`ContractVerification.vue Should load the UI & the Solidity releases 1`]
       <div class="v-card__text">
         <div class="row">
           <div class="col col-4">
-            <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+            <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
               <div class="v-input__control">
                 <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-6" class="v-input__slot">
                   <fieldset aria-hidden="true">
@@ -45,11 +45,11 @@ exports[`ContractVerification.vue Should load the UI & the Solidity releases 1`]
         </div>
         <div class="row">
           <div class="col col-4">
-            <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+            <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
               <div class="v-input__control">
                 <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-11" class="v-input__slot">
                   <fieldset aria-hidden="true">
-                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                   </fieldset>
                   <div class="v-select__slot"><label for="input-11" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">EVM Version *</label>
                     <div class="v-select__selections">
@@ -69,11 +69,11 @@ exports[`ContractVerification.vue Should load the UI & the Solidity releases 1`]
         </div>
         <div class="row">
           <div class="col col-2">
-            <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+            <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
               <div class="v-input__control">
                 <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-14" class="v-input__slot">
                   <fieldset aria-hidden="true">
-                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                   </fieldset>
                   <div class="v-select__slot"><label for="input-14" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Optimization *</label>
                     <div class="v-select__selections">
@@ -91,7 +91,7 @@ exports[`ContractVerification.vue Should load the UI & the Solidity releases 1`]
             </div>
           </div>
           <div class="col col-2">
-            <div class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined" style="display: none;">
+            <div class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined" style="display: none;">
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
@@ -110,7 +110,7 @@ exports[`ContractVerification.vue Should load the UI & the Solidity releases 1`]
       <div class="v-card__text">
         <div class="row">
           <div class="pb-0 col col-4">
-            <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
@@ -129,7 +129,7 @@ exports[`ContractVerification.vue Should load the UI & the Solidity releases 1`]
         </div>
         <div class="row">
           <div class="pt-0 col col-6">
-            <div class="v-input theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-file-input">
+            <div class="v-input theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-file-input">
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <div class="v-input__prepend-inner">
@@ -168,7 +168,7 @@ exports[`ContractVerification.vue Should load the UI & the Solidity releases 1`]
     <h4>Constructor Arguments</h4>
     <div class="mb-2 v-card v-sheet v-sheet--outlined theme--light">
       <div class="v-card__text">
-        <div class="v-input v-textarea v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input v-textarea v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
           <div class="v-input__control">
             <div class="v-input__slot">
               <fieldset aria-hidden="true">
