@@ -82,6 +82,7 @@ module.exports = async function(db, payload) {
                 evmVersion: evmVersion
             }
         };
+
         const missingImports = [];
         const compiledCode = compiler.compile(JSON.stringify(inputs), { import : function(path) {
             if (!imports[path]) {
@@ -94,7 +95,6 @@ module.exports = async function(db, payload) {
 
         if (missingImports.length)
             throw new Error(`Missing following imports: ${missingImports.join(', ')}`);
-
 
         const parsedCompiledCode = JSON.parse(compiledCode);
 
@@ -151,9 +151,6 @@ module.exports = async function(db, payload) {
         });
         await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'failed');
         await updateFirestoreContract(user.firebaseUserId, workspace.name, contractAddress, { verificationStatus: 'failed' });
-        return {
-            verificationSucceded: false,
-            reason: error.message
-        };
+        throw error;        
     }
 }
