@@ -19,6 +19,7 @@
         <v-tabs v-model="tab">
             <v-tab href="#transactions">Transactions</v-tab>
             <v-tab id="contractTab" href="#contract" v-if="isContract">Contract</v-tab>
+            <v-tab id="codeTab" href="#code" v-if="isContract && isPublicExplorer">Code</v-tab>
             <v-tab id="storageTab" href="#storage" v-if="isContract && !contract.imported && !isPublicExplorer">Storage</v-tab>
             <v-tab id="balancesTab" href="#balances">ERC-20 Tokens</v-tab>
         </v-tabs>
@@ -208,6 +209,11 @@
             <v-tab-item value="balances">
                 <Token-Balances :address="hash" />
             </v-tab-item>
+
+            <v-tab-item value="code">
+                <Contract-Verification :address="hash" />
+                <!-- <Contract-Code :address="hash" v-if="isVerifiedContract" /> -->
+            </v-tab-item>
         </v-tabs-items>
     </v-container>
 </template>
@@ -225,6 +231,7 @@ import ContractWriteMethod from './ContractWriteMethod';
 import ImportArtifactModal from './ImportArtifactModal';
 import RemoveContractConfirmationModal from './RemoveContractConfirmationModal';
 import AddressTransactionsList from './AddressTransactionsList';
+import ContractVerification from './ContractVerification';
 import Metamask from './Metamask';
 import TokenBalances from './TokenBalances';
 import UpgradeLink from './UpgradeLink';
@@ -245,7 +252,8 @@ export default {
         UpgradeLink,
         AddressTransactionsList,
         Metamask,
-        TokenBalances
+        TokenBalances,
+        ContractVerification
     },
     filters: {
         FromWei
@@ -425,6 +433,12 @@ export default {
         },
         isContract: function() {
             return this.contract && this.contract.address;
+        },
+        isVerifiedContract() {
+            return this.isContract && this.contract.verificationStatus == 'success';
+        },
+        isUnverifiedContract() {
+            return this.isContract && this.contract.verificationStatus != 'success';
         },
         isTokenContract: function() {
             return !!this.contract && this.contract.patterns && !!this.contract.patterns.length;

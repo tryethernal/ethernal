@@ -51,6 +51,9 @@ module.exports = async function(db, payload) {
     if (evmVersion && VALID_EVM_VERSIONS.indexOf(evmVersion) === -1)
         throw new Error(`Invalid EVM version "${evmVersion}". Valid versions are: ${VALID_EVM_VERSIONS.join(', ')}.`);
 
+    if (optimizer && parseInt(runs) < 0)
+        throw new Error('"runs" must be greater than 0.')
+
     try {
         await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'pending');
         await updateFirestoreContract(user.firebaseUserId, workspace.name, contractAddress, { verificationStatus: 'pending' });
@@ -79,8 +82,20 @@ module.exports = async function(db, payload) {
                 evmVersion: evmVersion
             }
         };
+        const missingImports = [];
+        const compiledCode = compiler.compile(JSON.stringify(inputs), { import : function(path) {
+            if (!imports[path]) {
+                missingImports.push(path);
+                return { content: null };
+            }
+            else
+                return imports[path];
+        }});
 
-        const compiledCode = compiler.compile(JSON.stringify(inputs), { import : function(path) { return imports[path] }});
+        if (missingImports.length)
+            throw new Error(`Missing following imports: ${missingImports.join(', ')}`);
+
+
         const parsedCompiledCode = JSON.parse(compiledCode);
 
         if (parsedCompiledCode.errors) {
@@ -94,7 +109,9 @@ module.exports = async function(db, payload) {
 
         if (typeof code.libraries == 'object' && Object.keys(code.libraries).length > 0) {
             console.log('Linking bytecode...')
+            console.log(code.libraries)
             const linkedBytecode = linker.linkBytecode(bytecode, code.libraries);
+            console.log(bytecode == linkedBytecode)
             bytecode = linkedBytecode;
         }
 
