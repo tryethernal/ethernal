@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.0] - 2022-08-19
+### Added
+- [Public Explorer] Added UI for contract verification. Note that import support is limited for now (it will only work if imported files are in the same directory than contract file), but will be improved in the future.
+
 ## [2.4.4] - 2022-08-18
 ### Changed
 - [Public Explorer] Contract verification is now done with partial matches (ie metadata are stripped before checking)
