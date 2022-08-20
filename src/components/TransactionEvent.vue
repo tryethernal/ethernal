@@ -19,8 +19,7 @@
     </v-card>
 </template>
 <script>
-import { decodeLog } from '@/lib/abi';
-import { findAbiForEvent } from '@/lib/log';
+import { findAbiForEvent, decodeLog } from '@/lib/abi';
 import FormattedSolVar from './FormattedSolVar';
 import HashLink from './HashLink';
 

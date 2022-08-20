@@ -15,7 +15,7 @@
 </template>
 <script>
 import { ethers } from 'ethers';
-import { findAbiForFunction } from '@/lib/log';
+import { findAbiForFunction } from '@/lib/abi';
 import FormattedSolVar from './FormattedSolVar';
 
 export default {
