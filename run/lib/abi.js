@@ -7,13 +7,11 @@ const abis = {
 };
 
 const findAbiForFunction = (signature) => {
-    console.log('ok')
     const patterns = Object.keys(SELECTORS);
-    console.log(patterns);
+
     for (let i = 0; i < patterns.length; i++) {
         const pattern = patterns[i];
         const idx = SELECTORS[pattern].functions.indexOf(signature);
-        console.log(idx)
         if (idx > -1) {
             return abis[pattern];
         }
