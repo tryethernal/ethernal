@@ -113,10 +113,10 @@ module.exports = async function(db, payload) {
             bytecode = linkedBytecode;
         }
 
-        const compiledRuntimeBytecodeWithoutMetadata = `0x${stripBytecodeMetadata(bytecode)}${constructorArguments}`;
+        const compiledRuntimeBytecodeWithoutMetadata = `0x${stripBytecodeMetadata(bytecode)}${constructorArguments}`.toLowerCase();
 
         const deploymentTx = await db.getContractDeploymentTxByAddress(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress);
-        const deployedRuntimeBytecodeWithoutMetadata = stripBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length)) + constructorArguments;
+        const deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length)) + constructorArguments).toLowerCase();
 
         writeLog({
             functionName: 'api.contracts.verify',
