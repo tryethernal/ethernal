@@ -176,7 +176,7 @@ const searchForHash = async (workspaceId, hash) => {
         if (transaction)
             return [{
                 type: 'transaction',
-                data: transaction.toJSON()
+                data: { ...transaction.toJSON(), traceSteps: [] }
             }];
         else {
             const block = await workspace.findBlockByHash(hash);
@@ -350,7 +350,7 @@ const getWorkspaceTransaction = async (workspaceId, hash) => {
         const workspace = await Workspace.findByPk(workspaceId);
         const transaction = await workspace.findTransaction(hash);
 
-        return transaction.toJSON();
+        return { ...transaction.toJSON(), traceSteps: [] };
     } catch(error) {
         writeLog({
             functionName: 'firebase.getWorkspaceTransaction',
@@ -657,7 +657,7 @@ const storeTransaction = async (userId, workspace, transaction) => {
             return null;
 
         const newTransaction = await user.workspaces[0].safeCreateTransaction(transaction, block.id);
-        return newTransaction.toJSON();
+        return { ...newTransaction.toJSON(), traceSteps: [] };
     } catch(error) {
         writeLog({
             functionName: 'firebase.storeTransaction',
@@ -927,7 +927,7 @@ const storeTransactionData = async (userId, workspace, hash, data) => {
             throw new Error(`Couldn't find transaction`);
 
         await transaction.safeUpdateStorage(data);
-        return transaction.toJSON();
+        return { ...transaction.toJSON(), traceSteps: [] };
     } catch(error) {
         writeLog({
             functionName: 'firebase.storeTransactionData',
@@ -993,7 +993,7 @@ const storeFailedTransactionError = async (userId, workspace, transactionHash, e
                 message: error.message
             });
 
-            return transaction.toJSON();
+            return { ...transaction.toJSON(), traceSteps: [] };
         } catch(error) {
             writeLog({
                 functionName: 'firebase.storeFailedTransactionError',

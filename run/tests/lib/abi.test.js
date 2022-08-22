@@ -1,11 +1,8 @@
-const ethers = require('ethers');
-
 const { decodeLog, getTokenTransfers, getTransactionMethodDetails } = require('../../lib/abi.js');
 const ABIProp = require('../fixtures/ABIProp.json');
 const LogProp = require('../fixtures/LogProp.json');
 const DSProxyContract = require('../fixtures/DSProxyContract.json');
 const LogNoteEventProp = require('../fixtures/LogNoteEventProp.json');
-const ERC20_ABI = require('../fixtures/ERC20_ABI.json');
 const TransactionReceipt = require('../fixtures/TransactionReceipt.json');
 const AmalfiDepositTransaction = require('../fixtures/AmalfiDepositTransaction.json');
 const AmalfiContract = require('../fixtures/AmalfiContract.json');
