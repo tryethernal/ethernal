@@ -18,7 +18,7 @@ exports[`AddAccountModal.vue Should be able to add an account from a valid priva
             <div>
               Private keys are encrypted server side with AES 256 CBC, and stored encrypted. We strongly recommend to not use accounts with any value.
             </div>
-            <div class="v-input mt-2 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input mt-2 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">
@@ -30,7 +30,7 @@ exports[`AddAccountModal.vue Should be able to add an account from a valid priva
             </div>
             <hr role="separator" aria-orientation="horizontal" class="my-3 v-divider theme--light">
             <div>Or impersonate an account.</div>
-            <div class="v-input theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
               <div class="v-input__control">
                 <div class="v-input__slot">
                   <fieldset aria-hidden="true">

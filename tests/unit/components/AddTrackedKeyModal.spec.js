@@ -10,7 +10,7 @@ describe('AddTrackedKeyModal.vue', () => {
         helper = new MockHelper();
     });
 
-    it('Should let you add a tracking key', async (done) => {
+    it('Should let you add a tracking key', async () => {
         const wrapper = helper.mountFn(AddTrackedKeyModal);
 
         wrapper.vm.open({ variableIndex: 1 });
@@ -31,6 +31,5 @@ describe('AddTrackedKeyModal.vue', () => {
         }, 1500);
 
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 });

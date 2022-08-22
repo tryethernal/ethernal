@@ -7,6 +7,7 @@ describe('BlockList.vue', () => {
 
     beforeEach(() => {
         helper = new MockHelper();
+        jest.spyOn(Date, 'now').mockImplementation(() => new Date('2022-08-07T12:33:37.000Z'));
     });
 
     it('Should show the blocks list', async () => {

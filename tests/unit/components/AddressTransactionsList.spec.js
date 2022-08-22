@@ -10,6 +10,7 @@ describe('AddressTransactionsList.vue', () => {
 
     beforeEach(async () => {
         helper = new MockHelper();
+        jest.spyOn(Date, 'now').mockImplementation(() => new Date('2022-08-07T12:33:37.000Z'));
         for (let i = 1; i <= 5; i++) {
             const transaction = {
                 id: i,

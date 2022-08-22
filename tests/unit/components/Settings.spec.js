@@ -26,16 +26,15 @@ describe('Settings.vue', () => {
         });
     });
 
-    it('Should load the settings page', async (done) => {
+    it('Should load the settings page', async () => {
         jest.spyOn(helper.mocks.server, 'getWorkspaces')
             .mockResolvedValueOnce({ data: [{ id: 'Hardhat', name: 'Hardhat', rpcServer: 'http://localhost:1234' }]})
         const wrapper = helper.mountFn(Settings);
         await new Promise(process.nextTick);
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should let the user update general options', async (done) => {
+    it('Should let the user update general options', async () => {
         const updateWorkspaceSettingsMock = jest.spyOn(helper.mocks.server, 'updateWorkspaceSettings');
 
         const wrapper = helper.mountFn(Settings);
@@ -59,10 +58,9 @@ describe('Settings.vue', () => {
             networkId: 1,
             name: 'Hardhat'
         });
-        done();
     });
 
-    it('Should let the user update call options', async (done) => {
+    it('Should let the user update call options', async () => {
         const updateWorkspaceSettingsMock = jest.spyOn(helper.mocks.server, 'updateWorkspaceSettings');
         
         const wrapper = helper.mountFn(Settings);
@@ -87,10 +85,9 @@ describe('Settings.vue', () => {
             name: 'Hardhat',
             tracing: null
         });
-        done();
     });
 
-    it('Should let the user switch workspaces', async (done) => {
+    it('Should let the user switch workspaces', async () => {
         jest.spyOn(helper.mocks.server, 'getWorkspaces')
             .mockResolvedValueOnce({ data: [{ id: 'Ganache', name: 'Ganache', rpcServer: 'http://localhost:1234' }]});
 
@@ -103,10 +100,9 @@ describe('Settings.vue', () => {
         await flushPromises();
 
         expect(setCurrentWorkspaceMock).toHaveBeenCalledWith('Ganache');
-        done();
     });
 
-    it('Should let the user reset the workspace', async (done) => {
+    it('Should let the user reset the workspace', async () => {
         const resetWorkspaceMock = jest.spyOn(helper.mocks.server, 'resetWorkspace');
         const wrapper = helper.mountFn(Settings);
         await flushPromises();
@@ -121,6 +117,5 @@ describe('Settings.vue', () => {
 
         expect(confirmMock).toHaveBeenCalled();
         expect(resetWorkspaceMock).toHaveBeenCalledWith('Hardhat');
-        done();
     });
 });

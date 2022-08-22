@@ -10,7 +10,7 @@ describe('OnboardingModal.vue', () => {
         helper = new MockHelper();
     });
 
-    it('Should let the user create a new workspace', async (done) => {
+    it('Should let the user create a new workspace', async () => {
         jest.spyOn(helper.mocks.server, 'createWorkspace').mockResolvedValue({ data: {
             workspace: {
                 rpcServer: 'https://127.0.0.1',
@@ -42,7 +42,5 @@ describe('OnboardingModal.vue', () => {
             },
             name: 'Hardhat'
         });
-        
-        done();
     });
 });
