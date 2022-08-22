@@ -10,7 +10,7 @@ describe('TokenTransfers.vue', () => {
         helper = new MockHelper();
     });
 
-    it('Should display token transfers', async (done) => {
+    it('Should display token transfers', async () => {
         const wrapper = helper.mountFn(TokenTransfers, {
             propsData: {
                 transfers: [
@@ -23,10 +23,9 @@ describe('TokenTransfers.vue', () => {
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should display fomatted amounts if info is present on token contract', async (done) => {
+    it('Should display fomatted amounts if info is present on token contract', async () => {
         jest.spyOn(helper.mocks.server, 'getContract')
             .mockResolvedValue({ data: { tokenDecimals: 18, tokenSymbol: 'ETL', tokenName: 'Ethernal' }});
 
@@ -42,6 +41,5 @@ describe('TokenTransfers.vue', () => {
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 });

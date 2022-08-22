@@ -12,7 +12,7 @@ describe('Transaction.vue', () => {
         helper = new MockHelper();
     });
 
-    it('Should display parsed error messages', async (done) => {
+    it('Should display parsed error messages', async () => {
         jest.spyOn(helper.mocks.server, 'getTransaction')
             .mockResolvedValue({ data: {
                 ...USDCTransferTx,
@@ -34,10 +34,9 @@ describe('Transaction.vue', () => {
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should display raw error messages', async (done) => {
+    it('Should display raw error messages', async () => {
         jest.spyOn(helper.mocks.server, 'getTransaction')
             .mockResolvedValue({ data: {
                 ...USDCTransferTx,
@@ -59,10 +58,9 @@ describe('Transaction.vue', () => {
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should not display the menu if public explorer', async (done) => {
+    it('Should not display the menu if public explorer', async () => {
         jest.spyOn(helper.mocks.server, 'getTransaction')
             .mockResolvedValue({ data: {
                 ...USDCTransferTx,
@@ -85,6 +83,5 @@ describe('Transaction.vue', () => {
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 });

@@ -25,7 +25,7 @@ describe('Metamask.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should show a "Connect with Metamask" button if no account connected', async (done) => {
+    it('Should show a "Connect with Metamask" button if no account connected', async () => {
         window.ethereum = ethereum;
         detectEthereumProvider.mockResolvedValueOnce(window.ethereum);
         
@@ -33,11 +33,9 @@ describe('Metamask.vue', () => {
         await flushPromises();
         
         expect(wrapper.html()).toMatchSnapshot();
-
-        done();
     });
 
-    it('Should show the address when an account is connected', async (done) => {
+    it('Should show the address when an account is connected', async () => {
         jest.spyOn(ethereum, 'request')
             .mockResolvedValueOnce(['0x1234'])
             .mockResolvedValueOnce('0x1');
@@ -51,10 +49,9 @@ describe('Metamask.vue', () => {
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should show an error is Metamask is not on the expected network', async (done) => {
+    it('Should show an error is Metamask is not on the expected network', async () => {
         jest.spyOn(ethereum, 'request')
             .mockResolvedValueOnce(['0x1234'])
             .mockResolvedValueOnce('0x2');
@@ -68,10 +65,9 @@ describe('Metamask.vue', () => {
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should emit the new connection status when connecting Metamask', async (done) => {
+    it('Should emit the new connection status when connecting Metamask', async () => {
         jest.spyOn(ethereum, 'request')
             .mockResolvedValueOnce(['0x1234'])
             .mockResolvedValueOnce('0x1');
@@ -87,6 +83,5 @@ describe('Metamask.vue', () => {
         expect(wrapper.emitted().rpcConnectionStatusChanged.length).toBe(2);
         expect(wrapper.vm.connectedAccount).toEqual('0x1234');
         expect(wrapper.vm.chainId).toEqual('0x1');
-        done();
     });
 });

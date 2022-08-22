@@ -13,7 +13,18 @@ describe('TransactionEvent.vue', () => {
         helper = new MockHelper();
     });
 
-    it('Should display transaction event', async (done) => {
+    it('Should load erc20 abi if event is detected', async () => {
+        const wrapper = helper.mountFn(TransactionEvent, {
+            propsData: {
+                log: LogProp
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should display transaction event', async () => {
         jest.spyOn(helper.mocks.server, 'getContract')
             .mockResolvedValue({ data: { address: TransactionProp.to, abi: ABIProp }});
 
@@ -26,10 +37,9 @@ describe('TransactionEvent.vue', () => {
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should display transaction event for a proxied contract', async (done) => {
+    it('Should display transaction event for a proxied contract', async () => {
         jest.spyOn(helper.mocks.server, 'getContract')
             .mockResolvedValue({ data: { address: TransactionProp.to, proxyContract: { address: '0x123', abi: ABIProp }}});
 
@@ -42,7 +52,6 @@ describe('TransactionEvent.vue', () => {
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
     it('Should display warning if no ABI', () => {

@@ -5,7 +5,7 @@ import AlchemyIntegrationModal from '@/components/AlchemyIntegrationModal.vue';
 describe('AlchemyIntegrationModal.vue', () => {
     let helper;
 
-    it('Should display a message if you are not in an Alchemy workspace', async (done) => {
+    it('Should display a message if you are not in an Alchemy workspace', async () => {
         helper = new MockHelper({ currentWorkspace: { rpcServer: 'http://localhost:8545' }});
 
         const wrapper = helper.mountFn(AlchemyIntegrationModal);
@@ -14,10 +14,9 @@ describe('AlchemyIntegrationModal.vue', () => {
         await wrapper.vm.$nextTick();
 
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should let you enable a webhook', async (done) => {
+    it('Should let you enable a webhook', async () => {
         helper = new MockHelper({ currentWorkspace: { rpcServer: 'http://alchemyapi.io/1234' }});
         const enableAlchemyWebhookMock = jest.spyOn(helper.mocks.server, 'enableAlchemyWebhook');
 
@@ -37,10 +36,9 @@ describe('AlchemyIntegrationModal.vue', () => {
         expect(enableAlchemyWebhookMock).toHaveBeenCalled();
         expect(wrapper.vm.token).toBeTruthy();
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should let you disable a webhook', async (done) => {
+    it('Should let you disable a webhook', async () => {
         helper = new MockHelper({ currentWorkspace: { rpcServer: 'http://alchemyapi.io/1234' }});
         const disableAlchemyWebhookMock = jest.spyOn(helper.mocks.server, 'disableAlchemyWebhook');
 
@@ -59,6 +57,5 @@ describe('AlchemyIntegrationModal.vue', () => {
         expect(disableAlchemyWebhookMock).toHaveBeenCalled();
         expect(wrapper.vm.token).toBeFalsy();
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 });

@@ -15,6 +15,7 @@
 </template>
 <script>
 import { ethers } from 'ethers';
+import { findAbiForFunction } from '@/lib/abi';
 import FormattedSolVar from './FormattedSolVar';
 
 export default {
@@ -27,8 +28,10 @@ export default {
         parsedTransactionData: null
     }),
     mounted: function() {
-        if (this.abi) {
-            const jsonInterface = new ethers.utils.Interface(this.abi);
+        const contractAbi = this.abi ? this.abi : findAbiForFunction(this.data.slice(0, 10));
+
+        if (contractAbi) {
+            const jsonInterface = new ethers.utils.Interface(contractAbi);
             this.parsedTransactionData = jsonInterface.parseTransaction({ data: this.data, value: this.value });
         }
     },

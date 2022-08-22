@@ -15,7 +15,7 @@ describe('Storage', () => {
         };
     });
 
-    it('Should build the structure', async (done) => {
+    it('Should build the structure', (done) => {
         const storage = new Storage(instanceDecoderMock)
         storage.buildStructure().then(() => {
             expect(storage.structure).toMatchSnapshot();
@@ -23,7 +23,7 @@ describe('Storage', () => {
         });
     });
 
-    it('Should serialize to json', async (done) => {
+    it('Should serialize to json', (done) => {
         const storage = new Storage(instanceDecoderMock);
         storage.buildStructure().then(() => {
             expect(storage.toJSON()).toMatchSnapshot();
@@ -31,7 +31,7 @@ describe('Storage', () => {
         });
     });
 
-    it('Should decode the data', async (done) => {
+    it('Should decode the data', (done) => {
         const storage = new Storage(instanceDecoderMock);
         storage.decodeData().then((data) => {
             expect(data).toMatchSnapshot();
@@ -42,7 +42,7 @@ describe('Storage', () => {
         });
     });
 
-    it('Should return watched paths', async (done) => {
+    it('Should return watched paths', (done) => {
         const storage = new Storage(instanceDecoderMock);
         storage.buildStructure().then(() => {
             expect(storage.watchedPaths).toMatchSnapshot();

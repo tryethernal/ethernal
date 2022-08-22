@@ -4,6 +4,9 @@ node_modules
 screens/
 tests_output/
 firebase-emulator/
+firebase-export-*/
+.firebase/
+ganache-db/
 coverage/
 
 functions/report*
