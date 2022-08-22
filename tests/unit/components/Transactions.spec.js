@@ -8,9 +8,10 @@ describe('Transactions.vue', () => {
 
     beforeEach(async () => {
         helper = new MockHelper();
+        jest.spyOn(Date, 'now').mockImplementation(() => new Date('2022-08-07T12:33:37.000Z'));
     });
 
-    it('Should display the list', async (done) => {
+    it('Should display the list', async () => {
         const transaction1 = {
             hash: '0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0',
             timestamp: '2022-05-06T17:11:26.000Z',
@@ -44,6 +45,5 @@ describe('Transactions.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
         expect(wrapper.vm.transactions).toEqual([transaction1, transaction2]);
         expect(wrapper.vm.transactionCount).toEqual(2);
-        done();
     });
 });

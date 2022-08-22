@@ -11,7 +11,7 @@ describe('StorageStructure.vue', () => {
         helper = new MockHelper();
     });
 
-    it('Should display the correct info', async (done) => {
+    it('Should display the correct info', async () => {
         const wrapper = helper.mountFn(StorageStructure, {
             propsData: {
                 storage: StorageProp
@@ -20,6 +20,5 @@ describe('StorageStructure.vue', () => {
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 });

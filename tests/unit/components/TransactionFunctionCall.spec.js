@@ -12,7 +12,7 @@ describe('TransactionFunctionCall.vue', () => {
         helper = new MockHelper();
     });
 
-    it('Should load erc20 abi if function is detected', async (done) => {
+    it('Should load erc20 abi if function is detected', async () => {
         const wrapper = helper.mountFn(TransactionFunctionCall, {
             propsData: {
                 data: Transaction.data,
@@ -22,10 +22,9 @@ describe('TransactionFunctionCall.vue', () => {
         });
         await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should handle arrays as parameters', async (done) => {
+    it('Should handle arrays as parameters', async () => {
         const wrapper = helper.mountFn(TransactionFunctionCall, {
             propsData: {
                 data: '0xe10497e00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000003',
@@ -49,10 +48,9 @@ describe('TransactionFunctionCall.vue', () => {
 
         await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should display transaction call', async (done) => {
+    it('Should display transaction call', async () => {
         const wrapper = helper.mountFn(TransactionFunctionCall, {
             propsData: {
                 data: Transaction.data,
@@ -63,10 +61,9 @@ describe('TransactionFunctionCall.vue', () => {
         });
         await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should display warning if no ABI', async (done) => {
+    it('Should display warning if no ABI', async () => {
         const wrapper = helper.mountFn(TransactionFunctionCall, {
             propsData: {
                 data: '0xb9059cbb23456789',
@@ -76,6 +73,5 @@ describe('TransactionFunctionCall.vue', () => {
         });
         await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 });

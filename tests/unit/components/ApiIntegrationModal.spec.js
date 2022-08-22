@@ -5,7 +5,7 @@ import ApiIntegrationModal from '@/components/ApiIntegrationModal.vue';
 describe('ApiIntegrationModal.vue', () => {
     let helper;
 
-    it('Should let you enable the API', async (done) => {
+    it('Should let you enable the API', async () => {
         helper = new MockHelper({ rpcServer: 'http://localhost:8545' });
         const enableWorkspaceApiMock = jest.spyOn(helper.mocks.server, 'enableWorkspaceApi');
 
@@ -25,10 +25,9 @@ describe('ApiIntegrationModal.vue', () => {
         expect(enableWorkspaceApiMock).toHaveBeenCalled();
         expect(wrapper.vm.token).toBeTruthy();
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should let you disable the API', async (done) => {
+    it('Should let you disable the API', async () => {
         helper = new MockHelper({ rpcServer: 'http://localhost:8545' });
         const disableWorkspaceApiMock = jest.spyOn(helper.mocks.server, 'disableWorkspaceApi');
 
@@ -47,6 +46,5 @@ describe('ApiIntegrationModal.vue', () => {
         expect(disableWorkspaceApiMock).toHaveBeenCalled();
         expect(wrapper.vm.token).toBeFalsy();
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 });

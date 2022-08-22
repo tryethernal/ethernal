@@ -9,7 +9,7 @@ describe('TokensBalanceDiff.vue', () => {
 
     beforeEach(() => helper = new MockHelper());
 
-    it('Should display token balances difference', async (done) => {
+    it('Should display token balances difference', async () => {
         const wrapper = helper.mountFn(TokensBalanceDiff, {
             propsData: {
                 token: '0xdc64a140aa3e981100a9beca4e685f962f0cf6c9',
@@ -34,10 +34,9 @@ describe('TokensBalanceDiff.vue', () => {
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should display formatted token balances difference', async (done) => {
+    it('Should display formatted token balances difference', async () => {
         jest.spyOn(helper.mocks.server, 'getContract')
             .mockResolvedValue({ data: { tokenDecimals: 18, tokenSymbol: 'ETL', tokenName: 'Ethernal' }});
 
@@ -65,6 +64,5 @@ describe('TokensBalanceDiff.vue', () => {
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 });

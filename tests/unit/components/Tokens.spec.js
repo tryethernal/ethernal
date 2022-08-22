@@ -10,7 +10,7 @@ describe('Tokens.vue', () => {
         helper = new MockHelper();
     });
 
-    it('Should display token contracts', async (done) => {
+    it('Should display token contracts', async () => {
         jest.spyOn(helper.mocks.server, 'getContracts')
             .mockResolvedValue({
                 data: {
@@ -27,6 +27,5 @@ describe('Tokens.vue', () => {
         await new Promise(process.nextTick);
 
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 });

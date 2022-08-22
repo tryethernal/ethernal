@@ -10,7 +10,7 @@ describe('TokenBalances.vue', () => {
         helper = new MockHelper();
     });
 
-    it('Should display token balances', async (done) => {
+    it('Should display token balances', async () => {
         jest.spyOn(helper.mocks.server, 'getTokenBalances')
             .mockResolvedValue({
                 data: [
@@ -25,6 +25,5 @@ describe('TokenBalances.vue', () => {
         await new Promise(process.nextTick);
 
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 });
