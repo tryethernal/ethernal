@@ -144,11 +144,7 @@ module.exports = (sequelize, DataTypes) => {
     methodDetails: {
         type: DataTypes.VIRTUAL,
         get() {
-            try {
-                return this.contract && this.contract.abi ?
-                    getTransactionMethodDetails(this, this.contract.abi) :
-                    {}
-            } catch(_error) { return {} }
+            return getTransactionMethodDetails(this, this.contract && this.contract.abi);
         }
     },
     nonce: DataTypes.INTEGER,
