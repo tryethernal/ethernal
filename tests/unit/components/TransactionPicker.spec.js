@@ -14,7 +14,7 @@ describe('TransactionPicker.vue', () => {
             .mockResolvedValue({ data: { address: Transaction.to, abi: ABI }});
     });
 
-    it('Should display the picker', async (done) => {
+    it('Should display the picker', async () => {
         const wrapper = helper.mountFn(TransactionPicker, {
             propsData: {
                 transactions: [Transaction]
@@ -22,10 +22,9 @@ describe('TransactionPicker.vue', () => {
         });
         await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 
-    it('Should display a message if no transactions', async (done) => {
+    it('Should display a message if no transactions', async () => {
         const wrapper = helper.mountFn(TransactionPicker, {
             propsData: {
                 transactions: []
@@ -33,6 +32,5 @@ describe('TransactionPicker.vue', () => {
         });
         await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
-        done();
     });
 });

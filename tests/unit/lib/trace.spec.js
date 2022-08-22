@@ -13,9 +13,8 @@ describe('parseTrace', () => {
         };
     });
 
-    it('Should return the processed trace', async (done) => {
+    it('Should return the processed trace', async () => {
         const result = await parseTrace(from, Trace, provider);
         expect(result).toMatchSnapshot();
-        done();
     });
 });

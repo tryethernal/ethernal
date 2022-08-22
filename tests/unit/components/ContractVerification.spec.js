@@ -13,7 +13,7 @@ const helper = new MockHelper();
 describe('ContractVerification.vue', () => {
     beforeEach(() => jest.clearAllMocks());
 
-    it('Should load the UI & the Solidity releases', async (done) => {
+    it('Should load the UI & the Solidity releases', (done) => {
         jest.spyOn(axios, 'get')
             .mockResolvedValue({ data: { builds: [
                 { longVersion: '0.1.2' },
@@ -26,7 +26,7 @@ describe('ContractVerification.vue', () => {
             }
         });
 
-        await setTimeout(() => {
+        setTimeout(() => {
             expect(wrapper.vm.allCompilerVersions.length).toEqual(2);
             expect(wrapper.vm.releasesCompilerVersions.length).toEqual(1);
             expect(wrapper.html()).toMatchSnapshot();
