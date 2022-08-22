@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.1] - 2022-08-22
+### Added
+- If ABI is not available, function calls & events are going to be tried to be matched with an ERC-20 ABI. If there is a match it will be decoded.
+
 ## [2.5.0] - 2022-08-19
 ### Added
 - [Public Explorer] Added UI for contract verification. Note that import support is limited for now (it will only work if imported files are in the same directory than contract file), but will be improved in the future.
