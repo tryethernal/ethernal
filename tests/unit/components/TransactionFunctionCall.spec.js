@@ -12,6 +12,19 @@ describe('TransactionFunctionCall.vue', () => {
         helper = new MockHelper();
     });
 
+    it('Should load erc20 abi if function is detected', async (done) => {
+        const wrapper = helper.mountFn(TransactionFunctionCall, {
+            propsData: {
+                data: Transaction.data,
+                value: Transaction.value,
+                to: Transaction.to
+            }
+        });
+        await flushPromises();
+        expect(wrapper.html()).toMatchSnapshot();
+        done();
+    });
+
     it('Should handle arrays as parameters', async (done) => {
         const wrapper = helper.mountFn(TransactionFunctionCall, {
             propsData: {
@@ -56,7 +69,7 @@ describe('TransactionFunctionCall.vue', () => {
     it('Should display warning if no ABI', async (done) => {
         const wrapper = helper.mountFn(TransactionFunctionCall, {
             propsData: {
-                data: Transaction.data,
+                data: '0xb9059cbb23456789',
                 value: Transaction.value,
                 to: Transaction.to
             }

@@ -13,6 +13,18 @@ describe('TransactionEvent.vue', () => {
         helper = new MockHelper();
     });
 
+    it('Should load erc20 abi if event is detected', async (done) => {
+        const wrapper = helper.mountFn(TransactionEvent, {
+            propsData: {
+                log: LogProp
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+        done();
+    });
+
     it('Should display transaction event', async (done) => {
         jest.spyOn(helper.mocks.server, 'getContract')
             .mockResolvedValue({ data: { address: TransactionProp.to, abi: ABIProp }});
