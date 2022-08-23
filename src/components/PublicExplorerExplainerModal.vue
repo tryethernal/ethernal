@@ -25,7 +25,7 @@
             Here is a preview of what it looks like: <a href="https://novascan.io" target="_blank">Novascan</a>
             <br><br>
 
-            If it sounds like something that could be useful to you just submit your email below and we'll reach out to set that up :)
+            If it sounds like something that could be useful to you, just submit your email below and we'll reach out to set that up :)
             <br><br>
 
             <v-row>
@@ -75,6 +75,7 @@ export default {
         open: function(options) {
             this.dialog = true;
             this.options = options || {};
+            this.email = this.user.email;
             return new Promise((resolve, reject) => {
                 this.resolve = resolve;
                 this.reject = reject;
