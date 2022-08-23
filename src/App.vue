@@ -76,6 +76,15 @@
                         <v-list-item-title>Settings</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+
+                <v-list-item class="primary--text" link v-if="isRemote" @click="openPublicExplorerExplainerModal()">
+                    <v-list-item-icon>
+                        <v-icon color="primary">mdi-earth</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>Public Explorer</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
             </v-list>
 
             <template v-slot:append>
@@ -90,7 +99,7 @@
                     </v-list-item>
                     <v-list-item target="_blank" :href="`https://doc.tryethernal.com`" v-if="!isPublicExplorer">
                         <v-list-item-icon>
-                            <v-icon>mdi-text-box-multiple-outline</v-icon>
+                            <v-icon>mdi-text-box-multiple</v-icon>
                         </v-list-item-icon>
                         <v-list-item-content>
                             <v-list-item-title>Documentation</v-list-item-title>
@@ -98,7 +107,7 @@
                     </v-list-item>
                     <v-list-item target="_blank" :href="`https://discord.gg/jEAprf45jj`" v-if="!isPublicExplorer">
                         <v-list-item-icon>
-                            <v-icon>mdi-discord</v-icon>
+                            <v-icon>mdi-forum</v-icon>
                         </v-list-item-icon>
                         <v-list-item-content>
                             <v-list-item-title>Discord</v-list-item-title>
@@ -125,6 +134,7 @@
         </v-navigation-drawer>
 
         <Onboarding-Modal ref="onboardingModal" />
+        <Public-Explorer-Explainer-Modal ref="publicExplorerExplainerModal" v-if="isRemote" />
 
         <v-app-bar :style="styles" app dense fixed flat v-if="canDisplaySides">
             <component :is="appBarComponent"></component>
@@ -145,12 +155,14 @@ import { mapGetters } from 'vuex';
 import { auth } from './plugins/firebase';
 import RpcConnector from './components/RpcConnector';
 import OnboardingModal from './components/OnboardingModal';
+import PublicExplorerExplainerModal from './components/PublicExplorerExplainerModal';
 
 export default {
     name: 'App',
     components: {
         RpcConnector,
-        OnboardingModal
+        OnboardingModal,
+        PublicExplorerExplainerModal
     },
     data: () => ({
         version: process.env.VUE_APP_VERSION,
@@ -165,13 +177,17 @@ export default {
         styles: {},
         logo: null,
         links: [],
-        banner: null
+        banner: null,
+        isRemote: false
     }),
     created: function() {
         if (this.isPublicExplorer)
             return this.initPublicExplorer();
     },
     methods: {
+        openPublicExplorerExplainerModal() {
+            this.$refs.publicExplorerExplainerModal.open();
+        },
         logOut: function() {
             const isPublicExplorer = this.isPublicExplorer;
             this.$store.dispatch('updateUser', null);
@@ -276,8 +292,15 @@ export default {
                     Vue.use(pusherPlugin, { store: store });
                     this.appBarComponent = 'rpc-connector';
                     this.routerComponent = 'router-view';
-                    if (!this.publicExplorer)
+
+                    if (!this.isPublicExplorer) {
                         this.server.getProductRoadToken().then((res) => this.prAuthToken = res.data.token);
+                        this.server.getMarketingFlags().then(({ data: { isRemote }}) => {
+                            if (isRemote === null)
+                                this.server.setRemoteFlag();
+                            this.isRemote = !!isRemote;
+                        });
+                    }
                 });
         },
         initPrivateExplorer: function() {

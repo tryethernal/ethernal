@@ -30,6 +30,11 @@ class ProviderConnector {
     async fetchTransactionReceipt(transactionHash) {
         return await this.provider.getTransactionReceipt(transactionHash)
     }
+
+    async fetchNetworkId() {
+        const { chainId } = await this.provider.getNetwork();
+        return chainId;
+    }
 }
 
 class Tracer {

@@ -9,6 +9,7 @@ jest.mock('../../../lib/rpc', () => {
         })),
         Tracer: actual.Tracer,
         ProviderConnector: jest.fn().mockImplementation(() => ({
+            fetchNetworkId: jest.fn().mockResolvedValue(123),
             fetchBlockWithTransactions: jest.fn()
                 .mockResolvedValue({
                     number: 1,

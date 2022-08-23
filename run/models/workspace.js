@@ -619,6 +619,7 @@ module.exports = (sequelize, DataTypes) => {
     apiEnabled: DataTypes.BOOLEAN,
     tracing: DataTypes.STRING,
     alchemyIntegrationEnabled: DataTypes.BOOLEAN,
+    isRemote: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Workspace',
