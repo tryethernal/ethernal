@@ -122,6 +122,12 @@ router.post('/', authMiddleware, async (req, res) => {
 
         const workspace = await db.createWorkspace(data.uid, filteredWorkspaceData);
 
+        await enqueueTask('processWorkspace', {
+            uid: data.uid,
+            workspace: data.workspace,
+            secret: process.env.AUTH_SECRET
+        });
+
         res.status(200).json(workspace);
     } catch(error) {
         console.log(error);

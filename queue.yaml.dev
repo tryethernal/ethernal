@@ -9,3 +9,5 @@ queue:
 - name: contractProcessing
 - name: transactionSync
 - name: blockSync
+- name: submitExplorerLead
+- name: processWorkspace
