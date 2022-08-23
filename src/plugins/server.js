@@ -347,6 +347,37 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            setRemoteFlag() {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/marketing/setRemoteFlag`;
+                return axios.post(resource, { data });
+            },
+
+            submitExplorerLead(email) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    email: email,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/marketing/submitExplorerLead`;
+                return axios.post(resource, { data });
+            },
+
+            getMarketingFlags() {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/marketing`;
+                return axios.get(resource, { params });
+            },
+
             verifyContract(address, data) {
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/verify`;
                 return axios.post(resource, data);

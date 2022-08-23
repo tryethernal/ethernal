@@ -11,6 +11,27 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const setWorkspaceRemoteFlag = async (userId, workspaceName, flag) => {
+    try {
+        const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
+        const workspace = user.workspaces[0];
+
+        return workspace.update({ isRemote: flag });
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.setWorkspaceRemoteFlag',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                userId: String(userId),
+                workspaceName: workspaceName
+            }
+        });
+        throw error;
+    }
+};
+
 const getWalletVolume = async (workspaceId, from, to) => {
     if (!workspaceId) throw '[getWalletVolume] Missing parameter';
 
@@ -1449,5 +1470,6 @@ module.exports = {
     getTotalTxCount: getTotalTxCount,
     getActiveWalletCount: getActiveWalletCount,
     getTransactionVolume: getTransactionVolume,
-    getWalletVolume: getWalletVolume
+    getWalletVolume: getWalletVolume,
+    setWorkspaceRemoteFlag: setWorkspaceRemoteFlag
 };

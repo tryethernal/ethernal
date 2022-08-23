@@ -53,5 +53,6 @@ jest.mock('../../../lib/firebase', () => ({
     getTransactionVolume: jest.fn(),
     getTxCount: jest.fn(),
     getTotalTxCount: jest.fn(),
-    getActiveWalletCount: jest.fn()
+    getActiveWalletCount: jest.fn(),
+    setWorkspaceRemoteFlag: jest.fn()
 }));
