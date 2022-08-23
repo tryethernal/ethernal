@@ -2,7 +2,9 @@ require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/lib/crypto');
 require('../mocks/middlewares/auth');
+require('../mocks/lib/tasks');
 const db = require('../../lib/firebase');
+const { enqueueTask } = require('../../lib/tasks');
 
 const supertest = require('supertest');
 const app = require('../../app');
@@ -62,6 +64,9 @@ describe(`POST ${BASE_URL}/settings`, () => {
             .expect(200)
             .then(() => {
                 expect(db.updateWorkspaceSettings).toHaveBeenCalledWith('123', 'My Workspace', { rpcServer: 'http://localhost:8545' });
+                expect(enqueueTask).toHaveBeenCalledWith('processWorkspace',
+                    { uid: '123', workspace: 'My Workspace', secret: '123' }
+                );
                 done();
             });
     });
@@ -79,6 +84,9 @@ describe(`POST ${BASE_URL}`, () => {
                     name: 'My Workspace',
                     rpcServer: 'http://localhost:8545'
                 });
+                expect(enqueueTask).toHaveBeenCalledWith('processWorkspace',
+                    { uid: '123', workspace: 'My Workspace', secret: '123' }
+                );
                 done();
             });
     });

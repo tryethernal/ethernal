@@ -11,7 +11,7 @@ router.get('/', authMiddleware, async (req, res) => {
             throw new Error('[GET /api/marketing] Missing parameters.');
 
         const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
-        console.log(workspace)
+
         res.status(200).json({
             isRemote: workspace.isRemote
         });

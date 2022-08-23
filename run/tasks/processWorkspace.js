@@ -1,5 +1,4 @@
 const express = require('express');
-const { processTransactions } = require('../lib/transactions');
 const { ProviderConnector } = require('../lib/rpc');
 const db = require('../lib/firebase');
 const taskAuthMiddleware = require('../middlewares/taskAuth');
