@@ -75,7 +75,6 @@ export default {
         open: function(options) {
             this.dialog = true;
             this.options = options || {};
-            this.email = this.user.email;
             return new Promise((resolve, reject) => {
                 this.resolve = resolve;
                 this.reject = reject;
