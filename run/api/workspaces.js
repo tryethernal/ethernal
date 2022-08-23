@@ -2,6 +2,7 @@ const express = require('express');
 const authMiddleware = require('../middlewares/auth');
 const { sanitize, stringifyBns } = require('../lib/utils');
 const { encode, decrypt } = require('../lib/crypto');
+const { enqueueTask } = require('../lib/tasks');
 const db = require('../lib/firebase');
 
 const router = express.Router();
@@ -122,6 +123,12 @@ router.post('/', authMiddleware, async (req, res) => {
 
         const workspace = await db.createWorkspace(data.uid, filteredWorkspaceData);
 
+        await enqueueTask('processWorkspace', {
+            uid: data.uid,
+            workspace: filteredWorkspaceData.name,
+            secret: process.env.AUTH_SECRET
+        });
+
         res.status(200).json(workspace);
     } catch(error) {
         console.log(error);
@@ -138,6 +145,12 @@ router.post('/settings', authMiddleware, async (req, res) => {
         }
 
         await db.updateWorkspaceSettings(data.uid, data.workspace, data.settings);
+
+        await enqueueTask('processWorkspace', {
+            uid: data.uid,
+            workspace: data.workspace,
+            secret: process.env.AUTH_SECRET
+        });
 
         res.sendStatus(200);
     } catch(error) {

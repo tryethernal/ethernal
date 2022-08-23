@@ -13,6 +13,7 @@ const explorers = require('./explorers');
 const stripe = require('./stripe');
 const search = require('./search');
 const stats = require('./stats');
+const marketing = require('./marketing');
 
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
@@ -27,5 +28,6 @@ router.use('/explorers', explorers);
 router.use('/stripe', stripe);
 router.use('/search', search);
 router.use('/stats', stats);
+router.use('/marketing', marketing);
 
 module.exports = router;

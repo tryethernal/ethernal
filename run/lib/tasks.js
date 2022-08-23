@@ -8,7 +8,9 @@ const ALLOWED_TASKS = [
     'transactionSync',
     'transactionProcessing',
     'usageBilling',
-    'contractProcessing'
+    'contractProcessing',
+    'processWorkspace',
+    'submitExplorerLead'
 ];
 
 const getTaskClient = () => {
