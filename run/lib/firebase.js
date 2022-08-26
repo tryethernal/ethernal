@@ -11,6 +11,80 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const getContractErc721Token = async (workspaceId, contractAddress, tokenId) => {
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const contract = await workspace.findContractByAddress(contractAddress);
+
+        const token = await contract.getErc721Token(tokenId);
+
+        return token ? token.toJSON() : null;
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.getContractErc721Token',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                contractAddress: String(contractAddress),
+                tokenId: tokenId
+            }
+        });
+        throw error;
+    }
+};
+
+const getContractErc721Tokens = async (workspaceId, contractAddress, page, itemsPerPage, orderBy, order) => {
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const contract = await workspace.findContractByAddress(contractAddress);
+
+        const tokens = await contract.getFilteredErc721Tokens(page, itemsPerPage, orderBy, order);
+        const total = await contract.countErc721Tokens();
+
+        return {
+            items: tokens.map(t => t.toJSON()),
+            total: total
+        };
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.getContractErc721Tokens',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                contractAddress: String(contractAddress)
+            }
+        });
+        throw error;
+    }
+};
+
+const storeErc721Token = async (userId, workspace, contractAddress, token) => {
+    if (!userId || !workspace || !contractAddress || !token) throw '[storeErc721Token] Missing parameter';
+
+    try {
+        const user = await User.findByAuthIdWithWorkspace(userId, workspace);
+        const contract = await user.workspaces[0].findContractByAddress(contractAddress);
+
+        return contract.safeCreateErc721Token(token);
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.storeErc721Token',
+            error: error,
+            extra: {
+                userId: String(userId),
+                workspace: workspace,
+                address: address,
+                data: data
+            }
+        });
+        throw error;
+    }
+};
+
 const setWorkspaceRemoteFlag = async (userId, workspaceName, flag) => {
     try {
         const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
@@ -727,8 +801,7 @@ const storeContractData = async (userId, workspace, address, data) => {
 
     try {
         const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-        const contract = await user.workspaces[0].safeCreateOrUpdateContract({ address: address, ...data });
-        return contract.toJSON();
+        return user.workspaces[0].safeCreateOrUpdateContract({ address: address, ...data });
     } catch(error) {
         writeLog({
             functionName: 'firebase.storeContractData',
@@ -1471,5 +1544,8 @@ module.exports = {
     getActiveWalletCount: getActiveWalletCount,
     getTransactionVolume: getTransactionVolume,
     getWalletVolume: getWalletVolume,
-    setWorkspaceRemoteFlag: setWorkspaceRemoteFlag
+    setWorkspaceRemoteFlag: setWorkspaceRemoteFlag,
+    storeErc721Token: storeErc721Token,
+    getContractErc721Tokens: getContractErc721Tokens,
+    getContractErc721Token: getContractErc721Token
 };

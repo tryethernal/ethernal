@@ -18,7 +18,7 @@
                      <span :class="`ml-${4 * displayDepth}`"> }</span>
                 </span>
                 <span v-else-if="input.type == 'string'">
-                    <span v-if="isValueJSON">
+                    <span v-if="isValueJSON" style="white-space: normal;">
                         <vue-json-pretty
                             :data="JSONValue"
                             :custom-value-formatter="JSONPrettyCustomFormatter"

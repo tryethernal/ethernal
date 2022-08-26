@@ -299,6 +299,7 @@ module.exports = (sequelize, DataTypes) => {
     async safeCreateOrUpdateContract(contract) {
         const contracts = await this.getContracts({ where: { address: contract.address.toLowerCase() }});
         const existingContract = contracts[0];
+
         const newContract = sanitize({
             hashedBytecode: contract.hashedBytecode,
             abi: contract.abi,
@@ -312,7 +313,10 @@ module.exports = (sequelize, DataTypes) => {
             tokenDecimals: contract.token && contract.token.decimals,
             tokenName: contract.token && contract.token.name,
             tokenSymbol: contract.token && contract.token.symbol,
-            watchedPaths: contract.watchedPaths
+            tokenTotalSupply: contract.token && contract.token.totalSupply,
+            watchedPaths: contract.watchedPaths,
+            has721Metadata: contract.has721Metadata,
+            has721Enumerable: contract.has721Enumerable,
         });
 
         if (existingContract)
@@ -455,7 +459,7 @@ module.exports = (sequelize, DataTypes) => {
                 id: contractId
             }
         });
-        return contracts[0]
+        return contracts[0];
     }
 
     async findContractByAddress(address) {

@@ -137,7 +137,9 @@ const serverFunctions = {
             const web3Rpc = new Web3(serverFunctions._getWeb3Provider(data.rpcServer));
             var networkId = await web3Rpc.eth.net.getId();
             var latestBlockNumber = await rpcProvider.getBlockNumber();
+            console.log(latestBlockNumber)
             var latestBlock = await rpcProvider.getBlock(latestBlockNumber);
+            console.log(latestBlock)
             var gasLimit = latestBlock.gasLimit.toString();
 
             var workspace = {
@@ -347,6 +349,27 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            getErc721Token(contractAddress, tokenId) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}/${tokenId}`;
+                return axios.get(resource, { params });
+            },
+
+            getErc721Tokens(contractAddress, options) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Collections/${contractAddress}/tokens`;
+                return axios.get(resource, { params });
+            },
+
             setRemoteFlag() {
                 const data = {
                     firebaseAuthToken: store.getters.firebaseIdToken,

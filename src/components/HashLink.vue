@@ -20,7 +20,7 @@ const { sanitize } = require('../lib/utils');
 
 export default {
     name: 'HashLink',
-    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName'],
+    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName', 'xsHash'],
     data: () => ({
         copied: false,
         token: null,
@@ -60,6 +60,9 @@ export default {
             if (!this.hash) return;
             if (this.fullHash) {
                 return this.hash;
+            }
+            else if (this.xsHash) {
+                return `${this.hash.slice(0, 5)}...${this.hash.slice(-5)}`;
             }
             else {
                 return `${this.hash.slice(0, 10)}...${this.hash.slice(-5)}`;

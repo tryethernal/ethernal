@@ -2,8 +2,10 @@ const axios = require('axios');
 const express = require('express');
 const ethers = require('ethers');
 const { sanitize } = require('../lib/utils');
-const { isErc20 } = require('../lib/contract');
+const { isErc20, isErc721 } = require('../lib/contract');
+const SELECTORS = require('../lib/abis/selectors.json');
 const db = require('../lib/firebase');
+const { ContractConnector, ERC721Connector } = require('../lib/rpc');
 const writeLog = require('../lib/writeLog');
 const { trigger } = require('../lib/pusher');
 const transactionsLib = require('../lib/transactions');
@@ -11,22 +13,26 @@ const taskAuthMiddleware = require('../middlewares/taskAuth');
 
 const router = express.Router();
 
-const ERC20_ABI = [
+const ERC20_ABI = require('../lib/abis/erc20.json');
+
+const ERC721_ABI = [
+    {"constant": true,"inputs": [{"internalType": "bytes4","name": "interfaceId","type": "bytes4"}],"name": "supportsInterface","outputs": [{"internalType": "bool","name": "","type": "bool"}],"payable": false,"stateMutability": "view","type": "function"},
     {"name":"name", "constant":true, "payable":false, "type":"function", "inputs":[], "outputs":[{"name":"","type":"string"}]},
     {"name":"symbol", "constant":true, "payable":false, "type":"function", "inputs":[], "outputs":[{"name":"","type":"string"}]},
-    {"name":"decimals", "constant":true, "payable":false, "type":"function", "inputs":[], "outputs":[{"name":"","type":"uint8"}]}
+    {"inputs": [],"name": "totalSupply","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"}
 ];
 
-const fetchTokenInfo = async (rpcServer, contractAddress, abi) => {
+const findPatterns = async (rpcServer, contractAddress, abi) => {
     try {
-        let decimals, symbol, name, promises = [];
+        let decimals, symbol, name, totalSupply, promises = [], patterns = [], tokenData = {}, has721Metadata, has721Enumerable;
 
         const provider = new ethers.providers.JsonRpcProvider({ url: rpcServer });
-        const contract = new ethers.Contract(contractAddress, ERC20_ABI, provider);
+        const erc20contract = new ethers.Contract(contractAddress, ERC20_ABI, provider);
 
-        promises.push(contract.decimals());
-        promises.push(contract.symbol());
-        promises.push(contract.name());
+        promises.push(erc20contract.decimals());
+        promises.push(erc20contract.symbol());
+        promises.push(erc20contract.name());
+        promises.push(erc20contract.totalSupply());
 
         await Promise.all(promises).then(res => {
             decimals = res[0];
@@ -34,23 +40,50 @@ const fetchTokenInfo = async (rpcServer, contractAddress, abi) => {
             name = res[2];
         }).catch(() => {});
 
-        if (!decimals || !symbol || !name) {
-            return {};
+        if (decimals && symbol && name) {
+            tokenData = sanitize({
+                decimals: decimals,
+                symbol: symbol,
+                name: name,
+                totalSupply: totalSupply
+            });
+
+            patterns.push('erc20');
+
+            if (abi && !isErc20(abi))
+                patterns.push('proxy')
         }
 
-        const tokenData = sanitize({
-            decimals: decimals,
-            symbol: symbol,
-            name: name
-        });
+        if (abi && isErc721(abi))
+            patterns.push('erc721')
 
-        const patterns = ['erc20'];
-        if (abi)
-            if (!isErc20(abi)) patterns.push('proxy');
+        const contract = new ContractConnector(rpcServer, contractAddress, ERC721_ABI);
+
+        if (!abi) {
+            const isErc721 = await contract.supportsInterface('0x80ac58cd');
+            if (isErc721)
+                patterns.push('erc721');
+        }
+
+        if (patterns.indexOf('erc721') > -1) {
+            has721Metadata = await contract.has721Metadata();
+            has721Enumerable = await contract.has721Enumerable();
+            symbol = await contract.symbol();
+            name = await contract.name();
+            totalSupply = await contract.totalSupply();
+
+            tokenData = sanitize({
+                symbol: symbol,
+                name: name,
+                totalSupply: totalSupply
+            });
+        }
 
         return {
             patterns: patterns,
-            tokenData: tokenData
+            tokenData: tokenData,
+            has721Metadata: has721Metadata,
+            has721Enumerable: has721Enumerable
         };
     } catch(error) {
         console.log(error);
@@ -145,6 +178,31 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
             proxy: scannerMetadata.proxy
         });
 
+        if (workspace.public && !contract.processed) {
+            const tokenInfo = await findPatterns(workspace.rpcServer, contract.address, metadata.abi);
+            await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, sanitize({
+                patterns: tokenInfo.patterns,
+                processed: true,
+                token: tokenInfo.tokenData,
+                has721Metadata: tokenInfo.has721Metadata,
+                has721Enumerable: tokenInfo.has721Enumerable,
+            }));
+
+            const erc721 = new ERC721Connector(workspace.rpcServer, contract.address, {
+                metadata: tokenInfo.has721Metadata,
+                enumerable: tokenInfo.has721Enumerable
+            });
+
+            try {
+                const collection = await erc721.fetchAllTokens(true, async (token) => {
+                    await db.storeErc721Token(user.firebaseUserId, workspace.name, contract.address, token);
+                });
+            } catch(error) {
+                console.log(error);
+                throw error;
+            }
+        }
+
         if (metadata.proxy)
             await db.storeContractData(user.firebaseUserId, workspace.name, metadata.proxy, { address: metadata.proxy });
 
@@ -155,15 +213,6 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
                 contract.address, 
                 metadata
             )
-        }
-
-        if (workspace.public) { 
-            const tokenInfo = await fetchTokenInfo(workspace.rpcServer, contract.address, metadata.abi);
-            await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, sanitize({
-                patterns: tokenInfo.patterns,
-                processed: true,
-                token: tokenInfo.tokenData
-            }));
         }
 
         const transactions = await db.getContractTransactions(user.firebaseUserId, workspace.name, contract.address);

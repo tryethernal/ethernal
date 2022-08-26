@@ -1,6 +1,11 @@
 const ethers = require('ethers');
+const axios = require('axios');
 const { parseTrace, processTrace } = require('./trace');
+const { sanitize } = require('./utils');
 const writeLog = require('./writeLog');
+const ERC721_ABI = require('./abis/erc721.json');
+const ERC721_ENUMERABLE_ABI = require('./abis/erc721Enumerable.json');
+const ERC721_METADATA_ABI = require('./abis/erc721Metadata.json');
 
 let getProvider = function(url) {
     const rpcServer = new URL(url);
@@ -86,6 +91,13 @@ class Tracer {
 }
 
 class ContractConnector {
+
+     INTERFACE_IDS = {
+         '721': '0x80ac58cd',
+         '721Metadata': '0x5b5e139f',
+         '721Enumerable': '0x780e9d63'
+     };
+
     constructor(server, address, abi) {
         if (!server || !address || !abi) throw '[ContractConnector] Missing parameter';
         this.provider = getProvider(server);
@@ -99,11 +111,116 @@ class ContractConnector {
             return (error.body ? JSON.parse(error.body).error.message : error.reason) || error.message || "Can't connect to the server";
         }
     }
+
+    has721Interface() {
+        return this.contract.supportsInterface(this.INTERFACE_IDS['721']);
+    }
+
+    has721Metadata() {
+        return this.contract.supportsInterface(this.INTERFACE_IDS['721Metadata']);
+    }
+
+    has721Enumerable() {
+        return this.contract.supportsInterface(this.INTERFACE_IDS['721Enumerable']);
+    }
+
+    symbol() {
+        return this.contract.symbol();
+    }
+
+    name() {
+        return this.contract.name();
+    }
+
+    async totalSupply() {
+        const res = await this.contract.totalSupply();
+        return res.toString();
+    }
+}
+
+class ERC721Connector {
+
+    constructor(server, address, interfaces) {
+        if (!server || !address) throw '[ERC721Connector] Missing parameter';
+
+        this.interfaces = {
+            metadata: !!interfaces.metadata,
+            enumerable: !!interfaces.enumerable
+        };
+
+        this.abi = ERC721_ABI;
+
+        if (this.interfaces.metadata)
+            this.abi = this.abi.concat(ERC721_METADATA_ABI);
+
+        if (this.interfaces.enumerable)
+            this.abi = this.abi.concat(ERC721_ENUMERABLE_ABI);
+
+        this.provider = getProvider(server);
+        this.contract = new ethers.Contract(address, this.abi, this.provider);
+    }
+
+    async totalSupply() {
+        const res = await this.contract.totalSupply();
+        return res.toString();
+    }
+
+    tokenByIndex(index) {
+        return this.contract.tokenByIndex(index);
+    }
+
+    ownerOf(tokenId) {
+        return this.contract.ownerOf(tokenId);
+    }
+
+    tokenURI(tokenId) {
+        return this.contract.tokenURI(tokenId);
+    }
+
+    async fetchAllTokens(fetchMetadata = false, cb) {
+        if (!this.interfaces.enumerable)
+            throw 'This method is only available on ERC721 implemeting the Enumerable interface';
+
+        const totalSupply = await this.totalSupply();
+
+        const tokens = [];
+
+        for (let i = 0; i < 10; i++) {
+            const tokenId = await this.tokenByIndex(ethers.BigNumber.from(i).toString());
+
+            if (!tokenId) continue;
+
+            const owner = await this.ownerOf(tokenId.toString());
+            const URI = await this.tokenURI(tokenId.toString());
+
+            let metadata;
+            if (fetchMetadata) {
+                const axiosableURI = URI.startsWith('ipfs://') ?
+                    `https://ipfs.io/ipfs/${URI.slice(7, URI.length)}` : URI;
+
+                metadata = (await axios.get(axiosableURI)).data;
+            }
+
+            const token = sanitize({
+                tokenId: tokenId.toString(),
+                owner: owner,
+                URI: URI,
+                metadata: metadata
+            });
+
+            tokens.push(token);
+
+            if (cb) await cb(token);
+        }
+
+        return tokens;
+    }
 }
 
 module.exports = {
     ContractConnector: ContractConnector,
     Tracer: Tracer,
     ProviderConnector: ProviderConnector,
-    getProvider: getProvider
+    getProvider: getProvider,
+    ERC721Connector: ERC721Connector
 };

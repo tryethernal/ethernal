@@ -5,6 +5,7 @@ const {
 } = require('sequelize');
 const Op = Sequelize.Op;
 const { enqueueTask } = require('../lib/tasks');
+const { sanitize } = require('../lib/utils');
 const { trigger } = require('../lib/pusher');
 const moment = require('moment');
 
@@ -22,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
           foreignKey: 'address',
           as: 'proxyContract'
       });
+      Contract.hasMany(models.Erc721Token, { foreignKey: 'contractId', as: 'erc721Tokens' });
     }
 
     getProxyContract() {
@@ -33,6 +35,47 @@ module.exports = (sequelize, DataTypes) => {
                 address: this.proxy
             }
         });
+    }
+
+    async getErc721Token(tokenId) {
+        const tokens = await this.getErc721Tokens({
+            where: {
+                tokenId: tokenId
+            },
+            include: {
+                model: sequelize.models.Contract,
+                attributes: ['address', 'tokenName', 'tokenSymbol'],
+                as: 'contract'
+            },
+            attributes: ['owner', 'URI', 'tokenId', 'metadata']
+        });
+        return tokens[0];
+    }
+
+    getFilteredErc721Tokens(page = 1, itemsPerPage = 10, orderBy = 'tokenId', order = 'ASC') {
+        return this.getErc721Tokens({
+            offset: (page - 1) * itemsPerPage,
+            limit: itemsPerPage,
+            order: [[orderBy, order]]
+        });
+    }
+
+    async safeCreateErc721Token(token) {
+        const existingToken = await this.getErc721Tokens({
+            where: {
+                tokenId: token.tokenId,
+            }
+        });
+        if (existingToken.length > 0)
+            return;
+
+        return this.createErc721Token(sanitize({
+            workspaceId: this.workspaceId,
+            owner: token.owner,
+            URI: token.URI,
+            tokenId: token.tokenId,
+            metadata: token.metadata
+        }));
     }
   }
   Contract.init({
@@ -71,7 +114,10 @@ module.exports = (sequelize, DataTypes) => {
             return raw ? JSON.parse(raw) : [];
         }
     },
-    verificationStatus: DataTypes.STRING
+    verificationStatus: DataTypes.STRING,
+    has721Metadata: DataTypes.BOOLEAN,
+    has721Enumerable: DataTypes.BOOLEAN,
+    tokenTotalSupply: DataTypes.STRING
   }, {
     hooks: {
         afterUpdate(contract, options) {

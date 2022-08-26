@@ -405,10 +405,10 @@ export default {
             'chains'
         ]),
         tab: {
-            set (tab) {
+            set(tab) {
                 this.$router.replace({ query: { ...this.$route.query, tab } });
             },
-            get () {
+            get() {
                 return this.$route.query.tab;
             }
         }
