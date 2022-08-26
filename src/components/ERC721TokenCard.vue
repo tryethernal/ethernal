@@ -43,7 +43,7 @@ export default {
             return null;
         },
         name() {
-            return this.metadata.name || this.tokenId;
+            return this.metadata.name || `#${this.tokenId}`;
         }
     }
 }

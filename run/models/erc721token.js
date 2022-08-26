@@ -15,6 +15,38 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Erc721Token.init({
+    attributes: {
+        type: DataTypes.VIRTUAL,
+        get() {
+            if (!this.metadata.attributes || typeof this.metadata.attributes !== 'object')
+                return [];
+
+            const properties = this.metadata.attributes.filter(metadata => {
+                return metadata.value && typeof metadata.value == 'string';
+            });
+            const levels = this.metadata.attributes.filter(metadata => {
+                return metadata.value && typeof metadata.value == 'number';
+            });
+            const boosts = this.metadata.attributes.filter(metadata => {
+                return metadata.display_type &&
+                    metadata.value &&
+                    typeof metadata.value == 'number' &&
+                    ['boost_number', 'boost_percentage'].indexOf(metadata.display_type);
+            });
+            const stats = this.metadata.attributes.filter(metadata => {
+                return metadata.display_type &&
+                    metadata.value &&
+                    typeof metadata.value == 'number' &&
+                    metadata.display_type == 'number';
+            });
+            const dates = this.metadata.attributes.filter(metadata => {
+                return metadata.display_type &&
+                    metadata.display_type == 'date';
+            });
+
+            return { properties, levels, boosts, stats, dates };
+        }
+    },
     workspaceId: DataTypes.INTEGER,
     contractId: DataTypes.INTEGER,
     owner: {

@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
                 attributes: ['address', 'tokenName', 'tokenSymbol'],
                 as: 'contract'
             },
-            attributes: ['owner', 'URI', 'tokenId', 'metadata']
+            attributes: ['owner', 'URI', 'tokenId', 'metadata', 'attributes']
         });
         return tokens[0];
     }
