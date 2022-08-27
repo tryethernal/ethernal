@@ -4,9 +4,21 @@
             <v-col cols="2" v-for="(token, idx) in tokens" :key="idx">
                 <ERC721-Token-Card
                     :owner="token.owner"
-                    :metadata="token.metadata"
+                    :name="token.attributes.name"
+                    :imageData="token.attributes.image_data"
                     :tokenId="token.tokenId"
-                    :contractAddress="address" />
+                    :contractAddress="address"
+                    :backgroundColor="token.attributes.background_color" />
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-pagination
+                    v-model="page"
+                    :length="Math.ceil(tokenCount / currentOptions.itemsPerPage)"
+                    :total-visible="7"
+                    @input="pageChanged">
+                </v-pagination>
             </v-col>
         </v-row>
     </v-container>
@@ -22,15 +34,19 @@ export default {
         ERC721TokenCard
     },
     data: () => ({
+        page: 1,
         loading: false,
         tokens: [],
         tokenCount: 0,
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['tokenId'], sortDesc: [false] }
+        currentOptions: { page: 1, itemsPerPage: 12, sortBy: ['tokenId'], sortDesc: [false] }
     }),
     mounted() {
         this.fetchTokens();
     },
     methods: {
+        pageChanged(newPage) {
+            this.fetchTokens({ ...this.currentOptions, page: newPage });
+        },
         fetchTokens(newOptions) {
             this.loading = true;
 

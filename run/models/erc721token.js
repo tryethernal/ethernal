@@ -18,33 +18,61 @@ module.exports = (sequelize, DataTypes) => {
     attributes: {
         type: DataTypes.VIRTUAL,
         get() {
-            if (!this.metadata.attributes || typeof this.metadata.attributes !== 'object')
-                return [];
+            if (!this.metadata || !this.metadata.attributes || typeof this.metadata.attributes !== 'object')
+                return {
+                    name: `#${this.tokenId}`,
+                    image_data: null,
+                    background_color: null,
+                    description: null,
+                    external_url: null,
+                    properties: [],
+                    levels: [],
+                    boosts: [],
+                    stats: [],
+                    dates: []
+                };
+
+            const name = this.metadata.name || `#${this.tokenId}`;
+
+            let image_data;
+            if (this.metadata.image_data)
+                image_data = this.metadata.image_data;
+            else if (this.metadata.image) {
+                const insertableImage = this.metadata.image.startsWith('ipfs://') ?
+                    `https://ipfs.io/ipfs/${this.metadata.image.slice(7, this.metadata.image.length)}` :
+                    this.metadata.image;
+
+                image_data = `<img style="height: 100%; width: 100%; object-fit: cover" src="${insertableImage}" />`;
+            }
 
             const properties = this.metadata.attributes.filter(metadata => {
                 return metadata.value && typeof metadata.value == 'string';
             });
+
             const levels = this.metadata.attributes.filter(metadata => {
                 return metadata.value && typeof metadata.value == 'number';
             });
+
             const boosts = this.metadata.attributes.filter(metadata => {
                 return metadata.display_type &&
                     metadata.value &&
                     typeof metadata.value == 'number' &&
                     ['boost_number', 'boost_percentage'].indexOf(metadata.display_type);
             });
+
             const stats = this.metadata.attributes.filter(metadata => {
                 return metadata.display_type &&
                     metadata.value &&
                     typeof metadata.value == 'number' &&
                     metadata.display_type == 'number';
             });
+
             const dates = this.metadata.attributes.filter(metadata => {
                 return metadata.display_type &&
                     metadata.display_type == 'date';
             });
 
-            return { properties, levels, boosts, stats, dates };
+            return { background_color: this.metadata.background_color, name, image_data, external_url: this.metadata.external_url, description: this.metadata.description, properties, levels, boosts, stats, dates };
         }
     },
     workspaceId: DataTypes.INTEGER,
@@ -56,7 +84,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     },
     URI: DataTypes.STRING,
-    tokenId: DataTypes.STRING,
+    tokenId: DataTypes.INTEGER,
     metadata: DataTypes.JSONB
   }, {
     sequelize,

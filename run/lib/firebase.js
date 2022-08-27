@@ -11,6 +11,29 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const updateErc721TokenMetadata = async (workspaceId, contractAddress, tokenId, metadata) => {
+    if (!workspaceId || !contractAddress || !tokenId || !metadata) throw '[updateErc721TokenMetadata] Missing parameter';
+
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const contract = await workspace.findContractByAddress(contractAddress);
+
+        return contract.safeUpdateErc721TokenMetadata(tokenId, metadata);
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.updateErc721TokenMetadata',
+            error: error,
+            extra: {
+                workspaceId: workspaceId,
+                contractAddress: contractAddress,
+                tokenId: tokenId,
+                metadata: metadata
+            }
+        });
+        throw error;
+    }
+};
+
 const getContractErc721Token = async (workspaceId, contractAddress, tokenId) => {
     try {
         const workspace = await Workspace.findByPk(workspaceId);
@@ -62,12 +85,12 @@ const getContractErc721Tokens = async (workspaceId, contractAddress, page, items
     }
 };
 
-const storeErc721Token = async (userId, workspace, contractAddress, token) => {
-    if (!userId || !workspace || !contractAddress || !token) throw '[storeErc721Token] Missing parameter';
+const storeErc721Token = async (workspaceId, contractAddress, token) => {
+    if (!workspaceId || !contractAddress || !token) throw '[storeErc721Token] Missing parameter';
 
     try {
-        const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-        const contract = await user.workspaces[0].findContractByAddress(contractAddress);
+        const workspace = await Workspace.findByPk(workspaceId);
+        const contract = await workspace.findContractByAddress(contractAddress);
 
         return contract.safeCreateErc721Token(token);
     } catch(error) {
@@ -1547,5 +1570,6 @@ module.exports = {
     setWorkspaceRemoteFlag: setWorkspaceRemoteFlag,
     storeErc721Token: storeErc721Token,
     getContractErc721Tokens: getContractErc721Tokens,
-    getContractErc721Token: getContractErc721Token
+    getContractErc721Token: getContractErc721Token,
+    updateErc721TokenMetadata: updateErc721TokenMetadata
 };

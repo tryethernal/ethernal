@@ -39,10 +39,11 @@ module.exports = {
             type: Sequelize.STRING
           },
           tokenId: {
-            type: Sequelize.STRING
+            type: Sequelize.INTEGER
           },
           metadata: {
-            type: Sequelize.JSONB
+            type: Sequelize.JSONB,
+            defaultValue: {}
           },
           createdAt: {
             allowNull: false,

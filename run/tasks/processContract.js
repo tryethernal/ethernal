@@ -194,9 +194,7 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
             });
 
             try {
-                const collection = await erc721.fetchAllTokens(true, async (token) => {
-                    await db.storeErc721Token(user.firebaseUserId, workspace.name, contract.address, token);
-                });
+                const collection = await erc721.fetchAndStoreAllTokens(workspace.id);
             } catch(error) {
                 console.log(error);
                 throw error;

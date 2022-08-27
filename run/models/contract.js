@@ -60,6 +60,16 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    async safeUpdateErc721TokenMetadata(tokenId, metadata) {
+        const token = await this.getErc721Tokens({
+            where: {
+                tokenId: tokenId,
+            }
+        });
+
+        return token[0].update({ metadata: metadata });
+    }
+
     async safeCreateErc721Token(token) {
         const existingToken = await this.getErc721Tokens({
             where: {

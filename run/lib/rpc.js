@@ -2,6 +2,7 @@ const ethers = require('ethers');
 const axios = require('axios');
 const { parseTrace, processTrace } = require('./trace');
 const { sanitize } = require('./utils');
+const { enqueueTask } = require('./tasks');
 const writeLog = require('./writeLog');
 const ERC721_ABI = require('./abis/erc721.json');
 const ERC721_ENUMERABLE_ABI = require('./abis/erc721Enumerable.json');
@@ -149,6 +150,7 @@ class ERC721Connector {
         };
 
         this.abi = ERC721_ABI;
+        this.address = address;
 
         if (this.interfaces.metadata)
             this.abi = this.abi.concat(ERC721_METADATA_ABI);
@@ -177,7 +179,7 @@ class ERC721Connector {
         return this.contract.tokenURI(tokenId);
     }
 
-    async fetchAllTokens(fetchMetadata = false, cb) {
+    async fetchAndStoreAllTokens(workspaceId) {
         if (!this.interfaces.enumerable)
             throw 'This method is only available on ERC721 implemeting the Enumerable interface';
 
@@ -185,35 +187,14 @@ class ERC721Connector {
 
         const tokens = [];
 
-        for (let i = 0; i < 10; i++) {
-            const tokenId = await this.tokenByIndex(ethers.BigNumber.from(i).toString());
-
-            if (!tokenId) continue;
-
-            const owner = await this.ownerOf(tokenId.toString());
-            const URI = await this.tokenURI(tokenId.toString());
-
-            let metadata;
-            if (fetchMetadata) {
-                const axiosableURI = URI.startsWith('ipfs://') ?
-                    `https://ipfs.io/ipfs/${URI.slice(7, URI.length)}` : URI;
-
-                metadata = (await axios.get(axiosableURI)).data;
-            }
-
-            const token = sanitize({
-                tokenId: tokenId.toString(),
-                owner: owner,
-                URI: URI,
-                metadata: metadata
-            });
-
-            tokens.push(token);
-
-            if (cb) await cb(token);
+        for (let i = 0; i < totalSupply; i++) {
+            await enqueueTask('fetchAndStoreErc721Token', {
+                workspaceId: workspaceId,
+                address: this.address,
+                index: i,
+                secret: process.env.AUTH_SECRET
+            }, `${process.env.CLOUD_RUN_ROOT}/tasks/fetchAndStoreErc721Token`);
         }
-
-        return tokens;
     }
 }
 
