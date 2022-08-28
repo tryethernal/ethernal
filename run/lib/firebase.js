@@ -11,14 +11,37 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
-const updateErc721TokenMetadata = async (workspaceId, contractAddress, tokenId, metadata) => {
-    if (!workspaceId || !contractAddress || !tokenId || !metadata) throw '[updateErc721TokenMetadata] Missing parameter';
+const getErc721TokenTransfers = async (workspaceId, contractAddress, tokenId) => {
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const contract = await workspace.findContractByAddress(contractAddress);
+
+        const tokens = await contract.getErc721Tokens({ where: { tokenId: tokenId }});
+        return tokens[0].getTokenTransfers();
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.getErc721TokenTransfers',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                contractAddress: String(contractAddress),
+                tokenId: tokenId
+            }
+        });
+        throw error;
+    }
+};
+
+const updateErc721Token = async (workspaceId, contractAddress, tokenId, fields) => {
+    if (!workspaceId || !contractAddress || !tokenId || !fields) throw '[updateErc721TokenMetadata] Missing parameter';
 
     try {
         const workspace = await Workspace.findByPk(workspaceId);
         const contract = await workspace.findContractByAddress(contractAddress);
 
-        return contract.safeUpdateErc721TokenMetadata(tokenId, metadata);
+        return contract.safeUpdateErc721Token(tokenId, fields);
     } catch(error) {
         writeLog({
             functionName: 'firebase.updateErc721TokenMetadata',
@@ -1571,5 +1594,6 @@ module.exports = {
     storeErc721Token: storeErc721Token,
     getContractErc721Tokens: getContractErc721Tokens,
     getContractErc721Token: getContractErc721Token,
-    updateErc721TokenMetadata: updateErc721TokenMetadata
+    getErc721TokenTransfers: getErc721TokenTransfers,
+    updateErc721Token: updateErc721Token
 };

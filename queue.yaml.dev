@@ -12,4 +12,4 @@ queue:
 - name: submitExplorerLead
 - name: processWorkspace
 - name: fetchAndStoreErc721Token
-- name: reloadErc721Metadata
+- name: reloadErc721

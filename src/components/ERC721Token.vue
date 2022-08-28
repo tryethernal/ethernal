@@ -2,13 +2,13 @@
     <v-container fluid>
         <v-alert text v-if="metadataReloaded" type="success">A metadata reload for this token has been queued for processing. It will be updated soon.</v-alert>
         <v-row class="mb-3">
-            <v-col cols="3" v-if="token.attributes.image_data" >
+            <v-col cols="12" sm="6" lg="3" v-if="token.attributes.image_data" >
                 <v-card :color="token.attributes.background_color ? `#${token.attributes.background_color}` : ''" rounded="xl" outlined class="mb-1">
                     <div class="fill" v-html="token.attributes.image_data"></div>
                 </v-card>
             </v-col>
 
-            <v-col cols="6">
+            <v-col cols="12" sm="6">
                 <v-card outlined>
                     <v-card-subtitle class="pb-0">
                         <Router-Link :to="`/address/${token.contract.address}`" class="text-h6 text-decoration-none">{{ token.contract.tokenName }}</Router-Link>
@@ -36,12 +36,17 @@
                     <v-card-text v-if="token.attributes.description">{{ token.attributes.description }}</v-card-text>
                 </v-card>
             </v-col>
+
+            <v-col cols="12">
+                <h2 class="mb-2">Transfers</h2>
+                <Token-Transfers :transfers="transfers" :dense="true" />
+            </v-col>
         </v-row>
 
         <template v-if="token.attributes.properties.length">
             <h2>Properties</h2>
             <v-row class="mb-3">
-                <v-col cols="2" v-for="(property, idx) in token.attributes.properties" :key="idx">
+                <v-col cols="6" sm="3" md="2" v-for="(property, idx) in token.attributes.properties" :key="idx">
                     <v-card outlined style="border-color: var(--v-primary-base);">
                         <v-card-text class="text-center" style="opacity: 1;">
                             <div class="text-caption primary--text">{{ property.trait_type }}</div>
@@ -64,7 +69,7 @@
         <template v-if="token.attributes.levels.length">
             <h2>Levels</h2>
             <v-row class="mb-3">
-                <v-col cols="2" v-for="(level, idx) in token.attributes.levels" :key="idx">
+                <v-col cols="6" sm="3" md="2" v-for="(level, idx) in token.attributes.levels" :key="idx">
                     <v-card outlined style="border-color: var(--v-primary-base);">
                         <v-card-text class="text-center" style="opacity: 1;">
                             <div class="text-caption primary--text">{{ level.trait_type }}</div>
@@ -78,7 +83,7 @@
         <template v-if="token.attributes.boosts.length">
             <h2>Boosts</h2>
             <v-row class="mb-3">
-                <v-col class="text-center" cols="2" v-for="(boost, idx) in token.attributes.boosts" :key="idx">
+                <v-col cols="6" sm="3" md="2" class="text-center" v-for="(boost, idx) in token.attributes.boosts" :key="idx">
                     <v-progress-circular :rotate="360" :size="100" :width="15" :value="boost.display_type == 'boost_percentage' ? boost.value : 100" color="primary">
                         <div class="text-h6 font-weight-bold primary--text">+{{ boost.value }}{{ boost.display_type == 'boost_percentage' ? '%' : '' }}</div>
                     </v-progress-circular>
@@ -90,7 +95,7 @@
         <template v-if="token.attributes.stats.length">
             <h2>Stats</h2>
             <v-row class="mb-3">
-                <v-col cols="2" v-for="(stat, idx) in token.attributes.stats" :key="idx">
+                <v-col cols="6" sm="3" md="2" v-for="(stat, idx) in token.attributes.stats" :key="idx">
                     <v-card outlined style="border-color: var(--v-primary-base);">
                         <v-card-text class="text-center" style="opacity: 1;">
                             <div class="text-caption primary--text">{{ stat.trait_type }}</div>
@@ -104,7 +109,7 @@
         <template v-if="token.attributes.dates.length">
             <h2>Dates</h2>
             <v-row class="mb-3">
-                <v-col cols="3" v-for="(date, idx) in token.attributes.dates" :key="idx">
+                <v-col cols="6" sm="3" md="2" v-for="(date, idx) in token.attributes.dates" :key="idx">
                     <v-card outlined style="border-color: var(--v-primary-base);">
                         <v-card-text class="text-center" style="opacity: 1;">
                             <div class="text-caption primary--text">{{ date.trait_type }}</div>
@@ -118,18 +123,21 @@
 </template>
 
 <script>
-import HashLink from './HashLink';
 const moment = require('moment');
+import TokenTransfers from './TokenTransfers';
+import HashLink from './HashLink';
 
 export default {
     name: 'ERC721Token',
     props: ['hash', 'tokenId'],
     components: {
+        TokenTransfers,
         HashLink
     },
     data: () => ({
         loading: false,
         metadataReloaded: false,
+        transfers: [],
         token: {
             contract: {},
             metadata: {},
@@ -143,23 +151,29 @@ export default {
         },
         reloadMetadata() {
             this.metadataReloaded = false;
-            this.server.updateErc721TokenMetadata(this.hash, this.tokenId)
+            this.server.reloadErc721Token(this.hash, this.tokenId)
                 .then(() => this.metadataReloaded = true)
                 .catch(console.log);
         },
-        fetchErc721Token() {
+        getErc721Token() {
             this.loading = true;
             this.server.getErc721Token(this.hash, this.tokenId)
                 .then(({ data }) => this.token = data)
                 .catch(console.log)
                 .finally(() => this.loading = false);
         },
+        getErc721TokenTransfers() {
+            this.server.getErc721TokenTransfers(this.hash, this.tokenId)
+                .then(({ data }) => this.transfers = data)
+                .catch(console.log);
+        }
     },
     watch: {
         hash: {
             immediate: true,
-            handler(hash) {
-                this.fetchErc721Token(hash);
+            handler() {
+                this.getErc721Token();
+                this.getErc721TokenTransfers();
             }
         }
     },

@@ -420,7 +420,7 @@ exports.transactionSyncTask = functions.https.onCall(async (data, context) => {
                     });
             }
 
-            return transactionsLib.processTransactions(data.userId, data.workspace, [txSynced]);
+            return;
         } catch(error) {
             console.log(error);
         }

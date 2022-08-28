@@ -13,7 +13,7 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
         const data = req.body.data;
         if (!data.workspaceId || !data.address || !data.tokenId) {
             console.log(data);
-            throw '[POST /tasks/reloadErc721Metadata] Missing parameter.';
+            throw '[POST /tasks/reloadErc721] Missing parameter.';
         }
 
         const workspace = await db.getWorkspaceById(data.workspaceId);
@@ -21,13 +21,14 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
         const erc721Connector = new ERC721Connector(workspace.rpcServer, data.address, { metadata: true, enumerable: true });
 
         const URI = await erc721Connector.tokenURI(data.tokenId.toString());
+        const owner = await erc721Connector.ownerOf(data.tokenId.toString());
 
         const axiosableURI = URI.startsWith('ipfs://') ?
             `https://ipfs.io/ipfs/${URI.slice(7, URI.length)}` : URI;
 
         const metadata = (await axios.get(axiosableURI)).data;
 
-        await db.updateErc721TokenMetadata(workspace.id, data.address, data.tokenId, metadata);
+        await db.updateErc721Token(workspace.id, data.address, data.tokenId, { metadata, owner });
 
         res.sendStatus(200);
     } catch(error) {

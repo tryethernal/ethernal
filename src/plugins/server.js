@@ -349,7 +349,17 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
-            updateErc721TokenMetadata(contractAddress, tokenId) {
+            getErc721TokenTransfers(contractAddress, tokenId) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}/${tokenId}/transfers`;
+                return axios.get(resource, { params });
+            },
+
+            reloadErc721Token(contractAddress, tokenId) {
                 const data = {
                     firebaseAuthToken: store.getters.firebaseIdToken,
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,

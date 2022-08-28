@@ -3,6 +3,7 @@ const {
   Model
 } = require('sequelize');
 const { trigger } = require('../lib/pusher');
+const { enqueueTask } = require('../lib/tasks');
 
 module.exports = (sequelize, DataTypes) => {
   class TokenTransfer extends Model {
@@ -13,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       TokenTransfer.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'transaction' });
+      TokenTransfer.hasOne(models.Contract, {
+          sourceKey: 'token',
+          foreignKey: 'address',
+          as: 'contract'
+      });
     }
   }
   TokenTransfer.init({
@@ -35,12 +41,25 @@ module.exports = (sequelize, DataTypes) => {
             this.setDataValue('token', value.toLowerCase());
         }
     },
+    tokenId: {
+        type: DataTypes.INTEGER,
+        set(value) {
+            this.setDataValue('tokenId', parseInt(value))
+        }
+    },
     transactionId: DataTypes.INTEGER,
-    workspaceId: DataTypes.INTEGER
+    workspaceId: DataTypes.INTEGER,
   }, {
     hooks: {
         async afterSave(tokenTransfer, options) {
-            
+            if (tokenTransfer.tokenId)
+                 await enqueueTask('reloadErc721', {
+                    workspaceId: tokenTransfer.workspaceId,
+                    address: tokenTransfer.token,
+                    tokenId: tokenTransfer.tokenId,
+                    secret: process.env.AUTH_SECRET
+                }, `${process.env.CLOUD_RUN_ROOT}/tasks/reloadErc721`);
+
             const transaction = await tokenTransfer.getTransaction({
                 attributes: ['blockNumber', 'hash'],
                 include: [

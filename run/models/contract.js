@@ -60,14 +60,17 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async safeUpdateErc721TokenMetadata(tokenId, metadata) {
+    async safeUpdateErc721Token(tokenId, fields) {
         const token = await this.getErc721Tokens({
             where: {
                 tokenId: tokenId,
             }
         });
 
-        return token[0].update({ metadata: metadata });
+        return token[0].update(sanitize({
+            metadata: fields.metadata,
+            owner: fields.owner
+        }));
     }
 
     async safeCreateErc721Token(token) {

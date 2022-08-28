@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col cols="2" v-for="(token, idx) in tokens" :key="idx">
+            <v-col cols="6" sm="4" lg="2" v-for="(token, idx) in tokens" :key="idx">
                 <ERC721-Token-Card
                     :owner="token.owner"
                     :name="token.attributes.name"

@@ -4,13 +4,13 @@ const db = require('../lib/firebase');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const { enqueueTask } = require('../lib/tasks');
 
-router.get('/:address/:tokenId', workspaceAuthMiddleware, async (req, res) => {
+router.get('/:address/:tokenId/transfers', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
 
     try {
-        const token = await db.getContractErc721Token(data.workspace.id, req.params.address, req.params.tokenId);
+        const transfers = await db.getErc721TokenTransfers(data.workspace.id, req.params.address, req.params.tokenId);
 
-        res.status(200).json(token);
+        res.status(200).json(transfers);
     } catch(error) {
         console.log(error);
         res.status(400).send(error);
@@ -28,14 +28,27 @@ router.post('/:address/:tokenId/reload', workspaceAuthMiddleware, async (req, re
 
         const workspace = await db.getWorkspaceByName(data.firebaseUserId, data.workspace);
 
-        await enqueueTask('reloadErc721Metadata', {
+        await enqueueTask('reloadErc721', {
             workspaceId: workspace.id,
             address: req.params.address,
             tokenId: req.params.tokenId,
             secret: process.env.AUTH_SECRET
-        }, `${process.env.CLOUD_RUN_ROOT}/tasks/reloadErc721Metadata`);
+        }, `${process.env.CLOUD_RUN_ROOT}/tasks/reloadErc721`);
 
         res.sendStatus(200);
+    } catch(error) {
+        console.log(error);
+        res.status(400).send(error);
+    }
+});
+
+router.get('/:address/:tokenId', workspaceAuthMiddleware, async (req, res) => {
+    const data = req.query;
+
+    try {
+        const token = await db.getContractErc721Token(data.workspace.id, req.params.address, req.params.tokenId);
+
+        res.status(200).json(token);
     } catch(error) {
         console.log(error);
         res.status(400).send(error);

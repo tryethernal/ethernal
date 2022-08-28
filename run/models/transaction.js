@@ -73,7 +73,8 @@ module.exports = (sequelize, DataTypes) => {
             dst: tokenTransfer.dst,
             src: tokenTransfer.src,
             amount: tokenTransfer.amount,
-            token: tokenTransfer.token
+            token: tokenTransfer.token,
+            tokenId: tokenTransfer.tokenId
         }));
     }
 

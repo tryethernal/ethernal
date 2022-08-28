@@ -419,8 +419,23 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.TokenTransfer,
-                    attributes: ['amount', 'dst', 'src', 'token'],
-                    as: 'tokenTransfers'
+                    attributes: ['amount', 'dst', 'src', 'token', 'tokenId'],
+                    as: 'tokenTransfers',
+                    include: [
+                        {
+                            model: sequelize.models.Contract,
+                            attributes: ['name', 'patterns', 'tokenDecimals', 'tokenSymbol', 'tokenName'],
+                            as: 'contract',
+                            where: {
+                                [Op.and]: sequelize.where(
+                                    sequelize.col("tokenTransfers.workspaceId"),
+                                    Op.eq,
+                                    sequelize.col("tokenTransfers->contract.workspaceId")
+                                ),
+                            },
+                            required: false
+                        }
+                    ]
                 },
                 {
                     model: sequelize.models.Block,

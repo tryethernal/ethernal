@@ -12,7 +12,7 @@ const ALLOWED_TASKS = [
     'processWorkspace',
     'submitExplorerLead',
     'fetchAndStoreErc721Token',
-    'reloadErc721Metadata'
+    'reloadErc721'
 ];
 
 const getTaskClient = () => {
