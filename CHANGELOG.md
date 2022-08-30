@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.3] - 2022-08-30
+### Fixed
+- Boolean inputs are properly handled in contract interactions now (only supports 'true' and 'false').
+
 ## [2.5.2] - 2022-08-23
 ### Added
 - Display modal for workspaces connected to a remote rpc to present public explorer offering.
