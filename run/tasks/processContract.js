@@ -5,7 +5,7 @@ const { sanitize } = require('../lib/utils');
 const { isErc20, isErc721 } = require('../lib/contract');
 const SELECTORS = require('../lib/abis/selectors.json');
 const db = require('../lib/firebase');
-const { ContractConnector, ERC721Connector } = require('../lib/rpc');
+const { ContractConnector, ERC721Connector, getProvider } = require('../lib/rpc');
 const writeLog = require('../lib/writeLog');
 const { trigger } = require('../lib/pusher');
 const transactionsLib = require('../lib/transactions');
@@ -26,7 +26,7 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
     try {
         let decimals, symbol, name, totalSupply, promises = [], patterns = [], tokenData = {}, has721Metadata, has721Enumerable;
 
-        const provider = new ethers.providers.JsonRpcProvider({ url: rpcServer });
+        const provider = getProvider(rpcServer);
         const erc20contract = new ethers.Contract(contractAddress, ERC20_ABI, provider);
 
         promises.push(erc20contract.decimals());
@@ -60,17 +60,19 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
         const contract = new ContractConnector(rpcServer, contractAddress, ERC721_ABI);
 
         if (!abi) {
-            const isErc721 = await contract.supportsInterface('0x80ac58cd');
-            if (isErc721)
-                patterns.push('erc721');
+            try {
+                const isErc721 = await contract.has721Interface();
+                if (isErc721)
+                    patterns.push('erc721');
+            } catch(_) {}
         }
 
         if (patterns.indexOf('erc721') > -1) {
             has721Metadata = await contract.has721Metadata();
             has721Enumerable = await contract.has721Enumerable();
-            symbol = await contract.symbol();
-            name = await contract.name();
-            totalSupply = await contract.totalSupply();
+            symbol = has721Metadata ? await contract.symbol() : null;
+            name = has721Metadata ? await contract.name() : null;
+            totalSupply = has721Enumerable ? await contract.totalSupply() : null;
 
             tokenData = sanitize({
                 symbol: symbol,
@@ -81,7 +83,10 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
 
         return {
             patterns: patterns,
-            tokenData: tokenData,
+            tokenSymbol: tokenData.symbol,
+            tokenName: tokenData.name,
+            tokenDecimals: tokenData.decimals,
+            totalSupply: tokenData.totalSupply,
             has721Metadata: has721Metadata,
             has721Enumerable: has721Enumerable
         };
@@ -179,18 +184,15 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
         });
 
         if (workspace.public && !contract.processed) {
-            const tokenInfo = await findPatterns(workspace.rpcServer, contract.address, metadata.abi);
+            const tokenData = await findPatterns(workspace.rpcServer, contract.address, metadata.abi);
             await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, sanitize({
-                patterns: tokenInfo.patterns,
+                ...tokenData,
                 processed: true,
-                token: tokenInfo.tokenData,
-                has721Metadata: tokenInfo.has721Metadata,
-                has721Enumerable: tokenInfo.has721Enumerable,
             }));
 
             const erc721 = new ERC721Connector(workspace.rpcServer, contract.address, {
-                metadata: tokenInfo.has721Metadata,
-                enumerable: tokenInfo.has721Enumerable
+                metadata: tokenData.has721Metadata,
+                enumerable: tokenData.has721Enumerable
             });
 
             try {

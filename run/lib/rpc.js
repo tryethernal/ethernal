@@ -1,14 +1,12 @@
 const ethers = require('ethers');
-const axios = require('axios');
 const { parseTrace, processTrace } = require('./trace');
-const { sanitize } = require('./utils');
 const { enqueueTask } = require('./tasks');
 const writeLog = require('./writeLog');
 const ERC721_ABI = require('./abis/erc721.json');
 const ERC721_ENUMERABLE_ABI = require('./abis/erc721Enumerable.json');
 const ERC721_METADATA_ABI = require('./abis/erc721Metadata.json');
 
-let getProvider = function(url) {
+const getProvider = function(url) {
     const rpcServer = new URL(url);
 
     let provider = ethers.providers.WebSocketProvider;
@@ -184,8 +182,6 @@ class ERC721Connector {
             throw 'This method is only available on ERC721 implemeting the Enumerable interface';
 
         const totalSupply = await this.totalSupply();
-
-        const tokens = [];
 
         for (let i = 0; i < totalSupply; i++) {
             await enqueueTask('fetchAndStoreErc721Token', {

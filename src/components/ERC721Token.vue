@@ -38,13 +38,13 @@
             </v-col>
 
             <v-col cols="12">
-                <h2 class="mb-2">Transfers</h2>
+                <h3 class="mb-2">Transfers</h3>
                 <Token-Transfers :transfers="transfers" :dense="true" />
             </v-col>
         </v-row>
 
         <template v-if="token.attributes.properties.length">
-            <h2>Properties</h2>
+            <h3>Properties</h3>
             <v-row class="mb-3">
                 <v-col cols="6" sm="3" md="2" v-for="(property, idx) in token.attributes.properties" :key="idx">
                     <v-card outlined style="border-color: var(--v-primary-base);">
@@ -67,7 +67,7 @@
         </template>
 
         <template v-if="token.attributes.levels.length">
-            <h2>Levels</h2>
+            <h3>Levels</h3>
             <v-row class="mb-3">
                 <v-col cols="6" sm="3" md="2" v-for="(level, idx) in token.attributes.levels" :key="idx">
                     <v-card outlined style="border-color: var(--v-primary-base);">
@@ -81,7 +81,7 @@
         </template>
 
         <template v-if="token.attributes.boosts.length">
-            <h2>Boosts</h2>
+            <h3>Boosts</h3>
             <v-row class="mb-3">
                 <v-col cols="6" sm="3" md="2" class="text-center" v-for="(boost, idx) in token.attributes.boosts" :key="idx">
                     <v-progress-circular :rotate="360" :size="100" :width="15" :value="boost.display_type == 'boost_percentage' ? boost.value : 100" color="primary">
@@ -93,7 +93,7 @@
         </template>
 
         <template v-if="token.attributes.stats.length">
-            <h2>Stats</h2>
+            <h3>Stats</h3>
             <v-row class="mb-3">
                 <v-col cols="6" sm="3" md="2" v-for="(stat, idx) in token.attributes.stats" :key="idx">
                     <v-card outlined style="border-color: var(--v-primary-base);">
@@ -107,7 +107,7 @@
         </template>
 
         <template v-if="token.attributes.dates.length">
-            <h2>Dates</h2>
+            <h3>Dates</h3>
             <v-row class="mb-3">
                 <v-col cols="6" sm="3" md="2" v-for="(date, idx) in token.attributes.dates" :key="idx">
                     <v-card outlined style="border-color: var(--v-primary-base);">

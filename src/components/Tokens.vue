@@ -65,6 +65,7 @@ export default {
     }),
     mounted: function() {
         this.pusher.onNewToken(() => this.getTokens(this.currentOptions), this);
+        this.pusher.onDestroyedContract(() => this.getTokens(this.currentOptions), this);
     },
     methods: {
         getTokens: function(newOptions) {

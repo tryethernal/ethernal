@@ -310,10 +310,10 @@ module.exports = (sequelize, DataTypes) => {
             processed: contract.processed,
             proxy: contract.proxy,
             timestamp: contract.timestamp,
-            tokenDecimals: contract.token && contract.token.decimals,
-            tokenName: contract.token && contract.token.name,
-            tokenSymbol: contract.token && contract.token.symbol,
-            tokenTotalSupply: contract.token && contract.token.totalSupply,
+            tokenDecimals: contract.tokenDecimals,
+            tokenName: contract.tokenName,
+            tokenSymbol: contract.tokenSymbol,
+            tokenTotalSupply: contract.totalSupply,
             watchedPaths: contract.watchedPaths,
             has721Metadata: contract.has721Metadata,
             has721Enumerable: contract.has721Enumerable,
@@ -370,7 +370,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId'],
             order: [
-                [ sequelize.literal('"traceSteps".'), 'id', 'asc']
+                [sequelize.literal('"traceSteps".'), 'id', 'asc']
             ],
             include: [
                 {

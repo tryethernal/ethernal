@@ -221,7 +221,7 @@
             </v-tab-item>
 
             <v-tab-item v-if="isErc721" value="collection">
-                <ERC-721-Collection :address="hash" />
+                <ERC-721-Collection :address="hash" :totalSupply="contract.tokenTotalSupply" />
             </v-tab-item>
         </v-tabs-items>
     </v-container>
@@ -460,8 +460,6 @@ export default {
         },
         tab: {
             set(tab) {
-                console.log(tab)
-                console.log({ ...this.$route.query, tab })
                 this.$router.replace({ query: { ...this.$route.query, tab } });
             },
             get() {

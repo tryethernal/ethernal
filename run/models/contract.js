@@ -85,6 +85,7 @@ module.exports = (sequelize, DataTypes) => {
         return this.createErc721Token(sanitize({
             workspaceId: this.workspaceId,
             owner: token.owner,
+            index: token.index,
             URI: token.URI,
             tokenId: token.tokenId,
             metadata: token.metadata
@@ -133,6 +134,11 @@ module.exports = (sequelize, DataTypes) => {
     tokenTotalSupply: DataTypes.STRING
   }, {
     hooks: {
+        afterDestroy(contract, options) {
+            trigger(`private-contracts;workspace=${contract.workspaceId}`, 'destroyed', null);
+            if (contract.patterns.indexOf('erc20') > -1)
+                trigger(`private-tokens;workspace=${contract.workspaceId}`, 'destroyed', null);
+        },
         afterUpdate(contract, options) {
             trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
             if (contract.patterns.indexOf('erc20') > -1)

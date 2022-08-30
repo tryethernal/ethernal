@@ -35,6 +35,7 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
 
         const token = sanitize({
             tokenId: tokenId.toString(),
+            index: data.index,
             owner: owner,
             URI: URI,
             metadata: metadata

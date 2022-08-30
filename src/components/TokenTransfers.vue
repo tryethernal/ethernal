@@ -80,7 +80,7 @@ export default {
                 headers.push({ text: 'Type', value: 'type' });
 
             if (transaction)
-                headers.push({ text: 'On', value: 'timestamp' });
+                headers.push({ text: 'Mined On', value: 'timestamp' });
 
             headers.push(
                 { text: 'From', value: 'src' },

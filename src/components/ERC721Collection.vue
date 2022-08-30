@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col cols="6" sm="4" lg="2" v-for="(token, idx) in tokens" :key="idx">
+            <v-col cols="6" sm="4" lg="2" v-for="(token, idx) in tokenCards" :key="idx">
                 <ERC721-Token-Card
                     :owner="token.owner"
                     :name="token.attributes.name"
@@ -15,7 +15,7 @@
             <v-col>
                 <v-pagination
                     v-model="page"
-                    :length="Math.ceil(tokenCount / currentOptions.itemsPerPage)"
+                    :length="length"
                     :total-visible="7"
                     @input="pageChanged">
                 </v-pagination>
@@ -29,7 +29,7 @@ import ERC721TokenCard from './ERC721TokenCard';
 
 export default {
     name: 'ERC721Collection',
-    props: ['address'],
+    props: ['address', 'totalSupply'],
     components: {
         ERC721TokenCard
     },
@@ -66,6 +66,18 @@ export default {
                 })
                 .catch(console.log)
                 .finally(() => this.loading = false);
+        }
+    },
+    computed: {
+        tokenCards() {
+            const cards = []
+            for (let i = 0; i < this.currentOptions.itemsPerPage; i++) {
+                cards.push(this.tokens[i] ? this.tokens[i] : { attributes: {}})
+            }
+            return cards;
+        },
+        length() {
+            return Math.ceil(this.totalSupply / this.currentOptions.itemsPerPage);
         }
     }
 }

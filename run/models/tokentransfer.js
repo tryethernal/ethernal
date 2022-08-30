@@ -52,14 +52,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     hooks: {
         async afterSave(tokenTransfer, options) {
-            if (tokenTransfer.tokenId)
-                 await enqueueTask('reloadErc721', {
-                    workspaceId: tokenTransfer.workspaceId,
-                    address: tokenTransfer.token,
-                    tokenId: tokenTransfer.tokenId,
-                    secret: process.env.AUTH_SECRET
-                }, `${process.env.CLOUD_RUN_ROOT}/tasks/reloadErc721`);
-
             const transaction = await tokenTransfer.getTransaction({
                 attributes: ['blockNumber', 'hash'],
                 include: [
@@ -75,6 +67,15 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 ]
             });
+
+            if (tokenTransfer.tokenId && transaction.workspace.public)
+                 await enqueueTask('reloadErc721', {
+                    workspaceId: tokenTransfer.workspaceId,
+                    address: tokenTransfer.token,
+                    tokenId: tokenTransfer.tokenId,
+                    secret: process.env.AUTH_SECRET
+                }, `${process.env.CLOUD_RUN_ROOT}/tasks/reloadErc721`);
+
             if (!transaction.workspace.public)
                 trigger(`private-processableTransactions;workspace=${transaction.workspace.id}`, 'new', transaction.toJSON());
         }

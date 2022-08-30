@@ -111,8 +111,9 @@ module.exports = (sequelize, DataTypes) => {
         }
     },
     URI: DataTypes.STRING,
-    tokenId: DataTypes.INTEGER,
-    metadata: DataTypes.JSONB
+    tokenId: DataTypes.STRING,
+    metadata: DataTypes.JSONB,
+    index: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Erc721Token',

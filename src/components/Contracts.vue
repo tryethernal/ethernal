@@ -104,6 +104,7 @@ export default {
             this.headers.push({ text: '', value: 'remove' });
 
         this.pusher.onNewContract(() => this.getContracts(this.currentOptions), this);
+        this.pusher.onDestroyedContract(() => this.getContracts(this.currentOptions), this);
     },
     methods: {
         moment: moment,
