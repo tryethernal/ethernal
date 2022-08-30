@@ -37,6 +37,32 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    getErc721TokenTransfersByTokenId(tokenId) {
+        return sequelize.models.TokenTransfer.findAll({
+            where: {
+                tokenId: tokenId,
+                workspaceId: this.workspaceId,
+                '$contract.id$': { [Op.eq]: this.id }
+            },
+            order: [
+                ['id', 'desc']
+            ],
+            include: [
+                {
+                    model: sequelize.models.Contract,
+                    attributes: ['id', 'tokenName', 'tokenDecimals', 'tokenSymbol', 'name', 'patterns'],
+                    as: 'contract'
+                },
+                {
+                    model: sequelize.models.Transaction,
+                    attributes: ['hash', 'timestamp'],
+                    as: 'transaction'
+                }
+            ],
+            attributes: ['id', 'amount', 'dst', 'src', 'token', 'tokenId']
+        });
+    }
+
     async getErc721Token(index) {
         const tokens = await this.getErc721Tokens({
             where: {

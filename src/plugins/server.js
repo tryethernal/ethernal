@@ -348,13 +348,13 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            getErc721TokenTransfers(contractAddress, index) {
+            getErc721TokenTransfers(contractAddress, tokenId) {
                 const params = {
                     firebaseAuthToken: store.getters.firebaseIdToken,
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}/${index}/transfers`;
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}/${tokenId}/transfers`;
                 return axios.get(resource, { params });
             },
 

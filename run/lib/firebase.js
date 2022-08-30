@@ -11,13 +11,12 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
-const getErc721TokenTransfers = async (workspaceId, contractAddress, index) => {
+const getErc721TokenTransfers = async (workspaceId, contractAddress, tokenId) => {
     try {
         const workspace = await Workspace.findByPk(workspaceId);
         const contract = await workspace.findContractByAddress(contractAddress);
 
-        const tokens = await contract.getErc721Tokens({ where: { index: index }});
-        const transfers = tokens.length ? tokens[0].getTokenTransfers() : [];
+        const transfers = await contract.getErc721TokenTransfersByTokenId(tokenId);
 
         return transfers.map(t => t.toJSON());
     } catch(error) {
@@ -29,7 +28,7 @@ const getErc721TokenTransfers = async (workspaceId, contractAddress, index) => {
                 parsedDetail: error.original && error.original.detail,
                 workspaceId: String(workspaceId),
                 contractAddress: String(contractAddress),
-                index: index
+                tokenId: tokenId
             }
         });
         throw error;

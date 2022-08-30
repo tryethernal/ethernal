@@ -15,31 +15,6 @@ module.exports = (sequelize, DataTypes) => {
       Erc721Token.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       Erc721Token.belongsTo(models.Contract, { foreignKey: 'contractId', as: 'contract' });
     }
-
-    getTokenTransfers() {
-        return sequelize.models.TokenTransfer.findAll({
-            where: {
-                workspaceId: this.workspaceId,
-                '$contract.id$': { [Op.eq]: this.contractId }
-            },
-            order: [
-                ['id', 'desc']
-            ],
-            include: [
-                {
-                    model: sequelize.models.Contract,
-                    attributes: ['id', 'tokenName', 'tokenDecimals', 'tokenSymbol', 'name', 'patterns'],
-                    as: 'contract'
-                },
-                {
-                    model: sequelize.models.Transaction,
-                    attributes: ['hash', 'timestamp'],
-                    as: 'transaction'
-                }
-            ],
-            attributes: ['id', 'amount', 'dst', 'src', 'token', 'tokenId']
-        });
-    }
   }
   Erc721Token.init({
     attributes: {

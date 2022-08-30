@@ -5,11 +5,11 @@ const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
 const { enqueueTask } = require('../lib/tasks');
 
-router.get('/:address/:index/transfers', workspaceAuthMiddleware, async (req, res) => {
+router.get('/:address/:tokenId/transfers', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
 
     try {
-        const transfers = await db.getErc721TokenTransfers(data.workspace.id, req.params.address, req.params.index);
+        const transfers = await db.getErc721TokenTransfers(data.workspace.id, req.params.address, req.params.tokenId);
 
         res.status(200).json(transfers);
     } catch(error) {

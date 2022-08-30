@@ -4,6 +4,8 @@
             <v-data-table
                 :hide-default-footer="transfers.length <= 10"
                 :headers="tableHeaders"
+                :sort-by="sortBy"
+                :sort-desc="true"
                 :items="transfers">
                 <template v-slot:top v-if="!dense">
                     <v-toolbar dense flat>
@@ -32,7 +34,7 @@
                     <Hash-Link :type="'address'" :hash="item.dst" :fullHash="!dense" :withName="true" :withTokenName="true" />
                 </template>
                 <template v-slot:item.token="{ item }">
-                    <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" :tokenId="item.tokenId" />
+                    <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" :tokenId="item.tokenIndex" />
                 </template>
                 <template v-slot:item.amount="{ item }">
                     {{ item.amount | fromWei(decimals[item.token], symbols[item.token], unformatted) }}
@@ -61,7 +63,8 @@ export default {
         tableHeaders: [],
         decimals: {},
         symbols: {},
-        type: {}
+        type: {},
+        sortBy: null
     }),
     mounted() {
         this.loadContractData();
@@ -79,8 +82,10 @@ export default {
             else
                 headers.push({ text: 'Type', value: 'type' });
 
-            if (transaction)
+            if (transaction) {
                 headers.push({ text: 'Mined On', value: 'timestamp' });
+                this.sortBy = 'timestamp';
+            }
 
             headers.push(
                 { text: 'From', value: 'src' },

@@ -167,17 +167,21 @@ export default {
             this.loading = true;
             this.server.getErc721Token(this.hash, this.index)
                 .then(({ data }) => {
+                    if (!data) return;
+
                     this.token = data;
                     if (this.token.contract)
                         this.contract = this.token.contract;
                     else
                         this.getContract();
+
+                    this.getErc721TokenTransfers();
                 })
                 .catch(console.log)
                 .finally(() => this.loading = false);
         },
         getErc721TokenTransfers() {
-            this.server.getErc721TokenTransfers(this.hash, this.index)
+            this.server.getErc721TokenTransfers(this.hash, this.token.tokenId)
                 .then(({ data }) => this.transfers = data)
                 .catch(console.log);
         },
@@ -192,7 +196,6 @@ export default {
             immediate: true,
             handler() {
                 this.getErc721Token();
-                this.getErc721TokenTransfers();
             }
         }
     },

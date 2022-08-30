@@ -7,6 +7,7 @@
                     :name="token.attributes.name"
                     :imageData="token.attributes.image_data"
                     :index="token.index"
+                    :tokenId="token.tokenId"
                     :contractAddress="address"
                     :backgroundColor="token.attributes.background_color" />
             </v-col>
