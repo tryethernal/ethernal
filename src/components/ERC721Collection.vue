@@ -1,12 +1,12 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col cols="6" sm="4" lg="2" v-for="(token, idx) in tokenCards" :key="idx">
+            <v-col cols="6" sm="4" lg="2" v-for="(token, idx) in tokens" :key="idx">
                 <ERC721-Token-Card
                     :owner="token.owner"
                     :name="token.attributes.name"
                     :imageData="token.attributes.image_data"
-                    :tokenId="token.tokenId"
+                    :index="token.index"
                     :contractAddress="address"
                     :backgroundColor="token.attributes.background_color" />
             </v-col>
@@ -35,46 +35,30 @@ export default {
     },
     data: () => ({
         page: 1,
-        loading: false,
         tokens: [],
-        tokenCount: 0,
-        currentOptions: { page: 1, itemsPerPage: 12, sortBy: ['tokenId'], sortDesc: [false] }
+        currentOptions: { page: 1, itemsPerPage: 12, sortBy: ['index'], order: 'asc' }
     }),
     mounted() {
-        this.fetchTokens();
+        this.getTokens();
     },
     methods: {
         pageChanged(newPage) {
-            this.fetchTokens({ ...this.currentOptions, page: newPage });
+            this.currentOptions = { ...this.currentOptions, page: newPage };
+            this.getTokens();
         },
-        fetchTokens(newOptions) {
-            this.loading = true;
-
-            if (newOptions)
-                this.currentOptions = newOptions;
-
-            const options = {
-                page: this.currentOptions.page,
-                itemsPerPage: this.currentOptions.itemsPerPage,
-                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
-            };
-
-            this.server.getErc721Tokens(this.address, options)
-                .then(({ data: { items, total } }) => {
-                    this.tokens = items;
-                    this.tokenCount = total;
-                })
+        getTokens() {
+            this.tokens = Array(this.maxTokenLength).fill({ attributes: {}});
+            this.server.getErc721Tokens(this.address, this.currentOptions)
+                .then(({ data: { items } }) => this.tokens = items)
                 .catch(console.log)
-                .finally(() => this.loading = false);
         }
     },
     computed: {
-        tokenCards() {
-            const cards = []
-            for (let i = 0; i < this.currentOptions.itemsPerPage; i++) {
-                cards.push(this.tokens[i] ? this.tokens[i] : { attributes: {}})
-            }
-            return cards;
+        maxTokenLength() {
+            if (this.currentOptions.page == this.length)
+                return this.currentOptions.itemsPerPage - (this.length * this.currentOptions.itemsPerPage - this.totalSupply);
+            else
+                return this.currentOptions.itemsPerPage
         },
         length() {
             return Math.ceil(this.totalSupply / this.currentOptions.itemsPerPage);

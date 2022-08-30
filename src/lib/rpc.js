@@ -1,4 +1,6 @@
 const ethers = require('ethers');
+const axios = require('axios');
+const { sanitize } = require('./utils');
 
 const ERC721_ABI = require('../abis/erc721.json');
 const ERC721_ENUMERABLE_ABI = require('../abis/erc721Enumerable.json');
@@ -79,6 +81,7 @@ class ERC721Connector {
 
         this.abi = ERC721_ABI;
         this.address = address;
+        this.totalSupplyValue = null;
 
         if (this.interfaces.metadata)
             this.abi = this.abi.concat(ERC721_METADATA_ABI);
@@ -107,21 +110,33 @@ class ERC721Connector {
         return this.contract.tokenURI(tokenId);
     }
 
-    // async fetchAndStoreAllTokens(workspaceId) {
-    //     if (!this.interfaces.enumerable)
-    //         throw 'This method is only available on ERC721 implemeting the Enumerable interface';
+    async fetchTokenByIndex(index) {
+        if (!this.interfaces.enumerable)
+            throw 'This method is only available on ERC721 implemeting the Enumerable interface';
 
-    //     const totalSupply = await this.totalSupply();
+        if (this.totalSupplyValue == null)
+            this.totalSupplyValue = await this.totalSupply();
 
-    //     for (let i = 0; i < totalSupply; i++) {
-    //         await enqueueTask('fetchAndStoreErc721Token', {
-    //             workspaceId: workspaceId,
-    //             address: this.address,
-    //             index: i,
-    //             secret: process.env.AUTH_SECRET
-    //         }, `${process.env.CLOUD_RUN_ROOT}/tasks/fetchAndStoreErc721Token`);
-    //     }
-    // }
+        if (index > this.totalSupplyValue - 1)
+            return null;
+
+        const tokenId = await this.tokenByIndex(index);
+        const owner = await this.ownerOf(tokenId.toString());
+        const URI = await this.tokenURI(tokenId.toString());
+
+        const axiosableURI = URI.startsWith('ipfs://') ?
+            `https://ipfs.io/ipfs/${URI.slice(7, URI.length)}` : URI;
+
+        const metadata = (await axios.get(axiosableURI)).data;
+
+        return sanitize({
+            tokenId: tokenId.toString(),
+            index: index,
+            owner: owner,
+            URI: URI,
+            metadata: metadata
+        });
+    }
 }
 
 module.exports = {

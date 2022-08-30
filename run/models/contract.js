@@ -37,22 +37,22 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async getErc721Token(tokenId) {
+    async getErc721Token(index) {
         const tokens = await this.getErc721Tokens({
             where: {
-                tokenId: tokenId
+                index: index
             },
             include: {
                 model: sequelize.models.Contract,
                 attributes: ['address', 'tokenName', 'tokenSymbol'],
                 as: 'contract'
             },
-            attributes: ['owner', 'URI', 'tokenId', 'metadata', 'attributes']
+            attributes: ['owner', 'URI', 'tokenId', 'metadata', 'attributes', 'index']
         });
         return tokens[0];
     }
 
-    getFilteredErc721Tokens(page = 1, itemsPerPage = 10, orderBy = 'tokenId', order = 'ASC') {
+    getFilteredErc721Tokens(page = 1, itemsPerPage = 10, orderBy = 'index', order = 'ASC') {
         return this.getErc721Tokens({
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
@@ -63,7 +63,7 @@ module.exports = (sequelize, DataTypes) => {
     async safeUpdateErc721Token(tokenId, fields) {
         const token = await this.getErc721Tokens({
             where: {
-                tokenId: tokenId,
+                index: index,
             }
         });
 
@@ -76,7 +76,7 @@ module.exports = (sequelize, DataTypes) => {
     async safeCreateErc721Token(token) {
         const existingToken = await this.getErc721Tokens({
             where: {
-                tokenId: token.tokenId,
+                index: token.index,
             }
         });
         if (existingToken.length > 0)

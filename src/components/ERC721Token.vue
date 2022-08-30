@@ -2,38 +2,44 @@
     <v-container fluid>
         <v-alert text v-if="metadataReloaded" type="success">A metadata reload for this token has been queued for processing. It will be updated soon.</v-alert>
         <v-row class="mb-3">
-            <v-col cols="12" sm="6" lg="3" v-if="token.attributes.image_data" >
-                <v-card :color="token.attributes.background_color ? `#${token.attributes.background_color}` : ''" rounded="xl" outlined class="mb-1">
+            <v-col cols="12" sm="6" lg="3">
+                <v-card v-if="token.attributes.image_data && !loading" :color="token.attributes.background_color ? `#${token.attributes.background_color}` : ''" rounded="xl" outlined class="mb-1">
                     <div class="fill" v-html="token.attributes.image_data"></div>
                 </v-card>
+                <v-skeleton-loader v-else-if="loading" type="image"></v-skeleton-loader>
             </v-col>
 
             <v-col cols="12" sm="6">
                 <v-card outlined>
-                    <v-card-subtitle class="pb-0">
-                        <Router-Link :to="`/address/${token.contract.address}`" class="text-h6 text-decoration-none">{{ token.contract.tokenName }}</Router-Link>
-                        <div style="position: relative; float: right">
-                            <v-tooltip v-if="token.attributes.external_url" top>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <a  v-bind="attrs" v-on="on" class="text-decoration-none" :href="token.attributes.external_url" v-if="token.attributes.external_url">
-                                        <v-icon>mdi-open-in-new</v-icon>
-                                    </a>
-                                </template>
-                                See on {{ hostOf(token.attributes.external_url) }}
-                            </v-tooltip>
-                            <v-tooltip top>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <a @click="reloadMetadata" v-bind="attrs" v-on="on" class="text-decoration-none">
-                                        <v-icon>mdi-refresh</v-icon>
-                                    </a>
-                                </template>
-                                Reload metadata
-                            </v-tooltip>
-                        </div>
+                    <template v-if="!loading">
+                        <v-card-subtitle class="pb-0">
+                            <Router-Link :to="`/address/${hash}`" class="text-h6 text-decoration-none">{{ contract.tokenName }}</Router-Link>
+                            <div style="position: relative; float: right">
+                                <v-tooltip v-if="token.attributes.external_url" top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <a  v-bind="attrs" v-on="on" class="text-decoration-none" :href="token.attributes.external_url" v-if="token.attributes.external_url">
+                                            <v-icon>mdi-open-in-new</v-icon>
+                                        </a>
+                                    </template>
+                                    See on {{ hostOf(token.attributes.external_url) }}
+                                </v-tooltip>
+                                <v-tooltip top v-if="isPublicExplorer">
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <a @click="reloadMetadata" v-bind="attrs" v-on="on" class="text-decoration-none">
+                                            <v-icon>mdi-refresh</v-icon>
+                                        </a>
+                                    </template>
+                                    Reload metadata
+                                </v-tooltip>
+                            </div>
+                        </v-card-subtitle>
+                        <v-card-title class="text-h4 font-weight-bold">{{ token.attributes.name }}</v-card-title>
+                        <v-card-subtitle>Owned by <Hash-Link :type="'address'" :hash="token.owner" /></v-card-subtitle>
+                        <v-card-text v-if="token.attributes.description">{{ token.attributes.description }}</v-card-text>
+                    </template>
+                    <v-card-subtitle v-else>
+                        <v-skeleton-loader type="paragraph"></v-skeleton-loader>
                     </v-card-subtitle>
-                    <v-card-title class="text-h4 font-weight-bold">{{ token.attributes.name }}</v-card-title>
-                    <v-card-subtitle>Owned by <Hash-Link :type="'address'" :hash="token.owner" /></v-card-subtitle>
-                    <v-card-text v-if="token.attributes.description">{{ token.attributes.description }}</v-card-text>
                 </v-card>
             </v-col>
 
@@ -124,12 +130,14 @@
 
 <script>
 const moment = require('moment');
+import { mapGetters } from 'vuex';
+
 import TokenTransfers from './TokenTransfers';
 import HashLink from './HashLink';
 
 export default {
     name: 'ERC721Token',
-    props: ['hash', 'tokenId'],
+    props: ['hash', 'index'],
     components: {
         TokenTransfers,
         HashLink
@@ -138,8 +146,8 @@ export default {
         loading: false,
         metadataReloaded: false,
         transfers: [],
+        contract: {},
         token: {
-            contract: {},
             metadata: {},
             attributes: { properties: [], levels: [], boosts: [], stats: [], dates: [] }
         }
@@ -151,20 +159,31 @@ export default {
         },
         reloadMetadata() {
             this.metadataReloaded = false;
-            this.server.reloadErc721Token(this.hash, this.tokenId)
+            this.server.reloadErc721Token(this.hash, this.index)
                 .then(() => this.metadataReloaded = true)
                 .catch(console.log);
         },
         getErc721Token() {
             this.loading = true;
-            this.server.getErc721Token(this.hash, this.tokenId)
-                .then(({ data }) => this.token = data)
+            this.server.getErc721Token(this.hash, this.index)
+                .then(({ data }) => {
+                    this.token = data;
+                    if (this.token.contract)
+                        this.contract = this.token.contract;
+                    else
+                        this.getContract();
+                })
                 .catch(console.log)
                 .finally(() => this.loading = false);
         },
         getErc721TokenTransfers() {
-            this.server.getErc721TokenTransfers(this.hash, this.tokenId)
+            this.server.getErc721TokenTransfers(this.hash, this.index)
                 .then(({ data }) => this.transfers = data)
+                .catch(console.log);
+        },
+        getContract() {
+            this.server.getContract(this.hash)
+                .then(({ data }) => this.contract = data)
                 .catch(console.log);
         }
     },
@@ -177,6 +196,11 @@ export default {
             }
         }
     },
+    computed: {
+        ...mapGetters([
+            'isPublicExplorer'
+        ])
+    }
 }
 </script>
 <style>

@@ -9,6 +9,72 @@ const ERC721_ENUMERABLE_ABI = require('../abis/erc721Enumerable.json');
 const { ContractConnector, getProvider } = require('./rpc');
 const { sanitize } = require('./utils');
 
+const formatErc721Metadata = (token) => {
+    if (!token)
+        return null;
+
+    if (!token.metadata || !token.metadata.attributes || typeof token.metadata.attributes !== 'object')
+        return {
+            name: `#${token.tokenId}`,
+            image_data: null,
+            background_color: null,
+            description: null,
+            external_url: null,
+            properties: [],
+            levels: [],
+            boosts: [],
+            stats: [],
+            dates: []
+        };
+
+    const name = token.metadata.name || `#${token.tokenId}`;
+
+    let image_data;
+    if (token.metadata.image_data)
+        image_data = token.metadata.image_data;
+    else if (token.metadata.image) {
+        const insertableImage = token.metadata.image.startsWith('ipfs://') ?
+            `https://ipfs.io/ipfs/${token.metadata.image.slice(7, token.metadata.image.length)}` :
+            token.metadata.image;
+
+        image_data = `<img style="height: 100%; width: 100%; object-fit: cover" src="${insertableImage}" />`;
+    }
+
+    const properties = token.metadata.attributes.filter(metadata => {
+        return metadata.value && typeof metadata.value == 'string';
+    });
+
+    const levels = token.metadata.attributes.filter(metadata => {
+        return metadata.value && typeof metadata.value == 'number';
+    });
+
+    const boosts = token.metadata.attributes.filter(metadata => {
+        return metadata.display_type &&
+            metadata.value &&
+            typeof metadata.value == 'number' &&
+            ['boost_number', 'boost_percentage'].indexOf(metadata.display_type);
+    });
+
+    const stats = token.metadata.attributes.filter(metadata => {
+        return metadata.display_type &&
+            metadata.value &&
+            typeof metadata.value == 'number' &&
+            metadata.display_type == 'number';
+    });
+
+    const dates = token.metadata.attributes.filter(metadata => {
+        return metadata.display_type &&
+            metadata.display_type == 'date';
+    });
+
+    const attributes = { background_color: token.metadata.background_color, name, image_data, external_url: token.metadata.external_url, description: token.metadata.description, properties, levels, boosts, stats, dates };
+
+    return {
+        attributes,
+        ...token
+    };
+};
+
 const findPatterns = async (rpcServer, contractAddress, abi) => {
     try {
         let decimals, symbol, name, totalSupply, promises = [], patterns = [], tokenData = {}, has721Metadata, has721Enumerable;
@@ -134,5 +200,6 @@ const isErc721 = (abi) => {
 module.exports = {
     isErc20: isErc20,
     isErc721: isErc721,
-    findPatterns: findPatterns
+    findPatterns: findPatterns,
+    formatErc721Metadata: formatErc721Metadata
 };

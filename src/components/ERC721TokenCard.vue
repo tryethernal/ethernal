@@ -1,6 +1,6 @@
 <template>
     <v-card>
-        <router-link v-if="imageData" :to="`/token/${contractAddress}/${tokenId}`">
+        <router-link v-if="imageData" :to="`/token/${contractAddress}/${index}`">
             <div :style="`background-color: ${backgroundColor ? '#' + backgroundColor : ''};`" rounded="lg" elevation="2" v-html="imageData"></div>
         </router-link>
         <v-skeleton-loader v-else type="image"></v-skeleton-loader>
@@ -21,7 +21,7 @@ import HashLink from './HashLink';
 
 export default {
     name: 'ERC721TokenCard',
-    props: ['owner', 'tokenId', 'imageData', 'name', 'contractAddress', 'backgroundColor'],
+    props: ['owner', 'index', 'imageData', 'name', 'contractAddress', 'backgroundColor'],
     components: {
         HashLink
     },

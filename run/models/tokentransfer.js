@@ -41,12 +41,7 @@ module.exports = (sequelize, DataTypes) => {
             this.setDataValue('token', value.toLowerCase());
         }
     },
-    tokenId: {
-        type: DataTypes.INTEGER,
-        set(value) {
-            this.setDataValue('tokenId', parseInt(value))
-        }
-    },
+    tokenIndex: DataTypes.INTEGER,
     transactionId: DataTypes.INTEGER,
     workspaceId: DataTypes.INTEGER,
   }, {

@@ -7,7 +7,8 @@ import { Storage } from '../lib/storage';
 import { functions } from './firebase';
 import { sanitize } from '../lib/utils';
 import { parseTrace } from '../lib/trace';
-import { findPatterns } from '../lib/contract';
+import { findPatterns, formatErc721Metadata } from '../lib/contract';
+import { ERC721Connector } from '../lib/rpc';
 
 const serverFunctions = {
     // Private
@@ -311,6 +312,31 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            getErc721TokensFrom (contractAddress, indexes) {
+                const tokens = [];
+                return new Promise((resolve, reject) => {
+                    const data = {
+                        firebaseAuthToken: store.getters.firebaseIdToken,
+                        firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                        workspace: store.getters.currentWorkspace.name,
+                    };
+                    const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}`;
+
+                    const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
+                    const promises = [];
+                    for (let i = 0; i < indexes.length; i++) {
+                        promises.push(erc721Connector.fetchTokenByIndex(indexes[i])
+                            .then((token) => {
+                                tokens.push(token)
+                                axios.post(resource, { data: { ...data, token } });
+                            }));
+                    }
+                    Promise.all(promises)
+                        .then(() => resolve(tokens))
+                        .catch(reject);
+                })
+            },
+
             setTokenProperties(contractAddress, properties) {
                 const data = {
                     firebaseAuthToken: store.getters.firebaseIdToken,
@@ -322,34 +348,44 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            getErc721TokenTransfers(contractAddress, tokenId) {
+            getErc721TokenTransfers(contractAddress, index) {
                 const params = {
                     firebaseAuthToken: store.getters.firebaseIdToken,
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}/${tokenId}/transfers`;
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}/${index}/transfers`;
                 return axios.get(resource, { params });
             },
 
-            reloadErc721Token(contractAddress, tokenId) {
+            reloadErc721Token(contractAddress, index) {
                 const data = {
                     firebaseAuthToken: store.getters.firebaseIdToken,
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}/${tokenId}/reload`;
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}/${index}/reload`;
                 return axios.post(resource, { data });
             },
 
-            getErc721Token(contractAddress, tokenId) {
-                const params = {
-                    firebaseAuthToken: store.getters.firebaseIdToken,
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
-                };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}/${tokenId}`;
-                return axios.get(resource, { params });
+            getErc721Token(contractAddress, index) {
+                if (!store.getters.isPublicExplorer) {
+                    const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
+                    return new Promise((resolve, reject) => {
+                        erc721Connector.fetchTokenByIndex(index)
+                            .then(res => resolve({ data: formatErc721Metadata(res) }))
+                            .catch(reject);
+                    });
+                }
+                else {
+                    const params = {
+                        firebaseAuthToken: store.getters.firebaseIdToken,
+                        firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                        workspace: store.getters.currentWorkspace.name,
+                    };
+                    const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}/${index}`;
+                    return axios.get(resource, { params });
+                }
             },
 
             getErc721Tokens(contractAddress, options) {
@@ -359,8 +395,27 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     ...options
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Collections/${contractAddress}/tokens`;
-                return axios.get(resource, { params });
+
+                if (!store.getters.isPublicExplorer) {
+                    return new Promise((resolve, reject) => {
+                        const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
+                        const promises = [];
+                        const indexes = Array.from({ length: options.itemsPerPage }, (_, i) => options.itemsPerPage * (options.page - 1) + i);
+                        for (let i = 0; i < indexes.length; i++)
+                            promises.push(erc721Connector.fetchTokenByIndex(indexes[i]));
+
+                        Promise.all(promises)
+                            .then((res) => {
+                                const tokens = sanitize(res.map(el => formatErc721Metadata(el)));
+                                resolve({ data: { items: tokens }});
+                            })
+                            .catch(reject);
+                    });
+                }
+                else {
+                    const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Collections/${contractAddress}/tokens`;
+                    return axios.get(resource, { params });
+                }
             },
 
             setRemoteFlag() {

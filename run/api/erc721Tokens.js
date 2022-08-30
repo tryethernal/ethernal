@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
+const authMiddleware = require('../middlewares/auth');
 const { enqueueTask } = require('../lib/tasks');
 
-router.get('/:address/:tokenId/transfers', workspaceAuthMiddleware, async (req, res) => {
+router.get('/:address/:index/transfers', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
 
     try {
-        const transfers = await db.getErc721TokenTransfers(data.workspace.id, req.params.address, req.params.tokenId);
+        const transfers = await db.getErc721TokenTransfers(data.workspace.id, req.params.address, req.params.index);
 
         res.status(200).json(transfers);
     } catch(error) {
@@ -17,11 +18,11 @@ router.get('/:address/:tokenId/transfers', workspaceAuthMiddleware, async (req, 
     }
 });
 
-router.post('/:address/:tokenId/reload', workspaceAuthMiddleware, async (req, res) => {
+router.post('/:address/:index/reload', workspaceAuthMiddleware, async (req, res) => {
     const data = req.body.data;
 
     try {
-        if (!data.workspace || !req.params.address || !req.params.tokenId) {
+        if (!data.workspace || !req.params.address || !req.params.index) {
             console.log(data);
             throw '[POST /tasks/fetchAndStoreErc721Token] Missing parameter.';
         }
@@ -31,7 +32,7 @@ router.post('/:address/:tokenId/reload', workspaceAuthMiddleware, async (req, re
         await enqueueTask('reloadErc721', {
             workspaceId: workspace.id,
             address: req.params.address,
-            tokenId: req.params.tokenId,
+            index: req.params.index,
             secret: process.env.AUTH_SECRET
         }, `${process.env.CLOUD_RUN_ROOT}/tasks/reloadErc721`);
 
@@ -42,11 +43,11 @@ router.post('/:address/:tokenId/reload', workspaceAuthMiddleware, async (req, re
     }
 });
 
-router.get('/:address/:tokenId', workspaceAuthMiddleware, async (req, res) => {
+router.get('/:address/:index', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
 
     try {
-        const token = await db.getContractErc721Token(data.workspace.id, req.params.address, req.params.tokenId);
+        const token = await db.getContractErc721Token(data.workspace.id, req.params.address, req.params.index);
 
         res.status(200).json(token);
     } catch(error) {
