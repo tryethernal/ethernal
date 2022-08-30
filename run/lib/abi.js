@@ -96,7 +96,7 @@ const getTransactionMethodDetails = (transaction, abi) => {
             param.push(input.type)
             if (input.name)
                 param.push(` ${input.name}`);
-            if (parsedTransactionData.args[i])
+            if (parsedTransactionData.args[i] !== undefined && parsedTransactionData.args[i] !== null)
                 param.push(`: ${parsedTransactionData.args[i]}`)
             inputsLabel.push(param.join(''));
         }
