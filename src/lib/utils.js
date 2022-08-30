@@ -23,7 +23,14 @@ export const getProvider = function(rpcServer) {
 };
 
 export const processMethodCallParam = function(param, inputType) {
-    if (inputType.endsWith(']') || inputType == 'tuple')
+    if (inputType == 'bool')
+        if (param === 'true')
+            return true;
+        else if (param == 'false')
+            return false;
+        else
+            throw new Error("Input needs to be 'true' or 'false'");
+    else if (inputType.endsWith(']') || inputType == 'tuple')
         try {
             return JSON.parse(param);
         } catch(_error) {

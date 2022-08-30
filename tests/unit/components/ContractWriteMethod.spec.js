@@ -70,6 +70,84 @@ describe('ContractWriteMethod.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
+    it('Should accept true as an input for bool type', async () => {
+        props.method = {
+            "inputs": [
+                {
+                    "internalType": "bool",
+                    "name": "boolInp",
+                    "type": "bool"
+                }
+            ],
+            "name": "boolFun",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        };
+
+        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+
+        await wrapper.find('input').setValue('true');
+        await wrapper.find('button').trigger('click');
+        await new Promise(process.nextTick);
+
+        expect(wrapper.vm.result).toEqual({ txHash: '0xabcd', message: null });
+        expect(wrapper.vm.receipt).toEqual({ status: true });
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should accept false as an input for bool type', async () => {
+        props.method = {
+            "inputs": [
+                {
+                    "internalType": "bool",
+                    "name": "boolInp",
+                    "type": "bool"
+                }
+            ],
+            "name": "boolFun",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        };
+
+        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+
+        await wrapper.find('input').setValue('false');
+        await wrapper.find('button').trigger('click');
+        await new Promise(process.nextTick);
+
+        expect(wrapper.vm.result).toEqual({ txHash: '0xabcd', message: null });
+        expect(wrapper.vm.receipt).toEqual({ status: true });
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it.only('Should throw an error for bool type if input is not true or false', async () => {
+        props.method = {
+            "inputs": [
+                {
+                    "internalType": "bool",
+                    "name": "boolInp",
+                    "type": "bool"
+                }
+            ],
+            "name": "boolFun",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        };
+
+        const wrapper = helper.mountFn(ContractWriteMethod, { propsData: props });
+
+        await wrapper.find('input').setValue('frbbforbuo');
+        await wrapper.find('button').trigger('click');
+        await new Promise(process.nextTick);
+
+        expect(wrapper.vm.result).toEqual({ txHash: null, message: "Input needs to be 'true' or 'false'" });
+        expect(wrapper.vm.receipt).toEqual({});
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should handle array input properly', async () => {
         props.method = {
             "inputs": [
