@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.4] - 2022-09-01
+### Fixed
+- Timestamp was displayed incorrectly on block page
+
 ## [2.5.3] - 2022-08-30
 ### Fixed
 - Boolean inputs are properly handled in contract interactions now (only supports 'true' and 'false').
