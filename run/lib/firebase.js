@@ -557,13 +557,14 @@ const getAddressTransactions = async (workspaceId, address, page, itemsPerPage, 
     }
 };
 
-const getWorkspaceContracts = async (userId, workspaceName, page, itemsPerPage, orderBy, order, onlyTokens) => {
+const getWorkspaceContracts = async (userId, workspaceName, page, itemsPerPage, orderBy, order, pattern) => {
     try {
         const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
         const workspace = user.workspaces[0];
-        const contracts = await workspace.getFilteredContracts(page, itemsPerPage, orderBy, order, onlyTokens);
+        const contracts = await workspace.getFilteredContracts(page, itemsPerPage, orderBy, order, pattern);
+        const allowedPatterns = ['erc20', 'erc721'].indexOf(pattern) > -1 ? pattern : null;
         const contractCount = await workspace.countContracts({
-            where: onlyTokens ? { patterns: { [Op.contains]: ["erc20"] }} : {}
+            where: allowedPatterns ? { patterns: { [Op.contains]: [allowedPatterns] }} : {}
         });
 
         return {

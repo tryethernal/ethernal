@@ -155,7 +155,7 @@ router.get('/:address', workspaceAuthMiddleware, async (req, res) => {
 router.get('/', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
     try {
-        const contracts = await db.getWorkspaceContracts(data.firebaseUserId, data.workspace.name, data.page, data.itemsPerPage, data.orderBy, data.order, data.onlyTokens);
+        const contracts = await db.getWorkspaceContracts(data.firebaseUserId, data.workspace.name, data.page, data.itemsPerPage, data.orderBy, data.order, data.pattern);
 
         res.status(200).json(contracts);
     } catch(error) {

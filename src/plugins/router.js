@@ -12,6 +12,7 @@ import Tokens from '../components/Tokens.vue';
 import Settings from '../components/Settings.vue';
 import Overview from '../components/Overview.vue';
 import ERC721Token from '../components/ERC721Token.vue';
+import ERC721Collections from '../components/ERC721Collections.vue';
 
 const redirectIfLoggedIn = function (to, from, next) {
     if (auth().currentUser) {
@@ -43,6 +44,7 @@ const routes = [
     { path: '/token/:hash', component: Address, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/contracts', component: Contracts, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/tokens', component: Tokens, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/nfts', component: ERC721Collections, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/settings', component: Settings, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '*', redirect: '/overview' }
 ];

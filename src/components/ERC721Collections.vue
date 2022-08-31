@@ -22,6 +22,9 @@
             <template v-slot:item.tokenSymbol="{ item }">
                 {{ item.tokenSymbol }}
             </template>
+            <template v-slot:item.tokenTotalSupply="{ item }">
+                {{ parseInt(item.tokenTotalSupply).toLocaleString() }}
+            </template>
             <template v-slot:item.tags="{ item }">
                 <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" x-small class="success mr-2">
                     {{ formatContractPattern(pattern) }}
@@ -57,6 +60,10 @@ export default {
                 value: 'tokenSymbol'
             },
             {
+                text: 'Total Supply',
+                value: 'tokenTotalSupply'
+            },
+            {
                 text: '',
                 value: 'tags'
             }
@@ -78,7 +85,7 @@ export default {
                 page: this.currentOptions.page,
                 itemsPerPage: this.currentOptions.itemsPerPage,
                 order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc',
-                pattern: 'erc20'
+                pattern: 'erc721'
             };
 
             this.server.getContracts(options)
