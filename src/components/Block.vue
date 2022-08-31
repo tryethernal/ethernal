@@ -13,7 +13,8 @@
             <v-divider vertical></v-divider>
             <v-col lg="2" md="12" sm="12">
                 <v-subheader class="text-overline">Mined On</v-subheader>
-                {{ parseInt(block.timestamp) | moment('YYYY-MM-DD h:mm:ss A') }}
+                {{ moment(block.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
+                <small>{{ moment(block.timestamp).fromNow() }}</small>
             </v-col>
             <v-divider vertical></v-divider>
             <v-col lg="8" md="12" sm="12">
@@ -29,6 +30,7 @@
 </template>
 
 <script>
+const moment = require('moment');
 import TransactionsList from './TransactionsList';
 
 export default {
@@ -43,6 +45,9 @@ export default {
         },
         loading: true
     }),
+    methods: {
+        moment: moment
+    },
     watch: {
         number: {
             immediate: true,
