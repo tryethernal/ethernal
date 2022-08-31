@@ -50,7 +50,12 @@ export default {
         getTokens() {
             this.tokens = Array(this.maxTokenLength).fill({ attributes: {}});
             this.server.getErc721Tokens(this.address, this.currentOptions)
-                .then(({ data: { items } }) => this.tokens = items)
+                .then(({ data: { items } }) => {
+                    const tokens = [];
+                    for (let i = 0; i < this.maxTokenLength; i++)
+                        tokens.push(items[i] ? items[i] : { attributes: {}});
+                    this.tokens = tokens;
+                })
                 .catch(console.log)
         }
     },

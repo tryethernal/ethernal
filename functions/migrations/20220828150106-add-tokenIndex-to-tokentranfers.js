@@ -3,7 +3,7 @@
 module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.addColumn('token_transfers', 'tokenId', {
-      type: Sequelize.DataTypes.INTEGER,
+      type: Sequelize.DataTypes.STRING,
       allowNull: true
     });
   },

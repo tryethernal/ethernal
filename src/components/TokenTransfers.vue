@@ -34,7 +34,7 @@
                     <Hash-Link :type="'address'" :hash="item.dst" :fullHash="!dense" :withName="true" :withTokenName="true" />
                 </template>
                 <template v-slot:item.token="{ item }">
-                    <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" :tokenId="item.tokenIndex" />
+                    <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" :tokenId="item.tokenId" />
                 </template>
                 <template v-slot:item.amount="{ item }">
                     {{ item.amount | fromWei(decimals[item.token], symbols[item.token], unformatted) }}

@@ -86,7 +86,7 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async safeUpdateErc721Token(tokenId, fields) {
+    async safeUpdateErc721Token(index, fields) {
         const token = await this.getErc721Tokens({
             where: {
                 index: index,
