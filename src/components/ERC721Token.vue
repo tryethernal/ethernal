@@ -20,7 +20,7 @@
                                 <v-tooltip v-if="token.attributes.external_url" top>
                                     <template v-slot:activator="{ on, attrs }">
                                         <a  v-bind="attrs" v-on="on" class="text-decoration-none" :href="token.attributes.external_url" v-if="token.attributes.external_url">
-                                            <v-icon>mdi-open-in-new</v-icon>
+                                            <v-icon color="primary">mdi-open-in-new</v-icon>
                                         </a>
                                     </template>
                                     See on {{ hostOf(token.attributes.external_url) }}
@@ -28,7 +28,7 @@
                                 <v-tooltip top v-if="isPublicExplorer">
                                     <template v-slot:activator="{ on, attrs }">
                                         <a @click="reloadMetadata" v-bind="attrs" v-on="on" class="text-decoration-none">
-                                            <v-icon>mdi-refresh</v-icon>
+                                            <v-icon color="primary">mdi-refresh</v-icon>
                                         </a>
                                     </template>
                                     Reload metadata
@@ -36,7 +36,7 @@
                                 <v-tooltip top v-if="!isPublicExplorer">
                                     <template v-slot:activator="{ on, attrs }">
                                         <a @click="openErc721TokenTransferModal()" v-bind="attrs" v-on="on" class="text-decoration-none">
-                                            <v-icon>mdi-send</v-icon>
+                                            <v-icon color="primary">mdi-send</v-icon>
                                         </a>
                                     </template>
                                     Transfer Token
