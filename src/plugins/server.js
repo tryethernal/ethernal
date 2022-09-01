@@ -149,9 +149,9 @@ const serverFunctions = {
     },
     callContractWriteMethod: async function(data) {
         try {
-            var provider = serverFunctions._getProvider(data.rpcServer);
-            var signer;
-            var options = sanitize({
+            const provider = serverFunctions._getProvider(data.rpcServer);
+            let signer;
+            const options = sanitize({
                 gasLimit: data.options.gasLimit,
                 gasPrice: data.options.gasPrice,
                 value: data.options.value,
@@ -163,7 +163,7 @@ const serverFunctions = {
             else {
                 signer = provider.getSigner(data.options.from);
             }
-            var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
+            const contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
 
             const pendingTx = await contract[data.method](...Object.values(data.params), options);
 
@@ -187,6 +187,11 @@ const serverFunctions = {
             else
                 throw sanitize({ reason: reason, data: errorData });
         }
+    },
+    transferErc721Token(rpcServer, contractAddress, from, to, tokenId) {
+        const erc721Connector = new ERC721Connector(rpcServer, contractAddress);
+        return erc721Connector.safeTransferFrom(from, to, tokenId);
+
     },
     traceTransaction: async function(rpcServer, hash) {
         try {
@@ -924,7 +929,8 @@ export const serverPlugin = {
                         .then(resolve)
                         .catch(reject)
                 });
-            }
+            },
+            transferErc721Token: serverFunctions.transferErc721Token
         };
     }
 };

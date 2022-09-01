@@ -71,7 +71,7 @@ class ContractConnector {
 
 class ERC721Connector {
 
-    constructor(server, address, interfaces) {
+    constructor(server, address, interfaces = {}) {
         if (!server || !address) throw '[ERC721Connector] Missing parameter';
 
         this.interfaces = {
@@ -108,6 +108,17 @@ class ERC721Connector {
 
     tokenURI(tokenId) {
         return this.contract.tokenURI(tokenId);
+    }
+
+    setSigner(from) {
+        const signer = this.provider.getSigner(from);
+        return this.contract.connect(signer);
+    }
+
+    safeTransferFrom(from, to, tokenId) {
+        const signer = this.provider.getSigner(from);
+        const contractWithSigner = new ethers.Contract(this.address, this.abi, signer);
+        return contractWithSigner['safeTransferFrom(address,address,uint256)'](from, to, ethers.BigNumber.from(tokenId));
     }
 
     async fetchTokenByIndex(index) {

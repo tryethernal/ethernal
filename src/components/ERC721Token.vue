@@ -1,5 +1,7 @@
 <template>
     <v-container fluid>
+        <ERC721-Token-Transfer-Modal ref="erc721TokenTransferModal" v-if="!isPublicExplorer" :address="hash" :token="token" />
+
         <v-alert text v-if="metadataReloaded" type="success">A metadata reload for this token has been queued for processing. It will be updated soon.</v-alert>
         <v-row class="mb-3">
             <v-col cols="12" sm="6" lg="3">
@@ -30,6 +32,14 @@
                                         </a>
                                     </template>
                                     Reload metadata
+                                </v-tooltip>
+                                <v-tooltip top v-if="!isPublicExplorer">
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <a @click="openErc721TokenTransferModal()" v-bind="attrs" v-on="on" class="text-decoration-none">
+                                            <v-icon>mdi-send</v-icon>
+                                        </a>
+                                    </template>
+                                    Transfer Token
                                 </v-tooltip>
                             </div>
                         </v-card-subtitle>
@@ -133,6 +143,7 @@ const moment = require('moment');
 import { mapGetters } from 'vuex';
 
 import TokenTransfers from './TokenTransfers';
+import ERC721TokenTransferModal from './ERC721TokenTransferModal';
 import HashLink from './HashLink';
 
 export default {
@@ -140,6 +151,7 @@ export default {
     props: ['hash', 'index'],
     components: {
         TokenTransfers,
+        ERC721TokenTransferModal,
         HashLink
     },
     data: () => ({
@@ -156,6 +168,11 @@ export default {
         moment: moment,
         hostOf(url) {
             return new URL(url).host;
+        },
+        openErc721TokenTransferModal() {
+            this.$refs.erc721TokenTransferModal
+                .open({ address: this.hash, token: this.token })
+                .then((reload) => reload ? this.getErc721Token() : null);
         },
         reloadMetadata() {
             this.metadataReloaded = false;
