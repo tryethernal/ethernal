@@ -24,7 +24,7 @@ router.post('/:address/:index/reload', workspaceAuthMiddleware, async (req, res)
     try {
         if (!data.workspace || !req.params.address || !req.params.index) {
             console.log(data);
-            throw '[POST /tasks/fetchAndStoreErc721Token] Missing parameter.';
+            throw '[POST /:address/:index/reload] Missing parameter.';
         }
 
         const workspace = await db.getWorkspaceByName(data.firebaseUserId, data.workspace);
