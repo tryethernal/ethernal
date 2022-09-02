@@ -7,7 +7,7 @@
             <v-alert type="success" v-if="successMessage" v-html="successMessage"></v-alert>
             <v-alert type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
             <v-alert type="error" v-if="invalidOwner">The connected account is not the owner of this token.</v-alert>
-            <v-alert v-if="!successMessage && !errorMessage && !isPublicExplorer && !invalidOwner" type="info" text>This will work if your node supports either <code>hardhat_impersonateAccount</code> or <code>evm_unlockUnknownAccount</code>.</v-alert>
+            <v-alert v-if="!successMessage && !errorMessage && !isPublicExplorer && !invalidOwner" type="info" text v-html="'This will only work if your node supports either <code>hardhat_impersonateAccount</code> or <code>evm_unlockUnknownAccount</code>.'"></v-alert>
 
             Owner: <Hash-Link :type="'address'" :fullHash="true" :hash="token.owner"></Hash-Link>
             <v-text-field

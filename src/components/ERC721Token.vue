@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <ERC721-Token-Transfer-Modal ref="erc721TokenTransferModal" v-if="!isPublicExplorer" :address="hash" :token="token" />
+        <ERC721-Token-Transfer-Modal ref="erc721TokenTransferModal" :address="hash" :token="token" />
 
         <v-alert text v-if="metadataReloaded" type="success">A metadata reload for this token has been queued for processing. It will be updated soon.</v-alert>
         <v-row class="mb-3">
@@ -20,7 +20,7 @@
                                 <v-tooltip v-if="token.attributes.external_url" top>
                                     <template v-slot:activator="{ on, attrs }">
                                         <a  v-bind="attrs" v-on="on" class="text-decoration-none" :href="token.attributes.external_url" v-if="token.attributes.external_url">
-                                            <v-icon color="primary">mdi-open-in-new</v-icon>
+                                            <v-icon color="primary" class="mr-2">mdi-open-in-new</v-icon>
                                         </a>
                                     </template>
                                     See on {{ hostOf(token.attributes.external_url) }}
@@ -28,12 +28,12 @@
                                 <v-tooltip top v-if="isPublicExplorer">
                                     <template v-slot:activator="{ on, attrs }">
                                         <a @click="reloadMetadata" v-bind="attrs" v-on="on" class="text-decoration-none">
-                                            <v-icon color="primary">mdi-refresh</v-icon>
+                                            <v-icon color="primary" class="mr-2">mdi-refresh</v-icon>
                                         </a>
                                     </template>
                                     Reload metadata
                                 </v-tooltip>
-                                <v-tooltip top v-if="!isPublicExplorer">
+                                <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
                                         <a @click="openErc721TokenTransferModal()" v-bind="attrs" v-on="on" class="text-decoration-none">
                                             <v-icon color="primary">mdi-send</v-icon>
