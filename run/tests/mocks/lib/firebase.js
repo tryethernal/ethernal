@@ -57,5 +57,7 @@ jest.mock('../../../lib/firebase', () => ({
     setWorkspaceRemoteFlag: jest.fn(),
     getContractErc721Tokens: jest.fn(),
     getContractErc721Token: jest.fn(),
-    getErc721TokenTransfers: jest.fn()
+    getErc721TokenTransfers: jest.fn(),
+    storeErc721Token: jest.fn(),
+    updateErc721Token: jest.fn()
 }));

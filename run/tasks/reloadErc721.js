@@ -11,7 +11,7 @@ const router = express.Router();
 router.post('/', taskAuthMiddleware, async (req, res) => {
     try {
         const data = req.body.data;
-        if (!data.workspaceId || !data.address || !data.index) {
+        if (!data.workspaceId || !data.address || data.index === undefined || data.index === null) {
             console.log(data);
             throw '[POST /tasks/reloadErc721] Missing parameter.';
         }

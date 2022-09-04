@@ -849,7 +849,8 @@ const storeContractData = async (userId, workspace, address, data) => {
 
     try {
         const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-        return user.workspaces[0].safeCreateOrUpdateContract({ address: address, ...data });
+        const contract = await user.workspaces[0].safeCreateOrUpdateContract({ address: address, ...data });
+        return contract.toJSON();
     } catch(error) {
         writeLog({
             functionName: 'firebase.storeContractData',

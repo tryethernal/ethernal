@@ -139,7 +139,7 @@ class ContractConnector {
 
 class ERC721Connector {
 
-    constructor(server, address, interfaces) {
+    constructor(server, address, interfaces = {}) {
         if (!server || !address) throw '[ERC721Connector] Missing parameter';
 
         this.interfaces = {
@@ -179,7 +179,7 @@ class ERC721Connector {
 
     async fetchAndStoreAllTokens(workspaceId) {
         if (!this.interfaces.enumerable)
-            throw 'This method is only available on ERC721 implemeting the Enumerable interface';
+            throw new Error('This method is only available on ERC721 implemeting the Enumerable interface');;
 
         const totalSupply = await this.totalSupply();
 

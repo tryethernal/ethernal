@@ -10,6 +10,41 @@ const db = require('../../lib/firebase');
 
 beforeEach(() => jest.clearAllMocks());
 
+describe('getErc721TokenTransfers', () => {
+    it('Should return all erc721 tokens transfers for the token id', (done) => {
+        db.getErc721TokenTransfers(1, '0x123', 1)
+            .then(transfers => {
+                expect(transfers).toEqual([
+                    { src: '0x123', dst: '0x456', tokenId: '1' }
+                ]);
+                done();
+            });
+    });
+});
+
+describe('getContractErc721Token', () => {
+    it('Should return the erc721 token', (done) => {
+        db.getContractErc721Token(1, '0x123', 1)
+            .then(token => {
+                expect(token).toEqual({ tokenId: '1' });
+                done();
+            });
+    });
+});
+
+describe('getContractErc721Tokens', () => {
+    it('Should return erc721 tokens with total count', (done) => {
+        db.getContractErc721Tokens(1, '0x123', 1, 10, 'src', 'asc')
+            .then(tokens => {
+                expect(tokens).toEqual({
+                    items: [{ tokenId: '1' }],
+                    total: 1
+                });
+                done();
+            });
+    });
+});
+
 describe('searchForAddress', () => {
     it('Should return found contracts', (done) => {
         db.searchForAddress(1, '0x123')

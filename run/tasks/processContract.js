@@ -197,10 +197,7 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
 
             try {
                 const collection = await erc721.fetchAndStoreAllTokens(workspace.id);
-            } catch(error) {
-                console.log(error);
-                throw error;
-            }
+            } catch(_error) {}
         }
 
         if (metadata.proxy)
