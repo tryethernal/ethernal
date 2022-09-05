@@ -2,41 +2,43 @@
 <v-dialog v-model="dialog" max-width="600">
     <v-card>
         <v-card-title class="headline">Transfer {{ token.attributes.name }}</v-card-title>
+        <v-form v-model="validForm">
+            <v-card-text>
+                <v-alert type="success" v-if="successMessage" v-html="successMessage"></v-alert>
+                <v-alert type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
+                <v-alert type="error" v-if="invalidOwner">The connected account is not the owner of this token.</v-alert>
+                <v-alert v-if="!successMessage && !errorMessage && !isPublicExplorer && !invalidOwner" type="info" text v-html="'This will only work if your node supports either <code>hardhat_impersonateAccount</code> or <code>evm_unlockUnknownAccount</code>.'"></v-alert>
 
-        <v-card-text>
-            <v-alert type="success" v-if="successMessage" v-html="successMessage"></v-alert>
-            <v-alert type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
-            <v-alert type="error" v-if="invalidOwner">The connected account is not the owner of this token.</v-alert>
-            <v-alert v-if="!successMessage && !errorMessage && !isPublicExplorer && !invalidOwner" type="info" text v-html="'This will only work if your node supports either <code>hardhat_impersonateAccount</code> or <code>evm_unlockUnknownAccount</code>.'"></v-alert>
+                Owner: <Hash-Link :type="'address'" :fullHash="true" :hash="token.owner"></Hash-Link>
+                <v-text-field
+                    v-model="recipient"
+                    :rules="[v => !!v && v.length == 42 || 'Invalid address (must be 42 characters long)']"
+                    small
+                    outlined
+                    dense
+                    prepend-inner-icon="mdi-arrow-right"
+                    class="mt-3"
+                    id="recipient"
+                    label="Recipient Address">
+                </v-text-field>
+                <span class="align-right" v-if="transaction.hash">
+                    Transaction:
+                    <v-progress-circular v-if="transaction.hash && transaction.receipt.status === undefined" class="mr-2" size="16" width="2" indeterminate color="primary"></v-progress-circular>
+                    <template v-else>
+                        <v-icon small v-show="transaction.receipt.status" color="success lighten-1" class="mr-1 align-with-text">mdi-check-circle</v-icon>
+                        <v-icon small v-show="!transaction.receipt.status" color="error lighten-1" class="mr-1 align-with-text">mdi-alert-circle</v-icon>
+                    </template>
+                    <Hash-Link :type="'transaction'" :hash="transaction.hash"></Hash-Link>
+                </span>
+                <Metamask v-if="dialog && isPublicExplorer" class="mt-1" @rpcConnectionStatusChanged="onRpcConnectionStatusChanged"></Metamask>
+            </v-card-text>
 
-            Owner: <Hash-Link :type="'address'" :fullHash="true" :hash="token.owner"></Hash-Link>
-            <v-text-field
-                v-model="recipient"
-                :rules="[v => !!v && v.length == 42 || 'Invalid address (must be 42 characters long)']"
-                small
-                outlined
-                dense
-                prepend-inner-icon="mdi-arrow-right"
-                class="mt-3"
-                label="Recipient Address">
-            </v-text-field>
-            <span class="align-right" v-if="transaction.hash">
-                Transaction:
-                <v-progress-circular v-if="transaction.hash && transaction.receipt.status === undefined" class="mr-2" size="16" width="2" indeterminate color="primary"></v-progress-circular>
-                <template v-else>
-                    <v-icon small v-show="transaction.receipt.status" color="success lighten-1" class="mr-1 align-with-text">mdi-check-circle</v-icon>
-                    <v-icon small v-show="!transaction.receipt.status" color="error lighten-1" class="mr-1 align-with-text">mdi-alert-circle</v-icon>
-                </template>
-                <Hash-Link :type="'transaction'" :hash="transaction.hash"></Hash-Link>
-            </span>
-            <Metamask v-if="dialog && isPublicExplorer" class="mt-1" @rpcConnectionStatusChanged="onRpcConnectionStatusChanged"></Metamask>
-        </v-card-text>
-
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" text @click.stop="close()">Close</v-btn>
-            <v-btn id="transferToken" color="primary" :disabled="isPublicExplorer && !metamaskData.isReady || invalidOwner" :loading="loading" text @click.stop="transferToken()">Transfer Token</v-btn>
-        </v-card-actions>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" text @click.stop="close()">Close</v-btn>
+                <v-btn id="transferToken" color="primary" :disabled="!validForm || isPublicExplorer && !metamaskData.isReady || invalidOwner" :loading="loading" text @click.stop="transferToken()">Transfer Token</v-btn>
+            </v-card-actions>
+        </v-form>
     </v-card>
 </v-dialog>
 </template>
@@ -55,6 +57,7 @@ export default {
         Metamask
     },
     data: () => ({
+        validForm: false,
         recipient: null,
         dialog: false,
         resolve: null,
@@ -148,6 +151,7 @@ export default {
             this.transaction = {
                 receipt: {}
             };
+            this.validForm = false;
             this.didTransfer = false;
             this.rpcConnectionStatus = false;
             this.metamaskData = {};

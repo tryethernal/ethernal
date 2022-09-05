@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ERC721Collection.vue Should load & display tokens 1`] = `
+<div class="container container--fluid">
+  <div class="row">
+    <div class="col-sm-4 col-lg-2 col-6">
+      <erc721-token-card-stub contractaddress="Ox123" tokenid="1" name="Ethernal" owner="0xabc"></erc721-token-card-stub>
+    </div>
+    <div class="col-sm-4 col-lg-2 col-6">
+      <erc721-token-card-stub contractaddress="Ox123"></erc721-token-card-stub>
+    </div>
+    <div class="col-sm-4 col-lg-2 col-6">
+      <erc721-token-card-stub contractaddress="Ox123"></erc721-token-card-stub>
+    </div>
+    <div class="col-sm-4 col-lg-2 col-6">
+      <erc721-token-card-stub contractaddress="Ox123"></erc721-token-card-stub>
+    </div>
+    <div class="col-sm-4 col-lg-2 col-6">
+      <erc721-token-card-stub contractaddress="Ox123"></erc721-token-card-stub>
+    </div>
+    <div class="col-sm-4 col-lg-2 col-6">
+      <erc721-token-card-stub contractaddress="Ox123"></erc721-token-card-stub>
+    </div>
+    <div class="col-sm-4 col-lg-2 col-6">
+      <erc721-token-card-stub contractaddress="Ox123"></erc721-token-card-stub>
+    </div>
+    <div class="col-sm-4 col-lg-2 col-6">
+      <erc721-token-card-stub contractaddress="Ox123"></erc721-token-card-stub>
+    </div>
+    <div class="col-sm-4 col-lg-2 col-6">
+      <erc721-token-card-stub contractaddress="Ox123"></erc721-token-card-stub>
+    </div>
+    <div class="col-sm-4 col-lg-2 col-6">
+      <erc721-token-card-stub contractaddress="Ox123"></erc721-token-card-stub>
+    </div>
+    <div class="col-sm-4 col-lg-2 col-6">
+      <erc721-token-card-stub contractaddress="Ox123"></erc721-token-card-stub>
+    </div>
+    <div class="col-sm-4 col-lg-2 col-6">
+      <erc721-token-card-stub contractaddress="Ox123"></erc721-token-card-stub>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <nav role="navigation" aria-label="Pagination Navigation">
+        <ul class="v-pagination theme--light">
+          <li><button disabled="disabled" type="button" aria-label="Previous page" class="v-pagination__navigation v-pagination__navigation--disabled"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></button></li>
+          <li><button type="button" aria-current="true" aria-label="Current Page, Page 1" class="v-pagination__item v-pagination__item--active primary">1</button></li>
+          <li><button type="button" aria-label="Goto Page 2" class="v-pagination__item">2</button></li>
+          <li><button type="button" aria-label="Goto Page 3" class="v-pagination__item">3</button></li>
+          <li><span class="v-pagination__more">...</span></li>
+          <li><button type="button" aria-label="Goto Page 7" class="v-pagination__item">7</button></li>
+          <li><button type="button" aria-label="Goto Page 8" class="v-pagination__item">8</button></li>
+          <li><button type="button" aria-label="Goto Page 9" class="v-pagination__item">9</button></li>
+          <li><button type="button" aria-label="Next page" class="v-pagination__navigation"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></button></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+`;

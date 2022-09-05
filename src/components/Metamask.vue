@@ -91,8 +91,7 @@ export default {
             return this.formattedExpectedChainId === this.chainId;
         },
         formattedExpectedChainId: function() {
-            return '0x7a69'
-            // return `0x${this.publicExplorer.chainId.toString(16)}`;
+            return `0x${this.publicExplorer.chainId.toString(16)}`;
         }
     }
 }
