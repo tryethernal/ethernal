@@ -78,7 +78,7 @@ exports[`ERC721Token.vue Should load & display an erc721 token 1`] = `
     </div>
     <div class="col col-12">
       <h3 class="mb-2">Transfers</h3>
-      <token-transfers-stub dense="true" transfers="[object Object]"></token-transfers-stub>
+      <token-transfers-stub withtransactiondata="true" dense="true" transfers="[object Object]"></token-transfers-stub>
     </div>
   </div>
   <h3>Properties</h3>

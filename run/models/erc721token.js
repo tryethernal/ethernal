@@ -20,18 +20,21 @@ module.exports = (sequelize, DataTypes) => {
     attributes: {
         type: DataTypes.VIRTUAL,
         get() {
-            if (!this.metadata || !this.metadata.attributes || typeof this.metadata.attributes !== 'object')
+            if (!token.metadata)
                 return {
-                    name: `#${this.tokenId}`,
-                    image_data: null,
-                    background_color: null,
-                    description: null,
-                    external_url: null,
-                    properties: [],
-                    levels: [],
-                    boosts: [],
-                    stats: [],
-                    dates: []
+                    ...token,
+                    attributes: {
+                        name: `#${token.tokenId}`,
+                        image_data: null,
+                        background_color: null,
+                        description: null,
+                        external_url: null,
+                        properties: [],
+                        levels: [],
+                        boosts: [],
+                        stats: [],
+                        dates: []
+                    }
                 };
 
             const name = this.metadata.name || `#${this.tokenId}`;
@@ -47,19 +50,23 @@ module.exports = (sequelize, DataTypes) => {
                 image_data = `<img style="height: 100%; width: 100%; object-fit: cover" src="${insertableImage}" />`;
             }
 
-            const properties = this.metadata.attributes.filter(metadata => {
-                return metadata.value && typeof metadata.value == 'string';
+            const properties = token.metadata.attributes.filter(metadata => {
+                return metadata.value &&
+                    !metadata.display_type &&
+                    typeof metadata.value == 'string';
             });
 
-            const levels = this.metadata.attributes.filter(metadata => {
-                return metadata.value && typeof metadata.value == 'number';
+            const levels = token.metadata.attributes.filter(metadata => {
+                return metadata.value &&
+                    !metadata.display_type &&
+                    typeof metadata.value == 'number';
             });
 
-            const boosts = this.metadata.attributes.filter(metadata => {
+            const boosts = token.metadata.attributes.filter(metadata => {
                 return metadata.display_type &&
                     metadata.value &&
                     typeof metadata.value == 'number' &&
-                    ['boost_number', 'boost_percentage'].indexOf(metadata.display_type);
+                    ['boost_number', 'boost_percentage'].indexOf(metadata.display_type) > -1;
             });
 
             const stats = this.metadata.attributes.filter(metadata => {

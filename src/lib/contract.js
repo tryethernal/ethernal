@@ -1,4 +1,4 @@
- const ethers = require('ethers');
+const ethers = require('ethers');
 
 const SELECTORS = require('../abis/selectors.json');
 const ERC20_ABI = require('../abis/erc20.json');
@@ -13,23 +13,27 @@ const formatErc721Metadata = (token) => {
     if (!token)
         return null;
 
-    if (!token.metadata || !token.metadata.attributes || typeof token.metadata.attributes !== 'object')
+    if (!token.metadata)
         return {
-            name: `#${token.tokenId}`,
-            image_data: null,
-            background_color: null,
-            description: null,
-            external_url: null,
-            properties: [],
-            levels: [],
-            boosts: [],
-            stats: [],
-            dates: []
+            ...token,
+            attributes: {
+                name: `#${token.tokenId}`,
+                image_data: null,
+                background_color: null,
+                description: null,
+                external_url: null,
+                properties: [],
+                levels: [],
+                boosts: [],
+                stats: [],
+                dates: []
+            }
         };
 
     const name = token.metadata.name || `#${token.tokenId}`;
 
     let image_data;
+
     if (token.metadata.image_data)
         image_data = token.metadata.image_data;
     else if (token.metadata.image) {
@@ -40,34 +44,38 @@ const formatErc721Metadata = (token) => {
         image_data = `<img style="height: 100%; width: 100%; object-fit: cover" src="${insertableImage}" />`;
     }
 
-    const properties = token.metadata.attributes.filter(metadata => {
-        return metadata.value && typeof metadata.value == 'string';
+    const properties = (token.metadata.attributes || []).filter(metadata => {
+        return metadata.value &&
+            !metadata.display_type &&
+            typeof metadata.value == 'string';
     });
 
-    const levels = token.metadata.attributes.filter(metadata => {
-        return metadata.value && typeof metadata.value == 'number';
+    const levels = (token.metadata.attributes || []).filter(metadata => {
+        return metadata.value &&
+            !metadata.display_type &&
+            typeof metadata.value == 'number';
     });
 
-    const boosts = token.metadata.attributes.filter(metadata => {
+    const boosts = (token.metadata.attributes || []).filter(metadata => {
         return metadata.display_type &&
             metadata.value &&
             typeof metadata.value == 'number' &&
-            ['boost_number', 'boost_percentage'].indexOf(metadata.display_type);
+            ['boost_number', 'boost_percentage'].indexOf(metadata.display_type) > -1;
     });
 
-    const stats = token.metadata.attributes.filter(metadata => {
+    const stats = (token.metadata.attributes || []).filter(metadata => {
         return metadata.display_type &&
             metadata.value &&
             typeof metadata.value == 'number' &&
             metadata.display_type == 'number';
     });
 
-    const dates = token.metadata.attributes.filter(metadata => {
+    const dates = (token.metadata.attributes || []).filter(metadata => {
         return metadata.display_type &&
             metadata.display_type == 'date';
     });
 
-    const attributes = { background_color: token.metadata.background_color, name, image_data, external_url: token.metadata.external_url, description: token.metadata.description, properties, levels, boosts, stats, dates };
+    const attributes = { background_color: token.metadata.background_color || null, name, image_data, external_url: token.metadata.external_url || null, description: token.metadata.description || null, properties, levels, boosts, stats, dates };
 
     return {
         attributes,
@@ -91,6 +99,7 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
             decimals = res[0];
             symbol = res[1];
             name = res[2];
+            totalSupply = res[3];
         }).catch(() => {});
 
         if (decimals && symbol && name) {
@@ -142,8 +151,8 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
             tokenName: tokenData.name,
             tokenDecimals: tokenData.decimals,
             totalSupply: tokenData.totalSupply,
-            has721Metadata: has721Metadata,
-            has721Enumerable: has721Enumerable
+            has721Metadata: !!has721Metadata,
+            has721Enumerable: !!has721Enumerable
         };
     } catch(error) {
         console.log(error);

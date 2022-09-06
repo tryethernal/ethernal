@@ -51,7 +51,7 @@ import { formatContractPattern } from '@/lib/utils';
 
 export default {
     name: 'TokenTransfers',
-    props: ['transfers', 'dense'],
+    props: ['transfers', 'dense', 'withTransactionData', 'withTokenData'],
     components: {
         HashLink
     },
@@ -75,14 +75,14 @@ export default {
         formatContractPattern: formatContractPattern,
         setHeaders() {
             const headers = [];
-            const transaction = this.transfers.length && this.transfers[0].transaction;
 
-            if (transaction)
+            if (this.withTransactionData)
                 headers.push({ text: 'Transaction', value: 'transactionHash' });
-            else
+
+            if (this.withTokenData)
                 headers.push({ text: 'Type', value: 'type' });
 
-            if (transaction) {
+            if (this.withTransactionData) {
                 headers.push({ text: 'Mined On', value: 'timestamp' });
                 this.sortBy = 'timestamp';
             }
@@ -92,11 +92,11 @@ export default {
                 { text: 'To', value: 'dst' }
             )
 
-            if (!transaction) {
+            if (this.withTokenData) {
                 headers.push(
                     { text: 'Token', value: 'token' },
                     { text: 'Amount', value: 'amount' }
-                );
+                )
             }
 
             this.tableHeaders = headers;
@@ -104,6 +104,9 @@ export default {
         loadContractData() {
             for (let i = 0; i < this.transfers.length; i++) {
                 const contract = this.transfers[i].contract;
+
+                if (!contract)
+                    continue;
 
                 contract.tokenDecimals ?
                     this.$set(this.decimals, this.transfers[i].token, contract.tokenDecimals) :

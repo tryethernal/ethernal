@@ -89,7 +89,7 @@ exports[`TransactionsList.vue Should display the list 1`] = `
       </thead>
       <tbody>
         <tr class="">
-          <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" class="">0x06003448...94ef0</a> <span>
+          <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" class="">0x06003448...94ef0</a> <!----> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" value="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0"></span>
             <!----></span>
           </td>
@@ -100,12 +100,12 @@ exports[`TransactionsList.vue Should display the list 1`] = `
               05/06 7:11:26 PM<br> <small>3 months ago</small></div>
           </td>
           <td class="text-start">
-            <!----> <span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <span>
+            <!----> <span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <!----> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
             <!----></span>
           </td>
           <td class="text-start">
-            <!----> <span><!----> <a href="#/address/Ox1" class="">Ox1...Ox1</a> <span>
+            <!----> <span><!----> <a href="#/address/Ox1" class="">Ox1...Ox1</a> <!----> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox1" value="Ox1"></span>
             <!----></span>
           </td>
@@ -115,7 +115,7 @@ exports[`TransactionsList.vue Should display the list 1`] = `
           <td class="text-start"></td>
         </tr>
         <tr class="">
-          <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x1234" class="">0x1234...x1234</a> <span>
+          <td class="text-start"><span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px;"></i></span><span class="v-tooltip v-tooltip--top"><!----></span> <span><!----> <a href="#/transaction/0x1234" class="">0x1234...x1234</a> <!----> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x1234" value="0x1234"></span>
             <!----></span>
           </td>
@@ -126,12 +126,12 @@ exports[`TransactionsList.vue Should display the list 1`] = `
               05/06 7:11:26 PM<br> <small>3 months ago</small></div>
           </td>
           <td class="text-start">
-            <!----> <span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <span>
+            <!----> <span><!----> <a href="#/address/0x0" class="">0x0...0x0</a> <!----> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0" value="0x0"></span>
             <!----></span>
           </td>
           <td class="text-start">
-            <!----> <span><!----> <a href="#/address/Ox1" class="">Ox1...Ox1</a> <span>
+            <!----> <span><!----> <a href="#/address/Ox1" class="">Ox1...Ox1</a> <!----> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-Ox1" value="Ox1"></span>
             <!----></span>
           </td>

@@ -123,12 +123,12 @@ class ERC721Connector {
 
     async fetchTokenByIndex(index) {
         if (!this.interfaces.enumerable)
-            throw 'This method is only available on ERC721 implemeting the Enumerable interface';
+            throw new Error('This method is only available on ERC721 implemeting the Enumerable interface');
 
         if (this.totalSupplyValue == null)
             this.totalSupplyValue = await this.totalSupply();
 
-        if (index > this.totalSupplyValue - 1)
+        if (index < 0 || index > this.totalSupplyValue - 1)
             return null;
 
         const tokenId = await this.tokenByIndex(index);

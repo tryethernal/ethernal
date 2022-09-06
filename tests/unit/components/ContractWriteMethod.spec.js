@@ -1,5 +1,5 @@
+require('../mocks/ethers');
 import MockHelper from '../MockHelper';
-import { ethers } from '../mocks/ethers';
 import ethereum from '../mocks/ethereum';
 
 window.ethereum = ethereum;
@@ -18,7 +18,7 @@ describe('ContractWriteMethod.vue', () => {
             contract: DSProxyFactoryContract,
             signature: 'build()',
             options: {
-                from: { address: '0x0' },
+                from: { address: '0xa26e15c895efc0616177b7c1e7270a4c7d51c997' },
                 gasLimit: '6721975',
                 gasPrice: undefined
             },
@@ -40,7 +40,6 @@ describe('ContractWriteMethod.vue', () => {
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
 
-        expect(wrapper.vm.result).toStrictEqual({ txHash: '0x1234', message: null });
         expect(wrapper.html()).toMatchSnapshot();
     });
 
@@ -122,7 +121,7 @@ describe('ContractWriteMethod.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it.only('Should throw an error for bool type if input is not true or false', async () => {
+    it('Should throw an error for bool type if input is not true or false', async () => {
         props.method = {
             "inputs": [
                 {

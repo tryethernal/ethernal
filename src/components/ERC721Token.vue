@@ -55,7 +55,7 @@
 
             <v-col cols="12">
                 <h3 class="mb-2">Transfers</h3>
-                <Token-Transfers :transfers="transfers" :dense="true" />
+                <Token-Transfers :transfers="transfers" :dense="true" :withTransactionData="true" />
             </v-col>
         </v-row>
 
