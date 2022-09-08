@@ -1,10 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ERC721Collection.vue Should display info message if contract is enumerable but there are no tokens minted 1`] = `
+<div class="container container--fluid">
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__text">
+      It looks like this collection is empty. Mint some tokens to see them (if you just minted some, wait a few more seconds for them to be processed).
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ERC721Collection.vue Should display info message if contract is not enumerable 1`] = `
+<div class="container container--fluid">
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__text">
+      Collection view is only available for ERC721 contracts that implement the Enumerable extension.
+    </div>
+  </div>
+</div>
+`;
+
 exports[`ERC721Collection.vue Should load & display tokens 1`] = `
 <div class="container container--fluid">
   <div class="row">
     <div class="col-sm-4 col-lg-2 col-6">
-      <erc721-token-card-stub contractaddress="Ox123" tokenid="1" name="Ethernal" owner="0xabc"></erc721-token-card-stub>
+      <erc721-token-card-stub contractaddress="Ox123" name="Ethernal" tokenid="1" owner="0xabc"></erc721-token-card-stub>
     </div>
     <div class="col-sm-4 col-lg-2 col-6">
       <erc721-token-card-stub contractaddress="Ox123"></erc721-token-card-stub>

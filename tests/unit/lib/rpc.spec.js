@@ -25,7 +25,6 @@ describe('ERC721Connector', () => {
         const token = await erc721.fetchTokenByIndex(1);
         expect(token).toEqual({
             tokenId: '1',
-            index: 1,
             owner: '0x123',
             URI: 'ipfs://QmPbxeGcXhYQQNgsC6a36dDyYUcHgMLnGKnF8pVFmGsvqi',
             metadata: { metadata: 'image' }

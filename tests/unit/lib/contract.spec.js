@@ -3,7 +3,7 @@ require('../mocks/rpc');
 
 const ethers = require('ethers');
 const { isErc20, isErc721, findPatterns, formatErc721Metadata } = require('@/lib/contract');
-const { ContractConnector } = require('@/lib/rpc');
+const { ContractConnector, ERC721Connector } = require('@/lib/rpc');
 import DSProxyContract from '../fixtures/DSProxyContract';
 import ERC20 from '@/abis/erc20.json';
 import ERC721 from '@/abis/erc721.json';
@@ -147,7 +147,7 @@ describe('findPatterns', () => {
             tokenSymbol: 'ETL',
             tokenName: 'Ethernal',
             tokenDecimals: 18,
-            totalSupply: 1000,
+            totalSupply: '1000',
             has721Metadata: false,
             has721Enumerable: false
         });
@@ -160,7 +160,7 @@ describe('findPatterns', () => {
             tokenSymbol: 'ETL',
             tokenName: 'Ethernal',
             tokenDecimals: 18,
-            totalSupply: 1000,
+            totalSupply: '1000',
             has721Metadata: false,
             has721Enumerable: false
         });
@@ -180,6 +180,10 @@ describe('findPatterns', () => {
                 has721Interface: jest.fn().mockResolvedValue(true),
                 has721Metadata: jest.fn().mockResolvedValue(true),
                 has721Enumerable: jest.fn().mockResolvedValue(true),
+            }
+        });
+        ERC721Connector.mockImplementation(function() {
+            return {
                 symbol: jest.fn().mockResolvedValue('ETL'),
                 name: jest.fn().mockResolvedValue('Ethernal'),
                 totalSupply: jest.fn().mockResolvedValue(1000)

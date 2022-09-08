@@ -12,7 +12,7 @@ describe('ERC721TokenCard.vue', () => {
         const wrapper = helper.mountFn(ERC721TokenCard, {
             propsData: {
                 owner: '0x123',
-                index: 0,
+                tokenId: '0',
                 imageData: '<img src="http://image" />',
                 name: 'Token #1',
                 contractAddress: '0xabc',

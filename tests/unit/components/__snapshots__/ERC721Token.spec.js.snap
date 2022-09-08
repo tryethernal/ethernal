@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ERC721Token.vue Should load & display an erc721 token 1`] = `
-<div class="container container--fluid">
+<div class="container container--fluid" index="0">
   <erc721-token-transfer-modal-stub token="[object Object]" address="0x123"></erc721-token-transfer-modal-stub>
   <!---->
   <div class="row mb-3">
-    <div class="col-sm-6 col-lg-3 col-12">
+    <div class="col">
       <div class="mb-1 v-card v-sheet v-sheet--outlined theme--light rounded-xl">
         <div class="fill"><svg id="luchador1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <style>
