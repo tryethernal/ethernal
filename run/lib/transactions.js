@@ -101,7 +101,7 @@ const processTransactions = async (userId, workspaceName, transactions) => {
 
         try {
             tokenTransfers = getTokenTransfers(transaction);
-            console.log(tokenTransfers)
+
             await db.storeTransactionTokenTransfers(userId, workspaceName, transaction.hash, tokenTransfers);
 
             if (workspace && workspace.public) {
