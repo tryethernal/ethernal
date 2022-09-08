@@ -59,5 +59,7 @@ jest.mock('../../../lib/firebase', () => ({
     getContractErc721Token: jest.fn(),
     getErc721TokenTransfers: jest.fn(),
     storeErc721Token: jest.fn(),
-    updateErc721Token: jest.fn()
+    updateErc721Token: jest.fn(),
+    getContractByWorkspaceId: jest.fn(),
+    storeContractDataWithWorkspaceId: jest.fn()
 }));

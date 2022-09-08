@@ -44,10 +44,10 @@ describe(`POST ${BASE_URL}/:address/:index/reload`, () => {
             .send({ data: { workspace: 'Ethernal' }})
             .expect(200)
             .then(() => {
-                expect(enqueueTask).toHaveBeenCalledWith('reloadErc721', {
+                expect(enqueueTask).toHaveBeenCalledWith('reloadErc721Token', {
                     workspaceId: 1,
                     address: '0x123',
-                    index: '0',
+                    tokenId: '0',
                     secret: expect.anything()
                 }, expect.anything());
                 done();

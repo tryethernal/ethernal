@@ -27,7 +27,10 @@ jest.mock('../../../lib/rpc', () => {
         ERC721Connector: jest.fn().mockImplementation(() => ({
             tokenByIndex: jest.fn().mockResolvedValue('0'),
             ownerOf: jest.fn().mockResolvedValue('0xabc'),
-            tokenURI: jest.fn().mockResolvedValue('http://metadata')
+            tokenURI: jest.fn().mockResolvedValue('http://metadata'),
+            totalSupply: jest.fn().mockResolvedValue('1000'),
+            symbol: jest.fn().mockResolvedValue('ETL'),
+            name: jest.fn().mockResolvedValue('Ethernal')
         }))
     }
 });

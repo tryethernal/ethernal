@@ -21,7 +21,7 @@ const axios = require('axios');
 const ethers = require('ethers');
 const db = require('../../lib/firebase');
 const transactionsLib = require('../../lib/transactions');
-const { ContractConnector } = require('../../lib/rpc');
+const { ContractConnector, ERC721Connector } = require('../../lib/rpc');
 const ERC721_ABI = require('../fixtures/ERC721_ABI.json');
 
 const supertest = require('supertest');
@@ -136,12 +136,14 @@ describe('POST /', () => {
         jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 1, name: 'My Workspace', public: true, rpcServer: 'http://rpc.ethernal.com' });
         jest.spyOn(db, 'getWorkspaceContractById').mockResolvedValue({ workspaceId: 1, address: '0x123' });
         ContractConnector.mockImplementationOnce(() => ({
-            name: jest.fn().mockResolvedValue('Ethernal'),
             has721Metadata: jest.fn().mockResolvedValue(true),
             has721Enumerable: jest.fn().mockResolvedValue(true),
+            has721Interface: jest.fn().mockResolvedValue(true)
+        }));
+        ERC721Connector.mockImplementationOnce(() => ({
+            name: jest.fn().mockResolvedValue('Ethernal'),
             symbol: jest.fn().mockResolvedValue('ETL'),
             totalSupply: jest.fn().mockResolvedValue('1000'),
-            has721Interface: jest.fn().mockResolvedValue(true)
         }));
 
         request.post(BASE_URL)
@@ -180,7 +182,8 @@ describe('POST /', () => {
                     processed: true,
                     tokenName: 'Ethernal',
                     tokenSymbol: 'ETL',
-                    tokenDecimals: 18
+                    tokenDecimals: 18,
+                    totalSupply: "1000"
                 });
                 done();
             });

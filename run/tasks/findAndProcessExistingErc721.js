@@ -5,8 +5,7 @@ const taskAuthMiddleware = require('../middlewares/taskAuth');
 const db = require('../lib/firebase');
 const { ERC721Connector } = require('../lib/rpc');
 const { sanitize } = require('../lib/utils');
-const models = require('../models');
-const Workspace = models.Workspace;
+const Workspace = db.Workspace;
 const router = express.Router();
 const { enqueueTask } = require('../lib/tasks');
 
