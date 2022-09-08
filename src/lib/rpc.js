@@ -44,28 +44,53 @@ class ContractConnector {
     }
 
     has721Interface() {
-        return this.contract.supportsInterface(this.INTERFACE_IDS['721']);
+        try {
+            return this.contract.supportsInterface(this.INTERFACE_IDS['721']);
+        } catch(_error) {
+            return new Promise(resolve => resolve(false));
+        }
     }
 
     has721Metadata() {
-        return this.contract.supportsInterface(this.INTERFACE_IDS['721Metadata']);
+        try {
+            return this.contract.supportsInterface(this.INTERFACE_IDS['721Metadata']);
+         } catch(_error) {
+             return new Promise(resolve => resolve(false));
+         }
     }
 
     has721Enumerable() {
-        return this.contract.supportsInterface(this.INTERFACE_IDS['721Enumerable']);
+        try {
+            return this.contract.supportsInterface(this.INTERFACE_IDS['721Enumerable']);
+        } catch(_error) {
+            return new Promise(resolve => resolve(false));
+        }
     }
 
     symbol() {
-        return this.contract.symbol();
+        try {
+            return this.contract.symbol();
+        } catch(_error) {
+            console.log(_error);
+            return new Promise(resolve => resolve(null));
+        }
     }
 
     name() {
-        return this.contract.name();
+        try {
+            return this.contract.name();
+        } catch(_error) {
+            return new Promise(resolve => resolve(null));
+        }
     }
 
     async totalSupply() {
-        const res = await this.contract.totalSupply();
-        return res.toString();
+        try {
+            const res = await this.contract.totalSupply();
+            return res.toString();
+        } catch(_error) {
+            return null;
+        }
     }
 }
 
@@ -94,20 +119,54 @@ class ERC721Connector {
     }
 
     async totalSupply() {
-        const res = await this.contract.totalSupply();
-        return res.toString();
+        try {
+            const res = await this.contract.totalSupply();
+            return res.toString();
+        } catch(_error) {
+            return new Promise(resolve => resolve(null));
+        }
     }
 
-    tokenByIndex(index) {
-        return this.contract.tokenByIndex(index);
+    symbol() {
+        try {
+            return this.contract.symbol();
+        } catch(_error) {
+            console.log(_error);
+            return new Promise(resolve => resolve(null));
+        }
+    }
+
+    name() {
+        try {
+            return this.contract.name();
+        } catch(_error) {
+            return new Promise(resolve => resolve(null));
+        }
+    }
+
+    async tokenByIndex(index) {
+        try {
+            const res = await this.contract.tokenByIndex(index);
+            return res.toString();
+        } catch(_error) {
+            return new Promise(resolve => resolve(null));
+        }
     }
 
     ownerOf(tokenId) {
-        return this.contract.ownerOf(tokenId);
+        try {
+            return this.contract.ownerOf(tokenId);
+        } catch (_error) {
+            return new Promise(resolve => resolve(null));
+        }
     }
 
     tokenURI(tokenId) {
-        return this.contract.tokenURI(tokenId);
+        try {
+            return this.contract.tokenURI(tokenId);
+        } catch(_error) {
+            return new Promise(resolve => resolve(null));
+        }
     }
 
     setSigner(from) {
@@ -121,6 +180,38 @@ class ERC721Connector {
         return contractWithSigner['safeTransferFrom(address,address,uint256)'](from, to, ethers.BigNumber.from(tokenId));
     }
 
+    async fetchTokenById(tokenId) {
+        let metadata, URI;
+
+        const owner = await this.ownerOf(tokenId.toString());
+
+        try {
+            URI = await this.tokenURI(tokenId.toString());
+        } catch(_) {
+            URI = null;
+        }
+
+        if (URI) {
+            const axiosableURI = URI.startsWith('ipfs://') ?
+                `https://ipfs.io/ipfs/${URI.slice(7, URI.length)}` : URI;
+
+            try {
+                metadata = (await axios.get(axiosableURI)).data;
+            } catch(error) {
+                metadata = {};
+            }
+        }
+        else
+            metadata = {};
+
+        return sanitize({
+            tokenId: tokenId.toString(),
+            owner: owner,
+            URI: URI,
+            metadata: metadata
+        });
+    }
+
     async fetchTokenByIndex(index) {
         if (!this.interfaces.enumerable)
             throw new Error('This method is only available on ERC721 implemeting the Enumerable interface');
@@ -128,25 +219,12 @@ class ERC721Connector {
         if (this.totalSupplyValue == null)
             this.totalSupplyValue = await this.totalSupply();
 
-        if (index < 0 || index > this.totalSupplyValue - 1)
+        if (!this.totalSupplyValue || index < 0 || index > this.totalSupplyValue - 1)
             return null;
 
         const tokenId = await this.tokenByIndex(index);
-        const owner = await this.ownerOf(tokenId.toString());
-        const URI = await this.tokenURI(tokenId.toString());
 
-        const axiosableURI = URI.startsWith('ipfs://') ?
-            `https://ipfs.io/ipfs/${URI.slice(7, URI.length)}` : URI;
-
-        const metadata = (await axios.get(axiosableURI)).data;
-
-        return sanitize({
-            tokenId: tokenId.toString(),
-            index: index,
-            owner: owner,
-            URI: URI,
-            metadata: metadata
-        });
+        return this.fetchTokenById(tokenId);
     }
 }
 

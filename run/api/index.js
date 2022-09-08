@@ -16,6 +16,7 @@ const stats = require('./stats');
 const marketing = require('./marketing');
 const erc721Collections = require('./erc721Collections');
 const erc721Tokens = require('./erc721Tokens');
+const jobs = require('./jobs');
 
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
@@ -33,5 +34,6 @@ router.use('/stats', stats);
 router.use('/marketing', marketing);
 router.use('/erc721Collections', erc721Collections);
 router.use('/erc721Tokens', erc721Tokens);
+router.use('/jobs', jobs);
 
 module.exports = router;

@@ -6,7 +6,7 @@ const ERC721_ABI = require('../abis/erc721.json');
 const ERC721_METADATA_ABI = require('../abis/erc721Metadata.json');
 const ERC721_ENUMERABLE_ABI = require('../abis/erc721Enumerable.json');
 
-const { ContractConnector, getProvider } = require('./rpc');
+const { ContractConnector, ERC721Connector, getProvider } = require('./rpc');
 const { sanitize } = require('./utils');
 
 const formatErc721Metadata = (token) => {
@@ -99,8 +99,8 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
             decimals = res[0];
             symbol = res[1];
             name = res[2];
-            totalSupply = res[3];
-        }).catch(() => {});
+            totalSupply = res[3] && res[3].toString();
+        }).catch(console.log);
 
         if (decimals && symbol && name) {
             tokenData = sanitize({
@@ -134,9 +134,11 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
         if (patterns.indexOf('erc721') > -1) {
             has721Metadata = await contract.has721Metadata();
             has721Enumerable = await contract.has721Enumerable();
-            symbol = has721Metadata ? await contract.symbol() : null;
-            name = has721Metadata ? await contract.name() : null;
-            totalSupply = has721Enumerable ? await contract.totalSupply() : null;
+
+            const erc721Connector = new ERC721Connector(rpcServer, contractAddress, { metadata: has721Metadata, enumerable: has721Enumerable });
+            symbol = await erc721Connector.symbol();
+            name = await erc721Connector.name();
+            totalSupply = await erc721Connector.totalSupply();
 
             tokenData = sanitize({
                 symbol: symbol,

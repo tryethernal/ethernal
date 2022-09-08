@@ -4,11 +4,13 @@
 
         <v-alert text v-if="metadataReloaded" type="success">A metadata reload for this token has been queued for processing. It will be updated soon.</v-alert>
         <v-row class="mb-3">
-            <v-col cols="12" sm="6" lg="3">
-                <v-card v-if="token.attributes.image_data && !loading" :color="token.attributes.background_color ? `#${token.attributes.background_color}` : ''" rounded="xl" outlined class="mb-1">
+            <v-col v-if="token.attributes.image_data && !loading">
+                <v-card :color="token.attributes.background_color ? `#${token.attributes.background_color}` : ''" rounded="xl" outlined class="mb-1">
                     <div class="fill" v-html="token.attributes.image_data"></div>
                 </v-card>
-                <v-skeleton-loader v-else-if="loading" type="image"></v-skeleton-loader>
+            </v-col>
+            <v-col v-else-if="loading" cols="12" sm="6" lg="3">
+                <v-skeleton-loader type="image"></v-skeleton-loader>
             </v-col>
 
             <v-col cols="12" sm="6">
@@ -148,7 +150,7 @@ import HashLink from './HashLink';
 
 export default {
     name: 'ERC721Token',
-    props: ['hash', 'index'],
+    props: ['hash', 'tokenId'],
     components: {
         TokenTransfers,
         ERC721TokenTransferModal,
@@ -176,13 +178,13 @@ export default {
         },
         reloadMetadata() {
             this.metadataReloaded = false;
-            this.server.reloadErc721Token(this.hash, this.index)
+            this.server.reloadErc721Token(this.hash, this.tokenId)
                 .then(() => this.metadataReloaded = true)
                 .catch(console.log);
         },
         getErc721Token() {
             this.loading = true;
-            this.server.getErc721Token(this.hash, this.index)
+            this.server.getErc721Token(this.hash, this.tokenId)
                 .then(({ data }) => {
                     if (!data) return;
 

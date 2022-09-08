@@ -63,22 +63,22 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async getErc721Token(index) {
+    async getErc721Token(tokenId) {
         const tokens = await this.getErc721Tokens({
             where: {
-                index: index
+                tokenId: tokenId
             },
             include: {
                 model: sequelize.models.Contract,
                 attributes: ['address', 'tokenName', 'tokenSymbol'],
                 as: 'contract'
             },
-            attributes: ['owner', 'URI', 'tokenId', 'metadata', 'attributes', 'index']
+            attributes: ['owner', 'URI', 'tokenId', 'metadata', 'attributes']
         });
         return tokens[0];
     }
 
-    getFilteredErc721Tokens(page = 1, itemsPerPage = 10, orderBy = 'index', order = 'ASC') {
+    getFilteredErc721Tokens(page = 1, itemsPerPage = 10, orderBy = 'tokenId', order = 'ASC') {
         return this.getErc721Tokens({
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
@@ -86,10 +86,10 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async safeUpdateErc721Token(index, fields) {
+    async safeUpdateErc721Token(tokenId, fields) {
         const token = await this.getErc721Tokens({
             where: {
-                index: index,
+                tokenId: tokenId,
             }
         });
 
@@ -99,23 +99,23 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
-    async safeCreateErc721Token(token) {
-        const existingToken = await this.getErc721Tokens({
+    async safeCreateOrUpdateErc721Token(token) {
+        const existingTokens = await this.getErc721Tokens({
             where: {
-                index: token.index,
+                tokenId: String(token.tokenId)
             }
         });
-        if (existingToken.length > 0)
-            return;
-
-        return this.createErc721Token(sanitize({
-            workspaceId: this.workspaceId,
-            owner: token.owner,
-            index: token.index,
-            URI: token.URI,
-            tokenId: token.tokenId,
-            metadata: token.metadata
-        }));
+       
+        if (existingTokens.length > 0)
+            return this.safeUpdateErc721Token(existingTokens[0].tokenId, token)
+        else
+            return this.createErc721Token(sanitize({
+                workspaceId: this.workspaceId,
+                owner: token.owner,
+                URI: token.URI,
+                tokenId: token.tokenId,
+                metadata: token.metadata
+            }));
     }
   }
   Contract.init({

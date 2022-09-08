@@ -62,7 +62,8 @@ module.exports = (sequelize, DataTypes) => {
             where: {
                 dst: tokenTransfer.dst,
                 src: tokenTransfer.src,
-                token: tokenTransfer.token
+                token: tokenTransfer.token,
+                tokenId: tokenTransfer.tokenId
             }
         });
         if (existingRecords.length > 0)

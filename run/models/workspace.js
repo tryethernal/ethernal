@@ -151,8 +151,8 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     getFilteredContracts(page = 1, itemsPerPage = 10, orderBy = 'timestamp', order = 'DESC', pattern = null) {
-        const allowedPatterns = ['erc210', 'erc721'].indexOf(pattern) > -1 ? pattern : null;
-        const where = allowedPatterns ? { patterns: { [Op.contains]: [allowedPatterns] } } : {};
+        const allowedPattern = ['erc20', 'erc721'].indexOf(pattern) > -1 ? pattern : null;
+        const where = allowedPattern ? { patterns: { [Op.contains]: [allowedPattern] } } : {};
 
         return this.getContracts({
             where: where,

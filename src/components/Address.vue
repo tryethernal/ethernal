@@ -221,7 +221,7 @@
             </v-tab-item>
 
             <v-tab-item v-if="isErc721" value="collection">
-                <ERC-721-Collection :address="hash" :totalSupply="contract.tokenTotalSupply" />
+                <ERC-721-Collection :address="hash" :totalSupply="contract.tokenTotalSupply" :has721Enumerable="contract.has721Enumerable" />
             </v-tab-item>
         </v-tabs-items>
     </v-container>

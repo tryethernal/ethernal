@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     attributes: {
         type: DataTypes.VIRTUAL,
         get() {
-            if (!token.metadata)
+            if (!this.metadata)
                 return {
                     ...token,
                     attributes: {
@@ -50,33 +50,33 @@ module.exports = (sequelize, DataTypes) => {
                 image_data = `<img style="height: 100%; width: 100%; object-fit: cover" src="${insertableImage}" />`;
             }
 
-            const properties = token.metadata.attributes.filter(metadata => {
+            const properties = (this.metadata.attributes || []).filter(metadata => {
                 return metadata.value &&
                     !metadata.display_type &&
                     typeof metadata.value == 'string';
             });
 
-            const levels = token.metadata.attributes.filter(metadata => {
+            const levels = (this.metadata.attributes || []).filter(metadata => {
                 return metadata.value &&
                     !metadata.display_type &&
                     typeof metadata.value == 'number';
             });
 
-            const boosts = token.metadata.attributes.filter(metadata => {
+            const boosts = (this.metadata.attributes || []).filter(metadata => {
                 return metadata.display_type &&
                     metadata.value &&
                     typeof metadata.value == 'number' &&
                     ['boost_number', 'boost_percentage'].indexOf(metadata.display_type) > -1;
             });
 
-            const stats = this.metadata.attributes.filter(metadata => {
+            const stats = (this.metadata.attributes || []).filter(metadata => {
                 return metadata.display_type &&
                     metadata.value &&
                     typeof metadata.value == 'number' &&
                     metadata.display_type == 'number';
             });
 
-            const dates = this.metadata.attributes.filter(metadata => {
+            const dates = (this.metadata.attributes || []).filter(metadata => {
                 return metadata.display_type &&
                     metadata.display_type == 'date';
             });
@@ -94,8 +94,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     URI: DataTypes.STRING,
     tokenId: DataTypes.STRING,
-    metadata: DataTypes.JSONB,
-    index: DataTypes.INTEGER
+    metadata: DataTypes.JSONB
   }, {
     sequelize,
     modelName: 'Erc721Token',

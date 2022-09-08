@@ -39,11 +39,8 @@ module.exports = {
             type: Sequelize.STRING
           },
           tokenId: {
-            type: Sequelize.STRING
-          },
-          index: {
-              type: Sequelize.INTEGER,
-              allowNull: false
+            type: Sequelize.STRING,
+            allowNull: false
           },
           metadata: {
             type: Sequelize.JSONB,

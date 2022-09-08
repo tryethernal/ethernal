@@ -23,7 +23,7 @@
                 {{ item.tokenSymbol }}
             </template>
             <template v-slot:item.tokenTotalSupply="{ item }">
-                {{ parseInt(item.tokenTotalSupply).toLocaleString() }}
+                {{ item.tokenTotalSupply ? parseInt(item.tokenTotalSupply).toLocaleString() : '' }}
             </template>
             <template v-slot:item.tags="{ item }">
                 <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" x-small class="success mr-2">

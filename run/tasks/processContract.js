@@ -10,17 +10,11 @@ const writeLog = require('../lib/writeLog');
 const { trigger } = require('../lib/pusher');
 const transactionsLib = require('../lib/transactions');
 const taskAuthMiddleware = require('../middlewares/taskAuth');
-
 const router = express.Router();
 
+const ERC721_ABI = require('../lib/abis/erc721.json');
 const ERC20_ABI = require('../lib/abis/erc20.json');
 
-const ERC721_ABI = [
-    {"constant": true,"inputs": [{"internalType": "bytes4","name": "interfaceId","type": "bytes4"}],"name": "supportsInterface","outputs": [{"internalType": "bool","name": "","type": "bool"}],"payable": false,"stateMutability": "view","type": "function"},
-    {"name":"name", "constant":true, "payable":false, "type":"function", "inputs":[], "outputs":[{"name":"","type":"string"}]},
-    {"name":"symbol", "constant":true, "payable":false, "type":"function", "inputs":[], "outputs":[{"name":"","type":"string"}]},
-    {"inputs": [],"name": "totalSupply","outputs": [{"internalType": "uint256","name": "","type": "uint256"}],"stateMutability": "view","type": "function"}
-];
 
 const findPatterns = async (rpcServer, contractAddress, abi) => {
     try {
@@ -38,7 +32,8 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
             decimals = res[0];
             symbol = res[1];
             name = res[2];
-        }).catch(() => {});
+            totalSupply = res[3] && res[3].toString();
+        }).catch(console.log);
 
         if (decimals && symbol && name) {
             tokenData = sanitize({
@@ -64,15 +59,19 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
                 const isErc721 = await contract.has721Interface();
                 if (isErc721)
                     patterns.push('erc721');
-            } catch(_) {}
+            } catch(error) {
+                console.log(error);
+            }
         }
 
         if (patterns.indexOf('erc721') > -1) {
             has721Metadata = await contract.has721Metadata();
             has721Enumerable = await contract.has721Enumerable();
-            symbol = has721Metadata ? await contract.symbol() : null;
-            name = has721Metadata ? await contract.name() : null;
-            totalSupply = has721Enumerable ? await contract.totalSupply() : null;
+
+            const erc721Connector = new ERC721Connector(rpcServer, contractAddress, { metadata: has721Metadata, enumerable: has721Enumerable });
+            symbol = await erc721Connector.symbol();
+            name = await erc721Connector.name();
+            totalSupply = await erc721Connector.totalSupply();
 
             tokenData = sanitize({
                 symbol: symbol,
@@ -197,7 +196,9 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
 
             try {
                 const collection = await erc721.fetchAndStoreAllTokens(workspace.id);
-            } catch(_error) {}
+            } catch(_error) {
+                console.log(_error);
+            }
         }
 
         if (metadata.proxy)
@@ -213,7 +214,12 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
         }
 
         const transactions = await db.getContractTransactions(user.firebaseUserId, workspace.name, contract.address);
-        await transactionsLib.processTransactions(user.firebaseUserId, workspace.name, transactions);
+
+        try {
+            await transactionsLib.processTransactions(user.firebaseUserId, workspace.name, transactions);
+        } catch(error) {
+            console.log(error);
+        }
 
         trigger(`private-contracts;workspace=${contract.workspaceId};address=${contract.address}`, 'updated', null);
 

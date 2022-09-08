@@ -69,12 +69,12 @@ module.exports = (sequelize, DataTypes) => {
             });
 
             if (tokenTransfer.tokenId && transaction.workspace.public)
-                 await enqueueTask('reloadErc721', {
+                 await enqueueTask('reloadErc721Token', {
                     workspaceId: tokenTransfer.workspaceId,
                     address: tokenTransfer.token,
                     tokenId: tokenTransfer.tokenId,
                     secret: process.env.AUTH_SECRET
-                }, `${process.env.CLOUD_RUN_ROOT}/tasks/reloadErc721`);
+                }, `${process.env.CLOUD_RUN_ROOT}/tasks/reloadErc721Token`);
 
             if (!transaction.workspace.public)
                 trigger(`private-processableTransactions;workspace=${transaction.workspace.id}`, 'new', transaction.toJSON());
