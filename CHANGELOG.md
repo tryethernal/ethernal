@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.2] - 2022-09-09
+### Added
+- ERC-721 tokens tab on each address page
+
+### Fixed
+- Retroactive token transfer detection during contract processing
+
 ## [2.6.1] - 2022-09-09
 ### Changed
 - Updated error messaging for easier troubleshooting when connecting a new chain
