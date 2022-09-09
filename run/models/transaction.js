@@ -59,12 +59,12 @@ module.exports = (sequelize, DataTypes) => {
 
     async safeCreateTokenTransfer(tokenTransfer) {
         const existingRecords = await this.getTokenTransfers({
-            where: {
+            where: sanitize({
                 dst: tokenTransfer.dst,
                 src: tokenTransfer.src,
                 token: tokenTransfer.token,
                 tokenId: tokenTransfer.tokenId
-            }
+            })
         });
         if (existingRecords.length > 0)
             return null;
