@@ -100,12 +100,17 @@ export default {
                 this.loading = false;
                 if (error.reason) {
                     if (error.reason.indexOf('Invalid JSON RPC response') > -1 || error.reason.indexOf('connection not open on send()') > -1) {
-                        return this.errorMessage = `Can't connect to <b>${rpcServer}</b>. If you are connecting to a remote chain, make sure that you are using https or wss. If you can't connect to a local server, check that your browser is not blocking requests to localhost (for Brave, you need to disable Shields).`;
+                        if (rpcServer.startsWith('http://'))
+                            return this.errorMessage = `Can't connect to <b>${rpcServer}</b>. If you are connecting to a remote chain, make sure you've allowed app.tryethernal.com to <a href="https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html" target="_blank">load insecure content</a>, or use https.`
+                        else if (rpcServer.startsWith('ws'))
+                            return this.errorMessage = `Can't connect to <b>${rpcServer}</b>. Make sure the network is up or try connecting over http or https`;
+                        else
+                            return this.errorMessage = `Can't connect to <b>${rpcServer}</b>.`;
                     }
                     return this.errorMessage = error.reason;
                 }
                 if (error.code && error.code == 1006) {
-                    return this.errorMessage = "Can't connect to the server";
+                    return this.errorMessage = `Can't connect to <b>${rpcServer}</b>. Make sure the following request works and is returning a chain id: <code>curl -k --location --request POST ${rpcServer} -H "Content-Type: application/json" --data '{"method":"eth_chainId","params":[],"id":1,"jsonrpc":"2.0"}'</code>`;
                 }
                 this.errorMessage = error.message ? error.message : error;
             }
