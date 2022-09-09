@@ -1555,7 +1555,14 @@ const getContractTransactions = async (userId, workspace, address) => {
 
     try {
         const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-        const transactions = await user.workspaces[0].getTransactions({ where: { to: address }});
+        const transactions = await user.workspaces[0].getTransactions({
+            where: { to: address },
+            include: {
+                model: TransactionReceipt,
+                as: 'receipt',
+                include: 'logs'
+            }
+        });
         return transactions.map(t => t.toJSON());
     } catch(error) {
         writeLog({
