@@ -10,7 +10,7 @@ router.get('/:address/balances', workspaceAuthMiddleware, async (req, res) => {
         if (!req.params.address)
             throw new Error('[GET /:address/balances] Missing parameter');
 
-        const result = await db.getAddressLatestTokenBalances(data.workspace.id, req.params.address,);
+        const result = await db.getAddressLatestTokenBalances(data.workspace.id, req.params.address, req.query.patterns);
 
         res.status(200).json(result);
     } catch(error) {

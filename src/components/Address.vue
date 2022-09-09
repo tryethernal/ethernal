@@ -21,7 +21,8 @@
             <v-tab id="contractTab" href="#contract" v-if="isContract">Contract</v-tab>
             <v-tab id="codeTab" href="#code" v-if="isContract && isPublicExplorer">Code</v-tab>
             <v-tab id="storageTab" href="#storage" v-if="isContract && !contract.imported && !isPublicExplorer">Storage</v-tab>
-            <v-tab id="balancesTab" href="#balances">ERC-20 Tokens</v-tab>
+            <v-tab id="erc20Balances" href="#erc20Balances">ERC-20 Tokens</v-tab>
+            <v-tab id="erc721Balances" href="#erc721Balances">ERC-721 Tokens</v-tab>
             <v-tab id="collectionTab" href="#collection" v-if="isErc721">ERC-721 Collection</v-tab>
         </v-tabs>
 
@@ -207,8 +208,12 @@
                 </template>
             </v-tab-item>
 
-            <v-tab-item value="balances">
-                <Token-Balances :address="hash" />
+            <v-tab-item value="erc20Balances">
+                <Token-Balances :address="hash" :patterns="['erc20']" />
+            </v-tab-item>
+
+            <v-tab-item value="erc721Balances">
+                <Token-Balances :address="hash" :patterns="['erc721']" :dense="true" />
             </v-tab-item>
 
             <v-tab-item value="code">

@@ -307,12 +307,12 @@ const getTxCount = async (workspaceId, since = 0) => {
     }
 };
 
-const getAddressLatestTokenBalances = async (workspaceId, address) => {
+const getAddressLatestTokenBalances = async (workspaceId, address, tokenPatterns) => {
     if (!workspaceId|| !address) throw '[getAddressLatestTokenBalance] Missing parameter';
 
     try {
         const workspace = await Workspace.findByPk(workspaceId);
-        return await workspace.safeFindLatestTokenBalances(address);
+        return await workspace.safeFindLatestTokenBalances(address, tokenPatterns);
     } catch(error) {
         writeLog({
             functionName: 'firebase.getAddressLatestTokenBalances',

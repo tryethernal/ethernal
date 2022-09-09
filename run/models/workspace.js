@@ -91,8 +91,27 @@ module.exports = (sequelize, DataTypes) => {
         return wallets;
     }
 
-    async safeFindLatestTokenBalances(address) {
+    async safeFindLatestTokenBalances(address, tokenPatterns = []) {
         if (!address) return [];
+
+        const allowedTokenPatterns = tokenPatterns.filter(p => ['erc20', 'erc721'].indexOf(p) > -1);
+
+        let tokenFilter = {
+            [Op.and]: sequelize.where(
+                sequelize.col("tokenContract.workspaceId"),
+                Op.eq,
+                sequelize.col("TokenBalanceChange.workspaceId")
+            ),
+            [Op.and]: sequelize.where(
+                sequelize.col("tokenContract.address"),
+                Op.eq,
+                sequelize.col("TokenBalanceChange.token")
+            )
+        };
+
+        if (allowedTokenPatterns.length) {
+            tokenFilter = { patterns: { [Op.contains]: allowedTokenPatterns }, ...tokenFilter };
+        }
 
         const tokenBalanceChanges = await this.getTokenBalanceChanges({
             where: {
@@ -104,19 +123,8 @@ module.exports = (sequelize, DataTypes) => {
                     model: sequelize.models.Contract,
                     attributes: ['name', 'tokenName', 'tokenSymbol', 'tokenDecimals', 'address', 'workspaceId'],
                     as: 'tokenContract',
-                    where: {
-                        [Op.and]: sequelize.where(
-                            sequelize.col("tokenContract.workspaceId"),
-                            Op.eq,
-                            sequelize.col("TokenBalanceChange.workspaceId")
-                        ),
-                        [Op.and]: sequelize.where(
-                            sequelize.col("tokenContract.address"),
-                            Op.eq,
-                            sequelize.col("TokenBalanceChange.token")
-                        ),
-                    },
-                    required: false
+                    where: tokenFilter,
+                    required: !!allowedTokenPatterns.length
                 },
                 {
                     model: sequelize.models.Transaction,
