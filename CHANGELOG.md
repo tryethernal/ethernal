@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.0] - 2022-09-09
+### Added
+- ERC-721 Support
+
 ## [2.5.4] - 2022-09-01
 ### Fixed
 - Timestamp was displayed incorrectly on block page
