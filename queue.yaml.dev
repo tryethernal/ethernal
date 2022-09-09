@@ -11,3 +11,6 @@ queue:
 - name: blockSync
 - name: submitExplorerLead
 - name: processWorkspace
+- name: fetchAndStoreErc721Token
+- name: reloadErc721Token
+- name: findAndProcessExistingErc721

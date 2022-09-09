@@ -17,6 +17,7 @@
   },
   "main": "index.js",
   "dependencies": {
+    "@firebase/util": "^1.6.3",
     "@google-cloud/logging": "^9.8.2",
     "@google-cloud/pubsub": "^2.19.0",
     "@google-cloud/tasks": "^2.5.0",

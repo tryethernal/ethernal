@@ -54,7 +54,7 @@ export default {
             });
         },
         close: function() {
-            this.resolve(false);
+            this.resolve(true);
             this.reset();
         },
         goToBilling: function() {

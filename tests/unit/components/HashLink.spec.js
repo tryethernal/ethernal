@@ -10,6 +10,38 @@ describe('HashLink.vue', () => {
         helper = new MockHelper();
     });
 
+    it('Should display smaller hash if xsHash option is passed', async () => {
+        const wrapper = helper.mountFn(HashLink, {
+            propsData: {
+                type: 'address',
+                hash: '0xed5af388653567af2f388e6224dc7c4b3241c544',
+                xsHash: true                
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+
+    it('Should display link to token if tokenId is passed', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+             .mockResolvedValue({ data: { name: 'My Contract', tokenName: 'Ethernal', tokenSymbol: 'ETL' }});
+
+        const wrapper = helper.mountFn(HashLink, {
+            propsData: {
+                type: 'address',
+                hash: '0x123',
+                tokenId: '1',
+                withName: true,
+                withTokenName: true
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should display the token name if symbol but flag withTokenName', async () => {
         jest.spyOn(helper.mocks.server, 'getContract')
              .mockResolvedValue({ data: { name: 'My Contract', tokenName: 'Ethernal', tokenSymbol: 'ETL' }});

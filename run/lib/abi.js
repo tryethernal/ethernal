@@ -3,7 +3,8 @@ const { stringifyBns, sanitize } = require('./utils');
 
 const SELECTORS = require('./abis/selectors.json');
 const abis = {
-    erc20: require('./abis/erc20.json')
+    erc20: require('./abis/erc20.json'),
+    erc721: require('./abis/erc721.json')
 };
 
 const findAbiForFunction = (signature) => {
@@ -53,18 +54,23 @@ const getTokenTransfers = (transaction) => {
         for (let i = 0; i < transaction.receipt.logs.length; i++) {
             const log = transaction.receipt.logs[i];
             if (log.topics[0] == '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
-                const decodedLog = decodeLog(log, abis['erc20']);
+                let decodedLog;
+                for (const [pattern, abi] of Object.entries(abis)) {
+                    decodedLog = decodeLog(log, abi);
+                    if (decodedLog) break;
+                }
+
                 if (decodedLog) {
                     transfers.push(sanitize(stringifyBns({
                         token: log.address,
-                        src: decodedLog.args[0],
-                        dst: decodedLog.args[1],
-                        amount: decodedLog.args[2]
+                        src: decodedLog.args.from,
+                        dst: decodedLog.args.to,
+                        amount: decodedLog.args.amount || ethers.BigNumber.from('1'),
+                        tokenId: decodedLog.args.tokenId || null
                     })));
                 }
             }
         }
-
         return transfers;
     } catch(error) {
         return [];

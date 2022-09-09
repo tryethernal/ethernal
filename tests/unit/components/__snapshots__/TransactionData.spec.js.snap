@@ -20,7 +20,7 @@ exports[`TransactionData.vue Should display instructions if there is no ABI 1`] 
     <div class="col">
       <h3 class="mb-2">Emitted Events</h3>
       <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text"><b>Emitter:</b> <span><!----> <a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <span>
+        <div class="v-card__text"><b>Emitter:</b> <span><!----> <a href="#/address/0xc00e94Cb662C3520282E6f5717214004A7f26888" class="">0xc00e94Cb...26888</a> <!----> <span>
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xc00e94Cb662C3520282E6f5717214004A7f26888" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></span>
           <!----></span><br> <b>Topics:</b>
           <ul>

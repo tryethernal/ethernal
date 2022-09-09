@@ -47,18 +47,22 @@ describe(`POST ${BASE_URL}/:address/tokenProperties`, () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('Should set token properties and return 200 status code', (done) => {
+        const properties = {
+            patterns: [],
+            tokenSymbol: 'ETL',
+            tokenDecimals: 18,
+            tokenName: 'Ethernal',
+            totalSupply: '100000',
+            has721Metadata: false,
+            has721Enumerable: false
+        };
         db.getWorkspaceContract.mockResolvedValue({ patterns: [] });
         request.post(`${BASE_URL}/0x123/tokenProperties`)
-            .send({ data: { workspace: 'My Workspace', tokenProperties: { symbol: 'ETL', decimals: 18, name: 'Ethernal' }}})
+            .send({ data: { workspace: 'My Workspace', properties }})
             .expect(200)
             .then(() => {
                 expect(db.storeContractData).toHaveBeenCalledWith('123', 'My Workspace', '0x123', {
-                    patterns: [],
-                    token: {
-                        symbol: 'ETL',
-                        decimals: 18,
-                        name: 'Ethernal'
-                    },
+                    ...properties,
                     processed: true
                 });
                 done();
@@ -66,14 +70,16 @@ describe(`POST ${BASE_URL}/:address/tokenProperties`, () => {
     });
 
     it('Should merge token patterns and return 200 status code', (done) => {
+        const properties = {
+            patterns: ['erc20', 'proxy']
+        };
         db.getWorkspaceContract.mockResolvedValue({ patterns: ['erc20'] });
         request.post(`${BASE_URL}/0x123/tokenProperties`)
-            .send({ data: { workspace: 'My Workspace', tokenPatterns: ['erc20', 'proxy']}})
+            .send({ data: { workspace: 'My Workspace', properties }})
             .expect(200)
             .then(() => {
                 expect(db.storeContractData).toHaveBeenCalledWith('123', 'My Workspace', '0x123', {
-                    patterns: ['erc20', 'proxy'],
-                    token: {},
+                    ...properties,
                     processed: true
                 });
                 done();

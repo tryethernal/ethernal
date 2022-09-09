@@ -33,6 +33,11 @@ jest.mock('@/plugins/server', () => ({
                 getTransactions: jest.fn(),
                 getTransactionVolume: jest.fn(),
                 getWalletVolume: jest.fn(),
+                getErc721Tokens: jest.fn(),
+                getErc721TokenTransfers: jest.fn(),
+                getErc721Token: jest.fn(),
+                reloadErc721Token: jest.fn(),
+                transferErc721Token: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))

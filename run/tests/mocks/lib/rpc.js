@@ -4,8 +4,8 @@ jest.mock('../../../lib/rpc', () => {
     return {
         getProvider: jest.fn(),    
         ContractConnector: jest.fn().mockImplementation(() => ({
-            callReadMethod: jest.fn()
-                .mockResolvedValue([ethers.BigNumber.from('1')])
+            callReadMethod: jest.fn().mockResolvedValue([ethers.BigNumber.from('1')]),
+            has721Interface: jest.fn().mockResolvedValue(false)
         })),
         Tracer: actual.Tracer,
         ProviderConnector: jest.fn().mockImplementation(() => ({
@@ -23,6 +23,14 @@ jest.mock('../../../lib/rpc', () => {
                 .mockResolvedValue({
                     status: 1
                 })
+        })),
+        ERC721Connector: jest.fn().mockImplementation(() => ({
+            tokenByIndex: jest.fn().mockResolvedValue('0'),
+            ownerOf: jest.fn().mockResolvedValue('0xabc'),
+            tokenURI: jest.fn().mockResolvedValue('http://metadata'),
+            totalSupply: jest.fn().mockResolvedValue('1000'),
+            symbol: jest.fn().mockResolvedValue('ETL'),
+            name: jest.fn().mockResolvedValue('Ethernal')
         }))
     }
 });
