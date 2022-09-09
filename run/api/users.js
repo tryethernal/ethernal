@@ -5,7 +5,6 @@ const authMiddleware = require('../middlewares/auth');
 
 router.post('/me/setCurrentWorkspace', authMiddleware, async (req, res) => {
     const data = req.body.data;
-    console.log(data);
     try {
         await db.setCurrentWorkspace(data.uid, data.workspace);
 

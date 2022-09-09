@@ -43,6 +43,12 @@ export const pusherPlugin = {
                 return channel.bind('new', handler, context);
             },
 
+            onDestroyedContract(handler, context) {
+                const workspaceId = store.getters.currentWorkspace.id;
+                const channel = pusher.subscribe(`private-contracts;workspace=${workspaceId}`);
+                return channel.bind('destroyed', handler, context);
+            },
+
             onNewTransaction(handler, context, address) {
                 const workspaceId = store.getters.currentWorkspace.id;
                 const params = [`workspace=${workspaceId}`];

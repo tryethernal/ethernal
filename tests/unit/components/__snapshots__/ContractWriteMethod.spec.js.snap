@@ -9,7 +9,7 @@ exports[`ContractWriteMethod.vue Should accept false as an input for bool type 1
         <fieldset aria-hidden="true">
           <legend style="width: -24px;"><span class="notranslate">​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-16" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">bool boolInp</label><input id="input-16" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-48" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">bool boolInp</label><input id="input-48" type="text"></div>
       </div>
     </div>
   </div>
@@ -40,7 +40,7 @@ exports[`ContractWriteMethod.vue Should accept false as an input for bool type 1
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-21" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-21" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-53" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-53" type="number"></div>
         </div>
       </div>
     </div>
@@ -57,7 +57,7 @@ exports[`ContractWriteMethod.vue Should accept true as an input for bool type 1`
         <fieldset aria-hidden="true">
           <legend style="width: -24px;"><span class="notranslate">​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-4" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">bool boolInp</label><input id="input-4" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-36" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">bool boolInp</label><input id="input-36" type="text"></div>
       </div>
     </div>
   </div>
@@ -88,7 +88,7 @@ exports[`ContractWriteMethod.vue Should accept true as an input for bool type 1`
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-9" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-9" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-41" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-41" type="number"></div>
         </div>
       </div>
     </div>
@@ -126,7 +126,7 @@ exports[`ContractWriteMethod.vue Should display only the error message if the tx
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-109" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-109" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-144" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-144" type="number"></div>
         </div>
       </div>
     </div>
@@ -164,7 +164,7 @@ exports[`ContractWriteMethod.vue Should display only the error message if there 
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-98" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-98" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-133" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-133" type="number"></div>
         </div>
       </div>
     </div>
@@ -202,7 +202,7 @@ exports[`ContractWriteMethod.vue Should display only the error message with the 
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-74" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-74" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-109" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-109" type="number"></div>
         </div>
       </div>
     </div>
@@ -240,7 +240,7 @@ exports[`ContractWriteMethod.vue Should display only the tx hash when it succeed
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-63" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-63" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-98" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-98" type="number"></div>
         </div>
       </div>
     </div>
@@ -295,7 +295,7 @@ exports[`ContractWriteMethod.vue Should display the formatted error message with
         <fieldset aria-hidden="true">
           <legend style="width: -24px;"><span class="notranslate">​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-81" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">address to</label><input id="input-81" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-116" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">address to</label><input id="input-116" type="text"></div>
       </div>
     </div>
   </div>
@@ -305,7 +305,7 @@ exports[`ContractWriteMethod.vue Should display the formatted error message with
         <fieldset aria-hidden="true">
           <legend style="width: -24px;"><span class="notranslate">​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-82" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">uint256 amount</label><input id="input-82" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-117" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">uint256 amount</label><input id="input-117" type="text"></div>
       </div>
     </div>
   </div>
@@ -336,7 +336,7 @@ exports[`ContractWriteMethod.vue Should display the formatted error message with
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-87" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-87" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-122" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-122" type="number"></div>
         </div>
       </div>
     </div>
@@ -374,7 +374,7 @@ exports[`ContractWriteMethod.vue Should display the tx hash and status when it s
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-52" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-52" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-87" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-87" type="number"></div>
         </div>
       </div>
     </div>
@@ -391,7 +391,7 @@ exports[`ContractWriteMethod.vue Should handle array input properly 1`] = `
         <fieldset aria-hidden="true">
           <legend style="width: -24px;"><span class="notranslate">​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-36" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">uint256[] values</label><input id="input-36" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-71" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">uint256[] values</label><input id="input-71" type="text"></div>
       </div>
     </div>
   </div>
@@ -422,7 +422,7 @@ exports[`ContractWriteMethod.vue Should handle array input properly 1`] = `
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-41" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-41" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-76" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-76" type="number"></div>
         </div>
       </div>
     </div>
@@ -525,7 +525,7 @@ exports[`ContractWriteMethod.vue Should throw an error for bool type if input is
         <fieldset aria-hidden="true">
           <legend style="width: -24px;"><span class="notranslate">​</span></legend>
         </fieldset>
-        <div class="v-text-field__slot"><label for="input-4" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">bool boolInp</label><input id="input-4" type="text"></div>
+        <div class="v-text-field__slot"><label for="input-60" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">bool boolInp</label><input id="input-60" type="text"></div>
       </div>
     </div>
   </div>
@@ -556,7 +556,7 @@ exports[`ContractWriteMethod.vue Should throw an error for bool type if input is
           <fieldset aria-hidden="true">
             <legend style="width: 0px;"><span class="notranslate">​</span></legend>
           </fieldset>
-          <div class="v-text-field__slot"><label for="input-9" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-9" type="number"></div>
+          <div class="v-text-field__slot"><label for="input-65" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" id="input-65" type="number"></div>
         </div>
       </div>
     </div>

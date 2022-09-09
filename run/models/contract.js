@@ -5,6 +5,7 @@ const {
 } = require('sequelize');
 const Op = Sequelize.Op;
 const { enqueueTask } = require('../lib/tasks');
+const { sanitize } = require('../lib/utils');
 const { trigger } = require('../lib/pusher');
 const moment = require('moment');
 
@@ -22,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
           foreignKey: 'address',
           as: 'proxyContract'
       });
+      Contract.hasMany(models.Erc721Token, { foreignKey: 'contractId', as: 'erc721Tokens' });
     }
 
     getProxyContract() {
@@ -33,6 +35,87 @@ module.exports = (sequelize, DataTypes) => {
                 address: this.proxy
             }
         });
+    }
+
+    getErc721TokenTransfersByTokenId(tokenId) {
+        return sequelize.models.TokenTransfer.findAll({
+            where: {
+                tokenId: tokenId,
+                workspaceId: this.workspaceId,
+                '$contract.id$': { [Op.eq]: this.id }
+            },
+            order: [
+                ['id', 'desc']
+            ],
+            include: [
+                {
+                    model: sequelize.models.Contract,
+                    attributes: ['id', 'tokenName', 'tokenDecimals', 'tokenSymbol', 'name', 'patterns'],
+                    as: 'contract'
+                },
+                {
+                    model: sequelize.models.Transaction,
+                    attributes: ['hash', 'timestamp'],
+                    as: 'transaction'
+                }
+            ],
+            attributes: ['id', 'amount', 'dst', 'src', 'token', 'tokenId']
+        });
+    }
+
+    async getErc721Token(tokenId) {
+        const tokens = await this.getErc721Tokens({
+            where: {
+                tokenId: tokenId
+            },
+            include: {
+                model: sequelize.models.Contract,
+                attributes: ['address', 'tokenName', 'tokenSymbol'],
+                as: 'contract'
+            },
+            attributes: ['owner', 'URI', 'tokenId', 'metadata', 'attributes']
+        });
+        return tokens[0];
+    }
+
+    getFilteredErc721Tokens(page = 1, itemsPerPage = 10, orderBy = 'tokenId', order = 'ASC') {
+        return this.getErc721Tokens({
+            offset: (page - 1) * itemsPerPage,
+            limit: itemsPerPage,
+            order: [[orderBy, order]]
+        });
+    }
+
+    async safeUpdateErc721Token(tokenId, fields) {
+        const token = await this.getErc721Tokens({
+            where: {
+                tokenId: tokenId,
+            }
+        });
+
+        return token[0].update(sanitize({
+            metadata: fields.metadata,
+            owner: fields.owner
+        }));
+    }
+
+    async safeCreateOrUpdateErc721Token(token) {
+        const existingTokens = await this.getErc721Tokens({
+            where: {
+                tokenId: String(token.tokenId)
+            }
+        });
+       
+        if (existingTokens.length > 0)
+            return this.safeUpdateErc721Token(existingTokens[0].tokenId, token)
+        else
+            return this.createErc721Token(sanitize({
+                workspaceId: this.workspaceId,
+                owner: token.owner,
+                URI: token.URI,
+                tokenId: token.tokenId,
+                metadata: token.metadata
+            }));
     }
   }
   Contract.init({
@@ -71,9 +154,17 @@ module.exports = (sequelize, DataTypes) => {
             return raw ? JSON.parse(raw) : [];
         }
     },
-    verificationStatus: DataTypes.STRING
+    verificationStatus: DataTypes.STRING,
+    has721Metadata: DataTypes.BOOLEAN,
+    has721Enumerable: DataTypes.BOOLEAN,
+    tokenTotalSupply: DataTypes.STRING
   }, {
     hooks: {
+        afterDestroy(contract, options) {
+            trigger(`private-contracts;workspace=${contract.workspaceId}`, 'destroyed', null);
+            if (contract.patterns.indexOf('erc20') > -1)
+                trigger(`private-tokens;workspace=${contract.workspaceId}`, 'destroyed', null);
+        },
         afterUpdate(contract, options) {
             trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
             if (contract.patterns.indexOf('erc20') > -1)

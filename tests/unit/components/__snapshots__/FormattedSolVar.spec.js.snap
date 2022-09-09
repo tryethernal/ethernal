@@ -15,7 +15,7 @@ exports[`FormattedSolVar.vue Should display data:image as img tag 1`] = `
 exports[`FormattedSolVar.vue Should display formatted json 1`] = `
 <span class="ml-4"><span>string: </span> <span>
             (<a id="switchFormatted">Display Raw</a> <!---->)
-         <span><span><span><div class="vjs-tree"><div><div><div class="vjs-tree__node"><!---->  <!----> <span><span class="vjs-tree__brackets">
+         <span><span><span style="white-space: normal;"><div class="vjs-tree"><div><div><div class="vjs-tree__node"><!---->  <!----> <span><span class="vjs-tree__brackets">
   {
 </span>
 <!----></span></div>

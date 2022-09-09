@@ -110,7 +110,7 @@
             <v-row class="my-2" v-show="transaction.tokenTransfers.length">
                 <v-col>
                     <h3 class="mb-2">Token Transfers</h3>
-                    <Token-Transfers :transfers="transaction.tokenTransfers" />
+                    <Token-Transfers :transfers="transaction.tokenTransfers" :withTokenData="true" />
                 </v-col>
             </v-row>
 

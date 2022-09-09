@@ -5,7 +5,7 @@
             outlined
             dense
             hide-details="auto"
-            class="py-1"
+            class="py-1 col-3"
             v-model="params[inputIdx]"
             v-for="(input, inputIdx) in method.inputs"
             :disabled='!active'

@@ -150,15 +150,16 @@ module.exports = (sequelize, DataTypes) => {
             });
     }
 
-    getFilteredContracts(page = 1, itemsPerPage = 10, orderBy = 'timestamp', order = 'DESC', onlyTokens = false) {
-        const where = onlyTokens ? { patterns: { [Op.contains]: ["erc20"] } } : {};
+    getFilteredContracts(page = 1, itemsPerPage = 10, orderBy = 'timestamp', order = 'DESC', pattern = null) {
+        const allowedPattern = ['erc20', 'erc721'].indexOf(pattern) > -1 ? pattern : null;
+        const where = allowedPattern ? { patterns: { [Op.contains]: [allowedPattern] } } : {};
 
         return this.getContracts({
             where: where,
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
             order: [[orderBy, order]],
-            attributes: ['address', 'name', 'timestamp', 'patterns', 'workspaceId', 'tokenName', 'tokenSymbol']
+            attributes: ['address', 'name', 'timestamp', 'patterns', 'workspaceId', 'tokenName', 'tokenSymbol', 'tokenTotalSupply']
         });
     }
 
@@ -299,6 +300,7 @@ module.exports = (sequelize, DataTypes) => {
     async safeCreateOrUpdateContract(contract) {
         const contracts = await this.getContracts({ where: { address: contract.address.toLowerCase() }});
         const existingContract = contracts[0];
+
         const newContract = sanitize({
             hashedBytecode: contract.hashedBytecode,
             abi: contract.abi,
@@ -309,10 +311,13 @@ module.exports = (sequelize, DataTypes) => {
             processed: contract.processed,
             proxy: contract.proxy,
             timestamp: contract.timestamp,
-            tokenDecimals: contract.token && contract.token.decimals,
-            tokenName: contract.token && contract.token.name,
-            tokenSymbol: contract.token && contract.token.symbol,
-            watchedPaths: contract.watchedPaths
+            tokenDecimals: contract.tokenDecimals,
+            tokenName: contract.tokenName,
+            tokenSymbol: contract.tokenSymbol,
+            tokenTotalSupply: contract.totalSupply,
+            watchedPaths: contract.watchedPaths,
+            has721Metadata: contract.has721Metadata,
+            has721Enumerable: contract.has721Enumerable,
         });
 
         if (existingContract)
@@ -366,7 +371,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId'],
             order: [
-                [ sequelize.literal('"traceSteps".'), 'id', 'asc']
+                [sequelize.literal('"traceSteps".'), 'id', 'asc']
             ],
             include: [
                 {
@@ -415,8 +420,23 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.TokenTransfer,
-                    attributes: ['amount', 'dst', 'src', 'token'],
-                    as: 'tokenTransfers'
+                    attributes: ['amount', 'dst', 'src', 'token', 'tokenId'],
+                    as: 'tokenTransfers',
+                    include: [
+                        {
+                            model: sequelize.models.Contract,
+                            attributes: ['name', 'patterns', 'tokenDecimals', 'tokenSymbol', 'tokenName'],
+                            as: 'contract',
+                            where: {
+                                [Op.and]: sequelize.where(
+                                    sequelize.col("tokenTransfers.workspaceId"),
+                                    Op.eq,
+                                    sequelize.col("tokenTransfers->contract.workspaceId")
+                                ),
+                            },
+                            required: false
+                        }
+                    ]
                 },
                 {
                     model: sequelize.models.Block,
@@ -455,7 +475,7 @@ module.exports = (sequelize, DataTypes) => {
                 id: contractId
             }
         });
-        return contracts[0]
+        return contracts[0];
     }
 
     async findContractByAddress(address) {

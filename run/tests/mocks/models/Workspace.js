@@ -23,6 +23,14 @@ const transaction2 = {
     toJSON: jest.fn().mockReturnValue({ hash: '0x456' })
 };
 
+const erc721TokenTransfer = {
+    toJSON: jest.fn().mockReturnValue({ src: '0x123', dst: '0x456', tokenId: '1' })
+};
+
+const erc721Token = {
+    toJSON: jest.fn().mockReturnValue({ tokenId: '1' })
+};
+
 const block1 = {
     number: 1,
     toJSON: jest.fn().mockReturnValue({ number: 1 })
@@ -37,6 +45,10 @@ const contract1 = {
     id: 10,
     address: '0x123',
     update: jest.fn(),
+    getErc721TokenTransfersByTokenId: jest.fn().mockResolvedValue([erc721TokenTransfer]),
+    getErc721Token: jest.fn().mockResolvedValue(erc721Token),
+    getFilteredErc721Tokens: jest.fn().mockResolvedValue([erc721Token]),
+    countErc721Tokens: jest.fn().mockResolvedValue(1),
     toJSON: jest.fn().mockReturnValue({ id: 10, address: '0x123' })
 };
 

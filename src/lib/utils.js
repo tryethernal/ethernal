@@ -45,6 +45,8 @@ export const formatContractPattern = function(pattern) {
             return 'ERC 20';
         case 'proxy':
             return 'Proxy'
+        case 'erc721':
+            return 'ERC 721';
         default:
             return pattern;
     }

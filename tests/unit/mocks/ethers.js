@@ -53,11 +53,19 @@ export const ethers = jest.mock('ethers', () => {
     let counter = 0;
     const contract = function() {
         return {
+            name: () => 'Ethernal',
+            symbol: () => 'ETL',
+            decimals: () => 18,
+            totalSupply: () => 1000,
+            tokenByIndex: () => 1,
+            ownerOf: () => '0x123',
+            tokenURI: () => 'ipfs://QmPbxeGcXhYQQNgsC6a36dDyYUcHgMLnGKnF8pVFmGsvqi',
             functions: {
                 name: () => ['Ethernal'],
                 symbol: () => ['ETL'],
                 decimals: () => [18],
                 fakeRead: () => 'This is a fake result',
+                totalSupply: () => [1000],
                 'balanceOf(address)': jest.fn(() => ++counter % 2 ? [actual.BigNumber.from('2000000000000000')] : [actual.BigNumber.from('1000000000000000')])
             },
             fakeWrite: () => new Promise((resolve) => resolve({ hash: '0x123abc' })),
@@ -69,9 +77,9 @@ export const ethers = jest.mock('ethers', () => {
 
     Object.defineProperty(ethers, 'providers', { value: providers, writable: false });
     Object.defineProperty(ethers, 'Wallet', { value: wallet, writable: false });
-    Object.defineProperty(ethers, 'Contract', { value: contract })
+    Object.defineProperty(ethers, 'Contract', { value: contract, writable: true })
     Object.defineProperty(ethers, 'utils', { value: actual.utils, writable: false })
     Object.defineProperty(ethers, 'BigNumber', { value: actual.BigNumber, writable: false });
 
-    return { ethers: ethers };
+    return ethers;
 });

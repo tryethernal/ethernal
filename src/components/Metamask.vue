@@ -5,7 +5,7 @@
         </v-card-text>
         <v-card-text v-show="ethereum">
             <v-row>
-                <v-col cols="6">
+                <v-col>
                     <v-alert outlined dense type="error" v-if="chainId && !isChainValid">
                         Invalid chain id <b>{{ chainId }}</b> ({{ parseInt(chainId, 16) }}), expecting <b>{{ formattedExpectedChainId }}</b> ({{ publicExplorer.chainId }}). Click <a @click.stop="switchMetamaskChain()">here</a> to switch network in Metamask.
                     </v-alert>

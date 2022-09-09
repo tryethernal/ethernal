@@ -11,6 +11,171 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const storeContractDataWithWorkspaceId = async (workspaceId, address, data) => {
+    if (!workspaceId || !address || !data) throw '[storeContractDataWithWorkspaceId] Missing parameter';
+
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        return workspace.safeCreateOrUpdateContract({
+            address: address,
+            ...data
+        });
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.getContractByWorkspaceId',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                address: String(address)
+            }
+        });
+        throw error;
+    }
+};
+
+const getContractByWorkspaceId = async (workspaceId, address) => {
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const contract = await workspace.findContractByAddress(address);
+        return contract ? contract.toJSON() : null;
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.getContractByWorkspaceId',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                address: String(address)
+            }
+        });
+        throw error;
+    }
+};
+
+const getErc721TokenTransfers = async (workspaceId, contractAddress, tokenId) => {
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const contract = await workspace.findContractByAddress(contractAddress);
+
+        const transfers = await contract.getErc721TokenTransfersByTokenId(tokenId);
+
+        return transfers.map(t => t.toJSON());
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.getErc721TokenTransfers',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                contractAddress: String(contractAddress),
+                tokenId: tokenId
+            }
+        });
+        throw error;
+    }
+};
+
+const updateErc721Token = async (workspaceId, contractAddress, index, fields) => {
+    if (!workspaceId || !contractAddress || !index || !fields) throw '[updateErc721TokenMetadata] Missing parameter';
+
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const contract = await workspace.findContractByAddress(contractAddress);
+
+        return contract.safeUpdateErc721Token(index, fields);
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.updateErc721TokenMetadata',
+            error: error,
+            extra: {
+                workspaceId: workspaceId,
+                contractAddress: contractAddress,
+                index: index,
+                metadata: metadata
+            }
+        });
+        throw error;
+    }
+};
+
+const getContractErc721Token = async (workspaceId, contractAddress, tokenId) => {
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const contract = await workspace.findContractByAddress(contractAddress);
+
+        const token = await contract.getErc721Token(tokenId);
+
+        return token ? token.toJSON() : null;
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.getContractErc721Token',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                contractAddress: String(contractAddress),
+                tokenId: tokenId
+            }
+        });
+        throw error;
+    }
+};
+
+const getContractErc721Tokens = async (workspaceId, contractAddress, page, itemsPerPage, orderBy, order) => {
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const contract = await workspace.findContractByAddress(contractAddress);
+
+        const tokens = await contract.getFilteredErc721Tokens(page, itemsPerPage, orderBy, order);
+        const total = await contract.countErc721Tokens();
+
+        return {
+            items: tokens.map(t => t.toJSON()),
+            total: total
+        };
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.getContractErc721Tokens',
+            error: error,
+            extra: {
+                parsedMessage: error.original && error.original.message,
+                parsedDetail: error.original && error.original.detail,
+                workspaceId: String(workspaceId),
+                contractAddress: String(contractAddress)
+            }
+        });
+        throw error;
+    }
+};
+
+const storeErc721Token = async (workspaceId, contractAddress, token) => {
+    if (!workspaceId || !contractAddress || !token) throw '[storeErc721Token] Missing parameter';
+
+    try {
+        const workspace = await Workspace.findByPk(workspaceId);
+        const contract = await workspace.findContractByAddress(contractAddress);
+
+        return contract.safeCreateOrUpdateErc721Token(token);
+    } catch(error) {
+        writeLog({
+            functionName: 'firebase.storeErc721Token',
+            error: error,
+            extra: {
+                userId: String(userId),
+                workspace: workspace,
+                address: address,
+                data: data
+            }
+        });
+        throw error;
+    }
+};
+
 const setWorkspaceRemoteFlag = async (userId, workspaceName, flag) => {
     try {
         const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
@@ -436,13 +601,14 @@ const getAddressTransactions = async (workspaceId, address, page, itemsPerPage, 
     }
 };
 
-const getWorkspaceContracts = async (userId, workspaceName, page, itemsPerPage, orderBy, order, onlyTokens) => {
+const getWorkspaceContracts = async (userId, workspaceName, page, itemsPerPage, orderBy, order, pattern) => {
     try {
         const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
         const workspace = user.workspaces[0];
-        const contracts = await workspace.getFilteredContracts(page, itemsPerPage, orderBy, order, onlyTokens);
+        const contracts = await workspace.getFilteredContracts(page, itemsPerPage, orderBy, order, pattern);
+        const allowedPatterns = ['erc20', 'erc721'].indexOf(pattern) > -1 ? pattern : null;
         const contractCount = await workspace.countContracts({
-            where: onlyTokens ? { patterns: { [Op.contains]: ["erc20"] }} : {}
+            where: allowedPatterns ? { patterns: { [Op.contains]: [allowedPatterns] }} : {}
         });
 
         return {
@@ -1471,5 +1637,13 @@ module.exports = {
     getActiveWalletCount: getActiveWalletCount,
     getTransactionVolume: getTransactionVolume,
     getWalletVolume: getWalletVolume,
-    setWorkspaceRemoteFlag: setWorkspaceRemoteFlag
+    setWorkspaceRemoteFlag: setWorkspaceRemoteFlag,
+    storeErc721Token: storeErc721Token,
+    getContractErc721Tokens: getContractErc721Tokens,
+    getContractErc721Token: getContractErc721Token,
+    getErc721TokenTransfers: getErc721TokenTransfers,
+    updateErc721Token: updateErc721Token,
+    getContractByWorkspaceId: getContractByWorkspaceId,
+    storeContractDataWithWorkspaceId: storeContractDataWithWorkspaceId,
+    Workspace: Workspace
 };

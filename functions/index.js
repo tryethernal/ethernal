@@ -420,7 +420,7 @@ exports.transactionSyncTask = functions.https.onCall(async (data, context) => {
                     });
             }
 
-            return transactionsLib.processTransactions(data.userId, data.workspace, [txSynced]);
+            return;
         } catch(error) {
             console.log(error);
         }
@@ -1351,47 +1351,6 @@ exports.getUnprocessedContracts = functions.https.onCall(async (data, context) =
             const contracts = await db.getUnprocessedContracts(context.auth.uid, data.workspace);
 
             return { contracts: contracts };
-        } catch(error) {
-            console.log(error)
-            var reason = error.reason || error.message || 'Server error. Please retry.';
-            throw new functions.https.HttpsError(error.code || 'unknown', reason);        
-        }
-    }, data, context);
-});
-
-exports.setTokenProperties = functions.https.onCall(async (data, context) => {
-    return await psqlWrapper(async () => {
-        if (!context.auth)
-            throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
-
-        try {
-            if (!data.workspace || !data.contract) {
-                console.log(data);
-                throw new functions.https.HttpsError('invalid-argument', '[setTokenProperties] Missing parameter.');
-            }
-
-            const patterns = data.tokenPatterns ? admin.firestore.FieldValue.arrayUnion(...data.tokenPatterns) : [];
-
-            let tokenData = {};
-            if (data.tokenProperties)
-                tokenData = sanitize({
-                    symbol: data.tokenProperties.symbol,
-                    decimals: data.tokenProperties.decimals,
-                    name: data.tokenProperties.name
-                });
-
-            await db.storeContractData(context.auth.uid, data.workspace, data.contract, { patterns: patterns, processed: true, token: tokenData });
-
-            await enqueueTask('migration', {
-                uid: context.auth.uid,
-                workspace: data.workspace,
-                contract: data.contract,
-                tokenPatterns: data.tokenPatterns,
-                tokenProperties: data.tokenProperties,
-                secret: functions.config().ethernal.auth_secret
-            }, `${functions.config().ethernal.root_tasks}/api/contracts/${data.contract}/tokenProperties`);
-
-            return { success: true };
         } catch(error) {
             console.log(error)
             var reason = error.reason || error.message || 'Server error. Please retry.';
