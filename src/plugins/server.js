@@ -494,11 +494,12 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            getTokenBalances(address) {
+            getTokenBalances(address, patterns) {
                 const params = {
                     firebaseAuthToken: store.getters.firebaseIdToken,
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
+                    patterns: patterns
                 };
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/addresses/${address}/balances`;
                 return axios.get(resource, { params });
