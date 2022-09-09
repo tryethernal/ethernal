@@ -10,7 +10,9 @@ const ALLOWED_TASKS = [
     'usageBilling',
     'contractProcessing',
     'processWorkspace',
-    'submitExplorerLead'
+    'submitExplorerLead',
+    'reloadErc721Token',
+    'findAndProcessExistingErc721',
 ];
 
 const getTaskClient = () => {

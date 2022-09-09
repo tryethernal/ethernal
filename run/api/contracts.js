@@ -49,20 +49,23 @@ router.post('/:address/tokenProperties', authMiddleware, async (req, res) => {
         if (!contract)
             return res.status(200).send(`Couldn't find contract at address ${req.params.address}.`);
 
-        const newPatterns = data.tokenPatterns ? [...new Set([...contract.patterns, ...data.tokenPatterns])] : contract.patterns;
+        const newPatterns = data.properties.patterns ? [...new Set([...contract.patterns, ...data.properties.patterns])] : contract.patterns;
 
         let tokenData = {};
-        if (data.tokenProperties) {
+        if (data.properties) {
             tokenData = sanitize({
-                symbol: data.tokenProperties.symbol,
-                decimals: data.tokenProperties.decimals,
-                name: data.tokenProperties.name
+                patterns: newPatterns,
+                tokenSymbol: data.properties.tokenSymbol,
+                tokenDecimals: data.properties.tokenDecimals,
+                tokenName: data.properties.tokenName,
+                totalSupply: data.properties.totalSupply,
+                has721Metadata: data.properties.has721Metadata,
+                has721Enumerable: data.properties.has721Enumerable
             });
         }
 
         await db.storeContractData(data.uid, data.workspace, req.params.address, {
-            patterns: newPatterns,
-            token: tokenData,
+            ...tokenData,
             processed: true
         });
 
@@ -152,7 +155,7 @@ router.get('/:address', workspaceAuthMiddleware, async (req, res) => {
 router.get('/', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
     try {
-        const contracts = await db.getWorkspaceContracts(data.firebaseUserId, data.workspace.name, data.page, data.itemsPerPage, data.orderBy, data.order, data.onlyTokens);
+        const contracts = await db.getWorkspaceContracts(data.firebaseUserId, data.workspace.name, data.page, data.itemsPerPage, data.orderBy, data.order, data.pattern);
 
         res.status(200).json(contracts);
     } catch(error) {

@@ -40,21 +40,23 @@ export default {
             this.dialog = true;
             this.address = options.address;
             this.workspace = options.workspace;
+
             return new Promise((resolve, reject) => {
                 this.resolve = resolve;
                 this.reject = reject;
             });
         },
         close: function() {
-            this.resolve();
+            this.resolve(true);
             this.reset();
         },
         removeContract: function() {
             this.loading = true;
             this.server.removeContract(this.workspace, this.address)
                 .then(() => {
-                    this.$router.push({ path: '/contracts', query: { removedContract: this.address }});
-                    this.reset();
+                    if (this.$router.currentRoute.path != '/contracts')
+                        this.$router.push({ path: '/contracts', query: { removedContract: this.address }});
+                    this.close();
                 })
                 .catch((error) => {
                     this.errorMessage = error.message;

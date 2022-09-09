@@ -8,7 +8,8 @@ jest.mock('../../../src/plugins/pusher', () => ({
                 onNewContract: jest.fn(),
                 onNewTransaction: jest.fn(),
                 onNewToken: jest.fn(),
-                onUserUpdated: jest.fn()
+                onUserUpdated: jest.fn(),
+                onDestroyedContract: jest.fn()
             }
         }
     }

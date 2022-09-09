@@ -47,7 +47,7 @@
 </template>
 <script>
 const Web3 = require('web3');
-import { ethers } from 'ethers';
+const ethers = require('ethers');
 import { mapGetters } from 'vuex';
 import { sanitize, processMethodCallParam } from '../lib/utils';
 import { formatErrorFragment } from '../lib/abi';
@@ -83,8 +83,9 @@ export default {
             const options = sanitize({ ...this.options, from: this.options.from.address, value: this.value });
             const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
 
-            const signer = provider.getSigner();
+            const signer = provider.getSigner(this.options.from.address);
             const contract = new ethers.Contract(this.contract.address, this.contract.abi, signer);
+
             contract.populateTransaction[this.signature](...Object.values(processedParams), options)
                 .then((transaction) => {
                     const params = {

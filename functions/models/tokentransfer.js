@@ -18,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     dst: DataTypes.STRING,
     src: DataTypes.STRING,
     token: DataTypes.STRING,
-    transactionId: DataTypes.INTEGER
+    transactionId: DataTypes.INTEGER,
+    tokenId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'TokenTransfer',

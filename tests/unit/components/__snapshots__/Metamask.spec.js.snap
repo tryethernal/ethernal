@@ -7,7 +7,7 @@ exports[`Metamask.vue Should show a "Connect with Metamask" button if no account
   </div>
   <div class="v-card__text" style="">
     <div class="row">
-      <div class="col col-6">
+      <div class="col">
         <!----> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="connectMetamask"><span class="v-btn__content">Connect With Metamask</span></button>
       </div>
     </div>
@@ -22,7 +22,7 @@ exports[`Metamask.vue Should show an error is Metamask is not on the expected ne
   </div>
   <div class="v-card__text" style="">
     <div class="row">
-      <div class="col col-6">
+      <div class="col">
         <div role="alert" class="v-alert v-sheet v-sheet--outlined theme--light v-alert--dense v-alert--outlined error--text">
           <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--light error--text"></i>
             <div class="v-alert__content">
@@ -45,7 +45,7 @@ exports[`Metamask.vue Should show an explaination message if no metamask 1`] = `
   </div>
   <div class="v-card__text" style="display: none;">
     <div class="row">
-      <div class="col col-6">
+      <div class="col">
         <!----> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="connectMetamask"><span class="v-btn__content">Connect With Metamask</span></button>
       </div>
     </div>
@@ -60,7 +60,7 @@ exports[`Metamask.vue Should show the address when an account is connected 1`] =
   </div>
   <div class="v-card__text" style="">
     <div class="row">
-      <div class="col col-6">
+      <div class="col">
         <!---->
         <div><b>Connected Metamask account:</b> 0x1234
         </div>

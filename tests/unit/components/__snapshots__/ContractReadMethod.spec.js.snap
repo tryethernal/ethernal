@@ -3,7 +3,7 @@
 exports[`ContractReadMethod.vue Should display a generic error message if the function fails 1`] = `
 <div>
   <div class="pb-1 font-weight-bold">isProxy</div>
-  <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input py-1 col-3 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
@@ -24,7 +24,7 @@ exports[`ContractReadMethod.vue Should display a generic error message if the fu
 exports[`ContractReadMethod.vue Should display the UI to interact with a method 1`] = `
 <div>
   <div class="pb-1 font-weight-bold">isProxy</div>
-  <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input py-1 col-3 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
@@ -45,7 +45,7 @@ exports[`ContractReadMethod.vue Should display the UI to interact with a method 
 exports[`ContractReadMethod.vue Should display the error message if one is returned 1`] = `
 <div>
   <div class="pb-1 font-weight-bold">isProxy</div>
-  <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input py-1 col-3 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
@@ -122,7 +122,7 @@ exports[`ContractReadMethod.vue Should handle multiple results 1`] = `
 exports[`ContractReadMethod.vue Should return the result when interacting with the method 1`] = `
 <div>
   <div class="pb-1 font-weight-bold">isProxy</div>
-  <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input py-1 col-3 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
@@ -151,7 +151,7 @@ exports[`ContractReadMethod.vue Should return the result when interacting with t
 exports[`ContractReadMethod.vue Should work when input is any array 1`] = `
 <div>
   <div class="pb-1 font-weight-bold">reproBug</div>
-  <div class="v-input py-1 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input py-1 col-3 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">
@@ -183,7 +183,7 @@ exports[`ContractReadMethod.vue Should work when input is any array 1`] = `
 exports[`ContractReadMethod.vue Should work when it is in public explorer mode 1`] = `
 <div>
   <div class="pb-1 font-weight-bold">isProxy</div>
-  <div class="v-input py-1 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+  <div class="v-input py-1 col-3 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
     <div class="v-input__control">
       <div class="v-input__slot">
         <fieldset aria-hidden="true">

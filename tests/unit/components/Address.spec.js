@@ -88,7 +88,7 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: ['Address-Transactions-List'],
+            stubs: ['Address-Transactions-List', 'Contract-Verification'],
             getters: {
                 isPublicExplorer: jest.fn().mockReturnValue(true),
                 currentWorkspace: jest.fn().mockReturnValue({
@@ -108,7 +108,7 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: ['Address-Transactions-List']
+            stubs: ['Address-Transactions-List', 'Contract-Verification']
         });
         await wrapper.vm.$nextTick();
 
@@ -126,7 +126,7 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: ['Address-Transactions-List'],
+            stubs: ['Address-Transactions-List', 'Contract-Verification'],
             getters: {
                 chain: jest.fn().mockReturnValue('ethereum'),
                 isPublicExplorer: jest.fn().mockReturnValue(true),
@@ -155,7 +155,7 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: ['Address-Transactions-List'],
+            stubs: ['Address-Transactions-List', 'Contract-Verification'],
             getters: {
                 isPublicExplorer: jest.fn().mockReturnValue(false),
                 currentWorkspace: jest.fn(() => ({
@@ -182,7 +182,7 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: ['Address-Transactions-List'],
+            stubs: ['Address-Transactions-List', 'Contract-Verification'],
             getters: {
                 isPublicExplorer: jest.fn().mockReturnValue(false),
                 currentWorkspace: jest.fn(() => ({
@@ -223,7 +223,7 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: ['Address-Transactions-List']
+            stubs: ['Address-Transactions-List', 'Contract-Verification']
         });
 
         await wrapper.vm.$nextTick();

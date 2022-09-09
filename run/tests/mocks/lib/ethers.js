@@ -32,6 +32,7 @@ jest.mock('ethers', () => {
             name: () => new Promise((resolve) => resolve('Ethernal')),
             symbol: () => new Promise((resolve) => resolve('ETL')),
             decimals: () => new Promise((resolve) => resolve(18)),
+            totalSupply: () => new Promise((resolve) => resolve(1000)),
             functions: {
                 name: () => new Promise((resolve) => resolve('Ethernal'))
             }
@@ -39,7 +40,7 @@ jest.mock('ethers', () => {
     };
 
     Object.defineProperty(ethers, 'providers', { value: providers });
-    Object.defineProperty(ethers, 'Contract', { value: contract });
+    Object.defineProperty(ethers, 'Contract', { value: contract, writable: true });
     Object.defineProperty(ethers, 'BigNumber', { value: original.BigNumber });
     Object.defineProperty(ethers, 'utils', { value: original.utils });
 

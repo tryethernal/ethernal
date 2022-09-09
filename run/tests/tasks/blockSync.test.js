@@ -29,7 +29,7 @@ describe('POST /', () => {
             }})
             .expect(200)
             .then(() => {
-                expect(enqueueTask).toHaveBeenCalledTimes(3)
+                expect(enqueueTask).toHaveBeenCalledTimes(3);
                 done();
             });
     });
