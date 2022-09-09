@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.1] - 2022-09-09
+### Changed
+- Updated error messaging for easier troubleshooting when connecting a new chain
+
 ## [2.6.0] - 2022-09-09
 ### Added
 - ERC-721 Support
