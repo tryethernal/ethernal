@@ -11,6 +11,8 @@ import Contracts from '../components/Contracts.vue';
 import Tokens from '../components/Tokens.vue';
 import Settings from '../components/Settings.vue';
 import Overview from '../components/Overview.vue';
+import ERC721Token from '../components/ERC721Token.vue';
+import ERC721Collections from '../components/ERC721Collections.vue';
 
 const redirectIfLoggedIn = function (to, from, next) {
     if (auth().currentUser) {
@@ -37,9 +39,12 @@ const routes = [
     { path: '/transaction/:hash', component: Transaction, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/tx/:hash', component: Transaction, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/address/:hash', component: Address, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/address/:hash/:tokenId', component: ERC721Token, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/token/:hash/:tokenId', component: ERC721Token, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/token/:hash', component: Address, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/contracts', component: Contracts, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/tokens', component: Tokens, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/nfts', component: ERC721Collections, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/settings', component: Settings, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '*', redirect: '/overview' }
 ];

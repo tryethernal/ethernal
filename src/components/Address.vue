@@ -22,6 +22,7 @@
             <v-tab id="codeTab" href="#code" v-if="isContract && isPublicExplorer">Code</v-tab>
             <v-tab id="storageTab" href="#storage" v-if="isContract && !contract.imported && !isPublicExplorer">Storage</v-tab>
             <v-tab id="balancesTab" href="#balances">ERC-20 Tokens</v-tab>
+            <v-tab id="collectionTab" href="#collection" v-if="isErc721">ERC-721 Collection</v-tab>
         </v-tabs>
 
         <v-tabs-items :value="tab">
@@ -118,7 +119,7 @@
                     <div v-else>
                         <v-card-text v-if="contract.abi">
                             <v-row v-for="(method, methodIdx) in contractReadMethods" :key="methodIdx" class="pb-4">
-                                <v-col lg="3" md="6" sm="12">
+                                <v-col lg="12" md="6" sm="12">
                                     <Contract-Read-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="callOptions" />
                                 </v-col>
                             </v-row>
@@ -218,6 +219,10 @@
                     </v-card-text>
                 </v-card>
             </v-tab-item>
+
+            <v-tab-item v-if="isErc721" value="collection">
+                <ERC-721-Collection :address="hash" :totalSupply="contract.tokenTotalSupply" :has721Enumerable="contract.has721Enumerable" />
+            </v-tab-item>
         </v-tabs-items>
     </v-container>
 </template>
@@ -238,6 +243,7 @@ import AddressTransactionsList from './AddressTransactionsList';
 import ContractVerification from './ContractVerification';
 import Metamask from './Metamask';
 import TokenBalances from './TokenBalances';
+import ERC721Collection from './ERC721Collection';
 import UpgradeLink from './UpgradeLink';
 
 import FromWei from '../filters/FromWei';
@@ -257,7 +263,8 @@ export default {
         AddressTransactionsList,
         Metamask,
         TokenBalances,
-        ContractVerification
+        ContractVerification,
+        ERC721Collection
     },
     filters: {
         FromWei
@@ -288,14 +295,13 @@ export default {
         rpcConnectionStatus: false
     }),
     created: function() {
+        if (!this.tab)
+            this.tab = 'transactions';
+
         this.server.getAccountBalance(this.lowerHash).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
 
         this.callOptions.gasLimit = this.currentWorkspace.gasLimit;
         this.callOptions.gasPrice = this.currentWorkspace.gasPrice;
-
-        if (!this.tab) {
-            this.tab = 'transactions';
-        }
 
         if (!this.isPublicExplorer)
             this.rpcConnectionStatus = true;
@@ -429,6 +435,11 @@ export default {
             'chain',
             'isPublicExplorer'
         ]),
+        isErc721() {
+            return this.contract &&
+                this.contract.patterns &&
+                this.contract.patterns.indexOf('erc721') > -1;
+        },
         lowerHash: function() {
             return this.hash.toLowerCase();
         },

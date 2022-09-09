@@ -7,7 +7,8 @@ import { Storage } from '../lib/storage';
 import { functions } from './firebase';
 import { sanitize } from '../lib/utils';
 import { parseTrace } from '../lib/trace';
-import { isErc20 } from '../lib/contract';
+import { findPatterns, formatErc721Metadata } from '../lib/contract';
+import { ERC721Connector } from '../lib/rpc';
 
 const serverFunctions = {
     // Private
@@ -46,43 +47,6 @@ const serverFunctions = {
         }
 
         return new provider(url);
-    },
-    _fetchTokenInfo: async function(contract, rpcServer) {
-        let decimals = [], symbol = [], name = [];
-        try {
-            const ERC20_ABI = [
-                {"name":"name", "constant":true, "payable":false, "type":"function", "inputs":[], "outputs":[{"name":"","type":"string"}]},
-                {"name":"symbol", "constant":true, "payable":false, "type":"function", "inputs":[], "outputs":[{"name":"","type":"string"}]},
-                {"name":"decimals", "constant":true, "payable":false, "type":"function", "inputs":[], "outputs":[{"name":"","type":"uint8"}]}
-            ];
-            const tmpContract = {
-                ...contract,
-                abi: ERC20_ABI
-            };
-            decimals = await serverFunctions.callContractReadMethod({ contract: tmpContract, method: 'decimals()', options: {}, params: {}, rpcServer: rpcServer });
-            symbol = await serverFunctions.callContractReadMethod({ contract: tmpContract, method: 'symbol()', options: {}, params: {}, rpcServer: rpcServer });
-            name = await serverFunctions.callContractReadMethod({ contract: tmpContract, method: 'name()', options: {}, params: {}, rpcServer: rpcServer });
-        } catch (error) {
-            if (error.reason == 'missing response')
-                throw "Can't connect to the server";
-        }
-
-        if (!decimals.length || !symbol.length || !name.length) {
-            return {};
-        }
-        else {
-            const tokenPatterns = ['erc20'];
-            if (contract.abi && !isErc20(contract.abi)) tokenPatterns.push('proxy');
-
-            return {
-                patterns: tokenPatterns,
-                properties: {
-                    decimals: decimals[0],
-                    symbol: symbol[0],
-                    name: name[0]
-                }
-            };
-        }
     },
 
     // Public
@@ -137,7 +101,9 @@ const serverFunctions = {
             const web3Rpc = new Web3(serverFunctions._getWeb3Provider(data.rpcServer));
             var networkId = await web3Rpc.eth.net.getId();
             var latestBlockNumber = await rpcProvider.getBlockNumber();
+            console.log(latestBlockNumber)
             var latestBlock = await rpcProvider.getBlock(latestBlockNumber);
+            console.log(latestBlock)
             var gasLimit = latestBlock.gasLimit.toString();
 
             var workspace = {
@@ -183,9 +149,9 @@ const serverFunctions = {
     },
     callContractWriteMethod: async function(data) {
         try {
-            var provider = serverFunctions._getProvider(data.rpcServer);
-            var signer;
-            var options = sanitize({
+            const provider = serverFunctions._getProvider(data.rpcServer);
+            let signer;
+            const options = sanitize({
                 gasLimit: data.options.gasLimit,
                 gasPrice: data.options.gasPrice,
                 value: data.options.value,
@@ -197,7 +163,7 @@ const serverFunctions = {
             else {
                 signer = provider.getSigner(data.options.from);
             }
-            var contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
+            const contract = new ethers.Contract(data.contract.address, data.contract.abi, signer);
 
             const pendingTx = await contract[data.method](...Object.values(data.params), options);
 
@@ -221,6 +187,11 @@ const serverFunctions = {
             else
                 throw sanitize({ reason: reason, data: errorData });
         }
+    },
+    transferErc721Token(rpcServer, contractAddress, from, to, tokenId) {
+        const erc721Connector = new ERC721Connector(rpcServer, contractAddress);
+        return erc721Connector.safeTransferFrom(from, to, tokenId);
+
     },
     traceTransaction: async function(rpcServer, hash) {
         try {
@@ -255,19 +226,18 @@ const serverFunctions = {
     },
     processContracts: async function(data) {
         try {
+            const res = [];
             const contracts = (await functions.httpsCallable('getUnprocessedContracts')({ workspace: data.workspace })).data.contracts;
             for (let i = 0; i < contracts.length; i++) {
                 const contract = contracts[i];
-                const token = await serverFunctions._fetchTokenInfo(contract, data.rpcServer);
-                await functions.httpsCallable('setTokenProperties')({
-                    workspace: data.workspace,
-                    contract: contract.address,
-                    tokenProperties: token.properties,
-                    tokenPatterns: token.patterns
+                const properties = await findPatterns(data.rpcServer, contract.address);
+                res.push({
+                    address: contract.address,
+                    properties: properties
                 });
             }
 
-            return true;
+            return res;
         } catch(error) {
             console.log(error);
             var reason = error.reason || error.message || "Can't connect to the server";
@@ -347,6 +317,113 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            getErc721TokensFrom(contractAddress, indexes) {
+                const tokens = [];
+                return new Promise((resolve, reject) => {
+                    const data = {
+                        firebaseAuthToken: store.getters.firebaseIdToken,
+                        firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                        workspace: store.getters.currentWorkspace.name,
+                    };
+                    const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}`;
+
+                    const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
+                    const promises = [];
+                    for (let i = 0; i < indexes.length; i++) {
+                        promises.push(erc721Connector.fetchTokenByIndex(indexes[i])
+                            .then((token) => {
+                                tokens.push(token)
+                                axios.post(resource, { data: { ...data, token } });
+                            }));
+                    }
+                    Promise.all(promises)
+                        .then(() => resolve(tokens))
+                        .catch(reject);
+                })
+            },
+
+            setTokenProperties(contractAddress, properties) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    properties: properties
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${contractAddress}/tokenProperties`;
+                return axios.post(resource, { data });
+            },
+
+            getErc721TokenTransfers(contractAddress, tokenId) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}/${tokenId}/transfers`;
+                return axios.get(resource, { params });
+            },
+
+            reloadErc721Token(contractAddress, tokenId) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}/${tokenId}/reload`;
+                return axios.post(resource, { data });
+            },
+
+            getErc721Token(contractAddress, tokenId) {
+                if (!store.getters.isPublicExplorer) {
+                    const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
+                    return new Promise((resolve, reject) => {
+                        erc721Connector.fetchTokenById(tokenId)
+                            .then(res => resolve({ data: formatErc721Metadata(res) }))
+                            .catch(reject);
+                    });
+                }
+                else {
+                    const params = {
+                        firebaseAuthToken: store.getters.firebaseIdToken,
+                        firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                        workspace: store.getters.currentWorkspace.name,
+                    };
+                    const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}/${tokenId}`;
+                    return axios.get(resource, { params });
+                }
+            },
+
+            getErc721Tokens(contractAddress, options) {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+
+                if (!store.getters.isPublicExplorer) {
+                    return new Promise((resolve, reject) => {
+                        const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
+                        const promises = [];
+                        const indexes = Array.from({ length: options.itemsPerPage }, (_, i) => options.itemsPerPage * (options.page - 1) + i);
+                        for (let i = 0; i < indexes.length; i++)
+                            promises.push(erc721Connector.fetchTokenByIndex(indexes[i]));
+
+                        Promise.all(promises)
+                            .then((res) => {
+                                console.log(res)
+                                const tokens = sanitize(res.map(el => formatErc721Metadata(el)));
+                                resolve({ data: { items: tokens }});
+                            })
+                            .catch(reject);
+                    });
+                }
+                else {
+                    const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Collections/${contractAddress}/tokens`;
+                    return axios.get(resource, { params });
+                }
+            },
+
             setRemoteFlag() {
                 const data = {
                     firebaseAuthToken: store.getters.firebaseIdToken,
@@ -700,7 +777,16 @@ export const serverPlugin = {
             processContracts: async function(workspace) {
                 return new Promise((resolve, reject) => {
                     serverFunctions.processContracts({ workspace: workspace, rpcServer: _rpcServer() })
-                        .then(resolve)
+                        .then((contracts) => {
+                            const promises = [];
+                            for (let i = 0; i < contracts.length; i++) {
+                                const contract = contracts[i];
+                                promises.push(Vue.prototype.server.setTokenProperties(contract.address, contract.properties));
+                            }
+                            Promise.all(promises)
+                                .then(resolve)
+                                .catch(reject);
+                        })
                         .catch(reject);
                 });
             },
@@ -771,7 +857,6 @@ export const serverPlugin = {
                     for (var i = 0; i < endpoints.length; i++) {
                         const web3Rpc = new Web3(serverFunctions._getWeb3Provider(endpoints[i]));
                         var networkId = await web3Rpc.eth.net.getId().catch(() => {});
-                        console.log(networkId)
                         if (networkId) {
                             res.push(endpoints[i])
                         }
@@ -845,7 +930,8 @@ export const serverPlugin = {
                         .then(resolve)
                         .catch(reject)
                 });
-            }
+            },
+            transferErc721Token: serverFunctions.transferErc721Token
         };
     }
 };

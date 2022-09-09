@@ -64,7 +64,16 @@
                         <v-icon>mdi-alpha-c-circle</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                        <v-list-item-title>Tokens</v-list-item-title>
+                        <v-list-item-title>ERC-20 Tokens</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
+                <v-list-item link :to="'/nfts'">
+                    <v-list-item-icon>
+                        <v-icon>mdi-palette-advanced</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>ERC-721 Tokens</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
 

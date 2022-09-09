@@ -14,8 +14,8 @@ exports[`Tokens.vue Should display token contracts 1`] = `
         <thead class="v-data-table-header">
           <tr>
             <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Token Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Token Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            <th role="columnheader" scope="col" aria-label="Token Symbol: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Token Symbol</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="Symbol: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Symbol</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
           </tr>
         </thead>

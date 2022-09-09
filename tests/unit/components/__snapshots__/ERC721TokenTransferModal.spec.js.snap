@@ -1,0 +1,190 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ERC721TokenTransferModal.vue Should not show the metamask button if not public explorer 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+        <div class="v-card v-sheet theme--light">
+          <div class="v-card__title headline">Transfer My Token #1</div>
+          <form novalidate="novalidate" class="v-form">
+            <div class="v-card__text">
+              <!---->
+              <!---->
+              <!---->
+              <div role="alert" class="v-alert v-sheet theme--dark v-alert--text info--text">This will only work if your node supports either <code>hardhat_impersonateAccount</code> or <code>evm_unlockUnknownAccount</code>.</div>
+
+              Owner: <hash-link-stub fullhash="true" hash="0xabc" type="address"></hash-link-stub>
+              <div class="v-input mt-3 v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <div class="v-input__prepend-inner">
+                      <div class="v-input__icon v-input__icon--prepend-inner"><i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-right theme--light"></i></div>
+                    </div>
+                    <fieldset aria-hidden="true">
+                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="recipient" class="v-label theme--light" style="left: 0px; position: absolute;">Recipient Address</label><input small="" id="recipient" type="text"></div>
+                  </div>
+                  <div class="v-text-field__details">
+                    <div class="v-messages theme--light">
+                      <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!---->
+              <!---->
+            </div>
+            <div class="v-card__actions">
+              <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--text theme--light v-size--default" id="transferToken"><span class="v-btn__content">Transfer Token</span></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`ERC721TokenTransferModal.vue Should send a transation with Metamask 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+        <div class="v-card v-sheet theme--light">
+          <div class="v-card__title headline">Transfer My Token #1</div>
+          <form novalidate="novalidate" class="v-form">
+            <div class="v-card__text">
+              <div role="alert" class="v-alert v-sheet theme--dark success">Transfer transaction sent: <a class="white--text" href="/transaction/0x1234">0x1234</a></div>
+              <!---->
+              <!---->
+              <!---->
+
+              Owner: <hash-link-stub fullhash="true" hash="0xabc" type="address"></hash-link-stub>
+              <div class="v-input mt-3 v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <div class="v-input__prepend-inner">
+                      <div class="v-input__icon v-input__icon--prepend-inner"><i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-right theme--light"></i></div>
+                    </div>
+                    <fieldset aria-hidden="true">
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="recipient" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Recipient Address</label><input small="" id="recipient" type="text"></div>
+                  </div>
+                  <div class="v-text-field__details">
+                    <div class="v-messages theme--light">
+                      <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!---->
+              <metamask-stub class="mt-1"></metamask-stub>
+            </div>
+            <div class="v-card__actions">
+              <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="transferToken"><span class="v-btn__content">Transfer Token</span></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`ERC721TokenTransferModal.vue Should show the Metamask button if public explorer 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+        <div class="v-card v-sheet theme--light">
+          <div class="v-card__title headline">Transfer My Token #1</div>
+          <form novalidate="novalidate" class="v-form">
+            <div class="v-card__text">
+              <!---->
+              <!---->
+              <!---->
+              <!---->
+
+              Owner: <hash-link-stub fullhash="true" hash="0xabc" type="address"></hash-link-stub>
+              <div class="v-input mt-3 v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <div class="v-input__prepend-inner">
+                      <div class="v-input__icon v-input__icon--prepend-inner"><i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-right theme--light"></i></div>
+                    </div>
+                    <fieldset aria-hidden="true">
+                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="recipient" class="v-label theme--light" style="left: 0px; position: absolute;">Recipient Address</label><input small="" id="recipient" type="text"></div>
+                  </div>
+                  <div class="v-text-field__details">
+                    <div class="v-messages theme--light">
+                      <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!---->
+              <metamask-stub class="mt-1"></metamask-stub>
+            </div>
+            <div class="v-card__actions">
+              <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--text theme--light v-size--default" id="transferToken"><span class="v-btn__content">Transfer Token</span></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`ERC721TokenTransferModal.vue Should successfully impersonate the account & call the transfer function 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+        <div class="v-card v-sheet theme--light">
+          <div class="v-card__title headline">Transfer My Token #1</div>
+          <form novalidate="novalidate" class="v-form">
+            <div class="v-card__text">
+              <div role="alert" class="v-alert v-sheet theme--dark success">Token transferred successfully!</div>
+              <!---->
+              <!---->
+              <!---->
+
+              Owner: <hash-link-stub fullhash="true" hash="0xabc" type="address"></hash-link-stub>
+              <div class="v-input mt-3 v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <div class="v-input__prepend-inner">
+                      <div class="v-input__icon v-input__icon--prepend-inner"><i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-right theme--light"></i></div>
+                    </div>
+                    <fieldset aria-hidden="true">
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="recipient" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Recipient Address</label><input small="" id="recipient" type="text"></div>
+                  </div>
+                  <div class="v-text-field__details">
+                    <div class="v-messages theme--light">
+                      <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                    </div>
+                  </div>
+                </div>
+              </div> <span class="align-right">
+                    Transaction:
+                    <i aria-hidden="true" class="v-icon notranslate mr-1 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px;"></i> <i aria-hidden="true" class="v-icon notranslate mr-1 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px; display: none;"></i> <hash-link-stub hash="0xdef" type="transaction"></hash-link-stub></span>
+              <!---->
+            </div>
+            <div class="v-card__actions">
+              <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="transferToken"><span class="v-btn__content">Transfer Token</span></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;

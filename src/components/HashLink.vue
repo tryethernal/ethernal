@@ -7,6 +7,8 @@
             Verified contract.
         </v-tooltip>
         <router-link v-if="hash" :to="link()">{{ name }}</router-link>
+        <span v-if="tokenId">
+            &nbsp;(<router-link :to="`/address/${hash}/${tokenId}`">#{{ tokenId }}</router-link>)</span>
         <span v-if="hash && !copied && !notCopiable">
             &nbsp; <v-icon @click="copyHash()" x-small>mdi-content-copy</v-icon><input type="hidden" :id="`copyElement-${hash}`" :value="hash">
         </span>
@@ -20,7 +22,7 @@ const { sanitize } = require('../lib/utils');
 
 export default {
     name: 'HashLink',
-    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName'],
+    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName', 'xsHash', 'tokenId'],
     data: () => ({
         copied: false,
         token: null,
@@ -60,6 +62,9 @@ export default {
             if (!this.hash) return;
             if (this.fullHash) {
                 return this.hash;
+            }
+            else if (this.xsHash) {
+                return `${this.hash.slice(0, 5)}...${this.hash.slice(-5)}`;
             }
             else {
                 return `${this.hash.slice(0, 10)}...${this.hash.slice(-5)}`;

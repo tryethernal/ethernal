@@ -49,11 +49,11 @@ export default {
                 value: 'address'
             },
             {
-                text: 'Token Name',
+                text: 'Name',
                 value: 'tokenName'
             },
             {
-                text: 'Token Symbol',
+                text: 'Symbol',
                 value: 'tokenSymbol'
             },
             {
@@ -65,6 +65,7 @@ export default {
     }),
     mounted: function() {
         this.pusher.onNewToken(() => this.getTokens(this.currentOptions), this);
+        this.pusher.onDestroyedContract(() => this.getTokens(this.currentOptions), this);
     },
     methods: {
         getTokens: function(newOptions) {
@@ -77,7 +78,7 @@ export default {
                 page: this.currentOptions.page,
                 itemsPerPage: this.currentOptions.itemsPerPage,
                 order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc',
-                onlyTokens: true
+                pattern: 'erc20'
             };
 
             this.server.getContracts(options)

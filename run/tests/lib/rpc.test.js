@@ -1,10 +1,55 @@
 require('../mocks/lib/trace');
 require('../mocks/lib/ethers');
+require('../mocks/lib/tasks');
 const ethers = require('ethers');
 const { processTrace, parseTrace } = require('../../lib/trace');
-const { ContractConnector, Tracer } = require('../../lib/rpc');
+const { enqueueTask } = require('../../lib/tasks');
+const { ContractConnector, Tracer, ERC721Connector } = require('../../lib/rpc');
+const ERC721_ABI = require('../../lib/abis/erc721.json');
+const ERC721_ENUMERABLE_ABI = require('../../lib/abis/erc721Enumerable.json');
+const ERC721_METADATA_ABI = require('../../lib/abis/erc721Metadata.json');
 
 afterEach(() => jest.clearAllMocks());
+
+describe('ERC721Connector', () => {
+    const host = 'http://localhost:8545', address = '0x123';
+
+    it('Should create an instance with a provider, a contract and base erc721 abi', () => {
+        const connector = new ERC721Connector(host, address);
+        expect(connector.provider).toEqual(expect.objectContaining({ send: expect.anything() }));
+        expect(connector.contract).toEqual(expect.objectContaining({
+            name: expect.anything(),
+            functions: expect.any(Object)
+        }));
+        expect(connector.abi).toEqual(ERC721_ABI);
+    });
+
+    it('Should create an instance with erc721 metadata abi', () => {
+        const connector = new ERC721Connector(host, address, { metadata: true });
+        expect(connector.abi).toEqual([...ERC721_ABI, ...ERC721_METADATA_ABI]);
+    });
+
+    it('Should create an instance with erc721 enumerable abi', () => {
+        const connector = new ERC721Connector(host, address, { enumerable: true });
+        expect(connector.abi).toEqual([...ERC721_ABI, ...ERC721_ENUMERABLE_ABI]);
+    });
+
+    it('Should not all allow token fetching if instance is not enumerable', async () => {
+        const connector = new ERC721Connector(host, address);
+        expect(async () => {
+            await connector.fetchAndStoreAllTokens(1);
+        }).rejects.toThrow(new Error('This method is only available on ERC721 implemeting the Enumerable interface'));
+    });
+
+    it('Should queue fetching for each token if instance is enumerable', async () => {
+        const connector = new ERC721Connector(host, address, { enumerable: true });
+        jest.spyOn(connector, 'totalSupply').mockResolvedValueOnce(2);
+        
+        await connector.fetchAndStoreAllTokens(1);
+
+        expect(enqueueTask).toHaveBeenCalledTimes(2);
+    });
+});
 
 describe('ContractConnector', () => {
     it('Should create an instance with a provider and a contract', () => {

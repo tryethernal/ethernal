@@ -145,13 +145,25 @@ LogDescription {
 }
 `;
 
-exports[`getTokenTransfers Should return an array with transfers 1`] = `
+exports[`getTokenTransfers Should return decoded erc20 transfers 1`] = `
 Array [
   Object {
     "amount": "1",
     "dst": "0xc00e94cb662c3520282e6f5717214004a7f26888",
     "src": "0xe93381fb4c4f14bda253907b18fad305d799241a",
     "token": "0xc00e94cb662c3520282e6f5717214004a7f26888",
+  },
+]
+`;
+
+exports[`getTokenTransfers Should return decoded erc721 transfers 1`] = `
+Array [
+  Object {
+    "amount": "1",
+    "dst": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+    "src": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+    "token": "0xed5af388653567af2f388e6224dc7c4b3241c544",
+    "tokenId": "10",
   },
 ]
 `;
