@@ -9,7 +9,7 @@
                     :sort-desc="true"
                     :headers="headers">
                 <template v-slot:top>
-                    <v-toolbar dense flat>
+                    <v-toolbar dense flat v-if="!dense">
                         <v-spacer></v-spacer>
                         <v-switch v-model="unformatted" label="Unformatted Balances"></v-switch>
                     </v-toolbar>
@@ -31,7 +31,7 @@ import FromWei from '../filters/FromWei.js';
 
 export default {
     name: 'TokenBalances',
-    props: ['address'],
+    props: ['address', 'patterns', 'dense'],
     components: {
         HashLink
     },
@@ -53,7 +53,7 @@ export default {
     methods: {
         getTokenBalances() {
             this.loading = true;
-            this.server.getTokenBalances(this.address)
+            this.server.getTokenBalances(this.address, this.patterns)
                 .then(({ data }) => this.balances = data)
                 .catch(console.log)
                 .finally(() => this.loading = false);
