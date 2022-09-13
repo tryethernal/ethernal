@@ -1,6 +1,7 @@
 const express = require('express');
 const { stringifyBns, sanitize } = require('../lib/utils');
 const db = require('../lib/firebase');
+const { enqueueTask } = require('../lib/tasks');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
 
@@ -43,15 +44,28 @@ router.post('/', authMiddleware, async (req, res) => {
         if (!block)
             throw Error('[POST /api/blocks] Missing block parameter.');
 
-        var syncedBlock = stringifyBns(sanitize(block));
+        const serverSync = req.query.serverSync && String(req.query.serverSync) === 'true';
 
-        const storedBlock = await db.storeBlock(data.uid, data.workspace, syncedBlock);
-        // TODO: Bill usage if empty block
+        if (serverSync) {
+            if (!block.number)
+                throw Error('[POST /api/blocks] Missing block number.');
+
+            await enqueueTask('blockSync', {
+                userId: data.uid,
+                workspace: data.workspace,
+                blockNumber: data.block.number,
+                secret: process.env.AUTH_SECRET
+            }, `${process.env.CLOUD_RUN_ROOT}/tasks/blockSync`);
+        }
+        else {
+            const syncedBlock = stringifyBns(sanitize(block));
+            const storedBlock = await db.storeBlock(data.uid, data.workspace, syncedBlock);
+        }
 
         res.sendStatus(200);
     } catch(error) {
         console.log(error);
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
