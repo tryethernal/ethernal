@@ -13,7 +13,7 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
     const data = req.body.data;
 
     try {
-        if (!data.userId || !data.workspace || !data.blockNumber) {
+        if (!data.userId || !data.workspace || data.blockNumber === undefined || data.blockNumber === null) {
             console.log(data);
             throw '[POST /tasks/blockSync] Missing parameter.';
         }
@@ -24,14 +24,21 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
 
         const block = await providerConnector.fetchBlockWithTransactions(data.blockNumber);
 
-        if (!block)
-            throw new Error(`Couldn't fetch block from provider`);
+        if (!block) {
+            writeLog({
+                functionName: 'tasks.blockSync',
+                error: "Couldn't fetch block from provider",
+                extra: {
+                    blockNumber: data.blockNumber,
+                    userId: data.userId,
+                    workspace: data.workspace
+                }
+            });
+            return res.sendStatus(200);
+        }
 
         const syncedBlock = sanitize(stringifyBns({ ...block, transactions: block.transactions.map(tx => stringifyBns(tx)) }));
         const storedBlock = await db.storeBlock(data.userId, data.workspace, syncedBlock);
-
-        // if (storedBlock && block.transactions.length === 0)
-        //     return publish('bill-usage', { userId: data.userId, timestamp: block.timestamp });
 
         for (let i = 0; i < block.transactions.length; i++) {
             await enqueueTask('transactionSync', {
