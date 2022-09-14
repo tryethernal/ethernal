@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" max-width="600" :persistent="true">
+    <v-dialog v-model="dialog" max-width="1000" :persistent="true">
         <v-stepper vertical v-model="stepperIndex">
             <h3 class="ml-6 mt-4">Ethernal Onboarding</h3>
             <v-stepper-step step="1" :complete="stepperIndex > 1">
@@ -13,14 +13,13 @@
 
             <v-stepper-step step="2" :complete="stepperIndex > 2">Set up the client</v-stepper-step>
             <v-stepper-content step="2">
+                <h5>For Hardhat</h5>
+                <p>
+                    Add the <a href="https://github.com/tryethernal/hardhat-ethernal" target="_blank">plugin</a> to your project with <code>yarn add hardhat-ethernal</code> or <code>npm install hardhat-ethernal</code><br>
+                </p>
+                <h5>For other nodes (Ganache, ...)</h5>
                 <p>
                     Install the <a href="https://github.com/tryethernal/ethernal-cli" target="_blank">CLI</a> with <code>npm install ethernal -g</code>
-                </p>
-                <p>
-                    And sign-in with <code>ethernal login</code>
-                </p>
-                <p>
-                    If you have troubles signing in with <code>ethernal login</code>, you can run the <code>ethernal</code> CLI or Hardhat commands with env variables instead: <code>ETHERNAL_EMAIL=your@email.com ETHERNAL_PASSWORD=pwd npx hardhat node for example.</code>
                 </p>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -30,19 +29,17 @@
 
             <v-stepper-step step="3" :complete="stepperIndex > 3">Listen for blocks</v-stepper-step>
             <v-stepper-content step="3">
-                <h5>For Ganache</h5>
-                <p>
-                    Run <code>ethernal listen</code> to listen for blocks (<a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">doc</a>).
-                </p>
                 <h5>For Hardhat</h5>
-                <p>
-                    Add the <a href="https://github.com/tryethernal/hardhat-ethernal" target="_blank">plugin</a> to your project with <code>yarn add hardhat-ethernal</code><br>
-                </p>
                 <p>
                     Add <code>require('hardhat-ethernal');</code> in your <code>hardhat-config.js</code> file.
                 </p>
                 <p>
-                    Restart your Hardhat node and you are good to go :) the plugin will automatically synchronize all blocks and transactions.
+                    Restart your node with <code>ETHERNAL_EMAIL={{ user.email }} ETHERNAL_PASSWORD=yourpwd npx hardhat node</code> (<a href="https://github.com/tryethernal/hardhat-ethernal" target="_blank">doc</a>)<br>
+                    You are good to go :) the plugin will automatically synchronize all blocks and transactions.<br>
+                </p>
+                <h5>For other nodes (Ganache, ...)</h5>
+                <p>
+                    Run <code>ETHERNAL_EMAIL={{ user.email }} ETHERNAL_PASSWORD=yourpwd ethernal listen</code> to listen for blocks (<a href="https://github.com/tryethernal/cli" target="_blank">doc</a>).
                 </p>
                 <p v-if="!canExit">
                     Waiting for your first block...
@@ -101,7 +98,8 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'currentWorkspace'
+            'currentWorkspace',
+            'user'
         ])
     }
 }
