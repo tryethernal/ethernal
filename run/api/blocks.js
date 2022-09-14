@@ -7,30 +7,6 @@ const authMiddleware = require('../middlewares/auth');
 
 const router = express.Router();
 
-router.post('/syncRange', authMiddleware, async (req, res) => {
-    try {
-        const data = req.body.data;
-
-        if (!data.workspace || data.from === undefined || data.from === null || data.to === undefined || data.to === null) {
-            console.log(data)
-            throw new Error('[POST /api/blocks/syncRange] Missing parameter');
-        }
-
-        await enqueueTask('batchBlockSync', {
-            userId: data.uid,
-            workspace: data.workspace,
-            from: data.from,
-            to: data.to,
-            secret: process.env.AUTH_SECRET,
-        }, `${process.env.CLOUD_RUN_ROOT}/tasks/batchBlockSync`);
-
-        res.sendStatus(200);
-    } catch(error) {
-        console.log(error);
-        res.status(400).send(error);
-    }
-});
-
 router.get('/', workspaceAuthMiddleware, async (req, res) => {
     try {
         const data = req.query;
