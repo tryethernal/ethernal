@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.0] - 2022-09-14
+### Added
+- Cloud Run endpoints to sync block range
+
+### Changed
+- Updated onboarding modal wording
+
 ## [2.6.2] - 2022-09-09
 ### Added
 - ERC-721 tokens tab on each address page
