@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const { decrypt } = require('../lib/crypto');
 module.exports = (sequelize, DataTypes) => {
   class Account extends Model {
     /**
@@ -22,7 +23,12 @@ module.exports = (sequelize, DataTypes) => {
         }
     },
     balance: DataTypes.STRING,
-    privateKey: DataTypes.STRING
+    privateKey: {
+         type: DataTypes.STRING,
+         get() {
+             return this.getDataValue('privateKey') ? decrypt(this.getDataValue('privateKey')) : null;
+         }
+    }
   }, {
     sequelize,
     modelName: 'Account',
