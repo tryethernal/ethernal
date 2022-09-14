@@ -4,6 +4,7 @@ const { sanitize }  = require('../lib/utils');
 
 module.exports = async (req, res, next) => {
     const pusherData =  sanitize({ socket_id: req.body.socket_id, channel_name: req.body.channel_name, firebaseAuthToken: req.body.firebaseAuthToken, firebaseUserId: req.body.firebaseUserId });
+    const authorizationHeader = req.headers['Authorization'];
     const data = { ...req.body.data, ...req.query, ...pusherData };
     try {
         let firebaseUser;
