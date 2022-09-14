@@ -24,8 +24,11 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
                 workspace: data.workspace,
                 from: end,
                 to: parseInt(data.to),
+                secret: process.env.AUTH_SECRET
             }, `${process.env.CLOUD_RUN_ROOT}/tasks/batchBlockSync`);
         }
+        else
+            end += 1;
 
         for (let i = start; i < end; i++) {
             const promises = [];

@@ -1,3 +1,3 @@
 jest.mock('../../../lib/tasks', () => ({
-    enqueueTask: jest.fn()
+    enqueueTask: jest.fn().mockResolvedValue(true)
 }));
