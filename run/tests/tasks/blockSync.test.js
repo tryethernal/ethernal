@@ -1,4 +1,5 @@
 require('../mocks/lib/rpc');
+require('../mocks/lib/writeLog');
 require('../mocks/lib/tasks');
 require('../mocks/lib/firebase');
 require('../mocks/lib/transactions');
@@ -7,6 +8,7 @@ require('../mocks/middlewares/taskAuth');
 const db = require('../../lib/firebase');
 const { enqueueTask } = require('../../lib/tasks');
 const { ProviderConnector } = require('../../lib/rpc');
+const writeLog = require('../../lib/writeLog');
 
 const supertest = require('supertest');
 const app = require('../../app');
@@ -34,7 +36,7 @@ describe('POST /', () => {
             });
     });
 
-    it('Should send a 401 if block cannot be found', (done) => {
+    it('Should fail gracefully if block cannot be found', (done) => {
         ProviderConnector.mockImplementationOnce(() => ({
             fetchBlockWithTransactions: jest.fn().mockResolvedValue(null)
         }));
@@ -45,6 +47,10 @@ describe('POST /', () => {
                 workspace: 'My Workspace',
                 blockNumber: 1
             }})
-            .expect(400, done);
+            .expect(200)
+            .then(() => {
+                expect(writeLog).toHaveBeenCalled();
+                done();
+            });
     });
 });

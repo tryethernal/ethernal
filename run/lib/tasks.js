@@ -13,6 +13,8 @@ const ALLOWED_TASKS = [
     'submitExplorerLead',
     'reloadErc721Token',
     'findAndProcessExistingErc721',
+    'batchBlockSync',
+    'secondaryBlockSync'
 ];
 
 const getTaskClient = () => {

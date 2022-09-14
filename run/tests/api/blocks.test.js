@@ -12,6 +12,26 @@ const request = supertest(app);
 
 const BASE_URL = '/api/blocks'
 
+describe(`POST ${BASE_URL}/syncRange`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('Should enqueue a batchBlockSync task', (done) => {
+        request.post(`${BASE_URL}/syncRange`)
+            .send({ data: { workspace: 'My Workspace', from: 1, to: 10 }})
+            .expect(200)
+            .then(() => {
+                expect(enqueueTask).toHaveBeenCalledWith('batchBlockSync', {
+                    userId: '123',
+                    workspace: 'My Workspace',
+                    from: 1,
+                    to: 10,
+                    secret: expect.anything()
+                }, expect.anything());
+                done();
+            });
+    });
+});
+
 describe(`POST ${BASE_URL}`, () => {
     beforeEach(() => jest.clearAllMocks());
 
