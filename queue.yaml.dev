@@ -14,3 +14,5 @@ queue:
 - name: fetchAndStoreErc721Token
 - name: reloadErc721Token
 - name: findAndProcessExistingErc721
+- name: batchBlockSync
+- name: secondaryBlockSync
