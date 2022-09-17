@@ -138,6 +138,9 @@
                             <v-list-item-title class="red--text text--darken-3">Log Out</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
+                    <div class="caption text-center font-italic" v-if="isPublicExplorer">
+                        Powered By <a href="https://tryethernal.com" target="_blank">Ethernal</a>
+                    </div>
                 </v-list>
             </template>
         </v-navigation-drawer>
