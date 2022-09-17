@@ -33,9 +33,10 @@ module.exports = {
     decode: (token) => {
         try {
             const jwtSecret = process.env.ENCRYPTION_JWT_SECRET;
+
             return jwt.verify(token, jwtSecret);
         } catch (error) {
-            throw 'Invalid auth token';
+            throw error;
         }
     }
 };

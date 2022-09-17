@@ -1,17 +1,37 @@
 const { getAuth } = require('firebase-admin/auth');
 const db = require('../lib/firebase');
 const { sanitize }  = require('../lib/utils');
+const { decode, decrypt } = require('../lib/crypto');
 
 module.exports = async (req, res, next) => {
     const pusherData =  sanitize({ socket_id: req.body.socket_id, channel_name: req.body.channel_name, firebaseAuthToken: req.body.firebaseAuthToken, firebaseUserId: req.body.firebaseUserId });
-    const authorizationHeader = req.headers['Authorization'];
+    const authorizationHeader = req.headers['authorization'];
     const data = { ...req.body.data, ...req.query, ...pusherData };
     try {
         let firebaseUser;
 
         req.body.data = req.body.data || {};
 
-        if (data.firebaseUserId && process.env.NODE_ENV !== 'production') {
+        if (authorizationHeader) {
+            const headerSplit = authorizationHeader.split('Bearer ');
+            if (headerSplit.length > 1) {
+                const jwtData = decode(headerSplit[1]);
+
+                const user = await db.getUser(jwtData.firebaseUserId, ['apiKey']);
+
+                if (decrypt(user.apiKey) !== jwtData.apiKey)
+                    throw new Error(`Invalid authorization header`);
+
+                if (!user)
+                    throw new Error(`Invalid authorization header`);
+
+                req.body.data.uid = jwtData.firebaseUserId;
+                next();
+            }
+            else
+                throw new Error(`Invalid authorization header`);
+        }
+        else if (data.firebaseUserId && process.env.NODE_ENV !== 'production') {
             req.body.data.uid = data.firebaseUserId;
             next();
         }
@@ -33,6 +53,6 @@ module.exports = async (req, res, next) => {
         console.error(data)
         console.error(error);
         console.log(req.body);
-        res.status(401).send(error);
+        res.status(401).send(error.message);
     }
 };

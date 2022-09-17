@@ -317,6 +317,16 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            getApiToken() {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/me/getApiToken`;
+                return axios.get(resource, { params });
+            },
+
             getErc721TokensFrom(contractAddress, indexes) {
                 const tokens = [];
                 return new Promise((resolve, reject) => {
@@ -756,9 +766,6 @@ export const serverPlugin = {
             },
             importContract: function(workspace, contractAddress) {
                 return functions.httpsCallable('importContract')({ workspace: workspace, contractAddress: contractAddress });
-            },
-            getWorkspaceApiToken: function(workspace) {
-                return functions.httpsCallable('getWorkspaceApiToken')({ workspace: workspace });
             },
             enableWorkspaceApi: function(workspace) {
                 return functions.httpsCallable('enableWorkspaceApi')({ workspace: workspace });

@@ -4,6 +4,7 @@ const {
 } = require('sequelize');
 const { sanitize } = require('../lib/utils');
 const { trigger } = require('../lib/pusher');
+const { encode, decrypt } = require('../lib/crypto');
 const { Workspace } = require('./index');
 
 const Op = Sequelize.Op;
@@ -21,20 +22,12 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Explorer, { foreignKey: 'userId', as: 'explorers' });
     }
 
-    static findByAuthId(firebaseUserId) {
+    static findByAuthId(firebaseUserId, extraFields = []) {
         return User.findOne({
             where: {
                 firebaseUserId: firebaseUserId
             },
-            include: ['workspaces', 'currentWorkspace']
-        });
-    }
-
-    static findByApiKey(apiKey) {
-        return User.findOne({
-            where: {
-                apiKey: apiKey
-            },
+            attributes: ['email', 'firebaseUserId', 'id', 'isPremium', 'plan', ...extraFields],
             include: ['workspaces', 'currentWorkspace']
         });
     }
@@ -44,6 +37,7 @@ module.exports = (sequelize, DataTypes) => {
             where: {
                 stripeCustomerId: stripeCustomerId
             },
+            attributes: ['email', 'firebaseUserId', 'id', 'isPremium', 'plan'],
             include: ['workspaces', 'currentWorkspace']
         });
     }
@@ -54,6 +48,7 @@ module.exports = (sequelize, DataTypes) => {
             where: {
                 firebaseUserId: firebaseUserId
             },
+            attributes: ['email', 'firebaseUserId', 'id', 'isPremium', 'plan'],
             include: [
                 {
                     model: Workspace,
@@ -92,6 +87,13 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
+    getApiToken() {
+        return encode({
+            apiKey: decrypt(this.apiKey),
+            firebaseUserId: this.firebaseUserId
+        });
+    }
+
     safeCreateWorkspace(data) {
         return this.createWorkspace(sanitize({
             name: data.name,
@@ -108,9 +110,18 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   User.init({
+    apiToken: {
+        type: DataTypes.VIRTUAL,
+        get() {
+            return encode({
+                firebaseUserId: this.getDataValue('firebaseUserId'),
+                apiKey: decrypt(this.getDataValue('apiKey'))
+            });
+        }
+    },
+    apiKey: DataTypes.STRING,
     firebaseUserId: DataTypes.STRING,
     email: DataTypes.STRING,
-    apiKey: DataTypes.STRING,
     currentWorkspaceId: DataTypes.INTEGER,
     plan: DataTypes.STRING,
     stripeCustomerId: DataTypes.STRING,
