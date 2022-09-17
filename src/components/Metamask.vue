@@ -7,7 +7,7 @@
             <v-row>
                 <v-col>
                     <v-alert outlined dense type="error" v-if="chainId && !isChainValid">
-                        Invalid chain id <b>{{ chainId }}</b> ({{ parseInt(chainId, 16) }}), expecting <b>{{ formattedExpectedChainId }}</b> ({{ publicExplorer.chainId }}). Click <a @click.stop="switchMetamaskChain()">here</a> to switch network in Metamask.
+                        Invalid chain id <b>{{ chainId }}</b> ({{ parseInt(chainId, 16) }}), expecting <b>{{ formattedExpectedChainId }}</b> ({{ currentWorkspace.networkId }}). Click <a @click.stop="switchMetamaskChain()">here</a> to switch network in Metamask.
                     </v-alert>
                     <div v-if="connectedAccount">
                         <b>Connected Metamask account:</b> {{ connectedAccount }}
@@ -91,7 +91,7 @@ export default {
             return this.formattedExpectedChainId === this.chainId;
         },
         formattedExpectedChainId: function() {
-            return `0x${this.publicExplorer.chainId.toString(16)}`;
+            return `0x${parseInt(this.currentWorkspace.networkId).toString(16)}`;
         }
     }
 }
