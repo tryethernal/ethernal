@@ -12,8 +12,8 @@ describe('Metamask.vue', () => {
 
     beforeEach(async () => {
         helper = new MockHelper({
-            publicExplorer: {
-                chainId: 1
+            currentWorkspace: {
+                networkId: 1
             }
         });
         detectEthereumProvider.mockResolvedValue(null);
