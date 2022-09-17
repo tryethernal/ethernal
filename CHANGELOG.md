@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.2] - 2022-09-17
+### Fixed
+- Bug preventing from interacting with contracts from app.tryethernal.com if the workspace is public
+
 ## [2.7.1] - 2022-09-14
 ### Changed
 - Updated onboarding modal wording (previous update didn't actually include that)
