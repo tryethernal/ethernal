@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.3] - 2022-09-17
+### Added
+- [Public Explorer] "Powered By Ethernal" link
+
 ## [2.7.2] - 2022-09-17
 ### Fixed
 - Bug preventing from interacting with contracts from app.tryethernal.com if the workspace is public
