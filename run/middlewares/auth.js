@@ -19,6 +19,9 @@ module.exports = async (req, res, next) => {
 
                 const user = await db.getUser(jwtData.firebaseUserId, ['apiKey']);
 
+                if (!user)
+                    throw new Error(`Invalid firebaseUserId`);
+
                 if (decrypt(user.apiKey) !== jwtData.apiKey)
                     throw new Error(`Invalid authorization header`);
 

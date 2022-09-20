@@ -323,7 +323,7 @@ export const serverPlugin = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/me/getApiToken`;
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/me/apiToken`;
                 return axios.get(resource, { params });
             },
 

@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
 
-router.get('/me/getApiToken', authMiddleware, async (req, res) => {
+router.get('/me/apiToken', authMiddleware, async (req, res) => {
     const data = req.body.data;
     try {
         const user = await db.getUser(data.uid, ['apiKey', 'apiToken']);

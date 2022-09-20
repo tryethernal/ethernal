@@ -1,6 +1,6 @@
 const { getAuth, connectAuthEmulator } = require('firebase-admin/auth');
 const db = require('../lib/firebase');
-const { sanitize }  = require('../lib/utils');
+const { sanitize, getEnv }  = require('../lib/utils');
 const { decrypt, decode, encode } = require('../lib/crypto');
 
 module.exports = async (req, res, next) => {
@@ -11,7 +11,7 @@ module.exports = async (req, res, next) => {
 
     try {
         if (!data.workspace)
-            throw new Error('Missing parameters');
+            throw new Error('Missing parameter');
 
         if (authorizationHeader) {
             const headerSplit = authorizationHeader.split('Bearer ');
@@ -37,7 +37,7 @@ module.exports = async (req, res, next) => {
         else if (data.firebaseAuthToken) {
             firebaseUser = await getAuth().verifyIdToken(data.firebaseAuthToken);
         }
-        else if (process.env.NODE_ENV !== 'production') {
+        else if (getEnv() !== 'production') {
             firebaseUser = { user_id: data.firebaseUserId };
         }
 
