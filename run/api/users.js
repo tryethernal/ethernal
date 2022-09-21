@@ -1,7 +1,12 @@
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const Analytics = require('../lib/analytics');
+const { getAuth } = require('firebase-admin/auth');
+const uuidAPIKey = require('uuid-apikey');
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
+const { encrypt } = require('../lib/crypto');
 
 router.get('/me/apiToken', authMiddleware, async (req, res) => {
     const data = req.body.data;
@@ -42,12 +47,34 @@ router.get('/me', authMiddleware, async (req, res) => {
 router.post('/', async (req, res) => {
     const data = req.body.data;
     try {
-        if (!data.uid || !data.data) {
+        if (!data.firebaseUserId) {
             console.log(data);
             throw new Error('POST [/api/users] Missing parameter.');
         }
 
-        await db.createUser(data.uid, data.data);
+        const apiKey = uuidAPIKey.create().apiKey;
+        const encryptedKey = encrypt(apiKey);
+
+        const authUser = await getAuth().getUser(data.firebaseUserId);
+        const customer = await stripe.customers.create({
+            email: authUser.email
+        });
+
+        await db.createUser(data.firebaseUserId, {
+            email: authUser.email,
+            apiKey: encryptedKey,
+            stripeCustomerId: customer.id,
+            plan: 'free'
+        });
+
+        const analytics = new Analytics(process.env.MIXPANEL_API_TOKEN);
+
+        analytics.setUser(data.firebaseUserId, {
+            $email: authUser.email,
+            $created: (new Date()).toISOString(),
+        });
+        analytics.setSubscription(data.firebaseUserId, null, 'free', null, false);
+        analytics.track(data.firebaseUserId, 'Sign Up');
 
         res.sendStatus(200);
     } catch(error) {
