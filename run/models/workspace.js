@@ -8,7 +8,6 @@ const moment = require('moment');
 
 const Op = Sequelize.Op;
 const INTEGRATION_FIELD_MAPPING = {
-    'api': 'apiEnabled',
     'alchemy': 'alchemyIntegrationEnabled'
 };
 
@@ -644,7 +643,6 @@ module.exports = (sequelize, DataTypes) => {
     gasLimit: DataTypes.STRING,
     gasPrice: DataTypes.STRING,
     userId: DataTypes.INTEGER,
-    apiEnabled: DataTypes.BOOLEAN,
     tracing: DataTypes.STRING,
     alchemyIntegrationEnabled: DataTypes.BOOLEAN,
     isRemote: DataTypes.BOOLEAN

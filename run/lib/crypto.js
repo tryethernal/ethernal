@@ -31,11 +31,7 @@ module.exports = {
         return jwt.sign(data, jwtSecret);
     },
     decode: (token) => {
-        try {
-            const jwtSecret = process.env.ENCRYPTION_JWT_SECRET;
-            return jwt.verify(token, jwtSecret);
-        } catch (error) {
-            throw 'Invalid auth token';
-        }
+        const jwtSecret = process.env.ENCRYPTION_JWT_SECRET;
+        return jwt.verify(token, jwtSecret);
     }
 };
