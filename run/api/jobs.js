@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
-const User = db.User;
 const taskAuthMiddleware = require('../middlewares/taskAuth');
 const { enqueueTask } = require('../lib/tasks');
 
