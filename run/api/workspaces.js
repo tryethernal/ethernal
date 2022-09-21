@@ -132,7 +132,7 @@ router.post('/', authMiddleware, async (req, res) => {
         res.status(200).json(workspace);
     } catch(error) {
         console.log(error);
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
