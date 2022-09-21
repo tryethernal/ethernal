@@ -21,8 +21,7 @@ module.exports = async (req, res, next) => {
         res.locals.uid = data.uid;
         res.locals.workspace = { rpcServer: workspace.rpcServer, name: workspace.name };
         res.locals.integrations = []
-        if (workspace.apiEnabled) res.locals.integrations.push('api');
-        if (workspace.alchemyIntegrationEnabled) res.locals.integrations.push('alchemyIntegrationEnabled');
+        if (workspace.alchemyIntegrationEnabled) res.locals.integrations.push('alchemy');
                 
         next();
     } catch(error) {

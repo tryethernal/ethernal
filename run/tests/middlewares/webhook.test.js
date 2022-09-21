@@ -20,8 +20,7 @@ describe('webhookMiddleware', () => {
         jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({
             rpcServer: 'localhost',
             name: 'hardhat',
-            apiEnabled: true,
-            alchemyIntegrationEnabled: false
+            alchemyIntegrationEnabled: true
         });
         
         const next = jest.fn();
@@ -39,7 +38,7 @@ describe('webhookMiddleware', () => {
                 name: 'hardhat',
                 rpcServer: 'localhost'
             },
-            integrations: ['api']
+            integrations: ['alchemy']
         })
         expect(next).toHaveBeenCalled();
     });

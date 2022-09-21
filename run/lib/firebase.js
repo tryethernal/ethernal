@@ -670,9 +670,9 @@ const getUserById = async (id) => {
     }
 };
 
-const getUser = async (id) => {
+const getUser = async (id, extraFields = []) => {
     try {
-        const user = await User.findByAuthId(id);
+        const user = await User.findByAuthId(id, extraFields);
         return user ? user.toJSON() : null;
     } catch(error) {
         writeLog({

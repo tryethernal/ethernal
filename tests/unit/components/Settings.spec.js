@@ -12,7 +12,6 @@ describe('Settings.vue', () => {
         helper = new MockHelper({
             currentWorkspace: {
                 alchemyIntegrationEnabled: false,
-                apiEnabled: false,
                 defaultAccount: null,
                 gasLimit: null,
                 gasPrice: null,
@@ -48,7 +47,6 @@ describe('Settings.vue', () => {
         expect(updateWorkspaceSettingsMock).toHaveBeenCalledWith('Hardhat', { chain: 'bsc', rpcServer: 'http://localhost:1234', settings: expect.anything() });
         expect(helper.actions.updateCurrentWorkspace).toHaveBeenCalledWith(expect.anything(), {
             alchemyIntegrationEnabled: false,
-            apiEnabled: false,
             defaultAccount: null,
             gasLimit: null,
             gasPrice: null,
@@ -75,7 +73,6 @@ describe('Settings.vue', () => {
         expect(updateWorkspaceSettingsMock).toHaveBeenCalledWith('Hardhat', { chain: 'ethereum', rpcServer: 'http://localhost:8545', settings: { defaultAccount: '0x123', gasPrice: '1234', gasLimit: '12345' }});
         expect(helper.actions.updateCurrentWorkspace).toHaveBeenCalledWith(expect.anything(), {
             alchemyIntegrationEnabled: false,
-            apiEnabled: false,
             rpcServer: 'http://localhost:8545',
             chain: 'ethereum',
             networkId: 1,
