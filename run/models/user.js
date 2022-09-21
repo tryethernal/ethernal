@@ -104,7 +104,6 @@ module.exports = (sequelize, DataTypes) => {
             defaultAccount: data.settings && data.settings.defaultAccount,
             gasLimit: data.settings && data.settings.gasLimit,
             gasPrice: data.settings && data.settings.gasPrice,
-            apiEnabled: data.integrations && data.integrations.indexOf('api') > -1,
             alchemyIntegrationEnabled: data.integrations && data.integrations.indexOf('alchemy') > -1
         }));
     }

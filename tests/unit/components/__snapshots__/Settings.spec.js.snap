@@ -11,7 +11,7 @@ exports[`Settings.vue Should load the settings page 1`] = `
         <div class="v-slide-group__content v-tabs-bar__content">
           <div class="v-tabs-slider-wrapper" style="transition: none;">
             <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#workspace" aria-selected="true" role="tab" class="v-tab v-tab--active">Workspace</a> <a tabindex="0" href="#billing" aria-selected="false" role="tab" class="v-tab">Billing</a>
+          </div><a tabindex="0" href="#workspace" aria-selected="true" role="tab" class="v-tab v-tab--active">Workspace</a> <a tabindex="0" href="#billing" aria-selected="false" role="tab" class="v-tab">Billing</a> <a tabindex="0" href="#account" aria-selected="false" role="tab" class="v-tab">Account</a>
         </div>
       </div>
       <div class="v-slide-group__next v-slide-group__next--disabled">
@@ -51,7 +51,7 @@ exports[`Settings.vue Should load the settings page 1`] = `
                   You will need to restart the CLI or the Hardhat node for a server change to take effect.
                   <div class="v-input mt-3 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-22" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-25" class="v-input__slot">
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
@@ -79,7 +79,7 @@ exports[`Settings.vue Should load the settings page 1`] = `
                 <div class="v-card__text">
                   <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-27" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-30" class="v-input__slot">
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
@@ -123,9 +123,6 @@ exports[`Settings.vue Should load the settings page 1`] = `
               <div class="v-dialog__container">
                 <!---->
               </div>
-              <div class="v-dialog__container">
-                <!---->
-              </div>
               <h4>Integrations</h4>
               <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
                 <div class="v-card__text">
@@ -140,13 +137,6 @@ exports[`Settings.vue Should load the settings page 1`] = `
                         <tbody>
                           <tr class="">
                             <td class="text-start">Alchemy</td>
-                            <td class="text-start">
-                              Disabled
-                            </td>
-                            <td class="text-right"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Manage</span></button></td>
-                          </tr>
-                          <tr class="">
-                            <td class="text-start">API</td>
                             <td class="text-start">
                               Disabled
                             </td>
@@ -270,6 +260,9 @@ exports[`Settings.vue Should load the settings page 1`] = `
             </div>
           </div>
         </div>
+      </transition-stub>
+      <transition-stub name="">
+        <!---->
       </transition-stub>
       <transition-stub name="">
         <!---->

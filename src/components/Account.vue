@@ -17,7 +17,6 @@
     </div>
 </template>
 <script>
-import { mapGetters } from 'vuex';
 
 export default {
     name: 'Account',
@@ -49,11 +48,6 @@ export default {
                 window.getSelection().removeAllRanges();
             }
         },
-    },
-    computed: {
-        ...mapGetters([
-            'user'
-        ])
     }
 }
 </script>
