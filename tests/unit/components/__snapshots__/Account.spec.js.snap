@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Account.vue Should load the account tab 1`] = `
+<div>
+  <div class="row">
+    <div class="col col-6">
+      <h4>Api Token</h4>
+      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__text">
+          <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-readonly v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><input id="apiToken" readonly="readonly" type="text"></div>
+                <div class="v-input__append-inner">
+                  <div class="v-input__icon v-input__icon--append"><button type="button" aria-label="append icon" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light"></button></div>
+                </div>
+              </div>
+            </div>
+          </div> <input type="hidden" id="copyElement" value="1234">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

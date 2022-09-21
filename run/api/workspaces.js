@@ -1,7 +1,7 @@
 const express = require('express');
 const authMiddleware = require('../middlewares/auth');
 const { sanitize, stringifyBns } = require('../lib/utils');
-const { encode, decrypt } = require('../lib/crypto');
+const { encode, decrypt, decode } = require('../lib/crypto');
 const { enqueueTask } = require('../lib/tasks');
 const db = require('../lib/firebase');
 
@@ -69,7 +69,7 @@ router.post('/enableApi', authMiddleware, async (req, res) => {
         const token = encode({
             uid: data.uid,
             workspace: data.workspace,
-            apiKey: data.apiKey
+            apiKey: apiKey
         });
 
         res.status(200).json({ token: token });
@@ -95,7 +95,7 @@ router.post('/enableAlchemy', authMiddleware, async (req, res) => {
         const token = encode({
             uid: data.uid,
             workspace: data.workspace,
-            apiKey: data.apiKey
+            apiKey: apiKey
         });
 
         res.status(200).json({ token: token });
