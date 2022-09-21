@@ -28,7 +28,8 @@
     "pusher": "^5.1.0-beta",
     "sequelize": "^6.19.0",
     "solc": "^0.8.13",
-    "stripe": "^9.8.0"
+    "stripe": "^9.8.0",
+    "uuid-apikey": "^1.5.3"
   },
   "devDependencies": {
     "jest": "^28.1.0",

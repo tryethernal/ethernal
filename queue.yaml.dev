@@ -16,3 +16,4 @@ queue:
 - name: findAndProcessExistingErc721
 - name: batchBlockSync
 - name: secondaryBlockSync
+- name: regenerateApiKeys

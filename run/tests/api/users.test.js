@@ -1,5 +1,8 @@
 require('../mocks/models');
 require('../mocks/lib/firebase');
+require('../mocks/lib/firebase-admin');
+require('../mocks/lib/crypto');
+require('../mocks/lib/stripe');
 require('../mocks/middlewares/auth');
 const db = require('../../lib/firebase');
 
@@ -19,7 +22,7 @@ describe(`GET ${BASE_URL}/me/apiToken`, () => {
             .then(({ body: { apiToken }}) => {
                 expect(apiToken).toEqual('apiToken');
                 done();
-            })
+            });
     });
 });
 
@@ -33,7 +36,7 @@ describe(`POST ${BASE_URL}/me/setCurrentWorkspace`, () => {
             .then(() => {
                 expect(db.setCurrentWorkspace).toHaveBeenCalledWith('123', 'hardhat');
                 done();
-            })
+            });
     });
 });
 
@@ -47,7 +50,7 @@ describe(`GET ${BASE_URL}/me`, () => {
             .then(({ body }) => {
                 expect(body).toEqual({ id: 1 });
                 done();
-            })
+            });
     });
 });
 
@@ -55,12 +58,18 @@ describe(`POST ${BASE_URL}`, () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('Should return 200 status code', (done) => {
+
         request.post(BASE_URL)
-            .send({ data: { uid: '123', data: { email: 'antoine@tryethernal.com' }}})
+            .send({ data: { firebaseUserId: '123' }})
             .expect(200)
             .then(() => {
-                expect(db.createUser).toHaveBeenCalledWith('123', { email: 'antoine@tryethernal.com' });
+                expect(db.createUser).toHaveBeenCalledWith('123', {
+                    email: 'antoine@tryethernal.com',
+                    apiKey: '1234',
+                    stripeCustomerId: '1234',
+                    plan: 'free'
+                });
                 done();
-            })
+            });
     });
 });
