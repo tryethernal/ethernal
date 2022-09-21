@@ -1,5 +1,12 @@
 <template>
     <v-app :style="styles">
+        <v-overlay :value="isOverlayActive" absolute :z-index="1000" color="primary" :opacity="0.2">
+            <v-progress-circular
+                indeterminate
+                size="64"
+                color="primary"
+            ></v-progress-circular>
+        </v-overlay>
         <v-system-bar v-html="banner" v-if="isPublicExplorer && banner" class="primary color--text text-center font-weight-bold" color="primary" app window>
         </v-system-bar>
         <v-navigation-drawer :style="styles" app permanent v-if="canDisplaySides">
@@ -190,9 +197,11 @@ export default {
         logo: null,
         links: [],
         banner: null,
-        isRemote: false
+        isRemote: false,
+        isOverlayActive: false
     }),
     created: function() {
+        this.isOverlayActive = true;
         if (this.isPublicExplorer)
             return this.initPublicExplorer();
     },
@@ -209,6 +218,7 @@ export default {
             });
         },
         launchOnboarding: function() {
+            this.isOverlayActive = false;
             this.$refs.onboardingModal.open();
         },
         initPublicExplorer: function() {
@@ -302,6 +312,7 @@ export default {
             this.$store.dispatch('updateCurrentWorkspace', { isAdmin: isAdmin, ...data })
                 .then(() => {
                     Vue.use(pusherPlugin, { store: store });
+                    this.isOverlayActive = false;
                     this.appBarComponent = 'rpc-connector';
                     this.routerComponent = 'router-view';
 
@@ -355,6 +366,7 @@ export default {
             }
             if (!user.uid && !this.isPublicExplorer) {
                 Vue.use(pusherPlugin, { store: store });
+                this.isOverlayActive = false;
                 this.routerComponent = 'router-view';
             }
         }
