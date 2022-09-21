@@ -317,6 +317,15 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            createUser(firebaseUserId) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: firebaseUserId,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/users`;
+                return axios.post(resource, { data });
+            },
+
             getApiToken() {
                 const params = {
                     firebaseAuthToken: store.getters.firebaseIdToken,
@@ -623,15 +632,15 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            // setCurrentWorkspace(workspace) {
-            //     const data = {
-            //         firebaseAuthToken: store.getters.firebaseIdToken,
-            //         firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-            //         workspace: workspace
-            //     };
-            //     const resource = `${process.env.VUE_APP_API_ROOT}/api/users/me/setCurrentWorkspace`;
-            //     return axios.post(resource, { data });
-            // },
+            setCurrentWorkspace(workspace) {
+                const data = {
+                    workspace: workspace,
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/me/setCurrentWorkspace`;
+                return axios.post(resource, { data });
+            },
 
             getPublicExplorerByDomain(domain) {
                 const params = {
@@ -669,18 +678,16 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            // createWorkspace(name, workspaceData) {
-            //     const data = {
-            //         firebaseAuthToken: store.getters.firebaseIdToken,
-            //         firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-            //         data: {
-            //             name: name,
-            //             workspaceData: workspaceData
-            //         }
-            //     };
-            //     const resource = `${process.env.VUE_APP_API_ROOT}/api/workspaces`;
-            //     return axios.post(resource, { data });
-            // },
+            createWorkspace(name, workspaceData) {
+                const data = {
+                    name: name,
+                    workspaceData: workspaceData,
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/workspaces`;
+                return axios.post(resource, { data });
+            },
 
             getWorkspaces() {
                 const params = {
@@ -725,14 +732,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            setCurrentWorkspace: function(workspace) {
-                return functions.httpsCallable('setCurrentWorkspace')({ name: workspace });
-            },
             getProductRoadToken: function() {
                 return functions.httpsCallable('getProductRoadToken')();
-            },
-            createUser: function(uid) {
-                return functions.httpsCallable('createUser')({ uid: uid });
             },
             syncTransactionData: function(workspace, hash, data) {
                 return functions.httpsCallable('syncTransactionData')({ workspace: workspace, hash: hash, data: data });
@@ -748,9 +749,6 @@ export const serverPlugin = {
             },
             updateWorkspaceSettings: function(workspace, settings) {
                 return functions.httpsCallable('updateWorkspaceSettings')({ workspace: workspace, settings: settings });
-            },
-            createWorkspace: function(name, data) {
-                return functions.httpsCallable('createWorkspace')({ name: name, workspaceData: data });
             },
             syncContractData: function(workspace, address, name, abi, watchedPaths) {
                 return functions.httpsCallable('syncContractData')({ workspace: workspace, address: address, name: name, abi: abi, watchedPaths: watchedPaths });

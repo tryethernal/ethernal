@@ -94,7 +94,16 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    safeCreateWorkspace(data) {
+    async safeCreateWorkspace(data) {
+        const existingWorkspace = await this.getWorkspaces({
+            where: {
+                name: data.name
+            }
+        });
+
+        if (existingWorkspace.length > 0)
+            throw new Error('A workspace with this name already exists');
+
         return this.createWorkspace(sanitize({
             name: data.name,
             public: data.public,

@@ -1652,5 +1652,6 @@ module.exports = {
     updateErc721Token: updateErc721Token,
     getContractByWorkspaceId: getContractByWorkspaceId,
     storeContractDataWithWorkspaceId: storeContractDataWithWorkspaceId,
-    Workspace: Workspace
+    Workspace: Workspace,
+    User: User
 };
