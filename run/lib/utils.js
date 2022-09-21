@@ -1,5 +1,7 @@
 const ethers = require('ethers');
 
+const getEnv = () => process.env.NODE_ENV;
+
 const isStringifiedBN = function(obj) {
     if (!obj)
         return false;
@@ -48,5 +50,6 @@ const _stringifyBns = (obj) => {
 module.exports = {
     sanitize: _sanitize,
     stringifyBns: _stringifyBns,
-    isJson: _isJson
+    isJson: _isJson,
+    getEnv: getEnv
 }

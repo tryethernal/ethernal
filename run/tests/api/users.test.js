@@ -9,6 +9,20 @@ const request = supertest(app);
 
 const BASE_URL = '/api/users'
 
+describe(`GET ${BASE_URL}/me/apiToken`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('Should return the api token', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ apiToken: 'apiToken' });
+        request.get(`${BASE_URL}/me/apiToken`)
+            .expect(200)
+            .then(({ body: { apiToken }}) => {
+                expect(apiToken).toEqual('apiToken');
+                done();
+            })
+    });
+});
+
 describe(`POST ${BASE_URL}/me/setCurrentWorkspace`, () => {
     beforeEach(() => jest.clearAllMocks());
 

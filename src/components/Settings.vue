@@ -3,6 +3,7 @@
         <v-tabs v-model="tab" class="mb-2">
             <v-tab href="#workspace">Workspace</v-tab>
             <v-tab href="#billing">Billing</v-tab>
+            <v-tab href="#account">Account</v-tab>
         </v-tabs>
 
         <v-tabs-items :value="tab">
@@ -76,7 +77,6 @@
                         </v-card>
 
                         <Alchemy-Integration-Modal ref="alchemyIntegrationModal" />
-                        <Api-Integration-Modal ref="apiIntegrationModal" />
                         <h4>Integrations</h4>
                         <v-card outlined class="mb-4">
                             <v-card-text>
@@ -165,6 +165,10 @@
             <v-tab-item value="billing">
                 <Billing />
             </v-tab-item>
+
+            <v-tab-item value="account">
+                <Account />
+            </v-tab-item>
         </v-tabs-items>
     </v-container>
 </template>
@@ -172,16 +176,16 @@
 import { mapGetters } from 'vuex';
 import CreateWorkspaceModal from './CreateWorkspaceModal';
 import AlchemyIntegrationModal from './AlchemyIntegrationModal';
-import ApiIntegrationModal from './ApiIntegrationModal';
 import Billing from './Billing';
+import Account from './Account';
 
 export default {
     name: 'Settings',
     components: {
         CreateWorkspaceModal,
         AlchemyIntegrationModal,
-        ApiIntegrationModal,
-        Billing
+        Billing,
+        Account
     },
     data: () => ({
         plans: [
@@ -239,12 +243,6 @@ export default {
                     setting: 'alchemyIntegrationEnabled',
                     action:  'openAlchemyIntegrationModal'
                 },
-                {
-                    name: 'API',
-                    slug: 'api',
-                    setting: 'apiEnabled',
-                    action: 'openApiIntegrationModal'
-                }
             ]
         },
         workspacesDataTableHeaders: [
@@ -295,7 +293,6 @@ export default {
         this.settings = {
             workspaceId: this.currentWorkspace.id,
             alchemyIntegrationEnabled: this.currentWorkspace.alchemyIntegrationEnabled,
-            apiEnabled: this.currentWorkspace.apiEnabled,
             chain: this.currentWorkspace.chain,
             defaultAccount: this.currentWorkspace.defaultAccount,
             gasLimit: this.currentWorkspace.gasLimit,
@@ -372,15 +369,6 @@ export default {
                 this.settings.alchemyIntegrationEnabled = isAlchemyIntegrationEnabled;
                 this.$store.dispatch('updateCurrentWorkspace', this.settings);
             })
-        },
-        openApiIntegrationModal: function() {
-            this.$refs.apiIntegrationModal.open({
-                enabled: this.settings.apiEnabled
-            })
-            .then((isApiEnabled) => {
-                this.settings.apiEnabled = isApiEnabled;
-                this.$store.dispatch('updateCurrentWorkspace', this.settings);
-            });
         },
         resetWorkspace: function() {
             if (confirm(`Are you sure you want to reset the workspace ${this.currentWorkspace.name}? This action is definitive.`)) {
