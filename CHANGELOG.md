@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.0] - 2022-09-21
+### Changed
+- Api token authentication is now done at the user account level, not the workspace
+
 ## [2.7.3] - 2022-09-17
 ### Added
 - [Public Explorer] "Powered By Ethernal" link
