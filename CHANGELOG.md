@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.1] - 2022-09-21
+### Added
+- Spinning wheel when web app is loading
+
+### Removed
+- Some firebase dependencies, making startup time faster, especially when registering
+
 ## [2.8.0] - 2022-09-21
 ### Changed
 - Api token authentication is now done at the user account level, not the workspace
