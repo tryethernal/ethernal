@@ -245,7 +245,6 @@ module.exports = (sequelize, DataTypes) => {
     gasLimit: DataTypes.STRING,
     gasPrice: DataTypes.STRING,
     userId: DataTypes.INTEGER,
-    apiEnabled: DataTypes.BOOLEAN,
     tracing: DataTypes.STRING,
     alchemyIntegrationEnabled: DataTypes.BOOLEAN,
   }, {
