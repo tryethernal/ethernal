@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.2] - 2022-09-22
+### Changed
+- [Public Explorer] Better support of custom logo
+
 ## [2.8.1] - 2022-09-21
 ### Added
 - Spinning wheel when web app is loading
