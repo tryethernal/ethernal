@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.3] - 2022-09-22
+### Added
+- [Public Explorer] Support of custom icons for external links
+
 ## [2.8.2] - 2022-09-22
 ### Changed
 - [Public Explorer] Better support of custom logo
