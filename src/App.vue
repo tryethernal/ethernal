@@ -10,7 +10,7 @@
         <v-system-bar v-html="banner" v-if="isPublicExplorer && banner" class="primary color--text text-center font-weight-bold" color="primary" app window>
         </v-system-bar>
         <v-navigation-drawer :style="styles" app permanent v-if="canDisplaySides">
-            <img :src="logo" alt="logo" v-if="logo" />
+            <img :src="logo" alt="logo" class="custom-logo" v-if="logo" />
             <v-list-item v-else>
                 <v-list-item-content>
                     <v-list-item-title class="logo">
@@ -390,5 +390,11 @@ export default {
 }
 .v-toolbar__content {
     padding: 0;
+}
+.custom-logo {
+    padding-top: 10px;
+    max-width: 250px;
+    text-align: center;
+    vertical-align: middle
 }
 </style>
