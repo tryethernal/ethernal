@@ -71,7 +71,7 @@ router.post('/', authMiddleware, async (req, res) => {
         const serverSync = req.query.serverSync && String(req.query.serverSync) === 'true';
 
         if (serverSync) {
-            if (!block.number)
+            if (block.number === undefined || block.number === null)
                 throw Error('[POST /api/blocks] Missing block number.');
 
             await enqueueTask('blockSync', {
