@@ -118,7 +118,8 @@ router.post('/', authMiddleware, async (req, res) => {
             chain: data.workspaceData.chain,
             networkId: data.workspaceData.networkId,
             rpcServer: data.workspaceData.rpcServer,
-            settings: data.workspaceData.settings
+            settings: data.workspaceData.settings,
+            public: data.workspaceData.public
         }));
 
         const workspace = await db.createWorkspace(data.uid, filteredWorkspaceData);
