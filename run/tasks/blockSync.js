@@ -34,7 +34,7 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
                     workspace: data.workspace
                 }
             });
-            return res.sendStatus(200);
+            return res.sendStatus(400);
         }
 
         const syncedBlock = sanitize(stringifyBns({ ...block, transactions: block.transactions.map(tx => stringifyBns(tx)) }));
