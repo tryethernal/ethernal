@@ -19,8 +19,7 @@ router.post('/:address', authMiddleware, async (req, res) => {
             name: data.name,
             abi: data.abi,
             watchedPaths: data.watchedPaths,
-            hashedBytecode: data.hashedBytecode,
-            imported: data.imported
+            hashedBytecode: data.hashedBytecode
         });
 
         const canSyncData = await db.canUserSyncContract(data.uid, data.workspace, req.params.address);

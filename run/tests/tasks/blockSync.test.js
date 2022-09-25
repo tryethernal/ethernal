@@ -36,7 +36,7 @@ describe('POST /', () => {
             });
     });
 
-    it('Should fail gracefully if block cannot be found', (done) => {
+    it('Should fail if block cannot be found', (done) => {
         ProviderConnector.mockImplementationOnce(() => ({
             fetchBlockWithTransactions: jest.fn().mockResolvedValue(null)
         }));
@@ -47,7 +47,7 @@ describe('POST /', () => {
                 workspace: 'My Workspace',
                 blockNumber: 1
             }})
-            .expect(200)
+            .expect(400)
             .then(() => {
                 expect(writeLog).toHaveBeenCalled();
                 done();
