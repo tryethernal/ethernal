@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.5] - 2022-09-25
+### Fixed
+- Settings update (again)
+- Contract importing
+
 ## [2.8.4] - 2022-09-25
 ### Fixed
 - Settings update was broken
