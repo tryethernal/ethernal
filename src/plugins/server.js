@@ -744,6 +744,17 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
+            importContract(contractAddress) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${contractAddress}`;
+                return axios.post(resource, { data });
+            },
+
             getProductRoadToken: function() {
                 return functions.httpsCallable('getProductRoadToken')();
             },
@@ -770,9 +781,6 @@ export const serverPlugin = {
             },
             storeAccountPrivateKey: function(workspace, account, privateKey) {
                 return functions.httpsCallable('setPrivateKey')({ workspace: workspace, account: account, privateKey });
-            },
-            importContract: function(workspace, contractAddress) {
-                return functions.httpsCallable('importContract')({ workspace: workspace, contractAddress: contractAddress });
             },
             enableWorkspaceApi: function(workspace) {
                 return functions.httpsCallable('enableWorkspaceApi')({ workspace: workspace });

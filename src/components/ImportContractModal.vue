@@ -65,7 +65,7 @@ export default {
             this.successMessage = null;
             this.errorMessage = null;
             this.loading = true;
-            this.server.importContract(this.currentWorkspace.name, this.contractAddress)
+            this.server.importContract(this.contractAddress)
                 .then(() => {
                         this.successMessage = `Contract has been imported at address <a class="white--text" href="/address/${this.contractAddress}">${this.contractAddress}</a>. If available, metadata will be automatically imported from Etherscan in a few seconds...`
                 })
