@@ -732,6 +732,18 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
+            updateWorkspaceSettings(settings) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    settings: settings
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/workspaces/settings`;
+                return axios.post(resource, { data });
+            },
+
             getProductRoadToken: function() {
                 return functions.httpsCallable('getProductRoadToken')();
             },
@@ -746,9 +758,6 @@ export const serverPlugin = {
             },
             resetWorkspace: function(name) {
                 return functions.httpsCallable('resetWorkspace')({ workspace: name })
-            },
-            updateWorkspaceSettings: function(workspace, settings) {
-                return functions.httpsCallable('updateWorkspaceSettings')({ workspace: workspace, settings: settings });
             },
             syncContractData: function(workspace, address, name, abi, watchedPaths) {
                 return functions.httpsCallable('syncContractData')({ workspace: workspace, address: address, name: name, abi: abi, watchedPaths: watchedPaths });
