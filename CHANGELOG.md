@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.4] - 2022-09-25
+### Fixed
+- Settings update was broken
+
+### Changed
+- Batch syncing is now done in a separate queue to avoid slowing down normal syncing
+
 ## [2.8.3] - 2022-09-22
 ### Added
 - [Public Explorer] Support of custom icons for external links
