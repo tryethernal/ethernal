@@ -325,7 +325,7 @@ export default {
 
             this.server.initRpcServer(this.settings.rpcServer)
                 .then(() => {
-                    this.server.updateWorkspaceSettings(this.currentWorkspace.name, {
+                    this.server.updateWorkspaceSettings({
                         rpcServer: this.settings.rpcServer,
                         chain: this.settings.chain,
                         settings: {
