@@ -373,7 +373,7 @@ export default {
         resetWorkspace: function() {
             if (confirm(`Are you sure you want to reset the workspace ${this.currentWorkspace.name}? This action is definitive.`)) {
                 this.resetWorkspaceLoading = true;
-                this.server.resetWorkspace(this.currentWorkspace.name)
+                this.server.resetWorkspace()
                     .then(() => {
                         alert('Workspace reset finished!');
                     })

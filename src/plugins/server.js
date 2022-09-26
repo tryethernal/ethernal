@@ -755,38 +755,83 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            getProductRoadToken: function() {
-                return functions.httpsCallable('getProductRoadToken')();
+            getProductRoadToken() {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/marketing/productRoadToken`;
+                return axios.get(resource, { params });
             },
-            syncTransactionData: function(workspace, hash, data) {
-                return functions.httpsCallable('syncTransactionData')({ workspace: workspace, hash: hash, data: data });
+
+            syncTransactionData(hash, transactionData) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    data: transactionData
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${hash}/storage`;
+                return axios.post(resource, { data });
             },
-            processTransaction: function(workspace, transactionHash) {
-                return functions.httpsCallable('processTransaction')({ workspace: workspace, transaction: transactionHash });
+
+            processTransaction(transactionHash) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    transaction: transactionHash
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${transactionHash}/process`;
+                return axios.post(resource, { data });
             },
-            removeContract: function(workspace, address) {
-                return functions.httpsCallable('removeContract')({ workspace: workspace, address: address });
+
+            removeContract(address) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/remove`;
+                return axios.post(resource, { data });
             },
-            resetWorkspace: function(name) {
-                return functions.httpsCallable('resetWorkspace')({ workspace: name })
+
+            resetWorkspace() {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/workspaces/reset`;
+                return axios.post(resource, { data });
             },
-            syncContractData: function(workspace, address, name, abi, watchedPaths) {
-                return functions.httpsCallable('syncContractData')({ workspace: workspace, address: address, name: name, abi: abi, watchedPaths: watchedPaths });
+
+            syncContractData(address, name, abi, watchedPaths) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    address: address,
+                    name: name,
+                    abi: abi,
+                    watchedPaths: watchedPaths
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}`;
+                return axios.post(resource, { data });
             },
-            syncTrace: function(workspace, txHash, trace) {
-                return functions.httpsCallable('syncTrace')({ workspace: workspace, txHash: txHash, steps: trace });
-            },
+
             getAccount: function(workspace, account) {
                 return functions.httpsCallable('getAccount')({ workspace: workspace, account: account });
             },
             storeAccountPrivateKey: function(workspace, account, privateKey) {
                 return functions.httpsCallable('setPrivateKey')({ workspace: workspace, account: account, privateKey });
-            },
-            enableWorkspaceApi: function(workspace) {
-                return functions.httpsCallable('enableWorkspaceApi')({ workspace: workspace });
-            },
-            disableWorkspaceApi: function(workspace) {
-                return functions.httpsCallable('disableWorkspaceApi')({ workspace: workspace });
             },
             enableAlchemyWebhook: function(workspace) {
                 return functions.httpsCallable('enableAlchemyWebhook')({ workspace: workspace });

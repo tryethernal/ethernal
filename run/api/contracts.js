@@ -71,7 +71,7 @@ router.post('/:address/tokenProperties', authMiddleware, async (req, res) => {
         res.sendStatus(200);
     } catch(error) {
         console.log(error);
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
@@ -83,7 +83,7 @@ router.post('/:address/remove', authMiddleware, async (req, res) => {
         res.sendStatus(200);
     } catch(error) {
         console.log(error);
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
