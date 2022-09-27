@@ -13,6 +13,21 @@ const request = supertest(app);
 
 const BASE_URL = '/api/contracts';
 
+describe(`GET ${BASE_URL}/processable`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('Should return contracts with 200 status code', (done) => {
+        jest.spyOn(db, 'getUnprocessedContracts').mockResolvedValue([{ address: '0x123' }]);
+        request.get(`${BASE_URL}/processable?firebaseUserId=123&workspace=My+Workspace`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual([{ address: '0x123' }]);
+                expect(db.getUnprocessedContracts).toHaveBeenCalledWith('123', 'My Workspace');
+                done();
+            });
+    });
+});
+
 describe(`POST ${BASE_URL}/:address`, () => {
     beforeEach(() => jest.clearAllMocks());
 
