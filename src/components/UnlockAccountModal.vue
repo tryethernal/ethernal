@@ -25,7 +25,6 @@
 </template>
 <script>
 const ethers = require('ethers');
-import { mapGetters } from 'vuex';
 
 export default {
     name: 'UnlockAccountModal',
@@ -63,7 +62,7 @@ export default {
                 if (wallet.address.toLowerCase() != address)
                     throw { code: 'WALLET_MISMATCH'};
 
-                this.server.storeAccountPrivateKey(this.currentWorkspace.name, address, privateKey)
+                this.server.storeAccountPrivateKey(address, privateKey)
                     .then(() => {
                         this.successMessage = 'Account unlocked.';
                     })
@@ -89,11 +88,6 @@ export default {
             this.options = {};
             this.pkey = null;
         }
-    },
-    computed: {
-        ...mapGetters([
-            'currentWorkspace'
-        ])
     }
 }
 </script>

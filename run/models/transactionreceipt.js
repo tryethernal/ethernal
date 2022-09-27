@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
         async afterSave(receipt, options) {
             const fullTransaction = await receipt.getTransaction({
-                attributes: ['hash', 'workspaceId', 'rawError', 'parsedError', 'to', 'data', 'blockNumber'],
+                attributes: ['hash', 'workspaceId', 'rawError', 'parsedError', 'to', 'data', 'blockNumber', 'from', 'gasLimit', 'gasPrice', 'type', 'value'],
                 include: [
                     {
                         model: sequelize.models.Workspace,
