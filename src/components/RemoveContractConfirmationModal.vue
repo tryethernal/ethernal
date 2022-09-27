@@ -52,7 +52,7 @@ export default {
         },
         removeContract: function() {
             this.loading = true;
-            this.server.removeContract(this.workspace, this.address)
+            this.server.removeContract(this.address)
                 .then(() => {
                     if (this.$router.currentRoute.path != '/contracts')
                         this.$router.push({ path: '/contracts', query: { removedContract: this.address }});

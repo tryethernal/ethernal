@@ -87,12 +87,12 @@ export default {
         toggleSwitch: function(value) {
             this.loading = true;
             if (value) {
-                this.server.enableAlchemyWebhook(this.currentWorkspace.name)
+                this.server.enableAlchemyWebhook()
                     .then(({data}) => this.token = data.token)
                     .finally(() => this.loading = false);
             }
             else {
-                this.server.disableAlchemyWebhook(this.currentWorkspace.name)
+                this.server.disableAlchemyWebhook()
                     .then(() => this.token = null)
                     .finally(() => this.loading = false);
             }

@@ -17,9 +17,10 @@
                     <Hash-Link :type="'transaction'" :hash="item.transaction.hash" />
                 </template>
                 <template v-slot:item.type="{ item }">
-                    <v-chip x-small class="success mr-2">
+                    <v-chip x-small class="success mr-2" v-if="type[item.token]">
                         {{ formatContractPattern(type[item.token]) }}
                     </v-chip>
+                    <span v-else>N/A</span>
                 </template>
                 <template v-slot:item.timestamp="{ item }">
                     <div class="my-2 text-left">
