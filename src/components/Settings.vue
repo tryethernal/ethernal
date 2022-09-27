@@ -76,26 +76,6 @@
                             </v-card-text>
                         </v-card>
 
-                        <Alchemy-Integration-Modal ref="alchemyIntegrationModal" />
-                        <h4>Integrations</h4>
-                        <v-card outlined class="mb-4">
-                            <v-card-text>
-                                <v-data-table
-                                    :hide-default-header="true"
-                                    :hide-default-footer="true"
-                                    :items="integrations.items"
-                                    :headers="integrations.headers">
-                                    <template v-slot:item.status="{ item }">
-                                        {{ settings[item.setting] ? 'Enabled' : 'Disabled' }}
-                                    </template>
-                                    <template v-slot:item.actions="{ item }">
-                                        <v-btn color="primary" @click="callFunction(item.action)">Manage</v-btn>
-                                    </template>
-                                </v-data-table>
-                                <h4>Each workspace has separate integration settings.</h4>
-                            </v-card-text>
-                        </v-card>
-
                         <Create-Workspace-Modal ref="createWorkspaceModal" />
                         <h4>Workspaces</h4>
                         <v-card outlined class="mb-4">
@@ -175,7 +155,6 @@
 <script>
 import { mapGetters } from 'vuex';
 import CreateWorkspaceModal from './CreateWorkspaceModal';
-import AlchemyIntegrationModal from './AlchemyIntegrationModal';
 import Billing from './Billing';
 import Account from './Account';
 
@@ -183,7 +162,6 @@ export default {
     name: 'Settings',
     components: {
         CreateWorkspaceModal,
-        AlchemyIntegrationModal,
         Billing,
         Account
     },
@@ -220,31 +198,6 @@ export default {
                 ]
             }
         ],
-        integrations: {
-            headers: [
-                {
-                    text: '',
-                    value: 'name'
-                },
-                {
-                    text: '',
-                    value: 'status'
-                },
-                {
-                    text: '',
-                    value: 'actions',
-                    align: 'right'
-                }
-            ],
-            items: [
-                {
-                    name: 'Alchemy',
-                    slug: 'alchemy',
-                    setting: 'alchemyIntegrationEnabled',
-                    action:  'openAlchemyIntegrationModal'
-                },
-            ]
-        },
         workspacesDataTableHeaders: [
             {
                 text: 'Name',
@@ -292,7 +245,6 @@ export default {
 
         this.settings = {
             workspaceId: this.currentWorkspace.id,
-            alchemyIntegrationEnabled: this.currentWorkspace.alchemyIntegrationEnabled,
             chain: this.currentWorkspace.chain,
             defaultAccount: this.currentWorkspace.defaultAccount,
             gasLimit: this.currentWorkspace.gasLimit,
@@ -361,19 +313,10 @@ export default {
         switchWorkspace: function(name) {
             this.server.setCurrentWorkspace(name).then(() => document.location.reload());
         },
-        openAlchemyIntegrationModal: function() {
-            this.$refs.alchemyIntegrationModal.open({
-                enabled: this.settings.alchemyIntegrationEnabled
-            })
-            .then((isAlchemyIntegrationEnabled) => {
-                this.settings.alchemyIntegrationEnabled = isAlchemyIntegrationEnabled;
-                this.$store.dispatch('updateCurrentWorkspace', this.settings);
-            })
-        },
         resetWorkspace: function() {
             if (confirm(`Are you sure you want to reset the workspace ${this.currentWorkspace.name}? This action is definitive.`)) {
                 this.resetWorkspaceLoading = true;
-                this.server.resetWorkspace(this.currentWorkspace.name)
+                this.server.resetWorkspace()
                     .then(() => {
                         alert('Workspace reset finished!');
                     })

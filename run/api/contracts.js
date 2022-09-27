@@ -6,6 +6,23 @@ const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
 const processContractVerification = require('../lib/processContractVerification');
 
+router.get('/processable', authMiddleware, async (req, res) => {
+    const data = req.query;
+    try {
+        if (!data.firebaseUserId || !data.workspace) {
+            console.log(data);
+            throw new Error(`[POST /api/contracts/processable] Missing parameters`);
+        }
+
+        const contracts = await db.getUnprocessedContracts(data.firebaseUserId, data.workspace);
+
+        res.status(200).json(contracts);
+    } catch(error) {
+        console.log(error);
+        res.status(400).send(error.message);
+    }
+});
+
 router.post('/:address', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
@@ -31,7 +48,7 @@ router.post('/:address', authMiddleware, async (req, res) => {
         res.sendStatus(200);
     } catch(error) {
         console.log(error);
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
@@ -71,7 +88,7 @@ router.post('/:address/tokenProperties', authMiddleware, async (req, res) => {
         res.sendStatus(200);
     } catch(error) {
         console.log(error);
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
@@ -83,7 +100,7 @@ router.post('/:address/remove', authMiddleware, async (req, res) => {
         res.sendStatus(200);
     } catch(error) {
         console.log(error);
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
@@ -147,7 +164,7 @@ router.get('/:address', workspaceAuthMiddleware, async (req, res) => {
         res.status(200).json(contract);
     } catch(error) {
         console.log(error);
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
@@ -159,7 +176,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res) => {
         res.status(200).json(contracts);
     } catch(error) {
         console.log(error);
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 

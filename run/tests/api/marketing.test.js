@@ -1,8 +1,12 @@
 require('../mocks/lib/firebase');
 require('../mocks/middlewares/auth');
 require('../mocks/lib/tasks');
+jest.mock('jsonwebtoken', () => ({
+    sign: jest.fn().mockReturnValue('token')
+}));
 const db = require('../../lib/firebase');
 const { enqueueTask } = require('../../lib/tasks');
+const jwt = require('jsonwebtoken');
 
 const supertest = require('supertest');
 const app = require('../../app');
@@ -11,6 +15,18 @@ const request = supertest(app);
 const BASE_URL = '/api/marketing';
 
 beforeEach(() => jest.clearAllMocks());
+
+describe(`GET ${BASE_URL}/productRoadToken`, () => {
+    it('Should enqueue task and return 200', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ email: 'antoine@tryethernal.com' });
+        request.get(`${BASE_URL}/productRoadToken?workspace=ethernal`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ token: 'token' });
+                done();
+            });
+    });
+});
 
 describe(`GET ${BASE_URL}`, () => {
     it('Should return the marketing flags', (done) => {
@@ -24,7 +40,7 @@ describe(`GET ${BASE_URL}`, () => {
     });
 });
 
-describe(`GET ${BASE_URL}/submitExplorerLead`, () => {
+describe(`POST ${BASE_URL}/submitExplorerLead`, () => {
     it('Should enqueue task and return 200', (done) => {
         request.post(`${BASE_URL}/submitExplorerLead`)
             .send({ data: { workspace: 'ethernal', email: 'antoine@tryethernal.com' }})
@@ -38,7 +54,7 @@ describe(`GET ${BASE_URL}/submitExplorerLead`, () => {
     });
 });
 
-describe(`GET ${BASE_URL}/setRemoteFlag`, () => {
+describe(`POST ${BASE_URL}/setRemoteFlag`, () => {
      it('Should process workspace if flag is not set', (done) => {
         jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ isRemote: null });
         request.post(`${BASE_URL}/setRemoteFlag`)

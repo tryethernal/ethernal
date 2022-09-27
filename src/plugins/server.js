@@ -4,7 +4,6 @@ const Decoder = require('@truffle/decoder');
 const axios = require('axios');
 
 import { Storage } from '../lib/storage';
-import { functions } from './firebase';
 import { sanitize } from '../lib/utils';
 import { parseTrace } from '../lib/trace';
 import { findPatterns, formatErc721Metadata } from '../lib/contract';
@@ -101,9 +100,7 @@ const serverFunctions = {
             const web3Rpc = new Web3(serverFunctions._getWeb3Provider(data.rpcServer));
             var networkId = await web3Rpc.eth.net.getId();
             var latestBlockNumber = await rpcProvider.getBlockNumber();
-            console.log(latestBlockNumber)
             var latestBlock = await rpcProvider.getBlock(latestBlockNumber);
-            console.log(latestBlock)
             var gasLimit = latestBlock.gasLimit.toString();
 
             var workspace = {
@@ -224,26 +221,7 @@ const serverFunctions = {
             throw { reason: reason };
         }
     },
-    processContracts: async function(data) {
-        try {
-            const res = [];
-            const contracts = (await functions.httpsCallable('getUnprocessedContracts')({ workspace: data.workspace })).data.contracts;
-            for (let i = 0; i < contracts.length; i++) {
-                const contract = contracts[i];
-                const properties = await findPatterns(data.rpcServer, contract.address);
-                res.push({
-                    address: contract.address,
-                    properties: properties
-                });
-            }
 
-            return res;
-        } catch(error) {
-            console.log(error);
-            var reason = error.reason || error.message || "Can't connect to the server";
-            throw { reason: reason };
-        }
-    },
     getBalanceChanges: async function(account, token, block, rpcServer) {
         let currentBalance = ethers.BigNumber.from('0');
         let previousBalance = ethers.BigNumber.from('0');
@@ -292,8 +270,19 @@ const serverFunctions = {
     fetchErrorData: async function(transaction, rpcServer) {
         try {
             const provider = serverFunctions._getProvider(rpcServer);
-            const res = await provider.call({ to: transaction.to, data: transaction.data }, transaction.blockNumber);
-            return ethers.utils.toUtf8String('0x' + res.substr(138));
+            const res = await provider.call({
+                from: transaction.from,
+                to: transaction.to,
+                data: transaction.data,
+                gasPrice: transaction.gasPrice,
+                gasLimit: transaction.gasLimit,
+                value: transaction.value
+            }, transaction.blockNumber);
+
+            return {
+                parsed: true,
+                message: ethers.utils.toUtf8String('0x' + res.substr(138))
+            };
         } catch(error) {
             if (error.response) {
                 const parsed = JSON.parse(error.response);
@@ -317,6 +306,16 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            getProcessableContracts() {
+                 const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/processable`;
+                return axios.get(resource, { params });
+            },
+
             createUser(firebaseUserId) {
                 const data = {
                     firebaseAuthToken: store.getters.firebaseIdToken,
@@ -755,74 +754,144 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            getProductRoadToken: function() {
-                return functions.httpsCallable('getProductRoadToken')();
+            getProductRoadToken() {
+                const params = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/marketing/productRoadToken`;
+                return axios.get(resource, { params });
             },
-            syncTransactionData: function(workspace, hash, data) {
-                return functions.httpsCallable('syncTransactionData')({ workspace: workspace, hash: hash, data: data });
+
+            syncTransactionData(hash, transactionData) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    data: transactionData
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${hash}/storage`;
+                return axios.post(resource, { data });
             },
-            processTransaction: function(workspace, transactionHash) {
-                return functions.httpsCallable('processTransaction')({ workspace: workspace, transaction: transactionHash });
+
+            processTransaction(transactionHash) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    transaction: transactionHash
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${transactionHash}/process`;
+                return axios.post(resource, { data });
             },
-            removeContract: function(workspace, address) {
-                return functions.httpsCallable('removeContract')({ workspace: workspace, address: address });
+
+            removeContract(address) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/remove`;
+                return axios.post(resource, { data });
             },
-            resetWorkspace: function(name) {
-                return functions.httpsCallable('resetWorkspace')({ workspace: name })
+
+            resetWorkspace() {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/workspaces/reset`;
+                return axios.post(resource, { data });
             },
-            syncContractData: function(workspace, address, name, abi, watchedPaths) {
-                return functions.httpsCallable('syncContractData')({ workspace: workspace, address: address, name: name, abi: abi, watchedPaths: watchedPaths });
+
+            syncContractData(address, name, abi, watchedPaths) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    address: address,
+                    name: name,
+                    abi: abi,
+                    watchedPaths: watchedPaths
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}`;
+                return axios.post(resource, { data });
             },
-            syncTrace: function(workspace, txHash, trace) {
-                return functions.httpsCallable('syncTrace')({ workspace: workspace, txHash: txHash, steps: trace });
+
+            storeAccountPrivateKey(account, privateKey) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    privateKey: privateKey
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/accounts/${account}/privateKey`;
+                return axios.post(resource, { data });
             },
-            getAccount: function(workspace, account) {
-                return functions.httpsCallable('getAccount')({ workspace: workspace, account: account });
+
+            syncFailedTransactionError(transactionHash, error) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    error: error
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${transactionHash}/error`;
+                return axios.post(resource, { data });
             },
-            storeAccountPrivateKey: function(workspace, account, privateKey) {
-                return functions.httpsCallable('setPrivateKey')({ workspace: workspace, account: account, privateKey });
+
+            syncTokenBalanceChanges(transactionHash, tokenBalanceChanges) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    tokenBalanceChanges: tokenBalanceChanges
+                };
+
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${transactionHash}/tokenBalanceChanges`;
+                return axios.post(resource, { data });
             },
-            enableWorkspaceApi: function(workspace) {
-                return functions.httpsCallable('enableWorkspaceApi')({ workspace: workspace });
+
+            getProvider: serverFunctions._getProvider,
+
+            processContracts: async function(rpcServer) {
+                try {
+                    const contracts = (await Vue.prototype.server.getProcessableContracts()).data;
+                    for (let i = 0; i < contracts.length; i++) {
+                        const contract = contracts[i];
+                        try {
+                            const properties = await findPatterns(rpcServer, contract.address);
+                            await Vue.prototype.server.setTokenProperties(contract.address, properties);
+                        } catch(error) {
+                            console.log(`Error processing contract ${contract.address}`);
+                            console.log(error);
+                        }
+                    }
+                } catch(error) {
+                    console.log(error);
+                    var reason = error.reason || error.message || "Can't connect to the server";
+                    throw { reason: reason };
+                }
             },
-            disableWorkspaceApi: function(workspace) {
-                return functions.httpsCallable('disableWorkspaceApi')({ workspace: workspace });
-            },
-            enableAlchemyWebhook: function(workspace) {
-                return functions.httpsCallable('enableAlchemyWebhook')({ workspace: workspace });
-            },
-            disableAlchemyWebhook: function(workspace) {
-                return functions.httpsCallable('disableAlchemyWebhook')({ workspace: workspace });
-            },
-            getProvider: function(url) {
-                return serverFunctions._getProvider(url);
-            },
-            processContracts: async function(workspace) {
-                return new Promise((resolve, reject) => {
-                    serverFunctions.processContracts({ workspace: workspace, rpcServer: _rpcServer() })
-                        .then((contracts) => {
-                            const promises = [];
-                            for (let i = 0; i < contracts.length; i++) {
-                                const contract = contracts[i];
-                                promises.push(Vue.prototype.server.setTokenProperties(contract.address, contract.properties));
-                            }
-                            Promise.all(promises)
-                                .then(resolve)
-                                .catch(reject);
-                        })
-                        .catch(reject);
-                });
-            },
-            processFailedTransactions: async function(transactions, workspace) {
+
+            processFailedTransactions: async function(transactions, rpcServer) {
                  try {
                     for (let i = 0; i < transactions.length; i++) {
                         const transaction = transactions[i];
 
                         if (transaction.receipt.status === 0 || transaction.receipt.status === false) {
-                            serverFunctions.fetchErrorData(transaction, workspace.rpcServer)
-                                .then((result) => {
-                                    return functions.httpsCallable('syncFailedTransactionError')({ workspace: workspace.name, transaction: transaction.hash, error: result });
-                                })
+                            serverFunctions.fetchErrorData(transaction, rpcServer)
+                                .then(result => Vue.prototype.server.syncFailedTransactionError(transaction.hash, result))
                                 .catch(console.log);
                         }
                     }
@@ -832,6 +901,7 @@ export const serverPlugin = {
                     throw { reason: reason };
                 }
             },
+
             processTransactions: async function(workspace, transactions) {
                 try {
                     for (let i = 0; i < transactions.length; i++) {
@@ -857,7 +927,7 @@ export const serverPlugin = {
                         }
 
                         if (Object.keys(tokenBalanceChanges).length)
-                            functions.httpsCallable('syncTokenBalanceChanges')({ workspace: workspace.name, transaction: transaction.hash, tokenBalanceChanges: tokenBalanceChanges });
+                            Vue.prototype.server.syncTokenBalanceChanges(transaction.hash, tokenBalanceChanges);
                     }
                 } catch(error) {
                     console.log(error);
@@ -865,6 +935,7 @@ export const serverPlugin = {
                     throw { reason: reason };
                 }
             },
+
             searchForLocalChains: async function() {
                 try {
                     const endpoints = [
@@ -930,10 +1001,10 @@ export const serverPlugin = {
                         .catch(reject)
                 });
             },
-            callContractWriteMethod: function(contract, method, options, params, rpcServer, shouldTrace) {
+            callContractWriteMethod: function(contract, method, options, params, rpcServer) {
                 return new Promise((resolve, reject) => {
                     serverFunctions
-                        .callContractWriteMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer, shouldTrace: shouldTrace })
+                        .callContractWriteMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer })
                         .then(resolve)
                         .catch(reject)
                 });
