@@ -101,7 +101,7 @@ export default {
                 }
             }
 
-            this.server.syncContractData(this.currentWorkspace.name, this.address, this.name, parsedAbi)
+            this.server.syncContractData(this.address, this.name, parsedAbi)
                 .then(() => {
                     this.updated = true;
                     this.successMessage = 'Metadata updated';

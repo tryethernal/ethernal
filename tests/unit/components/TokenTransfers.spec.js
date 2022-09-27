@@ -12,7 +12,7 @@ describe('TokenTransfers.vue', () => {
 
     it('Should display erc721 token transfers', async () => {
         const wrapper = helper.mountFn(TokenTransfers, {
-            withTransaction: true,
+            withTransactionData: true,
             withTokenData: false,
             propsData: {
                 transfers: [
@@ -31,7 +31,7 @@ describe('TokenTransfers.vue', () => {
                         token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
                         src: '0xC056255e6B1E6001852f9f20587A964cb89418e7',
                         dst: '0x4f6742bADB049791CD9A37ea913f2BAC38d01279',
-                        tokenId: '2',
+                        tokenId: 2,
                         transaction: {
                             hash: '0x124',
                             timestamp: 1662409422
@@ -46,14 +46,31 @@ describe('TokenTransfers.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should display erc20 token transfers', async () => {
+    it('Should display token transfers', async () => {
         const wrapper = helper.mountFn(TokenTransfers, {
             propsData: {
-                withTransaction: false,
+                withTransactionData: false,
                 withTokenData: true,
                 transfers: [
-                    { token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', src: '0xC056255e6B1E6001852f9f20587A964cb89418e7', dst: '0x4f6742bADB049791CD9A37ea913f2BAC38d01279', amount: '100000000000000000' },
-                    { token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', src: '0xC056255e6B1E6001852f9f20587A964cb89418e7', dst: '0x4f6742bADB049791CD9A37ea913f2BAC38d01279', amount: '100000000000000000' }
+                    {
+                        token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                        src: '0xC056255e6B1E6001852f9f20587A964cb89418e7',
+                        dst: '0x4f6742bADB049791CD9A37ea913f2BAC38d01279',
+                        amount: '100000000000000000'
+                    },
+                    {
+                        token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                        src: '0xC056255e6B1E6001852f9f20587A964cb89418e7',
+                        dst: '0x4f6742bADB049791CD9A37ea913f2BAC38d01279',
+                        amount: '100000000000000000'
+                    },
+                    {
+                        token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                        src: '0xC056255e6B1E6001852f9f20587A964cb89418e7',
+                        dst: '0x4f6742bADB049791CD9A37ea913f2BAC38d01279',
+                        amount: 1,
+                        tokenId: 1
+                    }
                 ]
             },
             stubs: ['Hash-Link']
@@ -64,16 +81,25 @@ describe('TokenTransfers.vue', () => {
     });
 
     it('Should display fomatted amounts if info is present on token contract', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
-            .mockResolvedValue({ data: { tokenDecimals: 18, tokenSymbol: 'ETL', tokenName: 'Ethernal' }});
-
         const wrapper = helper.mountFn(TokenTransfers, {
             propsData: {
-                withTransaction: false,
+                withTransactionData: false,
                 withTokenData: true,
                 transfers: [
-                    { token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', src: '0xC056255e6B1E6001852f9f20587A964cb89418e7', dst: '0x4f6742bADB049791CD9A37ea913f2BAC38d01279', amount: '100000000000000000' },
-                    { token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', src: '0xC056255e6B1E6001852f9f20587A964cb89418e7', dst: '0x4f6742bADB049791CD9A37ea913f2BAC38d01279', amount: '100000000000000000' }
+                    {
+                        token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                        src: '0xC056255e6B1E6001852f9f20587A964cb89418e7',
+                        dst: '0x4f6742bADB049791CD9A37ea913f2BAC38d01279',
+                        amount: '100000000000000000',
+                        contract: { tokenDecimals: 18, tokenSymbol: 'ETL', tokenName: 'Ethernal', patterns: ['erc20'] }
+                    },
+                    {
+                        token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                        src: '0xC056255e6B1E6001852f9f20587A964cb89418e7',
+                        dst: '0x4f6742bADB049791CD9A37ea913f2BAC38d01279',
+                        amount: '100000000000000000',
+                        contract: { tokenDecimals: 18, tokenSymbol: 'ETL', tokenName: 'Ethernal', patterns: ['erc20'] }
+                    }
                 ]
             },
             stubs: ['Hash-Link']

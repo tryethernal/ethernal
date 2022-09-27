@@ -64,7 +64,7 @@ export default {
                 if (privateKey) {
                     const wallet = new ethers.Wallet(privateKey);
                     walletAddress = wallet.address.toLowerCase();
-                    promises.push(this.server.storeAccountPrivateKey(this.currentWorkspace.name, wallet.address, privateKey));
+                    promises.push(this.server.storeAccountPrivateKey(wallet.address, privateKey));
                 }
 
                 if (accountAddress) {

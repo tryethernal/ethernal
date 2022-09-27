@@ -317,7 +317,7 @@ export default {
                     this.routerComponent = 'router-view';
 
                     if (!this.isPublicExplorer) {
-                        this.server.getProductRoadToken().then((res) => this.prAuthToken = res.data.token);
+                        this.server.getProductRoadToken().then(res => this.prAuthToken = res.data.token);
                         this.server.getMarketingFlags().then(({ data: { isRemote }}) => {
                             if (isRemote === null)
                                 this.server.setRemoteFlag();

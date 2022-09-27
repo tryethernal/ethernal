@@ -11,7 +11,6 @@ describe('Settings.vue', () => {
         window.Stripe = jest.fn();
         helper = new MockHelper({
             currentWorkspace: {
-                alchemyIntegrationEnabled: false,
                 defaultAccount: null,
                 gasLimit: null,
                 gasPrice: null,
@@ -46,7 +45,6 @@ describe('Settings.vue', () => {
 
         expect(updateWorkspaceSettingsMock).toHaveBeenCalledWith({ chain: 'bsc', rpcServer: 'http://localhost:1234', settings: expect.anything() });
         expect(helper.actions.updateCurrentWorkspace).toHaveBeenCalledWith(expect.anything(), {
-            alchemyIntegrationEnabled: false,
             defaultAccount: null,
             gasLimit: null,
             gasPrice: null,
@@ -72,7 +70,6 @@ describe('Settings.vue', () => {
 
         expect(updateWorkspaceSettingsMock).toHaveBeenCalledWith({ chain: 'ethereum', rpcServer: 'http://localhost:8545', settings: { defaultAccount: '0x123', gasPrice: '1234', gasLimit: '12345' }});
         expect(helper.actions.updateCurrentWorkspace).toHaveBeenCalledWith(expect.anything(), {
-            alchemyIntegrationEnabled: false,
             rpcServer: 'http://localhost:8545',
             chain: 'ethereum',
             networkId: 1,
@@ -113,6 +110,6 @@ describe('Settings.vue', () => {
         await flushPromises();
 
         expect(confirmMock).toHaveBeenCalled();
-        expect(resetWorkspaceMock).toHaveBeenCalledWith('Hardhat');
+        expect(resetWorkspaceMock).toHaveBeenCalled();
     });
 });

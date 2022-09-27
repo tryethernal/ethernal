@@ -123,35 +123,6 @@ exports[`Settings.vue Should load the settings page 1`] = `
               <div class="v-dialog__container">
                 <!---->
               </div>
-              <h4>Integrations</h4>
-              <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-                <div class="v-card__text">
-                  <div class="v-data-table theme--light">
-                    <div class="v-data-table__wrapper">
-                      <table>
-                        <colgroup>
-                          <col class="">
-                          <col class="">
-                          <col class="">
-                        </colgroup>
-                        <tbody>
-                          <tr class="">
-                            <td class="text-start">Alchemy</td>
-                            <td class="text-start">
-                              Disabled
-                            </td>
-                            <td class="text-right"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Manage</span></button></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  <h4>Each workspace has separate integration settings.</h4>
-                </div>
-              </div>
-              <div class="v-dialog__container">
-                <!---->
-              </div>
               <h4>Workspaces</h4>
               <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
                 <div class="v-card__text">
@@ -187,10 +158,10 @@ exports[`Settings.vue Should load the settings page 1`] = `
                     <div class="v-data-footer">
                       <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
                           <div class="v-input__control">
-                            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-60" class="v-input__slot">
+                            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-53" class="v-input__slot">
                               <div class="v-select__slot">
                                 <div class="v-select__selections">
-                                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-60" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-53" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                                 </div>
                                 <div class="v-input__append-inner">
                                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -219,12 +190,12 @@ exports[`Settings.vue Should load the settings page 1`] = `
                     <div class="col">
                       <div class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
                         <div class="v-input__control">
-                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-69" class="v-input__slot">
+                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-62" class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                             </fieldset>
-                            <div class="v-select__slot"><label for="input-69" class="v-label theme--light" style="left: 0px; position: absolute;">Status</label>
-                              <div class="v-select__selections"><input id="input-69" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                            <div class="v-select__slot"><label for="input-62" class="v-label theme--light" style="left: 0px; position: absolute;">Status</label>
+                              <div class="v-select__selections"><input id="input-62" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
                               <div class="v-input__append-inner">
                                 <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
                               </div><input type="hidden">

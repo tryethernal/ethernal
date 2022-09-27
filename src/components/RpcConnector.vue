@@ -128,7 +128,7 @@ export default Vue.extend({
             this.processFailedTransactions();
             this.pusher.onNewContract(this.processContracts, this);
             this.pusher.onNewProcessableTransactions((transaction) => this.server.processTransactions(this.currentWorkspace, [transaction]), this);
-            this.pusher.onNewFailedTransactions((transaction) => this.server.processFailedTransactions([transaction], this.currentWorkspace), this);
+            this.pusher.onNewFailedTransactions((transaction) => this.server.processFailedTransactions([transaction], this.currentWorkspace.rpcServer), this);
         }
         this.pusher.onNewBlock((block) => this.$store.dispatch('updateCurrentBlock', block), this);
     },
@@ -143,7 +143,7 @@ export default Vue.extend({
         },
         processContracts: function() {
             this.processingContracts = true;
-            this.server.processContracts(this.currentWorkspace.name)
+            this.server.processContracts(this.currentWorkspace.rpcServer)
                 .catch(console.log)
                 .finally(() => this.processingContracts = false );
         },
