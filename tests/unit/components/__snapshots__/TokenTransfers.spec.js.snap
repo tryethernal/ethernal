@@ -1,91 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TokenTransfers.vue Should display erc20 token transfers 1`] = `
-<div class="v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__text">
-    <div class="v-data-table v-data-table--has-top theme--light">
-      <header class="v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px;">
-        <div class="v-toolbar__content" style="height: 48px;">
-          <div class="spacer"></div>
-          <div class="v-input theme--light v-input--selection-controls v-input--switch">
-            <div class="v-input__control">
-              <div class="v-input__slot">
-                <div class="v-input--selection-controls__input"><input aria-checked="false" id="input-29" role="switch" type="checkbox" aria-disabled="false" value="">
-                  <div class="v-input--selection-controls__ripple"></div>
-                  <div class="v-input--switch__track theme--light"></div>
-                  <div class="v-input--switch__thumb theme--light">
-                    <transition-stub name="fab-transition" mode="out-in"></transition-stub>
-                  </div>
-                </div><label for="input-29" class="v-label theme--light" style="left: 0px; position: relative;">Unformatted Amounts</label>
-              </div>
-              <div class="v-messages theme--light">
-                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-      <div class="v-data-table__wrapper">
-        <table>
-          <colgroup>
-            <col class="">
-            <col class="">
-            <col class="">
-            <col class="">
-            <col class="">
-          </colgroup>
-          <thead class="v-data-table-header">
-            <tr>
-              <th role="columnheader" scope="col" aria-label="Type: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Type</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-              <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-              <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-              <th role="columnheader" scope="col" aria-label="Token: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Token</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-              <th role="columnheader" scope="col" aria-label="Amount: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Amount</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="">
-              <td class="text-start"><span class="success mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">
-                    
-                </span></span></td>
-              <td class="text-start">
-                <hash-link-stub withtokenname="true" withname="true" fullhash="true" hash="0xC056255e6B1E6001852f9f20587A964cb89418e7" type="address"></hash-link-stub>
-              </td>
-              <td class="text-start">
-                <hash-link-stub withtokenname="true" withname="true" fullhash="true" hash="0x4f6742bADB049791CD9A37ea913f2BAC38d01279" type="address"></hash-link-stub>
-              </td>
-              <td class="text-start">
-                <hash-link-stub withtokenname="true" withname="true" hash="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" type="address"></hash-link-stub>
-              </td>
-              <td class="text-start">
-                100000000000000000
-              </td>
-            </tr>
-            <tr class="">
-              <td class="text-start"><span class="success mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">
-                    
-                </span></span></td>
-              <td class="text-start">
-                <hash-link-stub withtokenname="true" withname="true" fullhash="true" hash="0xC056255e6B1E6001852f9f20587A964cb89418e7" type="address"></hash-link-stub>
-              </td>
-              <td class="text-start">
-                <hash-link-stub withtokenname="true" withname="true" fullhash="true" hash="0x4f6742bADB049791CD9A37ea913f2BAC38d01279" type="address"></hash-link-stub>
-              </td>
-              <td class="text-start">
-                <hash-link-stub withtokenname="true" withname="true" hash="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" type="address"></hash-link-stub>
-              </td>
-              <td class="text-start">
-                100000000000000000
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
 exports[`TokenTransfers.vue Should display erc721 token transfers 1`] = `
 <div class="v-card v-sheet v-sheet--outlined theme--light">
   <div class="v-card__text">
@@ -158,13 +72,13 @@ exports[`TokenTransfers.vue Should display fomatted amounts if info is present o
           <div class="v-input theme--light v-input--selection-controls v-input--switch">
             <div class="v-input__control">
               <div class="v-input__slot">
-                <div class="v-input--selection-controls__input"><input aria-checked="false" id="input-56" role="switch" type="checkbox" aria-disabled="false" value="">
+                <div class="v-input--selection-controls__input"><input aria-checked="false" id="input-57" role="switch" type="checkbox" aria-disabled="false" value="">
                   <div class="v-input--selection-controls__ripple"></div>
                   <div class="v-input--switch__track theme--light"></div>
                   <div class="v-input--switch__thumb theme--light">
                     <transition-stub name="fab-transition" mode="out-in"></transition-stub>
                   </div>
-                </div><label for="input-56" class="v-label theme--light" style="left: 0px; position: relative;">Unformatted Amounts</label>
+                </div><label for="input-57" class="v-label theme--light" style="left: 0px; position: relative;">Unformatted Amounts</label>
               </div>
               <div class="v-messages theme--light">
                 <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
@@ -194,8 +108,92 @@ exports[`TokenTransfers.vue Should display fomatted amounts if info is present o
           <tbody>
             <tr class="">
               <td class="text-start"><span class="success mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">
-                    
+                    ERC 20
                 </span></span></td>
+              <td class="text-start">
+                <hash-link-stub withtokenname="true" withname="true" fullhash="true" hash="0xC056255e6B1E6001852f9f20587A964cb89418e7" type="address"></hash-link-stub>
+              </td>
+              <td class="text-start">
+                <hash-link-stub withtokenname="true" withname="true" fullhash="true" hash="0x4f6742bADB049791CD9A37ea913f2BAC38d01279" type="address"></hash-link-stub>
+              </td>
+              <td class="text-start">
+                <hash-link-stub withtokenname="true" withname="true" hash="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" type="address"></hash-link-stub>
+              </td>
+              <td class="text-start">
+                0.1 ETL
+              </td>
+            </tr>
+            <tr class="">
+              <td class="text-start"><span class="success mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">
+                    ERC 20
+                </span></span></td>
+              <td class="text-start">
+                <hash-link-stub withtokenname="true" withname="true" fullhash="true" hash="0xC056255e6B1E6001852f9f20587A964cb89418e7" type="address"></hash-link-stub>
+              </td>
+              <td class="text-start">
+                <hash-link-stub withtokenname="true" withname="true" fullhash="true" hash="0x4f6742bADB049791CD9A37ea913f2BAC38d01279" type="address"></hash-link-stub>
+              </td>
+              <td class="text-start">
+                <hash-link-stub withtokenname="true" withname="true" hash="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" type="address"></hash-link-stub>
+              </td>
+              <td class="text-start">
+                0.1 ETL
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`TokenTransfers.vue Should display token transfers 1`] = `
+<div class="v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__text">
+    <div class="v-data-table v-data-table--has-top theme--light">
+      <header class="v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px;">
+        <div class="v-toolbar__content" style="height: 48px;">
+          <div class="spacer"></div>
+          <div class="v-input theme--light v-input--selection-controls v-input--switch">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <div class="v-input--selection-controls__input"><input aria-checked="false" id="input-29" role="switch" type="checkbox" aria-disabled="false" value="">
+                  <div class="v-input--selection-controls__ripple"></div>
+                  <div class="v-input--switch__track theme--light"></div>
+                  <div class="v-input--switch__thumb theme--light">
+                    <transition-stub name="fab-transition" mode="out-in"></transition-stub>
+                  </div>
+                </div><label for="input-29" class="v-label theme--light" style="left: 0px; position: relative;">Unformatted Amounts</label>
+              </div>
+              <div class="v-messages theme--light">
+                <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <div class="v-data-table__wrapper">
+        <table>
+          <colgroup>
+            <col class="">
+            <col class="">
+            <col class="">
+            <col class="">
+            <col class="">
+          </colgroup>
+          <thead class="v-data-table-header">
+            <tr>
+              <th role="columnheader" scope="col" aria-label="Type: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Type</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="Token: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Token</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="Amount: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Amount</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="">
+              <td class="text-start"><span>N/A</span></td>
               <td class="text-start">
                 <hash-link-stub withtokenname="true" withname="true" fullhash="true" hash="0xC056255e6B1E6001852f9f20587A964cb89418e7" type="address"></hash-link-stub>
               </td>
@@ -210,9 +208,7 @@ exports[`TokenTransfers.vue Should display fomatted amounts if info is present o
               </td>
             </tr>
             <tr class="">
-              <td class="text-start"><span class="success mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">
-                    
-                </span></span></td>
+              <td class="text-start"><span>N/A</span></td>
               <td class="text-start">
                 <hash-link-stub withtokenname="true" withname="true" fullhash="true" hash="0xC056255e6B1E6001852f9f20587A964cb89418e7" type="address"></hash-link-stub>
               </td>
@@ -224,6 +220,21 @@ exports[`TokenTransfers.vue Should display fomatted amounts if info is present o
               </td>
               <td class="text-start">
                 100000000000000000
+              </td>
+            </tr>
+            <tr class="">
+              <td class="text-start"><span>N/A</span></td>
+              <td class="text-start">
+                <hash-link-stub withtokenname="true" withname="true" fullhash="true" hash="0xC056255e6B1E6001852f9f20587A964cb89418e7" type="address"></hash-link-stub>
+              </td>
+              <td class="text-start">
+                <hash-link-stub withtokenname="true" withname="true" fullhash="true" hash="0x4f6742bADB049791CD9A37ea913f2BAC38d01279" type="address"></hash-link-stub>
+              </td>
+              <td class="text-start">
+                <hash-link-stub tokenid="1" withtokenname="true" withname="true" hash="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" type="address"></hash-link-stub>
+              </td>
+              <td class="text-start">
+                1
               </td>
             </tr>
           </tbody>
