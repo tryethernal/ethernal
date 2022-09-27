@@ -93,11 +93,11 @@ router.post('/:hash/error', authMiddleware, async (req, res) => {
         }
 
         await db.storeFailedTransactionError(data.uid, data.workspace, req.params.hash, data.error);
-       
+
        res.sendStatus(200);
     } catch(error) {
         console.log(error);
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
@@ -116,7 +116,7 @@ router.post('/:hash/process', authMiddleware, async (req, res) => {
         res.sendStatus(200);
     } catch(error) {
         console.log(error);
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 

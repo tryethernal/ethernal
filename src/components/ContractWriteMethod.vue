@@ -133,7 +133,6 @@ export default {
                     privateKey: this.options.from.privateKey,
                     from: this.options.from.address
                 });
-                const shouldTrace = this.currentWorkspace.advancedOptions && this.currentWorkspace.advancedOptions.tracing == 'other';
 
                 if (!this.options.gasLimit || parseInt(this.options.gasLimit) < 1) {
                     throw { reason: 'You must set a gas limit' }
@@ -144,7 +143,7 @@ export default {
                     processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
                 }
 
-                this.server.callContractWriteMethod(this.contract, this.signature, options, processedParams, this.currentWorkspace.rpcServer, shouldTrace)
+                this.server.callContractWriteMethod(this.contract, this.signature, options, processedParams, this.currentWorkspace.rpcServer)
                     .then((pendingTx) => {
                         this.result.txHash = pendingTx.hash;
 
