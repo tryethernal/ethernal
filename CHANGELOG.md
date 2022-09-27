@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.0] - 2022-09-26
+### Removed
+- Firebase Functions dependencies. Should make the app faster overall 🚀
+- Alchemy integration frontend (not Alchemy webhooks + unused + deprecated token auth)
+
 ## [2.8.6] - 2022-09-25
 ### Fixed
 - Unit tests
