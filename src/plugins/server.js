@@ -4,7 +4,6 @@ const Decoder = require('@truffle/decoder');
 const axios = require('axios');
 
 import { Storage } from '../lib/storage';
-import { functions } from './firebase';
 import { sanitize } from '../lib/utils';
 import { parseTrace } from '../lib/trace';
 import { findPatterns, formatErc721Metadata } from '../lib/contract';
