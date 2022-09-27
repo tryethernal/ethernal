@@ -43,7 +43,7 @@ router.post('/createCheckoutSession', authMiddleware, async (req, res) => {
 router.post('/createPortalSession', authMiddleware, async (req, res) => {
     const data = { ...req.query, ...req.body.data };
     try {
-        const user = await db.getUser(data.uid);
+        const user = await db.getUser(data.uid, ['stripeCustomerId']);
         const session = await stripe.billingPortal.sessions.create({
             customer: user.stripeCustomerId,
             return_url: `${process.env.APP_URL}/settings?tab=billing`
