@@ -3,6 +3,8 @@ const {
   Model
 } = require('sequelize');
 const { decrypt } = require('../lib/crypto');
+const { trigger } = require('../lib/pusher');
+
 module.exports = (sequelize, DataTypes) => {
   class Account extends Model {
     /**
@@ -26,13 +28,21 @@ module.exports = (sequelize, DataTypes) => {
     privateKey: {
          type: DataTypes.STRING,
          get() {
-             return this.getDataValue('privateKey') ? decrypt(this.getDataValue('privateKey')) : null;
+            return this.getDataValue('privateKey') ? decrypt(this.getDataValue('privateKey')) : null;
          }
     }
   }, {
     sequelize,
     modelName: 'Account',
-    tableName: 'accounts'
+    tableName: 'accounts',
+    hooks: {
+        afterUpdate(account, options) {
+            trigger(`private-accounts;workspace=${account.workspaceId}`, 'updated', null);
+        },
+        afterSave(account, options) {
+            trigger(`private-accounts;workspace=${account.workspaceId}`, 'updated', null);
+        }
+    }
   });
   return Account;
 };

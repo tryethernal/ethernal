@@ -551,6 +551,7 @@ module.exports = (sequelize, DataTypes) => {
                 await sequelize.models.Transaction.destroy({ where: { workspaceId: this.id }}, { transaction });
                 await sequelize.models.Block.destroy({ where: { workspaceId: this.id }}, { transaction });
                 await sequelize.models.Contract.destroy({ where: { workspaceId: this.id }}, { transaction });
+                await sequelize.models.Account.destroy({ where: { workspaceId: this.id }}, { transaction });
             });
         } catch(error) {
             console.log(error);

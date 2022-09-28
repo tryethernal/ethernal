@@ -46,7 +46,7 @@ router.post('/:address/privateKey', authMiddleware, async (req, res) => {
         res.sendStatus(200);
     } catch(error) {
         console.log(error);
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
