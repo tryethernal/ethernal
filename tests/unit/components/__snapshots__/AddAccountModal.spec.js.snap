@@ -120,11 +120,7 @@ exports[`AddAccountModal.vue Should display an error message if the private key 
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title headline">Add Account</div>
           <div class="v-card__text">
-            <div role="alert" class="v-alert v-sheet theme--dark error">
-              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark"></i>
-                <div class="v-alert__content">Invalid private key.</div>
-              </div>
-            </div>
+            <div role="alert" class="v-alert v-sheet theme--dark error">Invalid private key.</div>
             <!---->
             <div>Enter a private key to add the corresponding account.</div>
             <div>

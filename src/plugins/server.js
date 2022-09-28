@@ -64,7 +64,7 @@ const serverFunctions = {
         try {
             const rpcProvider = new serverFunctions._getProvider(data.rpcServer);
             const accounts = await rpcProvider.listAccounts();
-            return accounts.map((acc) => acc.toLowerCase());
+            return accounts.map(acc => acc.toLowerCase());
         } catch(error) {
             console.log(error);
             var reason = error.reason || error.message || "Can't connect to the server";
@@ -153,9 +153,9 @@ const serverFunctions = {
                 gasPrice: data.options.gasPrice,
                 value: data.options.value,
             });
-
             if (data.options.privateKey) {
-                signer = new ethers.Wallet(data.options.privateKey, provider);
+                // Bad hack due to some issue in how we use the crypto library that result in some junk being appended to the decrypted pk
+                signer = new ethers.Wallet(data.options.privateKey.slice(0, 66), provider);
             }
             else {
                 signer = provider.getSigner(data.options.from);
