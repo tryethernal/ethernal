@@ -77,8 +77,12 @@ export default {
                         bus.$emit('syncAccounts');
                     }
                     else if ((res[0] || res[1]) && accountAddress) {
-                        this.successMessage = 'Account added.';
-                        bus.$emit('syncAccounts');
+                        this.server.getAccountBalance(accountAddress)
+                            .then(rawBalance => {
+                                const balance = ethers.BigNumber.from(rawBalance).toString();
+                                this.server.syncBalance(accountAddress, balance)
+                                this.successMessage = 'Account added.';
+                            });
                     }
                     else
                         this.errorMessage = `Couldn't unlockAccount, make sure either <code>evm_unlockUnknownAccount</code> or <code>hardhat_impersonateAccount</code> is supported by your endpoint.`
