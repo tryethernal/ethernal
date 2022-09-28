@@ -19,6 +19,12 @@ export const pusherPlugin = {
         });
 
         Vue.prototype.pusher = {
+            onUpdatedAccount(handler, context) {
+                const workspaceId = store.getters.currentWorkspace.id;
+                const channel = pusher.subscribe(`private-accounts;workspace=${workspaceId}`);
+                return channel.bind('updated', handler, context);
+            },
+
             onNewFailedTransactions(handler, context) {
                 const workspaceId = store.getters.currentWorkspace.id;
                 const channel = pusher.subscribe(`private-failedTransactions;workspace=${workspaceId}`);

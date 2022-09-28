@@ -23,8 +23,8 @@ describe('AddAccountModal.vue', () => {
     });
 
     it('Should be able to add an account from an address', async () => {
-        const impersonateAccountMock = jest.spyOn(helper.mocks.server, 'impersonateAccount')
-            .mockResolvedValue(true);
+        const impersonateAccountMock = jest.spyOn(helper.mocks.server, 'impersonateAccount').mockResolvedValue(true);
+        jest.spyOn(helper.mocks.server, 'getAccountBalance').mockResolvedValue('100000');
 
         const wrapper = helper.mountFn(AddAccountModal);
 
