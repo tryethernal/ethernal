@@ -4,7 +4,7 @@
         <v-card-title class="headline">Add Account</v-card-title>
 
         <v-card-text>
-            <v-alert type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
+            <v-alert type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
             <v-alert type="success" v-if="successMessage">{{ successMessage }}</v-alert>
             <div>Enter a private key to add the corresponding account.</div>
             <div>
@@ -47,10 +47,10 @@ export default {
             return new Promise((resolve, reject) => {
                 this.resolve = resolve;
                 this.reject = reject;
-            })
+            });
         },
         close() {
-            this.resolve();
+            this.resolve(!!this.successMessage);
             this.reset();
         },
         unlockAccount(privateKey, accountAddress) {
@@ -71,12 +71,17 @@ export default {
                     promises.push(this.server.impersonateAccount(this.currentWorkspace.rpcServer, accountAddress));
                 }
 
-                Promise.all(promises).then(() => {
-                    if (walletAddress)
-                        bus.$emit('syncAccount', walletAddress);
-                    if (this.accountAddress)
-                        bus.$emit('syncAccount', this.accountAddress);
-                    this.successMessage = 'Account added.';
+                Promise.all(promises).then(res => {
+                    if (res[0] && walletAddress) {
+                        this.successMessage = 'Account added.';
+                        bus.$emit('syncAccounts');
+                    }
+                    else if ((res[0] || res[1]) && accountAddress) {
+                        this.successMessage = 'Account added.';
+                        bus.$emit('syncAccounts');
+                    }
+                    else
+                        this.errorMessage = `Couldn't unlockAccount, make sure either <code>evm_unlockUnknownAccount</code> or <code>hardhat_impersonateAccount</code> is supported by your endpoint.`
                 })
                 .catch(console.log)
                 .finally(() => this.loading = false);

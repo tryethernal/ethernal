@@ -2,6 +2,7 @@ jest.mock('../../../src/plugins/pusher', () => ({
     pusherPlugin: {
         install(Vue) {
             Vue.prototype.pusher = {
+                onUpdatedAccount: jest.fn(),
                 onNewFailedTransactions: jest.fn(),
                 onNewProcessableTransactions: jest.fn(),
                 onNewBlock: jest.fn(),
