@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.1] - 2022-09-28
+### Fixed
+- Account unlocking using private keys
+- Resetting a workspace now also clears accounts
+
 ## [2.9.0] - 2022-09-26
 ### Removed
 - Firebase Functions dependencies. Should make the app faster overall 🚀
