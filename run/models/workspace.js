@@ -545,13 +545,17 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
-    async reset() {
+    async reset(hourInterval) {
         try {
+            const filter = { where: { workspaceId: this.id }};
+            if (hourInterval)
+                filter['where']['createdAt'] = { [Op.lt]: sequelize.literal(`NOW() - interval '${hourInterval} hour'`)};
+
             return sequelize.transaction(async (transaction) => {
-                await sequelize.models.Transaction.destroy({ where: { workspaceId: this.id }}, { transaction });
-                await sequelize.models.Block.destroy({ where: { workspaceId: this.id }}, { transaction });
-                await sequelize.models.Contract.destroy({ where: { workspaceId: this.id }}, { transaction });
-                await sequelize.models.Account.destroy({ where: { workspaceId: this.id }}, { transaction });
+                await sequelize.models.Transaction.destroy(filter, { transaction });
+                await sequelize.models.Block.destroy(filter, { transaction });
+                await sequelize.models.Contract.destroy(filter, { transaction });
+                await sequelize.models.Account.destroy(filter, { transaction });
             });
         } catch(error) {
             console.log(error);
@@ -646,7 +650,8 @@ module.exports = (sequelize, DataTypes) => {
     userId: DataTypes.INTEGER,
     tracing: DataTypes.STRING,
     alchemyIntegrationEnabled: DataTypes.BOOLEAN,
-    isRemote: DataTypes.BOOLEAN
+    isRemote: DataTypes.BOOLEAN,
+    dataRetentionLimit: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Workspace',
