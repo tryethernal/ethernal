@@ -115,6 +115,9 @@ router.post('/', authMiddleware, async (req, res) => {
 
         const user = await db.getUser(data.uid, ['defaultDataRetentionLimit']);
 
+        if (!user)
+            throw new Error('[POST /api/workspaces] Could not find user');
+
         const filteredWorkspaceData = stringifyBns(sanitize({
             name: data.name,
             chain: data.workspaceData.chain,
