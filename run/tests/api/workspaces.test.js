@@ -76,13 +76,15 @@ describe(`POST ${BASE_URL}`, () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('Should return 200 status code', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ defaultDataRetentionLimit: 7 });
         request.post(`${BASE_URL}`)
             .send({ data: { name: 'My Workspace', workspaceData: { notvalid: 'ok', rpcServer: 'http://localhost:8545' }}})
             .expect(200)
             .then(() => {
                 expect(db.createWorkspace).toHaveBeenCalledWith('123', {
                     name: 'My Workspace',
-                    rpcServer: 'http://localhost:8545'
+                    rpcServer: 'http://localhost:8545',
+                    dataRetentionLimit: 7
                 });
                 expect(enqueueTask).toHaveBeenCalledWith('processWorkspace',
                     { uid: '123', workspace: 'My Workspace', secret: '123' }

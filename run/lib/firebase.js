@@ -1282,20 +1282,21 @@ const updateWorkspaceSettings = async (userId, workspace, settings) => {
     }
 };
 
-const resetWorkspace = async (userId, workspace) => {
+const resetWorkspace = async (userId, workspace, hourInterval) => {
     if (!userId || !String(workspace)) throw '[resetWorkspace] Missing parameter';
 
     try {
         const user = await User.findByAuthIdWithWorkspace(userId, String(workspace));
         if (user && user.workspaces.length)
-            await user.workspaces[0].reset();
+            await user.workspaces[0].reset(hourInterval);
     } catch(error) {
         writeLog({
             functionName: 'firebase.resetWorkspace',
             error: error,
             extra: {
                 userId: String(userId),
-                workspace: workspace
+                workspace: workspace,
+                hourInterval: hourInterval
             }
         });
         throw error;
