@@ -4,7 +4,6 @@ const db = require('../lib/firebase');
 module.exports = async (req, res, next) => {
     const data = { ...req.body.data, ...req.query };
     try {
-        console.log(data)
         if (data.secret === process.env.AUTH_SECRET)
             next();
         else
