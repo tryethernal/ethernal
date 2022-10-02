@@ -96,7 +96,8 @@ const workspace = {
 };
 
 const Workspace = {
-    findByPk: jest.fn().mockResolvedValue(workspace)
+    findByPk: jest.fn().mockResolvedValue(workspace),
+    findAll: jest.fn()
 };
 
 module.exports = {
