@@ -8,12 +8,14 @@ const router = express.Router();
 router.post('/', taskAuthMiddleware, async (req, res) => {
     try {
         const data = req.body.data;
-        if (!data.workspace) {
+        if (!data.userId || !data.workspace) {
             console.log(data);
-            throw '[POST /tasks/resetWorkspace] Missing parameter.';
+            throw '[POST /tasks/enforceDataRetentionForWorkspace] Missing parameter.';
         }
 
-        await db.getWorkspaceContracts(data.uid, data.workspace);
+        const workspace = await db.getWorkspaceByName(data.userId, data.workspace);
+        if (workspace.dataRetentionLimit > 0)
+            await db.resetWorkspace(data.userId, data.workspace, workspace.dataRetentionLimit);
 
         res.sendStatus(200);
     } catch(error) {

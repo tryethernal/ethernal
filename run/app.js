@@ -7,6 +7,7 @@ const authMiddleware = require('./middlewares/auth');
 const api = require('./api');
 const tasks = require('./tasks');
 const webhooks = require('./webhooks');
+const jobs = require('./jobs');
 
 initializeApp();
 const app = express();
@@ -28,5 +29,6 @@ if (process.env.CORS_DOMAIN)
 app.use('/api', api);
 app.use('/tasks', tasks);
 app.use('/webhooks', webhooks);
+app.use('/jobs', jobs);
 
 module.exports = app;
