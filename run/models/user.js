@@ -113,7 +113,7 @@ module.exports = (sequelize, DataTypes) => {
             defaultAccount: data.settings && data.settings.defaultAccount,
             gasLimit: data.settings && data.settings.gasLimit,
             gasPrice: data.settings && data.settings.gasPrice,
-            alchemyIntegrationEnabled: data.integrations && data.integrations.indexOf('alchemy') > -1
+            dataRetentionLimit: data.dataRetentionLimit
         }));
     }
   }
@@ -127,6 +127,7 @@ module.exports = (sequelize, DataTypes) => {
             });
         }
     },
+    defaultDataRetentionLimit: DataTypes.INTEGER,
     apiKey: DataTypes.STRING,
     firebaseUserId: DataTypes.STRING,
     email: DataTypes.STRING,

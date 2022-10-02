@@ -7,8 +7,8 @@
                 color="primary"
             ></v-progress-circular>
         </v-overlay>
-        <v-system-bar v-html="banner" v-if="isPublicExplorer && banner" class="primary color--text text-center font-weight-bold" color="primary" app window>
-        </v-system-bar>
+        <v-system-bar v-html="banner" v-if="isPublicExplorer && banner" class="primary color--text text-center font-weight-bold" color="primary" app window></v-system-bar>
+        <v-system-bar v-html="ethernalBanner" v-if="!isPublicExplorer && ethernalBanner" class="white--text text-center font-weight-bold" color="primary" app window></v-system-bar>
         <v-navigation-drawer :style="styles" app permanent v-if="canDisplaySides">
             <img :src="logo" alt="logo" class="custom-logo" v-if="logo" />
             <v-list-item v-else>
@@ -198,7 +198,8 @@ export default {
         links: [],
         banner: null,
         isRemote: false,
-        isOverlayActive: false
+        isOverlayActive: false,
+        ethernalBanner: 'For free plan users, data will soon expire after 7 days.&nbsp;<a href="http://blog.tryethernal.com/" target="_blank">Read More</a>'
     }),
     created: function() {
         this.isOverlayActive = true;
