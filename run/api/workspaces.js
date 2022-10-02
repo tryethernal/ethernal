@@ -113,13 +113,16 @@ router.post('/', authMiddleware, async (req, res) => {
             throw new Error('[POST /api/workspaces] Missing parameter');
         }
 
+        const user = await db.getUser(data.uid, ['defaultDataRetentionLimit']);
+
         const filteredWorkspaceData = stringifyBns(sanitize({
             name: data.name,
             chain: data.workspaceData.chain,
             networkId: data.workspaceData.networkId,
             rpcServer: data.workspaceData.rpcServer,
             settings: data.workspaceData.settings,
-            public: data.workspaceData.public
+            public: data.workspaceData.public,
+            dataRetentionLimit: user.defaultDataRetentionLimit
         }));
 
         const workspace = await db.createWorkspace(data.uid, filteredWorkspaceData);

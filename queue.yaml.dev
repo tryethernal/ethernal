@@ -17,3 +17,4 @@ queue:
 - name: batchBlockSync
 - name: secondaryBlockSync
 - name: enforceDataRetentionForWorkspace
+- name: initializeDefaultDataRetention
