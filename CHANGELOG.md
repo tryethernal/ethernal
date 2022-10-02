@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.2] - 2022-10-01
+### Changed
+- Data retention policy for free plan users. [Read More](https://blog.tryethernal.com)
+
 ## [2.9.1] - 2022-09-28
 ### Fixed
 - Account unlocking using private keys
