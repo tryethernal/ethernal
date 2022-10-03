@@ -29,6 +29,11 @@ exports[`Billing.vue Should display the button to manage the subscription when t
             1 workspace
             <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            7 days data retention
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
         </div>
       </div>
     </div>
@@ -51,8 +56,8 @@ exports[`Billing.vue Should display the button to manage the subscription when t
             <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <!---->
-
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited data retention
             <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
         </div>
@@ -121,6 +126,11 @@ exports[`Billing.vue Should display the button to start the subscription when th
             1 workspace
             <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
+          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            7 days data retention
+            <span class="v-tooltip v-tooltip--top"><!----></span>
+          </div>
         </div>
       </div>
     </div>
@@ -144,8 +154,8 @@ exports[`Billing.vue Should display the button to start the subscription when th
             <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
           <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <!---->
-
+            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+            Unlimited data retention
             <span class="v-tooltip v-tooltip--top"><!----></span>
           </div>
         </div>
