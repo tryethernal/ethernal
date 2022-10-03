@@ -468,29 +468,29 @@ const getUnprocessedContracts = async (userId, workspace) => {
 const isUserPremium = async (userId) => {
     if (!userId) throw '[isUserPremium] Missing parameter';
 
-    const user = await getUser(userId);
+    const user = await User.findOne({ firebaseUserId: userId });
     return user.plan == 'premium';
 };
 
 const canUserSyncContract = async (userId, workspace) => {
     if (!userId) throw '[canUserSyncContract] Missing parameter';
 
-    // try {
-    //     const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-    //     if (user.isPremium)
-    //         return true;
-    //     const contracts = await user.workspaces[0].getContracts();
-    //     if (contracts.length >= 10)
-    //         return false;
-    // } catch(error) {
-    //     writeLog({
-    //         log: 'postgresLogs',
-    //         functionName: 'firebase.canUserSyncContract',
-    //         message: (error.original && error.original.message) || error,
-    //         detail: error.original && error.original.detail,
-    //         uid: userId
-    //     });
-    // }
+    try {
+        const user = await User.findByAuthIdWithWorkspace(userId, workspace);
+        if (user.isPremium)
+            return true;
+        const contracts = await user.workspaces[0].getContracts();
+        if (contracts.length >= 10)
+            return false;
+    } catch(error) {
+        writeLog({
+            log: 'postgresLogs',
+            functionName: 'firebase.canUserSyncContract',
+            message: (error.original && error.original.message) || error,
+            detail: error.original && error.original.detail,
+            uid: userId
+        });
+    }
 
     const premium = await isUserPremium(userId);
     if (premium) return true;
