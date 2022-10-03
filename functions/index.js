@@ -141,12 +141,6 @@ exports.batchBlockSyncTask = functions.runWith({ timeoutSeconds: 540, memory: '2
                 blockNumber: i,
                 secret: functions.config().ethernal.auth_secret
             }, `${functions.config().ethernal.root_tasks}/tasks/blockSync`));
-
-            promises.push(enqueueTask('cloudFunctionBlockSync', {
-                userId: data.userId,
-                workspace: data.workspace,
-                blockNumber: i
-            }, `${functions.config().ethernal.root_functions}/blockSyncTask`));
             await Promise.all(promises);
         }
     } catch(error) {
@@ -163,8 +157,6 @@ exports.syncFailedTransactionError = functions.https.onCall(async (data, context
                 console.log(data);
                 throw new functions.https.HttpsError('invalid-argument', '[syncFailedTransactionError] Missing parameter.');
             }
-
-            await db.storeFailedTransactionError(context.auth.uid, data.workspace, data.transaction, data.error);
 
             await enqueueTask('migration', {
                 uid: context.auth.uid,
@@ -263,11 +255,6 @@ exports.processTransaction = functions.https.onCall(async (data, context) => {
                 throw new functions.https.HttpsError('invalid-argument', '[processTransaction] Missing parameter.');
             }
 
-            const transaction = await db.getTransaction(context.auth.uid, data.workspace, data.transaction);
-
-            if (transaction)
-                await transactionsLib.processTransactions(context.auth.uid, data.workspace, [transaction]);
-
             await enqueueTask('migration', {
                 uid: context.auth.uid,
                 workspace: data.workspace,
@@ -293,8 +280,6 @@ exports.syncTokenBalanceChanges = functions.https.onCall(async (data, context) =
                 throw new functions.https.HttpsError('invalid-argument', '[syncTokenBalanceChanges] Missing parameter.');
             }
 
-            await db.storeTokenBalanceChanges(context.auth.uid, data.workspace, data.transaction, data.tokenBalanceChanges);
-
             await enqueueTask('migration', {
                 uid: context.auth.uid,
                 workspace: data.workspace,
@@ -315,20 +300,6 @@ exports.resetWorkspace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' 
     return await psqlWrapper(async () => {
         if (!context.auth)
             throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
-
-        const rootPath = `users/${context.auth.uid}/workspaces/${data.workspace}`;
-        const paths = ['accounts', 'blocks', 'contracts', 'transactions', 'stats'].map(collection => `${rootPath}/${collection}`);
-
-        for (var i = 0; i < paths.length; i++) {
-            await firebaseTools.firestore.delete(paths[i], {
-                project: process.env.GCLOUD_PROJECT,
-                recursive: true,
-                yes: true,
-                token: functions.config().fb.token
-            });
-        }
-
-        await db.resetDatabaseWorkspace(context.auth.uid, data.workspace);
 
         await enqueueTask('migration', {
             uid: context.auth.uid,
@@ -351,8 +322,6 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
                 throw new functions.https.HttpsError('invalid-argument', '[syncBlock] Missing block parameter.');
 
             var syncedBlock = stringifyBns(sanitize(block));
-
-            const storedBlock = await db.storeBlock(context.auth.uid, data.workspace, syncedBlock);
 
             await enqueueTask('migration', {
                 block: data.block,
@@ -430,9 +399,6 @@ exports.blockSyncTask = functions.https.onCall(async (data, context) => {
             if (!block)
                 throw `Couldn't find block #${data.blockNumber}`;
 
-            const syncedBlock = sanitize(stringifyBns({ ...block, transactions: block.transactions.map(tx => stringifyBns(tx)) }));
-            const storedBlock = await db.storeBlock(data.userId, data.workspace, syncedBlock);
-
             for (let i = 0; i < block.transactions.length; i++) {
                 await enqueueTask('cloudFunctionTransactionSync', {
                     userId: data.userId,
@@ -457,18 +423,12 @@ exports.serverSideBlockSync = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError('invalid-argument', '[serverSideBlockSync] Missing parameter.');
         }
         const secret = functions.config().ethernal.auth_secret;
-        await enqueueTask('cloudRunBlockSync', {
+        return enqueueTask('cloudRunBlockSync', {
             userId: context.auth.uid,
             workspace: data.workspace,
             blockNumber: data.blockNumber,
             secret: secret
         }, `${functions.config().ethernal.root_tasks}/tasks/blockSync`);
-
-        return enqueueTask('cloudFunctionBlockSync', {
-            userId: context.auth.uid,
-            workspace: data.workspace,
-            blockNumber: data.blockNumber
-        }, `${functions.config().ethernal.root_functions}/blockSyncTask`);
     } catch(error) {
         console.log(error);
         var reason = error.reason || error.message || 'Server error. Please retry.';
@@ -543,36 +503,6 @@ exports.syncTrace = functions.runWith({ timeoutSeconds: 540, memory: '2GB' }).ht
                 throw new functions.https.HttpsError('invalid-argument', '[syncTrace] Missing parameter.')
             }
 
-            const trace = [];
-            for (const step of data.steps) {
-                if (['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2'].indexOf(step.op.toUpperCase()) > -1) {
-                    let contractRef;                
-                    const canSync = await db.canUserSyncContract(context.auth.uid, data.workspace);
-
-                    if (canSync) {
-                        const contractData = sanitize({
-                            address: step.address.toLowerCase(),
-                            hashedBytecode: step.contractHashedBytecode
-                        });
-
-                        await db.storeContractData(
-                            context.auth.uid,
-                            data.workspace,
-                            step.address,
-                            contractData
-                        );
-
-                        contractRef = db.getContractRef(context.auth.uid, data.workspace, step.address);
-                    }
-
-                    trace.push(sanitize({ ...step, contract: contractRef }));
-                }
-            }
-
-            await db.storeTrace(context.auth.uid, data.workspace, data.txHash, trace);
-
-            analytics.track(context.auth.uid, 'Trace Sync');
-
             await enqueueTask('migration', {
                 uid: context.auth.uid,
                 workspace: data.workspace,
@@ -600,15 +530,6 @@ exports.syncContractData = functions.https.onCall(async (data, context) => {
                 console.log(data);
                 throw new functions.https.HttpsError('invalid-argument', '[syncContractData] Missing parameter.');
             }
-
-            const canSync = await db.canUserSyncContract(uid, data.workspace);
-            const existingContract = await db.getContractData(uid, data.workspace, data.address);
-
-            if (existingContract || canSync) {
-                await db.storeContractData(uid, data.workspace, data.address, sanitize({ verificationStatus: data.verificationStatus, address: data.address, name: data.name, abi: data.abi, watchedPaths: data.watchedPaths }));
-            }
-            else
-                throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
 
             await enqueueTask('migration', {
                 uid: uid,
@@ -640,36 +561,6 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
                 throw new functions.https.HttpsError('invalid-argument', '[syncTransaction] Missing parameter.');
             }
 
-            const promises = [];
-            const transaction = data.transaction;
-            const receipt = data.transactionReceipt;
-
-            const sTransactionReceipt = receipt ? stringifyBns(sanitize(receipt)) : null;
-            const sTransaction = stringifyBns(sanitize(transaction));
-
-            const txSynced = sanitize({
-                ...sTransaction,
-                receipt: sTransactionReceipt,
-                error: '',
-                timestamp: data.block.timestamp,
-                tokenBalanceChanges: {},
-                tokenTransfers: []
-            });
-
-            const storedTx = await db.storeTransaction(context.auth.uid, data.workspace, txSynced);
-
-            if (!txSynced.to && sTransactionReceipt) {
-                const canSync = await db.canUserSyncContract(context.auth.uid, data.workspace);
-
-                if (canSync)
-                    await db.storeContractData(context.auth.uid, data.workspace, sTransactionReceipt.contractAddress, {
-                        address: sTransactionReceipt.contractAddress,
-                        timestamp: data.block.timestamp
-                    });
-            }
-
-            await transactionsLib.processTransactions(context.auth.uid, data.workspace, [txSynced]);
-
             await enqueueTask('migration', {
                 uid: context.auth.uid,
                 workspace: data.workspace,
@@ -679,168 +570,7 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
                 secret: functions.config().ethernal.auth_secret
             }, `${functions.config().ethernal.root_tasks}/api/transactions`);
 
-           return { txHash: txSynced.hash };
-        } catch(error) {
-            console.log(error);
-            var reason = error.reason || error.message || 'Server error. Please retry.';
-            throw new functions.https.HttpsError(error.code || 'unknown', reason);
-        }
-    }, data, context);
-});
-
-exports.enableAlchemyWebhook = functions.https.onCall(async (data, context) => {
-    return await psqlWrapper(async () => {
-        if (!context.auth)
-            throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
-
-        try {
-            if (!data.workspace) {
-                console.log(data);
-                throw new functions.https.HttpsError('invalid-argument', '[enableAlchemyWebhook] Missing parameter.');
-            }
-
-            const user = await db.getUser(context.auth.uid);
-            await db.addIntegration(context.auth.uid, data.workspace, 'alchemy');
-
-            const apiKey = decrypt(user.apiKey);
-
-            const token = encode({
-                uid: context.auth.uid,
-                workspace: data.workspace,
-                apiKey: apiKey
-            });
-
-            await enqueueTask('migration', {
-                uid: context.auth.uid,
-                workspace: data.workspace,
-                secret: functions.config().ethernal.auth_secret
-            }, `${functions.config().ethernal.root_tasks}/api/workspaces/enableAlchemy`);
-
-           return { token: token };
-        } catch(error) {
-            console.log(error);
-            var reason = error.reason || error.message || 'Server error. Please retry.';
-            throw new functions.https.HttpsError(error.code || 'unknown', reason);
-        }
-    }, data, context);
-});
-
-exports.enableWorkspaceApi = functions.https.onCall(async (data, context) => {
-    return await psqlWrapper(async () => {
-        if (!context.auth)
-            throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
-
-        try {
-            if (!data.workspace) {
-                console.log(data);
-                throw new functions.https.HttpsError('invalid-argument', '[enableWorkspaceApi] Missing parameter.');
-            }
-
-            const user = await db.getUser(context.auth.uid);
-
-            await db.addIntegration(context.auth.uid, data.workspace, 'api');
-
-            const apiKey = decrypt(user.apiKey);
-
-            const token = encode({
-                uid: context.auth.uid,
-                workspace: data.workspace,
-                apiKey: apiKey
-            });
-            
-            await enqueueTask('migration', {
-                uid: context.auth.uid,
-                workspace: data.workspace,
-                secret: functions.config().ethernal.auth_secret
-            }, `${functions.config().ethernal.root_tasks}/api/workspaces/enableApi`);
-
-           return { token: token };
-        } catch(error) {
-            console.log(error);
-            var reason = error.reason || error.message || 'Server error. Please retry.';
-            throw new functions.https.HttpsError(error.code || 'unknown', reason);
-        }
-    }, data, context);
-});
-
-exports.getWorkspaceApiToken = functions.https.onCall(async (data, context) => {
-    return await psqlWrapper(async () => {
-        if (!context.auth)
-            throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
-
-        try {
-            if (!data.workspace) {
-                console.log(data);
-                throw new functions.https.HttpsError('invalid-argument', '[getWorkspaceApiToken] Missing parameter.');
-            }
-
-            const user = await db.getUser(context.auth.uid);
-
-            const apiKey = decrypt(user.apiKey);
-
-            const token = encode({
-                uid: context.auth.uid,
-                workspace: data.workspace,
-                apiKey: apiKey
-            });
-
-           return { token: token };
-        } catch(error) {
-            console.log(error);
-            var reason = error.reason || error.message || 'Server error. Please retry.';
-            throw new functions.https.HttpsError(error.code || 'unknown', reason);
-        }
-    }, data, context);
-});
-
-exports.disableAlchemyWebhook = functions.https.onCall(async (data, context) => {
-    return await psqlWrapper(async () => {
-        if (!context.auth)
-            throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
-
-        try {
-            if (!data.workspace) {
-                console.log(data);
-                throw new functions.https.HttpsError('invalid-argument', '[disableAlchemyWebhook] Missing parameter.');
-            }
-
-            await db.removeIntegration(context.auth.uid, data.workspace, 'alchemy');
-
-            await enqueueTask('migration', {
-                uid: context.auth.uid,
-                workspace: data.workspace,
-                secret: functions.config().ethernal.auth_secret
-            }, `${functions.config().ethernal.root_tasks}/api/workspaces/disableAlchemy`);
-
-           return { success: true };
-        } catch(error) {
-            console.log(error);
-            var reason = error.reason || error.message || 'Server error. Please retry.';
-            throw new functions.https.HttpsError(error.code || 'unknown', reason);
-        }
-    }, data, context);
-});
-
-exports.disableWorkspaceApi = functions.https.onCall(async (data, context) => {
-    return await psqlWrapper(async () => {
-        if (!context.auth)
-            throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
-
-        try {
-            if (!data.workspace) {
-                console.log(data);
-                throw new functions.https.HttpsError('invalid-argument', '[disableWorkspaceApi] Missing parameter.');
-            }
-
-            await db.removeIntegration(context.auth.uid, data.workspace, 'api');
-
-            await enqueueTask('migration', {
-                uid: context.auth.uid,
-                workspace: data.workspace,
-                secret: functions.config().ethernal.auth_secret
-            }, `${functions.config().ethernal.root_tasks}/api/workspaces/disableApi`);
-
-           return { success: true };
+           return { txHash: data.transaction.hash };
         } catch(error) {
             console.log(error);
             var reason = error.reason || error.message || 'Server error. Please retry.';
@@ -859,17 +589,6 @@ exports.importContract = functions.https.onCall(async (data, context) => {
                 console.log(data);
                 throw new functions.https.HttpsError('invalid-argument', '[importContract] Missing parameter.');
             }
-            const workspace = await db.getWorkspaceByName(context.auth.uid, data.workspace);
-           
-            const canSync = await db.canUserSyncContract(context.auth.uid, data.workspace, data.contractAddress);
-
-            if (canSync)
-                await db.storeContractData(context.auth.uid, data.workspace, data.contractAddress, {
-                    address: data.contractAddress,
-                    imported: true
-                });
-            else
-                throw new functions.https.HttpsError('permission-denied', 'Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
 
             await enqueueTask('migration', {
                 uid: context.auth.uid,
@@ -878,7 +597,6 @@ exports.importContract = functions.https.onCall(async (data, context) => {
                 secret: functions.config().ethernal.auth_secret
             }, `${functions.config().ethernal.root_tasks}/api/contracts/${data.contractAddress}`);
 
-           analytics.track(context.auth.uid, 'Contract Import');
            return { success: true };
         } catch(error) {
             console.log(error);
@@ -887,37 +605,6 @@ exports.importContract = functions.https.onCall(async (data, context) => {
         }
     }, data, context);
 });
-
-exports.setPrivateKey = functions.https.onCall(async (data, context) => {
-    return await psqlWrapper(async () => {
-        if (!context.auth)
-            throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
-
-        try {
-            if (!data.workspace || !data.account || !data.privateKey) {
-                console.log(data);
-                throw new functions.https.HttpsError('invalid-argument', '[setPrivateKey] Missing parameter.');
-            }
-
-            const encryptedPk = encrypt(data.privateKey);
-
-            await db.storeAccountPrivateKey(context.auth.uid, data.workspace, data.account, encryptedPk)
-
-            await enqueueTask('migration', {
-                uid: context.auth.uid,
-                workspace: data.workspace,
-                privateKey: data.privateKey,
-                secret: functions.config().ethernal.auth_secret
-            }, `${functions.config().ethernal.root_tasks}/api/accounts/${data.account}/privateKey`);
-
-            return { success: true };
-        } catch(error) {
-            console.log(error);
-            var reason = error.reason || error.message || 'Server error. Please retry.';
-            throw new functions.https.HttpsError(error.code || 'unknown', reason);
-        }
-    }, data, context);
-})
 
 exports.getAccount = functions.https.onCall(async (data, context) => {
     return await psqlWrapper(async () => {
@@ -1017,7 +704,6 @@ exports.setCurrentWorkspace = functions.https.onCall(async (data, context) => {
                 throw new functions.https.HttpsError('invalid-argument', '[setCurrentWorkspace] Missing parameter.');
             }
 
-            await db.setCurrentWorkspace(context.auth.uid, data.name);
             await axios.post(`${functions.config().ethernal.root_tasks}/api/workspaces/setCurrent`, {
                 data: {
                     uid: context.auth.uid,
@@ -1045,8 +731,6 @@ exports.syncBalance = functions.https.onCall(async (data, context) => {
                 console.log(data);
                 throw new functions.https.HttpsError('invalid-argument', '[syncBalance] Missing parameter.');
             }
-
-            await db.updateAccountBalance(context.auth.uid, data.workspace, data.account, data.balance);
 
             await enqueueTask('migration', {
                 uid: context.auth.uid,
@@ -1106,7 +790,6 @@ exports.updateWorkspaceSettings = functions.https.onCall(async (data, context) =
             }
 
             if (Object.keys(sanitizedParams).length !== 0) {
-                await db.updateWorkspaceSettings(context.auth.uid, data.workspace, sanitizedParams);
                 await axios.post(`${functions.config().ethernal.root_tasks}/api/workspaces/settings`, {
                     data: {
                         uid: context.auth.uid,
@@ -1126,107 +809,6 @@ exports.updateWorkspaceSettings = functions.https.onCall(async (data, context) =
     }, data, context);
 });
 
-exports.createStripeCheckoutSession = functions.https.onCall(async (data, context) => {
-    return await psqlWrapper(async () => {
-        if (!context.auth)
-            throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
-
-        try {
-            const user = await db.getUser(context.auth.uid);
-            const selectedPlan = functions.config().ethernal.plans[data.plan];
-
-            if (!selectedPlan)
-                throw new functions.https.HttpsError('invalid-argument', '[createStripeCheckoutSession] Invalid plan.');
-
-            const rootUrl = functions.config().ethernal.root_url;
-            const authUser = await admin.auth().getUser(context.auth.uid)
-
-            const session = await stripe.checkout.sessions.create(sanitize({
-                mode: 'subscription',
-                client_reference_id: user.uid,
-                customer: user.stripeCustomerId,
-                // customer_email: user.email,
-                payment_method_types: ['card'],
-                line_items: [
-                    {
-                        price: selectedPlan,
-                        quantity: 1
-                    }
-                ],
-                success_url: `${rootUrl}/settings?tab=billing&status=upgraded`,
-                cancel_url: `${rootUrl}/settings?tab=billing`
-            }));
-
-            return { url: session.url };
-        } catch(error) {
-            console.log(error);
-            var reason = error.reason || error.message || 'Server error. Please retry.';
-            throw new functions.https.HttpsError(error.code || 'unknown', reason);
-        }
-    }, data, context);
-});
-
-exports.createStripePortalSession = functions.https.onCall(async (data, context) => {
-    return await psqlWrapper(async () => {
-        if (!context.auth)
-            throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
-        
-        try {
-            const user = await db.getUser(context.auth.uid);
-            const rootUrl = functions.config().ethernal.root_url;
-            const session = await stripe.billingPortal.sessions.create({
-                customer: user.stripeCustomerId,
-                return_url: `${rootUrl}/settings?tab=billing`
-            });
-
-            return { url: session.url };
-        } catch(error) {
-            console.log(error);
-            var reason = error.reason || error.message || 'Server error. Please retry.';
-            throw new functions.https.HttpsError(error.code || 'unknown', reason);
-        }
-    }, data, context);
-});
-
-exports.removeContract = functions.https.onCall(async (data, context) => {
-    return await psqlWrapper(async () => {
-        if (!context.auth)
-            throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
-        
-        try {
-            if (!data.workspace || !data.address) {
-                console.log(data);
-                throw new functions.https.HttpsError('invalid-argument', '[removeContract] Missing parameter.');
-            }
-
-            const contractPath = `users/${context.auth.uid}/workspaces/${data.workspace}/contracts/${data.address}`;
-
-            await firebaseTools.firestore.delete(contractPath, {
-                project: process.env.GCLOUD_PROJECT,
-                recursive: true,
-                yes: true,
-                token: functions.config().fb.token
-            });
-
-            await db.removeDatabaseContractArtifacts(context.auth.uid, data.workspace, data.address);
-
-            await enqueueTask('migration', {
-                uid: context.auth.uid,
-                workspace: data.workspace,
-                secret: functions.config().ethernal.auth_secret
-            }, `${functions.config().ethernal.root_tasks}/api/contracts/${data.address}/remove`);
-
-            analytics.track(context.auth.uid, 'Remove Contract');
-
-            return { success: true };
-        } catch(error) {
-            console.log(error)
-            var reason = error.reason || error.message || 'Server error. Please retry.';
-            throw new functions.https.HttpsError(error.code || 'unknown', reason);
-        }
-    }, data, context);
-});
-
 exports.syncTransactionData = functions.https.onCall(async (data, context) => {
     return await psqlWrapper(async () => {
         if (!context.auth)
@@ -1237,13 +819,6 @@ exports.syncTransactionData = functions.https.onCall(async (data, context) => {
                 console.log(data);
                 throw new functions.https.HttpsError('invalid-argument', '[syncTransactionData] Missing parameter.');
             }
-
-            await db.storeTransactionData(
-                context.auth.uid,
-                data.workspace,
-                data.hash,
-                sanitize(data.data)
-            );
 
             await enqueueTask('migration', {
                 uid: context.auth.uid,
@@ -1259,103 +834,6 @@ exports.syncTransactionData = functions.https.onCall(async (data, context) => {
             throw new functions.https.HttpsError(error.code || 'unknown', reason);
         }
     }, data, context);
-});
-
-exports.createUser = functions.https.onCall(async (data, context) => {
-    return await psqlWrapper(async () => {
-        if (!context.auth)
-            throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
-        
-        try {
-            const apiKey = uuidAPIKey.create().apiKey;
-            const encryptedKey = encrypt(apiKey);
-
-            const authUser = await admin.auth().getUser(context.auth.uid);
-
-            const customer = await stripe.customers.create({
-                email: authUser.email
-            });
-
-            await db.createUser(context.auth.uid, {
-                email: authUser.email,
-                apiKey: encryptedKey,
-                stripeCustomerId: customer.id,
-                plan: 'free'
-            });
-
-            await axios.post(`${functions.config().ethernal.root_tasks}/api/users`, {
-                data: {
-                    uid: context.auth.uid,
-                    data: {
-                        email: authUser.email,
-                        apiKey: encryptedKey,
-                        stripeCustomerId: customer.id,
-                        plan: 'free'
-                    }
-                }
-            });
-
-            analytics.setUser(context.auth.uid, {
-                $email: authUser.email,
-                $created: (new Date()).toISOString(),
-            });
-            analytics.setSubscription(context.auth.uid, null, 'free', null, false);
-            analytics.track(context.auth.uid, 'Sign Up');
-
-            return { success: true };
-        } catch(error) {
-            console.log(error)
-            var reason = error.reason || error.message || 'Server error. Please retry.';
-            throw new functions.https.HttpsError(error.code || 'unknown', reason);
-        }
-    }, data, context);
-});
-
-exports.getUnprocessedContracts = functions.https.onCall(async (data, context) => {
-    return await psqlWrapper(async () => {
-        if (!context.auth)
-            throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
-
-        try {
-            if (!data.workspace) {
-                console.log(data);
-                throw new functions.https.HttpsError('invalid-argument', '[getUnprocessedContracts] Missing parameter.');
-            }
-
-            const contracts = await db.getUnprocessedContracts(context.auth.uid, data.workspace);
-
-            return { contracts: contracts };
-        } catch(error) {
-            console.log(error)
-            var reason = error.reason || error.message || 'Server error. Please retry.';
-            throw new functions.https.HttpsError(error.code || 'unknown', reason);        
-        }
-    }, data, context);
-});
-
-exports.getProductRoadToken = functions.https.onCall(async (data, context) => {
-    if (!context.auth)
-        throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to do this');
-
-    try {
-        if (!functions.config().product_road || !functions.config().product_road.secret)
-            return { token: null };
-
-        const prAuthSecret = functions.config().product_road.secret;
-
-        const data = {
-            email: context.auth.token.email,
-            name: context.auth.token.email
-        };
-
-        const token = jwt.sign(data, prAuthSecret, { algorithm: 'HS256' });
-
-        return { token: token };
-    } catch(error) {
-        console.log(error)
-        var reason = error.reason || error.message || 'Server error. Please retry.';
-        throw new functions.https.HttpsError(error.code || 'unknown', reason);
-    }
 });
 
 exports.api = functions.https.onRequest(api);
