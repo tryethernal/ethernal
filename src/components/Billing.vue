@@ -102,12 +102,13 @@ export default {
         plans: {
             free: [
                 '10 contracts',
-                '1 workspace'
+                '1 workspace',
+                '7 days data retention'
             ],
             premium: [
                 'Unlimited contracts',
                 'Unlimited workspaces',
-                ''
+                'Unlimited data retention'
             ],
             custom: [
                 'Custom team pricing (starting at 5 seats)',
