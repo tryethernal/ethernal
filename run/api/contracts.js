@@ -41,7 +41,7 @@ router.post('/:address', authMiddleware, async (req, res) => {
 
         const canSyncData = await db.canUserSyncContract(data.uid, data.workspace, req.params.address);
         if (!canSyncData)
-            return res.status(200).send('Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
+            throw new Error('Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
 
         await db.storeContractData(data.uid, data.workspace, req.params.address, sanitizedData);
 
