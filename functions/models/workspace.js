@@ -4,7 +4,6 @@ const {
 } = require('sequelize');
 const { sanitize } = require('../lib/utils');
 const INTEGRATION_FIELD_MAPPING = {
-    'api': 'apiEnabled',
     'alchemy': 'alchemyIntegrationEnabled'
 };
 

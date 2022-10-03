@@ -354,16 +354,6 @@ exports.syncBlock = functions.https.onCall(async (data, context) => {
 
             const storedBlock = await db.storeBlock(context.auth.uid, data.workspace, syncedBlock);
 
-            if (storedBlock && block.transactions.length === 0) {
-                const topic = pubsub.topic('bill-usage');
-                const message = sanitize({
-                    userId: context.auth.uid,
-                    timestamp: data.block.timestamp
-                });
-                const messageBuffer = Buffer.from(JSON.stringify(message), 'utf8');
-                await topic.publish(messageBuffer);
-            }
-
             await enqueueTask('migration', {
                 block: data.block,
                 workspace: data.workspace,
@@ -408,9 +398,6 @@ exports.transactionSyncTask = functions.https.onCall(async (data, context) => {
 
             const storedTx = await db.storeTransaction(data.userId, data.workspace, txSynced);
 
-            if (storedTx)
-                await publish('bill-usage', { userId: data.userId, timestamp: data.timestamp });
-
             if (!txSynced.to && sTransactionReceipt) {
                 const canSync = await db.canUserSyncContract(data.userId, data.workspace, sTransactionReceipt.contractAddress);
                 if (canSync)
@@ -446,9 +433,6 @@ exports.blockSyncTask = functions.https.onCall(async (data, context) => {
             const syncedBlock = sanitize(stringifyBns({ ...block, transactions: block.transactions.map(tx => stringifyBns(tx)) }));
             const storedBlock = await db.storeBlock(data.userId, data.workspace, syncedBlock);
 
-            if (storedBlock && block.transactions.length === 0)
-                return publish('bill-usage', { userId: data.userId, timestamp: block.timestamp });
-            
             for (let i = 0; i < block.transactions.length; i++) {
                 await enqueueTask('cloudFunctionTransactionSync', {
                     userId: data.userId,
@@ -673,16 +657,6 @@ exports.syncTransaction = functions.https.onCall(async (data, context) => {
             });
 
             const storedTx = await db.storeTransaction(context.auth.uid, data.workspace, txSynced);
-
-            if (storedTx) {
-                const topic = pubsub.topic('bill-usage');
-                const message = sanitize({
-                    userId: context.auth.uid,
-                    timestamp: data.block.timestamp
-                });
-                const messageBuffer = Buffer.from(JSON.stringify(message), 'utf8');
-                await topic.publish(messageBuffer);
-            }
 
             if (!txSynced.to && sTransactionReceipt) {
                 const canSync = await db.canUserSyncContract(context.auth.uid, data.workspace);
