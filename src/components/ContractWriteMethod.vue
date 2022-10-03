@@ -41,7 +41,7 @@
                 :label="`Value (in ${chain.token})`">
             </v-text-field>
         </div>
-        <v-btn :disabled="!active" v-if="isPublicExplorer" :loading="loading" depressed class="mt-1" :color="theme == 'dark' ? '' : 'primary'" @click="sendWithMetamask()">Query</v-btn>
+        <v-btn :disabled="!active" v-if="senderMode == 'metamask'" :loading="loading" depressed class="mt-1" :color="theme == 'dark' ? '' : 'primary'" @click="sendWithMetamask()">Query</v-btn>
         <v-btn :disabled="!active" v-else :loading="loading" depressed class="mt-1" :color="theme == 'dark' ? '' : 'primary'" @click="sendMethod()">Query</v-btn>
     </div>
 </template>
@@ -54,7 +54,7 @@ import { formatErrorFragment } from '../lib/abi';
 
 export default {
     name: 'ContractWriteMethod',
-    props: ['method', 'contract', 'options', 'signature', 'active'],
+    props: ['method', 'contract', 'options', 'signature', 'active', 'senderMode'],
     data: () => ({
         valueInEth: 0,
         params: {},
@@ -85,7 +85,7 @@ export default {
 
             const signer = provider.getSigner(this.options.from.address);
             const contract = new ethers.Contract(this.contract.address, this.contract.abi, signer);
-
+            console.log(options)
             contract.populateTransaction[this.signature](...Object.values(processedParams), options)
                 .then((transaction) => {
                     const params = {
