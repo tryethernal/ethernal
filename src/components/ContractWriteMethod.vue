@@ -85,13 +85,14 @@ export default {
 
             const signer = provider.getSigner(this.options.from.address);
             const contract = new ethers.Contract(this.contract.address, this.contract.abi, signer);
-            console.log(options)
+
             contract.populateTransaction[this.signature](...Object.values(processedParams), options)
                 .then((transaction) => {
                     const params = {
                         ...transaction,
                         value: transaction.value.toHexString()
                     };
+
                     window.ethereum.request({
                         method: 'eth_sendTransaction',
                         params: [params]

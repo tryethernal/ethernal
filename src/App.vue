@@ -30,7 +30,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link :to="'/accounts'" v-if="!isPublicExplorer">
+                <v-list-item link :to="'/accounts'" v-if="!isPublicExplorer || accounts.length || isUserAdmin">
                     <v-list-item-icon>
                         <v-icon>mdi-account-multiple</v-icon>
                     </v-list-item-icon>
@@ -374,11 +374,13 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'accounts',
             'isPublicExplorer',
             'publicExplorer',
             'currentWorkspace',
             'user',
-            'isUserLoggedIn'
+            'isUserLoggedIn',
+            'isUserAdmin'
         ]),
         isAuthPage: function() { return this.$route.path.indexOf('/auth') > -1 },
         canDisplaySides: function() { return (this.isUserLoggedIn || this.isPublicExplorer) && !this.isAuthPage }

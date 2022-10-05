@@ -27,7 +27,6 @@
 <script>
 const ethers = require('ethers');
 import { mapGetters } from 'vuex';
-import { bus } from '../bus';
 
 export default {
     name: 'AddAccountModal',
@@ -73,16 +72,14 @@ export default {
 
                 Promise.all(promises).then(res => {
                     if (res[0] && walletAddress) {
-                        this.successMessage = 'Account added.';
-                        bus.$emit('syncAccounts');
+                        this.server.syncBalance(walletAddress, '0')
+                            .then(() => this.successMessage = 'Account added.')
+                            .catch(() => this.errorMessage = 'Error while adding account.');
                     }
                     else if ((res[0] || res[1]) && accountAddress) {
-                        this.server.getAccountBalance(accountAddress)
-                            .then(rawBalance => {
-                                const balance = ethers.BigNumber.from(rawBalance).toString();
-                                this.server.syncBalance(accountAddress, balance)
-                                this.successMessage = 'Account added.';
-                            });
+                        this.server.syncBalance(accountAddress, '0')
+                            .then(() => this.successMessage = 'Account added.')
+                            .catch(() => this.errorMessage = 'Error while adding account.');
                     }
                     else
                         this.errorMessage = `Couldn't unlockAccount, make sure either <code>evm_unlockUnknownAccount</code> or <code>hardhat_impersonateAccount</code> is supported by your endpoint.`

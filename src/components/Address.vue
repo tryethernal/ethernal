@@ -66,6 +66,7 @@
                 <template>
                     <h4>Call Options</h4>
                     <Contract-Call-Options
+                        v-if="accountsLoaded"
                         :accounts="accounts"
                         :loading="!contract.abi"
                         @senderSourceChanged="onSenderSourceChanged"
@@ -256,13 +257,16 @@ export default {
         storageError: false,
         loadingTx: true,
         rpcConnectionStatus: false,
-        senderMode: null
+        senderMode: null,
+        accountsLoaded: false
     }),
     created: function() {
         if (!this.tab)
             this.tab = 'transactions';
 
         this.server.getAccountBalance(this.lowerHash).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
+        if (this.isAccountMode)
+            this.rpcConnectionStatus = true;
     },
     methods: {
         onSenderSourceChanged(newMode) {
@@ -334,17 +338,17 @@ export default {
                 });
         },
         bindTheStuff: function(hash) {
-            if (!this.isPublicExplorer) {
-                this.server.getAccounts({ page: -1 }).then(({ data: { items }}) => {
-                    if (!items.length) return;
-                    this.accounts = items;
-                });
+            this.server.getAccounts({ page: -1 })
+                .then(({ data: { items }}) => {
+                    if (items.length)
+                        this.accounts = items;
+                })
+                .finally(() => this.accountsLoaded = true);
 
-                this.server.getAddressTransactions(hash)
-                    .then(({ data: { items }}) => {
-                        this.transactionsTo = items;
-                    });
-            }
+            this.server.getAddressTransactions(hash)
+                .then(({ data: { items }}) => {
+                    this.transactionsTo = items;
+                });
 
             this.contractLoader = true;
 
@@ -389,6 +393,9 @@ export default {
             'chain',
             'isPublicExplorer'
         ]),
+        isAccountMode() {
+            return this.senderMode === 'accounts';
+        },
         isErc721() {
             return this.contract &&
                 this.contract.patterns &&

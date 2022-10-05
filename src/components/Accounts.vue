@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
-        <Add-Account-Modal ref="addAccountModalRef" />
-        <Unlock-Account-Modal ref="openUnlockAccountModalRef" />
+        <Add-Account-Modal ref="addAccountModalRef" v-if="isUserAdmin" />
+        <Unlock-Account-Modal ref="openUnlockAccountModalRef" v-if="isUserAdmin" />
         <v-data-table
             :loading="loading"
             no-data-text="No Accounts"
@@ -30,7 +30,7 @@
                 <Hash-Link :type="'address'" :hash="item.address" />
             </template>
             <template v-slot:top>
-                <v-toolbar flat dense class="py-0">
+                <v-toolbar flat dense class="py-0" v-if="isUserAdmin">
                     <v-spacer></v-spacer>
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
@@ -51,16 +51,15 @@
                 </span>
                 <span v-else>N/A</span>
             </template>
-            <template v-slot:item.actions="{ item }">
+            <template v-slot:item.actions="{ item }" v-if="isUserAdmin">
                 <a href="#" @click.prevent="openUnlockAccountModal(item)">Set Private Key</a>
             </template>
         </v-data-table>
     </v-container>
 </template>
-
 <script>
+const ethers = require('ethers');
 import { mapGetters } from 'vuex';
-import { bus } from '../bus';
 
 import AddAccountModal from './AddAccountModal';
 import UnlockAccountModal from './UnlockAccountModal';
@@ -81,28 +80,30 @@ export default {
         accounts: [],
         accountCount: 0,
         headers: [
-            {
-                text: 'Address',
-                value: 'address'
-            },
-            {
-                text: 'Balance',
-                value: 'balance'
-            },
-            {
-                text: 'Actions',
-                value: 'actions'
-            }
+            { text: 'Address', value: 'address' },
+            { text: 'Balance', value: 'balance' }
         ],
         loading: false,
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['address'], sortDesc: [true] }
     }),
     mounted() {
         this.pusher.onUpdatedAccount(() => this.getAccounts());
+        if (this.isUserAdmin)
+            this.headers.push({ text: 'Actions', value: 'actions' });
     },
     methods: {
         syncAccounts() {
-            bus.$emit('syncAccounts');
+            this.loading = true;
+            if (!this.isPublicExplorer)
+                this.server.getRpcAccounts(this.currentWorkspace.rpcServer)
+                    .then(accounts => {
+                        const promises = [];
+                        for (let i = 0; i < accounts.length; i++)
+                            promises.push(this.server.syncBalance(accounts[i], '0'));
+
+                        Promise.all(promises).then(() => this.getAccounts());
+                    })
+                    .catch(() => this.loading = false);
         },
         getAccounts(newOptions) {
             this.loading = true;
@@ -117,8 +118,17 @@ export default {
             };
             this.server.getAccounts(options)
                 .then(({ data }) => {
+                    this.$store.dispatch('updateAccounts', data.items)
                     this.accounts = data.items;
                     this.accountCount = data.total;
+                    for (let i = 0; i < this.accounts.length; i++) {
+                        this.server.getAccountBalance(this.accounts[i].address)
+                            .then(rawBalance => {
+                                const balance = ethers.BigNumber.from(rawBalance).toString();
+                                console.log(balance)
+                                this.accounts[i].balance = balance;
+                            });
+                    }
                 })
                 .catch(console.log)
                 .finally(() => this.loading = false);
@@ -127,7 +137,7 @@ export default {
             this.$refs.addAccountModalRef.open()
                 .then(refresh => {
                     if (refresh)
-                        this.syncAccounts();
+                        this.getAccounts();
                 });
         },
         openUnlockAccountModal(account) {
@@ -137,7 +147,9 @@ export default {
     computed: {
         ...mapGetters([
             'currentWorkspace',
-            'chain'
+            'chain',
+            'isPublicExplorer',
+            'isUserAdmin'
         ])
     }
 }

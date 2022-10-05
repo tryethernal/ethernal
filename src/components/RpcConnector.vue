@@ -81,12 +81,9 @@
 </template>
 
 <script>
-const ethers = require('ethers');
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
 
-import { auth } from '../plugins/firebase.js';
-import { bus } from '../bus.js';
 import { formatContractPattern } from '@/lib/utils';
 
 export default Vue.extend({
@@ -103,10 +100,7 @@ export default Vue.extend({
         isFeedbackEnabled: false,
     }),
     created: function() {
-        if (auth().currentUser && !this.isPublicExplorer) {
-            bus.$on('syncAccounts', this.syncAccounts);
-            this.syncAccounts();
-        }
+        this.getAccounts();
         this.page = this.$route.path;
 
         if (process.env.VUE_APP_ENABLE_FEEDBACK && window.feedbackfin) {
@@ -159,26 +153,9 @@ export default Vue.extend({
                 .then(({ data }) => this.server.processFailedTransactions(data, this.currentWorkspace))
                 .catch(console.log);
         },
-        syncAccounts() {
-            const promises = []
-            promises.push(this.server.getRpcAccounts(this.currentWorkspace.rpcServer));
-            promises.push(this.server.getAccounts({ page: -1 }));
-
-            Promise.all(promises)
-                .then(res => {
-                    const results = {};
-                    res[0].forEach(a => results[a] = true);
-                    res[1].data.items.forEach(a => results[a.address] = true);
-
-                    const accounts = Object.keys(results);
-                    accounts.forEach(address => {
-                        this.server.getAccountBalance(address)
-                            .then(rawBalance => {
-                                const balance = ethers.BigNumber.from(rawBalance).toString();
-                                this.server.syncBalance(address, balance);
-                            });
-                    });
-                });
+        getAccounts() {
+            this.server.getAccounts({ page: -1 })
+                .then(({ data: { items } }) => this.$store.dispatch('updateAccounts', items));
         }
     },
     watch: {

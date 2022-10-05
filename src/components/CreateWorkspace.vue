@@ -91,7 +91,14 @@ export default {
 
                 this.server.createWorkspace(name, { ...workspace, chain: this.chain })
                     .then(({ data }) => {
-                        this.$emit('workspaceCreated', { workspace: data.workspace, name: name, chain: this.chain });
+                        this.server.getRpcAccounts(rpcServer)
+                            .then(accounts => {
+                                const promises = [];
+                                for (let i = 0; i < accounts.length; i++)
+                                    promises.push(this.server.syncBalance(accounts[i], '0', name));
+                                Promise.all(promises)
+                                    .finally(() => this.$emit('workspaceCreated', { workspace: data.workspace, name: name, chain: this.chain }));
+                            });
                     })
                     .catch(() => { throw 'Error while creating workspace' })
                     .finally(() => this.loading = false);
