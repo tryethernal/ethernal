@@ -3,6 +3,7 @@ const express = require('express');
 const db = require('../lib/firebase');
 const taskAuthMiddleware = require('../middlewares/taskAuth');
 const { enqueueTask } = require('../lib/tasks');
+const writeLog = require('../lib/writeLog');
 const Workspace = db.Workspace;
 
 const router = express.Router();
@@ -26,7 +27,10 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        console.log(error);
+        writeLog({
+            functionName: 'jobs.enforceDataRetention',
+            error: error
+        });
         res.sendStatus(400);
     }
 })

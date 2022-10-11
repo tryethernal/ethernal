@@ -20,14 +20,13 @@ router.get('/:address/:tokenId/transfers', workspaceAuthMiddleware, async (req, 
 
 router.post('/:address/:tokenId/reload', workspaceAuthMiddleware, async (req, res) => {
     const data = req.body.data;
-
     try {
         if (!data.workspace || !req.params.address || req.params.tokenId === undefined || req.params.tokenId === null) {
             console.log(data);
             throw '[POST /:address/:tokenId/reload] Missing parameter.';
         }
 
-        const workspace = await db.getWorkspaceByName(data.firebaseUserId, data.workspace);
+        const workspace = await db.getWorkspaceByName(req.query.firebaseUserId, data.workspace);
 
         await enqueueTask('reloadErc721Token', {
             workspaceId: workspace.id,
