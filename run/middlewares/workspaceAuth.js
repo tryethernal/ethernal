@@ -21,7 +21,6 @@ module.exports = async (req, res, next) => {
                 const jwtData = decode(jwtToken);
 
                 const user = await db.getUser(jwtData.firebaseUserId, ['apiKey']);
-
                 if (!user)
                     throw new Error(`Invalid firebaseUserId`);
 

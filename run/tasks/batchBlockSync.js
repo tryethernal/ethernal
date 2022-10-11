@@ -38,7 +38,7 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
                     workspace: data.workspace,
                     blockNumber: i,
                     secret: process.env.AUTH_SECRET
-                }, `${process.env.CLOUD_RUN_ROOT}/tasks/secondaryBlockSync`)
+                }, `${process.env.CLOUD_RUN_ROOT}/tasks/blockSync`)
             );
             await Promise.all(promises);
         }
