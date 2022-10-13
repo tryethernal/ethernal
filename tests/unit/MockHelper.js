@@ -18,6 +18,9 @@ class MockHelper {
 
         this.storeState = {
             user: {},
+            publicExplorer: {
+                totalSupply: '1000000000000'
+            },
             currentWorkspace: {
                 isAdmin: true,
                 chain: 'ethereum',

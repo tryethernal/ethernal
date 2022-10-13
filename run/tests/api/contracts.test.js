@@ -45,11 +45,11 @@ describe(`POST ${BASE_URL}/:address`, () => {
             });
     });
 
-    it('Should fail gracefully with an error message if user cannot sync', (done) => {
+    it('Should fail with an error message if user cannot sync', (done) => {
         db.canUserSyncContract.mockResolvedValue(false);
         request.post(`${BASE_URL}/0x123`)
             .send({ data: { workspace: 'My Workspace', address: '0x123', name: 'My Contract', invalid: 'data', abi: null }})
-            .expect(200)
+            .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual('Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.')
                 expect(db.storeContractData).not.toHaveBeenCalledWith();
