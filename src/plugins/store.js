@@ -15,7 +15,8 @@ export default new Vuex.Store({
             token: null,
             chainId: null,
             domain: null,
-            theme: 'light'
+            theme: 'light',
+            totalSupply: null
         },
         currentWorkspace: {
             userId: '',

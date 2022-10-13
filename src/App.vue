@@ -241,13 +241,14 @@ export default {
         setupPublicExplorer: function({ data }) {
             if (!data)
                 return;
-
+            console.log(data);
             this.$store.dispatch('setPublicExplorerData', {
                 name: data.name,
                 token: data.token,
                 chainId: data.chainId,
                 theme: data.themes.default,
-                slug: data.slug
+                slug: data.slug,
+                totalSupply: data.totalSupply
             }).then(() => {
                 if (data.themes) {
                     const lightTheme = data.themes.light || {};
