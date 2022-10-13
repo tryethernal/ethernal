@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CreateWorkspaceModal.vue Should let the user create a new workspace 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 700px;">
+        <div class="v-card v-sheet theme--light">
+          <div class="v-card__title headline">
+            New Workspace
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button>
+          </div>
+          <createworkspace-stub existingworkspaces=""></createworkspace-stub>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;

@@ -54,13 +54,13 @@
         <template>
             <template v-if="isPublicExplorer">
                 <v-divider vertical inset class="mx-2"></v-divider>
-                {{ chain.name }}
+                {{ currentWorkspace.name }}
             </template>
             <template v-else>
                 <v-divider vertical inset class="mx-2"></v-divider>
                 Workspace: {{ currentWorkspace.name }} ({{ chain.name }})
             </template>
-            <template v-if="!isPublicExplorer">
+            <template v-if="isUserAdmin">
                 <v-divider vertical inset class="mx-2"></v-divider>
                 {{ currentWorkspace.rpcServer }}
             </template>
@@ -209,7 +209,8 @@ export default Vue.extend({
             'chain',
             'user',
             'isPublicExplorer',
-            'currentBlock'
+            'currentBlock',
+            'isUserAdmin'
         ]),
         orderedItems: function() {
             const items = {

@@ -66,7 +66,6 @@
                 <template>
                     <h4>Call Options</h4>
                     <Contract-Call-Options
-                        v-if="accountsLoaded"
                         :accounts="accounts"
                         :loading="!contract.abi"
                         @senderSourceChanged="onSenderSourceChanged"
@@ -248,7 +247,6 @@ export default {
             gasLimit: '100000',
             gasPrice: null
         },
-        accounts: [],
         storage: {},
         transactionsTo: [],
         storageLoader: true,
@@ -257,8 +255,7 @@ export default {
         storageError: false,
         loadingTx: true,
         rpcConnectionStatus: false,
-        senderMode: null,
-        accountsLoaded: false
+        senderMode: null
     }),
     created: function() {
         if (!this.tab)
@@ -338,13 +335,6 @@ export default {
                 });
         },
         bindTheStuff: function(hash) {
-            this.server.getAccounts({ page: -1 })
-                .then(({ data: { items }}) => {
-                    if (items.length)
-                        this.accounts = items;
-                })
-                .finally(() => this.accountsLoaded = true);
-
             this.server.getAddressTransactions(hash)
                 .then(({ data: { items }}) => {
                     this.transactionsTo = items;
@@ -391,7 +381,8 @@ export default {
         ...mapGetters([
             'currentWorkspace',
             'chain',
-            'isPublicExplorer'
+            'isPublicExplorer',
+            'accounts'
         ]),
         isAccountMode() {
             return this.senderMode === 'accounts';

@@ -16,7 +16,7 @@
             :headers="headers"
             @update:options="getAccounts">
             <template v-slot:no-data>
-                No Accounts Available - Try to resync them.
+                No Accounts Available
             </template>
             <template v-slot:item.address="{ item }">
                 <v-tooltip top>
@@ -94,16 +94,16 @@ export default {
     methods: {
         syncAccounts() {
             this.loading = true;
-            if (!this.isPublicExplorer)
-                this.server.getRpcAccounts(this.currentWorkspace.rpcServer)
-                    .then(accounts => {
-                        const promises = [];
-                        for (let i = 0; i < accounts.length; i++)
-                            promises.push(this.server.syncBalance(accounts[i], '0'));
+            this.server.getRpcAccounts(this.currentWorkspace.rpcServer)
+                .then(accounts => {
+                    console.log(accounts)
+                    const promises = [];
+                    for (let i = 0; i < accounts.length; i++)
+                        promises.push(this.server.syncBalance(accounts[i], '0'));
 
-                        Promise.all(promises).then(() => this.getAccounts());
-                    })
-                    .catch(() => this.loading = false);
+                    Promise.all(promises).then(() => this.getAccounts());
+                })
+                .catch(() => this.loading = false);
         },
         getAccounts(newOptions) {
             this.loading = true;
@@ -125,7 +125,6 @@ export default {
                         this.server.getAccountBalance(this.accounts[i].address)
                             .then(rawBalance => {
                                 const balance = ethers.BigNumber.from(rawBalance).toString();
-                                console.log(balance)
                                 this.accounts[i].balance = balance;
                             });
                     }

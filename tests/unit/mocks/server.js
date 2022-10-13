@@ -5,11 +5,11 @@ jest.mock('@/plugins/server', () => ({
                 processFailedTransactions: jest.fn,
                 getRpcAccounts: jest.fn(),
                 getAccounts: jest.fn().mockResolvedValue({ data: { items: [] }}),
-                getAccountBalance: jest.fn(),
+                getAccountBalance: jest.fn().mockResolvedValue('10000'),
                 getContract: jest.fn().mockResolvedValue({ data: {} }),
                 storeAccountPrivateKey: jest.fn().mockResolvedValue(),
                 impersonateAccount: jest.fn(),
-                getAddressTransactions: jest.fn(),
+                getAddressTransactions: jest.fn().mockResolvedValue({ data: { items: [] }}),
                 getBlock: jest.fn(),
                 getBlocks: jest.fn(),
                 callContractReadMethod: jest.fn(),
@@ -39,6 +39,7 @@ jest.mock('@/plugins/server', () => ({
                 reloadErc721Token: jest.fn(),
                 transferErc721Token: jest.fn(),
                 getApiToken: jest.fn(),
+                setCurrentWorkspace: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))
@@ -53,10 +54,6 @@ jest.mock('@/plugins/server', () => ({
                 },
 
                 syncContractData: () => {
-                    return new Promise((resolve) => resolve(true));
-                },
-
-                setCurrentWorkspace: () => {
                     return new Promise((resolve) => resolve(true));
                 },
 
