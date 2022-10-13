@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col cols="12" sm="6" lg="4" v-if="publicExplorer.totalSupply">
+            <v-col cols="12" sm="6" lg="3" v-if="publicExplorer.totalSupply">
                 <Stat-Number :title="'Total Supply'" :value="formattedTotalSupply" />
             </v-col>
         </v-row>
@@ -176,8 +176,7 @@ export default {
             'publicExplorer'
         ]),
         formattedTotalSupply() {
-            const res = this.commify(formatUnits(BigNumber.from(this.publicExplorer.totalSupply), 18)).split('.')[0];
-            return this.publicExplorer.token ? `${res} ${this.publicExplorer.token}` : res;
+            return this.commify(formatUnits(BigNumber.from(this.publicExplorer.totalSupply), 18)).split('.')[0];
         }
     }
 }
