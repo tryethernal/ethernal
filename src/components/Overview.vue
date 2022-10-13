@@ -1,20 +1,25 @@
 <template>
     <v-container fluid>
         <v-row>
+            <v-col cols="12" sm="6" lg="4" v-if="publicExplorer.totalSupply">
+                <Stat-Number :title="'Total Supply'" :value="formattedTotalSupply" />
+            </v-col>
+        </v-row>
+
+        <v-row>
             <v-col cols="12" sm="6" lg="3">
-                <Stat-Number :type="'link'" :title="'Block Height'" :value="currentBlock.number" :loading="globalStatsLoading" :href="`/blocks/${currentBlock.number}`" />
+                <Stat-Number :type="'link'" :title="'Block Height'" :value="commify(currentBlock.number)" :loading="globalStatsLoading" :href="`/blocks/${currentBlock.number}`" />
+            </v-col>
+            <v-col cols="12" sm="6" lg="3">
+                <Stat-Number :title="'24h Tx Count'" :value="commify(txCount24h)" :loading="globalStatsLoading" />
             </v-col>
 
             <v-col cols="12" sm="6" lg="3">
-                <Stat-Number :title="'24h Tx Count'" :value="txCount24h" :loading="globalStatsLoading" />
+                <Stat-Number :title="'Total Tx Count'" :value="commify(txCountTotal)" :loading="globalStatsLoading" />
             </v-col>
 
             <v-col cols="12" sm="6" lg="3">
-                <Stat-Number :title="'Total Tx Count'" :value="txCountTotal" :loading="globalStatsLoading" />
-            </v-col>
-
-            <v-col cols="12" sm="6" lg="3">
-                <Stat-Number :title="'Total Active Wallets Count'" :value="activeWalletCount" :loading="globalStatsLoading" :infoTooltip="'An active wallet is an address that has sent at least one transaction.'" />
+                <Stat-Number :title="'Total Active Wallets Count'" :value="commify(activeWalletCount)" :loading="globalStatsLoading" :infoTooltip="'An active wallet is an address that has sent at least one transaction.'" />
             </v-col>
         </v-row>
 
@@ -63,6 +68,9 @@
 </template>
 
 <script>
+const ethers = require('ethers');
+const formatUnits = ethers.utils.formatUnits;
+const BigNumber = ethers.BigNumber;
 const moment = require('moment');
 import { mapGetters } from 'vuex';
 import router from '../plugins/router';
@@ -110,6 +118,7 @@ export default {
         this.chart = this.$refs.chart;
     },
     methods: {
+        commify: ethers.utils.commify,
         moment: moment,
         getGlobalStats() {
             this.globalStatsLoading = true;
@@ -163,8 +172,13 @@ export default {
     computed: {
         ...mapGetters([
             'currentBlock',
-            'isPublicExplorer'
-        ])
+            'isPublicExplorer',
+            'publicExplorer'
+        ]),
+        formattedTotalSupply() {
+            const res = this.commify(formatUnits(BigNumber.from(this.publicExplorer.totalSupply), 18)).split('.')[0];
+            return this.publicExplorer.token ? `${res} ${this.publicExplorer.token}` : res;
+        }
     }
 }
 </script>
