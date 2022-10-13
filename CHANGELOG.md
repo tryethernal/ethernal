@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.4] - 2022-10-13
+### Changed
+- [Public Explorer] Removed symbol display on total supply
+
 ## [2.9.3] - 2022-10-13
 ### Added
 - [Public Explorer] Total supply option
