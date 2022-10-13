@@ -63,7 +63,8 @@ module.exports = (sequelize, DataTypes) => {
     rpcServer: DataTypes.STRING,
     slug: DataTypes.STRING,
     themes: DataTypes.JSON,
-    token: DataTypes.STRING
+    token: DataTypes.STRING,
+    totalSupply: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Explorer',
