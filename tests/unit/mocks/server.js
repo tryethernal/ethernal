@@ -39,7 +39,7 @@ jest.mock('@/plugins/server', () => ({
                 reloadErc721Token: jest.fn(),
                 transferErc721Token: jest.fn(),
                 getApiToken: jest.fn(),
-                setCurrentWorkspace: jest.fn(),
+                setCurrentWorkspace: jest.fn().mockResolvedValue(null),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))

@@ -10,7 +10,7 @@ exports[`CreateWorkspaceModal.vue Should let the user create a new workspace 1`]
             New Workspace
             <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button>
           </div>
-          <createworkspace-stub existingworkspaces=""></createworkspace-stub>
+          <create-workspace-stub existingworkspaces=""></create-workspace-stub>
         </div>
       </div>
     </transition-stub>

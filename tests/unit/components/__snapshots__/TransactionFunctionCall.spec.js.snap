@@ -24,13 +24,6 @@ exports[`TransactionFunctionCall.vue Should display warning if no ABI 1`] = `
 </div>
 `;
 
-exports[`TransactionFunctionCall.vue Should display warning if no ABI 2`] = `
-<div class="v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__text"><b>Signature:</b> 0xb9059cbb<br> <b>Data:</b> 0xb9059cbb23456789
-  </div>
-</div>
-`;
-
 exports[`TransactionFunctionCall.vue Should handle arrays as parameters 1`] = `
 <div class="v-card v-sheet v-sheet--outlined theme--light">
   <div class="v-card__text">
