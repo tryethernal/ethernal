@@ -478,7 +478,7 @@ exports[`ContractWriteMethod.vue Should make the UI unavailable if not active fl
 </div>
 `;
 
-exports[`ContractWriteMethod.vue Should send the transaction with Metamask if public explorer 1`] = `
+exports[`ContractWriteMethod.vue Should send the transaction with Metamask if senderMode is metamask 1`] = `
 <div>
   <div class="font-weight-bold">build</div>
   <div class="grey lighten-3 pa-2 mt-1" style="">

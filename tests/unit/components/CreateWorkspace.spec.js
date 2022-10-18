@@ -37,6 +37,9 @@ describe('CreateWorkspace.vue', () => {
     it('Should let the user create a new workspace', async () => {
         const name = 'Hardhat';
         const rpcServer = 'http://127.0.0.1:8545';
+        jest.spyOn(helper.mocks.server, 'getRpcAccounts')
+            .mockResolvedValue(['0x123', '0x456']);
+
         const initRpcServerMock = jest.spyOn(helper.mocks.server, 'initRpcServer')
             .mockResolvedValue({
                 rpcServer: rpcServer,

@@ -15,5 +15,5 @@ export default function (amount = 0, to, symbol = 'ether', unformatted = false) 
     const commified = commify(roundedAmount);
     const formatted = commified.endsWith('.0') ? commified.split('.')[0] : commified;
 
-    return `${formatted} ${symbol}`;
+    return `${formatted} ${symbol || 'ether'}`;
 }
