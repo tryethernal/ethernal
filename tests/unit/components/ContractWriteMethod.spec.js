@@ -14,6 +14,7 @@ describe('ContractWriteMethod.vue', () => {
     beforeEach(() => {
         helper = new MockHelper({ rpcServer: 'http://localhost:8545' });
         props = {
+            senderMode: 'accounts',
             method: DSProxyFactoryContract.abi[2],
             contract: DSProxyFactoryContract,
             signature: 'build()',
@@ -26,12 +27,15 @@ describe('ContractWriteMethod.vue', () => {
         };
     });
 
-    it('Should send the transaction with Metamask if public explorer', async () => {
+    it('Should send the transaction with Metamask if senderMode is metamask', async () => {
         jest.spyOn(window.ethereum, 'request')
             .mockResolvedValue('0x1234');
 
         const wrapper = helper.mountFn(ContractWriteMethod, {
-            propsData: props,
+            propsData: {
+                ...props,
+                senderMode: 'metamask'
+            },
             getters: {
                 isPublicExplorer: jest.fn().mockReturnValue(true)
             }
