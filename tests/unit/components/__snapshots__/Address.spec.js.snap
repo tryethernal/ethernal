@@ -46,7 +46,7 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
         </div>
       </transition-stub>
       <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="contract">
+        <div class="v-window-item v-window-item--active" id="contract" style="">
           <h4>Artifact</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
             <!---->
@@ -69,70 +69,22 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
               <div class="v-card__text">
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <div>
-                      <div class="pb-1 font-weight-bold">_feeBasisPoints</div>
-                      <div>=&gt; uint256</div>
-                      <div id="call" style="display: none;"></div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-read-method-stub signature="_feeBasisPoints()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
                   </div>
                 </div>
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <div>
-                      <div class="pb-1 font-weight-bold">owner</div>
-                      <div>=&gt; address</div>
-                      <div id="call" style="display: none;"></div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-read-method-stub signature="owner()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
                   </div>
                 </div>
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <div>
-                      <div class="pb-1 font-weight-bold">depositsOf</div>
-                      <div class="v-input py-1 col-3 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-44" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-44" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div>=&gt; uint256</div>
-                      <div id="call" style="display: none;"></div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-read-method-stub signature="depositsOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
                   </div>
                 </div>
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <div>
-                      <div class="pb-1 font-weight-bold">maturityOf</div>
-                      <div class="v-input py-1 col-3 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-47" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-47" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div>=&gt; uint256</div>
-                      <div id="call" style="display: none;"></div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-read-method-stub signature="maturityOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
                   </div>
                 </div>
               </div>
@@ -144,237 +96,27 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
               <div class="v-card__text">
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <div>
-                      <div class="font-weight-bold">renounceOwnership</div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-55" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-55" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-write-method-stub signature="renounceOwnership()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
                   </div>
                 </div>
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <div>
-                      <div class="font-weight-bold">transferOwnership</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-58" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address newOwner</label><input disabled="disabled" id="input-58" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-63" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-63" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-write-method-stub signature="transferOwnership(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
                   </div>
                 </div>
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <div>
-                      <div class="font-weight-bold">setMaturity</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-66" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-66" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-67" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input disabled="disabled" id="input-67" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-72" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-72" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-write-method-stub signature="setMaturity(address,uint256)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
                   </div>
                 </div>
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <div>
-                      <div class="font-weight-bold">deposit</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-75" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-75" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-80" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-80" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-write-method-stub signature="deposit(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
                   </div>
                 </div>
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <div>
-                      <div class="font-weight-bold">withdraw</div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-87" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-87" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-write-method-stub signature="withdraw()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
                   </div>
                 </div>
               </div>
@@ -497,7 +239,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-37" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-37" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-185" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-185" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -519,7 +261,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-40" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-40" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-188" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-188" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -569,7 +311,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-48" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-48" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-196" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-196" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -587,7 +329,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-51" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address newOwner</label><input disabled="disabled" id="input-51" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-199" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address newOwner</label><input disabled="disabled" id="input-199" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -618,7 +360,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-56" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-56" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-204" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-204" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -636,7 +378,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-59" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-59" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-207" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-207" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -646,7 +388,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-60" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input disabled="disabled" id="input-60" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-208" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input disabled="disabled" id="input-208" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -677,7 +419,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-65" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-65" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-213" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-213" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -695,7 +437,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-68" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-68" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-216" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-216" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -726,7 +468,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-73" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-73" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-221" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-221" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -765,7 +507,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-80" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-80" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-228" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-228" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -843,7 +585,86 @@ exports[`Address.vue Should display the contract storage structure 1`] = `
         </div>
       </transition-stub>
       <transition-stub name="">
-        <!---->
+        <div class="v-window-item" id="contract" style="display: none;">
+          <h4>Artifact</h4>
+          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+            <!---->
+            <div class="v-dialog__container">
+              <!---->
+            </div>
+            <div class="v-card__text">
+              <!---->
+              Artifact for "<b>Amalfi</b>" has been uploaded.<span> (<a href="#">Edit</a>)</span>
+              <div class="mb-1 mt-2">
+                <h5>Dependencies:</h5>
+                Address, Context, Ownable, SafeMath
+              </div>
+            </div>
+            <!---->
+            <!---->
+          </div>
+          <h4>Call Options</h4>
+          <contract-call-options-stub accounts="0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA"></contract-call-options-stub>
+          <h4>Read Methods</h4>
+          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+            <div>
+              <div class="v-card__text">
+                <div class="row pb-4">
+                  <div class="col-sm-12 col-md-6 col-lg-12 col">
+                    <contract-read-method-stub signature="_feeBasisPoints()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+                  </div>
+                </div>
+                <div class="row pb-4">
+                  <div class="col-sm-12 col-md-6 col-lg-12 col">
+                    <contract-read-method-stub signature="owner()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+                  </div>
+                </div>
+                <div class="row pb-4">
+                  <div class="col-sm-12 col-md-6 col-lg-12 col">
+                    <contract-read-method-stub signature="depositsOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+                  </div>
+                </div>
+                <div class="row pb-4">
+                  <div class="col-sm-12 col-md-6 col-lg-12 col">
+                    <contract-read-method-stub signature="maturityOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <h4>Write Methods</h4>
+          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+            <div>
+              <div class="v-card__text">
+                <div class="row pb-4">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
+                    <contract-write-method-stub signature="renounceOwnership()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+                  </div>
+                </div>
+                <div class="row pb-4">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
+                    <contract-write-method-stub signature="transferOwnership(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+                  </div>
+                </div>
+                <div class="row pb-4">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
+                    <contract-write-method-stub signature="setMaturity(address,uint256)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+                  </div>
+                </div>
+                <div class="row pb-4">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
+                    <contract-write-method-stub signature="deposit(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+                  </div>
+                </div>
+                <div class="row pb-4">
+                  <div class="col-sm-12 col-md-6 col-lg-3 col">
+                    <contract-write-method-stub signature="withdraw()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </transition-stub>
       <transition-stub name="" style="display: none;">
         <!---->
@@ -1029,7 +850,185 @@ exports[`Address.vue Should display the contract verification UI if it is a publ
       </transition-stub>
       <transition-stub name="">
         <div class="v-window-item v-window-item--active" id="code" style="">
-          <contract-verification-stub address="0x123"></contract-verification-stub>
+          <div class="container container--fluid">
+            <!---->
+            <!---->
+            <form novalidate="novalidate" class="v-form">
+              <h4>Compiler Settings</h4>
+              <div class="mb-2 v-card v-sheet v-sheet--outlined theme--light">
+                <div class="v-card__text">
+                  <div class="row">
+                    <div class="col col-4">
+                      <div class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+                        <div class="v-input__control">
+                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-62" class="v-input__slot">
+                            <fieldset aria-hidden="true">
+                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                            </fieldset>
+                            <div class="v-select__slot"><label for="input-62" class="v-label theme--light" style="left: 0px; position: absolute;">Compiler Version *</label>
+                              <div class="v-select__selections"><input id="input-62" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                              <div class="v-input__append-inner">
+                                <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                              </div><input type="hidden">
+                            </div>
+                            <div class="v-menu">
+                              <!---->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col col-3">
+                      <div class="v-input v-input--hide-details v-input--dense theme--light v-input--selection-controls v-input--checkbox">
+                        <div class="v-input__control">
+                          <div class="v-input__slot">
+                            <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate v-icon--dense mdi mdi-checkbox-blank-outline theme--light"></i><input aria-checked="false" id="input-65" role="checkbox" type="checkbox" value="">
+                              <div class="v-input--selection-controls__ripple"></div>
+                            </div><label for="input-65" class="v-label theme--light" style="left: 0px; position: relative;">Show nightly builds</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col col-4">
+                      <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+                        <div class="v-input__control">
+                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-67" class="v-input__slot">
+                            <fieldset aria-hidden="true">
+                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                            </fieldset>
+                            <div class="v-select__slot"><label for="input-67" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">EVM Version *</label>
+                              <div class="v-select__selections">
+                                <div class="v-select__selection v-select__selection--comma">default (compiler default)</div><input id="input-67" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                              </div>
+                              <div class="v-input__append-inner">
+                                <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                              </div><input type="hidden">
+                            </div>
+                            <div class="v-menu">
+                              <!---->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col col-2">
+                      <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+                        <div class="v-input__control">
+                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-70" class="v-input__slot">
+                            <fieldset aria-hidden="true">
+                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                            </fieldset>
+                            <div class="v-select__slot"><label for="input-70" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Optimization *</label>
+                              <div class="v-select__selections">
+                                <div class="v-select__selection v-select__selection--comma">No</div><input id="input-70" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                              </div>
+                              <div class="v-input__append-inner">
+                                <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                              </div><input type="hidden" value="false">
+                            </div>
+                            <div class="v-menu">
+                              <!---->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col col-2">
+                      <div class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined" style="display: none;">
+                        <div class="v-input__control">
+                          <div class="v-input__slot">
+                            <fieldset aria-hidden="true">
+                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                            </fieldset>
+                            <div class="v-text-field__slot"><label for="input-73" class="v-label theme--light" style="left: 0px; position: absolute;">Runs *</label><input small="" id="input-73" type="number"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h4>Contract</h4>
+              <div class="mb-2 v-card v-sheet v-sheet--outlined theme--light">
+                <div class="v-card__text">
+                  <div class="row">
+                    <div class="pb-0 col col-4">
+                      <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                        <div class="v-input__control">
+                          <div class="v-input__slot">
+                            <fieldset aria-hidden="true">
+                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                            </fieldset>
+                            <div class="v-text-field__slot"><label for="input-75" class="v-label theme--light" style="left: 0px; position: absolute;">Contract Name *</label><input small="" id="input-75" type="text"></div>
+                          </div>
+                          <div class="v-text-field__details">
+                            <div class="v-messages theme--light">
+                              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="pt-0 col col-6">
+                      <div class="v-input theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-file-input">
+                        <div class="v-input__control">
+                          <div class="v-input__slot">
+                            <div class="v-input__prepend-inner">
+                              <div class="v-input__icon v-input__icon--prepend-inner"><i aria-hidden="true" class="v-icon notranslate mdi mdi-paperclip theme--light"></i></div>
+                            </div>
+                            <fieldset aria-hidden="true">
+                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                            </fieldset>
+                            <div class="v-text-field__slot"><label for="input-78" class="v-label theme--light" style="left: 0px; position: absolute;">Contract Files *</label>
+                              <div class="v-file-input__text v-file-input__text--chips"></div><input accept=".sol" id="input-78" type="file" multiple="multiple">
+                            </div>
+                            <div class="v-input__append-inner">
+                              <div></div>
+                            </div>
+                          </div>
+                          <div class="v-text-field__details">
+                            <div class="v-messages theme--light">
+                              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                            </div>
+                            <div class="v-counter theme--light">0 files (0 B in total)</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h4>Libraries Linking</h4>
+              <div class="mb-2 v-card v-sheet v-sheet--outlined theme--light">
+                <div class="v-card__text">
+                  <div class="row">
+                    <div class="col col-2"><button type="button" class="primary v-btn v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Add Library</span></button></div>
+                  </div>
+                </div>
+              </div>
+              <h4>Constructor Arguments</h4>
+              <div class="mb-2 v-card v-sheet v-sheet--outlined theme--light">
+                <div class="v-card__text">
+                  <div class="v-input v-textarea v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                    <div class="v-input__control">
+                      <div class="v-input__slot">
+                        <fieldset aria-hidden="true">
+                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                        </fieldset>
+                        <div class="v-text-field__slot"><label for="input-85" class="v-label theme--light" style="left: 0px; position: absolute;">Constructor Arguments (ABI Encoded)</label><textarea primary="" id="input-85" rows="3"></textarea></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form> <button type="button" disabled="disabled" class="primary v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Verify</span></button>
+          </div>
         </div>
       </transition-stub>
       <!---->
@@ -1214,7 +1213,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
         </div>
       </transition-stub>
       <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="contract">
+        <div class="v-window-item v-window-item--active" id="contract" style="">
           <h4>Artifact</h4>
           <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
             <!---->
@@ -1238,70 +1237,22 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
               <div class="v-card__text">
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <div>
-                      <div class="pb-1 font-weight-bold">_feeBasisPoints</div>
-                      <div>=&gt; uint256</div>
-                      <div id="call" style="display: none;"></div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-read-method-stub signature="_feeBasisPoints()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
                   </div>
                 </div>
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <div>
-                      <div class="pb-1 font-weight-bold">owner</div>
-                      <div>=&gt; address</div>
-                      <div id="call" style="display: none;"></div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-read-method-stub signature="owner()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
                   </div>
                 </div>
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <div>
-                      <div class="pb-1 font-weight-bold">depositsOf</div>
-                      <div class="v-input py-1 col-3 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-45" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-45" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div>=&gt; uint256</div>
-                      <div id="call" style="display: none;"></div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-read-method-stub signature="depositsOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
                   </div>
                 </div>
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <div>
-                      <div class="pb-1 font-weight-bold">maturityOf</div>
-                      <div class="v-input py-1 col-3 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-48" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-48" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div>=&gt; uint256</div>
-                      <div id="call" style="display: none;"></div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-read-method-stub signature="maturityOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
                   </div>
                 </div>
               </div>
@@ -1313,237 +1264,27 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
               <div class="v-card__text">
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <div>
-                      <div class="font-weight-bold">renounceOwnership</div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-56" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-56" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-write-method-stub signature="renounceOwnership()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
                   </div>
                 </div>
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <div>
-                      <div class="font-weight-bold">transferOwnership</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-59" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address newOwner</label><input disabled="disabled" id="input-59" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-64" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-64" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-write-method-stub signature="transferOwnership(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
                   </div>
                 </div>
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <div>
-                      <div class="font-weight-bold">setMaturity</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-67" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-67" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-68" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input disabled="disabled" id="input-68" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-73" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-73" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-write-method-stub signature="setMaturity(address,uint256)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
                   </div>
                 </div>
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <div>
-                      <div class="font-weight-bold">deposit</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-76" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-76" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-81" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-81" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-write-method-stub signature="deposit(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
                   </div>
                 </div>
                 <div class="row pb-4">
                   <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <div>
-                      <div class="font-weight-bold">withdraw</div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-88" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in Ether)</label><input small="" disabled="disabled" id="input-88" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
+                    <contract-write-method-stub signature="withdraw()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
                   </div>
                 </div>
               </div>
@@ -1583,13 +1324,7 @@ exports[`Address.vue Should sync the balance when loaded 1`] = `
       </div>
     </div>
     <div class="spacer"></div>
-    <div class="col-sm-12 col-md-6 col-lg-3 col align-self-end">
-      <div class="v-dialog__container">
-        <!---->
-      </div> <button type="button" class="v-btn v-btn--outlined theme--light v-size--small error--text"><span class="v-btn__content">
-                Remove contract
-            </span></button>
-    </div>
+    <!---->
   </div>
   <div class="v-tabs theme--light">
     <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
@@ -1600,8 +1335,10 @@ exports[`Address.vue Should sync the balance when loaded 1`] = `
         <div class="v-slide-group__content v-tabs-bar__content">
           <div class="v-tabs-slider-wrapper" style="transition: none;">
             <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active">Transactions</a> <a tabindex="0" href="#contract" aria-selected="false" role="tab" class="v-tab" id="contractTab">Contract</a>
-          <!----> <a tabindex="0" href="#storage" aria-selected="false" role="tab" class="v-tab" id="storageTab">Storage</a> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20Balances">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721Balances">ERC-721 Tokens</a>
+          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active">Transactions</a>
+          <!---->
+          <!---->
+          <!----> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20Balances">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721Balances">ERC-721 Tokens</a>
           <!---->
         </div>
       </div>

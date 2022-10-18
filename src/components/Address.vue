@@ -412,7 +412,7 @@ export default {
         },
         tab: {
             set(tab) {
-                this.$router.replace({ query: { ...this.$route.query, tab } });
+                this.$router.replace({ query: { ...this.$route.query, tab } }).catch(()=>{});
             },
             get() {
                 return this.$route.query.tab;

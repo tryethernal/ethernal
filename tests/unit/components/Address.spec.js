@@ -14,14 +14,19 @@ let helper;
 describe('Address.vue', () => {
 
     beforeEach(() => {
-        helper = new MockHelper({});
+        jest.clearAllMocks();
+        helper = new MockHelper();
         jest.spyOn(helper.mocks.db, 'contractStorage')
             .mockReturnValue({
                 once: jest.fn().mockResolvedValue()
             });
+        jest.spyOn(helper.mocks.server, 'getAccountBalance')
+            .mockResolvedValue('10000');
+        jest.spyOn(helper.mocks.server, 'getAddressTransactions')
+            .mockResolvedValue({ data: { items: [] }});
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValue({ data: null });
     });
-
-    afterEach(() => jest.clearAllMocks());
 
     it('Should display the contract verified text if it is a public explorer & contract is not verified', async () => {
         jest.spyOn(helper.mocks.server, 'getContract')
@@ -31,7 +36,7 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: ['Address-Transactions-List', 'Contract-Call-Options'],
+            stubs: ['Address-Transactions-List', 'Contract-Call-Options', 'Contract-Read-Method', 'Contract-Write-Method', 'Token-Balances', 'ERC-721-Collection'],
             getters: {
                 accounts: jest.fn().mockReturnValueOnce(['0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA']),
                 chain: jest.fn().mockReturnValueOnce('ethereum'),
@@ -59,7 +64,7 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: ['Address-Transactions-List', 'Contract-Verification', 'Contract-Call-Options'],
+            stubs: ['Address-Transactions-List', 'Contract-Call-Options', 'Contract-Read-Method', 'Contract-Write-Method', 'Token-Balances', 'ERC-721-Collection'],
             getters: {
                 accounts: jest.fn().mockReturnValueOnce(['0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA']),
                 chain: jest.fn().mockReturnValueOnce('ethereum'),
@@ -80,11 +85,14 @@ describe('Address.vue', () => {
     });
 
     it('Should not display the storage tab on contract page if in public explorer mode', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValueOnce({ data: { address: '0x123', name: 'Amalfi', abi: AmalfiContract.artifact.abi }});
+
         const wrapper = helper.mountFn(Address, {
             propsData: {
                 hash: '0x123'
             },
-            stubs: ['Address-Transactions-List', 'Contract-Verification', 'Contract-Call-Options'],
+            stubs: ['Address-Transactions-List', 'Contract-Verification', 'Contract-Call-Options', 'Contract-Read-Method', 'Contract-Write-Method', 'Token-Balances', 'ERC-721-Collection'],
             getters: {
                 accounts: jest.fn().mockReturnValueOnce(['0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA']),
                 isPublicExplorer: jest.fn().mockReturnValueOnce(true),
@@ -105,7 +113,7 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: ['Address-Transactions-List', 'Contract-Verification']
+            stubs: ['Contract-Call-Options', 'Address-Transactions-List', 'Contract-Verification', 'Contract-Read-Method', 'Contract-Write-Method', 'Token-Balances', 'ERC-721-Collection']
         });
         await wrapper.vm.$nextTick();
 
@@ -123,7 +131,7 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: ['Address-Transactions-List', 'Contract-Verification', 'Contract-Call-Options'],
+            stubs: ['Address-Transactions-List', 'Contract-Verification', 'Contract-Call-Options', 'Token-Balances', 'ERC-721-Collection'],
             getters: {
                 accounts: jest.fn().mockReturnValueOnce(['0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA']),
                 chain: jest.fn().mockReturnValueOnce('ethereum'),
@@ -153,7 +161,7 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: ['Address-Transactions-List', 'Contract-Verification', 'Contract-Call-Options'],
+            stubs: ['Address-Transactions-List', 'Contract-Verification', 'Contract-Call-Options', 'Contract-Read-Method', 'Contract-Write-Method', 'Token-Balances', 'ERC-721-Collection'],
             getters: {
                 accounts: jest.fn().mockReturnValueOnce(['0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA']),
                 isPublicExplorer: jest.fn().mockReturnValueOnce(false),
@@ -181,7 +189,7 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: ['Address-Transactions-List', 'Contract-Verification', 'Contract-Call-Options'],
+            stubs: ['Address-Transactions-List', 'Contract-Verification', 'Contract-Call-Options', 'Contract-Read-Method', 'Contract-Write-Method', 'Token-Balances', 'ERC-721-Collection'],
             getters: {
                 accounts: jest.fn().mockReturnValueOnce(['0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA']),
                 isPublicExplorer: jest.fn().mockReturnValueOnce(false),
@@ -199,7 +207,7 @@ describe('Address.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it.only('Should display the contract storage structure', async () => {
+    it('Should display the contract storage structure', async () => {
         const storedDependencies = {};
         for (const dependency in AmalfiContract.dependencies)
             storedDependencies[dependency] = JSON.stringify(AmalfiContract.dependencies[dependency]);
