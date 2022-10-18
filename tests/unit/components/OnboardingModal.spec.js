@@ -11,6 +11,9 @@ describe('OnboardingModal.vue', () => {
     });
 
     it('Should let the user create a new workspace', async () => {
+        jest.spyOn(helper.mocks.server, 'getRpcAccounts')
+            .mockResolvedValue(['0x123', '0x456']);
+
         jest.spyOn(helper.mocks.server, 'createWorkspace').mockResolvedValue({ data: {
             workspace: {
                 rpcServer: 'https://127.0.0.1',

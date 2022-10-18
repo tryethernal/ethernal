@@ -15,7 +15,7 @@ exports[`Block.vue Should show the block component 1`] = `
     <hr role="separator" aria-orientation="vertical" class="v-divider v-divider--vertical theme--light">
     <div class="col-sm-12 col-md-12 col-lg-2 col">
       <div class="v-subheader text-overline theme--light">Mined On</div>
-      Invalid date<br> <small>Invalid date</small>
+      10/18 8:28:41 PM<br> <small>in 2 months</small>
     </div>
     <hr role="separator" aria-orientation="vertical" class="v-divider v-divider--vertical theme--light">
     <div class="col-sm-12 col-md-12 col-lg-8 col">

@@ -71,6 +71,7 @@ class MockHelper {
     initMockStore(initialState, overrideGetters) {
         this.localVue.use(Vuex);
         this.getters = {
+            accounts: jest.fn().mockReturnValue(['0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA']),
             theme: jest.fn(),
             blockCount: jest.fn().mockReturnValue(2),
             transactionCount: jest.fn().mockReturnValue(2),
@@ -80,6 +81,7 @@ class MockHelper {
             }),
             nativeToken: jest.fn(() => 'Ether'),
             isPublicExplorer: jest.fn(() => false),
+            isUserAdmin: jest.fn(() => true),
             publicExplorer: jest.fn(() => this.storeState.publicExplorer),
             chains: jest.fn(() => {
                 return {
@@ -107,7 +109,8 @@ class MockHelper {
             updateCurrentWorkspace: jest.fn(),
             updateTransactionCount: jest.fn(),
             updateBlockCount: jest.fn(),
-            updateCurrentBlock: jest.fn()
+            updateCurrentBlock: jest.fn(),
+            updateAccounts: jest.fn()
         };
     }
 }

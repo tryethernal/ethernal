@@ -16,7 +16,7 @@ describe('RpcConnector.vue', () => {
         auth.mockReturnValue({ currentUser: { id: '1' }});
         jest.spyOn(helper.mocks.server, 'getBlocks').mockResolvedValue({ data: { items: [] }});
         jest.spyOn(helper.mocks.server, 'getRpcAccounts').mockResolvedValue(['0x123']);
-        jest.spyOn(helper.mocks.server, 'getAccounts').mockResolvedValue({ data: { items: [{ address: '0x123' }, { address: '0x456' }]}});
+        const getAccountsMock = jest.spyOn(helper.mocks.server, 'getAccounts').mockResolvedValue({ data: { items: [{ address: '0x123' }, { address: '0x456' }]}});
         jest.spyOn(helper.mocks.server, 'getAccountBalance').mockResolvedValue('1000000000000000000000');
         const syncBalanceSpy = jest.spyOn(helper.mocks.server, 'syncBalance');
 
@@ -26,9 +26,8 @@ describe('RpcConnector.vue', () => {
         await flushPromises();
 
         expect(onNewContractMock).toHaveBeenCalled();
+        expect(getAccountsMock).toHaveBeenCalled();
         expect(processContractMock).toHaveBeenCalled();
-        expect(syncBalanceSpy).toHaveBeenNthCalledWith(1, '0x123', '1000000000000000000000');
-        expect(syncBalanceSpy).toHaveBeenNthCalledWith(2, '0x456', '1000000000000000000000');
         expect(wrapper.html()).toMatchSnapshot();
     });
 
@@ -45,6 +44,7 @@ describe('RpcConnector.vue', () => {
             }
         });
 
+        expect(getAccountsMock).toHaveBeenCalled();
         expect(onNewContractMock).not.toHaveBeenCalled();
         expect(processContractMock).not.toHaveBeenCalled();
     });

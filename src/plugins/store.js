@@ -30,9 +30,14 @@ export default new Vuex.Store({
                 gas: null
             },
         },
+        accounts: [],
         connected: false
     },
     mutations: {
+        SET_ACCOUNTS(state, accounts) {
+            if (accounts.length)
+                state.accounts = accounts;
+        },
         SET_USER(state, data) {
             state.user = data ? { ...state.user, ...data } : {};
         },
@@ -77,6 +82,9 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        updateAccounts({ commit }, accounts) {
+            commit('SET_ACCOUNTS', accounts);
+        },
         updateUser({ commit }, user) {
             if (user) {
                 commit('SET_USER', sanitize({
@@ -127,9 +135,11 @@ export default new Vuex.Store({
         }
     },
     getters: {
+        accounts: state => state.accounts,
         firebaseIdToken: state => state.user.firebaseIdToken || '',
         theme: state => state.publicExplorer.theme,
         isUserLoggedIn: state => !!state.user.uid,
+        isUserAdmin: state => state.currentWorkspace && state.user.uid == state.currentWorkspace.firebaseUserId,
         isPublicExplorer: state => !!state.publicExplorer.slug || !!state.publicExplorer.domain || (state.currentWorkspace.public && state.user.uid == state.currentWorkspace.firebaseUserId),
         publicExplorer: state => state.publicExplorer,
         user: state => {
