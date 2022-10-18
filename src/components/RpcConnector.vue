@@ -52,13 +52,9 @@
             </v-row>
         </v-slide-x-transition>
         <template>
-            <template v-if="isPublicExplorer">
+            <template v-if="isUserAdmin">
                 <v-divider vertical inset class="mx-2"></v-divider>
-                {{ currentWorkspace.name }}
-            </template>
-            <template v-else>
-                <v-divider vertical inset class="mx-2"></v-divider>
-                Workspace: {{ currentWorkspace.name }} ({{ chain.name }})
+                Workspace: {{ currentWorkspace.name }}<template v-if="!isPublicExplorer"> ({{ chain.name }})</template>
             </template>
             <template v-if="isUserAdmin">
                 <v-divider vertical inset class="mx-2"></v-divider>

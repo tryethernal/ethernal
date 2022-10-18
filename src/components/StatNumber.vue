@@ -13,20 +13,27 @@
         </v-card-subtitle>
         <v-card-text class="text-h3" align="center">
             <v-skeleton-loader v-if="loading" type="list-item"></v-skeleton-loader>
-            <template v-else>
-                <router-link v-if="type == 'link'" style="text-decoration: none;" :to="href">{{ value }}</router-link>
+            <template v-else-if="!!value">
+                <router-link v-if="type == 'link'" style="text-decoration: none;" :to="href">{{ commify(value) }}</router-link>
                 <span v-else>
-                    {{ value }}
+                    {{ commify(value) }}
                 </span>
+            </template>
+            <template v-else>
+                N/A
             </template>
         </v-card-text>
     </v-card>
 </template>
 
 <script>
+const ethers = require('ethers');
 export default {
     name: 'StatNumber',
-    props: ['type', 'title', 'value', 'loading', 'href', 'infoTooltip']
+    props: ['type', 'title', 'value', 'loading', 'href', 'infoTooltip'],
+    methods: {
+        commify: ethers.utils.commify,
+    }
 }
 </script>
 

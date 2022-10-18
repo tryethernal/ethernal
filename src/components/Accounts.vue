@@ -96,7 +96,6 @@ export default {
             this.loading = true;
             this.server.getRpcAccounts(this.currentWorkspace.rpcServer)
                 .then(accounts => {
-                    console.log(accounts)
                     const promises = [];
                     for (let i = 0; i < accounts.length; i++)
                         promises.push(this.server.syncBalance(accounts[i], '0'));
