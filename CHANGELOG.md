@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.10.0] - 2022-10-18
+### Added
+- [Public Explorer] Possibility to interact with contracts using loaded accounts
+- Added Metamask integration in private explorer
+
 ## [2.9.4] - 2022-10-13
 ### Changed
 - [Public Explorer] Removed symbol display on total supply
