@@ -1,22 +1,20 @@
 <template>
-    <v-card outlined class="mb-4">
-        <v-card-text v-show="!ethereum">
+    <div>
+        <div v-show="!ethereum">
             You need Metamask in order to interact with this contract
-        </v-card-text>
-        <v-card-text v-show="ethereum">
-            <v-row>
-                <v-col>
-                    <v-alert outlined dense type="error" v-if="chainId && !isChainValid">
-                        Invalid chain id <b>{{ chainId }}</b> ({{ parseInt(chainId, 16) }}), expecting <b>{{ formattedExpectedChainId }}</b> ({{ currentWorkspace.networkId }}). Click <a @click.stop="switchMetamaskChain()">here</a> to switch network in Metamask.
-                    </v-alert>
-                    <div v-if="connectedAccount">
-                        <b>Connected Metamask account:</b> {{ connectedAccount }}
-                    </div>
-                    <v-btn :loading="loading" id="connectMetamask" v-else :color="theme == 'dark' ? '' : 'primary'" @click="connectMetamask()">Connect With Metamask</v-btn>
-                </v-col>
-            </v-row>
-        </v-card-text>
-    </v-card>
+        </div>
+        <v-row v-show="ethereum">
+            <v-col>
+                <v-alert outlined dense type="error" v-if="chainId && !isChainValid">
+                    Invalid chain id <b>{{ chainId }}</b> ({{ parseInt(chainId, 16) }}), expecting <b>{{ formattedExpectedChainId }}</b> ({{ currentWorkspace.networkId }}). Click <a @click.stop="switchMetamaskChain()">here</a> to switch network in Metamask.
+                </v-alert>
+                <div v-if="connectedAccount">
+                    <b>Connected Metamask account:</b> {{ connectedAccount }}
+                </div>
+                <v-btn :loading="loading" id="connectMetamask" v-else :color="theme == 'dark' ? '' : 'primary'" @click="connectMetamask()">Connect With Metamask</v-btn>
+            </v-col>
+        </v-row>
+    </div>
 </template>
 
 <script>

@@ -13,7 +13,6 @@
             <v-col cols="12" sm="6" lg="3">
                 <Stat-Number :title="'24h Tx Count'" :value="commify(txCount24h)" :loading="globalStatsLoading" />
             </v-col>
-
             <v-col cols="12" sm="6" lg="3">
                 <Stat-Number :title="'Total Tx Count'" :value="commify(txCountTotal)" :loading="globalStatsLoading" />
             </v-col>

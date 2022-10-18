@@ -65,53 +65,11 @@
 
                 <template>
                     <h4>Call Options</h4>
-                    <Metamask v-if="isPublicExplorer" @rpcConnectionStatusChanged="onRpcConnectionStatusChanged"></Metamask>
-                    <v-card outlined class="mb-4" v-else>
-                        <v-skeleton-loader v-if="contractLoader" class="col-4" type="list-item-three-line"></v-skeleton-loader>
-                        <div v-else>
-                            <v-card-text v-if="contract.abi">
-                                <v-row>
-                                    <v-col cols="5">
-                                        <v-select
-                                            outlined
-                                            dense
-                                            label="Select from address"
-                                            v-model="callOptions.from"
-                                            item-text="address"
-                                            :items="accounts"
-                                            return-object>
-                                            <template v-slot:item="{ item }">
-                                                <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
-                                                {{ item.address }}
-                                            </template>
-                                            <template v-slot:selection="{ item }">
-                                                <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
-                                                {{ item.address }}
-                                            </template>
-                                        </v-select>
-                                        <v-text-field
-                                            outlined
-                                            dense
-                                            type="number"
-                                            v-model="callOptions.gasPrice"
-                                            label="Gas Price (wei)">
-                                        </v-text-field>
-                                        <v-text-field
-                                            outlined
-                                            dense
-                                            type="number"
-                                            hide-details="auto"
-                                            v-model="callOptions.gasLimit"
-                                            label="Maximum Gas">
-                                        </v-text-field>
-                                    </v-col>
-                                </v-row>
-                            </v-card-text>
-                            <v-card-text v-else>
-                                <i>Upload an artifact to call this contract's methods.</i>
-                            </v-card-text>
-                        </div>
-                    </v-card>
+                    <Contract-Call-Options
+                        :accounts="accounts"
+                        :loading="!contract.abi"
+                        @senderSourceChanged="onSenderSourceChanged"
+                        @rpcConnectionStatusChanged="onRpcConnectionStatusChanged" />
                 </template>
 
                 <h4>Read Methods</h4>
@@ -121,7 +79,7 @@
                         <v-card-text v-if="contract.abi">
                             <v-row v-for="(method, methodIdx) in contractReadMethods" :key="methodIdx" class="pb-4">
                                 <v-col lg="12" md="6" sm="12">
-                                    <Contract-Read-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="callOptions" />
+                                    <Contract-Read-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="callOptions" :senderMode="senderMode" />
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -138,7 +96,7 @@
                         <v-card-text v-if="contract.abi">
                             <v-row v-for="(method, methodIdx) in contractWriteMethods" :key="methodIdx" class="pb-4">
                                 <v-col lg="3" md="6" sm="12">
-                                    <Contract-Write-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="callOptions" />
+                                    <Contract-Write-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="callOptions" :senderMode="senderMode" />
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -246,10 +204,10 @@ import ImportArtifactModal from './ImportArtifactModal';
 import RemoveContractConfirmationModal from './RemoveContractConfirmationModal';
 import AddressTransactionsList from './AddressTransactionsList';
 import ContractVerification from './ContractVerification';
-import Metamask from './Metamask';
 import TokenBalances from './TokenBalances';
 import ERC721Collection from './ERC721Collection';
 import UpgradeLink from './UpgradeLink';
+import ContractCallOptions from './ContractCallOptions';
 
 import FromWei from '../filters/FromWei';
 
@@ -266,10 +224,10 @@ export default {
         RemoveContractConfirmationModal,
         UpgradeLink,
         AddressTransactionsList,
-        Metamask,
         TokenBalances,
         ContractVerification,
-        ERC721Collection
+        ERC721Collection,
+        ContractCallOptions
     },
     filters: {
         FromWei
@@ -284,7 +242,6 @@ export default {
                 abi: []
             }
         },
-        accounts: [],
         callOptions: {
             from: null,
             gasLimit: '100000',
@@ -297,21 +254,22 @@ export default {
         contractLoader: false,
         storageError: false,
         loadingTx: true,
-        rpcConnectionStatus: false
+        rpcConnectionStatus: false,
+        senderMode: null
     }),
     created: function() {
         if (!this.tab)
             this.tab = 'transactions';
 
         this.server.getAccountBalance(this.lowerHash).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
-
-        this.callOptions.gasLimit = this.currentWorkspace.gasLimit;
-        this.callOptions.gasPrice = this.currentWorkspace.gasPrice;
-
-        if (!this.isPublicExplorer)
+        if (this.isAccountMode)
             this.rpcConnectionStatus = true;
     },
     methods: {
+        onSenderSourceChanged(newMode) {
+            this.senderMode = newMode;
+            this.rpcConnectionStatus = newMode == 'accounts';
+        },
         onRpcConnectionStatusChanged: function(data) {
             this.rpcConnectionStatus = data.isReady;
             this.callOptions.from = { address: data.account };
@@ -377,25 +335,10 @@ export default {
                 });
         },
         bindTheStuff: function(hash) {
-            if (!this.isPublicExplorer) {
-                this.server.getAccounts({ page: -1 }).then(({ data: { items }}) => {
-                    if (!items.length) return;
-                    this.accounts = items;
-
-                    if (this.currentWorkspace.defaultAccount) {
-                        for (let i = 0; i < this.accounts.length; i++)
-                            if (this.accounts[i].address == this.currentWorkspace.defaultAccount)
-                                this.callOptions.from = this.accounts[i];
-                    }
-                    else
-                        this.callOptions.from = this.accounts[0];
+            this.server.getAddressTransactions(hash)
+                .then(({ data: { items }}) => {
+                    this.transactionsTo = items;
                 });
-
-                this.server.getAddressTransactions(hash)
-                    .then(({ data: { items }}) => {
-                        this.transactionsTo = items;
-                    });
-            }
 
             this.contractLoader = true;
 
@@ -438,8 +381,12 @@ export default {
         ...mapGetters([
             'currentWorkspace',
             'chain',
-            'isPublicExplorer'
+            'isPublicExplorer',
+            'accounts'
         ]),
+        isAccountMode() {
+            return this.senderMode === 'accounts';
+        },
         isErc721() {
             return this.contract &&
                 this.contract.patterns &&
@@ -465,7 +412,7 @@ export default {
         },
         tab: {
             set(tab) {
-                this.$router.replace({ query: { ...this.$route.query, tab } });
+                this.$router.replace({ query: { ...this.$route.query, tab } }).catch(()=>{});
             },
             get() {
                 return this.$route.query.tab;

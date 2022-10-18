@@ -698,11 +698,11 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            syncBalance(address, balance) {
+            syncBalance(address, balance, workspace) {
                 const data = {
                     firebaseAuthToken: store.getters.firebaseIdToken,
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    workspace: workspace || store.getters.currentWorkspace.name,
                     balance: balance
                 };
 
