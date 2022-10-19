@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.10.1] - 2022-10-19
+### Fixed
+- [Public Explorer] Overview stats display bug
+
 ## [2.10.0] - 2022-10-18
 ### Added
 - [Public Explorer] Possibility to interact with contracts using loaded accounts
