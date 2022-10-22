@@ -212,12 +212,7 @@ export default {
                 value: 'actions'
             }
         ],
-        availableChains: [
-            { label: 'Ethereum', slug: 'ethereum' },
-            { label: 'Matic', slug: 'matic' },
-            { label: 'BSC', slug: 'bsc' },
-            { label: 'Avalanche', slug: 'avalanche' }
-        ],
+        availableChains: [],
         settings: {},
         workspaces: [],
         accounts: [],
@@ -231,6 +226,10 @@ export default {
         errorMessage: null
     }),
     mounted: function() {
+        Object.values(this.chains).map(chain => this.availableChains.push({
+            label: chain.name,
+            slug: chain.slug
+        }))
         if (!this.tab)
             this.tab = 'workspace';
 
