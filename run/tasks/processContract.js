@@ -116,6 +116,10 @@ const fetchEtherscanData = async (address, chain) => {
     let scannerHost = 'etherscan.io';
     let apiKey = process.env.ETHERSCAN_API_TOKEN;
     switch (chain) {
+        case 'arbitrum':
+            scannerHost = 'arbiscan.io';
+            apiKey = process.env.ARBISCAN_API_TOKEN;
+            break;
         case 'bsc':
             scannerHost = 'bscscan.com';
             apiKey = process.env.BSSCAN_API_TOKEN;
