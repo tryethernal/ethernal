@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.11.0] - 2022-10-22
+### Added
+- Arbiscan support for contract import (you can update your chain in the "Settings" tab)
+
 ## [2.10.1] - 2022-10-19
 ### Fixed
 - [Public Explorer] Overview stats display bug
