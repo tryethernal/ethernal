@@ -172,6 +172,12 @@ export default new Vuex.Store({
                 name: 'Avalanche',
                 token: 'Avax',
                 scanner: 'Snowtrace'
+            },
+            arbitrum: {
+                slug: 'arbitrum',
+                name: 'Arbitrum',
+                token: 'Ether',
+                scanner: 'Arbiscan'
             }
         }),
         chain: (state, getters) => {

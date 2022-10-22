@@ -7,7 +7,7 @@
             <v-alert text v-if="!canImport" type="error">Free plan users are limited to 10 synced contracts. Remove some contracts or <Upgrade-Link @goToBilling="goToBilling" :emit="true">upgrade</Upgrade-Link> to the Premium plan for more.</v-alert>
             <v-alert type="success" v-if="successMessage" v-html="successMessage"></v-alert>
             <v-alert type="error" v-if="errorMessage"> {{ errorMessage }}</v-alert>
-            <div>
+            <div v-if="chain.scanner">
                 Enter an address of a contract deployed on {{ chain.name }} mainnet.<br>
                 If the contract has been verified on {{ chain.scanner }}, its name and ABI will be pulled automatically.<br>
                 If not, the contract will be imported but you'll have to manually add the name and ABI.
