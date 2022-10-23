@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.11.1] - 2022-10-23
+### Fixed
+- Fixed bug that prevented new blocks from being detected during onboarding
+
 ## [2.11.0] - 2022-10-22
 ### Added
 - Arbiscan support for contract import (you can update your chain in the "Settings" tab)
