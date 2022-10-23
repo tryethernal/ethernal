@@ -77,9 +77,9 @@ export default {
         canExit: false,
     }),
     methods: {
-        onWorkspaceCreated: async function(workspaceData) {
+        onWorkspaceCreated: async function(workspace) {
             this.stepperIndex = 2;
-            this.$store.dispatch('updateCurrentWorkspace', { ...workspaceData.workspace, name: workspaceData.name, localNetwork: workspaceData.localNetwork, chain: workspaceData.chain })
+            this.$store.dispatch('updateCurrentWorkspace', workspace)
                 .then(() => {
                     Vue.use(pusherPlugin, { store: store });
                     this.pusher.onNewBlock(() => this.canExit = true, this);
