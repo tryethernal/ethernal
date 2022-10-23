@@ -37,11 +37,12 @@ describe('OnboardingModal.vue', () => {
         await flushPromises();
         
         expect(helper.actions.updateCurrentWorkspace).toHaveBeenCalledWith(expect.anything(), {
-            chain: 'ethereum',
-            rpcServer: 'https://127.0.0.1',
-            networkId: 1,
-            settings: {
-                gasLimit: 1234567
+            workspace: {
+                rpcServer: 'https://127.0.0.1',
+                networkId: 1,
+                settings: {
+                    gasLimit: 1234567
+                },
             },
             name: 'Hardhat'
         });
