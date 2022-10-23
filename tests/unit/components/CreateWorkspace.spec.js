@@ -81,8 +81,6 @@ describe('CreateWorkspace.vue', () => {
         });
 
         expect(wrapper.emitted().workspaceCreated[0]).toEqual([{
-            name: name,
-            chain: 'ethereum',
             workspace: {
                 rpcServer: rpcServer,
                 networkId: 1,
