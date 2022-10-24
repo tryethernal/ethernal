@@ -870,7 +870,7 @@ export const serverPlugin = {
                     for (let i = 0; i < contracts.length; i++) {
                         const contract = contracts[i];
                         try {
-                            const properties = await findPatterns(rpcServer, contract.address);
+                            const properties = await findPatterns(rpcServer, contract.address, contract.abi);
                             await Vue.prototype.server.setTokenProperties(contract.address, properties);
                         } catch(error) {
                             console.log(`Error processing contract ${contract.address}`);
