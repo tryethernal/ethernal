@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.11.3] - 2022-10-24
+### Fixed
+- Bug preventing call options to be changed
+
 ## [2.11.2] - 2022-10-24
 ### Fixed
 - Fixed bug that prevented proxied erc20 contracts from being correctly processed
