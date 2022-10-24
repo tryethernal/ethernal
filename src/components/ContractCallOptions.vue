@@ -72,27 +72,48 @@ export default {
         if (!this.accounts.length)
             return this.mode = 'metamask';
 
-        this.gasLimit = this.currentWorkspace.gasLimit;
-        this.gasPrice = this.currentWorkspace.gasPrice;
-        if (this.currentWorkspace.defaultAccount) {
-            console.log(this.currentWorkspace.defaultAccount)
-            for (let i = 0; i < this.accounts.length; i++)
-                if (this.accounts[i].address == this.currentWorkspace.defaultAccount)
-                    this.from = this.accounts[i];
-        }
-        else
-            this.from = this.accounts[0];
-
-        this.$emit('rpcConnectionStatusChanged', { isReady: true, account: this.from.address });
+        this.initAccountMode();
     },
     methods: {
+        initAccountMode() {
+            this.gasLimit = this.currentWorkspace.gasLimit;
+            this.gasPrice = this.currentWorkspace.gasPrice;
+            if (this.currentWorkspace.defaultAccount) {
+                for (let i = 0; i < this.accounts.length; i++)
+                    if (this.accounts[i].address == this.currentWorkspace.defaultAccount)
+                        this.from = this.accounts[i];
+            }
+            else
+                this.from = this.accounts[0];
+
+            this.$emit('rpcConnectionStatusChanged', { isReady: true, account: this.from.address });
+            this.emitCallOptionChanged();
+        },
         onRpcConnectionStatusChanged(data) {
             this.$emit('rpcConnectionStatusChanged', data);
+        },
+        emitCallOptionChanged() {
+            this.$emit('callOptionChanged', {
+                from: this.from,
+                gasLimit: this.gasLimit,
+                gasPrice: this.gasPrice
+            });
         }
     },
     watch: {
+        from() {
+            this.emitCallOptionChanged();
+        },
+        gasLimit() {
+            this.emitCallOptionChanged();
+        },
+        gasPrice() {
+            this.emitCallOptionChanged();
+        },
         mode() {
             this.$emit('senderSourceChanged', this.mode);
+            if (this.mode == 'accounts')
+                this.initAccountMode();
         }
     },
     computed: {
