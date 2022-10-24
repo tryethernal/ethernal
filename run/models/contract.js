@@ -165,6 +165,10 @@ module.exports = (sequelize, DataTypes) => {
             if (contract.patterns.indexOf('erc20') > -1)
                 trigger(`private-tokens;workspace=${contract.workspaceId}`, 'destroyed', null);
         },
+        beforeUpdate(contract, options) {
+            if (contract._changed.size > 0 && !contract._changed.has('processed'))
+                contract.processed = false;
+        },
         afterUpdate(contract, options) {
             trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
             if (contract.patterns.indexOf('erc20') > -1)
