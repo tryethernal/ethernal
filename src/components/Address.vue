@@ -69,6 +69,7 @@
                         :accounts="accounts"
                         :loading="!contract.abi"
                         @senderSourceChanged="onSenderSourceChanged"
+                        @callOptionChanged="onCallOptionChanged"
                         @rpcConnectionStatusChanged="onRpcConnectionStatusChanged" />
                 </template>
 
@@ -192,6 +193,7 @@
 
 <script>
 const ethers = require('ethers');
+const { sanitize } = require('../lib/utils');
 
 import { mapGetters } from 'vuex';
 
@@ -266,6 +268,14 @@ export default {
             this.rpcConnectionStatus = true;
     },
     methods: {
+        onCallOptionChanged(newCallOptions) {
+            this.callOptions = sanitize({
+                ...this.callOptions,
+                from: newCallOptions.from,
+                gasLimit: newCallOptions.gasLimit,
+                gasPrice: newCallOptions.gasPrice
+            });
+        },
         onSenderSourceChanged(newMode) {
             this.senderMode = newMode;
             this.rpcConnectionStatus = newMode == 'accounts';
