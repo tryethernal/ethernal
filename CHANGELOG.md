@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.11.4] - 2022-11-01
+### Fixed
+- Infinite loading for call options if no ABI uploaded
+
 ## [2.11.3] - 2022-10-24
 ### Fixed
 - Bug preventing call options to be changed
