@@ -67,7 +67,7 @@
                     <h4>Call Options</h4>
                     <Contract-Call-Options
                         :accounts="accounts"
-                        :loading="!contract.abi"
+                        :loading="!contract"
                         @senderSourceChanged="onSenderSourceChanged"
                         @callOptionChanged="onCallOptionChanged"
                         @rpcConnectionStatusChanged="onRpcConnectionStatusChanged" />
