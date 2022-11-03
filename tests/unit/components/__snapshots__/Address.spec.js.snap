@@ -56,7 +56,6 @@ exports[`Address.vue Should display the "Edit" button under the contract tab if 
             <div class="v-card__text">
               <!---->
               Artifact for "<b>Amalfi</b>" has been uploaded.<span> (<a href="#">Edit</a>)</span>
-              <!---->
             </div>
             <!---->
             <!---->
@@ -193,7 +192,6 @@ exports[`Address.vue Should display the contract interaction interface under the
             <div class="v-card__text">
               <!---->
               Artifact for "<b>Amalfi</b>" has been uploaded.
-              <!---->
               <!---->
             </div>
             <!---->
@@ -595,10 +593,6 @@ exports[`Address.vue Should display the contract storage structure 1`] = `
             <div class="v-card__text">
               <!---->
               Artifact for "<b>Amalfi</b>" has been uploaded.<span> (<a href="#">Edit</a>)</span>
-              <div class="mb-1 mt-2">
-                <h5>Dependencies:</h5>
-                Address, Context, Ownable, SafeMath
-              </div>
             </div>
             <!---->
             <!---->
@@ -1224,7 +1218,6 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
               <div class="mb-1 success--text"><i aria-hidden="true" class="v-icon notranslate success--text mr-1 mdi mdi-check-circle theme--light" style="font-size: 16px;"></i>Verified contract.
               </div>
               Artifact for "<b>Amalfi</b>" has been uploaded.<span> (<a href="#">Edit</a>)</span>
-              <!---->
             </div>
             <!---->
             <!---->

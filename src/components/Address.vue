@@ -44,10 +44,6 @@
                                 </div>
                                 <template v-if="contract.name && contract.abi">
                                     Artifact for "<b>{{ contract.name }}</b>" has been uploaded.<span v-if="currentWorkspace.isAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
-                                    <div v-if="contract.dependencies && Object.keys(contract.dependencies).length" class="mb-1 mt-2">
-                                        <h5>Dependencies:</h5>
-                                        {{ Object.keys(contract.dependencies).join(', ') }}
-                                    </div>
                                 </template>
                             </v-card-text>
                             <v-card-text v-if="(!contract.name || !contract.abi) && currentWorkspace.isAdmin && contract.verificationStatus != 'success'">
