@@ -198,7 +198,15 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.TransactionReceipt,
                     attributes: ['gasUsed', 'status', 'contractAddress'],
-                    as: 'receipt'
+                    as: 'receipt',
+                    include: [
+                        {
+                            model: sequelize.models.TransactionLog,
+                            attributes: ['address', 'data', 'logIndex', 'topics'],
+                            as: 'logs'
+                        }
+
+                    ]
                 },
                 {
                     model: sequelize.models.Contract,
@@ -325,6 +333,7 @@ module.exports = (sequelize, DataTypes) => {
             watchedPaths: contract.watchedPaths,
             has721Metadata: contract.has721Metadata,
             has721Enumerable: contract.has721Enumerable,
+            ast: contract.ast
         });
 
         if (existingContract)
@@ -390,7 +399,7 @@ module.exports = (sequelize, DataTypes) => {
                             model: sequelize.models.TransactionLog,
                             attributes: ['address', 'data', 'logIndex', 'topics'],
                             as: 'logs'
-                        } 
+                        }
                     ]
                 },
                 {
@@ -432,7 +441,7 @@ module.exports = (sequelize, DataTypes) => {
                     include: [
                         {
                             model: sequelize.models.Contract,
-                            attributes: ['name', 'patterns', 'tokenDecimals', 'tokenSymbol', 'tokenName'],
+                            attributes: ['name', 'patterns', 'tokenDecimals', 'tokenSymbol', 'tokenName', 'ast'],
                             as: 'contract',
                             where: {
                                 [Op.and]: sequelize.where(

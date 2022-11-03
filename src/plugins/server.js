@@ -12,14 +12,14 @@ import { ERC721Connector } from '../lib/rpc';
 const serverFunctions = {
     // Private
     _getDependenciesArtifact: function(contract) {
-        return contract.dependencies ? Object.entries(contract.dependencies).map(dep => dep[1]) : [];
+        return contract.ast.dependencies ? Object.entries(contract.ast.dependencies).map(dep => dep[1]) : [];
     },
     _buildStructure: async function(contract, rpcServer) {
         var web3 = new Web3(serverFunctions._getWeb3Provider(rpcServer));
-        var parsedArtifact = JSON.parse(contract.artifact);
+        var parsedArtifact = JSON.parse(contract.ast.artifact);
         var contractAddress = contract.address;
-        var dependenciesArtifacts = serverFunctions._getDependenciesArtifact(contract);
-        var instanceDecoder = await Decoder.forArtifactAt(parsedArtifact, web3, contractAddress, dependenciesArtifacts);
+
+        var instanceDecoder = await Decoder.forArtifactAt(parsedArtifact, contractAddress, { provider: web3.currentProvider, projectInfo: { artifacts: [...Object.values(contract.ast.dependencies).map(dep => JSON.parse(dep)), parsedArtifact] }});
         var storage = new Storage(instanceDecoder);
         await storage.buildStructure();
         return storage;
@@ -51,7 +51,7 @@ const serverFunctions = {
     // Public
     getStructure: async function(data) {
         try {
-            var structure = await serverFunctions._buildStructure(data.contract, data.rpcServer, data.dependenciesArtifact);
+            var structure = await serverFunctions._buildStructure(data.contract, data.rpcServer, data.contract.ast.dependencies);
             await structure.watch(data.contract.watchedPaths);
             return structure.toJSON();
         } catch(error) {
@@ -1009,10 +1009,10 @@ export const serverPlugin = {
                         .catch(reject)
                 });
             },
-            getStructure: function(contract, rpcServer, dependenciesArtifact) {
+            getStructure: function(contract, rpcServer) {
                 return new Promise((resolve, reject) => {
                     serverFunctions
-                        .getStructure({ contract: contract, rpcServer: rpcServer, dependenciesArtifact: dependenciesArtifact })
+                        .getStructure({ contract: contract, rpcServer: rpcServer })
                         .then(resolve)
                         .catch(reject)
                 });
