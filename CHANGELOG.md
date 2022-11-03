@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.12.0] - 2022-11-04
+### Changed
+- AST is now uploaded to Postgres. Make sure to update the CLI to 2.0.0 and the Hardhat plugin to 3.0.0 so that variable reading keeps working.
+
 ## [2.11.4] - 2022-11-01
 ### Fixed
 - Infinite loading for call options if no ABI uploaded
