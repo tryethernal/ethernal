@@ -6,12 +6,29 @@ const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
 const processContractVerification = require('../lib/processContractVerification');
 
+router.post('/:address/syncArtifact', authMiddleware, async (req, res) => {
+    const data = req.query;
+    try {
+        if (!data.uid || !data.workspace || !data.artifact) {
+            console.log(data);
+            throw new Error(`[POST /api/contracts/:address/syncArtifact] Missing parameters`);
+        }
+
+        const contracts = await db.getUnprocessedContracts(data.firebaseUserId, data.workspace);
+
+        res.status(200).json(contracts);
+    } catch(error) {
+        console.log(error);
+        res.status(400).send(error.message);
+    }
+});
+
 router.get('/processable', authMiddleware, async (req, res) => {
     const data = req.query;
     try {
         if (!data.firebaseUserId || !data.workspace) {
             console.log(data);
-            throw new Error(`[POST /api/contracts/processable] Missing parameters`);
+            throw new Error(`[GET /api/contracts/processable] Missing parameters`);
         }
 
         const contracts = await db.getUnprocessedContracts(data.firebaseUserId, data.workspace);
@@ -35,6 +52,7 @@ router.post('/:address', authMiddleware, async (req, res) => {
             address: data.address,
             name: data.name,
             abi: data.abi,
+            ast: data.ast,
             watchedPaths: data.watchedPaths,
             hashedBytecode: data.hashedBytecode
         });

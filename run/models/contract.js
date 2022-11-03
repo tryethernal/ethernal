@@ -157,7 +157,8 @@ module.exports = (sequelize, DataTypes) => {
     verificationStatus: DataTypes.STRING,
     has721Metadata: DataTypes.BOOLEAN,
     has721Enumerable: DataTypes.BOOLEAN,
-    tokenTotalSupply: DataTypes.STRING
+    tokenTotalSupply: DataTypes.STRING,
+    ast: DataTypes.JSON
   }, {
     hooks: {
         afterDestroy(contract, options) {

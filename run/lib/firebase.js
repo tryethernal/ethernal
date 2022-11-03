@@ -937,13 +937,6 @@ const getContract = async (userId, workspaceId, address) => {
     }
 };
 
-
-const storeContractArtifact = (userId, workspace, address, artifact) => {
-    if (!userId || !workspace || !address || !artifact) throw '[storeContractArtifact] Missing parameter';
-
-    throw 'Not implemented';
-};
-
 const storeContractDependencies = (userId, workspace, address, dependencies) => {
     if (!userId || !workspace || !address || !dependencies) throw '[storeContractDependencies] Missing parameter';
 
@@ -1583,7 +1576,6 @@ module.exports = {
     storeBlock: storeBlock,
     storeTransaction: storeTransaction,
     storeContractData: storeContractData,
-    storeContractArtifact: storeContractArtifact,
     storeContractDependencies: storeContractDependencies,
     getContractData: getContractData,
     getWorkspaceByName: getWorkspaceByName,
