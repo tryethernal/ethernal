@@ -44,10 +44,6 @@
                                 </div>
                                 <template v-if="contract.name && contract.abi">
                                     Artifact for "<b>{{ contract.name }}</b>" has been uploaded.<span v-if="currentWorkspace.isAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
-                                    <div v-if="contract.dependencies && Object.keys(contract.dependencies).length" class="mb-1 mt-2">
-                                        <h5>Dependencies:</h5>
-                                        {{ Object.keys(contract.dependencies).join(', ') }}
-                                    </div>
                                 </template>
                             </v-card-text>
                             <v-card-text v-if="(!contract.name || !contract.abi) && currentWorkspace.isAdmin && contract.verificationStatus != 'success'">
@@ -324,15 +320,15 @@ export default {
             }
             this.server.getStructure(this.contract, this.currentWorkspace.rpcServer)
                 .then(storage => this.storage = storage)
-                .catch((message) => {
+                .catch(message => {
                     this.storageError = true;
                     this.storageErrorMessage = message.reason || message;
                 })
                 .finally(() => this.storageLoader = false)
         },
         dependenciesNeded: function() {
-            for (const key in this.contract.dependencies) {
-               if (this.contract.dependencies[key].artifact === null)
+            for (const key in this.contract.ast.dependencies) {
+               if (this.contract.ast.dependencies[key].artifact === null)
                     return true;
             }
             return false;
@@ -356,25 +352,16 @@ export default {
                 .then(({ data }) => {
                     if (!data) return;
                     this.contract = data;
+
                     if (this.contract.abi)
                         this.contractInterface = new ethers.utils.Interface(this.contract.abi);
 
                     if (this.isPublicExplorer)
                         return this.contractLoader = false;
 
-                    this.db.contractStorage(hash).once('value', (snapshot) => {
-                        if (snapshot.val()) {
-                            this.contract.artifact = snapshot.val().artifact;
-                            const dependencies = {};
-                            Object.keys(snapshot.val().dependencies).forEach((dep) => dependencies[dep] = JSON.parse(snapshot.val().dependencies[dep]));
-                            this.contract = { ...this.contract, dependencies: dependencies, watchedPaths: this.contract.watchedPaths };
-                            this.decodeContract();
-                        }
-                        else {
-                            this.storageLoader = false;
-                        }
-                    })
-                    .finally(() => this.contractLoader = false);
+                    this.decodeContract();
+                    this.storageLoader = false;
+                    this.contractLoader = false;
                 })
                 .catch(console.log);
         }
@@ -406,7 +393,7 @@ export default {
             return this.hash.toLowerCase();
         },
         isStorageAvailable: function() {
-            return this.contract && this.contract.dependencies && Object.keys(this.contract.dependencies).length > 0;
+            return this.contract && this.contract.ast && this.contract.ast.dependencies && Object.keys(this.contract.ast.dependencies).length > 0;
         },
         isContract: function() {
             return this.contract && this.contract.address;
