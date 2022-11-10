@@ -125,6 +125,7 @@ router.post('/', authMiddleware, async (req, res) => {
             rpcServer: data.workspaceData.rpcServer,
             settings: data.workspaceData.settings,
             public: data.workspaceData.public,
+            tracing: data.workspaceData.tracing,
             dataRetentionLimit: user.defaultDataRetentionLimit
         }));
 
