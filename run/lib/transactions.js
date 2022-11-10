@@ -112,7 +112,7 @@ const processTransactions = async (userId, workspaceName, transactions) => {
         } catch(_error) {}
 
         if (workspace && workspace.public) {
-            if (workspace.tracing != 'disabled') {
+            if (workspace.tracing == 'other') {
                 try {
                     const tracer = new Tracer(workspace.rpcServer, db);
                     await tracer.process(transaction);
