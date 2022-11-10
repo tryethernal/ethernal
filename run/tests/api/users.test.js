@@ -3,6 +3,7 @@ require('../mocks/lib/firebase');
 require('../mocks/lib/firebase-admin');
 require('../mocks/lib/crypto');
 require('../mocks/lib/stripe');
+require('../mocks/lib/tasks');
 require('../mocks/middlewares/auth');
 const db = require('../../lib/firebase');
 
