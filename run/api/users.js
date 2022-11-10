@@ -1,10 +1,10 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const Analytics = require('../lib/analytics');
 const { getAuth } = require('firebase-admin/auth');
 const uuidAPIKey = require('uuid-apikey');
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
+const { enqueueTask } = require('../lib/tasks');
 const authMiddleware = require('../middlewares/auth');
 const { encrypt } = require('../lib/crypto');
 
@@ -67,14 +67,10 @@ router.post('/', async (req, res) => {
             plan: 'free'
         });
 
-        const analytics = new Analytics(process.env.MIXPANEL_API_TOKEN);
-
-        analytics.setUser(data.firebaseUserId, {
-            $email: authUser.email,
-            $created: (new Date()).toISOString(),
+        await enqueueTask('processUser', {
+            uid: data.firebaseUserId,
+            secret: process.env.AUTH_SECRET
         });
-        analytics.setSubscription(data.firebaseUserId, null, 'free', null, false);
-        analytics.track(data.firebaseUserId, 'Sign Up');
 
         res.sendStatus(200);
     } catch(error) {

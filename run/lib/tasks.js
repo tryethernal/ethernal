@@ -15,7 +15,8 @@ const ALLOWED_TASKS = [
     'findAndProcessExistingErc721',
     'batchBlockSync',
     'secondaryBlockSync',
-    'enforceDataRetentionForWorkspace'
+    'enforceDataRetentionForWorkspace',
+    'processUser'
 ];
 
 const getTaskClient = () => {

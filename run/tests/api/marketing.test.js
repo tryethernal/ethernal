@@ -6,7 +6,6 @@ jest.mock('jsonwebtoken', () => ({
 }));
 const db = require('../../lib/firebase');
 const { enqueueTask } = require('../../lib/tasks');
-const jwt = require('jsonwebtoken');
 
 const supertest = require('supertest');
 const app = require('../../app');
