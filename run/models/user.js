@@ -113,6 +113,7 @@ module.exports = (sequelize, DataTypes) => {
             defaultAccount: data.settings && data.settings.defaultAccount,
             gasLimit: data.settings && data.settings.gasLimit,
             gasPrice: data.settings && data.settings.gasPrice,
+            tracing: data.tracing,
             dataRetentionLimit: data.dataRetentionLimit
         }));
     }
