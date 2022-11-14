@@ -75,6 +75,7 @@ describe('processTransactions ', () => {
     it('Should process & store the trace if the workspace is public', async () => {
         const processTraceMock = jest.spyOn(Tracer.prototype, 'process');
         const saveTraceMock = jest.spyOn(Tracer.prototype, 'saveTrace');
+        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ rpcServer: 'http://localhost.com', tracing: 'other', public: true });
 
         await processTransactions('123', 'hardhat', [Transaction]);
 

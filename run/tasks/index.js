@@ -22,5 +22,6 @@ router.use('/reloadErc721Token', reloadErc721Token);
 router.use('/findAndProcessExistingErc721', findAndProcessExistingErc721);
 router.use('/batchBlockSync', batchBlockSync);
 router.use('/enforceDataRetentionForWorkspace', enforceDataRetentionForWorkspace);
+router.use('/processUser', require('./processUser'));
 
 module.exports = router;
