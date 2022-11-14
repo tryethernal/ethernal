@@ -18,3 +18,4 @@ queue:
 - name: secondaryBlockSync
 - name: enforceDataRetentionForWorkspace
 - name: initializeDefaultDataRetention
+- name: processUser
