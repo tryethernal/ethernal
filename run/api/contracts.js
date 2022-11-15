@@ -94,7 +94,8 @@ router.post('/:address/tokenProperties', authMiddleware, async (req, res) => {
                 tokenName: data.properties.tokenName,
                 totalSupply: data.properties.totalSupply,
                 has721Metadata: data.properties.has721Metadata,
-                has721Enumerable: data.properties.has721Enumerable
+                has721Enumerable: data.properties.has721Enumerable,
+                bytecode: data.properties.bytecode
             });
         }
 
