@@ -19,7 +19,7 @@ const serverFunctions = {
         var parsedArtifact = JSON.parse(contract.ast.artifact);
         var contractAddress = contract.address;
 
-        var instanceDecoder = await Decoder.forArtifactAt(parsedArtifact, contractAddress, { provider: web3.currentProvider, projectInfo: { artifacts: [...Object.values(contract.ast.dependencies).map(dep => JSON.parse(dep)), parsedArtifact] }});
+        var instanceDecoder = await Decoder.forArtifactAt(parsedArtifact, web3.currentProvider, contractAddress, { artifacts: [...Object.values(contract.ast.dependencies).map(dep => JSON.parse(dep)), parsedArtifact] });
         var storage = new Storage(instanceDecoder);
         await storage.buildStructure();
         return storage;
