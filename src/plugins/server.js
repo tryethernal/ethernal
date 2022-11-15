@@ -867,10 +867,14 @@ export const serverPlugin = {
             processContracts: async function(rpcServer) {
                 try {
                     const contracts = (await Vue.prototype.server.getProcessableContracts()).data;
+                    const provider = serverFunctions._getProvider(rpcServer);
                     for (let i = 0; i < contracts.length; i++) {
                         const contract = contracts[i];
                         try {
-                            const properties = await findPatterns(rpcServer, contract.address, contract.abi);
+                            let properties = await findPatterns(rpcServer, contract.address, contract.abi);
+                            const bytecode = await provider.getCode(contract.address);
+                            if (bytecode.length > 0)
+                                properties = { ...properties, bytecode: bytecode };
                             await Vue.prototype.server.setTokenProperties(contract.address, properties);
                         } catch(error) {
                             console.log(`Error processing contract ${contract.address}`);

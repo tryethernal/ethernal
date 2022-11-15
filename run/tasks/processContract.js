@@ -167,7 +167,7 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
             throw new Error('Missing parameter.');
         }
         
-        let scannerMetadata = {}, tokenPatterns = [], asm;
+        let scannerMetadata = {}, tokenPatterns = [], asm, bytecode, hashedBytecode;
 
         const workspace = await db.getWorkspaceById(data.workspaceId);
         const contract = await db.getWorkspaceContractById(workspace.id, data.contractId);
@@ -182,13 +182,19 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
             scannerMetadata = await findScannerMetadata(workspace, contract);
 
         const connector = new ContractConnector(workspace.rpcServer, contract.address, []);
-        const bytecode = await connector.getBytecode();
-        const hashedBytecode = ethers.utils.keccak256(bytecode);
 
-        try {
-            asm = yasold.decompileToText(bytecode);
-        } catch (error) {
-            writeLog({ functionName: 'tasks.processContract.yasold', error: error, extra: { data: data } });
+        if (workspace.public)
+            bytecode = await connector.getBytecode();
+        else
+            bytecode = contract.bytecode;
+
+        if (bytecode) {
+            hashedBytecode = ethers.utils.keccak256(bytecode);
+            try {
+                asm = yasold.decompileToText(bytecode);
+            } catch (error) {
+                writeLog({ functionName: 'tasks.processContract.yasold', error: error, extra: { data: data } });
+            }
         }
 
         const metadata = sanitize({

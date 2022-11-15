@@ -12,7 +12,6 @@
   },
   "main": "background.js",
   "dependencies": {
-    "@highlightjs/vue-plugin": "^1.0.2",
     "@metamask/detect-provider": "^1.2.0",
     "@popperjs/core": "^2.11.5",
     "@truffle/artifactor": "^4.0.93",

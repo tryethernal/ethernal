@@ -2361,13 +2361,6 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@highlightjs/vue-plugin@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@highlightjs/vue-plugin/-/vue-plugin-1.0.2.tgz#b63cc02b9f89803698166335e2c62028b52b3c26"
-  integrity sha512-4VVPeUZL6/NZ7J6/23RQIYLm9HR9rnOdz+cxx7/ISgtMVaf0vHAAwgHKmB54GNs5VvJlWMnKOuiLVcy30elz8g==
-  dependencies:
-    highlight.js "^10.7.2"
-
 "@intervolga/optimize-cssnano-plugin@^1.0.5":
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@intervolga/optimize-cssnano-plugin/-/optimize-cssnano-plugin-1.0.6.tgz#be7c7846128b88f6a9b1d1261a0ad06eb5c0fdf8"
