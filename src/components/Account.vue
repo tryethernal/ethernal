@@ -47,7 +47,7 @@ export default {
                 webhookField.setAttribute('type', 'hidden');
                 window.getSelection().removeAllRanges();
             }
-        },
+        }
     }
 }
 </script>
