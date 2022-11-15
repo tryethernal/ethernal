@@ -34,7 +34,7 @@ const BASE_URL = '/tasks/contractProcessing';
 beforeEach(() => jest.clearAllMocks());
 
 describe('POST /', () => {
-    jest.spyOn(db, 'getWorkspaceById').mockResolvedValue({ id: 1, name: 'My Workspace' });
+    jest.spyOn(db, 'getWorkspaceById').mockResolvedValue({ id: 1, name: 'My Workspace', public: true });
     jest.spyOn(db, 'getUserById').mockResolvedValue({ id: 1, firebaseUserId: '123' });
     jest.spyOn(db, 'getWorkspaceContractById').mockResolvedValue({ workspaceId: 1, address: '0x123' });
     jest.spyOn(db, 'getContractByHashedBytecode').mockResolvedValue(null);
