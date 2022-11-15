@@ -28,7 +28,7 @@ describe('Address.vue', () => {
             .mockResolvedValue({ data: null });
     });
 
-    it('Should display the contract verified text if it is a public explorer & contract is not verified', async () => {
+    it('Should display the contract verified text if it is a public explorer & contract is verified', async () => {
         jest.spyOn(helper.mocks.server, 'getContract')
             .mockResolvedValueOnce({ data: { address: '0x123', name: 'Amalfi', abi: AmalfiContract.artifact.abi, verificationStatus: 'success' }});
 
@@ -235,6 +235,34 @@ describe('Address.vue', () => {
 
         await wrapper.find('#storageTab').trigger('click');        
         await wrapper.vm.$nextTick();
+        
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should display the bytecode by default if present', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValueOnce({ data: { address: '0x123', name: 'Amalfi', abi: AmalfiContract.artifact.abi, bytecode: '0x123456' }});
+
+        const wrapper = helper.mountFn(Address, {
+            propsData: {
+                hash: '0x123'
+            },
+            stubs: ['Address-Transactions-List', 'Contract-Call-Options', 'Contract-Read-Method', 'Contract-Write-Method', 'Token-Balances', 'ERC-721-Collection'],
+            getters: {
+                accounts: jest.fn().mockReturnValueOnce(['0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA']),
+                chain: jest.fn().mockReturnValueOnce('ethereum'),
+                isPublicExplorer: jest.fn().mockReturnValueOnce(false),
+                currentWorkspace: jest.fn(() => ({
+                    isAdmin: false,
+                    settings: {}
+                }))
+            }
+        });
+
+        await flushPromises();
+
+        await wrapper.find('#codeTab').trigger('click');
+        await flushPromises();
         
         expect(wrapper.html()).toMatchSnapshot();
     });
