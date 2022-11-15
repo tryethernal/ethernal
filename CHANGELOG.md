@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.13.0] - 2022-11-15
+### Added
+- Bytecode & Assembly version are now displayed on contracts pages under the "Code" tab
+
+### Fixed
+- Bug preventing from reading storage
+
 ## [2.12.1] - 2022-11-14
 ### Added
 - On subscription, add email to Ghost blog (if env variable is set)
