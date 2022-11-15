@@ -16,6 +16,7 @@ require('../mocks/lib/transactions');
 require('../mocks/middlewares/taskAuth');
 require('../mocks/lib/pusher');
 require('../mocks/lib/rpc');
+require('../mocks/lib/yasold');
 
 const axios = require('axios');
 const ethers = require('ethers');
@@ -60,7 +61,7 @@ describe('POST /', () => {
             }})
             .expect(200)
             .then(() => {
-                expect(db.storeContractData).toHaveBeenCalledWith('123', 'My Workspace', '0x123', { name: 'Contract', abi: [{ my: 'function' }]});
+                expect(db.storeContractData).toHaveBeenCalledWith('123', 'My Workspace', '0x123', { asm: 'asm', bytecode: '0x1234', hashedBytecode: '0x56570de287d73cd1cb6092bb8fdee6173974955fdef345ae579ee9f475ea7432', name: 'Contract', abi: [{ my: 'function' }]});
                 done();
             });
     });
@@ -83,7 +84,7 @@ describe('POST /', () => {
             .expect(200)
             .then(() => {
                 expect(db.storeContractData).toHaveBeenCalledWith('123', 'My Workspace', '0x456', { address: '0x456' });
-                expect(db.storeContractData).toHaveBeenCalledWith('123', 'My Workspace', '0x123', { name: 'Contract', proxy: '0x456', abi: [{ my: 'function' }]});
+                expect(db.storeContractData).toHaveBeenCalledWith('123', 'My Workspace', '0x123', { name: 'Contract', asm: 'asm', bytecode: '0x1234', hashedBytecode: '0x56570de287d73cd1cb6092bb8fdee6173974955fdef345ae579ee9f475ea7432', proxy: '0x456', abi: [{ my: 'function' }]});
                 done();
             });
     });
@@ -102,6 +103,7 @@ describe('POST /', () => {
             has721Enumerable: jest.fn().mockResolvedValue(true),
             symbol: jest.fn().mockResolvedValue('ETL'),
             totalSupply: jest.fn().mockResolvedValue('1000'),
+            getBytecode: jest.fn().mockResolvedValue('0x1234')
         }));
         jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 1, name: 'My Workspace', public: true, rpcServer: 'http://rpc.ethernal.com' });
         jest.spyOn(db, 'getWorkspaceContractById').mockResolvedValue({ workspaceId: 1, address: '0x123', abi: ERC721_ABI });
@@ -135,10 +137,11 @@ describe('POST /', () => {
         });
         jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 1, name: 'My Workspace', public: true, rpcServer: 'http://rpc.ethernal.com' });
         jest.spyOn(db, 'getWorkspaceContractById').mockResolvedValue({ workspaceId: 1, address: '0x123' });
-        ContractConnector.mockImplementationOnce(() => ({
+        ContractConnector.mockImplementation(() => ({
             has721Metadata: jest.fn().mockResolvedValue(true),
             has721Enumerable: jest.fn().mockResolvedValue(true),
-            has721Interface: jest.fn().mockResolvedValue(true)
+            has721Interface: jest.fn().mockResolvedValue(true),
+            getBytecode: jest.fn().mockResolvedValue('0x1234')
         }));
         ERC721Connector.mockImplementationOnce(() => ({
             name: jest.fn().mockResolvedValue('Ethernal'),
