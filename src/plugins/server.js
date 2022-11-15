@@ -19,7 +19,7 @@ const serverFunctions = {
         var parsedArtifact = JSON.parse(contract.ast.artifact);
         var contractAddress = contract.address;
 
-        var instanceDecoder = await Decoder.forArtifactAt(parsedArtifact, contractAddress, { provider: web3.currentProvider, projectInfo: { artifacts: [...Object.values(contract.ast.dependencies).map(dep => JSON.parse(dep)), parsedArtifact] }});
+        var instanceDecoder = await Decoder.forArtifactAt(parsedArtifact, web3.currentProvider, contractAddress, { artifacts: [...Object.values(contract.ast.dependencies).map(dep => JSON.parse(dep)), parsedArtifact] });
         var storage = new Storage(instanceDecoder);
         await storage.buildStructure();
         return storage;
@@ -867,10 +867,14 @@ export const serverPlugin = {
             processContracts: async function(rpcServer) {
                 try {
                     const contracts = (await Vue.prototype.server.getProcessableContracts()).data;
+                    const provider = serverFunctions._getProvider(rpcServer);
                     for (let i = 0; i < contracts.length; i++) {
                         const contract = contracts[i];
                         try {
-                            const properties = await findPatterns(rpcServer, contract.address, contract.abi);
+                            let properties = await findPatterns(rpcServer, contract.address, contract.abi);
+                            const bytecode = await provider.getCode(contract.address);
+                            if (bytecode.length > 0)
+                                properties = { ...properties, bytecode: bytecode };
                             await Vue.prototype.server.setTokenProperties(contract.address, properties);
                         } catch(error) {
                             console.log(`Error processing contract ${contract.address}`);

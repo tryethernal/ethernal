@@ -4,5 +4,8 @@ module.exports = {
   transformIgnorePatterns: ['/node_modules/(?!vuetify|vue)'],
   restoreMocks: true,
   clearMocks: true,
-  resetMocks: true
+  resetMocks: true,
+  moduleNameMapper: {
+    '\\.(css|less)$': '<rootDir>/tests/unit/mocks/styles.js',
+  }
 }

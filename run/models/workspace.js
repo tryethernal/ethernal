@@ -333,7 +333,9 @@ module.exports = (sequelize, DataTypes) => {
             watchedPaths: contract.watchedPaths,
             has721Metadata: contract.has721Metadata,
             has721Enumerable: contract.has721Enumerable,
-            ast: contract.ast
+            ast: contract.ast,
+            bytecode: contract.bytecode,
+            asm: contract.asm
         });
 
         if (existingContract)
