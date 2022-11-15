@@ -2,6 +2,7 @@ const axios = require('axios');
 const express = require('express');
 const ethers = require('ethers');
 const { sanitize } = require('../lib/utils');
+const yasold = require('../lib/yasold');
 const { isErc20, isErc721 } = require('../lib/contract');
 const SELECTORS = require('../lib/abis/selectors.json');
 const db = require('../lib/firebase');
@@ -166,7 +167,7 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
             throw new Error('Missing parameter.');
         }
         
-        let scannerMetadata = {}, tokenPatterns = [];
+        let scannerMetadata = {}, tokenPatterns = [], asm;
 
         const workspace = await db.getWorkspaceById(data.workspaceId);
         const contract = await db.getWorkspaceContractById(workspace.id, data.contractId);
@@ -180,10 +181,23 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
         if (!localMetadata.name || !localMetadata.abi)
             scannerMetadata = await findScannerMetadata(workspace, contract);
 
+        const connector = new ContractConnector(workspace.rpcServer, contract.address, []);
+        const bytecode = await connector.getBytecode();
+        const hashedBytecode = ethers.utils.keccak256(bytecode);
+
+        try {
+            asm = yasold.decompileToText(bytecode);
+        } catch (error) {
+            writeLog({ functionName: 'tasks.processContract.yasold', error: error, extra: { data: data } });
+        }
+
         const metadata = sanitize({
             name: contract.name || localMetadata.name || scannerMetadata.name,
             abi: contract.abi || localMetadata.abi || scannerMetadata.abi,
-            proxy: scannerMetadata.proxy
+            proxy: scannerMetadata.proxy,
+            bytecode: bytecode,
+            hashedBytecode: hashedBytecode,
+            asm: asm
         });
 
         if (workspace.public && !contract.processed) {
@@ -193,22 +207,26 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
                 processed: true,
             }));
 
-            const erc721 = new ERC721Connector(workspace.rpcServer, contract.address, {
-                metadata: tokenData.has721Metadata,
-                enumerable: tokenData.has721Enumerable
-            });
+            if (tokenData.patterns.indexOf('erc721') > -1 && tokenData.has721Enumerable) {
+                const erc721 = new ERC721Connector(workspace.rpcServer, contract.address, {
+                    metadata: tokenData.has721Metadata,
+                    enumerable: tokenData.has721Enumerable
+                });
 
-            try {
-                const collection = await erc721.fetchAndStoreAllTokens(workspace.id);
-            } catch(_error) {
-                console.log(_error);
+                try {
+                    const collection = await erc721.fetchAndStoreAllTokens(workspace.id);
+                } catch(_error) {
+                    console.log(_error);
+                }
             }
+
+
         }
 
         if (metadata.proxy)
             await db.storeContractData(user.firebaseUserId, workspace.name, metadata.proxy, { address: metadata.proxy });
 
-        if (metadata.name || metadata.abi) {
+        if (metadata.name || metadata.abi || metadata.bytecode) {
             await db.storeContractData(
                 user.firebaseUserId,
                 workspace.name,

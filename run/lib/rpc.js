@@ -111,6 +111,14 @@ class ContractConnector {
         }
     }
 
+    async getBytecode() {
+        try {
+            return await this.provider.getCode(this.contract.address);
+        } catch(error) {
+            return (error.body ? JSON.parse(error.body).error.message : error.reason) || error.message || "Can't connect to the server";
+        }
+    }
+
     has721Interface() {
         try {
             return this.contract.supportsInterface(this.INTERFACE_IDS['721']);

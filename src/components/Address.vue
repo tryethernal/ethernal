@@ -19,7 +19,7 @@
         <v-tabs v-model="tab">
             <v-tab href="#transactions">Transactions</v-tab>
             <v-tab id="contractTab" href="#contract" v-if="isContract">Contract</v-tab>
-            <v-tab id="codeTab" href="#code" v-if="isContract && isPublicExplorer">Code</v-tab>
+            <v-tab id="codeTab" href="#code" v-if="isContract">Code</v-tab>
             <v-tab id="storageTab" href="#storage" v-if="isContract && !contract.imported && !isPublicExplorer">Storage</v-tab>
             <v-tab id="erc20Balances" href="#erc20Balances">ERC-20 Tokens</v-tab>
             <v-tab id="erc721Balances" href="#erc721Balances">ERC-721 Tokens</v-tab>
@@ -172,12 +172,50 @@
             </v-tab-item>
 
             <v-tab-item value="code">
-                <Contract-Verification :address="hash" v-if="isUnverifiedContract" />
-                <v-card class="mt-2" outlined v-else>
-                    <v-card-text>
-                        This contract has already been verified. Source code & compilation settings will be added here soon.
-                    </v-card-text>
-                </v-card>
+                 <v-expansion-panels class="mt-2" v-model="activeCodePanel">
+                    <v-expansion-panel class="mb-2" v-if="isPublicExplorer">
+                        <v-expansion-panel-header>
+                            <h4>Contract Verification<span v-if="isVerifiedContract" class="ml-2"><v-icon small color="success">mdi-check-circle</v-icon></span></h4>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <Contract-Verification :address="hash" v-if="isUnverifiedContract" />
+                            <v-card class="mt-2" outlined v-else>
+                                <v-card-text>
+                                    This contract has already been verified. Source code & compilation settings will be added here soon.
+                                </v-card-text>
+                            </v-card>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+
+                    <v-expansion-panel class="mb-2">
+                        <v-expansion-panel-header><h4>Bytecode</h4></v-expansion-panel-header>
+                        <v-expansion-panel-content v-if="contract.bytecode">
+                            <v-textarea dense outlined disabled :value="contract.bytecode">
+                                <template v-slot:append>
+                                    <v-btn icon @click="copyBytecode()">
+                                        <v-icon small>mdi-content-copy</v-icon>
+                                    </v-btn>
+                                </template>
+                            </v-textarea>
+                            <input type="hidden" id="copyElement" :value="contract.bytecode">
+                        </v-expansion-panel-content>
+                        <v-expansion-panel-content v-else>
+                            No bytecode for this contract. Redeploy to upload it.
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+
+                    <v-expansion-panel>
+                        <v-expansion-panel-header><h4>Assembly</h4></v-expansion-panel-header>
+                        <v-expansion-panel-content v-if="contract.asm">
+                            <pre>
+                                <div class="hljs" v-html="highlightedAsm"></div>
+                            </pre>
+                        </v-expansion-panel-content>
+                        <v-expansion-panel-content v-else>
+                            No assembly for this contract. Redeploy to upload it.
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
             </v-tab-item>
 
             <v-tab-item v-if="isErc721" value="collection">
@@ -188,7 +226,9 @@
 </template>
 
 <script>
+import 'highlight.js/styles/vs2015.css';
 const ethers = require('ethers');
+const hljs = require('highlight.js');
 const { sanitize } = require('../lib/utils');
 
 import { mapGetters } from 'vuex';
@@ -253,7 +293,8 @@ export default {
         storageError: false,
         loadingTx: true,
         rpcConnectionStatus: false,
-        senderMode: null
+        senderMode: null,
+        activeCodePanel: 1
     }),
     created: function() {
         if (!this.tab)
@@ -264,6 +305,22 @@ export default {
             this.rpcConnectionStatus = true;
     },
     methods: {
+        copyBytecode: function() {
+            const webhookField = document.querySelector('#copyElement');
+            webhookField.setAttribute('type', 'text');
+            webhookField.select();
+
+            try {
+                const copied = document.execCommand('copy');
+                const message = copied ? 'Bytecode copied!' : `Couldn't copy bytecode`;
+                alert(message);
+            } catch(error) {
+                alert(`Couldn't copy token`);
+            } finally {
+                webhookField.setAttribute('type', 'hidden');
+                window.getSelection().removeAllRanges();
+            }
+        },
         onCallOptionChanged(newCallOptions) {
             this.callOptions = sanitize({
                 ...this.callOptions,
@@ -353,6 +410,8 @@ export default {
                     if (!data) return;
                     this.contract = data;
 
+                    this.activeCodePanel = +this.isPublicExplorer;
+
                     if (this.contract.abi)
                         this.contractInterface = new ethers.utils.Interface(this.contract.abi);
 
@@ -407,6 +466,9 @@ export default {
         isTokenContract: function() {
             return !!this.contract && this.contract.patterns && !!this.contract.patterns.length;
         },
+        highlightedAsm() {
+            return this.contract && this.contract.asm && hljs.highlight(this.contract.asm, { language: 'x86asm' }).value
+        },
         tab: {
             set(tab) {
                 this.$router.replace({ query: { ...this.$route.query, tab } }).catch(()=>{});
@@ -432,3 +494,19 @@ export default {
     }
 }
 </script>
+<style scoped>
+.v-window {
+    overflow: visible;
+}
+.hljs {
+    border: 1px solid gray;
+    padding: 0.5em;
+    white-space: pre;
+    font-family: monospace;
+    line-height: 1.2;
+    overflow: scroll;
+    font-weight: 600;
+    text-transform: uppercase;
+    height: 80vh
+}
+</style>
