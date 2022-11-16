@@ -443,7 +443,7 @@ module.exports = (sequelize, DataTypes) => {
                     include: [
                         {
                             model: sequelize.models.Contract,
-                            attributes: ['name', 'patterns', 'tokenDecimals', 'tokenSymbol', 'tokenName', 'ast'],
+                            attributes: ['name', 'patterns', 'tokenDecimals', 'tokenSymbol', 'tokenName'],
                             as: 'contract',
                             where: {
                                 [Op.and]: sequelize.where(
