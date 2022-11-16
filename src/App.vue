@@ -104,7 +104,7 @@
 
             <template v-slot:append>
                 <v-list dense nav>
-                    <v-list-item link v-if="isPublicExplorer && ethereum" @click="addNetworkToMetamask()">
+                    <v-list-item link v-if="isPublicExplorer && ethereum && hasNetworkInfo" @click="addNetworkToMetamask()">
                         <v-list-item-icon>
                             <Icon icon="arcticons:metamask" width="24" height="24" />
                         </v-list-item-icon>
@@ -275,7 +275,7 @@ export default {
         setupPublicExplorer: function({ data }) {
             if (!data)
                 return;
-            console.log(data);
+
             this.$store.dispatch('setPublicExplorerData', {
                 name: data.name,
                 token: data.token,
@@ -417,7 +417,10 @@ export default {
             'isUserLoggedIn',
             'isUserAdmin'
         ]),
-        formattedExpectedChainId: function() {
+        hasNetworkInfo() {
+            return this.publicExplorer && this.publicExplorer.name && this.publicExplorer.domain && this.publicExplorer.token;
+        },
+        formattedExpectedChainId() {
             return `0x${parseInt(this.currentWorkspace.networkId).toString(16)}`;
         },
         isAuthPage: function() { return this.$route.path.indexOf('/auth') > -1 },
