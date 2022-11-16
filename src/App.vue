@@ -104,6 +104,14 @@
 
             <template v-slot:append>
                 <v-list dense nav>
+                    <v-list-item link v-if="isPublicExplorer && ethereum && hasNetworkInfo" @click="addNetworkToMetamask()">
+                        <v-list-item-icon>
+                            <Icon icon="arcticons:metamask" width="24" height="24" />
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>Add To Metamask</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
                     <v-list-item v-for="(link, idx) in links" target="_blank" :href="link.url" :key="idx">
                         <v-list-item-icon>
                             <v-icon>{{ link.icon || 'mdi-open-in-new' }}</v-icon>
@@ -165,8 +173,10 @@
 </template>
 
 <script>
+import { Icon } from '@iconify/vue2';
 import WebFont from 'webfontloader';
 import Vue from 'vue';
+import detectEthereumProvider from '@metamask/detect-provider';
 import store from './plugins/store';
 import { pusherPlugin } from './plugins/pusher';
 import { mapGetters } from 'vuex';
@@ -180,7 +190,8 @@ export default {
     components: {
         RpcConnector,
         OnboardingModal,
-        PublicExplorerExplainerModal
+        PublicExplorerExplainerModal,
+        Icon
     },
     data: () => ({
         version: process.env.VUE_APP_VERSION,
@@ -197,14 +208,39 @@ export default {
         links: [],
         banner: null,
         isRemote: false,
-        isOverlayActive: false
+        isOverlayActive: false,
+        ethereum: null
     }),
     created: function() {
+        detectEthereumProvider().then(provider => {
+            if (!provider || provider !== window.ethereum) return;
+            this.ethereum = provider;
+        });
         this.isOverlayActive = true;
         if (this.isPublicExplorer)
             return this.initPublicExplorer();
     },
     methods: {
+        addNetworkToMetamask() {
+            if (!this.ethereum) return;
+
+            this.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [
+                    {
+                        chainId: this.formattedExpectedChainId,
+                        chainName: this.publicExplorer.name,
+                        rpcUrls: [this.currentWorkspace.rpcServer],
+                        blockExplorerUrls: [`https://${this.publicExplorer.domain}`],
+                        nativeCurrency: {
+                            name: this.publicExplorer.token,
+                            symbol: this.publicExplorer.token,
+                            decimals: 18
+                        }
+                    }
+                ]
+            }).catch(console.log);
+        },
         openPublicExplorerExplainerModal() {
             this.$refs.publicExplorerExplainerModal.open();
         },
@@ -239,7 +275,7 @@ export default {
         setupPublicExplorer: function({ data }) {
             if (!data)
                 return;
-            console.log(data);
+
             this.$store.dispatch('setPublicExplorerData', {
                 name: data.name,
                 token: data.token,
@@ -381,6 +417,12 @@ export default {
             'isUserLoggedIn',
             'isUserAdmin'
         ]),
+        hasNetworkInfo() {
+            return this.publicExplorer && this.publicExplorer.name && this.publicExplorer.domain && this.publicExplorer.token;
+        },
+        formattedExpectedChainId() {
+            return `0x${parseInt(this.currentWorkspace.networkId).toString(16)}`;
+        },
         isAuthPage: function() { return this.$route.path.indexOf('/auth') > -1 },
         canDisplaySides: function() { return (this.isUserLoggedIn || this.isPublicExplorer) && !this.isAuthPage }
     }
