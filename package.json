@@ -12,6 +12,7 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@iconify/vue2": "^2.0.0",
     "@metamask/detect-provider": "^1.2.0",
     "@popperjs/core": "^2.11.5",
     "@truffle/artifactor": "^4.0.93",
