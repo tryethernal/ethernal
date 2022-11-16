@@ -581,6 +581,7 @@ module.exports = (sequelize, DataTypes) => {
 
     getUnprocessedContracts() {
         return this.getContracts({
+            attributes: ['address', 'abi'],
             where: {
                 processed: false
             }
