@@ -63,7 +63,8 @@ export default {
                                 {
                                     chainId: this.formattedExpectedChainId,
                                     chainName: this.publicExplorer.name,
-                                    rpcUrls: [this.currentWorkspace.rpcServer]
+                                    rpcUrls: [this.currentWorkspace.rpcServer],
+                                    blockExplorerUrls: [this.publicExplorer.domain]
                                 }
                             ]
                         }).catch(console.log);
