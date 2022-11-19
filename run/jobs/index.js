@@ -1,6 +1,17 @@
-const express = require('express');
-const router = express.Router();
+module.exports = {
+    // High priority
+    blockSync: require('./blockSync'),
+    transactionSync: require('./transactionSync'),
+    batchBlockSync: require('./batchBlockSync'),
+    
+    // Medium Priority
+    contractProcessing: require('./contractProcessing'),
+    transactionProcessing: require('./transactionProcessing'),
+    reloadErc721Token: require('./reloadErc721Token'),
 
-router.use('/enforceDataRetention', require('./enforceDataRetention'));
-
-module.exports = router;
+    // Low Priority
+    submitExplorerLead: require('./submitExplorerLead'),
+    processWorkspace: require('./processWorkspace'),
+    processUser: require('./processUser'),
+    enforceDataRetentionForWorkspace: require('./enforceDataRetentionForWorkspace')
+};

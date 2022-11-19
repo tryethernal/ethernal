@@ -1,6 +1,6 @@
 const ethers = require('ethers');
 const { parseTrace, processTrace } = require('./trace');
-const { enqueueTask } = require('./tasks');
+const { enqueue } = require('./queue');
 const writeLog = require('./writeLog');
 const ERC721_ABI = require('./abis/erc721.json');
 const ERC721_ENUMERABLE_ABI = require('./abis/erc721Enumerable.json');
@@ -254,12 +254,13 @@ class ERC721Connector {
 
         for (let i = 0; i < totalSupply; i++) {
             const tokenId = await this.tokenByIndex(i);
-            await enqueueTask('reloadErc721Token', {
-                workspaceId: workspaceId,
-                address: this.address,
-                tokenId: tokenId,
-                secret: process.env.AUTH_SECRET
-            }, `${process.env.CLOUD_RUN_ROOT}/tasks/reloadErc721Token`);
+            await enqueue('reloadErc721Token',
+                `reloadErc721Token-${workspaceId}-${this.address}-${tokenId}`, {
+                    workspaceId: workspaceId,
+                    address: this.address,
+                    tokenId: tokenId
+                }
+            );
         }
     }
 }

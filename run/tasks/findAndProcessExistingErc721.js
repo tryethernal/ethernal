@@ -7,7 +7,7 @@ const { ERC721Connector } = require('../lib/rpc');
 const { sanitize } = require('../lib/utils');
 const Workspace = db.Workspace;
 const router = express.Router();
-const { enqueueTask } = require('../lib/tasks');
+const { enqueue } = require('../lib/queue');
 
 router.post('/', taskAuthMiddleware, async (req, res) => {
     try {
@@ -24,11 +24,7 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
             await workspace.safeCreateOrUpdateContract({ address: contracts[i].address, processed: false });
 
         for (let i = 0; i < contracts.length; i++)
-            enqueueTask('contractProcessing', {
-                contractId: contracts[i].id,
-                workspaceId: contracts[i].workspaceId,
-                secret: process.env.AUTH_SECRET
-            }, `${process.env.CLOUD_RUN_ROOT}/tasks/contractProcessing`)
+            enqueue(`contractProcessing`, `contractProcessing-${contracts[i].id}`, { contractId: contracts[i].id, workspaceId: contracts[i].workspaceId });
 
         res.sendStatus(200);
     } catch(error) {

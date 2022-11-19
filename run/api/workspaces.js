@@ -4,6 +4,7 @@ const { sanitize, stringifyBns } = require('../lib/utils');
 const { encode, decrypt, decode } = require('../lib/crypto');
 const { enqueueTask } = require('../lib/tasks');
 const db = require('../lib/firebase');
+const { enqueue } = require('../lib/queue');
 
 const router = express.Router();
 
@@ -131,10 +132,9 @@ router.post('/', authMiddleware, async (req, res) => {
 
         const workspace = await db.createWorkspace(data.uid, filteredWorkspaceData);
 
-        await enqueueTask('processWorkspace', {
+        await enqueue('processWorkspace', `processWorkspace-${data.uid}-${workspace.name}`, {
             uid: data.uid,
-            workspace: filteredWorkspaceData.name,
-            secret: process.env.AUTH_SECRET
+            workspace: workspace.name,
         });
 
         res.status(200).json(workspace);
@@ -154,10 +154,9 @@ router.post('/settings', authMiddleware, async (req, res) => {
 
         await db.updateWorkspaceSettings(data.uid, data.workspace, data.settings);
 
-        await enqueueTask('processWorkspace', {
+        await enqueue('processWorkspace', `processWorkspace-${data.uid}-${data.workspace}`, {
             uid: data.uid,
             workspace: data.workspace,
-            secret: process.env.AUTH_SECRET
         });
 
         res.sendStatus(200);

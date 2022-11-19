@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 const { trigger } = require('../lib/pusher');
-const { enqueueTask } = require('../lib/tasks');
+const { enqueue } = require('../lib/queue');
 
 module.exports = (sequelize, DataTypes) => {
   class TokenTransfer extends Model {
@@ -69,12 +69,13 @@ module.exports = (sequelize, DataTypes) => {
             });
 
             if (tokenTransfer.tokenId && transaction.workspace.public)
-                 await enqueueTask('reloadErc721Token', {
-                    workspaceId: tokenTransfer.workspaceId,
-                    address: tokenTransfer.token,
-                    tokenId: tokenTransfer.tokenId,
-                    secret: process.env.AUTH_SECRET
-                }, `${process.env.CLOUD_RUN_ROOT}/tasks/reloadErc721Token`);
+                await enqueue('reloadErc721Token',
+                    `reloadErc721Token-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.tokenId}`, {
+                        workspaceId: tokenTransfer.workspaceId,
+                        address: tokenTransfer.token,
+                        tokenId: tokenTransfer.tokenId
+                    }
+                );
 
             if (!transaction.workspace.public)
                 trigger(`private-processableTransactions;workspace=${transaction.workspace.id}`, 'new', transaction.toJSON());

@@ -556,11 +556,11 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
-    async reset(hourInterval) {
+    async reset(dayInterval) {
         try {
             const filter = { where: { workspaceId: this.id }};
             if (hourInterval)
-                filter['where']['createdAt'] = { [Op.lt]: sequelize.literal(`NOW() - interval '${hourInterval} hour'`)};
+                filter['where']['createdAt'] = { [Op.lt]: sequelize.literal(`NOW() - interval '${dayInterval} day'`)};
 
             return sequelize.transaction(async (transaction) => {
                 await sequelize.models.Transaction.destroy(filter, { transaction });
