@@ -4,9 +4,12 @@ const moment = require('moment');
 module.exports = async job => {
     const data = job.data;
 
+    if (!process.env.EXPLORER_LEAD_SUBMISSION_ENDPOINT)
+        return;
+
     if (!data.workspace || !data.email) {
         console.log(data);
-        throw '[POST /tasks/submitExplorerLead] Missing parameter.';
+        throw '[jobs.submitExplorerLead] Missing parameter.';
     }
 
     const params = {

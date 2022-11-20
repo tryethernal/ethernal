@@ -31,7 +31,7 @@ module.exports = async job => {
         return await analytics.track(data.firebaseUserId, 'Sign Up');
     } catch(error) {
         if (error.context && error.context.startsWith('Member already exists'))
-            return res.sendStatus(200);
+            return;
 
         throw error;
     }

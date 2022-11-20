@@ -4,7 +4,6 @@ const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const { processTransactions } = require('../lib/transactions');
-const { enqueueTask } = require('../lib/tasks');
 const { enqueue } = require('../lib/queue');
 
 const router = express.Router();
@@ -68,8 +67,8 @@ router.post('/', authMiddleware, async (req, res) => {
                 });
         }
 
-        await enqueue('transactionSync', `transactionSync-${txSynced.hash}`, { 
-            userId: data.userId,
+        await enqueue('transactionProcessing', `transactionProcessing-${txSynced.hash}`, { 
+            userId: data.uid,
             workspace: data.workspace,
             transaction: txSynced
         }, 1);

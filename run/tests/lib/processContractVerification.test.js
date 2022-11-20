@@ -1,5 +1,5 @@
 require('../mocks/lib/firebase');
-require('../mocks/lib/tasks');
+require('../mocks/lib/queue');
 const db = require('../../lib/firebase');
 
 jest.mock('solc', () => ({

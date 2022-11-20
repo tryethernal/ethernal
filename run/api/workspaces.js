@@ -2,7 +2,6 @@ const express = require('express');
 const authMiddleware = require('../middlewares/auth');
 const { sanitize, stringifyBns } = require('../lib/utils');
 const { encode, decrypt, decode } = require('../lib/crypto');
-const { enqueueTask } = require('../lib/tasks');
 const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
 

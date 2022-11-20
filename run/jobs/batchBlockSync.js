@@ -15,7 +15,6 @@ module.exports = async job => {
 
     if (end - start >= MAX_CONCURRENT_BATCHES) {
         end = start + MAX_CONCURRENT_BATCHES;
-        writeLog({ functionName: 'jobs.processContract.batchBlockSync', error: `Requeuing batch ${end} to ${data.to}`, extra: {} });
         await enqueue('batchBlockSync', `batchBlockSync-${data.userId}-${data.workspace}-${end}-${parseInt(data.to)}`, {
             userId: data.userId,
             workspace: data.workspace,
@@ -26,7 +25,6 @@ module.exports = async job => {
     else
         end += 1;
 
-    writeLog({ functionName: 'jobs.processContract.batchBlockSync', error: `Syncing ${start} to ${end}`, extra: {} });
     for (let i = start; i < end; i++) {
         await enqueue('blockSync', `blockSync-batch-${data.userId}-${data.workspace}-${i}`, {
             userId: data.userId,

@@ -559,7 +559,7 @@ module.exports = (sequelize, DataTypes) => {
     async reset(dayInterval) {
         try {
             const filter = { where: { workspaceId: this.id }};
-            if (hourInterval)
+            if (dayInterval)
                 filter['where']['createdAt'] = { [Op.lt]: sequelize.literal(`NOW() - interval '${dayInterval} day'`)};
 
             return sequelize.transaction(async (transaction) => {

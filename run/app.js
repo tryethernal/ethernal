@@ -1,7 +1,6 @@
 const { initializeApp } = require('firebase-admin/app');
 const express = require('express');
 const cors = require('cors');
-
 const { ExpressAdapter } = require('@bull-board/express');
 const { createBullBoard } = require('@bull-board/api');
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
@@ -32,14 +31,14 @@ app.use(express.urlencoded({ extended: true }));
 if (process.env.CORS_DOMAIN)
     app.use(cors({ origin: process.env.CORS_DOMAIN }));
 
+
 const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath('/bull');
-
 createBullBoard({
     queues: Object.values(queues).map(queue => new BullMQAdapter(queue)),
     serverAdapter: serverAdapter,
-});
-    
+});    
+
 app.use('/api', api);
 app.use('/webhooks', webhooks);
 app.use('/bull', serverAdapter.getRouter());

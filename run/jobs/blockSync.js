@@ -1,6 +1,5 @@
 const { ProviderConnector } = require('../lib/rpc');
 const { sanitize, stringifyBns } = require('../lib/utils');
-const { enqueueTask } = require('../lib/tasks');
 const db = require('../lib/firebase');
 const writeLog = require('../lib/writeLog');
 const transactionsLib = require('../lib/transactions');
@@ -11,7 +10,7 @@ module.exports = async job => {
 
     if (!data.userId || !data.workspace || data.blockNumber === undefined || data.blockNumber === null) {
         console.log(data);
-        throw new Error('[workers.blockSync] Missing parameter.');
+        throw new Error('[jobs.blockSync] Missing parameter.');
     }
 
     const workspace = await db.getWorkspaceByName(data.userId, data.workspace);
@@ -21,7 +20,7 @@ module.exports = async job => {
     const block = await providerConnector.fetchBlockWithTransactions(data.blockNumber);
 
     if (!block)
-        throw new Error("Couldn't fetch block from provider")
+        throw new Error("Couldn't fetch block from provider");
 
     const syncedBlock = sanitize(stringifyBns({ ...block, transactions: block.transactions.map(tx => stringifyBns(tx)) }));
     const storedBlock = await db.storeBlock(data.userId, data.workspace, syncedBlock);

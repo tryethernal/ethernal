@@ -4,7 +4,6 @@ const {
   Sequelize
 } = require('sequelize');
 const Op = Sequelize.Op;
-const { enqueueTask } = require('../lib/tasks');
 const { sanitize } = require('../lib/utils');
 const { trigger } = require('../lib/pusher');
 const { enqueue } = require('../lib/queue');

@@ -1,9 +1,9 @@
 require('../mocks/lib/trace');
 require('../mocks/lib/ethers');
-require('../mocks/lib/tasks');
+require('../mocks/lib/queue');
 const ethers = require('ethers');
 const { processTrace, parseTrace } = require('../../lib/trace');
-const { enqueueTask } = require('../../lib/tasks');
+const { enqueue } = require('../../lib/queue');
 const { ContractConnector, Tracer, ERC721Connector } = require('../../lib/rpc');
 const ERC721_ABI = require('../../lib/abis/erc721.json');
 const ERC721_ENUMERABLE_ABI = require('../../lib/abis/erc721Enumerable.json');
@@ -47,7 +47,7 @@ describe('ERC721Connector', () => {
         
         await connector.fetchAndStoreAllTokens(1);
 
-        expect(enqueueTask).toHaveBeenCalledTimes(2);
+        expect(enqueue).toHaveBeenCalledTimes(2);
     });
 });
 

@@ -2,7 +2,6 @@ const express = require('express');
 const { ProviderConnector } = require('../lib/rpc');
 const { sanitize, stringifyBns } = require('../lib/utils');
 const db = require('../lib/firebase');
-const { enqueueTask } = require('../lib/tasks');
 const { enqueue } = require('../lib/queue');
 const taskAuthMiddleware = require('../middlewares/taskAuth');
 
