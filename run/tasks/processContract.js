@@ -181,10 +181,10 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
         if (!localMetadata.name || !localMetadata.abi)
             scannerMetadata = await findScannerMetadata(workspace, contract);
 
-        const connector = new ContractConnector(workspace.rpcServer, contract.address, []);
-
-        if (workspace.public)
+        if (workspace.public) {
+            const connector = new ContractConnector(workspace.rpcServer, contract.address, []);
             bytecode = await connector.getBytecode();
+        }
         else
             bytecode = contract.bytecode;
 
@@ -222,7 +222,13 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
                 try {
                     const collection = await erc721.fetchAndStoreAllTokens(workspace.id);
                 } catch(_error) {
-                    console.log(_error);
+                    writeLog({
+                        functionName: 'tasks.processContract.fetchAndStoreAllTokens',
+                        error: _error,
+                        extra: {
+                            data: data,
+                        }
+                    });
                 }
             }
 
@@ -246,7 +252,13 @@ router.post('/', taskAuthMiddleware, async (req, res) => {
         try {
             await transactionsLib.processTransactions(user.firebaseUserId, workspace.name, transactions);
         } catch(error) {
-            console.log(error);
+            writeLog({
+                functionName: 'tasks.processContract.processTransactions',
+                error: error,
+                extra: {
+                    data: data,
+                }
+            });
         }
 
         trigger(`private-contracts;workspace=${contract.workspaceId};address=${contract.address}`, 'updated', null);
