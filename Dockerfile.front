@@ -2,7 +2,7 @@ FROM node:16
 
 ENV HOST=0.0.0.0
 
-WORKDIR /app
+WORKDIR /
 
 COPY public/ ./public/
 COPY src/ ./src/
