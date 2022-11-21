@@ -37,7 +37,7 @@ serverAdapter.setBasePath('/bull');
 createBullBoard({
     queues: Object.values(queues).map(queue => new BullMQAdapter(queue)),
     serverAdapter: serverAdapter,
-});    
+});
 
 app.use('/api', api);
 app.use('/webhooks', webhooks);

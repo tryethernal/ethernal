@@ -15,6 +15,7 @@ functions/report*
 .env.*
 functions/.runtimeconfig.json
 /ganache-db
+run/.env
 
 /firebase-export-*
 /.firebase

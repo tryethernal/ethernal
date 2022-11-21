@@ -1,0 +1,25 @@
+FROM node:16
+
+WORKDIR /app
+
+COPY run/api ./api
+COPY run/config ./config
+COPY run/jobs ./jobs
+COPY run/lib ./lib
+COPY run/middlewares ./middlewares
+COPY run/models ./models
+COPY run/webhooks ./webhooks
+COPY run/app.js .
+COPY run/index.js .
+COPY run/queues.js .
+COPY run/scheduler.js .
+COPY run/workers/priorities.json ./workers/
+COPY run/package*.json .
+
+RUN ls
+RUN npm ci --only=production
+
+CMD ["node", "index.js"]
+
+
+

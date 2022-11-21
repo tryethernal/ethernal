@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  firebase_auth_emulator:
+    image: spine3/firebase-emulator
+    ports:
+      - "9099:9099"
+    volumes:
+      - ./firebase.json:/firebase/firebase.json
+    environment:
+      GCP_PROJECT: ethernal-95a14
+  web:
+    volumes:
+      - ./run/:/app
+    depends_on:
+      - firebase_auth_emulator
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "8888:8888"
+    env_file: run/.env
+  front:
+    depends_on:
+      - web
+      - firebase_auth_emulator
+    ports:
+      - "8080:8080"
+    build:
+      context: .
+      dockerfile: Dockerfile.front
+    env_file: .env.development
