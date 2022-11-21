@@ -3,11 +3,12 @@ const router = express.Router();
 const db = require('../lib/firebase');
 const { encrypt } = require('../lib/crypto');
 const authMiddleware = require('../middlewares/auth');
+const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', workspaceAuthMiddleware, async (req, res) => {
     const data = { ...req.query, ...req.body.data };
     try {
-        const result = await db.getAccounts(data.uid, data.workspace, data.page, data.itemsPerPage, data.orderBy, data.order)
+        const result = await db.getAccounts(data.firebaseUserId, data.workspace.name, data.page, data.itemsPerPage, data.orderBy, data.order)
         res.status(200).json(result);
     } catch(error) {
         console.log(error);
