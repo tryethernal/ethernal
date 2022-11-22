@@ -6,7 +6,7 @@ module.exports = async job => {
 
     if (!data.userId || !data.workspace || !data.transaction) {
         console.log(data);
-        throw '[POST /tasks/transactionProcessing] Missing parameter.';
+        throw '[jobs.transactionProcessing] Missing parameter.';
     }
 
     return await processTransactions(data.userId, data.workspace, [data.transaction]);

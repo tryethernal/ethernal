@@ -3,13 +3,12 @@ const { ProviderConnector } = require('../lib/rpc');
 const { sanitize, stringifyBns } = require('../lib/utils');
 const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
-const taskAuthMiddleware = require('../middlewares/taskAuth');
 
 module.exports = async job => {
     const data = job.data;
     if (!data.userId || !data.workspace || !data.transaction) {
         console.log(data);
-        throw new Error('[workers.transactionSync] Missing parameter.');
+        throw new Error('[jobs.transactionSync] Missing parameter.');
     }
 
     const workspace = await db.getWorkspaceByName(data.userId, data.workspace);

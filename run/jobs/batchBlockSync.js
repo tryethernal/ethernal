@@ -1,6 +1,5 @@
 const { enqueue } = require('../lib/queue');
 const writeLog = require('../lib/writeLog');
-const taskAuthMiddleware = require('../middlewares/taskAuth');
 
 module.exports = async job => {
     const data = job.data;

@@ -10,7 +10,6 @@ const { ContractConnector, ERC721Connector, getProvider } = require('../lib/rpc'
 const writeLog = require('../lib/writeLog');
 const { trigger } = require('../lib/pusher');
 const transactionsLib = require('../lib/transactions');
-const taskAuthMiddleware = require('../middlewares/taskAuth');
 const router = express.Router();
 
 const ERC721_ABI = require('../lib/abis/erc721.json');
