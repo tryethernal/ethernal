@@ -57,7 +57,7 @@ export default {
                 }
 
                 const provider = this.isPublicExplorer ? window.ethereum : null;
-                const rpcServer = this.isPublicExplorer ? null : this.currentWorkspace.rpcServer
+                const rpcServer = this.isPublicExplorer && provider ? null : this.currentWorkspace.rpcServer
                 const options = {
                     ...this.options,
                     from: this.options.from.address
