@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.14.1] - 2022-11-23
+### Fixed
+- Bug that caused read method calls to be called on the Metamask network when calling with loaded accounts
+
 ## [2.14.0] - 2022-11-22
 ### Fixed
 - Bug that prevented contract call if the explorer is public and Metamask is not installed
