@@ -35,9 +35,6 @@ export const dbPlugin = {
 if (process.env.NODE_ENV == 'development') {
     _functions.useFunctionsEmulator(process.env.VUE_APP_FUNCTIONS_HOST);
     _auth().useEmulator(process.env.VUE_APP_AUTH_HOST);
-
-    const rtdbSplit = process.env.VUE_APP_RTDB_HOST.split(':');
-    _rtdb.useEmulator(rtdbSplit[0], rtdbSplit[1]);
 }
 
 export const auth = _auth;
