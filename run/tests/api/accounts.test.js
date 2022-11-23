@@ -2,6 +2,7 @@ require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/lib/crypto');
 require('../mocks/middlewares/auth');
+require('../mocks/middlewares/workspaceAuth');
 const db = require('../../lib/firebase');
 
 const supertest = require('supertest');
