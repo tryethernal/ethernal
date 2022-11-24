@@ -1,11 +1,12 @@
 const { initializeApp } = require('firebase-admin/app');
 const express = require('express');
 const cors = require('cors');
+
 const { ExpressAdapter } = require('@bull-board/express');
 const { createBullBoard } = require('@bull-board/api');
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
 
-const authMiddleware = require('./middlewares/auth');
+const bullboardMiddlewere = require('./middlewares/bullboard');
 const queues = require('./queues');
 
 const api = require('./api');
@@ -41,6 +42,7 @@ createBullBoard({
 
 app.use('/api', api);
 app.use('/webhooks', webhooks);
-app.use('/bull', serverAdapter.getRouter());
+
+app.use('/bull', bullboardMiddlewere, serverAdapter.getRouter());
 
 module.exports = app;

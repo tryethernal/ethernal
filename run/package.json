@@ -19,6 +19,7 @@
     "@google-cloud/logging": "^9.8.3",
     "@tryghost/admin-api": "^1.13.1",
     "axios": "^0.27.2",
+    "basic-auth": "^2.0.1",
     "bullmq": "^3.2.2",
     "cls-hooked": "^4.2.2",
     "cors": "^2.8.5",
