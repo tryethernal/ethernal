@@ -18,7 +18,6 @@ module.exports = {
         devServer: {
             host: '0.0.0.0',
             hot: true,
-            socketPort: 443,
             disableHostCheck: true,
             allowedHosts: ['app.ethernal.local', '.ethernal.explorer']
         },

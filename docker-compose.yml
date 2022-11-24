@@ -18,7 +18,8 @@ services:
   high_priority_worker:
     build:
       context: .
-      dockerfile: Dockerfile.worker
+      dockerfile: Dockerfile
+      target: dev
     depends_on:
       - firebase_auth_emulator
     env_file: run/.env
@@ -26,19 +27,21 @@ services:
   medium_priority_worker:
     build:
       context: .
-      dockerfile: Dockerfile.worker
+      dockerfile: Dockerfile
     depends_on:
       - firebase_auth_emulator
     env_file: run/.env
     command: node workers/mediumPriority.js
+    target: dev
   low_priority_worker:
     build:
       context: .
-      dockerfile: Dockerfile.worker
+      dockerfile: Dockerfile
     depends_on:
       - firebase_auth_emulator
     env_file: run/.env
     command: node workers/lowPriority.js
+    target: dev
   web:
     volumes:
       - ./run/:/app
@@ -46,10 +49,12 @@ services:
       - firebase_auth_emulator
     build:
       context: .
-      dockerfile: Dockerfile.web
+      dockerfile: Dockerfile
     ports:
       - "8888:8888"
     env_file: run/.env
+    command: node index.js
+    target: dev
   front:
     extra_hosts:
       - "app.ethernal.local:0.0.0.0"
@@ -62,4 +67,5 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.front
+      target: dev
     env_file: .env.development

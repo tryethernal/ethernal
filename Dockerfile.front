@@ -1,18 +1,14 @@
-FROM node:16
+FROM node:16 AS base
 
 ENV HOST=0.0.0.0
 
-WORKDIR /
+WORKDIR /app
 
 COPY public/ ./public/
 COPY src/ ./src/
 COPY babel.config.js .firebaserc package.json yarn.lock vue.config.js _redirects ./
 
-RUN yarn install --production --ignore-scripts --prefer-offline --force --network-timeout 1000000
-RUN yarn add @vue/cli
-
+FROM base AS dev
+RUN yarn install
 EXPOSE 8080
 CMD ["yarn", "serve"]
-
-
-
