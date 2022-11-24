@@ -1,9 +1,9 @@
 const express = require('express');
 const { stringifyBns, sanitize } = require('../lib/utils');
 const db = require('../lib/firebase');
-const { enqueueTask } = require('../lib/tasks');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
+const { enqueue } = require('../lib/queue');
 
 const router = express.Router();
 
@@ -16,13 +16,12 @@ router.post('/syncRange', authMiddleware, async (req, res) => {
             throw new Error('[POST /api/blocks/syncRange] Missing parameter');
         }
 
-        await enqueueTask('batchBlockSync', {
+        await enqueue('batchBlockSync', `batchBlockSync-${data.uid}-${data.workspace}-${data.from}-${data.to}`, {
             userId: data.uid,
             workspace: data.workspace,
             from: data.from,
             to: data.to,
-            secret: process.env.AUTH_SECRET,
-        }, `${process.env.CLOUD_RUN_ROOT}/tasks/batchBlockSync`);
+        });
 
         res.sendStatus(200);
     } catch(error) {
@@ -74,12 +73,11 @@ router.post('/', authMiddleware, async (req, res) => {
             if (block.number === undefined || block.number === null)
                 throw Error('[POST /api/blocks] Missing block number.');
 
-            await enqueueTask('blockSync', {
+            await enqueue(`blockSync`, `blockSync-${block.number}`, {
                 userId: data.uid,
                 workspace: data.workspace,
-                blockNumber: data.block.number,
-                secret: process.env.AUTH_SECRET
-            }, `${process.env.CLOUD_RUN_ROOT}/tasks/blockSync`);
+                blockNumber: data.block.number
+            }, 1);
         }
         else {
             const syncedBlock = stringifyBns(sanitize(block));

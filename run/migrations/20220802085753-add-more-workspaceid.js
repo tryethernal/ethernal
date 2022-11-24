@@ -4,9 +4,12 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     const transaction = await queryInterface.sequelize.transaction();
     try {
+        const tokenBalanceChanges = await queryInterface.sequelize.query('SELECT tbc.*, t."workspaceId" from "token_balance_changes" tbc LEFT JOIN transactions t ON tbc."transactionId" = t.id');
+        const tokenTransfers = await queryInterface.sequelize.query('SELECT tf.*, t."workspaceId" from "token_transfers" tf LEFT JOIN transactions t ON tf."transactionId" = t.id');
+
         await queryInterface.addColumn('token_balance_changes', 'workspaceId', {
             type: Sequelize.INTEGER,
-            allowNull: false,
+            allowNull: true,
             references: {
                 key: 'id',
                 model: {
@@ -17,7 +20,7 @@ module.exports = {
 
         await queryInterface.addColumn('token_transfers', 'workspaceId', {
             type: Sequelize.INTEGER,
-            allowNull: false,
+            allowNull: true,
             references: {
                 key: 'id',
                 model: {
@@ -44,44 +47,58 @@ module.exports = {
           }
         );
 
-        const TokenBalanceChange = Sequelize.models.TokenBalanceChange;
-        const TokenTransfer = Sequelize.models.TokenTransfer;
-        const Transaction = Sequelize.models.Transaction;
+        if (tokenBalanceChanges[0].length) {
+            const newTokenBalanceChanges = tokenBalanceChanges[0].map(tokenBalanceChange => {
+                return {
+                    ...tokenBalanceChange,
+                    workspaceId: tokenBalanceChange.workspaceId
+                };
+            });
 
-        const tokenBalanceChanges = await TokenBalanceChange.findAll({
-            include: {
-                model: Transaction,
-                as: 'transaction'
-            }
-        });
-        const tokenTransfers = await TokenTransfer.findAll({
-            include: {
-                model: Transaction,
-                as: 'transaction'
-            }
-        });
+            await queryInterface.bulkInsert('token_balance_changes', newTokenBalanceChanges, {
+                transaction,
+                updateOnDuplicate: ["workspaceId"],
+                upsertKeys: ["id"]
+            });
+        }
 
-        const newTokenBalanceChanges = tokenBalanceChanges.map(tokenBalanceChange => {
-            return {
-                ...tokenBalanceChange,
-                workspaceId: tokenBalanceChange.transaction.workspaceId
-            };
-        });
-        await TokenBalanceChange.bulkCreate(newTokenBalanceChanges, {
-            transaction,
-            updateOnDuplicate: ["workspaceId"]
-        });
 
-        const newTokenTransfers = tokenTransfers.map(tokenTransfer => {
-            return {
-                ...tokenTransfer,
-                workspaceId: tokenTransfer.transaction.workspaceId
-            };
-        });
-        await TokenTransfer.bulkCreate(newTokenTransfers, {
-            transaction,
-            updateOnDuplicate: ["workspaceId"]
-        });
+        if (tokenTransfers[0].length) {
+            const newTokenTransfers = tokenTransfers[0].map(tokenTransfer => {
+                return {
+                    ...tokenTransfer,
+                    workspaceId: tokenTransfer.workspaceId
+                };
+            });
+
+            await queryInterface.bulkInsert('token_transfers', newTokenTransfers, {
+                transaction,
+                updateOnDuplicate: ["workspaceId"],
+                upsertKeys: ["id"]
+            });
+        }
+
+        await queryInterface.changeColumn('token_balance_changes', 'workspaceId', {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            references: {
+                key: 'id',
+                model: {
+                  tableName: 'workspaces'
+                }
+            },
+        }, { transaction });
+
+        await queryInterface.changeColumn('token_transfers', 'workspaceId', {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            references: {
+                key: 'id',
+                model: {
+                  tableName: 'workspaces'
+                }
+            },
+        }, { transaction });
 
         await transaction.commit();
     } catch(error) {
@@ -92,15 +109,16 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-      await queryInterface.sequelize.query(`
-        ALTER TABLE ONLY token_balance_changes
-        DROP CONSTRAINT token_balance_changes_workspaceId_idx
-      `);
-      await queryInterface.sequelize.query(`
-        ALTER TABLE ONLY token_balance_changes
-        DROP CONSTRAINT token_transfers_workspaceId_idx
-      `);
-      await queryInterface.removeColumn('token_balance_changes', 'workspaceId');
-      await queryInterface.removeColumn('token_transfers', 'workspaceId');
+    const transaction = await queryInterface.sequelize.transaction();
+    try {
+      await queryInterface.removeColumn('token_balance_changes', 'workspaceId', { transaction });
+      await queryInterface.removeColumn('token_transfers', 'workspaceId', { transaction });
+
+      await transaction.commit();
+    } catch(error) {
+      console.log(error)
+      await transaction.rollback();
+      throw error;
+    }
   }
 };

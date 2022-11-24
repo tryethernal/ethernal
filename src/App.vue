@@ -279,6 +279,7 @@ export default {
             this.$store.dispatch('setPublicExplorerData', {
                 name: data.name,
                 token: data.token,
+                domain: data.domain,
                 chainId: data.chainId,
                 theme: data.themes.default,
                 slug: data.slug,

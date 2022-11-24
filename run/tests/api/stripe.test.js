@@ -1,3 +1,4 @@
+require('../mocks/lib/queue');
 require('../mocks/middlewares/auth');
 require('../mocks/lib/firebase');
 require('../mocks/lib/stripe');

@@ -4,9 +4,9 @@ const {
   Sequelize
 } = require('sequelize');
 const Op = Sequelize.Op;
-const { enqueueTask } = require('../lib/tasks');
 const { sanitize } = require('../lib/utils');
 const { trigger } = require('../lib/pusher');
+const { enqueue } = require('../lib/queue');
 const moment = require('moment');
 
 module.exports = (sequelize, DataTypes) => {
@@ -177,11 +177,7 @@ module.exports = (sequelize, DataTypes) => {
             if (contract.patterns.indexOf('erc20') > -1)
                 trigger(`private-tokens;workspace=${contract.workspaceId}`, 'new', null);
 
-            return enqueueTask('contractProcessing', {
-                contractId: contract.id,
-                workspaceId: contract.workspaceId,
-                secret: process.env.AUTH_SECRET
-            }, `${process.env.CLOUD_RUN_ROOT}/tasks/contractProcessing`)
+            return enqueue(`contractProcessing`, `contractProcessing-${contract.id}`, { contractId: contract.id, workspaceId: contract.workspaceId });
         },
         afterSave(contract, options) {
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'new', null);
@@ -190,11 +186,7 @@ module.exports = (sequelize, DataTypes) => {
             if (contract.patterns.indexOf('erc20') > -1)
                 trigger(`private-tokens;workspace=${contract.workspaceId}`, 'new', null);
 
-            return enqueueTask('contractProcessing', {
-                contractId: contract.id,
-                workspaceId: contract.workspaceId,
-                secret: process.env.AUTH_SECRET
-            }, `${process.env.CLOUD_RUN_ROOT}/tasks/contractProcessing`)
+            return enqueue(`contractProcessing`, `contractProcessing-${contract.id}`, { contractId: contract.id, workspaceId: contract.workspaceId });
         }
     },
     sequelize,

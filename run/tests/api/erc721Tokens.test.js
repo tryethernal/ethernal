@@ -1,8 +1,8 @@
 require('../mocks/lib/firebase');
 require('../mocks/middlewares/workspaceAuth');
-require('../mocks/lib/tasks');
+require('../mocks/lib/queue');
 const db = require('../../lib/firebase');
-const { enqueueTask } = require('../../lib/tasks');
+const { enqueue } = require('../../lib/queue');
 
 const supertest = require('supertest');
 const app = require('../../app');
@@ -44,12 +44,11 @@ describe(`POST ${BASE_URL}/:address/:index/reload`, () => {
             .send({ data: { workspace: 'Ethernal' }})
             .expect(200)
             .then(() => {
-                expect(enqueueTask).toHaveBeenCalledWith('reloadErc721Token', {
+                expect(enqueue).toHaveBeenCalledWith('reloadErc721Token', expect.anything(), {
                     workspaceId: 1,
                     address: '0x123',
-                    tokenId: '0',
-                    secret: expect.anything()
-                }, expect.anything());
+                    tokenId: '0'
+                });
                 done();
             });
     });

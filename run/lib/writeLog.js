@@ -6,7 +6,7 @@ const isProductionEnvironment = process.env.NODE_ENV == 'production' ? true : fa
 let logging;
 
 module.exports = ({ logName = 'app', severity = 'WARNING', functionName, error, extra }) => {
-    if (isProductionEnvironment) {
+    if (isProductionEnvironment && projectId) {
         logging = logging || new Logging({ projectId });
         const logger = logging.log(logName);
         const message = error && error.message || '';

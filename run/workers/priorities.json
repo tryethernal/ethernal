@@ -1,0 +1,18 @@
+{
+    "high": [
+        "blockSync",
+        "transactionSync",
+        "batchBlockSync"
+    ],
+    "medium": [
+        "contractProcessing",
+        "transactionProcessing",
+        "reloadErc721Token"
+    ],
+    "low": [
+        "submitExplorerLead",
+        "processWorkspace",
+        "processUser",
+        "enforceDataRetentionForWorkspace"
+    ]
+}

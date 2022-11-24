@@ -1,4 +1,5 @@
 require('../mocks/lib/firebase');
+require('../mocks/lib/queue');
 require('../mocks/lib/utils');
 require('../mocks/lib/abi');
 require('../mocks/lib/ethers');

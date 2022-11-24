@@ -1,10 +1,10 @@
 require('../mocks/models');
 require('../mocks/lib/firebase');
-require('../mocks/lib/tasks');
+require('../mocks/lib/queue');
 require('../mocks/middlewares/workspaceAuth');
 require('../mocks/middlewares/auth');
 const db = require('../../lib/firebase');
-const { enqueueTask } = require('../../lib/tasks');
+const { enqueue } = require('../../lib/queue');
 
 const supertest = require('supertest');
 const app = require('../../app');
@@ -20,13 +20,12 @@ describe(`POST ${BASE_URL}/syncRange`, () => {
             .send({ data: { workspace: 'My Workspace', from: 1, to: 10 }})
             .expect(200)
             .then(() => {
-                expect(enqueueTask).toHaveBeenCalledWith('batchBlockSync', {
+                expect(enqueue).toHaveBeenCalledWith('batchBlockSync', expect.anything(), {
                     userId: '123',
                     workspace: 'My Workspace',
                     from: 1,
                     to: 10,
-                    secret: expect.anything()
-                }, expect.anything());
+                });
                 done();
             });
     });
@@ -51,11 +50,10 @@ describe(`POST ${BASE_URL}`, () => {
             .send({ data: { workspace: 'My Workspace', block: { number: 123 }}})
             .expect(200)
             .then(() => {
-                expect(enqueueTask).toHaveBeenCalledWith('blockSync', {
+                expect(enqueue).toHaveBeenCalledWith('blockSync', expect.anything(), {
                     userId: '123',
                     workspace: 'My Workspace',
-                    blockNumber: 123,
-                    secret: expect.anything()
+                    blockNumber: 123
                 }, expect.anything());
                 done();
             });

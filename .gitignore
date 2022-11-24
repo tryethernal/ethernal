@@ -8,6 +8,9 @@ firebase-export-*/
 .firebase/
 ganache-db/
 coverage/
+run/.env
+ethernal-95a14-19f78a7e26cc.json
+run/logfile
 
 functions/report*
 
