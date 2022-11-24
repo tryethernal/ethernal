@@ -16,6 +16,7 @@ COPY run/package*.json .
 
 FROM base AS dev
 RUN npm install
+RUN npm install nodemon -g
 
 FROM base AS prod
 COPY ethernal-95a14-19f78a7e26cc.json ./ethernal-95a14-19f78a7e26cc.json
