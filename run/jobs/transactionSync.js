@@ -27,6 +27,9 @@ module.exports = async job => {
 
     const storedTx = await db.storeTransaction(data.userId, data.workspace, txSynced);
 
+    // Should only happen if tx already exists
+    if (!storedTx) return;
+
     if (!txSynced.to && sTransactionReceipt) {
         const canSync = await db.canUserSyncContract(data.userId, data.workspace, sTransactionReceipt.contractAddress);
         if (canSync)
