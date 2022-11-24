@@ -4,7 +4,7 @@ const uuidAPIKey = require('uuid-apikey');
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
-const { enqueueTask } = require('../lib/tasks');
+const { enqueue } = require('../lib/queue');
 const authMiddleware = require('../middlewares/auth');
 const { encrypt } = require('../lib/crypto');
 
@@ -67,10 +67,7 @@ router.post('/', async (req, res) => {
             plan: 'free'
         });
 
-        await enqueueTask('processUser', {
-            uid: data.firebaseUserId,
-            secret: process.env.AUTH_SECRET
-        });
+        await enqueue('processUser', `processUser-${data.firebaseUserId}`, { uid: data.firebaseUserId });
 
         res.sendStatus(200);
     } catch(error) {

@@ -1,3 +1,0 @@
-queue:
-- name: block-sync
-- name: transaction-sync

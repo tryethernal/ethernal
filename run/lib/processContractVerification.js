@@ -1,17 +1,5 @@
-const { enqueueTask } = require('./tasks');
 const { sanitize } = require('./utils');
 const writeLog = require('./writeLog');
-
-const updateFirestoreContract = (userId, workspace, address, data) => {
-    return enqueueTask('migration', sanitize({
-        userId: userId,
-        workspace: workspace,
-        address: address,
-        abi: data.abi,
-        verificationStatus: data.verificationStatus,
-        secret: process.env.AUTH_SECRET
-    }), `${process.env.CLOUD_FUNCTIONS_ROOT}/${process.env.GCLOUD_PROJECT}/${process.env.GCLOUD_LOCATION}/syncContractData`)
-};
 
 const stripBytecodeMetadata = (bytecode) => {
     // Last 2 bytes contains metadata length
@@ -56,7 +44,6 @@ module.exports = async function(db, payload) {
 
     try {
         await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'pending');
-        await updateFirestoreContract(user.firebaseUserId, workspace.name, contractAddress, { verificationStatus: 'pending' });
 
         const compiler = await new Promise((resolve, reject) => {
             solc.loadRemoteVersion(compilerVersion, (err, solc) => {
@@ -131,7 +118,6 @@ module.exports = async function(db, payload) {
             console.log('Verification succeeded!');
             await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'success');
             await db.storeContractData(user.firebaseUserId, workspace.name, contractAddress, { name: contractName, abi: abi });
-            await updateFirestoreContract(user.firebaseUserId, workspace.name, contractAddress, { verificationStatus: 'success', abi: abi });
             return {
                 verificationSucceded: true
             };
@@ -150,7 +136,6 @@ module.exports = async function(db, payload) {
             }
         });
         await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'failed');
-        await updateFirestoreContract(user.firebaseUserId, workspace.name, contractAddress, { verificationStatus: 'failed' });
         throw error;        
     }
 }

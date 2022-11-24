@@ -6,17 +6,21 @@ export const pusherPlugin = {
     install(Vue, options) {
         const store = options.store;
 
-        const pusher = new Pusher(process.env.VUE_APP_PUSHER_KEY, {
-            cluster: 'eu',
-            channelAuthorization: {
-                endpoint: `${process.env.VUE_APP_API_ROOT}/api/pusher/authorization`,
-                params: {
-                    firebaseAuthToken: store.getters.firebaseIdToken,
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name
+        const pusher = process.env.VUE_APP_PUSHER_KEY ?
+            new Pusher(process.env.VUE_APP_PUSHER_KEY, {
+                cluster: 'eu',
+                channelAuthorization: {
+                    endpoint: `${process.env.VUE_APP_API_ROOT}/api/pusher/authorization`,
+                    params: {
+                        firebaseAuthToken: store.getters.firebaseIdToken,
+                        firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                        workspace: store.getters.currentWorkspace.name
+                    }
                 }
+            }) : {
+                subscribe: () => {},
+                bind: () => {}
             }
-        });
 
         Vue.prototype.pusher = {
             onUpdatedAccount(handler, context) {

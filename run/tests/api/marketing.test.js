@@ -1,11 +1,11 @@
 require('../mocks/lib/firebase');
 require('../mocks/middlewares/auth');
-require('../mocks/lib/tasks');
+require('../mocks/lib/queue');
 jest.mock('jsonwebtoken', () => ({
     sign: jest.fn().mockReturnValue('token')
 }));
 const db = require('../../lib/firebase');
-const { enqueueTask } = require('../../lib/tasks');
+const { enqueue } = require('../../lib/queue');
 
 const supertest = require('supertest');
 const app = require('../../app');
@@ -16,12 +16,14 @@ const BASE_URL = '/api/marketing';
 beforeEach(() => jest.clearAllMocks());
 
 describe(`GET ${BASE_URL}/productRoadToken`, () => {
-    it('Should enqueue task and return 200', (done) => {
+    it('Should return token', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ email: 'antoine@tryethernal.com' });
+        process.env.PRODUCT_ROAD_TOKEN = '123';
         request.get(`${BASE_URL}/productRoadToken?workspace=ethernal`)
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual({ token: 'token' });
+                delete process.env.PRODUCT_ROAD_TOKEN;
                 done();
             });
     });
@@ -40,13 +42,13 @@ describe(`GET ${BASE_URL}`, () => {
 });
 
 describe(`POST ${BASE_URL}/submitExplorerLead`, () => {
-    it('Should enqueue task and return 200', (done) => {
+    it('Should enqueue task', (done) => {
         request.post(`${BASE_URL}/submitExplorerLead`)
             .send({ data: { workspace: 'ethernal', email: 'antoine@tryethernal.com' }})
             .expect(200)
             .then(() => {
-                expect(enqueueTask).toHaveBeenCalledWith('submitExplorerLead',
-                    { workspace: 'ethernal', email: 'antoine@tryethernal.com', secret: expect.anything() }
+                expect(enqueue).toHaveBeenCalledWith('submitExplorerLead', expect.anything(),
+                    { workspace: 'ethernal', email: 'antoine@tryethernal.com' }
                 );
                 done();
             });
@@ -55,13 +57,13 @@ describe(`POST ${BASE_URL}/submitExplorerLead`, () => {
 
 describe(`POST ${BASE_URL}/setRemoteFlag`, () => {
      it('Should process workspace if flag is not set', (done) => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ isRemote: null });
+        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ name: 'ethernal', isRemote: null });
         request.post(`${BASE_URL}/setRemoteFlag`)
             .send({ data: { uid: '123', workspace: 'ethernal' }})
             .expect(200)
             .then(() => {
-                expect(enqueueTask).toHaveBeenCalledWith('processWorkspace',
-                    { uid: '123', workspace: 'ethernal', secret: expect.anything() }
+                expect(enqueue).toHaveBeenCalledWith('processWorkspace', expect.anything(),
+                    { uid: '123', workspace: 'ethernal' }
                 );
                 done();
             });
@@ -73,7 +75,7 @@ describe(`POST ${BASE_URL}/setRemoteFlag`, () => {
             .send({ data: { uid: '123', workspace: 'ethernal' }})
             .expect(200)
             .then(() => {
-                expect(enqueueTask).not.toHaveBeenCalled();
+                expect(enqueue).not.toHaveBeenCalled();
                 done();
             });
     });

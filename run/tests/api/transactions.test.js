@@ -1,12 +1,12 @@
 require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/lib/transactions');
-require('../mocks/lib/tasks');
+require('../mocks/lib/queue');
 require('../mocks/middlewares/workspaceAuth');
 require('../mocks/middlewares/auth');
 const db = require('../../lib/firebase');
 const { processTransactions } = require('../../lib/transactions');
-const { enqueueTask } = require('../../lib/tasks');
+const { enqueue } = require('../../lib/queue');
 
 const supertest = require('supertest');
 const app = require('../../app');
@@ -162,7 +162,7 @@ describe(`POST ${BASE_URL}/:hash/error`, () => {
     });
 });
 
-describe(`POST ${BASE_URL}/:hash`, () => {
+describe(`POST ${BASE_URL}`, () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('Should return 200 status and not store contract data if it is not a deployment', (done) => {
@@ -190,12 +190,11 @@ describe(`POST ${BASE_URL}/:hash`, () => {
                         timestamp: 123456
                     }
                 );
-                expect(enqueueTask).toHaveBeenCalledWith('transactionProcessing', {
+                expect(enqueue).toHaveBeenCalledWith('transactionProcessing', expect.anything(), {
                     userId: '123',
                     workspace: 'My Workspace',
                     transaction: expect.anything(),
-                    secret: '123'
-                });
+                }, 1);
                 done();
             });
     });
@@ -235,12 +234,11 @@ describe(`POST ${BASE_URL}/:hash`, () => {
                         timestamp: 123456
                     }
                 );
-                expect(enqueueTask).toHaveBeenCalledWith('transactionProcessing', {
+                expect(enqueue).toHaveBeenCalledWith('transactionProcessing', expect.anything(), {
                     userId: '123',
                     workspace: 'My Workspace',
-                    transaction: expect.anything(),
-                    secret: '123'
-                });
+                    transaction: expect.anything()
+                }, 1);
                 done();
             });
     });

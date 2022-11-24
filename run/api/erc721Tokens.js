@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../lib/firebase');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
-const { enqueueTask } = require('../lib/tasks');
+const { enqueue } = require('../lib/queue');
 
 router.get('/:address/:tokenId/transfers', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
@@ -27,13 +27,13 @@ router.post('/:address/:tokenId/reload', workspaceAuthMiddleware, async (req, re
         }
 
         const workspace = await db.getWorkspaceByName(req.query.firebaseUserId, data.workspace);
-
-        await enqueueTask('reloadErc721Token', {
-            workspaceId: workspace.id,
-            address: req.params.address,
-            tokenId: req.params.tokenId,
-            secret: process.env.AUTH_SECRET
-        }, `${process.env.CLOUD_RUN_ROOT}/tasks/reloadErc721Token`);
+        await enqueue('reloadErc721Token',
+            `reloadErc721Token-${workspace.id}-${req.params.address}-${req.params.tokenId}`, {
+                workspaceId: workspace.id,
+                address: req.params.address,
+                tokenId: req.params.tokenId
+            }
+        );
 
         res.sendStatus(200);
     } catch(error) {

@@ -131,7 +131,7 @@ router.post('/:address/verify', async (req, res) => {
             console.log(data);
             throw new Error(`[POST /${address}/verify] Missing parameter.`);
         }
-        console.log(data)
+
         const explorer = await db.getPublicExplorerParamsBySlug(data.explorerSlug);
 
         if (!explorer)
@@ -157,11 +157,8 @@ router.post('/:address/verify', async (req, res) => {
             contractName: data.contractName,
             optimizer: data.optimizer,
             runs: data.runs,
-            evmVersion: data.evmVersion,
-            secret: process.env.AUTH_SECRET
+            evmVersion: data.evmVersion
         });
-
-        const url = `${process.env.GCLOUD_RUN_ROOT}/tasks/`;
 
         const result = await processContractVerification(db, payload);
 

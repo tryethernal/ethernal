@@ -1,3 +1,4 @@
+require('../mocks/lib/queue');
 require('../mocks/middlewares/workspaceAuth');
 require('../mocks/lib/pusher');
 

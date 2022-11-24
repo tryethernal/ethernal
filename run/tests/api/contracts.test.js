@@ -1,4 +1,5 @@
 require('../mocks/models');
+require('../mocks/lib/queue');
 require('../mocks/lib/firebase');
 require('../mocks/lib/crypto');
 require('../mocks/lib/processContractVerification');
@@ -150,8 +151,7 @@ describe(`POST ${BASE_URL}/:address/verify`, () => {
                     contractAddress: '0x123',
                     compilerVersion: '0.8.0',
                     code: {},
-                    contractName: 'Ethernal',
-                    secret: '123'
+                    contractName: 'Ethernal'
                 });
                 done();
             });

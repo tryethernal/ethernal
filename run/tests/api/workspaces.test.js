@@ -2,9 +2,9 @@ require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/lib/crypto');
 require('../mocks/middlewares/auth');
-require('../mocks/lib/tasks');
+require('../mocks/lib/queue');
 const db = require('../../lib/firebase');
-const { enqueueTask } = require('../../lib/tasks');
+const { enqueue } = require('../../lib/queue');
 
 const supertest = require('supertest');
 const app = require('../../app');
@@ -64,8 +64,8 @@ describe(`POST ${BASE_URL}/settings`, () => {
             .expect(200)
             .then(() => {
                 expect(db.updateWorkspaceSettings).toHaveBeenCalledWith('123', 'My Workspace', { rpcServer: 'http://localhost:8545' });
-                expect(enqueueTask).toHaveBeenCalledWith('processWorkspace',
-                    { uid: '123', workspace: 'My Workspace', secret: '123' }
+                expect(enqueue).toHaveBeenCalledWith('processWorkspace', expect.anything(),
+                    { uid: '123', workspace: 'My Workspace' }
                 );
                 done();
             });
@@ -77,6 +77,7 @@ describe(`POST ${BASE_URL}`, () => {
 
     it('Should return 200 status code', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ defaultDataRetentionLimit: 7 });
+        jest.spyOn(db, 'createWorkspace').mockResolvedValueOnce({ name: 'My Workspace' });
         request.post(`${BASE_URL}`)
             .send({ data: { name: 'My Workspace', workspaceData: { notvalid: 'ok', rpcServer: 'http://localhost:8545' }}})
             .expect(200)
@@ -86,8 +87,8 @@ describe(`POST ${BASE_URL}`, () => {
                     rpcServer: 'http://localhost:8545',
                     dataRetentionLimit: 7
                 });
-                expect(enqueueTask).toHaveBeenCalledWith('processWorkspace',
-                    { uid: '123', workspace: 'My Workspace', secret: '123' }
+                expect(enqueue).toHaveBeenCalledWith('processWorkspace', expect.anything(),
+                    { uid: '123', workspace: 'My Workspace' }
                 );
                 done();
             });

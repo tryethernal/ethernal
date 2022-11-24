@@ -3,11 +3,14 @@ const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
-const { enqueueTask } = require('../lib/tasks');
+const { enqueue } = require('../lib/queue');
 
 router.get('/productRoadToken', authMiddleware, async (req, res) => {
     const data = { ...req.query, ...req.body.data };
     try {
+        if (!process.env.PRODUCT_ROAD_TOKEN)
+            return res.status(200).json({ token: null });
+
         if (!data.workspace)
             throw new Error('[GET /api/productRoadToken] Missing parameters.');
 
@@ -21,9 +24,7 @@ router.get('/productRoadToken', authMiddleware, async (req, res) => {
 
         const token = jwt.sign(payload, prAuthSecret, { algorithm: 'HS256' });
 
-        res.status(200).json({
-            token: token
-        });
+        res.status(200).json({ token: token });
     } catch(error) {
         console.log(error);
         console.log(data);
@@ -39,9 +40,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
         const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
 
-        res.status(200).json({
-            isRemote: workspace.isRemote
-        });
+        res.status(200).json({ isRemote: workspace.isRemote });
     } catch(error) {
         console.log(error);
         console.log(data);
@@ -55,10 +54,9 @@ router.post('/submitExplorerLead', authMiddleware, async (req, res) => {
         if (!data.workspace || !data.email)
             throw new Error('[GET /api/submitExplorerLead] Missing parameters.');
 
-        await enqueueTask('submitExplorerLead', {
+        await enqueue('submitExplorerLead', `submitExplorerLead-${data.workspace}`, {
             workspace: data.workspace,
-            email: data.email,
-            secret: process.env.AUTH_SECRET
+            email: data.email
         });
 
         res.sendStatus(200);
@@ -78,10 +76,9 @@ router.post('/setRemoteFlag', authMiddleware, async (req, res) => {
         const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
 
         if (workspace.isRemote == null) {
-            await enqueueTask('processWorkspace', {
+            await enqueue('processWorkspace', `processWorkspace-${data.uid}-${workspace.name}`, {
                 uid: data.uid,
-                workspace: data.workspace,
-                secret: process.env.AUTH_SECRET
+                workspace: workspace.name,
             });
         }
 

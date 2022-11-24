@@ -25,7 +25,7 @@
 <script>
 import { mapGetters } from 'vuex';
 
-const API_ROOT_URL = process.env.VUE_APP_API_ROOT_URL;
+const API_ROOT_URL = process.env.VUE_APP_API_ROOT;
 export default {
     name: 'AlchemyIntegrationModal',
     data: () => ({

@@ -4,7 +4,7 @@ const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const { processTransactions } = require('../lib/transactions');
-const { enqueueTask } = require('../lib/tasks');
+const { enqueue } = require('../lib/queue');
 
 const router = express.Router();
 
@@ -57,8 +57,6 @@ router.post('/', authMiddleware, async (req, res) => {
 
         const storedTx = await db.storeTransaction(data.uid, data.workspace, txSynced);
 
-        // TODO: Bill usage
-
         if (!txSynced.to && sTransactionReceipt) {
             const canSync = await db.canUserSyncContract(data.uid, data.workspace, sTransactionReceipt.contractAddress);
 
@@ -69,12 +67,11 @@ router.post('/', authMiddleware, async (req, res) => {
                 });
         }
 
-        await enqueueTask('transactionProcessing', {
+        await enqueue('transactionProcessing', `transactionProcessing-${txSynced.hash}`, { 
             userId: data.uid,
             workspace: data.workspace,
-            transaction: txSynced,
-            secret: process.env.AUTH_SECRET
-        });
+            transaction: txSynced
+        }, 1);
        
        res.sendStatus(200);
     } catch(error) {
