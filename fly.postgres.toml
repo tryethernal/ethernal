@@ -1,0 +1,21 @@
+# fly.toml file generated for ethernal-pg on 2022-11-25T13:12:28+01:00
+
+app = "ethernal-pg"
+kill_signal = "SIGINT"
+kill_timeout = 5
+processes = []
+
+[env]
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+
+[[services]]
+  internal_port = 5432 # Postgres instance
+  protocol = "tcp"
+  
+  # Open port 10000 for plaintext connections.
+  [[services.ports]]
+    handlers = []
+    port = 10000
