@@ -1,21 +1,30 @@
-# fly.toml file generated for ethernal-pg on 2022-11-25T13:12:28+01:00
+# fly.toml file generated for ethernal-pgbouncer on 2022-11-25T23:17:08+01:00
 
-app = "ethernal-pg"
+app = "ethernal-bouncer"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
+
+[build]
+  image = "antoinedc44/docker-pgbouncer:latest"
 
 [env]
 
 [experimental]
   allowed_public_ports = []
   auto_rollback = true
+  private_network = true
 
 [[services]]
   internal_port = 5432 # Postgres instance
   protocol = "tcp"
+
+  [services.concurrency]
+    hard_limit = 300
+    soft_limit = 200
+    type = "connections"
   
   # Open port 10000 for plaintext connections.
   [[services.ports]]
     handlers = []
-    port = 10000
+    port = 5432

@@ -30,7 +30,7 @@ app.use(express.json({
 app.use(express.urlencoded({ extended: true }));
 
 if (process.env.CORS_DOMAIN)
-    app.use(cors({ origin: process.env.CORS_DOMAIN }));
+    app.use(cors({ origin: process.env.CORS_DOMAIN, methods: ['GET', 'POST', 'OPTIONS'] }));
 
 
 const serverAdapter = new ExpressAdapter();
