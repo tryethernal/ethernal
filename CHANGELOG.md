@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2022-11-30
+### Added
+- Docker files + docker compose
+
+### Changed
+- Apps is now hosted on [Fly.io](https://fly.io) instaed of GCP
+
+### Removed
+- All Google Cloud dependencies except Firebase Auth & Cloud Logging (optional)
+
 ## [2.14.1] - 2022-11-23
 ### Fixed
 - Bug that caused read method calls to be called on the Metamask network when calling with loaded accounts
