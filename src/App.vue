@@ -338,6 +338,7 @@ export default {
                     name: data.workspace.name,
                     networkId: data.chainId,
                     rpcServer: data.rpcServer,
+                    storageEnabled: data.workspace.storageEnabled,
                     id: data.workspaceId
                 });
             });

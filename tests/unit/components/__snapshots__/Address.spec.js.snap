@@ -957,7 +957,7 @@ exports[`Address.vue Should display the contract verification UI if it is a publ
         <!---->
       </transition-stub>
       <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="code" style="">
+        <div class="v-window-item v-window-item--active" id="code">
           <div class="mt-2 v-item-group theme--light v-expansion-panels">
             <div aria-expanded="false" class="v-expansion-panel mb-2 v-expansion-panel--next-active"><button type="button" class="v-expansion-panel-header">
                 <h4>Contract Verification
@@ -1102,6 +1102,68 @@ exports[`Address.vue Should display the contract verified text if it is a public
 </div>
 `;
 
+exports[`Address.vue Should display the storage tab on contract page if in public explorer mode 1`] = `
+<div class="container container--fluid">
+  <div class="row mb-2">
+    <div class="col-sm-12 col-md-6 col-lg-3 col">
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__text">
+          Balance: 0.00000000000001 Ether
+        </div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <!---->
+  </div>
+  <div class="v-tabs theme--light">
+    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
+      <div class="v-slide-group__prev v-slide-group__prev--disabled">
+        <transition-stub name="fade-transition"></transition-stub>
+      </div>
+      <div class="v-slide-group__wrapper">
+        <div class="v-slide-group__content v-tabs-bar__content">
+          <div class="v-tabs-slider-wrapper" style="transition: none;">
+            <div class="v-tabs-slider"></div>
+          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active">Transactions</a> <a tabindex="0" href="#contract" aria-selected="false" role="tab" class="v-tab" id="contractTab">Contract</a> <a tabindex="0" href="#code" aria-selected="false" role="tab" class="v-tab" id="codeTab">Code</a> <a tabindex="0" href="#storage" aria-selected="false" role="tab" class="v-tab" id="storageTab">Storage</a> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20Balances">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721Balances">ERC-721 Tokens</a>
+          <!---->
+        </div>
+      </div>
+      <div class="v-slide-group__next v-slide-group__next--disabled">
+        <transition-stub name="fade-transition"></transition-stub>
+      </div>
+    </div>
+  </div>
+  <div class="v-window v-item-group theme--light v-tabs-items">
+    <div class="v-window__container">
+      <transition-stub name="">
+        <div class="v-window-item v-window-item--active" id="transactions">
+          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
+        </div>
+      </transition-stub>
+      <transition-stub name="">
+        <!---->
+      </transition-stub>
+      <transition-stub name="" style="display: none;">
+        <!---->
+      </transition-stub>
+      <transition-stub name="">
+        <!---->
+      </transition-stub>
+      <transition-stub name="">
+        <!---->
+      </transition-stub>
+      <transition-stub name="">
+        <!---->
+      </transition-stub>
+      <transition-stub name="">
+        <!---->
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Address.vue Should not display the storage tab on contract page if in public explorer mode 1`] = `
 <div class="container container--fluid">
   <div class="row mb-2">
@@ -1155,46 +1217,7 @@ exports[`Address.vue Should not display the storage tab on contract page if in p
         <!---->
       </transition-stub>
       <transition-stub name="">
-        <div class="v-window-item" id="code" style="display: none;">
-          <div class="mt-2 v-item-group theme--light v-expansion-panels">
-            <div aria-expanded="false" class="v-expansion-panel mb-2 v-expansion-panel--next-active"><button type="button" class="v-expansion-panel-header">
-                <h4>Contract Verification
-                  <!---->
-                </h4>
-                <transition-stub name="fade-transition">
-                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-                </transition-stub>
-              </button>
-              <transition-stub name="expand-transition">
-                <!---->
-              </transition-stub>
-            </div>
-            <div aria-expanded="true" class="v-expansion-panel mb-2 v-expansion-panel--active v-item--active"><button type="button" aria-expanded="true" class="v-expansion-panel-header v-expansion-panel-header--active">
-                <h4>Bytecode</h4>
-                <transition-stub name="fade-transition">
-                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-                </transition-stub>
-              </button>
-              <transition-stub name="expand-transition">
-                <div class="v-expansion-panel-content">
-                  <div class="v-expansion-panel-content__wrap">
-                    No bytecode for this contract. Redeploy to upload it.
-                  </div>
-                </div>
-              </transition-stub>
-            </div>
-            <div aria-expanded="false" class="v-expansion-panel"><button type="button" class="v-expansion-panel-header">
-                <h4>Assembly</h4>
-                <transition-stub name="fade-transition">
-                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-                </transition-stub>
-              </button>
-              <transition-stub name="expand-transition">
-                <!---->
-              </transition-stub>
-            </div>
-          </div>
-        </div>
+        <!---->
       </transition-stub>
       <!---->
     </div>

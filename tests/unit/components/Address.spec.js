@@ -97,6 +97,32 @@ describe('Address.vue', () => {
                 accounts: jest.fn().mockReturnValueOnce(['0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA']),
                 isPublicExplorer: jest.fn().mockReturnValueOnce(true),
                 currentWorkspace: jest.fn().mockReturnValueOnce({
+                    storageEnabled: false,
+                    isAdmin: false,
+                    settings: {}
+                })
+            }
+        });
+
+        await new Promise(process.nextTick);
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should display the storage tab on contract page if in public explorer mode', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValueOnce({ data: { address: '0x123', name: 'Amalfi', abi: AmalfiContract.artifact.abi }});
+
+        const wrapper = helper.mountFn(Address, {
+            propsData: {
+                hash: '0x123'
+            },
+            stubs: ['Address-Transactions-List', 'Contract-Verification', 'Contract-Call-Options', 'Contract-Read-Method', 'Contract-Write-Method', 'Token-Balances', 'ERC-721-Collection'],
+            getters: {
+                accounts: jest.fn().mockReturnValueOnce(['0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA']),
+                isPublicExplorer: jest.fn().mockReturnValueOnce(true),
+                currentWorkspace: jest.fn().mockReturnValueOnce({
+                    storageEnabled: true,
                     isAdmin: false,
                     settings: {}
                 })
