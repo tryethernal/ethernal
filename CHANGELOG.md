@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.1] - 2022-12-03
+### Changed
+- [Public Explorer] Better custom logo display
+- Postgres connection config in dev mode
+
 ## [3.0.0] - 2022-11-30
 ### Added
 - Docker files + docker compose
