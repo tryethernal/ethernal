@@ -7,7 +7,7 @@
                 color="primary"
             ></v-progress-circular>
         </v-overlay>
-        <v-system-bar v-html="banner" v-if="isPublicExplorer && banner" class="primary color--text text-center font-weight-bold" color="primary" app window></v-system-bar>
+        <v-system-bar height="40" v-html="banner" v-if="isPublicExplorer && banner" class="primary color--text text-center font-weight-bold" color="primary" app></v-system-bar>
         <v-navigation-drawer v-model="drawer" :style="styles" app v-if="canDisplaySides">
             <div class="custom-logo-wrapper" v-if="logo">
                 <img :src="logo" alt="logo" class="custom-logo" />
