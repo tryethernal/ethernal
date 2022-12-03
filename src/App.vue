@@ -8,7 +8,7 @@
             ></v-progress-circular>
         </v-overlay>
         <v-system-bar v-html="banner" v-if="isPublicExplorer && banner" class="primary color--text text-center font-weight-bold" color="primary" app window></v-system-bar>
-        <v-navigation-drawer :style="styles" app permanent v-if="canDisplaySides">
+        <v-navigation-drawer v-model="drawer" :style="styles" app v-if="canDisplaySides">
             <div class="custom-logo-wrapper" v-if="logo">
                 <img :src="logo" alt="logo" class="custom-logo" />
             </div>
@@ -165,7 +165,7 @@
         <Public-Explorer-Explainer-Modal ref="publicExplorerExplainerModal" v-if="isRemote" />
 
         <v-app-bar :style="styles" app dense fixed flat v-if="canDisplaySides">
-            <component :is="appBarComponent"></component>
+            <component @toggleMenu="toggleMenu" :is="appBarComponent"></component>
         </v-app-bar>
 
         <v-main class="color--text" :style="styles">
@@ -211,7 +211,8 @@ export default {
         banner: null,
         isRemote: false,
         isOverlayActive: false,
-        ethereum: null
+        ethereum: null,
+        drawer: null
     }),
     created: function() {
         detectEthereumProvider().then(provider => {
@@ -223,6 +224,9 @@ export default {
             return this.initPublicExplorer();
     },
     methods: {
+        toggleMenu() {
+            this.drawer = !this.drawer;
+        },
         addNetworkToMetamask() {
             if (!this.ethereum) return;
 
