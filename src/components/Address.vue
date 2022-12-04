@@ -374,6 +374,7 @@ export default {
         decodeContract: function() {
             if (!this.isStorageAvailable) return;
             this.storageError = false;
+            this.storageLoader = true;
             this.storageErrorMessage = '';
             if (this.dependenciesNeded()) {
                 return this.storageLoader = false;
@@ -422,7 +423,6 @@ export default {
                         return this.contractLoader = false;
 
                     this.decodeContract();
-                    this.storageLoader = false;
                     this.contractLoader = false;
                 })
                 .catch(console.log);
