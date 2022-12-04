@@ -226,7 +226,7 @@ exports[`Address.vue Should display the bytecode by default if present 1`] = `
                           <fieldset aria-hidden="true">
                             <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                           </fieldset>
-                          <div class="v-text-field__slot"><textarea disabled="disabled" id="input-502" rows="5"></textarea></div>
+                          <div class="v-text-field__slot"><textarea disabled="disabled" id="input-531" rows="5"></textarea></div>
                           <div class="v-input__append-inner"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-content-copy theme--light" style="font-size: 16px;"></i></span></button></div>
                         </div>
                         <div class="v-text-field__details">
@@ -352,7 +352,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-211" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-211" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-243" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-243" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -374,7 +374,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-214" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-214" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-246" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-246" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -424,7 +424,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-222" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-222" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-254" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-254" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -442,7 +442,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-225" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address newOwner</label><input disabled="disabled" id="input-225" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-257" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address newOwner</label><input disabled="disabled" id="input-257" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -473,7 +473,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-230" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-230" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-262" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-262" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -491,7 +491,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-233" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-233" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-265" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-265" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -501,7 +501,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-234" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input disabled="disabled" id="input-234" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-266" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input disabled="disabled" id="input-266" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -532,7 +532,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-239" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-239" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-271" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-271" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -550,7 +550,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                             </fieldset>
-                            <div class="v-text-field__slot"><label for="input-242" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-242" type="text"></div>
+                            <div class="v-text-field__slot"><label for="input-274" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-274" type="text"></div>
                           </div>
                         </div>
                       </div>
@@ -581,7 +581,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-247" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-247" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-279" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-279" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -620,7 +620,7 @@ exports[`Address.vue Should display the contract interaction interface under the
                               <fieldset aria-hidden="true">
                                 <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                               </fieldset>
-                              <div class="v-text-field__slot"><label for="input-254" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-254" type="number"></div>
+                              <div class="v-text-field__slot"><label for="input-286" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-286" type="number"></div>
                             </div>
                           </div>
                         </div>
@@ -957,7 +957,7 @@ exports[`Address.vue Should display the contract verification UI if it is a publ
         <!---->
       </transition-stub>
       <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="code">
+        <div class="v-window-item v-window-item--active" id="code" style="">
           <div class="mt-2 v-item-group theme--light v-expansion-panels">
             <div aria-expanded="false" class="v-expansion-panel mb-2 v-expansion-panel--next-active"><button type="button" class="v-expansion-panel-header">
                 <h4>Contract Verification
@@ -1217,7 +1217,46 @@ exports[`Address.vue Should not display the storage tab on contract page if in p
         <!---->
       </transition-stub>
       <transition-stub name="">
-        <!---->
+        <div class="v-window-item" id="code" style="display: none;">
+          <div class="mt-2 v-item-group theme--light v-expansion-panels">
+            <div aria-expanded="false" class="v-expansion-panel mb-2 v-expansion-panel--next-active"><button type="button" class="v-expansion-panel-header">
+                <h4>Contract Verification
+                  <!---->
+                </h4>
+                <transition-stub name="fade-transition">
+                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
+                </transition-stub>
+              </button>
+              <transition-stub name="expand-transition">
+                <!---->
+              </transition-stub>
+            </div>
+            <div aria-expanded="true" class="v-expansion-panel mb-2 v-expansion-panel--active v-item--active"><button type="button" aria-expanded="true" class="v-expansion-panel-header v-expansion-panel-header--active">
+                <h4>Bytecode</h4>
+                <transition-stub name="fade-transition">
+                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
+                </transition-stub>
+              </button>
+              <transition-stub name="expand-transition">
+                <div class="v-expansion-panel-content">
+                  <div class="v-expansion-panel-content__wrap">
+                    No bytecode for this contract. Redeploy to upload it.
+                  </div>
+                </div>
+              </transition-stub>
+            </div>
+            <div aria-expanded="false" class="v-expansion-panel"><button type="button" class="v-expansion-panel-header">
+                <h4>Assembly</h4>
+                <transition-stub name="fade-transition">
+                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
+                </transition-stub>
+              </button>
+              <transition-stub name="expand-transition">
+                <!---->
+              </transition-stub>
+            </div>
+          </div>
+        </div>
       </transition-stub>
       <!---->
     </div>
@@ -1253,7 +1292,8 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
         <div class="v-slide-group__content v-tabs-bar__content">
           <div class="v-tabs-slider-wrapper" style="transition: none;">
             <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="true" role="tab" class="v-tab v-tab--active" id="contractTab">Contract</a> <a tabindex="0" href="#code" aria-selected="false" role="tab" class="v-tab" id="codeTab">Code</a> <a tabindex="0" href="#storage" aria-selected="false" role="tab" class="v-tab" id="storageTab">Storage</a> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20Balances">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721Balances">ERC-721 Tokens</a>
+          </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="true" role="tab" class="v-tab v-tab--active" id="contractTab">Contract</a> <a tabindex="0" href="#code" aria-selected="false" role="tab" class="v-tab" id="codeTab">Code</a>
+          <!----> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20Balances">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721Balances">ERC-721 Tokens</a>
           <!---->
         </div>
       </div>
@@ -1351,9 +1391,7 @@ exports[`Address.vue Should say the contract is verified if it is a public explo
       <transition-stub name="" style="display: none;">
         <!---->
       </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
+      <!---->
       <transition-stub name="">
         <!---->
       </transition-stub>

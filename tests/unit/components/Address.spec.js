@@ -192,6 +192,7 @@ describe('Address.vue', () => {
                 accounts: jest.fn().mockReturnValueOnce(['0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA']),
                 isPublicExplorer: jest.fn().mockReturnValueOnce(false),
                 currentWorkspace: jest.fn(() => ({
+                    storageEnabled: true,
                     isAdmin: true,
                     settings: {}
                 }))
@@ -279,6 +280,7 @@ describe('Address.vue', () => {
                 chain: jest.fn().mockReturnValueOnce('ethereum'),
                 isPublicExplorer: jest.fn().mockReturnValueOnce(false),
                 currentWorkspace: jest.fn(() => ({
+                    storageEnabled: true,
                     isAdmin: false,
                     settings: {}
                 }))
