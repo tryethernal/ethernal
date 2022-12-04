@@ -14,6 +14,22 @@ const request = supertest(app);
 
 const BASE_URL = '/api/contracts';
 
+describe(`POST ${BASE_URL}/:address/watchedPaths`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('Should update the watchedPaths field', (done) => {
+        request.post(`${BASE_URL}/0x123/watchedPaths`)
+            .send({ data: { workspace: 'My Workspace', address: '0x123', watchedPaths: JSON.stringify([]) }})
+            .expect(200)
+            .then(() => {
+                expect(db.storeContractData).toHaveBeenCalledWith('123', 'My Workspace', '0x123', {
+                    watchedPaths: "[]"
+                });
+                done();
+            });
+    });
+});
+
 describe(`GET ${BASE_URL}/processable`, () => {
     beforeEach(() => jest.clearAllMocks());
 
