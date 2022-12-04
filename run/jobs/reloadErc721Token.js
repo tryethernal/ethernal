@@ -16,12 +16,12 @@ module.exports = async job => {
 
     let metadata = {}, URI = null;
     const erc721Connector = new ERC721Connector(workspace.rpcServer, data.address, { metadata: contract.has721Metadata, enumerable: contract.has721Enumerable });
-    try {
-        const totalSupply = await erc721Connector.totalSupply();
-        await db.storeContractDataWithWorkspaceId(workspace.id, data.address, { totalSupply: totalSupply });
-    } catch(error) {
-        console.log(error)
-    }
+    // try {
+    //     const totalSupply = await erc721Connector.totalSupply();
+    //     await db.storeContractDataWithWorkspaceId(workspace.id, data.address, { totalSupply: totalSupply });
+    // } catch(error) {
+    //     console.log(error)
+    // }
 
     try {
         URI = await erc721Connector.tokenURI(data.tokenId.toString());
