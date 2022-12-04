@@ -7,9 +7,11 @@
                 color="primary"
             ></v-progress-circular>
         </v-overlay>
-        <v-system-bar v-html="banner" v-if="isPublicExplorer && banner" class="primary color--text text-center font-weight-bold" color="primary" app window></v-system-bar>
-        <v-navigation-drawer :style="styles" app permanent v-if="canDisplaySides">
-            <img :src="logo" alt="logo" class="custom-logo" v-if="logo" />
+        <v-system-bar height="40" v-html="banner" v-if="isPublicExplorer && banner" class="primary color--text text-center font-weight-bold" color="primary" app></v-system-bar>
+        <v-navigation-drawer v-model="drawer" :style="styles" app v-if="canDisplaySides">
+            <div class="custom-logo-wrapper" v-if="logo">
+                <img :src="logo" alt="logo" class="custom-logo" />
+            </div>
             <v-list-item v-else>
                 <v-list-item-content>
                     <v-list-item-title class="logo">
@@ -163,7 +165,7 @@
         <Public-Explorer-Explainer-Modal ref="publicExplorerExplainerModal" v-if="isRemote" />
 
         <v-app-bar :style="styles" app dense fixed flat v-if="canDisplaySides">
-            <component :is="appBarComponent"></component>
+            <component @toggleMenu="toggleMenu" :is="appBarComponent"></component>
         </v-app-bar>
 
         <v-main class="color--text" :style="styles">
@@ -209,7 +211,8 @@ export default {
         banner: null,
         isRemote: false,
         isOverlayActive: false,
-        ethereum: null
+        ethereum: null,
+        drawer: null
     }),
     created: function() {
         detectEthereumProvider().then(provider => {
@@ -221,6 +224,9 @@ export default {
             return this.initPublicExplorer();
     },
     methods: {
+        toggleMenu() {
+            this.drawer = !this.drawer;
+        },
         addNetworkToMetamask() {
             if (!this.ethereum) return;
 
@@ -437,9 +443,13 @@ export default {
 .v-toolbar__content {
     padding: 0;
 }
+.custom-logo-wrapper {
+    text-align: center;
+}
 .custom-logo {
     padding-top: 10px;
     max-width: 250px;
+    max-height: 50px;
     text-align: center;
     vertical-align: middle
 }

@@ -1,5 +1,6 @@
 <template>
     <v-toolbar style="border-bottom: thin solid rgba(0, 0, 0, 0.12);overflow-x:auto; white-space: nowrap;" dense flat class="px-3 color--text">
+        <v-app-bar-nav-icon @click.stop="toggleMenu()" v-if="$vuetify.breakpoint.mobile"></v-app-bar-nav-icon>
         <v-icon @click="showSearchBar = !showSearchBar">mdi-magnify</v-icon>
         <v-slide-x-transition>
             <v-row v-show="showSearchBar">
@@ -126,6 +127,9 @@ export default Vue.extend({
     },
     methods: {
         formatContractPattern,
+        toggleMenu() {
+            this.$emit('toggleMenu');
+        },
         clearSearchBar: function() {
             this.search = null;
             this.showSearchBar = false;

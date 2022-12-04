@@ -3,7 +3,7 @@ module.exports = {
         "database": "ethernal_dev",
         "host": process.env.DB_HOST,
         "username": process.env.DB_USER,
-        "database": 'ethernal',
+        "database": "ethernal",
         "password": process.env.DB_PASSWORD,
         "dialect": "postgres"
     },
