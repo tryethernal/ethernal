@@ -368,7 +368,7 @@ export default {
         addStorageStructureChild: function(struct, idx, newKey) {
             this.storageLoader = true;
             this.contract.watchedPaths.push([...struct.path, newKey]);
-            this.server.syncContractData(this.lowerHash, null, null, JSON.stringify(this.contract.watchedPaths))
+            this.server.updateContractWatchedPaths(this.lowerHash, JSON.stringify(this.contract.watchedPaths))
                 .then(this.decodeContract);
         },
         decodeContract: function() {

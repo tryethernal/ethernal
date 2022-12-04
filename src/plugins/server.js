@@ -306,6 +306,17 @@ export const serverPlugin = {
         };
 
         Vue.prototype.server = {
+            updateContractWatchedPaths(address, paths) {
+                const data = {
+                    firebaseAuthToken: store.getters.firebaseIdToken,
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    watchedPaths: paths
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/watchedPaths`;
+                return axios.post(resource, { data });
+            },
+
             getProcessableContracts() {
                  const params = {
                     firebaseAuthToken: store.getters.firebaseIdToken,
