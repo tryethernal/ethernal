@@ -20,7 +20,7 @@
             <v-tab href="#transactions">Transactions</v-tab>
             <v-tab id="contractTab" href="#contract" v-if="isContract">Contract</v-tab>
             <v-tab id="codeTab" href="#code" v-if="isContract">Code</v-tab>
-            <v-tab id="storageTab" href="#storage" v-if="isContract && !contract.imported && !isPublicExplorer">Storage</v-tab>
+            <v-tab id="storageTab" href="#storage" v-if="isContract && currentWorkspace.storageEnabled">Storage</v-tab>
             <v-tab id="erc20Balances" href="#erc20Balances">ERC-20 Tokens</v-tab>
             <v-tab id="erc721Balances" href="#erc721Balances">ERC-721 Tokens</v-tab>
             <v-tab id="collectionTab" href="#collection" v-if="isErc721">ERC-721 Collection</v-tab>
@@ -108,7 +108,7 @@
                 <Token :contract="contract" />
             </v-tab-item>
 
-            <v-tab-item value="storage" v-if="contract && !contract.imported && !isPublicExplorer">
+            <v-tab-item value="storage" v-if="contract && currentWorkspace.storageEnabled">
                 <template v-if="isStorageAvailable">
                     <h4>Structure</h4>
                     <v-card outlined class="mb-4">
@@ -149,7 +149,7 @@
                 </template>
                 <template v-else>
                     <v-card outlined class="mt-4">
-                        <v-card-text>
+                        <v-card-text v-if="isUserAdmin">
                             Storage is not available on this contract. This is because the AST is not available. It can be for the following reasons:
                             <ul>
                                 <li>This contract has been imported (AST is not available yet through imports).</li>
@@ -158,6 +158,9 @@
                             </ul>
                             <br>
                             <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/contracts/reading-variables">Read more</a> on how storage reading works.
+                        </v-card-text>
+                        <v-card-text v-else>
+                            Storage is not available on this contract.
                         </v-card-text>
                     </v-card>
                 </template>
@@ -415,7 +418,7 @@ export default {
                     if (this.contract.abi)
                         this.contractInterface = new ethers.utils.Interface(this.contract.abi);
 
-                    if (this.isPublicExplorer)
+                    if (!this.currentWorkspace.storageEnabled)
                         return this.contractLoader = false;
 
                     this.decodeContract();
@@ -438,7 +441,8 @@ export default {
             'currentWorkspace',
             'chain',
             'isPublicExplorer',
-            'accounts'
+            'accounts',
+            'isUserAdmin'
         ]),
         isAccountMode() {
             return this.senderMode === 'accounts';

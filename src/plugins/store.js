@@ -19,6 +19,7 @@ export default new Vuex.Store({
             totalSupply: null
         },
         currentWorkspace: {
+            storageEnabled: true,
             userId: '',
             networkId: null,
             rpcServer: null,
