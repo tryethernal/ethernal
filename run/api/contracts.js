@@ -40,6 +40,27 @@ router.get('/processable', authMiddleware, async (req, res) => {
     }
 });
 
+router.post('/:address/watchedPaths', workspaceAuthMiddleware, async (req, res) => {
+    const data = { ...req.query, ...req.body.data };
+
+    try {
+        if (!data.firebaseUserId || !data.workspace || !data.watchedPaths) {
+            console.log(data);
+            throw new Error(`[POST /api/contracts/${req.params.address}/watchedPaths] Missing parameters`);
+        }
+        const sanitizedData = sanitize({
+            watchedPaths: data.watchedPaths,
+        });
+
+        await db.storeContractData(data.firebaseUserId, data.workspace, req.params.address, sanitizedData);
+
+        res.sendStatus(200);
+    } catch(error) {
+        console.log(error);
+        res.status(400).send(error.message);
+    }
+});
+
 router.post('/:address', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
