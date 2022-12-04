@@ -22,6 +22,7 @@ class MockHelper {
                 totalSupply: '1000000000000'
             },
             currentWorkspace: {
+                storageEnabled: true,
                 isAdmin: true,
                 chain: 'ethereum',
                 networkId: null,
