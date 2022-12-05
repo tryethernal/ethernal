@@ -17,9 +17,12 @@ exports[`Transaction.vue Should display parsed error messages 1`] = `
         <!---->
       </div><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default" role="button" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-dots-vertical theme--light"></i></span></button>
     </div>
-  </div> <span><span class="error v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-alert-circle theme--light" style="font-size: 16px;"></i>
-                Transaction Failed
-            </span></span></span>
+  </div> <span class="success mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-check theme--light" style="font-size: 16px;"></i>Transaction Succeeded
+        </span></span> <span class="error mr-2 v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-alert-circle theme--light" style="font-size: 16px;"></i>
+            Transaction Failed
+        </span></span> <span class="error mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
+            Unknown Transaction Status
+        </span></span>
   <!---->
   <div class="row mt-2">
     <div class="col">
@@ -99,9 +102,12 @@ exports[`Transaction.vue Should display raw error messages 1`] = `
         <!---->
       </div><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default" role="button" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-dots-vertical theme--light"></i></span></button>
     </div>
-  </div> <span><span class="error v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-alert-circle theme--light" style="font-size: 16px;"></i>
-                Transaction Failed
-            </span></span></span>
+  </div> <span class="success mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-check theme--light" style="font-size: 16px;"></i>Transaction Succeeded
+        </span></span> <span class="error mr-2 v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-alert-circle theme--light" style="font-size: 16px;"></i>
+            Transaction Failed
+        </span></span> <span class="error mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
+            Unknown Transaction Status
+        </span></span>
   <!---->
   <div class="row mt-2">
     <div class="col">
@@ -173,9 +179,12 @@ exports[`Transaction.vue Should not display the menu if public explorer 1`] = `
       <h2 class="text-truncate mb-2">Tx 0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759</h2>
     </div>
     <!---->
-  </div> <span><span class="success mr-2 v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-check theme--light" style="font-size: 16px;"></i>
-                Transaction Succeeded
-            </span></span></span>
+  </div> <span class="success mr-2 v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-check theme--light" style="font-size: 16px;"></i>Transaction Succeeded
+        </span></span> <span class="error mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-alert-circle theme--light" style="font-size: 16px;"></i>
+            Transaction Failed
+        </span></span> <span class="error mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
+            Unknown Transaction Status
+        </span></span>
   <!---->
   <!---->
   <div class="row my-2">

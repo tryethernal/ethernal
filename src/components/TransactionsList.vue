@@ -21,18 +21,14 @@
             <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
                     <span v-if="item.receipt">
-                        <v-icon v-bind="attrs" v-on="on" small v-if="!item.receipt.status" color="error lighten-1" class="mr-2">mdi-alert-circle</v-icon>
-                        <v-icon v-bind="attrs" v-on="on" small v-else color="success lighten-1" class="mr-2">mdi-check-circle</v-icon>
-                    </span>
-                    <span v-else>
-                        <v-icon v-bind="attrs" v-on="on" small color="grey lighten-1" class="mr-2">mdi-help-circle</v-icon>
+                        <v-icon v-bind="attrs" v-on="on" small v-show="txStatus(item) == 'succeeded'" color="success lighten-1" class="mr-2">mdi-check-circle</v-icon>
+                        <v-icon v-bind="attrs" v-on="on" small v-show="txStatus(item) == 'failed'" color="error lighten-1" class="mr-2">mdi-alert-circle</v-icon>
+                        <v-icon v-bind="attrs" v-on="on" small v-show="txStatus(item) == 'unknown'" color="grey lighten-1" class="mr-2">mdi-help-circle</v-icon>
                     </span>
                 </template>
-                <div v-if="item.receipt">
-                    <span v-if="!item.receipt.status">Failed Transaction</span>
-                    <span v-else>Succeeded Transaction</span>
-                </div>
-                <span v-else>Couldn't retrieve receipt, some info is not available.</span>
+                <span v-show="txStatus(item) == 'succeeded'">Suceeded Transaction</span>
+                <span v-show="txStatus(item) == 'failed'">Failed Transaction</span>
+                <span v-show="txStatus(item) == 'unknown'">Unkown Transaction Status</span>
             </v-tooltip>
             <Hash-Link :type="'transaction'" :hash="item.hash" />
         </template>
@@ -160,6 +156,19 @@ export default {
     },
     methods: {
         moment: moment,
+        txStatus(item) {
+            if (!item || !item.receipt)
+                return 'unknown';
+
+            const receipt = item.receipt;
+            if (receipt.status !== null && receipt.status !== undefined)
+                return receipt.status ? 'succeeded' : 'failed';
+
+            if (receipt.root && receipt.root != '0x' && receipt.cumulativeGasUsed === receipt.gasUsed)
+                return 'succeeded';
+
+            return 'failed';
+        },
         onPagination: function(pagination) {
             this.$emit('pagination', pagination);
         },

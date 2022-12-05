@@ -22,19 +22,17 @@
                     </v-col>
                 </template>
             </v-row>
-            <span v-if="transaction.receipt">
-                <v-chip small class="success mr-2" v-if="transaction.receipt.status">
-                    <v-icon small class="white--text mr-1">mdi-check</v-icon>
-                    Transaction Succeeded
-                </v-chip>
-                <v-chip small class="error" v-else>
-                    <v-icon small class="white--text mr-1">mdi-alert-circle</v-icon>
-                    Transaction Failed
-                </v-chip>
-            </span>
-            <div v-else class="mb-1">
-                Couldn't not retrieve receipt for this tx. Status and other information might not be available. You can try to resync the block with <code>ethernal sync -f {{ transaction.blockNumber }} -t {{ transaction.blockNumber + 1 }}</code>
-            </div>
+            <v-chip small class="success mr-2" v-show="txStatus == 'succeeded'">
+                <v-icon small class="white--text mr-1">mdi-check</v-icon>Transaction Succeeded
+            </v-chip>
+            <v-chip small class="error mr-2" v-show="txStatus == 'failed'">
+                <v-icon small class="white--text mr-1">mdi-alert-circle</v-icon>
+                Transaction Failed
+            </v-chip>
+            <v-chip small class="error mr-2" v-show="txStatus == 'unknown'">
+                <v-icon small class="white--text mr-1">mdi-help-circle</v-icon>
+                Unknown Transaction Status
+            </v-chip>
             <v-chip small v-if="!transaction.to">
                 <v-icon small class="mr-1">mdi-file</v-icon>
                 Contract Creation
@@ -224,7 +222,20 @@ export default {
             'chain',
             'currentWorkspace',
             'isPublicExplorer',
-        ])
+        ]),
+        txStatus() {
+            if (!this.transaction.receipt)
+                return 'unknown';
+
+            const receipt = this.transaction.receipt;
+            if (receipt.status !== null && receipt.status !== undefined)
+                return receipt.status ? 'succeeded' : 'failed';
+
+            if (receipt.root && receipt.root != '0x' && receipt.cumulativeGasUsed === receipt.gasUsed)
+                return 'succeeded';
+
+            return 'failed';
+        }
     }
 }
 </script>

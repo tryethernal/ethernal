@@ -197,7 +197,7 @@ module.exports = (sequelize, DataTypes) => {
             include: [
                 {
                     model: sequelize.models.TransactionReceipt,
-                    attributes: ['gasUsed', 'status', 'contractAddress'],
+                    attributes: ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'gasUsed', 'cumulativeGasUsed'],
                     as: 'receipt',
                     include: [
                         {
@@ -394,7 +394,7 @@ module.exports = (sequelize, DataTypes) => {
             include: [
                 {
                     model: sequelize.models.TransactionReceipt,
-                    attributes: ['gasUsed', 'status', 'contractAddress'],
+                    attributes: ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'cumulativeGasUsed'],
                     as: 'receipt',
                     include: [
                         {
