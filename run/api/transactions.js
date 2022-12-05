@@ -177,16 +177,16 @@ router.post('/:hash/trace', authMiddleware, async (req, res) => {
     }
 });
 
-router.post('/:hash/storage', authMiddleware, async (req, res) => {
-    const data = req.body.data;
-    
+router.post('/:hash/storage', workspaceAuthMiddleware, async (req, res) => {
+    const data = { ...req.query, ...req.body.data };
+
     try {
-        if (!data.uid || !data.workspace || !data.data) {
+        if (!data.firebaseUserId || !data.workspace || !data.data) {
             console.log(data);
             throw new Error('[POST /api/transactions/:hash/storage] Missing parameter.');
         }
 
-        await db.storeTransactionData(data.uid, data.workspace, req.params.hash, data.data);
+        await db.storeTransactionData(data.firebaseUserId, data.workspace, req.params.hash, data.data);
 
         res.sendStatus(200);
     } catch(error) {
