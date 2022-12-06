@@ -211,7 +211,7 @@ module.exports = async job => {
             processed: true,
         }));
 
-        if (tokenData.patterns.indexOf('erc721') > -1 && tokenData.has721Enumerable) {
+        if (tokenData.patterns.indexOf('erc721') > -1 && tokenData.has721Enumerable && workspace.erc721LoadingEnabled) {
             const erc721 = new ERC721Connector(workspace.rpcServer, contract.address, {
                 metadata: tokenData.has721Metadata,
                 enumerable: tokenData.has721Enumerable

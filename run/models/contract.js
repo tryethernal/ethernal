@@ -169,7 +169,7 @@ module.exports = (sequelize, DataTypes) => {
                 trigger(`private-tokens;workspace=${contract.workspaceId}`, 'destroyed', null);
         },
         beforeUpdate(contract, options) {
-            if (contract._changed.size > 0 && !contract._changed.has('processed'))
+            if (contract._changed.size > 0 && !contract._changed.has('processed') && !contract._changed.has('totalSupply'))
                 contract.processed = false;
         },
         afterUpdate(contract, options) {
