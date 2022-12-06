@@ -20,7 +20,7 @@ exports[`Transaction.vue Should display parsed error messages 1`] = `
   </div> <span class="success mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-check theme--light" style="font-size: 16px;"></i>Transaction Succeeded
         </span></span> <span class="error mr-2 v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-alert-circle theme--light" style="font-size: 16px;"></i>
             Transaction Failed
-        </span></span> <span class="error mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
+        </span></span> <span class="grey mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
             Unknown Transaction Status
         </span></span>
   <!---->
@@ -66,7 +66,7 @@ exports[`Transaction.vue Should display parsed error messages 1`] = `
     </div>
     <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Gas Limit</div>
-      1,000
+      84,000
     </div>
   </div>
   <div class="row my-2" style="display: none;">
@@ -105,7 +105,7 @@ exports[`Transaction.vue Should display raw error messages 1`] = `
   </div> <span class="success mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-check theme--light" style="font-size: 16px;"></i>Transaction Succeeded
         </span></span> <span class="error mr-2 v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-alert-circle theme--light" style="font-size: 16px;"></i>
             Transaction Failed
-        </span></span> <span class="error mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
+        </span></span> <span class="grey mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
             Unknown Transaction Status
         </span></span>
   <!---->
@@ -153,7 +153,7 @@ exports[`Transaction.vue Should display raw error messages 1`] = `
     </div>
     <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Gas Limit</div>
-      1,000
+      84,000
     </div>
   </div>
   <div class="row my-2" style="display: none;">
@@ -182,7 +182,7 @@ exports[`Transaction.vue Should not display the menu if public explorer 1`] = `
   </div> <span class="success mr-2 v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-check theme--light" style="font-size: 16px;"></i>Transaction Succeeded
         </span></span> <span class="error mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-alert-circle theme--light" style="font-size: 16px;"></i>
             Transaction Failed
-        </span></span> <span class="error mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
+        </span></span> <span class="grey mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
             Unknown Transaction Status
         </span></span>
   <!---->
@@ -219,7 +219,7 @@ exports[`Transaction.vue Should not display the menu if public explorer 1`] = `
     </div>
     <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Gas Limit</div>
-      1,000
+      84,000
     </div>
   </div>
   <div class="row my-2" style="display: none;">
