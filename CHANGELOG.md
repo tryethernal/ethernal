@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.3] - 2022-12-06
+### Changed
+- Display transaction gas limit instead of block gas limit
+- Better transaction status detection
+
 ## [3.1.2] - 2022-12-05
 ### Changed
 - Transaction status now handles cases with no status field
