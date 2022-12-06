@@ -232,7 +232,7 @@ export default {
             if (receipt.status !== null && receipt.status !== undefined)
                 return receipt.status ? 'succeeded' : 'failed';
 
-            if (receipt.root && receipt.root != '0x' && receipt.cumulativeGasUsed >= receipt.gasUsed)
+            if (receipt.root && receipt.root != '0x' && parseInt(receipt.cumulativeGasUsed) >= parseInt(receipt.gasUsed))
                 return 'succeeded';
 
             return 'failed';
