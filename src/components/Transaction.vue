@@ -29,7 +29,7 @@
                 <v-icon small class="white--text mr-1">mdi-alert-circle</v-icon>
                 Transaction Failed
             </v-chip>
-            <v-chip small class="error mr-2" v-show="txStatus == 'unknown'">
+            <v-chip small class="grey mr-2" v-show="txStatus == 'unknown'">
                 <v-icon small class="white--text mr-1">mdi-help-circle</v-icon>
                 Unknown Transaction Status
             </v-chip>
@@ -101,7 +101,7 @@
                 </v-col>
                 <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Gas Limit</div>
-                    {{ parseInt(transaction.block.gasLimit).toLocaleString() }}
+                    {{ parseInt(transaction.gasLimit || transaction.block.gasLimit).toLocaleString() }}
                 </v-col>
             </v-row>
 
@@ -171,6 +171,7 @@ export default {
             error: '',
             value: 0,
             gasPrice: 0,
+            gasLimit: 0,
             trace: null,
             receipt: {
                 gasUsed: 0,
@@ -231,7 +232,7 @@ export default {
             if (receipt.status !== null && receipt.status !== undefined)
                 return receipt.status ? 'succeeded' : 'failed';
 
-            if (receipt.root && receipt.root != '0x' && receipt.cumulativeGasUsed === receipt.gasUsed)
+            if (receipt.root && receipt.root != '0x' && receipt.cumulativeGasUsed >= receipt.gasUsed)
                 return 'succeeded';
 
             return 'failed';
