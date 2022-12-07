@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import ERC721TokenCard from './ERC721TokenCard';
 
 export default {
@@ -72,7 +73,7 @@ export default {
         },
         getTokens() {
             this.tokens = Array(this.maxTokenLength).fill({ attributes: {}});
-            this.server.getErc721Tokens(this.address, this.currentOptions)
+            this.server.getErc721Tokens(this.address, this.currentOptions, this.currentWorkspace.erc721LoadingEnabled)
                 .then(({ data: { items } }) => {
                     const tokens = [];
                     for (let i = 0; i < this.maxTokenLength; i++)
@@ -83,6 +84,9 @@ export default {
         }
     },
     computed: {
+        ...mapGetters([
+            'currentWorkspace'
+        ]),
         maxTokenLength() {
             if (this.currentOptions.page == this.length)
                 return this.currentOptions.itemsPerPage - (this.length * this.currentOptions.itemsPerPage - this.totalSupply);

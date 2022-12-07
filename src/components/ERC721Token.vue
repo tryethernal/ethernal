@@ -184,7 +184,7 @@ export default {
         },
         getErc721Token() {
             this.loading = true;
-            this.server.getErc721Token(this.hash, this.tokenId)
+            this.server.getErc721Token(this.hash, this.tokenId, this.currentWorkspace.erc721LoadingEnabled)
                 .then(({ data }) => {
                     if (!data) return;
 
@@ -220,7 +220,8 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'isPublicExplorer'
+            'isPublicExplorer',
+            'currentWorkspace'
         ])
     }
 }
