@@ -484,7 +484,11 @@ const getWorkspaceBlock = async (workspaceId, number, withTransactions) => {
                 include: {
                     model: Transaction,
                     as: 'transactions',
-                    include: 'receipt'
+                    include: {
+                        model: TransactionReceipt,
+                        attributes: ['gasUsed', 'status', 'contractAddress', [Sequelize.json('raw.root'), 'root'], 'cumulativeGasUsed'],
+                        as: 'receipt'
+                    }
                 }
             }) :
             await workspace.getBlocks({ where: { number: number }});
