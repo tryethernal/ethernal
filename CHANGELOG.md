@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.4] - 2022-12-07
+### Added
+- [Public Explorer] ERC-721 autoloading is now configurable
+
+### Fixed
+- Fixed ERC-721 infinite autoloading
+
 ## [3.1.3] - 2022-12-06
 ### Changed
 - Display transaction gas limit instead of block gas limit
