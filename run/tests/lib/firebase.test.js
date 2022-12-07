@@ -1,4 +1,5 @@
 jest.mock('sequelize', () => ({
+    json: jest.fn(),
     Op: {
         or: 'or'
     }
