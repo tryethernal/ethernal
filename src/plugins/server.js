@@ -402,8 +402,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            getErc721Token(contractAddress, tokenId) {
-                if (!store.getters.isPublicExplorer) {
+            getErc721Token(contractAddress, tokenId, loadingEnabled) {
+                if (!store.getters.isPublicExplorer || !loadingEnabled) {
                     const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
                     return new Promise((resolve, reject) => {
                         erc721Connector.fetchTokenById(tokenId)
@@ -422,7 +422,7 @@ export const serverPlugin = {
                 }
             },
 
-            getErc721Tokens(contractAddress, options) {
+            getErc721Tokens(contractAddress, options, loadingEnabled) {
                 const params = {
                     firebaseAuthToken: store.getters.firebaseIdToken,
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
@@ -430,7 +430,7 @@ export const serverPlugin = {
                     ...options
                 };
 
-                if (!store.getters.isPublicExplorer) {
+                if (!store.getters.isPublicExplorer || !loadingEnabled) {
                     return new Promise((resolve, reject) => {
                         const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
                         const promises = [];

@@ -664,7 +664,8 @@ module.exports = (sequelize, DataTypes) => {
     alchemyIntegrationEnabled: DataTypes.BOOLEAN,
     isRemote: DataTypes.BOOLEAN,
     dataRetentionLimit: DataTypes.INTEGER,
-    storageEnabled: DataTypes.BOOLEAN
+    storageEnabled: DataTypes.BOOLEAN,
+    erc721LoadingEnabled: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Workspace',
