@@ -7,7 +7,7 @@ const { isErc20, isErc721 } = require('../lib/contract');
 const SELECTORS = require('../lib/abis/selectors.json');
 const db = require('../lib/firebase');
 const { ContractConnector, ERC721Connector, getProvider } = require('../lib/rpc');
-const writeLog = require('../lib/writeLog');
+const logger = require('../lib/logger');
 const { trigger } = require('../lib/pusher');
 const transactionsLib = require('../lib/transactions');
 const router = express.Router();
@@ -88,8 +88,7 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
             has721Metadata: has721Metadata,
             has721Enumerable: has721Enumerable
         };
-    } catch(error) {
-        console.log(error);
+    } catch(_error) {
         return {};
     }
 };
@@ -160,10 +159,8 @@ const findScannerMetadata = async (workspace, contract) => {
 module.exports = async job => {
     const data = job.data;
 
-    if (!data.contractId) {
-        console.log(data);
+    if (!data.contractId)
         throw new Error('Missing parameter.');
-    }
 
     let scannerMetadata = {}, tokenPatterns = [], asm, bytecode, hashedBytecode;
 
@@ -242,13 +239,7 @@ module.exports = async job => {
     try {
         await transactionsLib.processTransactions(user.firebaseUserId, workspace.name, transactions);
     } catch(error) {
-        writeLog({
-            functionName: 'tasks.processContract.processTransactions',
-            error: error,
-            extra: {
-                data: data,
-            }
-        });
+        logger.error(error.message, { location: 'jobs.contractProcessing', error: error, data: data });
     }
 
     return trigger(`private-contracts;workspace=${contract.workspaceId};address=${contract.address}`, 'updated', null);

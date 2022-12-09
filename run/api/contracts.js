@@ -127,10 +127,8 @@ router.post('/:address/verify', async (req, res) => {
     const data = req.body;
     const address = req.params.address.toLowerCase();
     try {
-         if (!data.explorerSlug || !data.compilerVersion || !data.code || !data.contractName) {
-            console.log(data);
-            throw new Error(`[POST /${address}/verify] Missing parameter.`);
-        }
+         if (!data.explorerSlug || !data.compilerVersion || !data.code || !data.contractName)
+            throw new Error(`Missing parameter.`);
 
         const explorer = await db.getPublicExplorerParamsBySlug(data.explorerSlug);
 

@@ -1,4 +1,5 @@
 const express = require('express');
+const logger = require('../lib/logger');
 const { stringifyBns, sanitize } = require('../lib/utils');
 const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
@@ -124,7 +125,7 @@ router.post('/:hash/tokenBalanceChanges', authMiddleware, async (req, res) => {
         res.sendStatus(200);
     } catch(error) {
         logger.error(error.message, { location: 'post.api.transactions.hash.tokenBalanceChanges', error: error, data: data });
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
@@ -164,7 +165,7 @@ router.post('/:hash/trace', authMiddleware, async (req, res) => {
         res.sendStatus(200);
     } catch(error) {
         logger.error(error.message, { location: 'post.api.transactions.hash.trace', error: error, data: data });
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
@@ -180,7 +181,7 @@ router.post('/:hash/storage', workspaceAuthMiddleware, async (req, res) => {
         res.sendStatus(200);
     } catch(error) {
         logger.error(error.message, { location: 'post.api.transactions.hash.storage', error: error, data: data });
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
@@ -193,7 +194,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res) => {
         res.status(200).json(transactions);
     } catch(error) {
         logger.error(error.message, { location: 'get.api.transactions', error: error, data: data });
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
@@ -209,9 +210,8 @@ router.get('/:hash', workspaceAuthMiddleware, async (req, res) => {
         res.status(200).json(transaction);
     } catch(error) {
         logger.error(error.message, { location: 'get.api.transactions.hash', error: error, data: data });
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
-})
-
+});
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const { Worker } = require('bullmq');
 const connection = require('../config/redis')[process.env.NODE_ENV || 'production'];
 const jobs = require('../jobs');
-const writeLog = require('../lib/writeLog');
+const logger = require('../lib/logger');
 const priorities = require('./priorities.json');
 
 priorities['medium'].forEach(jobName => {
@@ -10,11 +10,12 @@ priorities['medium'].forEach(jobName => {
         async job => await jobs[jobName](job),
         { concurrency: 50 , connection },
     );
-    worker.on('failed', (job, err) => {
-        writeLog({ functionName: `workers.${jobName}`, error: err, extra: {
-            jobName: job.name,
+    worker.on('failed', (job, error) => {
+        logger.error(error.message, {
+            location: `workers.mediumPriority.${jobName}`,
+            error: error,
             data: job.data 
-        }});
+        });
     });
     console.log(`Started worker "${jobName}" - Priority: medium`);
 });

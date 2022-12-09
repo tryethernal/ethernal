@@ -8,10 +8,8 @@ const { enqueue } = require('../lib/queue');
 module.exports = async job => {
     const data = job.data;
 
-    if (!data.userId || !data.workspace || data.blockNumber === undefined || data.blockNumber === null) {
-        console.log(data);
-        throw new Error('[jobs.blockSync] Missing parameter.');
-    }
+    if (!data.userId || !data.workspace || data.blockNumber === undefined || data.blockNumber === null)
+        throw new Error('Missing parameter.');
 
     const workspace = await db.getWorkspaceByName(data.userId, data.workspace);
 

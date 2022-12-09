@@ -1,5 +1,6 @@
 const { getAuth } = require('firebase-admin/auth');
 const db = require('../lib/firebase');
+const logger = require('../lib/logger');
 
 module.exports = async (req, res, next) => {
     const data = { ...req.body.data, ...req.query };
@@ -9,8 +10,7 @@ module.exports = async (req, res, next) => {
         else
             res.sendStatus(401);
     } catch(error) {
-        console.error(data)
-        console.error(error);
+        logger.error(error.message, { location: 'middleware.task', error: error, data: data });
         res.status(401).send(error);
     }
 };
