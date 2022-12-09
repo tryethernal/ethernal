@@ -1,4 +1,4 @@
-import LogRocket from 'logrocket';
+import { datadogRum } from '@datadog/browser-rum';
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';
@@ -34,6 +34,28 @@ else {
     store.dispatch('updatePublicExplorerDomain', window.location.host);
 }
 
+const initDDRum = () => {
+    datadogRum.init({
+        applicationId: 'b07f5e51-1e3c-4633-b630-3ede52b33a1c',
+        clientToken: 'pub27393d18493525157987bef6e45c0d7f',
+        site: 'datadoghq.eu',
+        service:'ethernal',
+        env:'production',
+        sampleRate: 100,
+        sessionReplaySampleRate: 100,
+        trackInteractions: true,
+        trackResources: true,
+        trackLongTasks: true,
+        defaultPrivacyLevel:'mask-user-input',
+        beforeSend: (event, context) => {
+            if (event.type === 'resource' && (event.resource.type === 'fetch' || event.resource.type === 'xhr')) {
+                console.log(event, context)
+                event.context = { ...event.context, response: context.response };
+            }
+        }
+    });
+};
+
 new Vue({
     vuetify,
     store: store,
@@ -43,9 +65,10 @@ new Vue({
     },
     methods: {
         authStateChanged: function(user) {
-            if (user && process.env.VUE_APP_ENABLE_ANALYTICS && window.location.host == 'app.tryethernal.com') {
-                LogRocket.init(process.env.VUE_APP_LOGROCKET_ID);
-            }
+            // if (user && process.env.VUE_APP_ENABLE_ANALYTICS && window.location.host == 'app.tryethernal.com') {
+                initDDRum();
+                datadogRum.startSessionReplayRecording();
+            // }
 
             const currentPath = this.$router.currentRoute.path;
             const isPublicExplorer = store.getters.isPublicExplorer;

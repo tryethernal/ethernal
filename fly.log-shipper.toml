@@ -1,0 +1,18 @@
+app = "ethernal-log-shipper"
+kill_signal = "SIGINT"
+kill_timeout = 5
+processes = []
+
+[build]
+  image = "ghcr.io/superfly/fly-log-shipper:latest"
+
+[env]
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+  private_network = true
+
+[[services]]
+  http_checks = []
+  internal_port = 8686

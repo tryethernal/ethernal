@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const logger = require('../lib/logger');
 const db = require('../lib/firebase');
 
 router.get('/', async (req, res) => {
     const data = req.query;
+
     try {
         if (!data.domain && !data.slug)
-            throw new Error('[GET /api/explorers] Missing parameters.')
+            throw new Error('Missing parameters.')
 
         let explorer;
 
@@ -18,10 +20,9 @@ router.get('/', async (req, res) => {
         if (explorer)
             res.status(200).json(explorer);
         else
-            throw new Error('[GET /api/explorers] Could not find explorer');
+            throw new Error('Could not find explorer.');
     } catch(error) {
-        console.log(error);
-        console.log(data);
+        logger.error(error.message, { location: 'get.api.explorers', error: error, data: data, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });

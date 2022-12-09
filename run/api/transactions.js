@@ -10,37 +10,36 @@ const router = express.Router();
 
 router.get('/failedProcessable', authMiddleware, async (req, res) => {
     const data = req.query;
-    console.log(data);
+
     try {
         const transactions = await db.getFailedProcessableTransactions(data.firebaseUserId, data.workspace);
 
         res.status(200).json(transactions);
     } catch(error) {
-        console.log(error);
-        res.status(400).send(error);
+        logger.error(error.message, { location: 'get.api.transactions.failedProcessable', error: error, data: data });
+        res.status(400).send(error.message);
     }
 });
 
 router.get('/processable', authMiddleware, async (req, res) => {
     const data = req.query;
-    console.log(data);
+
     try {
         const transactions = await db.getProcessableTransactions(data.firebaseUserId, data.workspace);
 
         res.status(200).json(transactions);
     } catch(error) {
-        console.log(error);
-        res.status(400).send(error);
+        logger.error(error.message, { location: 'get.api.transactions.processable', error: error, data: data });
+        res.status(400).send(error.message);
     }
 });
 
 router.post('/', authMiddleware, async (req, res) => {
     const data = req.body.data;
+
     try {
-        if (!data.uid ||  !data.workspace || !data.block || !data.transaction) {
-            console.log(data);
-            throw new Error('[POST /api/transactions] Missing parameter.');
-        }
+        if (!data.uid ||  !data.workspace || !data.block || !data.transaction)
+            throw new Error('Missing parameter.');
 
         const promises = [];
         const transaction = data.transaction;
@@ -75,8 +74,8 @@ router.post('/', authMiddleware, async (req, res) => {
        
        res.sendStatus(200);
     } catch(error) {
-        console.log(error);
-        res.status(400).send(error);
+        logger.error(error.message, { location: 'post.api.transactions', error: error, data: data });
+        res.status(400).send(error.message);
     }
 });
 
@@ -84,16 +83,14 @@ router.post('/:hash/error', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
     try {
-        if (!data.uid || !data.workspace || !req.params.hash || !data.error) {
-            console.log(data);
-            throw new Error('[POST /api/transactions/:hash/error] Missing parameter.');
-        }
+        if (!data.uid || !data.workspace || !req.params.hash || !data.error)
+            throw new Error('Missing parameter.');
 
         await db.storeFailedTransactionError(data.uid, data.workspace, req.params.hash, data.error);
 
        res.sendStatus(200);
     } catch(error) {
-        console.log(error);
+        logger.error(error.message, { location: 'post.api.transactions.hash.error', error: error, data: data });
         res.status(400).send(error.message);
     }
 });
@@ -102,17 +99,15 @@ router.post('/:hash/process', authMiddleware, async (req, res) => {
     const data = req.body.data;
     
     try {
-        if (!data.uid || !data.workspace || !req.params.hash) {
-            console.log(data);
-            throw new Error('[POST /api/transactions/:hash/process] Missing parameter.');
-        }
+        if (!data.uid || !data.workspace || !req.params.hash)
+            throw new Error('Missing parameter.');
 
         const transaction = await db.getTransaction(data.uid, data.workspace, req.params.hash);
         await processTransactions(data.uid, data.workspace, [transaction]);
 
         res.sendStatus(200);
     } catch(error) {
-        console.log(error);
+        logger.error(error.message, { location: 'post.api.transactions.hash.process', error: error, data: data });
         res.status(400).send(error.message);
     }
 });
@@ -121,16 +116,14 @@ router.post('/:hash/tokenBalanceChanges', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
     try {
-        if (!data.uid || !data.workspace || !req.params.hash || !data.tokenBalanceChanges) {
-            console.log(data);
-            throw new Error('[POST /api/transactions/:hash/tokenBalanceChanges] Missing parameter.');
-        }
+        if (!data.uid || !data.workspace || !req.params.hash || !data.tokenBalanceChanges)
+            throw new Error('Missing parameter.');
         
         await db.storeTokenBalanceChanges(data.uid, data.workspace, req.params.hash, data.tokenBalanceChanges);
 
         res.sendStatus(200);
     } catch(error) {
-        console.log(error);
+        logger.error(error.message, { location: 'post.api.transactions.hash.tokenBalanceChanges', error: error, data: data });
         res.status(400).send(error);
     }
 });
@@ -139,10 +132,8 @@ router.post('/:hash/trace', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
     try {
-        if (!data.uid || !data.workspace || !req.params.hash || !data.steps) {
-            console.log(data);
-            throw new Error('[POST /api/transactions/:hash/trace] Missing parameter.');
-        }
+        if (!data.uid || !data.workspace || !req.params.hash || !data.steps)
+            throw new Error('Missing parameter.');
         
         const trace = [];
         for (const step of data.steps) {
@@ -172,7 +163,7 @@ router.post('/:hash/trace', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        console.log(error);
+        logger.error(error.message, { location: 'post.api.transactions.hash.trace', error: error, data: data });
         res.status(400).send(error);
     }
 });
@@ -181,16 +172,14 @@ router.post('/:hash/storage', workspaceAuthMiddleware, async (req, res) => {
     const data = { ...req.query, ...req.body.data };
 
     try {
-        if (!data.firebaseUserId || !data.workspace || !data.data) {
-            console.log(data);
-            throw new Error('[POST /api/transactions/:hash/storage] Missing parameter.');
-        }
+        if (!data.firebaseUserId || !data.workspace || !data.data)
+            throw new Error('Missing parameter.');
 
         await db.storeTransactionData(data.firebaseUserId, data.workspace, req.params.hash, data.data);
 
         res.sendStatus(200);
     } catch(error) {
-        console.log(error);
+        logger.error(error.message, { location: 'post.api.transactions.hash.storage', error: error, data: data });
         res.status(400).send(error);
     }
 });
@@ -203,22 +192,23 @@ router.get('/', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(transactions);
     } catch(error) {
-        console.log(error);
+        logger.error(error.message, { location: 'get.api.transactions', error: error, data: data });
         res.status(400).send(error);
     }
 });
 
 router.get('/:hash', workspaceAuthMiddleware, async (req, res) => {
+    const data = req.query;
+
     try {
-        const data = req.query;
         if (!req.params.hash)
-            throw '[GET /api/transactions/:hash] Missing parameter';
+            throw new Error('Missing parameter');
 
         const transaction = await db.getWorkspaceTransaction(data.workspace.id, req.params.hash);
 
         res.status(200).json(transaction);
     } catch(error) {
-        console.log(error);
+        logger.error(error.message, { location: 'get.api.transactions.hash', error: error, data: data });
         res.status(400).send(error);
     }
 })

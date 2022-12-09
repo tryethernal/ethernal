@@ -1,30 +1,12 @@
-const { Logging } = require('@google-cloud/logging');
-const projectId = process.env.GCLOUD_PROJECT;
+const { createLogger, format, transports } = require('winston');
 
-const isProductionEnvironment = process.env.NODE_ENV == 'production' ? true : false;
+const logger = createLogger({
+    level: 'info',
+    exitOnError: false,
+    format: format.json(),
+    transports: [
+        new transports.Console({ format: format.simple() })
+    ],
+});
 
-let logging;
-
-module.exports = ({ logName = 'app', severity = 'WARNING', functionName, error, extra }) => {
-    if (isProductionEnvironment && projectId) {
-        logging = logging || new Logging({ projectId });
-        const logger = logging.log(logName);
-        const message = error && error.message || '';
-        const stackTrace = error && error.stack || {}
-        return logger.write(
-            logger.entry({
-                severity: severity,
-                labels: {
-                    function: functionName,
-                }
-            }, {
-                message: message,
-                stackTrace: stackTrace,
-                extra: extra
-            })
-        );
-    }
-    else
-        console.log(`[${severity}]`, functionName || '', error || '', extra || '');
-};
-
+module.exports = logger;
