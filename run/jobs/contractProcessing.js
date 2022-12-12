@@ -32,7 +32,7 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
             symbol = res[1];
             name = res[2];
             totalSupply = res[3] && res[3].toString();
-        }).catch(console.log);
+        });
 
         if (decimals && symbol && name) {
             tokenData = sanitize({
@@ -58,9 +58,7 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
                 const isErc721 = await contract.has721Interface();
                 if (isErc721)
                     patterns.push('erc721');
-            } catch(error) {
-                console.log(error);
-            }
+            } catch(_error) {}
         }
 
         if (patterns.indexOf('erc721') > -1) {
@@ -188,7 +186,7 @@ module.exports = async job => {
         try {
             asm = yasold.decompileToText(bytecode);
         } catch (error) {
-            writeLog({ functionName: 'jobs.processContract.yasold', error: error, extra: { data: data } });
+            logger.error(error.message, { location: 'jobs.contractProcessing.asmDecompilation', error: error, data: data });
         }
     }
 
@@ -216,9 +214,7 @@ module.exports = async job => {
 
             try {
                 const collection = await erc721.fetchAndStoreAllTokens(workspace.id);
-            } catch(_error) {
-                console.log(_error);
-            }
+            } catch(_error) {}
         }
     }
 

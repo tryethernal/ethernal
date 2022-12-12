@@ -96,7 +96,7 @@ export default new Vuex.Store({
                     plan: user.plan
                 }));
                 // if (process.env.VUE_APP_ENABLE_ANALYTICS)
-                datadogRum.setUser({ id: user.uid, email: user.email });
+                datadogRum.setUser({ id: user.id, email: user.email, firebaseUserId: user.uid });
                     // LogRocket.identify(user.uid, { email: user.email });
             }
             else {

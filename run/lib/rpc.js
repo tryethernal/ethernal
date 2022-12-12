@@ -127,7 +127,6 @@ class ContractConnector {
         try {
             return this.contract.symbol();
         } catch(_error) {
-            console.log(_error);
             return new Promise(resolve => resolve(null));
         }
     }
@@ -203,7 +202,6 @@ class ERC721Connector {
         try {
             return this.contract.symbol();
         } catch(_error) {
-            console.log(_error);
             return new Promise(resolve => resolve(null));
         }
     }

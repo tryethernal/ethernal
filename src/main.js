@@ -22,6 +22,13 @@ Vue.use(serverPlugin, { store: store });
 
 const isEthernalDomain = window.location.host.endsWith(process.env.VUE_APP_MAIN_DOMAIN);
 
+XMLHttpRequest.prototype.realSend = XMLHttpRequest.prototype.send;
+const newSend = function(data) {
+    XMLHttpRequest.prototype.reqData = data;
+    this.realSend(data);
+};
+XMLHttpRequest.prototype.send = newSend;
+
 if (isEthernalDomain) {
     const splits = window.location.host.split('.');
     const domain = splits[splits.length - 2];
@@ -40,7 +47,7 @@ const initDDRum = () => {
         clientToken: 'pub27393d18493525157987bef6e45c0d7f',
         site: 'datadoghq.eu',
         service:'ethernal',
-        env:'production',
+        env: 'production',
         sampleRate: 100,
         sessionReplaySampleRate: 100,
         trackInteractions: true,
@@ -48,9 +55,40 @@ const initDDRum = () => {
         trackLongTasks: true,
         defaultPrivacyLevel:'mask-user-input',
         beforeSend: (event, context) => {
-            if (event.type === 'resource' && (event.resource.type === 'fetch' || event.resource.type === 'xhr')) {
-                console.log(event, context)
-                event.context = { ...event.context, response: context.response };
+            if (event.type === 'resource' && event.resource.type === 'xhr') {
+                const newContext = { ...event.context };
+                if (context.xhr && context.xhr.reqData) {
+                    try {
+                        newContext.body = JSON.parse(context.xhr.reqData);
+                    } catch(_) {
+                        newContext.body = context.xhr.reqData;
+                    }
+                }
+
+                try {
+                    newContext.response = JSON.parse(context.xhr.response);
+                } catch(_) {
+                    newContext.response = context.xhr.response;
+                }
+
+                event.context = { ...newContext };
+            }
+            else if (event.type === 'resource' && event.resource.type === 'fetch') {
+                const newContext = { ...event.context };
+                if (context.requestInit && context.requestInit.body) {
+                    try {
+                        newContext.body = new TextDecoder().decode(context.requestInit.body);
+                    } catch(_) {
+                        try {
+                            newContext.body = JSON.parse(context.requestInit.body);
+                        } catch (_) {
+                            newContext.body = context.requestInit.body;
+                        }
+                    }
+                }
+
+                newContext.response = context.response;
+                event.context = { ...newContext };
             }
         }
     });

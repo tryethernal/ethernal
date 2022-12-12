@@ -17,5 +17,5 @@ priorities['low'].forEach(jobName => {
             data: job.data 
         });
     });
-    console.log(`Started worker "${jobName}" - Priority: low`);
+    logger.info(`Started worker "${jobName}" - Priority: low`);
 });

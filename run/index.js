@@ -1,4 +1,4 @@
-const logger = require('./lib//writeLog');
+const logger = require('./lib//logger');
 const app = require('./app');
 
 const port = parseInt(process.env.PORT) || 6000;

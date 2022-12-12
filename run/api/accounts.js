@@ -36,10 +36,8 @@ router.post('/:address/syncBalance', authMiddleware, async (req, res) => {
 router.post('/:address/privateKey', authMiddleware, async (req, res) => {
     const data = req.body.data;
     try {
-        if (!data.uid || !data.workspace || !data.privateKey) {
-            console.log(data);
+        if (!data.uid || !data.workspace || !data.privateKey)
             throw new Error(`Missing parameters`);
-        }
 
         const encryptedPk = encrypt(data.privateKey);
         await db.storeAccountPrivateKey(data.uid, data.workspace, req.params.address.toLowerCase(), encryptedPk);
