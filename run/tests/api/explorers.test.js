@@ -37,7 +37,7 @@ describe(`GET ${BASE_URL}`, () => {
         request.get(`${BASE_URL}?slug=ethernal`)
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual('[GET /api/explorers] Could not find explorer');
+                expect(text).toEqual('Could not find explorer.');
                 done();
             });
     });
