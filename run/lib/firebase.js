@@ -14,7 +14,7 @@ const storeContractDataWithWorkspaceId = async (workspaceId, address, data) => {
     if (!workspaceId || !address || !data) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
-    return workspace.safeCreateOrUpdatepsqlContract({
+    return workspace.safeCreateOrUpdateContract({
         address: address,
         ...data
     });

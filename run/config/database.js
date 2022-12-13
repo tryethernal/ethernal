@@ -7,7 +7,9 @@ module.exports = {
         "database": "ethernal",
         "password": process.env.DB_PASSWORD,
         "dialect": "postgres",
-        "logging": msg => logger.debug(msg),
+        "logging": function(sql, sequelizeObject) {
+            logger.debug(sql, { instance: sequelizeObject.instance });
+        }
     },
     production: {
         "username": process.env.DB_USERNAME,
@@ -16,6 +18,8 @@ module.exports = {
         "host": process.env.DB_HOST,
         "port": process.env.DB_PORT,
         "dialect": "postgres",
-        "logging": logger.debug.bind(logger)
+        "logging": function(sql, sequelizeObject) {
+            logger.debug(sql, { instance: sequelizeObject.instance });
+        }
     }
 }

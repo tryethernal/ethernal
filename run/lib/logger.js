@@ -15,7 +15,7 @@ if (process.env.DATADOG_API_KEY) {
     };
     const transport = new transports.Http(httpTransportOptions);
     logger.add(transport);
-    logger.exceptions.handle(transport)
+    logger.exceptions.handle(transport);
 }
 else {
     const transport = new transports.Console({ format: format.combine(format.colorize(), format.simple()) });

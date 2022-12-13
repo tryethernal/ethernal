@@ -1,4 +1,4 @@
-import { datadogRum } from '@datadog/browser-rum';
+import LogRocket from 'logrocket';
 import Vue from 'vue';
 import Vuex from 'vuex';
 const { sanitize } = require('../lib/utils');
@@ -95,9 +95,8 @@ export default new Vuex.Store({
                     id: user.id,
                     plan: user.plan
                 }));
-                // if (process.env.VUE_APP_ENABLE_ANALYTICS)
-                datadogRum.setUser({ id: user.id, email: user.email, firebaseUserId: user.uid });
-                    // LogRocket.identify(user.uid, { email: user.email });
+                if (process.env.VUE_APP_ENABLE_ANALYTICS)
+                    LogRocket.identify(user.uid, { email: user.email });
             }
             else {
                 commit('SET_USER', null);
@@ -114,9 +113,8 @@ export default new Vuex.Store({
         },
         updateUserPlan({ commit }, data) {
             commit('SET_USER_PLAN', data.plan);
-            // if (process.env.VUE_APP_ENABLE_ANALYTICS && data.uid && data.plan && data.plan != 'free') {
-                datadogRum.setUserProperty('plan', data.plan);
-                // LogRocket.identify(data.uid, { email: data.email, plan: data.plan });
+            if (process.env.VUE_APP_ENABLE_ANALYTICS && data.uid && data.plan && data.plan != 'free')
+                LogRocket.identify(data.uid, { email: data.email, plan: data.plan });
         },
         updateOnboardedStatus({ commit }, status) {
             commit('SET_ONBOARDED_STATUS', status);
