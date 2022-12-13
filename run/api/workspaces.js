@@ -1,4 +1,5 @@
 const express = require('express');
+const logger = require('../lib/logger');
 const authMiddleware = require('../middlewares/auth');
 const { sanitize, stringifyBns } = require('../lib/utils');
 const { encode, decrypt, decode } = require('../lib/crypto');
@@ -9,57 +10,55 @@ const router = express.Router();
 
 router.get('/', authMiddleware, async (req, res) => {
     const data = req.body.data;
+
     try {
         const workspaces = await db.getUserWorkspaces(data.uid);
 
         res.status(200).json(workspaces);
     } catch(error) {
-        console.log(error);
-        res.status(400).send(error);
+        logger.error(error.message, { location: 'get.api.workspaces', error: error, data: data });
+        res.status(400).send(error.message);
     }
 });
 
 router.post('/disableApi', authMiddleware, async (req, res) => {
     const data = req.body.data;
+
     try {
-        if (!data.uid || !data.workspace) {
-            console.log(data);
-            throw new Error('[POST /api/workspaces/disableApi] Missing parameters');
-        }
+        if (!data.uid || !data.workspace)
+            throw new Error('Missing parameters.');
 
         await db.removeIntegration(data.uid, data.workspace, 'api');
 
         res.sendStatus(200);
     } catch(error) {
-        console.log(error);
-        res.status(400).send(error);
+        logger.error(error.message, { location: 'post.api.workspaces.disableApi', error: error, data: data });
+        res.status(400).send(error.message);
     }
 });
 
 router.post('/disableAlchemy', authMiddleware, async (req, res) => {
     const data = req.body.data;
+
     try {
-        if (!data.uid || !data.workspace) {
-            console.log(data);
-            throw new Error('[POST /api/workspaces/disableAlchemy] Missing parameters');
-        }
+        if (!data.uid || !data.workspace)
+            throw new Error('Missing parameters');
 
         await db.removeIntegration(data.uid, data.workspace, 'alchemy');
 
         res.sendStatus(200);
     } catch(error) {
-        console.log(error);
-        res.status(400).send(error);
+        logger.error(error.message, { location: 'post.api.workspaces.disableAlchemy', error: error, data: data });
+        res.status(400).send(error.message);
     }
 });
 
 router.post('/enableApi', authMiddleware, async (req, res) => {
     const data = req.body.data;
+
     try {
-        if (!data.uid || !data.workspace) {
-            console.log(data);
-            throw new Error('[POST /api/workspaces/enableApi] Missing parameters');
-        }
+        if (!data.uid || !data.workspace)
+            throw new Error('Missing parameters');
 
         await db.addIntegration(data.uid, data.workspace, 'api');
 
@@ -74,18 +73,16 @@ router.post('/enableApi', authMiddleware, async (req, res) => {
 
         res.status(200).json({ token: token });
     } catch(error) {
-        console.log(error);
-        res.status(400).send(error);
+        logger.error(error.message, { location: 'post.api.workspaces.enableApi', error: error, data: data });
+        res.status(400).send(error.message);
     }
 });
 
 router.post('/enableAlchemy', authMiddleware, async (req, res) => {
     const data = req.body.data;
     try {
-        if (!data.uid || !data.workspace) {
-            console.log(data);
-            throw new Error('[POST /api/workspaces/enableAlchemy] Missing parameters');
-        }
+        if (!data.uid || !data.workspace)
+            throw new Error('Missing parameters');
 
         await db.addIntegration(data.uid, data.workspace, 'alchemy');
 
@@ -100,23 +97,22 @@ router.post('/enableAlchemy', authMiddleware, async (req, res) => {
 
         res.status(200).json({ token: token });
     } catch(error) {
-        console.log(error);
-        res.status(400).send(error);
+        logger.error(error.message, { location: 'post.api.workspaces.enableAlchemy', error: error, data: data });
+        res.status(400).send(error.message);
     }
 });
 
 router.post('/', authMiddleware, async (req, res) => {
     const data = req.body.data;
+
     try {
-        if (!data.uid || !data.workspaceData || !data.name) {
-            console.log(data);
-            throw new Error('[POST /api/workspaces] Missing parameter');
-        }
+        if (!data.uid || !data.workspaceData || !data.name)
+            throw new Error('Missing parameters.');
 
         const user = await db.getUser(data.uid, ['defaultDataRetentionLimit']);
 
         if (!user)
-            throw new Error('[POST /api/workspaces] Could not find user');
+            throw new Error('Could not find user.');
 
         const filteredWorkspaceData = stringifyBns(sanitize({
             name: data.name,
@@ -138,18 +134,17 @@ router.post('/', authMiddleware, async (req, res) => {
 
         res.status(200).json(workspace);
     } catch(error) {
-        console.log(error);
+        logger.error(error.message, { location: 'post.api.workspaces', error: error, data: data });
         res.status(400).send(error.message);
     }
 });
 
 router.post('/settings', authMiddleware, async (req, res) => {
     const data = req.body.data;
+
     try {
-        if (!data.uid || !data.workspace || !data.settings) {
-            console.log(data);
-            throw new Error('[POST /api/workspaces/settings] Missing parameter');
-        }
+        if (!data.uid || !data.workspace || !data.settings)
+            throw new Error('Missing parameter.');
 
         await db.updateWorkspaceSettings(data.uid, data.workspace, data.settings);
 
@@ -160,41 +155,39 @@ router.post('/settings', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        console.log(error);
-        res.status(400).send(error);
+        logger.error(error.message, { location: 'post.api.workspaces.settings', error: error, data: data });
+        res.status(400).send(error.message);
     }
 });
 
 router.post('/setCurrent', authMiddleware, async (req, res) => {
     const data = req.body.data;
+
     try {
-        if (!data.uid || !data.workspace) {
-            console.log(data);
-            throw new Error('[POST /api/workspaces] Missing parameter');
-        }
+        if (!data.uid || !data.workspace)
+            throw new Error('Missing parameter.');
 
         await db.setCurrentWorkspace(data.uid, data.workspace);
 
         res.sendStatus(200);
     } catch(error) {
-        console.log(error);
+        logger.error(error.message, { location: 'post.api.workspaces.setCurrent', error: error, data: data });
         res.status(400).send(error);
     }
 });
 
 router.post('/reset', authMiddleware, async (req, res) => {
     const data = req.body.data;
+
     try {
-        if (!data.uid || !data.workspace) {
-            console.log(data);
-            throw new Error('[POST /api/workspaces/reset] Missing parameter');
-        }
+        if (!data.uid || !data.workspace)
+            throw new Error('Missing parameter.');
 
         await db.resetWorkspace(data.uid, data.workspace);
 
         res.sendStatus(200);
     } catch(error) {
-        console.log(error);
+        logger.error(error.message, { location: 'post.api.workspaces.reset', error: error, data: data });
         res.status(400).send(error);
     }
 });

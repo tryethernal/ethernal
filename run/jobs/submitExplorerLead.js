@@ -7,10 +7,8 @@ module.exports = async job => {
     if (!process.env.EXPLORER_LEAD_SUBMISSION_ENDPOINT)
         return;
 
-    if (!data.workspace || !data.email) {
-        console.log(data);
-        throw '[jobs.submitExplorerLead] Missing parameter.';
-    }
+    if (!data.workspace || !data.email)
+        throw new Error('Missing parameter.');
 
     const params = {
         workspace: data.workspace,

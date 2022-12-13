@@ -4,10 +4,8 @@ const db = require('../lib/firebase');
 module.exports = async job => {
     const data = job.data;
 
-    if (!data.workspace) {
-        console.log(data);
-        throw new Error('[jobs.processWorkspace] Missing parameter.');
-    }
+    if (!data.workspace)
+        throw new Error('Missing parameter.');
 
     const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
 

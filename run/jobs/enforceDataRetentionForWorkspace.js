@@ -1,6 +1,5 @@
 const { Op } = require('sequelize');
 const express = require('express');
-const writeLog = require('../lib/writeLog');
 const db = require('../lib/firebase');
 const Workspace = db.Workspace;
 

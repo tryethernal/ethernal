@@ -1,5 +1,4 @@
 const { enqueue } = require('../lib/queue');
-const writeLog = require('../lib/writeLog');
 
 module.exports = async job => {
     const data = job.data;

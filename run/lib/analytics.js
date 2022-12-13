@@ -10,7 +10,6 @@ class Analytics {
 
     track(uid, event, params = {}) {
         if (!this.token || !uid) return;
-        console.log(`Tracking '${event}' with params: ${JSON.stringify(params)}, for user ${uid}`);
         this.mixpanel.track(event, {
             ...params,
             distinct_id: uid
@@ -19,7 +18,6 @@ class Analytics {
 
     setUser(uid, params = {}) {
         if (!this.token || !uid) return;
-        console.log(`Setting user '${uid}' with params: ${JSON.stringify(params)}`);
         this.mixpanel.people.set(uid, params);
     }
 
@@ -30,7 +28,6 @@ class Analytics {
             plan: plan,
             subscriptionCancelsAtPeriodEnd: subscriptionCancelsAtPeriodEnd
         };
-        console.log(`Setting subscription for ${uid} with params: ${JSON.stringify(params)}`);
         this.mixpanel.people.set(uid, params);
     }
 }

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
+const logger = require('../lib//logger');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 
 router.get('/:address/balances', workspaceAuthMiddleware, async (req, res) => {
@@ -14,7 +15,7 @@ router.get('/:address/balances', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(result);
     } catch(error) {
-        console.log(error);
+        logger.error(error.message, { location: 'api.addresses.address.balance', error: error, data: data, queryParams: req.params });
         res.status(400).send(error);
     }
 });
@@ -27,7 +28,7 @@ router.get('/:address/transactions', workspaceAuthMiddleware, async (req, res) =
 
         res.status(200).json(result);
     } catch(error) {
-        console.log(error);
+        logger.error(error.message, { location: 'api.addresses.address.transaction', error: error, data: data, queryParams: req.params });
         res.status(400).send(error);
     }
 })

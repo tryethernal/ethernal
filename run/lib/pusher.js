@@ -1,5 +1,5 @@
 const Pusher = require('pusher');
-const writeLog = require('./writeLog');
+const logger = require('./logger');
 
 const isPusherPresent = process.env.PUSHER_APP_ID && process.env.PUSHER_KEY && process.env.PUSHER_SECRET;
 
@@ -17,6 +17,6 @@ module.exports = {
     trigger: (channel, event, data) => {
         if (isPusherPresent)
             return pusher.trigger(channel, event, data)
-                .catch(error => writeLog({ functionName: 'pusher.trigger', error: error, extra: { channel, event, data }}));
+                .catch(error => { throw error });
     }
 };

@@ -1,12 +1,15 @@
 const db = require('../lib/firebase');
 const { decrypt, decode } = require('../lib/crypto');
+const logger = require('../lib/logger');
 
 module.exports = async (req, res, next) => {
+    let data;
+
     try {
         if (!req.query.token)
             throw new Error('Missing auth token');
 
-        const data = decode(req.query.token);
+        data = decode(req.query.token);
 
         if (!data.apiKey || !data.workspace || !data.uid)
             throw new Error('Invalid auth token');
@@ -25,8 +28,7 @@ module.exports = async (req, res, next) => {
                 
         next();
     } catch(error) {
-        console.log(req)
-        console.error(error);
+        logger.error(error.message, { location: 'middleware.webhook', error: error, data: data });
         res.status(401).send(error);
     }
 };

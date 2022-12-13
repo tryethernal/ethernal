@@ -39,7 +39,7 @@ describe(`POST ${BASE_URL}`, () => {
             .send({ data: { workspace: 'My Workspace', block: {}}})
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual('[POST /api/blocks] Missing block number.');
+                expect(text).toEqual('Missing block number.');
                 done();
             });
     });

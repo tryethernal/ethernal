@@ -1,5 +1,4 @@
 const { sanitize } = require('./utils');
-const writeLog = require('./writeLog');
 
 const stripBytecodeMetadata = (bytecode) => {
     // Last 2 bytes contains metadata length
@@ -47,10 +46,8 @@ module.exports = async function(db, payload) {
 
         const compiler = await new Promise((resolve, reject) => {
             solc.loadRemoteVersion(compilerVersion, (err, solc) => {
-                if (err) {
-                    console.error(err);
+                if (err)
                     reject(err);
-                }
                 resolve(solc);
             });
         });
@@ -95,7 +92,6 @@ module.exports = async function(db, payload) {
         let bytecode = parsedCompiledCode.contracts[contractFile][contractName].evm.bytecode.object;
 
         if (typeof code.libraries == 'object' && Object.keys(code.libraries).length > 0) {
-            console.log('Linking bytecode...')
             const linkedBytecode = linker.linkBytecode(bytecode, code.libraries);
             bytecode = linkedBytecode;
         }
@@ -105,17 +101,7 @@ module.exports = async function(db, payload) {
         const deploymentTx = await db.getContractDeploymentTxByAddress(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress);
         const deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length)) + constructorArguments).toLowerCase();
 
-        writeLog({
-            functionName: 'api.contracts.verify',
-            extra: {
-                compiledRuntimeBytecodeWithoutMetadata: compiledRuntimeBytecodeWithoutMetadata,
-                deployedRuntimeBytecodeWithoutMetadata: deployedRuntimeBytecodeWithoutMetadata,
-                equalBytecodes: compiledRuntimeBytecodeWithoutMetadata === deployedRuntimeBytecodeWithoutMetadata,
-                payload: payload
-            }
-        });
         if (compiledRuntimeBytecodeWithoutMetadata === deployedRuntimeBytecodeWithoutMetadata) {
-            console.log('Verification succeeded!');
             await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'success');
             await db.storeContractData(user.firebaseUserId, workspace.name, contractAddress, { name: contractName, abi: abi });
             return {
@@ -123,18 +109,9 @@ module.exports = async function(db, payload) {
             };
         }
         else {
-            console.log('Verification failed!');
             throw new Error("Compiled bytecode doesn't match runtime bytecode. Make sure you uploaded the correct source code, linked all the libraries and provided the constructor arguments.");
         }
     } catch(error) {
-        writeLog({
-            functionName: 'api.contracts.verify',
-            error: error.message || error,
-            extra: {
-                error: error,
-                payload: payload
-            }
-        });
         await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'failed');
         throw error;        
     }

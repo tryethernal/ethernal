@@ -12,6 +12,7 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@datadog/browser-rum": "^4.26.0",
     "@iconify/vue2": "^2.0.0",
     "@metamask/detect-provider": "^1.2.0",
     "@popperjs/core": "^2.11.5",
