@@ -6,7 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.1.5] - 2022-12-07
+## [3.1.6] - 2022-12-13
+### Changed
+- Keep Logrocket for frontend monitoring
+- Better backend logging (avoid OOM due to circular JSON dependency)
+- Fix ERC-721 reloading bugs
+
+## [3.1.5] - 2022-12-13
 ### Added
 - Datadog monitoring (back + front)
 

@@ -92,7 +92,7 @@ module.exports = (sequelize, DataTypes) => {
             this.setDataValue('owner', value.toLowerCase());
         }
     },
-    URI: DataTypes.STRING,
+    URI: DataTypes.TEXT,
     tokenId: DataTypes.STRING,
     metadata: DataTypes.JSONB
   }, {
