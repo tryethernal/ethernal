@@ -6,7 +6,6 @@ const {
 
 const Op = Sequelize.Op
 const { sanitize } = require('../lib/utils');
-const writeLog = require('../lib/writeLog');
 const { trigger } = require('../lib/pusher');
 let { getTransactionMethodDetails } = require('../lib/abi');
 const moment = require('moment');

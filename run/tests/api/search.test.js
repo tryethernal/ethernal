@@ -16,7 +16,7 @@ describe(`GET ${BASE_URL}`, () => {
         request.get(`${BASE_URL}?type=abc&query=2`)
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual('[GET /api/search] Invalid search type.');
+                expect(text).toEqual('Invalid search type.');
                 done();
             });
     });

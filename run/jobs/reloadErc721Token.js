@@ -6,10 +6,9 @@ const { sanitize } = require('../lib/utils');
 
 module.exports = async job => {
     const data = job.data;
-    if (!data.workspaceId || !data.address || data.tokenId === undefined || data.tokenId === null) {
-        console.log(data);
-        throw new Error('[jobs.reloadErc721Token] Missing parameter.');
-    }
+
+    if (!data.workspaceId || !data.address || data.tokenId === undefined || data.tokenId === null)
+        throw new Error('Missing parameter.');
 
     const workspace = await db.getWorkspaceById(data.workspaceId);
     const contract = await db.getContractByWorkspaceId(workspace.id, data.address);
@@ -21,7 +20,7 @@ module.exports = async job => {
         const totalSupply = await erc721Connector.totalSupply();
         await db.storeContractDataWithWorkspaceId(workspace.id, data.address, { totalSupply: totalSupply });
     } catch(error) {
-        console.log(error)
+        logger.error(error.message, { location: 'jobs.reloadErc721Token', error: error, data: data });
     }
 
     try {

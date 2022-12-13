@@ -2,6 +2,7 @@ const { getAuth, connectAuthEmulator } = require('firebase-admin/auth');
 const db = require('../lib/firebase');
 const { sanitize, getEnv }  = require('../lib/utils');
 const { decrypt, decode, encode } = require('../lib/crypto');
+const logger = require('../lib/logger');
 
 module.exports = async (req, res, next) => {
     let firebaseUser = {};
@@ -61,7 +62,7 @@ module.exports = async (req, res, next) => {
         else
             res.sendStatus(404);
     } catch(error) {
-        console.log(error);
+        logger.error(error.message, { location: 'middleware.workspaceAuth', error: error, data: data });
         res.status(401).send(error.message);
     }
 };

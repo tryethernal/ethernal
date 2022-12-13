@@ -31,7 +31,7 @@ describe(`GET ${BASE_URL}/createCheckoutSession`, () => {
             .send({ data: { uid: 1, plan: 'invalid' }})
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual('[POST /api/stripe/createCheckoutSession] Invalid plan.');
+                expect(text).toEqual('Invalid plan.');
                 done();
             });
     });

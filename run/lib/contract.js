@@ -10,7 +10,6 @@ const findSelectors = (abi, pattern) => {
             try {
                 iface.getFunction(pattern.functions[i]);
             } catch (_) {
-                console.log(_)
                 return false;
             }
         }
@@ -19,7 +18,6 @@ const findSelectors = (abi, pattern) => {
             try {
                 iface.getEvent(pattern.events[i]);
             } catch (_) {
-                console.log(_)
                 return false;
             }
         }
@@ -28,14 +26,12 @@ const findSelectors = (abi, pattern) => {
             try {
                 iface.getError(pattern.errors[i]);
             } catch (_) {
-                console.log(_)
                 return false;
             }
         }
 
         return true;
     } catch(error) {
-        console.log(error)
         return false;
     }
 };
