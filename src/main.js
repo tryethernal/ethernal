@@ -43,8 +43,8 @@ else {
 
 const initDDRum = () => {
     datadogRum.init({
-        applicationId: 'b07f5e51-1e3c-4633-b630-3ede52b33a1c',
-        clientToken: 'pub27393d18493525157987bef6e45c0d7f',
+        applicationId: process.env.VUE_APP_DD_APPLICATION_ID,
+        clientToken: process.env.VUE_APP_DD_CLIENT_TOKEN,
         site: 'datadoghq.eu',
         service:'ethernal',
         env: 'production',
