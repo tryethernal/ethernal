@@ -1,4 +1,4 @@
-import { datadogRum } from '@datadog/browser-rum';
+import LogRocket from 'logrocket';
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';
@@ -41,59 +41,6 @@ else {
     store.dispatch('updatePublicExplorerDomain', window.location.host);
 }
 
-const initDDRum = () => {
-    datadogRum.init({
-        applicationId: process.env.VUE_APP_DD_APPLICATION_ID,
-        clientToken: process.env.VUE_APP_DD_CLIENT_TOKEN,
-        site: 'datadoghq.eu',
-        service:'ethernal',
-        env: 'production',
-        sampleRate: 100,
-        sessionReplaySampleRate: 100,
-        trackInteractions: true,
-        trackResources: true,
-        trackLongTasks: true,
-        defaultPrivacyLevel:'mask-user-input',
-        beforeSend: (event, context) => {
-            if (event.type === 'resource' && event.resource.type === 'xhr') {
-                const newContext = { ...event.context };
-                if (context.xhr && context.xhr.reqData) {
-                    try {
-                        newContext.body = JSON.parse(context.xhr.reqData);
-                    } catch(_) {
-                        newContext.body = context.xhr.reqData;
-                    }
-                }
-
-                try {
-                    newContext.response = JSON.parse(context.xhr.response);
-                } catch(_) {
-                    newContext.response = context.xhr.response;
-                }
-
-                event.context = { ...newContext };
-            }
-            else if (event.type === 'resource' && event.resource.type === 'fetch') {
-                const newContext = { ...event.context };
-                if (context.requestInit && context.requestInit.body) {
-                    try {
-                        newContext.body = new TextDecoder().decode(context.requestInit.body);
-                    } catch(_) {
-                        try {
-                            newContext.body = JSON.parse(context.requestInit.body);
-                        } catch (_) {
-                            newContext.body = context.requestInit.body;
-                        }
-                    }
-                }
-
-                newContext.response = context.response;
-                event.context = { ...newContext };
-            }
-        }
-    });
-};
-
 new Vue({
     vuetify,
     store: store,
@@ -103,10 +50,9 @@ new Vue({
     },
     methods: {
         authStateChanged: function(user) {
-            // if (user && process.env.VUE_APP_ENABLE_ANALYTICS && window.location.host == 'app.tryethernal.com') {
-                initDDRum();
-                datadogRum.startSessionReplayRecording();
-            // }
+            if (user && process.env.VUE_APP_ENABLE_ANALYTICS && window.location.host == 'app.tryethernal.com') {
+                LogRocket.init(process.env.VUE_APP_LOGROCKET_ID);
+            }
 
             const currentPath = this.$router.currentRoute.path;
             const isPublicExplorer = store.getters.isPublicExplorer;

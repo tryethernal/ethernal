@@ -3,6 +3,7 @@ const axios = require('axios');
 const db = require('../lib/firebase');
 const { ERC721Connector } = require('../lib/rpc');
 const { sanitize } = require('../lib/utils');
+const logger = require('../lib/logger');
 
 module.exports = async job => {
     const data = job.data;
@@ -13,15 +14,17 @@ module.exports = async job => {
     const workspace = await db.getWorkspaceById(data.workspaceId);
     const contract = await db.getContractByWorkspaceId(workspace.id, data.address);
 
-    let metadata = {}, URI = null;
+    let metadata = {}, URI = null, owner = null, totalSupply = null;
     const erc721Connector = new ERC721Connector(workspace.rpcServer, data.address, { metadata: contract.has721Metadata, enumerable: contract.has721Enumerable });
 
     try {
-        const totalSupply = await erc721Connector.totalSupply();
-        await db.storeContractDataWithWorkspaceId(workspace.id, data.address, { totalSupply: totalSupply });
+        totalSupply = await erc721Connector.totalSupply();
     } catch(error) {
-        logger.error(error.message, { location: 'jobs.reloadErc721Token', error: error, data: data });
+        totalSupply = null;
     }
+
+    if (totalSupply)
+        await db.storeContractDataWithWorkspaceId(workspace.id, data.address, { totalSupply: totalSupply });
 
     try {
         URI = await erc721Connector.tokenURI(data.tokenId.toString());
@@ -40,6 +43,14 @@ module.exports = async job => {
         }
     }
 
-    const owner = await erc721Connector.ownerOf(data.tokenId.toString());
-    return await db.storeErc721Token(workspace.id, data.address, { URI, tokenId: data.tokenId, metadata, owner });
+    try {
+        owner = await erc721Connector.ownerOf(data.tokenId.toString());
+    } catch(_) {
+         owner = null;
+    }
+
+    if (!URI && !Object.keys(metadata).length && !owner)
+        return;
+
+    return await db.storeErc721Token(workspace.id, data.address, sanitize({ URI, tokenId: data.tokenId, metadata, owner }));
 };
