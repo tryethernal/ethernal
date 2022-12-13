@@ -109,7 +109,6 @@ exports.parseTrace = async (from, trace, provider) => {
                 default:
             }
         } catch(error) {
-            console.log(error);
             return [];
         }
     }

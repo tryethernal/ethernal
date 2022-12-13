@@ -1,13 +1,12 @@
 const GhostAdminAPI = require('@tryghost/admin-api');
 const Analytics = require('../lib/analytics');
 const db = require('../lib/firebase');
-const writeLog = require('../lib/writeLog');
 
 module.exports = async job => {
     const data = job.data;
     try {
         if (!data.uid)
-            throw new Error('jobs.processUser Missing parameter');
+            throw new Error('Missing parameter');
 
         const user = await db.getUser(data.uid);
 

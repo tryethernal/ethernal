@@ -6,10 +6,9 @@ const { enqueue } = require('../lib/queue');
 
 module.exports = async job => {
     const data = job.data;
-    if (!data.userId || !data.workspace || !data.transaction) {
-        console.log(data);
-        throw new Error('[jobs.transactionSync] Missing parameter.');
-    }
+
+    if (!data.userId || !data.workspace || !data.transaction)
+        throw new Error('Missing parameter.');
 
     const workspace = await db.getWorkspaceByName(data.userId, data.workspace);
     const providerConnector = new ProviderConnector(workspace.rpcServer);

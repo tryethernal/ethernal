@@ -2,11 +2,13 @@ const { getAuth } = require('firebase-admin/auth');
 const db = require('../lib/firebase');
 const { sanitize }  = require('../lib/utils');
 const { decode, decrypt } = require('../lib/crypto');
+const logger = require('../lib/logger');
 
 module.exports = async (req, res, next) => {
     const pusherData =  sanitize({ socket_id: req.body.socket_id, channel_name: req.body.channel_name, firebaseAuthToken: req.body.firebaseAuthToken, firebaseUserId: req.body.firebaseUserId });
     const authorizationHeader = req.headers['authorization'];
     const data = { ...req.body.data, ...req.query, ...pusherData };
+
     try {
         let firebaseUser;
 
@@ -53,9 +55,7 @@ module.exports = async (req, res, next) => {
         else
             throw new Error('You must be signed in to do this.');
     } catch(error) {
-        console.error(data)
-        console.error(error);
-        console.log(req.body);
+        logger.error(error.message, { location: 'middleware.auth', error: error, data: data });
         res.status(401).send(error.message);
     }
 };

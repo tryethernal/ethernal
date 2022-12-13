@@ -17,7 +17,7 @@ describe(`GET /wallets`, () => {
         request.get(`${BASE_URL}/wallets?from=2022-04-05&to=2022-06-05`)
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual('[GET /api/stats/wallets] This endpoint is not available on private workspaces.');
+                expect(text).toEqual('This endpoint is not available on private workspaces.');
                 done();
             });
     });
@@ -46,7 +46,7 @@ describe(`GET /transactions`, () => {
         request.get(`${BASE_URL}/transactions?from=2022-04-05&to=2022-06-05`)
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual('[GET /api/stats/transactions] This endpoint is not available on private workspaces.');
+                expect(text).toEqual('This endpoint is not available on private workspaces.');
                 done();
             });
     });
@@ -75,7 +75,7 @@ describe(`GET /global`, () => {
         request.get(`${BASE_URL}/global`)
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual('[GET /api/stats/global] This endpoint is not available on private workspaces.');
+                expect(text).toEqual('This endpoint is not available on private workspaces.');
                 done();
             });
     });

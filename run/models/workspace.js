@@ -236,80 +236,76 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeCreateTransaction(transaction, blockId) {
-        try {
-            return sequelize.transaction(async (sequelizeTransaction) => {
-                const storedTx = await this.createTransaction(sanitize({
-                    blockHash: transaction.blockHash,
-                    blockNumber: transaction.blockNumber,
-                    blockId: blockId,
-                    chainId: transaction.chainId,
-                    confirmations: transaction.confirmations,
-                    creates: transaction.creates,
-                    data: transaction.data,
-                    parsedError: transaction.parsedError,
-                    rawError: transaction.rawError,
-                    from: transaction.from,
-                    gasLimit: transaction.gasLimit,
-                    gasPrice: transaction.gasPrice,
-                    hash: transaction.hash,
-                    methodLabel: transaction.methodLabel,
-                    methodName: transaction.methodName,
-                    methodSignature: transaction.methodSignature,
-                    nonce: transaction.nonce,
-                    r: transaction.r,
-                    s: transaction.s,
-                    timestamp: transaction.timestamp,
-                    to: transaction.to,
-                    transactionIndex: transaction.transactionIndex,
-                    type_: transaction.type,
-                    v: transaction.v,
-                    value: transaction.value,
-                    raw: transaction
+        return sequelize.transaction(async (sequelizeTransaction) => {
+            const storedTx = await this.createTransaction(sanitize({
+                blockHash: transaction.blockHash,
+                blockNumber: transaction.blockNumber,
+                blockId: blockId,
+                chainId: transaction.chainId,
+                confirmations: transaction.confirmations,
+                creates: transaction.creates,
+                data: transaction.data,
+                parsedError: transaction.parsedError,
+                rawError: transaction.rawError,
+                from: transaction.from,
+                gasLimit: transaction.gasLimit,
+                gasPrice: transaction.gasPrice,
+                hash: transaction.hash,
+                methodLabel: transaction.methodLabel,
+                methodName: transaction.methodName,
+                methodSignature: transaction.methodSignature,
+                nonce: transaction.nonce,
+                r: transaction.r,
+                s: transaction.s,
+                timestamp: transaction.timestamp,
+                to: transaction.to,
+                transactionIndex: transaction.transactionIndex,
+                type_: transaction.type,
+                v: transaction.v,
+                value: transaction.value,
+                raw: transaction
+            }), { transaction: sequelizeTransaction });
+
+            const receipt = transaction.receipt;
+            if (receipt) {
+                const storedReceipt = await storedTx.createReceipt(sanitize({
+                    workspaceId: storedTx.workspaceId,
+                    blockHash: receipt.blockHash,
+                    blockNumber: receipt.blockNumber,
+                    byzantium: receipt.byzantium,
+                    confirmations: receipt.confirmations,
+                    contractAddress: receipt.contractAddress,
+                    cumulativeGasUsed: receipt.cumulativeGasUsed,
+                    from: receipt.from,
+                    gasUsed: receipt.gasUsed,
+                    logsBloom: receipt.logsBloom,
+                    status: receipt.status,
+                    to: receipt.to,
+                    transactionHash: receipt.transactionHash,
+                    transactionIndex: receipt.transactionIndex,
+                    type_: receipt.type,
+                    raw: receipt
                 }), { transaction: sequelizeTransaction });
 
-                const receipt = transaction.receipt;
-                if (receipt) {
-                    const storedReceipt = await storedTx.createReceipt(sanitize({
+                for (let i = 0; i < receipt.logs.length; i++) {
+                    const log = receipt.logs[i];
+                    await storedReceipt.createLog(sanitize({
                         workspaceId: storedTx.workspaceId,
-                        blockHash: receipt.blockHash,
-                        blockNumber: receipt.blockNumber,
-                        byzantium: receipt.byzantium,
-                        confirmations: receipt.confirmations,
-                        contractAddress: receipt.contractAddress,
-                        cumulativeGasUsed: receipt.cumulativeGasUsed,
-                        from: receipt.from,
-                        gasUsed: receipt.gasUsed,
-                        logsBloom: receipt.logsBloom,
-                        status: receipt.status,
-                        to: receipt.to,
-                        transactionHash: receipt.transactionHash,
-                        transactionIndex: receipt.transactionIndex,
-                        type_: receipt.type,
-                        raw: receipt
+                        address: log.address,
+                        blockHash: log.blockHash,
+                        blockNumber: log.blockNumber,
+                        data: log.data,
+                        logIndex: log.logIndex,
+                        topics: log.topics,
+                        transactionHash: log.transactionHash,
+                        transactionIndex: log.transactionIndex,
+                        raw: log
                     }), { transaction: sequelizeTransaction });
-
-                    for (let i = 0; i < receipt.logs.length; i++) {
-                        const log = receipt.logs[i];
-                        await storedReceipt.createLog(sanitize({
-                            workspaceId: storedTx.workspaceId,
-                            address: log.address,
-                            blockHash: log.blockHash,
-                            blockNumber: log.blockNumber,
-                            data: log.data,
-                            logIndex: log.logIndex,
-                            topics: log.topics,
-                            transactionHash: log.transactionHash,
-                            transactionIndex: log.transactionIndex,
-                            raw: log
-                        }), { transaction: sequelizeTransaction });
-                    }
                 }
+            }
 
-                return storedTx;
-            });
-        } catch(error) {
-            console.log(error);
-        }
+            return storedTx;
+        });
     }
 
     async safeCreateOrUpdateContract(contract) {
@@ -557,20 +553,16 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async reset(dayInterval) {
-        try {
-            const filter = { where: { workspaceId: this.id }};
-            if (dayInterval)
-                filter['where']['createdAt'] = { [Op.lt]: sequelize.literal(`NOW() - interval '${dayInterval} day'`)};
+        const filter = { where: { workspaceId: this.id }};
+        if (dayInterval)
+            filter['where']['createdAt'] = { [Op.lt]: sequelize.literal(`NOW() - interval '${dayInterval} day'`)};
 
-            return sequelize.transaction(async (transaction) => {
-                await sequelize.models.Transaction.destroy(filter, { transaction });
-                await sequelize.models.Block.destroy(filter, { transaction });
-                await sequelize.models.Contract.destroy(filter, { transaction });
-                await sequelize.models.Account.destroy(filter, { transaction });
-            });
-        } catch(error) {
-            console.log(error);
-        }
+        return sequelize.transaction(async (transaction) => {
+            await sequelize.models.Transaction.destroy(filter, { transaction });
+            await sequelize.models.Block.destroy(filter, { transaction });
+            await sequelize.models.Contract.destroy(filter, { transaction });
+            await sequelize.models.Account.destroy(filter, { transaction });
+        });
     }
 
     async removeContractByAddress(address) {

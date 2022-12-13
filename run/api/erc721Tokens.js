@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const logger = require('../lib/logger');
 const db = require('../lib/firebase');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
@@ -13,18 +14,16 @@ router.get('/:address/:tokenId/transfers', workspaceAuthMiddleware, async (req, 
 
         res.status(200).json(transfers);
     } catch(error) {
-        console.log(error);
-        res.status(400).send(error);
+        logger.error(error.message, { location: 'get.api.tokens.address.tokenId.transfers', error: error, data: data, queryParams: req.params });
+        res.status(400).send(error.message);
     }
 });
 
 router.post('/:address/:tokenId/reload', workspaceAuthMiddleware, async (req, res) => {
     const data = req.body.data;
     try {
-        if (!data.workspace || !req.params.address || req.params.tokenId === undefined || req.params.tokenId === null) {
-            console.log(data);
-            throw '[POST /:address/:tokenId/reload] Missing parameter.';
-        }
+        if (!data.workspace || !req.params.address || req.params.tokenId === undefined || req.params.tokenId === null)
+            throw new Error('Missing parameter.');
 
         const workspace = await db.getWorkspaceByName(req.query.firebaseUserId, data.workspace);
         await enqueue('reloadErc721Token',
@@ -37,8 +36,8 @@ router.post('/:address/:tokenId/reload', workspaceAuthMiddleware, async (req, re
 
         res.sendStatus(200);
     } catch(error) {
-        console.log(error);
-        res.status(400).send(error);
+        logger.error(error.message, { location: 'post.api.tokens.address.tokenId.reload', error: error, data: data, queryParams: req.params });
+        res.status(400).send(error.messagae);
     }
 });
 
@@ -50,8 +49,8 @@ router.get('/:address/:tokenId', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(token);
     } catch(error) {
-        console.log(error);
-        res.status(400).send(error);
+        logger.error(error.message, { location: 'get.api.tokens.address.tokenId', error: error, data: data, queryParams: req.params });
+        res.status(400).send(error.message);
     }
 });
 

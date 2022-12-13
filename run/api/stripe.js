@@ -1,6 +1,7 @@
 const express = require('express');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const db = require('../lib/firebase');
+const logger = require('../lib/logger');    
 const { sanitize } = require('../lib/utils');
 const authMiddleware = require('../middlewares/auth');
 const router = express.Router();
@@ -16,7 +17,7 @@ router.post('/createCheckoutSession', authMiddleware, async (req, res) => {
         const selectedPlan = PLANS[data.plan];
 
         if (!selectedPlan)
-            throw new Error('[POST /api/stripe/createCheckoutSession] Invalid plan.');
+            throw new Error('Invalid plan.');
 
         const session = await stripe.checkout.sessions.create(sanitize({
             mode: 'subscription',
@@ -35,7 +36,7 @@ router.post('/createCheckoutSession', authMiddleware, async (req, res) => {
         
         res.status(200).json({ url: session.url });
     } catch(error) {
-        console.log(error);
+        logger.error(error.message, { location: 'post.api.stripe.createCheckoutSession', error: error, data: data });
         res.status(400).send(error.message);
     }
 });
@@ -51,7 +52,7 @@ router.post('/createPortalSession', authMiddleware, async (req, res) => {
 
         res.status(200).json({ url: session.url });
     } catch(error) {
-        console.log(error);
+        logger.error(error.message, { location: 'post.api.stripe.createPortalSession', error: error, data: data });
         res.status(400).send(error.message);
     }
 });
