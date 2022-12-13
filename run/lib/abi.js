@@ -117,7 +117,6 @@ const getTransactionMethodDetails = (transaction, abi) => {
             signature: `${fragment.name}(` + fragment.inputs.map((input) => `${input.type} ${input.name}`).join(', ') + ')'
         };
     } catch(_error) {
-        console.log(_error)
         return {};
     }
 };

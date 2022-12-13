@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
 const stripeLib = require('../lib/stripe');
+const logger = require('../lib/logger');
 
 router.post('/', async (req, res) => {
     try {
@@ -31,8 +32,7 @@ router.post('/', async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        console.log(req.rawBody)
-        console.log(error);
+        logger.error(error.message, { location: 'webhooks.stripe', error: error });
         res.status(401).json({ message: error });
     }
 });

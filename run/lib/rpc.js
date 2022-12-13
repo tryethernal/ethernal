@@ -1,7 +1,6 @@
 const ethers = require('ethers');
 const { parseTrace, processTrace } = require('./trace');
 const { enqueue } = require('./queue');
-const writeLog = require('./writeLog');
 const ERC721_ABI = require('./abis/erc721.json');
 const ERC721_ENUMERABLE_ABI = require('./abis/erc721Enumerable.json');
 const ERC721_METADATA_ABI = require('./abis/erc721Metadata.json');
@@ -55,14 +54,6 @@ class Tracer {
             this.parsedTrace = await parseTrace(transaction.from, rawTrace, this.provider);
         } catch(error) {
             if (!error.error || error.error.code != '-32601') {
-                writeLog({
-                    severity: 'ERROR',
-                    functionName: 'rpc.Tracer.process',
-                    error: error,
-                    extra: {
-                        transaction: this.transaction.hash,
-                    }
-                });
                 throw error;
             }
         }
@@ -73,17 +64,6 @@ class Tracer {
             if (Array.isArray(this.parsedTrace))
                 await processTrace(userId, workspace, this.transaction.hash, this.parsedTrace, this.db);
         } catch(error) {
-            writeLog({
-                severity: 'ERROR',
-                functionName: 'rpc.Tracer.saveTrace',
-                error: error,
-                extra: {
-                    userId: String(userId),
-                    workspace: workspace,
-                    transaction: this.transaction.hash,
-                    trace: this.parsedTrace
-                }
-            });
             throw error;
         }
     }
@@ -147,7 +127,6 @@ class ContractConnector {
         try {
             return this.contract.symbol();
         } catch(_error) {
-            console.log(_error);
             return new Promise(resolve => resolve(null));
         }
     }
@@ -223,7 +202,6 @@ class ERC721Connector {
         try {
             return this.contract.symbol();
         } catch(_error) {
-            console.log(_error);
             return new Promise(resolve => resolve(null));
         }
     }

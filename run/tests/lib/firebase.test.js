@@ -5,7 +5,6 @@ jest.mock('sequelize', () => ({
     }
 }));
 
-require('../mocks/lib/writeLog');
 const { Workspace, User, workspace, user, Explorer, explorer } = require('../mocks/models');
 const db = require('../../lib/firebase');
 

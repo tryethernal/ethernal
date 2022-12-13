@@ -34,7 +34,8 @@
     "sequelize": "^6.19.0",
     "solc": "^0.8.13",
     "stripe": "^9.8.0",
-    "uuid-apikey": "^1.5.3"
+    "uuid-apikey": "^1.5.3",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "jest": "^28.1.0",
