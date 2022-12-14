@@ -373,7 +373,7 @@ export default {
         initPrivateExplorer: function() {
             const firebaseUserId = auth().currentUser.uid;
             this.$store.dispatch('updateUser', { uid: firebaseUserId, email: auth().currentUser.email });
-            this.db.getIdToken(true).then((token) => {
+            this.db.getIdToken().then((token) => {
                 this.$store.dispatch('updateFirebaseIdToken', token);
                 this.server.getCurrentUser().then(({ data }) => {
                     const user = data;
@@ -383,7 +383,7 @@ export default {
                     else {
                         if (this.isPublicExplorer) return;
 
-                        this.db.getIdToken(true).then((token) => {
+                        this.db.getIdToken().then((token) => {
                             this.$store.dispatch('updateFirebaseIdToken', token);
                         });
 

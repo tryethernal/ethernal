@@ -87,7 +87,9 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
             has721Enumerable: has721Enumerable
         };
     } catch(_error) {
-        return {};
+        return {
+            patterns: []
+        };
     }
 };
 
