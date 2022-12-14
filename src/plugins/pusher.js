@@ -1,65 +1,75 @@
 const Pusher = require('pusher-js');
+import { sanitize } from '../lib/utils';
 Pusher.logToConsole = process.env.NODE_ENV != 'production';
 
 export const pusherPlugin = {
 
-    install(Vue, options) {
+    async install(Vue, options) {
         const store = options.store;
 
-        const pusher = process.env.VUE_APP_PUSHER_KEY ?
-            new Pusher(process.env.VUE_APP_PUSHER_KEY, {
-                cluster: 'eu',
-                channelAuthorization: {
-                    endpoint: `${process.env.VUE_APP_API_ROOT}/api/pusher/authorization`,
-                    params: {
-                        firebaseAuthToken: store.getters.firebaseIdToken,
-                        firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                        workspace: store.getters.currentWorkspace.name
+        const getPusher = async () => {
+            return process.env.VUE_APP_PUSHER_KEY ?
+                new Pusher(process.env.VUE_APP_PUSHER_KEY, {
+                    cluster: 'eu',
+                    channelAuthorization: {
+                        endpoint: `${process.env.VUE_APP_API_ROOT}/api/pusher/authorization`,
+                        params: sanitize({
+                            firebaseAuthToken: await Vue.prototype.db.getIdToken(),
+                            firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                            workspace: store.getters.currentWorkspace.name
+                        })
                     }
+                }) : {
+                    subscribe: () => {},
+                    bind: () => {}
                 }
-            }) : {
-                subscribe: () => {},
-                bind: () => {}
-            }
+        };
 
         Vue.prototype.pusher = {
-            onUpdatedAccount(handler, context) {
+            async onUpdatedAccount(handler, context) {
+                const pusher = await getPusher();
                 const workspaceId = store.getters.currentWorkspace.id;
                 const channel = pusher.subscribe(`private-accounts;workspace=${workspaceId}`);
                 return channel.bind('updated', handler, context);
             },
 
-            onNewFailedTransactions(handler, context) {
+            async onNewFailedTransactions(handler, context) {
+                const pusher = await getPusher();
                 const workspaceId = store.getters.currentWorkspace.id;
                 const channel = pusher.subscribe(`private-failedTransactions;workspace=${workspaceId}`);
                 return channel.bind('new', handler, context);
             },
 
-            onNewProcessableTransactions(handler, context) {
+            async onNewProcessableTransactions(handler, context) {
+                const pusher = await getPusher();
                 const workspaceId = store.getters.currentWorkspace.id;
                 const channel = pusher.subscribe(`private-processableTransactions;workspace=${workspaceId}`);
                 return channel.bind('new', handler, context);
             },
 
-            onNewBlock(handler, context) {
+            async onNewBlock(handler, context) {
+                const pusher = await getPusher();
                 const workspaceId = store.getters.currentWorkspace.id;
                 const channel = pusher.subscribe(`private-blocks;workspace=${workspaceId}`);
                 return channel.bind('new', handler, context);
             },
 
-            onNewContract(handler, context) {
+            async onNewContract(handler, context) {
+                const pusher = await getPusher();
                 const workspaceId = store.getters.currentWorkspace.id;
                 const channel = pusher.subscribe(`private-contracts;workspace=${workspaceId}`);
                 return channel.bind('new', handler, context);
             },
 
-            onDestroyedContract(handler, context) {
+            async onDestroyedContract(handler, context) {
+                const pusher = await getPusher();
                 const workspaceId = store.getters.currentWorkspace.id;
                 const channel = pusher.subscribe(`private-contracts;workspace=${workspaceId}`);
                 return channel.bind('destroyed', handler, context);
             },
 
-            onNewTransaction(handler, context, address) {
+            async onNewTransaction(handler, context, address) {
+                const pusher = await getPusher();
                 const workspaceId = store.getters.currentWorkspace.id;
                 const params = [`workspace=${workspaceId}`];
                 if (address)
@@ -68,13 +78,15 @@ export const pusherPlugin = {
                 return channel.bind('new', handler, context);
             },
 
-            onNewToken(handler, context) {
+            async onNewToken(handler, context) {
+                const pusher = await getPusher();
                 const workspaceId = store.getters.currentWorkspace.id;
                 const channel = pusher.subscribe(`private-tokens;workspace=${workspaceId}`);
                 return channel.bind('new', handler, context);
             },
 
-            onUserUpdated(handler, context) {
+            async onUserUpdated(handler, context) {
+                const pusher = await getPusher();
                 const userId = store.getters.user.id;
                 const channel = pusher.subscribe(`private-cache-users;id=${userId}`);
                 return channel.bind('updated', handler, context);
