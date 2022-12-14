@@ -12,7 +12,7 @@ export const dbPlugin = {
     install(Vue) {
         Vue.prototype.db = {
             getIdToken: function() {
-                if (!_auth.currentUser) return new Promise(resolve => resolve(null));
+                if (!_auth().currentUser) return new Promise(resolve => resolve(null));
                 return _auth().currentUser.getIdToken();
             }
         };
