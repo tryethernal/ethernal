@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.0] - 2022-12-14
+### Changed
+- Improve frontend id token management
+
 ## [3.1.6] - 2022-12-13
 ### Changed
 - Keep Logrocket for frontend monitoring
