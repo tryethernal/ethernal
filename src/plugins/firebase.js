@@ -9,16 +9,10 @@ firebase.initializeApp(FIREBASE_CONFIG);
 const _auth = firebase.auth;
 
 export const dbPlugin = {
-    install(Vue, options) {
-        var store = options.store;
-
-        var currentUser = function() {
-            return { uid: store.getters.currentWorkspace.firebaseUserId || store.getters.user.uid };
-        };
-
+    install(Vue) {
         Vue.prototype.db = {
             getIdToken: function() {
-                if (!currentUser()) return;
+                if (!_auth.currentUser) return new Promise(resolve => resolve(null));
                 return _auth().currentUser.getIdToken();
             }
         };

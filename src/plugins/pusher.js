@@ -1,4 +1,5 @@
 const Pusher = require('pusher-js');
+import { sanitize } from '../lib/utils';
 Pusher.logToConsole = process.env.NODE_ENV != 'production';
 
 export const pusherPlugin = {
@@ -12,11 +13,11 @@ export const pusherPlugin = {
                     cluster: 'eu',
                     channelAuthorization: {
                         endpoint: `${process.env.VUE_APP_API_ROOT}/api/pusher/authorization`,
-                        params: {
+                        params: sanitize({
                             firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                             firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                             workspace: store.getters.currentWorkspace.name
-                        }
+                        })
                     }
                 }) : {
                     subscribe: () => {},
