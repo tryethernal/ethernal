@@ -399,6 +399,8 @@ export default {
                                 this.launchOnboarding();
                         }
                     }
+                }).catch(() => {
+                    return this.logOut();
                 });
             });
         }
