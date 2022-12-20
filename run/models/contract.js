@@ -24,6 +24,17 @@ module.exports = (sequelize, DataTypes) => {
           as: 'proxyContract'
       });
       Contract.hasMany(models.Erc721Token, { foreignKey: 'contractId', as: 'erc721Tokens' });
+      Contract.hasMany(models.TransactionLog, {
+          sourceKey: 'address',
+          foreignKey: 'address',
+          as: 'transactionLogs',
+          scope: {
+              [Op.and]: sequelize.where(sequelize.col("contracts.workspaceId"),
+                  Op.eq,
+                  sequelize.col("transaction_logs.workspaceId")
+              )
+          },
+      })
     }
 
     getProxyContract() {
@@ -76,6 +87,60 @@ module.exports = (sequelize, DataTypes) => {
             attributes: ['owner', 'URI', 'tokenId', 'metadata', 'attributes']
         });
         return tokens[0];
+    }
+
+    countFilteredLogs(signature) {
+        return sequelize.models.TransactionLog.count({
+            include: {
+                model: sequelize.models.Contract,
+                as: 'contract'
+            },
+            where: {
+                address: this.address,
+                [Op.and]: sequelize.where(
+                    sequelize.json('topics')[0],
+                    Op.eq,
+                    signature
+                ),
+                [Op.and]: sequelize.where(sequelize.col("contract.workspaceId"),
+                  Op.eq,
+                  sequelize.col("TransactionLog.workspaceId")
+                )
+            }
+        });
+    }
+
+    getFilteredLogs(signature, page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC') {
+        return sequelize.models.TransactionLog.findAll({
+            include: [
+                {
+                    model: sequelize.models.TransactionReceipt,
+                    as: 'receipt',
+                    attributes: ['transactionHash', 'from', 'to']
+                },
+                {
+                    model: sequelize.models.Contract,
+                    as: 'contract',
+                    attributes: ['id', 'name', 'abi', 'address', 'tokenName', 'tokenSymbol', 'tokenDecimals', 'patterns']
+                },
+            ],
+            attributes: ['id', 'workspaceId', 'address', 'data', 'topics'],
+            where: {
+                address: this.address,
+                [Op.and]: sequelize.where(
+                    sequelize.json('topics')[0],
+                    Op.eq,
+                    signature
+                ),
+                [Op.and]: sequelize.where(sequelize.col("contract.workspaceId"),
+                  Op.eq,
+                  sequelize.col("TransactionLog.workspaceId")
+                )
+            },
+            offset: (page - 1) * itemsPerPage,
+            limit: itemsPerPage,
+            order: [[orderBy, order]]
+        });
     }
 
     getFilteredErc721Tokens(page = 1, itemsPerPage = 10, orderBy = 'tokenId', order = 'ASC') {
