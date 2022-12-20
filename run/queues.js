@@ -8,6 +8,7 @@ priorities['high'].forEach(jobName => {
         defaultJobOptions: {
             attempts: 50,
             removeOnComplete: 100,
+            timeout: 30000,
             backoff: {
                 type: 'exponential',
                 delay: 1000
@@ -22,6 +23,7 @@ priorities['medium'].forEach(jobName => {
         defaultJobOptions: {
             attempts: 20,
             removeOnComplete: 20,
+            timeout: 30000,
             backoff: {
                 type: 'exponential',
                 delay: 1000
@@ -36,6 +38,7 @@ priorities['low'].forEach(jobName => {
         defaultJobOptions: {
             attempts: 10,
             removeOnComplete: 10,
+            timeout: 30000,
             backoff: {
                 type: 'exponential',
                 delay: 1000

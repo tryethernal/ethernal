@@ -7,6 +7,22 @@ const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
 const processContractVerification = require('../lib/processContractVerification');
 
+router.get('/:address/logs', workspaceAuthMiddleware, async (req, res) => {
+    const data = req.query;
+
+    try {
+        if (!data.workspace || !data.signature)
+            throw new Error(`Missing parameters`);
+
+        const logs = await db.getContractLogs(data.workspace.id, req.params.address, data.signature, data.page, data.itemsPerPage, data.orderBy, data.order);
+
+        res.status(200).json(logs);
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.contracts.logs', error: error, data: { ...data, ...req.params }});
+        res.status(400).send(error.message);
+    }
+});
+
 router.get('/processable', authMiddleware, async (req, res) => {
     const data = req.query;
 
