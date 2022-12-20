@@ -10,6 +10,32 @@ const db = require('../../lib/firebase');
 
 beforeEach(() => jest.clearAllMocks());
 
+describe('getContractLogs', () => {
+    it('Should return logs if contract exists', (done) => {
+        db.getContractLogs(1, '0x123', '0x456')
+            .then(res => {
+                expect(res).toEqual(
+                    {
+                        total: 1,
+                        items: [
+                            { address: '0x123' }
+                        ]
+                    }
+                );
+                done();
+            });
+    });
+
+    it('Should fail if contract does not exist', (done) => {
+        jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce(null);
+        db.getContractLogs(1, '0x123', '0x456')
+            .catch(res => {
+                expect(res.message).toEqual(`Can't find a contract at 0x123.`);
+                done();
+            });
+    });
+});
+
 describe('getContractByWorkspaceId', () => {
     it('Should return the contract if it exists', (done) => {
         db.getContractByWorkspaceId(1, '0x123')

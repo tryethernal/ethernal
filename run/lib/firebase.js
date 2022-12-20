@@ -10,6 +10,24 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const getContractLogs = async (workspaceId, address, signature, page, itemsPerPage, orderBy, order) => {
+    if (!workspaceId || !address || !signature) throw new Error('Missing paramter.');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    const contract = await workspace.findContractByAddress(address);
+
+    if (!contract)
+        throw new Error(`Can't find a contract at ${address}.`);
+
+    const filteredLogs = await contract.getFilteredLogs(signature, page, itemsPerPage, orderBy, order);
+    const logCount = await contract.countFilteredLogs(signature)
+
+    return {
+        items: filteredLogs,
+        total: logCount
+    };
+};
+
 const storeContractDataWithWorkspaceId = async (workspaceId, address, data) => {
     if (!workspaceId || !address || !data) throw new Error('Missing parameter.');
 
@@ -736,5 +754,6 @@ module.exports = {
     updateErc721Token: updateErc721Token,
     getContractByWorkspaceId: getContractByWorkspaceId,
     storeContractDataWithWorkspaceId: storeContractDataWithWorkspaceId,
+    getContractLogs: getContractLogs,
     Workspace: Workspace
 };
