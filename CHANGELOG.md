@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3.0] - 2022-12-20
+### Added
+- Contract logs endpoint
+
 ## [3.2.0] - 2022-12-14
 ### Changed
 - Improve frontend id token management
