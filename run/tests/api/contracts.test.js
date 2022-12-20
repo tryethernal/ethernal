@@ -14,6 +14,30 @@ const request = supertest(app);
 
 const BASE_URL = '/api/contracts';
 
+describe(`GET ${BASE_URL}/:address/logs`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('Should fail if no contract at address', (done) => {
+        jest.spyOn(db, 'getContractLogs').mockRejectedValue(new Error(`Can't find a contract at 0x123.`));
+        request.get(`${BASE_URL}/0x123/logs?signature=0x456&firebaseUserId=123&workspace=My+Workspace`)
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Can't find a contract at 0x123.`);
+                done();
+            });
+    });
+
+    it('Should return logs with 200 status code', (done) => {
+        jest.spyOn(db, 'getContractLogs').mockResolvedValue({ total: 1, items: [{ address: 'Ox123' }]});
+        request.get(`${BASE_URL}/0x123/logs?signature=0x456&firebaseUserId=123&workspace=My+Workspace`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ total: 1, items: [{ address: 'Ox123' }]});
+                done();
+            });
+    });
+});
+
 describe(`POST ${BASE_URL}/:address/watchedPaths`, () => {
     beforeEach(() => jest.clearAllMocks());
 
