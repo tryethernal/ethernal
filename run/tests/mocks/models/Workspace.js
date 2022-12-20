@@ -48,6 +48,8 @@ const contract1 = {
     getErc721TokenTransfersByTokenId: jest.fn().mockResolvedValue([erc721TokenTransfer]),
     getErc721Token: jest.fn().mockResolvedValue(erc721Token),
     getFilteredErc721Tokens: jest.fn().mockResolvedValue([erc721Token]),
+    getFilteredLogs: jest.fn().mockResolvedValue([{ address: '0x123' }]),
+    countFilteredLogs: jest.fn().mockResolvedValue(1),
     countErc721Tokens: jest.fn().mockResolvedValue(1),
     toJSON: jest.fn().mockReturnValue({ id: 10, address: '0x123' })
 };
@@ -81,7 +83,6 @@ const workspace = {
     safeCreateBlock: jest.fn().mockResolvedValue(block1),
     safeCreateTransaction: jest.fn().mockResolvedValue(transaction1),
     safeCreateOrUpdateContract: jest.fn().mockResolvedValue(contract1),
-    findContractByAddress: jest.fn().mockResolvedValue(contract1),
     findContractByHashedBytecode: jest.fn().mockResolvedValue(contract1),
     safeCreateOrUpdateAccount: jest.fn().mockResolvedValue(account),
     removeContractByAddress: jest.fn(),

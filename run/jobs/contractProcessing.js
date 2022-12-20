@@ -184,8 +184,8 @@ module.exports = async job => {
         bytecode = contract.bytecode;
 
     if (bytecode) {
-        hashedBytecode = ethers.utils.keccak256(bytecode);
         try {
+            hashedBytecode = ethers.utils.keccak256(bytecode);
             asm = yasold.decompileToText(bytecode);
         } catch (error) {
             logger.error(error.message, { location: 'jobs.contractProcessing.asmDecompilation', error: error, data: data });

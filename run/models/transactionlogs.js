@@ -1,7 +1,9 @@
 'use strict';
 const {
-  Model
+  Model,
+  Sequelize
 } = require('sequelize');
+const Op = Sequelize.Op;
 module.exports = (sequelize, DataTypes) => {
   class TransactionLog extends Model {
     /**
@@ -12,6 +14,18 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       TransactionLog.belongsTo(models.TransactionReceipt, { foreignKey: 'transactionReceiptId', as: 'receipt' });
       TransactionLog.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
+      TransactionLog.hasOne(models.Contract, {
+          sourceKey: 'address',
+          foreignKey:  'address',
+          as: 'contract',
+          scope: {
+            [Op.and]: sequelize.where(sequelize.col("TransactionLog.workspaceId"),
+                Op.eq,
+                sequelize.col("contract.workspaceId")
+              ),
+            },
+          constraints: false
+      });
     }
   }
   TransactionLog.init({
