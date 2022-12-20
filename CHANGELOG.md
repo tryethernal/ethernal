@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3.1] - 2022-12-20
+### Changed
+- Restrict server side sync to public workspaces (ie public explorer plans).
+
 ## [3.3.0] - 2022-12-20
 ### Added
 - Contract logs endpoint

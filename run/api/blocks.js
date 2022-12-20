@@ -15,6 +15,10 @@ router.post('/syncRange', authMiddleware, async (req, res) => {
         if (!data.workspace || data.from === undefined || data.from === null || data.to === undefined || data.to === null)
             throw new Error('Missing parameter');
 
+        const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
+        if (!workspace.public)
+            throw new Error(`You are not allowed to use server side sync. If you'd like to, please reach out at contact@tryethernal.com`);
+
         await enqueue('batchBlockSync', `batchBlockSync-${data.uid}-${data.workspace}-${data.from}-${data.to}`, {
             userId: data.uid,
             workspace: data.workspace,
@@ -70,6 +74,10 @@ router.post('/', authMiddleware, async (req, res) => {
         const serverSync = req.query.serverSync && String(req.query.serverSync) === 'true';
 
         if (serverSync) {
+            const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
+            if (!workspace.public)
+                throw new Error(`You are not allowed to use server side sync. If you'd like to, please reach out at contact@tryethernal.com`);
+
             if (block.number === undefined || block.number === null)
                 throw Error('Missing block number.');
 

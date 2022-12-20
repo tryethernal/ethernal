@@ -15,7 +15,19 @@ const BASE_URL = '/api/blocks'
 describe(`POST ${BASE_URL}/syncRange`, () => {
     beforeEach(() => jest.clearAllMocks());
 
+    it('Should fail if it is server side and not public', (done) => {
+        db.getWorkspaceByName.mockResolvedValue({ name: 'My Workspace', public: false });
+        request.post(`${BASE_URL}/syncRange`)
+            .send({ data: { workspace: 'My Workspace', from: 1, to: 10 }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`You are not allowed to use server side sync. If you'd like to, please reach out at contact@tryethernal.com`);
+                done();
+            });
+    });
+
     it('Should enqueue a batchBlockSync task', (done) => {
+        db.getWorkspaceByName.mockResolvedValue({ name: 'My Workspace', public: true });
         request.post(`${BASE_URL}/syncRange`)
             .send({ data: { workspace: 'My Workspace', from: 1, to: 10 }})
             .expect(200)
@@ -35,6 +47,7 @@ describe(`POST ${BASE_URL}`, () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('Should throw an error if block number is missing with server sync', (done) => {
+        db.getWorkspaceByName.mockResolvedValue({ name: 'My Workspace', public: true });
         request.post(`${BASE_URL}/?serverSync=true`)
             .send({ data: { workspace: 'My Workspace', block: {}}})
             .expect(400)
@@ -44,8 +57,20 @@ describe(`POST ${BASE_URL}`, () => {
             });
     });
 
+    it('Should refuse server side block sync if workspace is not public', (done) => {
+        db.getWorkspaceByName.mockResolvedValue({ name: 'My Workspace', public: false });
+        request.post(`${BASE_URL}/?serverSync=true`)
+            .send({ data: { workspace: 'My Workspace', block: { number: 123 }}})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`You are not allowed to use server side sync. If you'd like to, please reach out at contact@tryethernal.com`);
+                done();
+            });
+    });
+
 
     it('Should enqueue server side block sync', (done) => {
+        db.getWorkspaceByName.mockResolvedValue({ name: 'My Workspace', public: true });
         request.post(`${BASE_URL}/?serverSync=true`)
             .send({ data: { workspace: 'My Workspace', block: { number: 123 }}})
             .expect(200)
