@@ -121,7 +121,6 @@ export default {
         if (this.justUpgraded) {
             this.subscriptionButtonLoading = true;
             this.pusher.onUserUpdated((user) => {
-                console.log(user)
                 if (user.plan == 'premium') {
                     this.$store.dispatch('updateUserPlan', { plan: 'premium' });
                     this.subscriptionButtonLoading = false;
@@ -134,7 +133,6 @@ export default {
             this.subscriptionButtonLoading = true;
             this.server.createStripePortalSession()
                 .then(({ data }) => {
-                    console.log(data)
                     document.location.href = data.url
                 })
                 .catch(() => this.subscriptionButtonLoading = false );
