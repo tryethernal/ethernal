@@ -13,7 +13,7 @@ const PLANS = {
 router.post('/createCheckoutSession', authMiddleware, async (req, res) => {
     const data = { ...req.query, ...req.body.data };
     try {
-        const user = await db.getUser(data.uid);
+        const user = await db.getUser(data.uid, ['stripeCustomerId']);
         const selectedPlan = PLANS[data.plan];
 
         if (!selectedPlan)
@@ -21,7 +21,7 @@ router.post('/createCheckoutSession', authMiddleware, async (req, res) => {
 
         const session = await stripe.checkout.sessions.create(sanitize({
             mode: 'subscription',
-            client_reference_id: user.uid,
+            client_reference_id: user.id,
             customer: user.stripeCustomerId,
             payment_method_types: ['card'],
             line_items: [
