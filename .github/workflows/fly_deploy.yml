@@ -10,10 +10,13 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v3
-        - name: Setup gcloud credentials
-          run: echo "$GCLOUD_CREDENTIALS" >> ethernal-95a14-19f78a7e26cc.json
+        - name: Setup credentials
+          run: |
+            echo "$GCLOUD_CREDENTIALS" >> ethernal-95a14-19f78a7e26cc.json
+            echo "$NEW_RELIC_LICENSE_KEY" >> newrelic-infra.yml
           shell: bash
           env:
             GCLOUD_CREDENTIALS: ${{ secrets.GCLOUD_CREDENTIALS }}
+            NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
         - uses: superfly/flyctl-actions/setup-flyctl@master
-        - run: flyctl deploy . -c fly.toml --remote-only --env NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }} --env NEW_RELIC_APP_NAME=${{ secrets.NEW_RELIC_APP_NAME }}
+        - run: flyctl deploy . -c fly.toml --remote-only
