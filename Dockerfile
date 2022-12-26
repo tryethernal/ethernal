@@ -1,4 +1,4 @@
-FROM newrelic/infrastructure:latest as base
+FROM node:16 AS base
 WORKDIR /app
 COPY run/api ./api
 COPY run/config ./config
@@ -20,5 +20,6 @@ RUN npm install nodemon -g
 
 FROM base AS prod
 COPY ethernal-95a14-19f78a7e26cc.json ./ethernal-95a14-19f78a7e26cc.json
-ADD newrelic-infra.yml /etc/newrelic-infra.yml
+ENV PATH="${PATH}:/sbin"
+RUN curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash && NEW_RELIC_REGION=EU /usr/local/bin/newrelic install
 RUN npm ci --only=production
