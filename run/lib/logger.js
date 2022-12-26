@@ -10,7 +10,7 @@ const logger = createLogger({
     transports: []
 });
 
-const transport = new transports.Console({ format: format.combine(format.colorize(), format.simple(), newrelicWinstonFormatter() });
+const transport = new transports.Console({ format: format.combine(format.colorize(), format.simple(), newrelicWinstonFormatter()) });
 logger.add(transport);
 logger.exceptions.handle(transport);
 
