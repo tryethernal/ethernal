@@ -1,4 +1,4 @@
-FROM node:16 AS base
+FROM newrelic/infrastructure:latest as base
 WORKDIR /app
 COPY run/api ./api
 COPY run/config ./config
@@ -20,7 +20,5 @@ RUN npm install nodemon -g
 
 FROM base AS prod
 COPY ethernal-95a14-19f78a7e26cc.json ./ethernal-95a14-19f78a7e26cc.json
-ENV NEW_RELIC_NO_CONFIG_FILE=true
-RUN apk add sudo
-RUN curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash && NRIA_MODE=unprivileged NEW_RELIC_REGION=EU /usr/local/bin/newrelic install
+ADD newrelic-infra.yml /etc/newrelic-infra.yml
 RUN npm ci --only=production
