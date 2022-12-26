@@ -21,5 +21,4 @@ RUN npm install nodemon -g
 FROM base AS prod
 COPY ethernal-95a14-19f78a7e26cc.json ./ethernal-95a14-19f78a7e26cc.json
 ENV NEW_RELIC_NO_CONFIG_FILE=true
-ENV NEW_RELIC_APP_NAME=backend
 RUN npm ci --only=production
