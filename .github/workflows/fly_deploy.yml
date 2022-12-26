@@ -16,4 +16,4 @@ jobs:
           env:
             GCLOUD_CREDENTIALS: ${{ secrets.GCLOUD_CREDENTIALS }}
         - uses: superfly/flyctl-actions/setup-flyctl@master
-        - run: flyctl deploy . -c fly.toml --remote-only --build-arg NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }} --build-arg NEW_RELIC_APP_NAME=${{ secrets.NEW_RELIC_APP_NAME }}
+        - run: flyctl deploy . -c fly.toml --remote-only --env NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }} --env NEW_RELIC_APP_NAME=${{ secrets.NEW_RELIC_APP_NAME }}
