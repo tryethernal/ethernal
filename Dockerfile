@@ -20,4 +20,5 @@ RUN npm install nodemon -g
 
 FROM base AS prod
 COPY ethernal-95a14-19f78a7e26cc.json ./ethernal-95a14-19f78a7e26cc.json
+RUN curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | bash && sudo NEW_RELIC_API_KEY=NEW_RELIC_API_KEY NEW_RELIC_ACCOUNT_ID=NEW_RELIC_ACCOUNT_ID NEW_RELIC_REGION=EU /usr/local/bin/newrelic install
 RUN npm ci --only=production
