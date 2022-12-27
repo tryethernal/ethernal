@@ -39,7 +39,7 @@ router.get('/me', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
     try {
-        const user = await db.getUser(data.uid);
+        const user = await db.getUser(data.uid, ['apiToken', 'apiKey']);
 
         res.status(200).json(user);
     } catch(error) {

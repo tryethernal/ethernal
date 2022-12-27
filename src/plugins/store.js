@@ -93,7 +93,8 @@ export default new Vuex.Store({
                     email: user.email,
                     loggedIn: true,
                     id: user.id,
-                    plan: user.plan
+                    plan: user.plan,
+                    apiToken: user.apiToken
                 }));
                 if (process.env.VUE_APP_ENABLE_ANALYTICS)
                     LogRocket.identify(user.uid, { email: user.email });
