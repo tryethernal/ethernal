@@ -122,10 +122,12 @@ module.exports = (sequelize, DataTypes) => {
     apiToken: {
         type: DataTypes.VIRTUAL,
         get() {
-            return encode({
-                firebaseUserId: this.getDataValue('firebaseUserId'),
-                apiKey: decrypt(this.getDataValue('apiKey'))
-            });
+            return this.getDataValue('apiKey') ?
+                encode({
+                    firebaseUserId: this.getDataValue('firebaseUserId'),
+                    apiKey: decrypt(this.getDataValue('apiKey'))
+                }) :
+                null;
         }
     },
     defaultDataRetentionLimit: DataTypes.INTEGER,
