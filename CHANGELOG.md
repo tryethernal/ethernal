@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.4.0] - 2022-12-27
+### Changed
+- Frontend auth is now done with the api token instead of firebase id
+
 ## [3.3.2] - 2022-12-21
 ### Fixed
 - Bug preventing plans upgrade/downgrade
