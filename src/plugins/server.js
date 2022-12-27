@@ -305,10 +305,11 @@ export const serverPlugin = {
             return store.getters.currentWorkspace.rpcServer;
         };
 
+        axios.defaults.headers.common = store.getters.user.apiToken ? { 'Authorization': `Bearer ${store.getters.user.apiToken}` } : {};
+
         Vue.prototype.server = {
-            async updateContractWatchedPaths(address, paths) {
+            updateContractWatchedPaths(address, paths) {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     watchedPaths: paths
@@ -317,9 +318,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async getProcessableContracts() {
+            getProcessableContracts() {
                  const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
@@ -346,12 +346,10 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async getErc721TokensFrom(contractAddress, indexes) {
+            getErc721TokensFrom(contractAddress, indexes) {
                 const tokens = [];
-                const firebaseAuthToken = await Vue.prototype.db.getIdToken();
                 return new Promise((resolve, reject) => {
                     const data = {
-                        firebaseAuthToken: firebaseAuthToken,
                         firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                         workspace: store.getters.currentWorkspace.name,
                     };
@@ -372,9 +370,8 @@ export const serverPlugin = {
                 })
             },
 
-            async setTokenProperties(contractAddress, properties) {
+            setTokenProperties(contractAddress, properties) {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     properties: properties
@@ -383,9 +380,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async getErc721TokenTransfers(contractAddress, tokenId) {
+            getErc721TokenTransfers(contractAddress, tokenId) {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
@@ -393,9 +389,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async reloadErc721Token(contractAddress, tokenId) {
+            reloadErc721Token(contractAddress, tokenId) {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
@@ -403,7 +398,7 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async getErc721Token(contractAddress, tokenId, loadingEnabled) {
+            getErc721Token(contractAddress, tokenId, loadingEnabled) {
                 if (!store.getters.isPublicExplorer || !loadingEnabled) {
                     const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
                     return new Promise((resolve, reject) => {
@@ -414,7 +409,6 @@ export const serverPlugin = {
                 }
                 else {
                     const params = {
-                        firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                         firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                         workspace: store.getters.currentWorkspace.name,
                     };
@@ -423,9 +417,8 @@ export const serverPlugin = {
                 }
             },
 
-            async getErc721Tokens(contractAddress, options, loadingEnabled) {
+            getErc721Tokens(contractAddress, options, loadingEnabled) {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     ...options
@@ -454,9 +447,8 @@ export const serverPlugin = {
                 }
             },
 
-            async setRemoteFlag() {
+            setRemoteFlag() {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
@@ -464,9 +456,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async submitExplorerLead(email) {
+            submitExplorerLead(email) {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     email: email,
@@ -475,9 +466,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async getMarketingFlags() {
+            getMarketingFlags() {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
@@ -490,9 +480,8 @@ export const serverPlugin = {
                 return axios.post(resource, data);
             },
 
-            async getWalletVolume(from, to) {
+            getWalletVolume(from, to) {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     from: from,
@@ -502,9 +491,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async getTransactionVolume(from, to) {
+            getTransactionVolume(from, to) {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     from: from,
@@ -514,9 +502,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async getGlobalStats() {
+            getGlobalStats() {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
@@ -524,9 +511,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async getTokenBalances(address, patterns) {
+            getTokenBalances(address, patterns) {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     patterns: patterns
@@ -535,9 +521,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async search(type, query) {
+            search(type, query) {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     type: type,
@@ -548,9 +533,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async getBlocks(options) {
+            getBlocks(options) {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     ...options
@@ -559,9 +543,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async getBlock(number, withTransactions = true) {
+            getBlock(number, withTransactions = true) {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     withTransactions: withTransactions
@@ -570,9 +553,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async getTransactions(options) {
+            getTransactions(options) {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     ...options
@@ -581,9 +563,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async getTransaction(hash) {
+            getTransaction(hash) {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
@@ -591,9 +572,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async getContracts(options) {
+            getContracts(options) {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     ...options
@@ -602,9 +582,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async getContract(address) {
+            getContract(address) {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
@@ -612,9 +591,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async getAddressTransactions(address, options) {
+            getAddressTransactions(address, options) {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     ...options
@@ -623,9 +601,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async getAccounts(options) {
+            getAccounts(options) {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     ...options
@@ -634,19 +611,17 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async getCurrentUser() {
+            getCurrentUser() {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId
                 };
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/users/me`;
                 return axios.get(resource, { params });
             },
 
-            async setCurrentWorkspace(workspace) {
+            setCurrentWorkspace(workspace) {
                 const data = {
                     workspace: workspace,
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId
                 };
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/users/me/setCurrentWorkspace`;
@@ -669,9 +644,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async getProcessableTransactions() {
+            getProcessableTransactions() {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name
                 };
@@ -679,9 +653,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async getFailedProcessableTransactions() {
+            getFailedProcessableTransactions() {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name
                 };
@@ -689,20 +662,18 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async createWorkspace(name, workspaceData) {
+            createWorkspace(name, workspaceData) {
                 const data = {
                     name: name,
                     workspaceData: workspaceData,
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId
                 };
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/workspaces`;
                 return axios.post(resource, { data });
             },
 
-            async getWorkspaces() {
+            getWorkspaces() {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId
                 };
 
@@ -710,9 +681,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async syncBalance(address, balance, workspace) {
+            syncBalance(address, balance, workspace) {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: workspace || store.getters.currentWorkspace.name,
                     balance: balance
@@ -722,9 +692,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async createStripeCheckoutSession(plan) {
+            createStripeCheckoutSession(plan) {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     plan: plan
                 };
@@ -733,9 +702,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async createStripePortalSession() {
+            createStripePortalSession() {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId
                 };
 
@@ -743,9 +711,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async updateWorkspaceSettings(settings) {
+            updateWorkspaceSettings(settings) {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     settings: settings
@@ -755,9 +722,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async importContract(contractAddress) {
+            importContract(contractAddress) {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name
                 };
@@ -766,9 +732,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async getProductRoadToken() {
+            getProductRoadToken() {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name
                 };
@@ -777,9 +742,8 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async syncTransactionData(hash, transactionData) {
+            syncTransactionData(hash, transactionData) {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     data: transactionData
@@ -789,9 +753,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async processTransaction(transactionHash) {
+            processTransaction(transactionHash) {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     transaction: transactionHash
@@ -801,9 +764,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async removeContract(address) {
+            removeContract(address) {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name
                 };
@@ -812,9 +774,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async resetWorkspace() {
+            resetWorkspace() {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name
                 };
@@ -823,9 +784,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async syncContractData(address, name, abi, watchedPaths) {
+            syncContractData(address, name, abi, watchedPaths) {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     address: address,
@@ -838,9 +798,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async storeAccountPrivateKey(account, privateKey) {
+            storeAccountPrivateKey(account, privateKey) {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     privateKey: privateKey
@@ -850,9 +809,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async syncFailedTransactionError(transactionHash, error) {
+            syncFailedTransactionError(transactionHash, error) {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     error: error
@@ -862,9 +820,8 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            async syncTokenBalanceChanges(transactionHash, tokenBalanceChanges) {
+            syncTokenBalanceChanges(transactionHash, tokenBalanceChanges) {
                 const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     tokenBalanceChanges: tokenBalanceChanges
@@ -876,7 +833,7 @@ export const serverPlugin = {
 
             getProvider: serverFunctions._getProvider,
 
-            processContracts: async function(rpcServer) {
+            async processContracts(rpcServer) {
                 try {
                     const contracts = (await Vue.prototype.server.getProcessableContracts()).data;
                     const provider = serverFunctions._getProvider(rpcServer);
@@ -900,7 +857,7 @@ export const serverPlugin = {
                 }
             },
 
-            processFailedTransactions: async function(transactions, rpcServer) {
+            async processFailedTransactions(transactions, rpcServer) {
                  try {
                     for (let i = 0; i < transactions.length; i++) {
                         const transaction = transactions[i];
@@ -918,7 +875,7 @@ export const serverPlugin = {
                 }
             },
 
-            processTransactions: async function(workspace, transactions) {
+            async processTransactions(workspace, transactions) {
                 try {
                     for (let i = 0; i < transactions.length; i++) {
                         const transaction = transactions[i];
@@ -952,7 +909,7 @@ export const serverPlugin = {
                 }
             },
 
-            searchForLocalChains: async function() {
+            async searchForLocalChains() {
                 try {
                     const endpoints = [
                         'http://127.0.0.1:7545',
@@ -977,7 +934,7 @@ export const serverPlugin = {
                     console.log(error)
                 }
             },
-            impersonateAccount: function(rpcServer, accountAddress) {
+            impersonateAccount(rpcServer, accountAddress) {
                 return new Promise((resolve, reject) => {
                     serverFunctions
                         .impersonateAccount({ rpcServer: rpcServer, accountAddress: accountAddress })
@@ -985,7 +942,7 @@ export const serverPlugin = {
                         .catch(reject)
                 });
             },
-            getAccountBalance: function(account) {
+            getAccountBalance(account) {
                 return new Promise((resolve, reject) => {
                     serverFunctions
                         .getAccountBalance({ rpcServer: _rpcServer(), account: account })
@@ -993,7 +950,7 @@ export const serverPlugin = {
                         .catch(reject)
                 });
             },
-            initRpcServer: function(rpcServer) {
+            initRpcServer(rpcServer) {
                 return new Promise((resolve, reject) => {
                     serverFunctions
                         .initRpcServer({ rpcServer: rpcServer })
@@ -1001,7 +958,7 @@ export const serverPlugin = {
                         .catch(reject)
                 });
             },
-            getRpcAccounts: function(rpcServer) {
+            getRpcAccounts(rpcServer) {
                 return new Promise((resolve, reject) => {
                     serverFunctions
                         .getRpcAccounts({ rpcServer: rpcServer })
@@ -1009,7 +966,7 @@ export const serverPlugin = {
                         .catch(reject)
                 });
             },
-            callContractReadMethod: function(contract, method, options, params, rpcServer, provider) {
+            callContractReadMethod(contract, method, options, params, rpcServer, provider) {
                 return new Promise((resolve, reject) => {
                     serverFunctions
                         .callContractReadMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer, provider: provider })
@@ -1017,7 +974,7 @@ export const serverPlugin = {
                         .catch(reject)
                 });
             },
-            callContractWriteMethod: function(contract, method, options, params, rpcServer) {
+            callContractWriteMethod(contract, method, options, params, rpcServer) {
                 return new Promise((resolve, reject) => {
                     serverFunctions
                         .callContractWriteMethod({ contract: contract, method: method, options: options, params: params, rpcServer: rpcServer })
@@ -1025,7 +982,7 @@ export const serverPlugin = {
                         .catch(reject)
                 });
             },
-            getStructure: function(contract, rpcServer) {
+            getStructure(contract, rpcServer) {
                 return new Promise((resolve, reject) => {
                     serverFunctions
                         .getStructure({ contract: contract, rpcServer: rpcServer })
@@ -1033,7 +990,7 @@ export const serverPlugin = {
                         .catch(reject)
                 });
             },
-            decodeData: function(contract, rpcServer, blockNumber) {
+            decodeData(contract, rpcServer, blockNumber) {
                 return new Promise((resolve, reject) => {
                     serverFunctions
                         .decodeData({ contract: contract, rpcServer: rpcServer, blockNumber: blockNumber })
