@@ -387,7 +387,7 @@ export default {
                             this.$store.dispatch('updateFirebaseIdToken', token);
                         });
 
-                        this.$store.dispatch('updateUser', { plan: user.plan, id: user.id });
+                        this.$store.dispatch('updateUser', { plan: user.plan, id: user.id, apiToken: data.apiToken });
 
                         if (user.currentWorkspace)
                             this.initWorkspace({ ...user.currentWorkspace, firebaseUserId: firebaseUserId });
