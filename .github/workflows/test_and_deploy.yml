@@ -2,6 +2,9 @@ name: Test & Deploy
 
 on: [push, workflow_dispatch]
 
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
 jobs:
   test_back:
     runs-on: ubuntu-latest
@@ -71,9 +74,18 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v3
+
+      - name: Setup credentials
+        run: |
+          echo "$GCLOUD_CREDENTIALS" >> ethernal-95a14-19f78a7e26cc.json
+        shell: bash
+        env:
+          GCLOUD_CREDENTIALS: ${{ secrets.GCLOUD_CREDENTIALS }}
+
+      - name: Deploy
+        uses: superfly/flyctl-actions/setup-flyctl@master
+        run: flyctl deploy . -c fly.toml --remote-only --build-only --build-target prod
 
   deploy_front:
     if: startsWith(github.ref, 'refs/tags/v')
