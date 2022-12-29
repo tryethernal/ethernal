@@ -78,6 +78,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install deps
+        run: yarn
+
       # - name: Get tag
       #   id: get_tag
       #   run: |
@@ -98,13 +101,10 @@ jobs:
       #     tag: ${{ steps.get_changelog.outputs.version }}
       #     token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install Vue CLI services
-        run: |
-          npm install @vue/cli-service -g
-
       - uses: jsmrcaga/action-netlify-deploy@v1.1.0
         with:
           build_directory: 'dist/'
+          build_command: 'yarn build'
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_DEPLOY_TO_PROD: false
 
