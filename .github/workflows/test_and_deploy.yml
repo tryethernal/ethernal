@@ -78,8 +78,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install deps
-        run: yarn
+      - name: Install deps & build
+        run: yarn && yarn build
 
       # - name: Get tag
       #   id: get_tag
@@ -101,12 +101,15 @@ jobs:
       #     tag: ${{ steps.get_changelog.outputs.version }}
       #     token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: jsmrcaga/action-netlify-deploy@v1.1.0
+      - uses: nwtgck/actions-netlify@v1.2
         with:
-          build_directory: 'dist/'
-          install_command: 'yarn build'
+          publish-dir: './dist'
+          enable-pull-request-comment: false
+          enable-commit-comment: false
+          overwrites-pull-request-comment: false
+        env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_DEPLOY_TO_PROD: false
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
       - name: Trigger Netlify deploy
         run: curl -X POST -d {} https://api.netlify.com/build_hooks/${{ secrets.NETLIFY_BUILD_HOOK_ID }}?trigger_branch=master&trigger_title=Triggered+by+Github+Actions
