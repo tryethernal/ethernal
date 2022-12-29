@@ -21,7 +21,7 @@ COPY run/index.js .
 COPY run/queues.js .
 COPY run/scheduler.js .
 COPY run/workers ./workers/
-COPY run/package*.json .
+COPY run/package*.json ./
 
 FROM base AS dev
 RUN npm install
@@ -29,10 +29,7 @@ RUN npm install nodemon -g
 
 FROM base AS prod
 COPY ethernal-95a14-19f78a7e26cc.json ./ethernal-95a14-19f78a7e26cc.json
-# RUN echo "license_key: faf019c91d1b9323fc8347473247e8da74f8NRAL" | sudo tee -a /etc/newrelic-infra.yml
-# RUN sudo apt-get update -y && apt-get install --no-install-recommends -y libcap2-bin gnupg ca-certificates systemd
-# RUN curl -s https://download.newrelic.com/infrastructure_agent/gpg/newrelic-infra.gpg | sudo apt-key add -
-# RUN printf "deb https://download.newrelic.com/infrastructure_agent/linux/apt focal main" | sudo tee -a /etc/apt/sources.list.d/newrelic-infra.list
-# RUN sudo apt-get update -y && sudo NRIA_MODE="PRIVILEGED" apt-get install newrelic-infra -y
-# RUN npm install nodemon -g
+RUN curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh | sudo bash
+RUN sudo NEW_RELIC_API_KEY=NRAK-DSHS3WXDY27QDVD5UU5YRR5V0WH NEW_RELIC_ACCOUNT_ID=3751919 /usr/local/bin/newrelic install
+RUN npm install nodemon -g
 RUN npm ci --only=production
