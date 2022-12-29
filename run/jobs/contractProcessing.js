@@ -178,7 +178,7 @@ module.exports = async job => {
 
     if (workspace.public) {
         const connector = new ContractConnector(workspace.rpcServer, contract.address, []);
-        bytecode = await connector.getBytecode();
+        // bytecode = await connector.getBytecode();
     }
     else
         bytecode = contract.bytecode;
