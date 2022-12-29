@@ -14,6 +14,6 @@ module.exports = async job => {
         const networkId = await provider.fetchNetworkId();
         return await db.setWorkspaceRemoteFlag(data.uid, data.workspace, true);
     } catch(_error) {
-        await db.setWorkspaceRemoteFlag(data.uid, data.workspace, false);
+        return await db.setWorkspaceRemoteFlag(data.uid, data.workspace, false);
     }
 };
