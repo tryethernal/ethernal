@@ -21,7 +21,8 @@ priorities['high'].forEach(jobName => {
 priorities['medium'].forEach(jobName => {
     queues[jobName] = new Queue(jobName, {
         defaultJobOptions: {
-            attempts: 20,
+            attempts: 0,
+            removeOnFail: true,
             removeOnComplete: 20,
             timeout: 30000,
             backoff: {
