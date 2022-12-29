@@ -105,7 +105,7 @@ describe('workspaceAuth', () => {
         expect(next).not.toHaveBeenCalled();
     });
 
-    it('Should return a 401 if no firebaseUserId & no auth header & no production', async () => {
+    it('Should return a 401 if no firebaseUserId & no auth header', async () => {
         getEnv.mockReturnValueOnce('production');
         const next = jest.fn();
         const req = {
@@ -140,23 +140,6 @@ describe('workspaceAuth', () => {
         expect(res.status).toHaveBeenCalledWith(401);
         expect(send).toHaveBeenCalledWith('Missing parameter');
         expect(next).not.toHaveBeenCalled();
-    });
-
-    it('Should not need auth if not in production', async () => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace' });
-        const next = jest.fn();
-        const req = {
-            headers: {},
-            body: {},
-            query: {
-                firebaseUserId: '123',
-                workspace: 'My Workspace'
-            }
-        };
-
-        await workspaceAuth(req, res, next);
-
-        expect(next).toHaveBeenCalled();
     });
 
     it('Should return 404 if workspace does not exist', async () => {
