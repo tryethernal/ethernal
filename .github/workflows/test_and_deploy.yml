@@ -104,7 +104,7 @@ jobs:
       - uses: jsmrcaga/action-netlify-deploy@v1.1.0
         with:
           build_directory: 'dist/'
-          entryPoint: 'yarn build'
+          install_command: 'yarn build'
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_DEPLOY_TO_PROD: false
 
