@@ -12,8 +12,9 @@ module.exports = async job => {
     try {
         const provider = new ProviderConnector(workspace.rpcServer);
         const networkId = await provider.fetchNetworkId();
-        return await db.setWorkspaceRemoteFlag(data.uid, data.workspace, true);
+        await db.setWorkspaceRemoteFlag(data.uid, data.workspace, true);
     } catch(_error) {
-        return await db.setWorkspaceRemoteFlag(data.uid, data.workspace, false);
+        await db.setWorkspaceRemoteFlag(data.uid, data.workspace, false);
     }
+    return true;
 };
