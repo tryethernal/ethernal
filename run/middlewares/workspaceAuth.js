@@ -37,9 +37,6 @@ module.exports = async (req, res, next) => {
         else if (data.firebaseAuthToken) {
             firebaseUser = await getAuth().verifyIdToken(data.firebaseAuthToken);
         }
-        else if (getEnv() !== 'production') {
-            firebaseUser = { user_id: data.firebaseUserId };
-        }
 
         if (!data.firebaseUserId && !firebaseUser.user_id)
             throw new Error('Missing parameter');

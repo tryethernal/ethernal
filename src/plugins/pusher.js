@@ -7,16 +7,20 @@ export const pusherPlugin = {
     async install(Vue, options) {
         const store = options.store;
 
-        const headers = store.getters.user.apiToken ?
-            { 'Authorization': `Bearer ${store.getters.user.apiToken}` } :
-            {};
-
         const pusher = process.env.VUE_APP_PUSHER_KEY ?
             new Pusher(process.env.VUE_APP_PUSHER_KEY, {
                 cluster: 'eu',
+                userAuthentication: {
+                    headersProvider: () => {
+                        console.log('ok')
+                        return { 'Authorization': `Bearer ${store.getters.user.apiToken}` }
+                    },
+                },
                 channelAuthorization: {
                     endpoint: `${process.env.VUE_APP_API_ROOT}/api/pusher/authorization`,
-                    headers: headers,
+                    headersProvider: () => {
+                        return { 'Authorization': `Bearer ${store.getters.user.apiToken}` }
+                    },
                     params: sanitize({
                         firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                         workspace: store.getters.currentWorkspace.name

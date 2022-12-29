@@ -36,10 +36,6 @@ module.exports = async (req, res, next) => {
             else
                 throw new Error(`Invalid authorization header`);
         }
-        else if (data.firebaseUserId && process.env.NODE_ENV !== 'production') {
-            req.body.data.uid = data.firebaseUserId;
-            next();
-        }
         else if (data.firebaseAuthToken) {
             firebaseUser = await getAuth().verifyIdToken(data.firebaseAuthToken);
 
