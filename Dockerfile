@@ -12,7 +12,7 @@ COPY run/index.js .
 COPY run/queues.js .
 COPY run/scheduler.js .
 COPY run/workers ./workers/
-COPY run/package*.json .
+COPY run/package*.json ./
 
 FROM base AS dev
 RUN npm install
