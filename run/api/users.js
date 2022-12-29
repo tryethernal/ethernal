@@ -63,7 +63,7 @@ router.post('/', async (req, res) => {
             email: authUser.email
         });
 
-        await db.createUser(data.firebaseUserId, {
+        const user = await db.createUser(data.firebaseUserId, {
             email: authUser.email,
             apiKey: encryptedKey,
             stripeCustomerId: customer.id,
@@ -72,7 +72,7 @@ router.post('/', async (req, res) => {
 
         await enqueue('processUser', `processUser-${data.firebaseUserId}`, { uid: data.firebaseUserId });
 
-        res.sendStatus(200);
+        res.status(200).json(user);
     } catch(error) {
         logger.error(error.message, { location: 'get.api.users', error: error, data: data });
         res.status(400).send(error.message);

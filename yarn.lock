@@ -3110,6 +3110,15 @@
     "@types/qs" "*"
     "@types/range-parser" "*"
 
+"@types/express-serve-static-core@4.17.28":
+  version "4.17.28"
+  resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.28.tgz#c47def9f34ec81dc6328d0b1b5303d1ec98d86b8"
+  integrity sha512-P1BJAEAW3E2DJUlkgq4tOL3RyMunoWXqbSCygWo5ZIWTjUgN1YnaXWW4VWl/oc8vs/XoYibEGBKP0uZyF4AHig==
+  dependencies:
+    "@types/node" "*"
+    "@types/qs" "*"
+    "@types/range-parser" "*"
+
 "@types/express-unless@*":
   version "0.5.1"
   resolved "https://registry.npmjs.org/@types/express-unless/-/express-unless-0.5.1.tgz"
@@ -3226,6 +3235,11 @@
 "@types/node@^13.7.0":
   version "13.13.38"
   resolved "https://registry.npmjs.org/@types/node/-/node-13.13.38.tgz"
+
+"@types/node@^14.14.31":
+  version "14.18.36"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.18.36.tgz#c414052cb9d43fab67d679d5f3c641be911f5835"
+  integrity sha512-FXKWbsJ6a1hIrRxv+FoukuHnGTgEzKYGi7kilfMae96AL9UNkPFNWJEEYWzdRI9ooIkbr4AKldyuSTLql06vLQ==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -11831,11 +11845,13 @@ pure-rand@^4.1.1:
   version "4.1.1"
   resolved "https://registry.npmjs.org/pure-rand/-/pure-rand-4.1.1.tgz"
 
-pusher-js@^7.1.1-beta:
-  version "7.1.1-beta"
-  resolved "https://registry.npmjs.org/pusher-js/-/pusher-js-7.1.1-beta.tgz"
-  integrity sha512-4aGhQFMOfHDmlc8hOS/wYf2f7wcKGJeUGUmLq5hDjRWlwYWBErPrGoTE5OdHJY9yRIsfwcBQzibvdyEXZ5ke6g==
+pusher-js@^7.6.0:
+  version "7.6.0"
+  resolved "https://registry.yarnpkg.com/pusher-js/-/pusher-js-7.6.0.tgz#8e4535856371be0f475a42b3eec1f8b5614672de"
+  integrity sha512-5CJ7YN5ZdC24E0ETraCU5VYFv0IY5ziXhrS0gS5+9Qrro1E4M1lcZhtr9H1H+6jNSLj1LKKAgcLeE1EH9GxMlw==
   dependencies:
+    "@types/express-serve-static-core" "4.17.28"
+    "@types/node" "^14.14.31"
     tweetnacl "^1.0.3"
 
 q@^1.1.2:

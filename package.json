@@ -34,7 +34,7 @@
     "ipaddr.js": "^2.0.0",
     "logrocket": "^1.0.14",
     "momentjs": "^2.0.0",
-    "pusher-js": "^7.1.1-beta",
+    "pusher-js": "^7.6.0",
     "stripe": "^8.176.0",
     "v-stripe-elements": "^1.2.0",
     "vue": "^2.6.11",

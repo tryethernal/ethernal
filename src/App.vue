@@ -377,8 +377,12 @@ export default {
                 this.$store.dispatch('updateFirebaseIdToken', token);
                 this.server.getCurrentUser().then(({ data }) => {
                     const user = data;
+
                     if (!user && !this.isPublicExplorer) {
-                        this.server.createUser(firebaseUserId).then(this.launchOnboarding);
+                        this.server.createUser(firebaseUserId).then(({ data }) => {
+                            this.$store.dispatch('updateUser', { plan: data.plan, id: data.id, apiToken: data.apiToken });
+                            this.launchOnboarding()
+                        });
                     }
                     else {
                         if (this.isPublicExplorer) return;
