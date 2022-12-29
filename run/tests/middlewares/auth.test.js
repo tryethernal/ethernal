@@ -102,23 +102,6 @@ describe('authMiddleware', () => {
         expect(next).not.toHaveBeenCalled();
     });
 
-    it('Should call next if not in production and has firebaseUserId', async () => {
-        const next = jest.fn();
-        let req = {
-            headers: {},
-            body: {
-                data: {
-                    firebaseUserId: '123'
-                }
-            }
-        };
-
-        await auth(req, res, next);
-
-        expect(req.body.data.uid).toEqual('123');
-        expect(next).toHaveBeenCalled();
-    });
-
     it('Should send a 401 if auth token is invalid', async () => {
         const next = jest.fn();
         let req = {

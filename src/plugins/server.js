@@ -305,7 +305,13 @@ export const serverPlugin = {
             return store.getters.currentWorkspace.rpcServer;
         };
 
-        axios.defaults.headers.common = store.getters.user.apiToken ? { 'Authorization': `Bearer ${store.getters.user.apiToken}` } : {};
+        axios.interceptors.request.use(
+            config => {
+                if (store.getters.user.apiToken)
+                    config.headers['Authorization'] = `Bearer ${store.getters.user.apiToken}`;
+                return config;
+            }
+        );
 
         Vue.prototype.server = {
             updateContractWatchedPaths(address, paths) {
@@ -434,7 +440,6 @@ export const serverPlugin = {
 
                         Promise.all(promises)
                             .then((res) => {
-                                console.log(res)
                                 const tokens = sanitize(res.map(el => formatErc721Metadata(el)));
                                 resolve({ data: { items: tokens }});
                             })
@@ -611,8 +616,9 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            getCurrentUser() {
+            async getCurrentUser() {
                 const params = {
+                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId
                 };
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/users/me`;
