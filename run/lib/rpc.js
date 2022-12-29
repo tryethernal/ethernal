@@ -35,8 +35,12 @@ class ProviderConnector {
     }
 
     async fetchNetworkId() {
-        const { chainId } = await this.provider.getNetwork();
-        return chainId;
+        try {
+            const { chainId } = await this.provider.getNetwork();
+            return chainId;
+        } catch(error) {
+            throw error;
+        }
     }
 }
 
