@@ -64,9 +64,6 @@ describe(`POST ${BASE_URL}/settings`, () => {
             .expect(200)
             .then(() => {
                 expect(db.updateWorkspaceSettings).toHaveBeenCalledWith('123', 'My Workspace', { rpcServer: 'http://localhost:8545' });
-                expect(enqueue).toHaveBeenCalledWith('processWorkspace', expect.anything(),
-                    { uid: '123', workspace: 'My Workspace' }
-                );
                 done();
             });
     });
@@ -87,9 +84,6 @@ describe(`POST ${BASE_URL}`, () => {
                     rpcServer: 'http://localhost:8545',
                     dataRetentionLimit: 7
                 });
-                expect(enqueue).toHaveBeenCalledWith('processWorkspace', expect.anything(),
-                    { uid: '123', workspace: 'My Workspace' }
-                );
                 done();
             });
     });

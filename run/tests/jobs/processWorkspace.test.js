@@ -11,24 +11,24 @@ beforeEach(() => jest.clearAllMocks());
 
 describe('processWorkspace', () => {
     it('Should set the flag to true if network is reachable', (done) => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ rpcServer: 'remote' });
+        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ rpcServer: 'remote', id: 1 });
 
-        processWorkspace({ data: { uid: '123', workspace: 'My Workspace' }})
+        processWorkspace({ data: { workspaceId: 1 }})
             .then(() => {
-                expect(db.setWorkspaceRemoteFlag).toHaveBeenCalledWith('123', 'My Workspace', true);
+                expect(db.setWorkspaceRemoteFlag).toHaveBeenCalledWith(1, true);
                 done();
             });
     });
 
     it('Should set the flag to false if network is unreachable', (done) => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ rpcServer: 'remote' });
+        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ rpcServer: 'remote', id: 1 });
         ProviderConnector.mockImplementation(() => ({
             fetchNetworkId: jest.fn().mockRejectedValue('Error')
         }));
 
-        processWorkspace({ data: { uid: '123', workspace: 'My Workspace' }})
+        processWorkspace({ data: { workspaceId: 1 }})
             .then(() => {
-                expect(db.setWorkspaceRemoteFlag).toHaveBeenCalledWith('123', 'My Workspace', false);
+                expect(db.setWorkspaceRemoteFlag).toHaveBeenCalledWith(1, false);
                 done();
             });
     });
