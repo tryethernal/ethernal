@@ -162,7 +162,7 @@ jobs:
       - name: Extract Netlify deploy id
         id: extract_deploy_id
         run: |
-          DEPLOY_ID=$(echo "${{ jobs.deploy_front.steps.netlify_deploy.outputs.deploy-url }}" | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
+          DEPLOY_ID=$(echo "${{ needs.deploy_front.steps.netlify_deploy.outputs.deploy-url }}" | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
           echo "::set-output name=deploy_id::$DEPLOY_ID"
         shell: bash
 
