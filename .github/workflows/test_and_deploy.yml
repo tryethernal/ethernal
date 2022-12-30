@@ -172,8 +172,8 @@ jobs:
           curl -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/${{ steps.extract_deploy_id.outputs.deploy_id }}/restore
 
   release_back:
-    # if: startsWith(github.ref, 'refs/tags/v')
-    # needs: [deploy_front, deploy_back]
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [deploy_front, deploy_back]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -181,4 +181,4 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Release deploy
-        run: flyctl deploy -i registry.fly.io/ethernal:ca19e8998016553303c7dd00a0b1710ead974c8f
+        run: flyctl deploy -i registry.fly.io/ethernal:${{ github.sha }}
