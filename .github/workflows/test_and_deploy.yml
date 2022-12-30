@@ -43,7 +43,6 @@ jobs:
   test_front:
     runs-on: ubuntu-latest
     timeout-minutes: 25
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -67,11 +66,10 @@ jobs:
         env:
           VUE_APP_API_ROOT: http://localhost:8081
 
-  deploy_front:
+  create_release:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [test_front]
+    needs: [test_front, test_back]
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -98,5 +96,85 @@ jobs:
           tag: ${{ steps.get_changelog.outputs.version }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Trigger Netlify deploy
-        run: curl -X POST -d {} https://api.netlify.com/build_hooks/${{ secrets.NETLIFY_BUILD_HOOK_ID }}?trigger_branch=master&trigger_title=Triggered+by+Github+Actions
+  deploy_front:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [create_release]
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install deps & build
+        run: yarn && yarn build
+        env:
+          VUE_APP_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          VUE_APP_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+          VUE_APP_FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
+          VUE_APP_FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          VUE_APP_FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+          VUE_APP_MESSAGING_SENDER_ID: ${{ secrets.MESSAGING_SENDER_ID }}
+          VUE_APP_FIREBASE_APP_ID: ${{ secrets.VUE_APP_FIREBASE_APP_ID }}
+          VUE_APP_LOGROCKET_ID: ${{ secrets.LOGROCKET_ID }}
+          VUE_APP_API_ROOT: ${{ secrets.API_ROOT }}
+          VUE_APP_MAIN_DOMAIN: ${{ secrets.MAIN_DOMAIN }}
+          VUE_APP_PUSHER_KEY: ${{ secrets.PUSHER_KEY }}
+          COMMIT_REF: ${{ github.sha }}
+
+      - uses: nwtgck/actions-netlify@v1.2
+        id: netlify_deploy
+        with:
+          publish-dir: './dist'
+          deploy-message: 'Deploying commit ${{ github.sha }}'
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+  deploy_back:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [create_release]
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup credentials
+        run: |
+          echo "$GCLOUD_CREDENTIALS" >> ethernal-95a14-19f78a7e26cc.json
+        shell: bash
+        env:
+          GCLOUD_CREDENTIALS: ${{ secrets.GCLOUD_CREDENTIALS }}
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Build & push docker image
+        run: |
+          flyctl auth docker
+          docker build -t registry.fly.io/ethernal:${{ github.sha }} .
+          docker push registry.fly.io/ethernal:${{ github.sha }}
+
+  release_front:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [deploy_front, deploy_back]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract Netlify deploy id
+        id: extract_deploy_id
+        run: |
+          DEPLOY_ID=$(echo "${{ needs.deploy_front.steps.netlify_deploy.outputs.deploy-url }}" | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
+          echo "::set-output name=deploy_id::$DEPLOY_ID"
+        shell: bash
+
+      - name: Release deploy
+        run: |
+          curl -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/${{ steps.extract_deploy_id.outputs.deploy_id }}/restore
+
+  release_back:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [deploy_front, deploy_back]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release deploy
+        run: flyctl deploy -i registry.fly.io/ethernal:${{ github.sha }}
