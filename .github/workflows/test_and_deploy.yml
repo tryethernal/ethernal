@@ -151,7 +151,7 @@ jobs:
 
       - run: |
           flyctl auth docker
-          docker build -t registry.fly.io/ethernal:${{ github.sha }}
+          docker build -t registry.fly.io/ethernal:${{ github.sha }} .
           docker push registry.fly.io/ethernal:${{ github.sha }}
 
   release_front:
