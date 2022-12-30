@@ -181,4 +181,4 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Release deploy
-        run: flyctl deploy -i registry.fly.io/ethernal:${{ github.sha }}
+        run: flyctl deploy -i registry.fly.io/ethernal:ca19e8998016553303c7dd00a0b1710ead974c8f
