@@ -118,9 +118,6 @@ jobs:
       - uses: nwtgck/actions-netlify@v1.2
         with:
           publish-dir: './dist'
-          enable-pull-request-comment: false
-          enable-commit-comment: false
-          overwrites-pull-request-comment: false
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
