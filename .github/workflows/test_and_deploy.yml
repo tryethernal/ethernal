@@ -133,8 +133,8 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
   deploy_back:
-    # if: startsWith(github.ref, 'refs/tags/v')
-    # needs: [create_release]
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [create_release]
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -149,14 +149,15 @@ jobs:
 
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - run: |
+      - name: Build & push docker image
+        run: |
           flyctl auth docker
           docker build -t registry.fly.io/ethernal:${{ github.sha }} .
           docker push registry.fly.io/ethernal:${{ github.sha }}
 
   release_front:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [deploy_front]
+    needs: [deploy_front, deploy_back]
     runs-on: ubuntu-latest
     steps:
       - name: Extract Netlify deploy id
@@ -169,3 +170,11 @@ jobs:
       - name: Release deploy
         run: |
           curl -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/${{ steps.extract_deploy_id.outputs.deploy_id }}/restore
+
+  release_back:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [deploy_front, deploy_back]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release deploy
+        run: flyctl deploy -i registry.fly.io/ethernal:${{ github.sha }}
