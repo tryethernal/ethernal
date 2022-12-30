@@ -132,4 +132,4 @@ jobs:
         shell: bash
 
       - name: Release deploy
-        run: curl -X POST -d {} https://api.netlify.com/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/${{ steps.extract_deploy_id.outputs.deploy_id }}/restore
+        run: curl -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/${{ steps.extract_deploy_id.outputs.deploy_id }}/restore
