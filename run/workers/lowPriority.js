@@ -14,7 +14,7 @@ priorities['low'].forEach(jobName => {
         logger.error(error.message, {
             location: `workers.lowPriority.${jobName}`,
             error: error,
-            data: job.data 
+            data: job.data
         });
     });
     logger.info(`Started worker "${jobName}" - Priority: low`);
