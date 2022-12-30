@@ -108,6 +108,7 @@ jobs:
           enable-pull-request-comment: false
           enable-commit-comment: false
           overwrites-pull-request-comment: false
+          github-deployment-environment: production
         env:
           VUE_APP_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           VUE_APP_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
