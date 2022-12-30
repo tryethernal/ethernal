@@ -157,7 +157,7 @@ exports[`Address.vue Should display the bytecode by default if present 1`] = `
     <!---->
   </div>
   <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text" data-booted="true">
+    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
       <div class="v-slide-group__prev v-slide-group__prev--disabled">
         <transition-stub name="fade-transition"></transition-stub>
       </div>
@@ -176,18 +176,18 @@ exports[`Address.vue Should display the bytecode by default if present 1`] = `
   </div>
   <div class="v-window v-item-group theme--light v-tabs-items">
     <div class="v-window__container">
-      <transition-stub name="v-window-x-reverse-transition">
+      <transition-stub name="">
         <div class="v-window-item" id="transactions" style="display: none;">
           <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
         </div>
       </transition-stub>
-      <transition-stub name="v-window-x-reverse-transition">
+      <transition-stub name="">
         <!---->
       </transition-stub>
-      <transition-stub name="v-window-x-reverse-transition" style="display: none;">
+      <transition-stub name="" style="display: none;">
         <!---->
       </transition-stub>
-      <transition-stub name="v-window-x-reverse-transition">
+      <transition-stub name="">
         <div class="v-window-item" id="storage" style="display: none;">
           <div class="mt-4 v-card v-sheet v-sheet--outlined theme--light">
             <div class="v-card__text">
@@ -201,13 +201,13 @@ exports[`Address.vue Should display the bytecode by default if present 1`] = `
           </div>
         </div>
       </transition-stub>
-      <transition-stub name="v-window-x-reverse-transition">
+      <transition-stub name="">
         <!---->
       </transition-stub>
-      <transition-stub name="v-window-x-reverse-transition">
+      <transition-stub name="">
         <!---->
       </transition-stub>
-      <transition-stub name="v-window-x-reverse-transition">
+      <transition-stub name="">
         <div class="v-window-item v-window-item--active" id="code">
           <div class="mt-2 v-item-group theme--light v-expansion-panels">
             <!---->
@@ -220,7 +220,7 @@ exports[`Address.vue Should display the bytecode by default if present 1`] = `
               <transition-stub name="expand-transition">
                 <div class="v-expansion-panel-content">
                   <div class="v-expansion-panel-content__wrap">
-                    <div class="v-input v-textarea v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                    <div class="v-input v-textarea v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
                       <div class="v-input__control">
                         <div class="v-input__slot">
                           <fieldset aria-hidden="true">
