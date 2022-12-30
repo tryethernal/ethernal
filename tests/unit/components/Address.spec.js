@@ -287,10 +287,10 @@ describe('Address.vue', () => {
             }
         });
 
-        await flushPromises();
+        await wrapper.vm.$nextTick();
 
         await wrapper.find('#codeTab').trigger('click');
-        await flushPromises();
+        await wrapper.vm.$nextTick();
         
         expect(wrapper.html()).toMatchSnapshot();
     });
