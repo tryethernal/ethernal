@@ -94,9 +94,8 @@ const storeErc721Token = async (workspaceId, contractAddress, token) => {
     return contract.safeCreateOrUpdateErc721Token(token);
 };
 
-const setWorkspaceRemoteFlag = async (userId, workspaceName, flag) => {
-    const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
-    const workspace = user.workspaces[0];
+const setWorkspaceRemoteFlag = async (workspaceId, flag) => {
+    const workspace = await Workspace.findByPk(workspaceId);
 
     return workspace.update({ isRemote: flag });
 };
