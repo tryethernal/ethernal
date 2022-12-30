@@ -116,11 +116,18 @@ jobs:
       #     token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: nwtgck/actions-netlify@v1.2
+        id: netlify_deploy
         with:
           publish-dir: './dist'
+          NETLIFY_DEPLOY_MESSAGE: 'Deploying commit ${{ github.sha }}'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
-      # - name: Trigger Netlify deploy
-      #   run: curl -X POST -d {} https://api.netlify.com/build_hooks/${{ secrets.NETLIFY_BUILD_HOOK_ID }}?trigger_branch=master&trigger_title=Triggered+by+Github+Actions
+      - name: Extract Netlify deploy id
+        id: extract_deploy_id
+        run: |
+          echo DEPLOY_ID=$(echo "${{ steps.netlify_deploy.outputs.NETLIFY_PREVIEW_URL }}" sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
+
+      - name: Release deploy
+        run: echo 'curl -X PUT -d {} https://api.netlify.com/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/${{ steps.extract_deploy_id.outputs.DEPLOY_ID }}'
