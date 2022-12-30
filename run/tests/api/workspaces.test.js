@@ -2,7 +2,9 @@ require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/lib/crypto');
 require('../mocks/middlewares/auth');
+require('../mocks/lib/queue');
 const db = require('../../lib/firebase');
+const { enqueue } = require('../../lib/queue');
 
 const supertest = require('supertest');
 const app = require('../../app');
