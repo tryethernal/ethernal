@@ -163,7 +163,7 @@ exports[`Address.vue Should display the bytecode by default if present 1`] = `
       </div>
       <div class="v-slide-group__wrapper">
         <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="height: 2px; left: 0px; width: 0px;">
+          <div class="v-tabs-slider-wrapper" style="transition: none;">
             <div class="v-tabs-slider"></div>
           </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="false" role="tab" class="v-tab" id="contractTab">Contract</a> <a tabindex="0" href="#code" aria-selected="true" role="tab" class="v-tab v-tab--active" id="codeTab">Code</a> <a tabindex="0" href="#storage" aria-selected="false" role="tab" class="v-tab" id="storageTab">Storage</a> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20Balances">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721Balances">ERC-721 Tokens</a>
           <!---->
