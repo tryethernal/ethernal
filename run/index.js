@@ -1,3 +1,5 @@
+if (process.env.NODE_ENV == 'production')
+    require('newrelic');
 const logger = require('./lib//logger');
 const app = require('./app');
 
