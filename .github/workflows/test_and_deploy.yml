@@ -132,4 +132,4 @@ jobs:
         shell: bash
 
       - name: Release deploy
-        run: echo 'curl -X PUT -d {} https://api.netlify.com/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/${{ steps.extract_deploy_id.outputs.deploy_id }}'
+        run: curl -X PUT -d {} https://api.netlify.com/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/${{ steps.extract_deploy_id.outputs.deploy_id }}
