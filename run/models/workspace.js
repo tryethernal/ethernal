@@ -4,6 +4,7 @@ const {
   Sequelize
 } = require('sequelize');
 const { sanitize } = require('../lib/utils');
+const { enqueue } = require('../lib/queue');
 const moment = require('moment');
 
 const Op = Sequelize.Op;
@@ -659,6 +660,18 @@ module.exports = (sequelize, DataTypes) => {
     storageEnabled: DataTypes.BOOLEAN,
     erc721LoadingEnabled: DataTypes.BOOLEAN
   }, {
+    hooks: {
+        afterSave(workspace, options) {
+            return enqueue('processWorkspace', `processWorkspace-${workspace.id}-${workspace.name}`, {
+                workspaceId: workspace.id,
+            });
+        },
+        afterUpdate(workspace, options) {
+            return enqueue('processWorkspace', `processWorkspace-${workspace.id}-${workspace.name}`, {
+                workspaceId: workspace.id,
+            });
+        }
+    },
     sequelize,
     modelName: 'Workspace',
     tableName: 'workspaces'

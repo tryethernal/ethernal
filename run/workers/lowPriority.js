@@ -11,12 +11,11 @@ priorities['low'].forEach(jobName => {
         { concurrency: 10 , connection },
     );
     worker.on('failed', (job, error) => {
-        return;
-        // logger.error(error.message, {
-        //     location: `workers.lowPriority.${jobName}`,
-        //     error: error,
-        //     data: job.data 
-        // });
+        logger.error(error.message, {
+            location: `workers.lowPriority.${jobName}`,
+            error: error,
+            data: job.data
+        });
     });
     logger.info(`Started worker "${jobName}" - Priority: low`);
 });
