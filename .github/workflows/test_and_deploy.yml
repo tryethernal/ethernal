@@ -150,9 +150,9 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
       - run: |
-          fly auth docker
-          docker build -t registry.fly.io/ethernal:latest
-          docker push registry.fly.io/ethernal:latest
+          flyctl auth docker
+          docker build -t registry.fly.io/ethernal:${{ github.sha }}
+          docker push registry.fly.io/ethernal:${{ github.sha }}
 
   release_front:
     if: startsWith(github.ref, 'refs/tags/v')
