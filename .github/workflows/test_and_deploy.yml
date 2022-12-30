@@ -127,9 +127,9 @@ jobs:
       - name: Extract Netlify deploy id
         id: extract_deploy_id
         run: |
-          BASH_DEPLOY_ID=$(echo "${{ steps.netlify_deploy.outputs.deploy-url }}" | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
-          echo "DEPLOY_ID=$BASH_DEPLOY_ID"
+          DEPLOY_ID=$(echo "${{ steps.netlify_deploy.outputs.deploy-url }}" | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
+          echo "::set-output name=deploy_id::$DEPLOY_ID"
         shell: bash
 
       - name: Release deploy
-        run: echo 'curl -X PUT -d {} https://api.netlify.com/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/${{ steps.extract_deploy_id.outputs.DEPLOY_ID }}'
+        run: echo 'curl -X PUT -d {} https://api.netlify.com/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/${{ steps.extract_deploy_id.outputs.deploy_id }}'
