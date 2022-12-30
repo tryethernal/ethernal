@@ -17,6 +17,7 @@
   "dependencies": {
     "@bull-board/express": "^4.6.4",
     "@google-cloud/logging": "^9.8.3",
+    "@newrelic/winston-enricher": "^4.0.1",
     "@tryghost/admin-api": "^1.13.1",
     "axios": "^0.27.2",
     "basic-auth": "^2.0.1",
@@ -29,6 +30,7 @@
     "jsonwebtoken": "^8.5.1",
     "mixpanel": "^0.16.0",
     "momentjs": "^2.0.0",
+    "newrelic": "^9.7.4",
     "pg": "^8.7.3",
     "pusher": "^5.1.0-beta",
     "sequelize": "^6.19.0",

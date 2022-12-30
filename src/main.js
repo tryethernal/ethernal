@@ -22,13 +22,6 @@ Vue.use(serverPlugin, { store: store });
 
 const isEthernalDomain = window.location.host.endsWith(process.env.VUE_APP_MAIN_DOMAIN);
 
-XMLHttpRequest.prototype.realSend = XMLHttpRequest.prototype.send;
-const newSend = function(data) {
-    XMLHttpRequest.prototype.reqData = data;
-    this.realSend(data);
-};
-XMLHttpRequest.prototype.send = newSend;
-
 if (isEthernalDomain) {
     const splits = window.location.host.split('.');
     const domain = splits[splits.length - 2];

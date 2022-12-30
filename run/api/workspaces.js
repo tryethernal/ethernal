@@ -127,11 +127,6 @@ router.post('/', authMiddleware, async (req, res) => {
 
         const workspace = await db.createWorkspace(data.uid, filteredWorkspaceData);
 
-        await enqueue('processWorkspace', `processWorkspace-${data.uid}-${workspace.name}`, {
-            uid: data.uid,
-            workspace: workspace.name,
-        });
-
         res.status(200).json(workspace);
     } catch(error) {
         logger.error(error.message, { location: 'post.api.workspaces', error: error, data: data });
@@ -147,11 +142,6 @@ router.post('/settings', authMiddleware, async (req, res) => {
             throw new Error('Missing parameter.');
 
         await db.updateWorkspaceSettings(data.uid, data.workspace, data.settings);
-
-        await enqueue('processWorkspace', `processWorkspace-${data.uid}-${data.workspace}`, {
-            uid: data.uid,
-            workspace: data.workspace,
-        });
 
         res.sendStatus(200);
     } catch(error) {
