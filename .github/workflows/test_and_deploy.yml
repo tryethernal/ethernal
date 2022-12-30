@@ -43,7 +43,6 @@ jobs:
   test_front:
     runs-on: ubuntu-latest
     timeout-minutes: 25
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -67,12 +66,41 @@ jobs:
         env:
           VUE_APP_API_ROOT: http://localhost:8081
 
+  create_release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [test_front, test_back]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get tag
+        id: get_tag
+        run: |
+          echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
+        shell: bash
+
+      - name: Get Changelog Entry
+        id: get_changelog
+        uses: mindsers/changelog-reader-action@v2
+        with:
+          validation_depth: 10
+          version: ${{ steps.get_tag.outputs.current_version }}
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          body: ${{ steps.get_changelog.outputs.changes }}
+          tag: ${{ steps.get_changelog.outputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
   deploy_front:
-    # if: startsWith(github.ref, 'refs/tags/v')
-    # needs: [test_front]
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [create_release]
     runs-on: ubuntu-latest
     environment: production
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -95,26 +123,6 @@ jobs:
           VUE_APP_PUSHER_KEY: ${{ secrets.PUSHER_KEY }}
           COMMIT_REF: ${{ github.sha }}
 
-      # - name: Get tag
-      #   id: get_tag
-      #   run: |
-      #     echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
-      #   shell: bash
-
-      # - name: Get Changelog Entry
-      #   id: get_changelog
-      #   uses: mindsers/changelog-reader-action@v2
-      #   with:
-      #     validation_depth: 10
-      #     version: ${{ steps.get_tag.outputs.current_version }}
-
-      # - name: Create Release
-      #   uses: ncipollo/release-action@v1
-      #   with:
-      #     body: ${{ steps.get_changelog.outputs.changes }}
-      #     tag: ${{ steps.get_changelog.outputs.version }}
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-
       - uses: nwtgck/actions-netlify@v1.2
         id: netlify_deploy
         with:
@@ -124,10 +132,37 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
+  deploy_back:
+    # if: startsWith(github.ref, 'refs/tags/v')
+    # needs: [create_release]
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup credentials
+        run: |
+          echo "$GCLOUD_CREDENTIALS" >> ethernal-95a14-19f78a7e26cc.json
+        shell: bash
+        env:
+          GCLOUD_CREDENTIALS: ${{ secrets.GCLOUD_CREDENTIALS }}
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - run: |
+          fly auth docker
+          docker build -t registry.fly.io/ethernal:latest
+          docker push registry.fly.io/ethernal:latest
+
+  release_front:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [deploy_front]
+    runs-on: ubuntu-latest
+    steps:
       - name: Extract Netlify deploy id
         id: extract_deploy_id
         run: |
-          DEPLOY_ID=$(echo "${{ steps.netlify_deploy.outputs.deploy-url }}" | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
+          DEPLOY_ID=$(echo "${{ jobs.deploy_front.steps.netlify_deploy.outputs.deploy-url }}" | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
           echo "::set-output name=deploy_id::$DEPLOY_ID"
         shell: bash
 
