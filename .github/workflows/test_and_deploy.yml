@@ -179,7 +179,7 @@ jobs:
           applicationId: ${{ secrets.NEW_RELIC_FRONTEND_APPLICATION_ID }}
           revision: "${{ needs.create_release.steps.get_tag.outputs.current_version }}"
           changelog: "${{ needs.create_release.steps.get_changelog.outputs.changes }}"
-          description: "Deploying commit ${{ github.sha }}"
+          description: "Deployed commit ${{ github.sha }}"
 
   release_back:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -201,4 +201,4 @@ jobs:
           applicationId: ${{ secrets.NEW_RELIC_BACKEND_APPLICATION_ID }}
           revision: "${{ needs.create_release.steps.get_tag.outputs.current_version }}"
           changelog: "${{ needs.create_release.steps.get_changelog.outputs.changes }}"
-          description: "Deploying commit ${{ github.sha }}"
+          description: "Deployed commit ${{ github.sha }}"
