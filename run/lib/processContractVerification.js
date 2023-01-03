@@ -1,6 +1,26 @@
 const { sanitize } = require('./utils');
+const ethers = require('ethers');
 
-const stripBytecodeMetadata = (bytecode) => {
+const stripBytecodeMetadata = (baseBytecode, includedBytecodes) => {
+    let baseBytecodeCopy = baseBytecode;
+    const metadataStrings = [];
+    for (let i = 0; i < includedBytecodes.length; i++) {
+        const includedBytecodeIndex = baseBytecodeCopy.indexOf(includedBytecodes[i].data);
+        if (includedBytecodeIndex > -1) {
+            baseBytecodeCopy = removeMetadata(baseBytecodeCopy.substring(0, includedBytecodeIndex)) + baseBytecodeCopy.substring(includedBytecodeIndex + includedBytecodes[i].metadataLength);
+        }
+    }
+
+    const strippedBytecode = removeMetadata(baseBytecodeCopy);
+    return strippedBytecode
+}
+
+const extractBytecodeMetadata = (bytecode) => {
+    const metadataLength = parseInt(bytecode.slice(bytecode.length - 4, bytecode.length), 16) * 2;
+    return bytecode.slice((4 + metadataLength) * -1);
+}
+
+const removeMetadata = (bytecode) => {
     // Last 2 bytes contains metadata length
     const metadataLength = parseInt(bytecode.slice(bytecode.length - 4, bytecode.length), 16) * 2;
 
@@ -89,6 +109,7 @@ module.exports = async function(db, payload) {
         }
 
         const abi = parsedCompiledCode.contracts[contractFile][contractName].abi;
+
         let bytecode = parsedCompiledCode.contracts[contractFile][contractName].evm.bytecode.object;
 
         if (typeof code.libraries == 'object' && Object.keys(code.libraries).length > 0) {
@@ -96,11 +117,18 @@ module.exports = async function(db, payload) {
             bytecode = linkedBytecode;
         }
 
-        const compiledRuntimeBytecodeWithoutMetadata = `0x${stripBytecodeMetadata(bytecode)}${constructorArguments}`.toLowerCase();
+        const includedBytecodes = [];
+        for (const [name, data] of Object.entries(parsedCompiledCode.contracts[contractFile]))
+            if (name != contractName && data.evm.bytecode.object.length > 0) {
+                const includedBytecode = data.evm.bytecode.object;
+                const metadataLength = parseInt(includedBytecode.slice(includedBytecode.length - 4, includedBytecode.length), 16) * 2 + 4;
+                includedBytecodes.push({ data: removeMetadata(data.evm.bytecode.object), metadataLength: metadataLength });
+            }
+
+        const compiledRuntimeBytecodeWithoutMetadata = `0x${stripBytecodeMetadata(bytecode, includedBytecodes)}${constructorArguments}`.toLowerCase();
 
         const deploymentTx = await db.getContractDeploymentTxByAddress(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress);
-        const deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length)) + constructorArguments).toLowerCase();
-
+        const deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length), includedBytecodes) + constructorArguments).toLowerCase();
         if (compiledRuntimeBytecodeWithoutMetadata === deployedRuntimeBytecodeWithoutMetadata) {
             await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'success');
             await db.storeContractData(user.firebaseUserId, workspace.name, contractAddress, { name: contractName, abi: abi });
