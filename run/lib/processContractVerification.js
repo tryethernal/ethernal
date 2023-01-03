@@ -1,5 +1,4 @@
 const { sanitize } = require('./utils');
-const ethers = require('ethers');
 
 const stripBytecodeMetadata = (baseBytecode, includedBytecodes) => {
     let baseBytecodeCopy = baseBytecode;
