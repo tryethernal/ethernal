@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.4.4] - 2023-01-03
+### Fixed
+- [Public Explorer] Contract verification was not working if constructor deployed a new contract
+- Happy new year 🍾!
+
 ## [3.4.3] - 2022-12-30
 ### Fixed
 - Tests
