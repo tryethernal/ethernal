@@ -15,9 +15,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
-          node-version: 16.14.0
+          node-version: 16
 
       - name: Setup timezone
         uses: zcong1993/setup-timezone@master
@@ -49,9 +49,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
-          node-version: 16.14.0
+          node-version: 16
 
       - name: Setup timezone
         uses: zcong1993/setup-timezone@master
@@ -79,7 +79,7 @@ jobs:
       - name: Get tag
         id: get_tag
         run: |
-          echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
+          echo "current_version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Get Changelog Entry
@@ -165,8 +165,8 @@ jobs:
       - name: Extract Netlify deploy id
         id: extract_deploy_id
         run: |
-          DEPLOY_ID=$(echo "${{ needs.deploy_front.steps.netlify_deploy.outputs.deploy-url }}" | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
-          echo "::set-output name=deploy_id::$DEPLOY_ID"
+          ID=$(echo "${{ needs.deploy_front.outputs.deploy-url }}" | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
+          echo "DEPLOY_ID=$ID" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Release deploy
@@ -179,8 +179,8 @@ jobs:
           apiKey: ${{ secrets.NEW_RELIC_API_KEY }}
           accountId: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
           applicationId: ${{ secrets.NEW_RELIC_FRONTEND_APPLICATION_ID }}
-          revision: "${{ needs.create_release.steps.get_tag.outputs.current_version }}"
-          changelog: "${{ needs.create_release.steps.get_changelog.outputs.changes }}"
+          revision: "${{ needs.create_release.outputs.current_version }}"
+          changelog: "${{ needs.create_release.outputs.changes }}"
           description: "Deployed commit ${{ github.sha }}"
 
   release_back:
@@ -202,6 +202,6 @@ jobs:
           apiKey: ${{ secrets.NEW_RELIC_API_KEY }}
           accountId: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
           applicationId: ${{ secrets.NEW_RELIC_BACKEND_APPLICATION_ID }}
-          revision: "${{ needs.create_release.steps.get_tag.outputs.current_version }}"
-          changelog: "${{ needs.create_release.steps.get_changelog.outputs.changes }}"
+          revision: "${{ needs.create_release.outputs.current_version }}"
+          changelog: "${{ needs.create_release.outputs.changes }}"
           description: "Deployed commit ${{ github.sha }}"
