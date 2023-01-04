@@ -121,6 +121,7 @@ jobs:
           VUE_APP_API_ROOT: ${{ secrets.API_ROOT }}
           VUE_APP_MAIN_DOMAIN: ${{ secrets.MAIN_DOMAIN }}
           VUE_APP_PUSHER_KEY: ${{ secrets.PUSHER_KEY }}
+          VUE_APP_ENABLE_ANALYTICS: true
           COMMIT_REF: ${{ github.sha }}
 
       - uses: nwtgck/actions-netlify@v1.2
