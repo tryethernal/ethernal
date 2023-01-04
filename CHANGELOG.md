@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.4.6] - 2023-01-04
+### Fixed
+- [Public Explorer] Remove Authorization header when authenticating with Pusher
+
 ## [3.4.5] - 2023-01-04
 ### Fixed
 - Re-enable analytics

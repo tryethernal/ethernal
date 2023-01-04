@@ -11,16 +11,11 @@ export const pusherPlugin = {
             new Pusher(process.env.VUE_APP_PUSHER_KEY, {
                 cluster: 'eu',
                 userAuthentication: {
-                    headersProvider: () => {
-                        console.log('ok')
-                        return { 'Authorization': `Bearer ${store.getters.user.apiToken}` }
-                    },
+                    headersProvider: () => store.getters.user.apiToken ? { 'Authorization': `Bearer ${store.getters.user.apiToken}` } : {}
                 },
                 channelAuthorization: {
                     endpoint: `${process.env.VUE_APP_API_ROOT}/api/pusher/authorization`,
-                    headersProvider: () => {
-                        return { 'Authorization': `Bearer ${store.getters.user.apiToken}` }
-                    },
+                    headersProvider: () => store.getters.user.apiToken ? { 'Authorization': `Bearer ${store.getters.user.apiToken}` } : {},
                     params: sanitize({
                         firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                         workspace: store.getters.currentWorkspace.name
