@@ -16,7 +16,7 @@
             <template v-else-if="!!value">
                 <router-link v-if="type == 'link'" style="text-decoration: none;" :to="href">{{ commify(value) }}</router-link>
                 <span v-else>
-                    {{ commify(value) }}
+                    {{ formatNumber(value, { short: true }) }}
                 </span>
             </template>
             <template v-else>
@@ -27,12 +27,12 @@
 </template>
 
 <script>
-const ethers = require('ethers');
+const { formatNumber } = require('../lib/utils');
 export default {
     name: 'StatNumber',
     props: ['type', 'title', 'value', 'loading', 'href', 'infoTooltip'],
     methods: {
-        commify: ethers.utils.commify,
+        formatNumber: formatNumber,
     }
 }
 </script>

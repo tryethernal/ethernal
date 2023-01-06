@@ -18,12 +18,28 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Contract.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
+      Contract.hasMany(models.Transaction, { 
+          sourceKey: 'address',
+          foreignKey: 'to',
+          as: 'transactions'
+      });
       Contract.hasOne(models.Contract, {
           sourceKey: 'proxy',
           foreignKey: 'address',
           as: 'proxyContract'
       });
       Contract.hasMany(models.Erc721Token, { foreignKey: 'contractId', as: 'erc721Tokens' });
+      Contract.hasOne(models.Transaction, {
+          sourceKey: 'address',
+          foreignKey: 'creates',
+          as: 'creationTransaction',
+          scope: {
+              [Op.and]: sequelize.where(sequelize.col("Contract.workspaceId"),
+                  Op.eq,
+                  sequelize.col("creationTransaction.workspaceId")
+              )
+          },
+      });
       Contract.hasMany(models.TransactionLog, {
           sourceKey: 'address',
           foreignKey: 'address',
@@ -34,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
                   sequelize.col("transaction_logs.workspaceId")
               )
           },
-      })
+      });
     }
 
     getProxyContract() {
@@ -46,6 +62,65 @@ module.exports = (sequelize, DataTypes) => {
                 address: this.proxy
             }
         });
+    }
+
+    async countErc20TokenHolders() {
+        const result = await sequelize.models.TokenBalanceChange.findAll({
+            where: {
+                workspaceId: this.workspaceId,
+                token: this.address
+            },
+            attributes: [
+                sequelize.literal('COUNT(DISTINCT(address))', 'count')
+            ],
+            raw: true
+        });
+        return parseInt(result[0].count);
+    }
+
+    countErc20TokenTransfers() {
+        return sequelize.models.TokenTransfer.count({
+            where: {
+                tokenId: null,
+                workspaceId: this.workspaceId,
+                '$contract.id$': { [Op.eq]: this.id }
+            },
+            include: 'contract'
+        });
+    }
+
+    async getErc20TokenCirculatingSupply() {
+        const result = await sequelize.models.TokenBalanceChange.findAll({
+            where: {
+                workspaceId: this.workspaceId,
+                token: this.address
+            },
+            attributes: [
+                sequelize.literal('SUM(diff::numeric)'),
+            ],
+            raw: true,
+        });
+        return result[0].sum;
+    }
+
+    getErc20TokenTransfers(page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC') {
+        return sequelize.models.TokenTransfer.findAll({
+            where: {
+                tokenId: null,
+                workspaceId: this.workspaceId,
+                '$contract.id$': { [Op.eq]: this.id }
+            },
+            include: [
+                {
+                    model: sequelize.models.Contract,
+                    attributes: ['id', 'tokenName', 'tokenDecimals', 'tokenSymbol'],
+                    as: 'contract'
+                }
+            ],
+            offset: (page - 1) * itemsPerPage,
+            limit: itemsPerPage,
+            order: [[orderBy, order]]
+        })
     }
 
     getErc721TokenTransfersByTokenId(tokenId) {

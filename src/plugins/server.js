@@ -352,6 +352,25 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
+            getContractStats(address) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/stats`;
+                return axios.get(resource, { params });
+            },
+
+            getErc20TokenTransfers(address, options) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    worksapce: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc20Contracts/${address}/transfers`;
+                return axios.get(resource, { params });
+            },
+
             getErc721TokensFrom(contractAddress, indexes) {
                 const tokens = [];
                 return new Promise((resolve, reject) => {

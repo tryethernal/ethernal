@@ -498,19 +498,26 @@ module.exports = (sequelize, DataTypes) => {
             where: {
                 address: address.toLowerCase()
             },
-            include: {
-                model: sequelize.models.Contract,
-                attributes: ['name', 'tokenName', 'tokenSymbol', 'tokenDecimals', 'abi', 'address'],
-                as: 'proxyContract',
-                required: false,
-                where: {
-                    [Op.and]: sequelize.where(
-                        sequelize.col("Contract.workspaceId"),
-                        Op.eq,
-                        sequelize.col("proxyContract.workspaceId")
-                    ),
+            include: [
+                {
+                    model: sequelize.models.Contract,
+                    attributes: ['name', 'tokenName', 'tokenSymbol', 'tokenDecimals', 'abi', 'address'],
+                    as: 'proxyContract',
+                    required: false,
+                    where: {
+                        [Op.and]: sequelize.where(
+                            sequelize.col("Contract.workspaceId"),
+                            Op.eq,
+                            sequelize.col("proxyContract.workspaceId")
+                        )
+                    }
+                },
+                {
+                    model: sequelize.models.Transaction,
+                    attributes: ['blockNumber', 'hash'],
+                    as: 'creationTransaction',
                 }
-            }
+            ]
         });
         return contracts[0];
     }

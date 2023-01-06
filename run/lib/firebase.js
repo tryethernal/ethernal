@@ -10,6 +10,48 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const getContractStats = async (workspaceId, address) => {
+    if (!workspaceId || !address) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    const contract = await workspace.findContractByAddress(address);
+
+    if (!contract)
+        throw new Error(`Can't find contract at this address`);
+
+    const tokenHolderCount = await contract.countErc20TokenHolders();
+    const transactionCount = await contract.countTransactions();
+    const erc20TransferCount = await contract.countErc20TokenTransfers();
+    const erc721TransferCount = 0
+    const erc20CirculatingSupply = await contract.getErc20TokenCirculatingSupply();
+
+    return {
+        tokenHolderCount: tokenHolderCount,
+        transactionCount: transactionCount,
+        erc20TransferCount: erc20TransferCount,
+        erc721TransferCount: erc721TransferCount,
+        erc20CirculatingSupply: erc20CirculatingSupply
+    };
+}
+
+const getErc20ContractTransfers = async (workspaceId, address, page, itemsPerPage, orderBy, order) => {
+    if (!workspaceId || !address) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    const contract = await workspace.findContractByAddress(address);
+
+    if (!contract)
+        throw new Error(`Can't find contract at this address`);
+
+    const transfers = await contract.getErc20TokenTransfers();
+    const transferCount = await contract.countErc20TokenTransfers();
+
+    return {
+        items: transfers.map(t => t.toJSON()),
+        total: transferCount,
+    };
+};
+
 const getContractLogs = async (workspaceId, address, signature, page, itemsPerPage, orderBy, order) => {
     if (!workspaceId || !address || !signature) throw new Error('Missing paramter.');
 
@@ -17,7 +59,7 @@ const getContractLogs = async (workspaceId, address, signature, page, itemsPerPa
     const contract = await workspace.findContractByAddress(address);
 
     if (!contract)
-        throw new Error(`Can't find a contract at ${address}.`);
+        throw new Error(`Can't find a contract at this address.`);
 
     const filteredLogs = await contract.getFilteredLogs(signature, page, itemsPerPage, orderBy, order);
     const logCount = await contract.countFilteredLogs(signature)
@@ -755,5 +797,7 @@ module.exports = {
     getContractByWorkspaceId: getContractByWorkspaceId,
     storeContractDataWithWorkspaceId: storeContractDataWithWorkspaceId,
     getContractLogs: getContractLogs,
+    getErc20ContractTransfers: getErc20ContractTransfers,
+    getContractStats: getContractStats,
     Workspace: Workspace
 };
