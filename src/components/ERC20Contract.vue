@@ -1,11 +1,13 @@
 <template>
     <v-container fluid>
-        <v-row v-if="contract.tokenName">
+        <v-row class="mb-1">
             <v-col cols="12" lg="5">
                 <v-card outlined style="height: 100%">
-                    <v-card-title>{{ contract.tokenName }}</v-card-title>
+                    <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
+                    <v-card-title v-else>{{ contract.tokenName }}</v-card-title>
                     <v-card-subtitle>
-                        <v-chip v-for="(pattern, idx) in contract.patterns" :key="idx" x-small class="success mr-2">
+                        <v-skeleton-loader v-if="loadingContract" type="chip"></v-skeleton-loader>
+                        <v-chip v-else v-for="(pattern, idx) in contract.patterns" :key="idx" x-small class="success mr-2">
                             {{ formatContractPattern(pattern) }}
                         </v-chip>
                     </v-card-subtitle>
@@ -13,24 +15,28 @@
                         <v-row>
                             <v-col cols="6">
                                 <small>Total Supply</small><br>
-                                <span class="text-h6 ml-2">{{ formatNumber(contract.tokenTotalSupply, { decimals: contract.tokenDecimals }) }} {{ contract.tokenSymbol }}</span>
+                                <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
+                                <span v-else class="text-h6 ml-2">{{ formatNumber(contract.tokenTotalSupply, { decimals: contract.tokenDecimals }) }} {{ contract.tokenSymbol }}</span>
                             </v-col>
 
                             <v-col cols="6">
                                 <small>Decimals</small><br>
-                                <span class="text-h6 ml-2">{{ contract.tokenDecimals }}</span>
+                                <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
+                                <span v-else class="text-h6 ml-2">{{ contract.tokenDecimals }}</span>
                             </v-col>
                         </v-row>
 
                         <v-row>
                             <v-col cols="6">
                                 <small>Contract Name</small><br>
-                                <span class="text-h6 ml-2">{{ contract.name }}</span>
+                                <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
+                                <span v-else class="text-h6 ml-2">{{ contract.name }}</span>
                             </v-col>
 
                             <v-col cols="6">
                                 <small>Contract Creation</small><br>
-                                <span class="ml-2">
+                                <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
+                                <span v-else class="ml-2">
                                     <Hash-Link :type="'transaction'" :hash="contract.creationTransaction.hash" />
                                 </span>
                             </v-col>
@@ -42,29 +48,31 @@
 
             <v-col cols="12" lg="7">
                 <v-row>
-                    <v-col cols="12" sm="6" lg="6" v-if="contractStats.tokenHolderCount">
-                        <Stat-Number :title="'Holders'" :value="contractStats.tokenHolderCount" />
+                    <v-col cols="12" sm="6" lg="6">
+                        <Stat-Number :loading="loadingStats" :title="'Holders'" :value="contractStats.tokenHolderCount" />
                     </v-col>
 
-                    <v-col cols="12" sm="6" lg="6" v-if="contractStats.erc20TransferCount">
-                        <Stat-Number :title="'Transfers'" :value="contractStats.erc20TransferCount" />
+                    <v-col cols="12" sm="6" lg="6">
+                        <Stat-Number :loading="loadingStats" :title="'Transfers'" :value="contractStats.erc20TransferCount" />
                     </v-col>
 
-                    <v-col cols="12" sm="6" lg="6" v-if="contractStats.erc20CirculatingSupply">
-                        <Stat-Number :title="'Circulating Supply'" :value="contractStats.erc20CirculatingSupply" :infoTooltip="'Number of minted tokens'" />
+                    <v-col cols="12" sm="6" lg="6">
+                        <Stat-Number :loading="loadingStats" :title="'Circulating Supply'" :value="contractStats.erc20CirculatingSupply" :infoTooltip="'Number of minted tokens'" />
                     </v-col>
 
                     <v-col cols="12" sm="6" lg="6">
                         <v-card outlined style="height: 100%">
-                            <v-card-subtitle v-if="connectedAccountBalance">
+                            <v-card-subtitle v-if="metamaskData.account && metamaskData.isReady">
                                 <div style="position: absolute;">Your Balance</div>
-                                <div class="text-right" v-if="connectedAccountBalance">
+                                <div class="text-right" v-if="metamaskData.account">
                                     <Hash-Link :type="'address'" :hash="metamaskData.account" />
                                 </div>
                             </v-card-subtitle>
                             <v-card-subtitle v-else>Your Balance</v-card-subtitle>
-                            <v-card-text class="text-h3" align="center" v-if="connectedAccountBalance">
-                                {{ formatNumber(connectedAccountBalance, { short: true }) }} {{ contract.tokenSymbol }}
+                            <v-card-text class="text-h3" align="center" v-if="metamaskData.account && metamaskData.isReady">
+                                <v-skeleton-loader v-if="loadingBalance" type="list-item"></v-skeleton-loader>
+                                <template v-else-if="connectedAccountBalance">{{ formatNumber(connectedAccountBalance, { short: true }) }} {{ contract.tokenSymbol }}</template>
+                                <template v-else>N/A</template>
                             </v-card-text>
                             <v-card-text v-else>
                                 <Metamask class="mt-1" @rpcConnectionStatusChanged="onRpcConnectionStatusChanged"></Metamask>
@@ -74,13 +82,29 @@
                 </v-row>
             </v-col>
         </v-row>
+
         <v-tabs v-model="tab">
             <v-tab id="transactionsTab" href="#transactions">Transactions</v-tab>
+            <v-tab id="holdersTab" href="#holders">Holders</v-tab>
+            <v-tab id="transfersTab" href="#transfers">Transfers</v-tab>
+            <v-tab id="analyticsTab" href="#analytics">Analytics</v-tab>
         </v-tabs>
 
         <v-tabs-items :value="tab">
             <v-tab-item value="transactions">
                 <Address-Transactions-List :address="address" />
+            </v-tab-item>
+
+            <v-tab-item value="holders">
+                <ERC-20-Token-Holders :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
+            </v-tab-item>
+
+            <v-tab-item value="analytics">
+                <ERC-20-Contract-Analytics :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
+            </v-tab-item>
+
+            <v-tab-item value="transfers">
+                <ERC-20-Token-Transfers :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
             </v-tab-item>
         </v-tabs-items>
     </v-container>
@@ -93,6 +117,9 @@ import { mapGetters } from 'vuex';
 const { formatNumber, formatContractPattern } = require('../lib/utils');
 
 import AddressTransactionsList from './AddressTransactionsList';
+import ERC20TokenHolders from './ERC20TokenHolders';
+import ERC20ContractAnalytics from './ERC20ContractAnalytics';
+import ERC20TokenTransfers from './ERC20TokenTransfers';
 import StatNumber from './StatNumber';
 import HashLink from './HashLink';
 import Metamask from './Metamask';
@@ -105,9 +132,14 @@ export default {
         StatNumber,
         HashLink,
         Metamask,
+        ERC20TokenHolders,
+        ERC20ContractAnalytics,
+        ERC20TokenTransfers
     },
     data: () => ({
-        loading: true,
+        loadingContract: true,
+        loadingStats: true,
+        loadingBalance: false,
         contract: {},
         contractStats: {},
         metamaskData: {},
@@ -122,6 +154,7 @@ export default {
         onRpcConnectionStatusChanged(data) {
             this.metamaskData = data;
             if (data.account && data.isReady) {
+                this.loadingBalance = true;
                 this.server.callContractReadMethod(
                     this.contract,
                     'balanceOf(address)',
@@ -129,7 +162,9 @@ export default {
                     { 0: data.account },
                     this.currentWorkspace.rpcServer,
                     window.ethereum
-                ).then(([balance]) => this.connectedAccountBalance = balance);
+                )
+                .then(([balance]) => this.connectedAccountBalance = balance)
+                .finally(() => this.loadingBalance = false);
             }
             else
                 this.connectedAccountBalance = null;
@@ -140,19 +175,18 @@ export default {
             immediate: true,
             handler(address) {
                 this.server.getContract(address)
-                    .then(({ data }) => this.contract = data);
+                    .then(({ data }) => this.contract = data)
+                    .finally(() => this.loadingContract = false);
 
                 this.server.getContractStats(address)
-                    .then(({ data }) => this.contractStats = data);
-
+                    .then(({ data }) => this.contractStats = data)
+                    .finally(() => this.loadingStats = false);
             }
         }
     },
     computed: {
         ...mapGetters([
-            'currentWorkspace',
-            'isPublicExplorer',
-            'isUserAdmin'
+            'currentWorkspace'
         ]),
         tab: {
             set(tab) {
@@ -165,5 +199,3 @@ export default {
     }
 }
 </script>
-<style scoped>
-</style>

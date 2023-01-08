@@ -1,7 +1,9 @@
 'use strict';
+
 const {
   Model,
-  Sequelize
+  Sequelize,
+  QueryTypes
 } = require('sequelize');
 const Op = Sequelize.Op;
 const { sanitize } = require('../lib/utils');
@@ -53,6 +55,131 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
+    getErc20TokenHolderHistory(from, to) {
+        if (!from || !to) return new Promise(resolve => resolve([]));
+
+        return sequelize.query(`
+            WITH days as (
+                SELECT
+                    date_trunc('day', d) as day
+                FROM generate_series(timestamp :from, timestamp :to, interval  '1 day') d
+            ),
+            data as (
+                SELECT
+                    days.day,
+                    (
+                        SELECT COUNT(DISTINCT(address))
+                        FROM token_balance_changes
+                        LEFT JOIN transactions ON token_balance_changes."transactionId" = transactions.id
+                        WHERE token_balance_changes.token = :token
+                        AND (
+                            SELECT SUM(diff::numeric) AS value
+                            FROM token_balance_changes
+                            WHERE token_balance_changes."workspaceId" = :workspaceId AND token_balance_changes.token = :token AND transactions.timestamp::date <= days.day
+                            AND token_balance_changes.address = address
+                        )::numeric > 0 
+                        AND token_balance_changes."workspaceId" = :workspaceId
+                        AND transactions.timestamp::date <= days.day
+                    ) AS count
+                FROM days
+                GROUP BY days.day
+            )
+
+            SELECT
+                day AS timestamp,
+                count
+            FROM data
+            ORDER BY day ASC
+        `, {
+            replacements: {
+                from: from,
+                to: to,
+                token: this.address,
+                workspaceId: this.workspaceId
+            },
+            type: QueryTypes.SELECT
+        });
+    }
+
+    getErc20CumulativeSupply(from, to) {
+        if (!from || !to) return new Promise(resolve => resolve([]));
+
+        return sequelize.query(`
+            WITH days as (
+                SELECT
+                    date_trunc('day', d) as day
+                FROM generate_series(timestamp :from, timestamp :to, interval  '1 day') d
+            ),
+            data as (
+                SELECT
+                    days.day,
+                    (
+                        SELECT coalesce(sum(diff::numeric), 0)
+                        FROM token_balance_changes
+                        LEFT JOIN transactions ON token_balance_changes."transactionId" = transactions.id
+                        WHERE token_balance_changes.token = :token
+                        AND token_balance_changes."workspaceId" = :workspaceId
+                        AND transactions.timestamp::date = days.day
+                    ) AS supply
+                FROM days
+                GROUP BY days.day
+            )
+
+            SELECT
+                day AS timestamp,
+                sum(supply) OVER (order by day asc rows between unbounded preceding and current row) AS "cumulativeSupply"
+            FROM data
+        `, {
+            replacements: {
+                from: from,
+                to: to,
+                token: this.address,
+                workspaceId: this.workspaceId
+            },
+            type: QueryTypes.SELECT
+        });
+    }
+
+    getErc20TransferVolume(from, to) {
+        if (!from || !to) return new Promise(resolve => resolve([]));
+
+        return sequelize.query(`
+            WITH days as (
+                SELECT
+                    date_trunc('day', d) as day
+                FROM generate_series(timestamp :from, timestamp :to, interval  '1 day') d
+            ),
+            data as (
+                SELECT
+                    days.day,
+                    (
+                        SELECT count(1)
+                        FROM token_transfers
+                        LEFT JOIN transactions ON token_transfers."transactionId" = transactions.id
+                        WHERE token_transfers.token = :token
+                        AND transactions.timestamp::date = days.day
+                        AND token_transfers."workspaceId" = :workspaceId
+                    ) AS count
+                FROM days
+                GROUP BY days.day
+            )
+
+            SELECT
+                day AS timestamp,
+                count
+            FROM data
+            ORDER BY day ASC
+        `, {
+            replacements: {
+                from: from,
+                to: to,
+                token: this.address,
+                workspaceId: this.workspaceId
+            },
+            type: QueryTypes.SELECT
+        });
+    }
+
     getProxyContract() {
         if (!this.proxy) return null;
 
@@ -61,6 +188,38 @@ module.exports = (sequelize, DataTypes) => {
                 workspaceId: this.workspaceId,
                 address: this.proxy
             }
+        });
+    }
+
+    getErc20TokenHolders(page = 1, itemsPerPage = 10, orderBy = 'amount', order = 'DESC') {
+        const sanitizedOrderBy = ['address', 'amount', 'share'].indexOf(orderBy) > -1 ? orderBy : 'amount';
+        const sanitizedOrder = ['desc', 'asc'].indexOf(order.toLowerCase()) > -1 ? order : 'DESC';
+
+        return sequelize.query(`
+            WITH balances AS (
+                SELECT address, SUM(diff::numeric) AS amount
+                FROM token_balance_changes
+                WHERE token_balance_changes."workspaceId" = :workspaceId AND token_balance_changes.token = :token
+                GROUP BY address
+            ),
+            supply AS (
+                SELECT SUM(diff::numeric) AS value
+                FROM token_balance_changes
+                WHERE token_balance_changes."workspaceId" = :workspaceId AND token_balance_changes.token = :token
+            )
+            SELECT balances.address, balances.amount::numeric AS amount, balances.amount::float / supply.value::float AS share
+            FROM token_balance_changes, balances, supply
+            WHERE token_balance_changes."workspaceId" = :workspaceId AND token_balance_changes.token = :token
+            GROUP BY balances.address, balances.amount, supply.value
+            ORDER BY ${sanitizedOrderBy} ${sanitizedOrder} LIMIT :itemsPerPage OFFSET :offset;
+        `, {
+            replacements: {
+                workspaceId: this.workspaceId,
+                token: this.address,
+                itemsPerPage:itemsPerPage,
+                offset: (page - 1) * itemsPerPage
+            },
+            type: QueryTypes.SELECT
         });
     }
 
@@ -83,9 +242,8 @@ module.exports = (sequelize, DataTypes) => {
             where: {
                 tokenId: null,
                 workspaceId: this.workspaceId,
-                '$contract.id$': { [Op.eq]: this.id }
-            },
-            include: 'contract'
+                token: this.address
+            }
         });
     }
 
@@ -104,22 +262,26 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     getErc20TokenTransfers(page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC') {
+        const sanitizedOrderBy = ['timestamp', 'transactionHash', 'blockNumber'].indexOf(orderBy) > - 1 ?
+            ['transaction', orderBy] : [orderBy];
+
         return sequelize.models.TokenTransfer.findAll({
             where: {
                 tokenId: null,
                 workspaceId: this.workspaceId,
-                '$contract.id$': { [Op.eq]: this.id }
+                token: this.address
             },
+            attributes: ['id', 'amount', 'src', 'dst', 'token'],
             include: [
                 {
-                    model: sequelize.models.Contract,
-                    attributes: ['id', 'tokenName', 'tokenDecimals', 'tokenSymbol'],
-                    as: 'contract'
+                    model: sequelize.models.Transaction,
+                    as: 'transaction',
+                    attributes: ['hash', 'blockNumber', 'timestamp']
                 }
             ],
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
-            order: [[orderBy, order]]
+            order: [[...sanitizedOrderBy, order]]
         })
     }
 

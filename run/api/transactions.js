@@ -27,7 +27,7 @@ router.get('/processable', authMiddleware, async (req, res) => {
 
     try {
         const transactions = await db.getProcessableTransactions(data.firebaseUserId, data.workspace);
-
+        console.log(transactions)
         res.status(200).json(transactions);
     } catch(error) {
         logger.error(error.message, { location: 'get.api.transactions.processable', error: error, data: data });

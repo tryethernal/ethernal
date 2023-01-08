@@ -10,6 +10,60 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const getErc20TokenHolderHistory = async (workspaceId, address, from, to) => {
+    if (!workspaceId || !address || !from || !to) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    const contract = await workspace.findContractByAddress(address);
+
+    if (!contract)
+        throw new Error(`Can't find contract at this address`);
+
+    return contract.getErc20TokenHolderHistory(from, to);
+};
+
+const getErc20ContractCumulativeSupply = async (workspaceId, address, from, to) => {
+    if (!workspaceId || !address || !from || !to) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    const contract = await workspace.findContractByAddress(address);
+
+    if (!contract)
+        throw new Error(`Can't find contract at this address`);
+
+    return contract.getErc20CumulativeSupply(from, to);
+};
+
+const getErc20ContractTransferVolume = async (workspaceId, address, from, to) => {
+    if (!workspaceId || !address || !from || !to) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    const contract = await workspace.findContractByAddress(address);
+
+    if (!contract)
+        throw new Error(`Can't find contract at this address`);
+
+    return contract.getErc20TransferVolume(from, to);
+};
+
+const getErc20ContractHolders = async (workspaceId, address, page, itemsPerPage, orderBy, order) => {
+    if (!workspaceId || !address) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    const contract = await workspace.findContractByAddress(address);
+
+    if (!contract)
+        throw new Error(`Can't find contract at this address`);
+
+    const holders = await contract.getErc20TokenHolders(page, itemsPerPage, orderBy, order);
+    const holderCount = await contract.countErc20TokenHolders();
+
+    return {
+        items: holders,
+        total: holderCount
+    };
+};
+
 const getContractStats = async (workspaceId, address) => {
     if (!workspaceId || !address) throw new Error('Missing parameter');
 
@@ -43,7 +97,7 @@ const getErc20ContractTransfers = async (workspaceId, address, page, itemsPerPag
     if (!contract)
         throw new Error(`Can't find contract at this address`);
 
-    const transfers = await contract.getErc20TokenTransfers();
+    const transfers = await contract.getErc20TokenTransfers(page, itemsPerPage, orderBy, order);
     const transferCount = await contract.countErc20TokenTransfers();
 
     return {
@@ -799,5 +853,9 @@ module.exports = {
     getContractLogs: getContractLogs,
     getErc20ContractTransfers: getErc20ContractTransfers,
     getContractStats: getContractStats,
+    getErc20ContractHolders: getErc20ContractHolders,
+    getErc20ContractTransferVolume: getErc20ContractTransferVolume,
+    getErc20ContractCumulativeSupply: getErc20ContractCumulativeSupply,
+    getErc20TokenHolderHistory: getErc20TokenHolderHistory,
     Workspace: Workspace
 };
