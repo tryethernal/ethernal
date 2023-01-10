@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.0] - 2023-01-10
+### Added
+- Added ids to token transfers & balance changes for better data reliability
+
 ## [3.4.6] - 2023-01-04
 ### Fixed
 - [Public Explorer] Remove Authorization header when authenticating with Pusher
