@@ -19,13 +19,13 @@ describe(`GET ${BASE_URL}/failedProcessable`, () => {
 
     it('Should return failed non processed transactions', (done) => {
         jest.spyOn(db, 'getFailedProcessableTransactions').mockResolvedValueOnce([{ hash: '0x123' }]);
-        
+
         request.get(`${BASE_URL}/failedProcessable`)
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual([{ hash: '0x123' }]);
                 done();
-            })
+            });
     });
 });
 
@@ -124,10 +124,10 @@ describe(`POST ${BASE_URL}/:hash/tokenBalanceChanges`, () => {
 
     it('Should return 200 status', (done) => {
         request.post(`${BASE_URL}/1234/tokenBalanceChanges`)
-            .send({ data: { workspace: 'My Workspace', tokenBalanceChanges: { 'Ox123': [{ address: '0x456', currentBalance: '0', previousBalance: '1', diff: '-1' }]}}})
+            .send({ data: { workspace: 'My Workspace', tokenTransferId: 1, changes: [{ token: '0x123', address: '0x456', currentBalance: '0', previousBalance: '1', diff: '-1' }]}})
             .expect(200)
             .then(() => {
-                expect(db.storeTokenBalanceChanges).toHaveBeenCalledWith('123', 'My Workspace', '1234', { 'Ox123': [{ address: '0x456', currentBalance: '0', previousBalance: '1', diff: '-1' }]});
+                expect(db.storeTokenBalanceChanges).toHaveBeenCalledWith('123', 'My Workspace', 1, [{ token: '0x123', address: '0x456', currentBalance: '0', previousBalance: '1', diff: '-1' }]);
                 done();
             });
     });
