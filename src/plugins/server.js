@@ -759,7 +759,7 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            processTransaction(transactionHash) {
+            reprocessTransaction(transactionHash) {
                 const data = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
@@ -826,11 +826,12 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            syncTokenBalanceChanges(transactionHash, tokenBalanceChanges) {
+            syncTokenBalanceChanges(transactionHash, tokenTransferId, changes) {
                 const data = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
-                    tokenBalanceChanges: tokenBalanceChanges
+                    tokenTransferId: tokenTransferId,
+                    changes: changes
                 };
 
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${transactionHash}/tokenBalanceChanges`;
@@ -881,37 +882,28 @@ export const serverPlugin = {
                 }
             },
 
-            async processTransactions(workspace, transactions) {
-                try {
-                    for (let i = 0; i < transactions.length; i++) {
-                        const transaction = transactions[i];
-
-                        const tokenBalanceChanges = {};
-                        for (let j = 0; j < transaction.tokenTransfers.length; j++) {
-                            const transfer = transaction.tokenTransfers[j];
-                            const changes = [];
-                            if (transfer.src != '0x0000000000000000000000000000000000000000') {
-                                const balanceChange = await serverFunctions.getBalanceChanges(transfer.src, transfer.token, transaction.blockNumber, workspace.rpcServer);
-                                if (balanceChange)
-                                    changes.push(balanceChange);
-                            }
-                            if (transfer.dst != '0x0000000000000000000000000000000000000000') {
-                                const balanceChange = await serverFunctions.getBalanceChanges(transfer.dst, transfer.token, transaction.blockNumber, workspace.rpcServer);
-                                if (balanceChange)
-                                    changes.push(balanceChange);
-                            }
-
-                            if (changes.length > 0)
-                                tokenBalanceChanges[transfer.token] = changes;
+            async processTransaction(workspace, transaction) {
+                for (let j = 0; j < transaction.tokenTransfers.length; j++) {
+                    try {
+                        const transfer = transaction.tokenTransfers[j];
+                        const changes = [];
+                        if (transfer.src != '0x0000000000000000000000000000000000000000') {
+                            const balanceChange = await serverFunctions.getBalanceChanges(transfer.src, transfer.token, transaction.blockNumber, workspace.rpcServer);
+                            if (balanceChange)
+                                changes.push(balanceChange);
+                        }
+                        if (transfer.dst != '0x0000000000000000000000000000000000000000') {
+                            const balanceChange = await serverFunctions.getBalanceChanges(transfer.dst, transfer.token, transaction.blockNumber, workspace.rpcServer);
+                            if (balanceChange)
+                                changes.push(balanceChange);
                         }
 
-                        if (Object.keys(tokenBalanceChanges).length)
-                            Vue.prototype.server.syncTokenBalanceChanges(transaction.hash, tokenBalanceChanges);
+                        if (changes.length > 0)
+                            Vue.prototype.server.syncTokenBalanceChanges(transaction.hash, transfer.id, changes);
+                    } catch(error) {
+                        console.log(error);
+                        continue;
                     }
-                } catch(error) {
-                    console.log(error);
-                    var reason = error.reason || error.message || "Can't connect to the server";
-                    throw { reason: reason };
                 }
             },
 
