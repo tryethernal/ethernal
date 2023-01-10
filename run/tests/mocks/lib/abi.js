@@ -1,4 +1,4 @@
 jest.mock('../../../lib/abi', () => ({
-    getTokenTransfers: jest.fn(),
+    getTokenTransfer: jest.fn(),
     getTransactionMethodDetails: jest.fn()
 }));

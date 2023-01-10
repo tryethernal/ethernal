@@ -202,10 +202,10 @@ export default {
         reprocessTransaction: function() {
             this.processing = true
             this.server
-                .processTransaction(this.hash)
+                .reprocessTransaction(this.hash)
                 .then(() => {
                     if (!this.isPublicExplorer)
-                        this.server.processTransactions(this.currentWorkspace, [this.transaction])
+                        this.server.processTransaction(this.currentWorkspace, this.transaction)
                             .catch(console.log)
                             .finally(() => this.processing = false);
                     else

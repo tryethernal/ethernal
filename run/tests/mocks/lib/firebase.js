@@ -66,6 +66,7 @@ jest.mock('../../../lib/firebase', () => {
         storeContractDataWithWorkspaceId: jest.fn(),
         getUnprocessedContracts: jest.fn(),
         getContractLogs: jest.fn(),
+        getTokenTransferForProcessing: jest.fn(),
         Workspace: Workspace
     }
 });
