@@ -85,26 +85,6 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async safeCreateTokenBalanceChange(balanceChange) {
-        const existingRecords = await this.getTokenBalanceChanges({
-            where: {
-                token: balanceChange.token,
-                address: balanceChange.address
-            }
-        });
-        if (existingRecords.length > 0)
-            return null;
-
-        return this.createTokenBalanceChange(sanitize({
-            token: balanceChange.token,
-            address: balanceChange.address,
-            currentBalance: balanceChange.currentBalance,
-            previousBalance: balanceChange.previousBalance,
-            diff: balanceChange.diff,
-            workspaceId: this.workspaceId
-        }));
-    }
-
     safeUpdateStorage(data) {
         return this.update({
             storage: data

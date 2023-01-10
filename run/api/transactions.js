@@ -117,10 +117,10 @@ router.post('/:hash/tokenBalanceChanges', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
     try {
-        if (!data.uid || !data.workspace || !req.params.hash || !data.tokenBalanceChanges)
+        if (!data.uid || !data.workspace || !req.params.hash || !data.changes || !data.tokenTransferId)
             throw new Error('Missing parameter.');
         
-        await db.storeTokenBalanceChanges(data.uid, data.workspace, req.params.hash, data.tokenBalanceChanges);
+        await db.storeTokenBalanceChanges(data.uid, data.workspace, data.tokenTransferId, data.changes);
 
         res.sendStatus(200);
     } catch(error) {
