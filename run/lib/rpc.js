@@ -5,6 +5,52 @@ const ERC721_ABI = require('./abis/erc721.json');
 const ERC721_ENUMERABLE_ABI = require('./abis/erc721Enumerable.json');
 const ERC721_METADATA_ABI = require('./abis/erc721Metadata.json');
 
+const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
+    let currentBalance = ethers.BigNumber.from('0');
+    let previousBalance = ethers.BigNumber.from('0');
+    const abi = ['function balanceOf(address owner) view returns (uint256)'];
+    const contract = new ContractConnector(rpcServer, token, abi);
+
+    try {
+        const options = {
+            from: null,
+            blockTag: blockNumber
+        };
+
+        const res = await contract.callReadMethod('balanceOf(address)', { 0: address }, options);
+        if (ethers.BigNumber.isBigNumber(res[0]))
+            currentBalance = res[0];
+        else
+            throw 'Not a big number result'
+    } catch(error) {
+        return null;
+    }
+
+    if (blockNumber > 1) {
+        try {
+            const options = {
+                from: null,
+                blockTag: Math.max(1, parseInt(blockNumber) - 1)
+            };
+
+            const res = await contract.callReadMethod('balanceOf(address)', { 0: address }, options);
+            if (ethers.BigNumber.isBigNumber(res[0]))
+                previousBalance = res[0];
+            else
+                throw 'Not a big number result'
+        }  catch(error) {
+            return null;
+        }
+    }
+
+    return {
+        address: address,
+        currentBalance: currentBalance.toString(),
+        previousBalance: previousBalance.toString(),
+        diff: currentBalance.sub(previousBalance).toString()
+    };
+}
+
 const getProvider = function(url) {
     const rpcServer = new URL(url);
 
@@ -252,5 +298,6 @@ module.exports = {
     Tracer: Tracer,
     ProviderConnector: ProviderConnector,
     getProvider: getProvider,
-    ERC721Connector: ERC721Connector
+    ERC721Connector: ERC721Connector,
+    getBalanceChange: getBalanceChange
 };
