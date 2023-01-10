@@ -525,7 +525,7 @@ const storeFailedTransactionError = async (userId, workspace, transactionHash, e
         const transaction = await user.workspaces[0].findTransaction(transactionHash);
 
         if (!transaction)
-            throw new Error(`Couldn't find transaction ${transactionHash}`);
+            throw new Error(`Couldn't find transaction`);
 
         await transaction.updateFailedTransactionError({
             parsed: error.parsed,
