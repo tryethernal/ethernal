@@ -21,10 +21,21 @@ module.exports = (sequelize, DataTypes) => {
           foreignKey: 'address',
           as: 'contract'
       });
-      TokenTransfer.hasOne(models.TokenBalanceChange, { foreignKey: 'tokenTransferId', as: 'tokenBalanceChange' });
+      TokenTransfer.hasMany(models.TokenBalanceChange, { foreignKey: 'tokenTransferId', as: 'tokenBalanceChanges' });
     }
 
-    safeCreateBalanceChange(balanceChange) {
+    async safeCreateBalanceChange(balanceChange) {
+        const existingChanges = await this.getTokenBalanceChanges({
+            where: {
+                transactionId: this.transactionId,
+                token: this.token,
+                address: balanceChange.address
+            }
+        });
+
+        if (existingChanges.length)
+            return;
+
         return this.createTokenBalanceChange(sanitize({
             transactionId: this.transactionId,
             workspaceId: this.workspaceId,
@@ -92,6 +103,12 @@ module.exports = (sequelize, DataTypes) => {
             if (transaction.workspace.public) {
                 await enqueue('processTokenTransfer',
                     `processTokenTransfer-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.id}`, {
+                        tokenTransferId: tokenTransfer.id
+                    }
+                );
+
+                await enqueue('processTokenTransfer',
+                    `processTokenTransfer-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.id}-2`, {
                         tokenTransferId: tokenTransfer.id
                     }
                 );
