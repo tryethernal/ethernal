@@ -66,6 +66,7 @@ const getTokenTransfer = (transactionLog) => {
                 });
             }
         }
+        return null;
     } catch(error) {
         return null;
     }
