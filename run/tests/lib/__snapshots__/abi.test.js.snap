@@ -145,25 +145,22 @@ LogDescription {
 }
 `;
 
-exports[`getTokenTransfers Should return decoded erc20 transfers 1`] = `
-Array [
-  Object {
-    "amount": "1",
-    "dst": "0xc00e94cb662c3520282e6f5717214004a7f26888",
-    "src": "0xe93381fb4c4f14bda253907b18fad305d799241a",
-    "token": "0xc00e94cb662c3520282e6f5717214004a7f26888",
-  },
-]
+exports[`getTokenTransfer Should return decoded erc20 transfer 1`] = `
+Object {
+  "amount": "1",
+  "dst": "0xc00e94Cb662C3520282E6f5717214004A7f26888",
+  "src": "0xE93381fB4c4F14bDa253907b18faD305D799241a",
+  "token": "0xc00e94Cb662C3520282E6f5717214004A7f26888",
+  "tokenId": null,
+}
 `;
 
-exports[`getTokenTransfers Should return decoded erc721 transfers 1`] = `
-Array [
-  Object {
-    "amount": "1",
-    "dst": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
-    "src": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
-    "token": "0xed5af388653567af2f388e6224dc7c4b3241c544",
-    "tokenId": "10",
-  },
-]
+exports[`getTokenTransfer Should return decoded erc721 transfer 1`] = `
+Object {
+  "amount": "1",
+  "dst": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "src": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+  "token": "0xed5af388653567af2f388e6224dc7c4b3241c544",
+  "tokenId": "10",
+}
 `;

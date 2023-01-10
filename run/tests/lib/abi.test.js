@@ -1,4 +1,4 @@
-const { decodeLog, getTokenTransfers, getTransactionMethodDetails, findAbiForFunction } = require('../../lib/abi.js');
+const { decodeLog, getTokenTransfer, getTransactionMethodDetails, findAbiForFunction } = require('../../lib/abi.js');
 const ERC_20_ABI = require('../../lib/abis/erc20.json');
 const ERC_721_ABI = require('../../lib/abis/erc721.json');
 const ABIProp = require('../fixtures/ABIProp.json');
@@ -35,17 +35,17 @@ describe('decodeLog', () => {
     });
 });
 
-describe('getTokenTransfers', () => {
-    it('Should return decoded erc721 transfers', () => {
-        expect(getTokenTransfers({ receipt: ERC721TransferReceipt })).toMatchSnapshot();
+describe('getTokenTransfer', () => {
+    it('Should return decoded erc721 transfer', () => {
+        expect(getTokenTransfer(ERC721TransferReceipt.logs[1])).toMatchSnapshot();
     });
 
-    it('Should return decoded erc20 transfers', () => {
-        expect(getTokenTransfers({ receipt: TransactionReceipt })).toMatchSnapshot();
+    it('Should return decoded erc20 transfer', () => {
+        expect(getTokenTransfer(TransactionReceipt.logs[0])).toMatchSnapshot();
     });
 
-    it('Should return an empty array', () => {
-        expect(getTokenTransfers(AmalfiDepositTransaction)).toEqual([]);
+    it('Should return null', () => {
+        expect(getTokenTransfer(AmalfiDepositTransaction.receipt.logs[0])).toEqual(null);
     });
 });
 

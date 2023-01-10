@@ -47,33 +47,28 @@ const decodeLog = (log, abi) => {
     return decodedLog;
 };
 
-const getTokenTransfers = (transaction) => {
-    const transfers = [];
-
+const getTokenTransfer = (transactionLog) => {
     try {
-        for (let i = 0; i < transaction.receipt.logs.length; i++) {
-            const log = transaction.receipt.logs[i];
-            if (log.topics[0] == '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
-                let decodedLog;
-                for (const [pattern, abi] of Object.entries(abis)) {
-                    decodedLog = decodeLog(log, abi);
-                    if (decodedLog) break;
-                }
+        if (transactionLog.topics[0] == '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
+            let decodedLog;
+            for (const [pattern, abi] of Object.entries(abis)) {
+                decodedLog = decodeLog(transactionLog, abi);
+                if (decodedLog) break;
+            }
 
-                if (decodedLog) {
-                    transfers.push(sanitize(stringifyBns({
-                        token: log.address,
-                        src: decodedLog.args.from,
-                        dst: decodedLog.args.to,
-                        amount: decodedLog.args.amount || ethers.BigNumber.from('1'),
-                        tokenId: decodedLog.args.tokenId || null
-                    })));
-                }
+            if (decodedLog) {
+                return stringifyBns({
+                    token: transactionLog.address,
+                    src: decodedLog.args.from,
+                    dst: decodedLog.args.to,
+                    amount: decodedLog.args.amount || ethers.BigNumber.from('1'),
+                    tokenId: decodedLog.args.tokenId || null
+                });
             }
         }
-        return transfers;
+        return null;
     } catch(error) {
-        return [];
+        return null;
     }
 };
 
@@ -123,7 +118,7 @@ const getTransactionMethodDetails = (transaction, abi) => {
 
 module.exports = {
     decodeLog: decodeLog,
-    getTokenTransfers: getTokenTransfers,
+    getTokenTransfer: getTokenTransfer,
     getTransactionMethodDetails: getTransactionMethodDetails,
     findAbiForFunction: findAbiForFunction
 };

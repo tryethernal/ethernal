@@ -2,6 +2,7 @@ jest.mock('../../../lib/rpc', () => {
     const ethers = require('ethers');
     const actual = jest.requireActual('../../../lib/rpc');
     return {
+        getBalanceChange: jest.fn(),
         getProvider: jest.fn(),    
         ContractConnector: jest.fn().mockImplementation(() => ({
             callReadMethod: jest.fn().mockResolvedValue([ethers.BigNumber.from('1')]),

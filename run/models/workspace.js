@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.hasMany(models.Contract, { foreignKey: 'workspaceId', as: 'contracts' });
       Workspace.hasMany(models.Account, { foreignKey: 'workspaceId', as: 'accounts' });
       Workspace.hasMany(models.TokenBalanceChange, { foreignKey: 'workspaceId', as: 'tokenBalanceChanges' });
+      Workspace.hasMany(models.TokenTransfer, { foreignKey: 'workspaceId', as: 'tokenTransfers' });
     }
 
     static findPublicWorkspaceById(id) {
@@ -430,7 +431,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.TokenBalanceChange,
-                    attributes: ['token', 'address', 'currentBalance', 'previousBalance', 'diff'],
+                    attributes: ['token', 'address', 'currentBalance', 'previousBalance', 'diff', 'transactionId'],
                     as: 'tokenBalanceChanges'
                 },
                 {
@@ -625,7 +626,7 @@ module.exports = (sequelize, DataTypes) => {
             include: [
                 {
                     model: sequelize.models.TokenTransfer,
-                    attributes: ['src', 'dst', 'token'],
+                    attributes: ['id', 'src', 'dst', 'token'],
                     as: 'tokenTransfers'
                 },
             ],

@@ -145,7 +145,7 @@ export default Vue.extend({
         },
         processTransactions: function() {
             this.server.getProcessableTransactions()
-                .then(({ data }) => this.server.processTransactions(this.currentWorkspace, data))
+                .then(({ data }) => data.forEach(transaction => this.server.processTransaction(this.currentWorkspace, transaction)))
                 .catch(console.log);
         },
         processFailedTransactions: function() {

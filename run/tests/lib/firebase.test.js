@@ -549,22 +549,21 @@ describe('storeTransactionData', () => {
 });
 
 describe('storeTokenBalanceChanges', () => {
-    const balanceChanges = {
-        '0x123': [
-            { src: '0x456' },
-            { src: '0x789' }
-        ]
-    };
+    const balanceChanges = [
+        { src: '0x456' },
+        { src: '0x789' }
+    ];
+
     it('Should call the creation method for each balance change', async () => {
-        const transaction = await workspace.findTransaction(1);
+        const tokenTransfer = (await workspace.getTokenTransfers(1))[0];
         await db.storeTokenBalanceChanges('123', 'My Workspace', '0x123', balanceChanges);
-        expect(transaction.safeCreateTokenBalanceChange).toHaveBeenCalledTimes(2);
+        expect(tokenTransfer.safeCreateBalanceChange).toHaveBeenCalledTimes(2);
     });
 
-    it('Should throw an error if the transaction does not exist', async () => {
-        jest.spyOn(workspace, 'findTransaction').mockResolvedValueOnce(null);
+    it('Should throw an error if the token transfer does not exist', async () => {
+        jest.spyOn(workspace, 'getTokenTransfers').mockResolvedValueOnce([]);
         await expect(db.storeTokenBalanceChanges('123', 'My Workspace', '0x123', balanceChanges))
-            .rejects.toThrow(`Couldn't find transaction`);
+            .rejects.toThrow(`Couldn't find token transfer`);
     });
 });
 

@@ -8,7 +8,6 @@ const transaction1 = {
     safeCreateTokenTransfer: jest.fn(),
     safeCreateTransactionTraceStep: jest.fn(),
     safeUpdateStorage: jest.fn(),
-    safeCreateTokenBalanceChange: jest.fn(),
     updateFailedTransactionError: jest.fn(),
     toJSON: jest.fn().mockReturnValue({ hash: '0x123' })
 };
@@ -18,7 +17,6 @@ const transaction2 = {
     safeCreateTokenTransfer: jest.fn(),
     safeCreateTransactionTraceStep: jest.fn(),
     safeUpdateStorage: jest.fn(),
-    safeCreateTokenBalanceChange: jest.fn(),
     updateFailedTransactionError: jest.fn(),
     toJSON: jest.fn().mockReturnValue({ hash: '0x456' })
 };
@@ -61,6 +59,12 @@ const contract2 = {
     toJSON: jest.fn().mockReturnValue({ id: 11, address: '0xabcd' })
 };
 
+const tokenTransfer = {
+    id: 1,
+    diff: '123',
+    safeCreateBalanceChange: jest.fn().mockResolvedValue()
+};
+
 const workspace = {
     id: 1,
     name: 'My Workspace',
@@ -79,6 +83,7 @@ const workspace = {
     getContracts: jest.fn().mockResolvedValue([contract1]),
     addIntegration: jest.fn(),
     removeIntegration: jest.fn(),
+    getTokenTransfers: jest.fn().mockResolvedValue([tokenTransfer]),
     findBlockByNumber: jest.fn().mockResolvedValue(null),
     safeCreateBlock: jest.fn().mockResolvedValue(block1),
     safeCreateTransaction: jest.fn().mockResolvedValue(transaction1),
