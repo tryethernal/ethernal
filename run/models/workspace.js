@@ -560,6 +560,8 @@ module.exports = (sequelize, DataTypes) => {
             filter['where']['createdAt'] = { [Op.lt]: sequelize.literal(`NOW() - interval '${dayInterval} day'`)};
 
         return sequelize.transaction(async (transaction) => {
+            await sequelize.models.TokenBalanceChange.destroy(filter, { transaction });
+            await sequelize.models.TokenTransfer.destroy(filter, { transaction });
             await sequelize.models.Transaction.destroy(filter, { transaction });
             await sequelize.models.Block.destroy(filter, { transaction });
             await sequelize.models.Contract.destroy(filter, { transaction });
