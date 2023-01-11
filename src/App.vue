@@ -345,7 +345,10 @@ export default {
                     networkId: data.chainId,
                     rpcServer: data.rpcServer,
                     storageEnabled: data.workspace.storageEnabled,
-                    id: data.workspaceId
+                    id: data.workspaceId,
+                    defaultAccount: data.workspace.defaultAccount,
+                    gasPrice: data.workspace.gasPrice,
+                    gasLimit: data.workspace.gasLimit
                 });
             });
         },
