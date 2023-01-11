@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Workspace,
-                    attributes: ['name', 'storageEnabled'],
+                    attributes: ['name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit'],
                     as: 'workspace'
                 }
             ]
@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Workspace,
-                    attributes: ['name', 'storageEnabled'],
+                    attributes: ['name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit'],
                     as: 'workspace'
                 }
             ]
