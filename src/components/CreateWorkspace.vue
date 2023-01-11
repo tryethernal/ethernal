@@ -97,11 +97,13 @@ export default {
                                 for (let i = 0; i < accounts.length; i++)
                                     promises.push(this.server.syncBalance(accounts[i], '0', name));
                                 Promise.all(promises)
-                                    .finally(() => this.$emit('workspaceCreated', data));
+                                    .finally(() => {
+                                        this.$emit('workspaceCreated', data);
+                                        this.loading = false;
+                                    });
                             });
                     })
-                    .catch(() => { throw 'Error while creating workspace' })
-                    .finally(() => this.loading = false);
+                    .catch(() => { throw 'Error while creating workspace' });
             } catch(error) {
                 console.log(error);
                 this.loading = false;
