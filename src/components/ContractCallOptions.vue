@@ -93,11 +93,11 @@ export default {
             this.$emit('rpcConnectionStatusChanged', data);
         },
         emitCallOptionChanged() {
-            this.$emit('callOptionChanged', {
-                from: this.from,
-                gasLimit: this.gasLimit,
-                gasPrice: this.gasPrice
-            });
+            const data = this.mode == 'accounts' ?
+                { from: this.from, gasLimit: this.gasLimit, gasPrice: this.gasPrice } :
+                { from: this.from };
+
+            this.$emit('callOptionChanged', data);
         }
     },
     watch: {

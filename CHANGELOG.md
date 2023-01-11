@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.5] - 2023-01-11
+### Fixed
+- Issue with gas set when calling Metamask
+
 ## [3.5.4] - 2023-01-11
 ### Fixed
 - Onboarding when RPC doesn't support eth_getAccounts
