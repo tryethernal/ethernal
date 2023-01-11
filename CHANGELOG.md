@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.3] - 2023-01-11
+### Changed
+- Reset workspace more gradually
+
 ## [3.5.2] - 2023-01-10
 ### Fixed
 - CI
