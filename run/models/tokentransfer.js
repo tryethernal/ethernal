@@ -106,12 +106,6 @@ module.exports = (sequelize, DataTypes) => {
                         tokenTransferId: tokenTransfer.id
                     }
                 );
-
-                await enqueue('processTokenTransfer',
-                    `processTokenTransfer-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.id}-2`, {
-                        tokenTransferId: tokenTransfer.id
-                    }
-                );
             }
 
             if (tokenTransfer.tokenId && transaction.workspace.public)
