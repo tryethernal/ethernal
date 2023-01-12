@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.6.1] - 2023-01-12
+### Added
+- Same than before but I tagged too quickly...
+
 ## [3.6.0] - 2023-01-12
 ### Added
 - Prepare token_transfers & token_balance_changes migration
