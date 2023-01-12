@@ -4,7 +4,7 @@ module.exports = async job => {
     const data = job.data;
 
     if (!data.userId || !data.workspace || data.from === null || data.from === undefined || data.to === null || data.to === undefined) {
-        throw new Error('[jobs.batchBlockSync] Missing parameter.');
+        throw new Error('Missing parameter.');
     }
 
     const MAX_CONCURRENT_BATCHES = 200;
