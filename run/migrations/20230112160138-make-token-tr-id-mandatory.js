@@ -8,7 +8,7 @@ module.exports = {
         try {
             const [transaction_logs] = await queryInterface.sequelize.query(`
                 SELECT tr."transactionId" AS "transactionId", tl.* FROM transaction_logs tl
-                LEFT JOIN transaction_receipts tr ON tr.id = tl."transactionReceiptId"
+                LEFT JOIN transaction_receipts tr ON tr.id = tl."transactionReceiptId;
             `);
 
             await queryInterface.sequelize.query(`
@@ -71,7 +71,7 @@ module.exports = {
             `, { transaction });
 
             let token_transfer_inserts = [];
-            const BATCH_SIZE = 100000;
+            const BATCH_SIZE = 50000;
             for (let i = 0; i < transaction_logs.length; i += BATCH_SIZE) {
                 for (let j = i; j < Math.min(i + BATCH_SIZE, transaction_logs.length); j++) {
                     const tl = transaction_logs[j];
@@ -87,18 +87,6 @@ module.exports = {
                     token_transfer_inserts = [];
                 }
             };
-
-            // let token_transfer_inserts = [];
-            // for (let i = 0; i < transaction_logs.length; i ++) {
-            //     const tl = transaction_logs[i];
-            //     const transfer = getTokenTransfer(tl);
-            //     if (transfer)
-            //         token_transfer_inserts.push(`('${transfer.amount}', '${transfer.dst}', '${transfer.src}', '${transfer.token}', ${tl.transactionId}, NOW(), NOW(), ${tl.workspaceId}, ${transfer.tokenId}, ${tl.id})`);
-            // }
-            // await queryInterface.sequelize.query(`
-            //     INSERT INTO token_transfers(amount, dst, src, token, "transactionId", "createdAt", "updatedAt", "workspaceId", "tokenId", "transactionLogId")
-            //     VALUES ${token_transfer_inserts.join(',')};
-            // `, { transaction });
 
             // Create token_transfers_pkey
             await queryInterface.sequelize.query(`
@@ -177,7 +165,6 @@ module.exports = {
     async down (queryInterface, Sequelize) {
         const transaction = await queryInterface.sequelize.transaction();
         try {
-            
             await transaction.commit();
         } catch(error) {
             console.log(error)

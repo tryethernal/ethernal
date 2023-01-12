@@ -9,6 +9,7 @@ module.exports = async job => {
         throw new Error('Missing parameter.');
 
     const tokenTransfer = await db.getTokenTransferForProcessing(data.tokenTransferId);
+
     if (!tokenTransfer)
         throw new Error('Cannot find token transfer');
 
@@ -34,6 +35,8 @@ module.exports = async job => {
 
     if (changes.length > 0)
         await db.storeTokenBalanceChanges(user.firebaseUserId, workspace.name, tokenTransfer.id, changes);
+    else
+        await tokenTransfer.update({ processed: true });
 
     return true;
 };
