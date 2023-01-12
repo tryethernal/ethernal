@@ -8,7 +8,8 @@
         "contractProcessing",
         "transactionProcessing",
         "reloadErc721Token",
-        "processTokenTransfer"
+        "processTokenTransfer",
+        "reprocessAllTokenTransfers"
     ],
     "low": [
         "submitExplorerLead",

@@ -33,18 +33,24 @@ module.exports = (sequelize, DataTypes) => {
             }
         });
 
-        if (existingChanges.length)
+        if (existingChanges.length) {
+            await this.update({ processed: true }, { transaction });
             return;
+        }
 
-        return this.createTokenBalanceChange(sanitize({
-            transactionId: this.transactionId,
-            workspaceId: this.workspaceId,
-            token: this.token,
-            address: balanceChange.address,
-            currentBalance: balanceChange.currentBalance,
-            previousBalance: balanceChange.previousBalance,
-            diff: balanceChange.diff
-        }));
+        return sequelize.transaction(async (transaction) => {
+            await this.createTokenBalanceChange(sanitize({
+                transactionId: this.transactionId,
+                workspaceId: this.workspaceId,
+                token: this.token,
+                address: balanceChange.address,
+                currentBalance: balanceChange.currentBalance,
+                previousBalance: balanceChange.previousBalance,
+                diff: balanceChange.diff
+            }), { transaction });
+
+            await this.update({ processed: true }, { transaction });
+        });
     }
   }
   TokenTransfer.init({
@@ -76,6 +82,7 @@ module.exports = (sequelize, DataTypes) => {
     transactionId: DataTypes.INTEGER,
     transactionLogId: DataTypes.INTEGER,
     workspaceId: DataTypes.INTEGER,
+    processed: DataTypes.BOOLEAN
   }, {
     hooks: {
         async afterSave(tokenTransfer, options) {

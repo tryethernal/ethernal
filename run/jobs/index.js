@@ -9,6 +9,7 @@ module.exports = {
     transactionProcessing: require('./transactionProcessing'),
     processTokenTransfer: require('./processTokenTransfer'),
     reloadErc721Token: require('./reloadErc721Token'),
+    reprocessAllTokenTransfers: require('./reprocessAllTokenTransfers'),
 
     // Low Priority
     submitExplorerLead: require('./submitExplorerLead'),
