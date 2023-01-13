@@ -1,0 +1,592 @@
+
+{
+  "header": {
+    "reportVersion": 1,
+    "event": "Allocation failed - JavaScript heap out of memory",
+    "trigger": "FatalError",
+    "filename": "report.20230112.195701.93748.0.001.json",
+    "dumpEventTime": "2023-01-12T19:57:01Z",
+    "dumpEventTimeStamp": "1673549821054",
+    "processId": 93748,
+    "cwd": "/Users/antoine/ethernal/ethernal/run",
+    "commandLine": [
+      "node",
+      "/Users/antoine/ethernal/ethernal/run/node_modules/.bin/sequelize-cli",
+      "db:migrate",
+      "--env",
+      "production"
+    ],
+    "nodejsVersion": "v12.9.1",
+    "wordSize": 64,
+    "arch": "x64",
+    "platform": "darwin",
+    "componentVersions": {
+      "node": "12.9.1",
+      "v8": "7.6.303.29-node.15",
+      "uv": "1.31.0",
+      "zlib": "1.2.11",
+      "brotli": "1.0.7",
+      "ares": "1.15.0",
+      "modules": "72",
+      "nghttp2": "1.39.2",
+      "napi": "4",
+      "llhttp": "1.1.4",
+      "http_parser": "2.8.0",
+      "openssl": "1.1.1c",
+      "cldr": "35.1",
+      "icu": "64.2",
+      "tz": "2019a",
+      "unicode": "12.1"
+    },
+    "release": {
+      "name": "node",
+      "headersUrl": "https://nodejs.org/download/release/v12.9.1/node-v12.9.1-headers.tar.gz",
+      "sourceUrl": "https://nodejs.org/download/release/v12.9.1/node-v12.9.1.tar.gz"
+    },
+    "osName": "Darwin",
+    "osRelease": "19.2.0",
+    "osVersion": "Darwin Kernel Version 19.2.0: Sat Nov  9 03:47:04 PST 2019; root:xnu-6153.61.1~20/RELEASE_X86_64",
+    "osMachine": "x86_64",
+    "cpus": [
+      {
+        "model": "Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz",
+        "speed": 2200,
+        "user": 48788930,
+        "nice": 0,
+        "sys": 37796540,
+        "idle": 219675000,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz",
+        "speed": 2200,
+        "user": 3259710,
+        "nice": 0,
+        "sys": 4020550,
+        "idle": 298960720,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz",
+        "speed": 2200,
+        "user": 40591340,
+        "nice": 0,
+        "sys": 28344450,
+        "idle": 237305630,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz",
+        "speed": 2200,
+        "user": 3127620,
+        "nice": 0,
+        "sys": 3505950,
+        "idle": 299607370,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz",
+        "speed": 2200,
+        "user": 34912780,
+        "nice": 0,
+        "sys": 24009900,
+        "idle": 247318660,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz",
+        "speed": 2200,
+        "user": 2925180,
+        "nice": 0,
+        "sys": 3075090,
+        "idle": 300240620,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz",
+        "speed": 2200,
+        "user": 28977780,
+        "nice": 0,
+        "sys": 19860060,
+        "idle": 257403420,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz",
+        "speed": 2200,
+        "user": 2772050,
+        "nice": 0,
+        "sys": 2712530,
+        "idle": 300756260,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz",
+        "speed": 2200,
+        "user": 25037670,
+        "nice": 0,
+        "sys": 17371940,
+        "idle": 263831560,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz",
+        "speed": 2200,
+        "user": 2651980,
+        "nice": 0,
+        "sys": 2410320,
+        "idle": 301178500,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz",
+        "speed": 2200,
+        "user": 20665610,
+        "nice": 0,
+        "sys": 14128460,
+        "idle": 271447030,
+        "irq": 0
+      },
+      {
+        "model": "Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz",
+        "speed": 2200,
+        "user": 2528450,
+        "nice": 0,
+        "sys": 2182040,
+        "idle": 301530250,
+        "irq": 0
+      }
+    ],
+    "networkInterfaces": [
+      {
+        "name": "lo0",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "127.0.0.1",
+        "netmask": "255.0.0.0",
+        "family": "IPv4"
+      },
+      {
+        "name": "lo0",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "::1",
+        "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+        "family": "IPv6",
+        "scopeid": 0
+      },
+      {
+        "name": "lo0",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "fe80::1",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 1
+      },
+      {
+        "name": "lo0",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "127.94.0.1",
+        "netmask": "255.0.0.0",
+        "family": "IPv4"
+      },
+      {
+        "name": "en5",
+        "internal": false,
+        "mac": "ac:de:48:00:11:22",
+        "address": "fe80::aede:48ff:fe00:1122",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 9
+      },
+      {
+        "name": "en0",
+        "internal": false,
+        "mac": "f0:18:98:2c:3f:7b",
+        "address": "fe80::1076:5ad5:8e78:7255",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 10
+      },
+      {
+        "name": "en0",
+        "internal": false,
+        "mac": "f0:18:98:2c:3f:7b",
+        "address": "192.168.1.107",
+        "netmask": "255.255.255.0",
+        "family": "IPv4"
+      },
+      {
+        "name": "awdl0",
+        "internal": false,
+        "mac": "92:00:8f:74:24:1c",
+        "address": "fe80::9000:8fff:fe74:241c",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 17
+      },
+      {
+        "name": "llw0",
+        "internal": false,
+        "mac": "92:00:8f:74:24:1c",
+        "address": "fe80::9000:8fff:fe74:241c",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 18
+      },
+      {
+        "name": "utun0",
+        "internal": false,
+        "mac": "00:00:00:00:00:00",
+        "address": "fe80::5155:bead:ddfa:7b97",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 19
+      },
+      {
+        "name": "utun1",
+        "internal": false,
+        "mac": "00:00:00:00:00:00",
+        "address": "fe80::2679:9fbc:3caf:5f35",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 20
+      },
+      {
+        "name": "utun2",
+        "internal": false,
+        "mac": "00:00:00:00:00:00",
+        "address": "fe80::bea3:5978:ba56:4e2d",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 21
+      },
+      {
+        "name": "utun3",
+        "internal": false,
+        "mac": "00:00:00:00:00:00",
+        "address": "fe80::3028:4bf0:fbe3:964c",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 22
+      },
+      {
+        "name": "utun4",
+        "internal": false,
+        "mac": "00:00:00:00:00:00",
+        "address": "fe80::17b5:8caf:788c:d475",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 24
+      }
+    ],
+    "host": "MacBook-Pro-de-Antoine-2.local"
+  },
+  "javascriptStack": {
+    "message": "No stack.",
+    "stack": [
+      "Unavailable."
+    ]
+  },
+  "nativeStack": [
+    {
+      "pc": "0x0000000100145b9c",
+      "symbol": "report::TriggerNodeReport(v8::Isolate*, node::Environment*, char const*, char const*, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, v8::Local<v8::String>) [/Users/antoine/.nvm/versions/node/v12.9.1/bin/node]"
+    },
+    {
+      "pc": "0x0000000100078d1b",
+      "symbol": "node::OnFatalError(char const*, char const*) [/Users/antoine/.nvm/versions/node/v12.9.1/bin/node]"
+    },
+    {
+      "pc": "0x000000010016e2a7",
+      "symbol": "v8::Utils::ReportOOMFailure(v8::internal::Isolate*, char const*, bool) [/Users/antoine/.nvm/versions/node/v12.9.1/bin/node]"
+    },
+    {
+      "pc": "0x000000010016e243",
+      "symbol": "v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, bool) [/Users/antoine/.nvm/versions/node/v12.9.1/bin/node]"
+    },
+    {
+      "pc": "0x00000001002f18b5",
+      "symbol": "v8::internal::Heap::FatalProcessOutOfMemory(char const*) [/Users/antoine/.nvm/versions/node/v12.9.1/bin/node]"
+    },
+    {
+      "pc": "0x00000001002f2fdd",
+      "symbol": "v8::internal::Heap::RecomputeLimits(v8::internal::GarbageCollector) [/Users/antoine/.nvm/versions/node/v12.9.1/bin/node]"
+    },
+    {
+      "pc": "0x00000001002efd96",
+      "symbol": "v8::internal::Heap::PerformGarbageCollection(v8::internal::GarbageCollector, v8::GCCallbackFlags) [/Users/antoine/.nvm/versions/node/v12.9.1/bin/node]"
+    },
+    {
+      "pc": "0x00000001002edcec",
+      "symbol": "v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [/Users/antoine/.nvm/versions/node/v12.9.1/bin/node]"
+    },
+    {
+      "pc": "0x00000001002f93c4",
+      "symbol": "v8::internal::Heap::AllocateRawWithLightRetry(int, v8::internal::AllocationType, v8::internal::AllocationAlignment) [/Users/antoine/.nvm/versions/node/v12.9.1/bin/node]"
+    },
+    {
+      "pc": "0x00000001002f943f",
+      "symbol": "v8::internal::Heap::AllocateRawWithRetryOrFail(int, v8::internal::AllocationType, v8::internal::AllocationAlignment) [/Users/antoine/.nvm/versions/node/v12.9.1/bin/node]"
+    },
+    {
+      "pc": "0x00000001002c79e7",
+      "symbol": "v8::internal::Factory::NewFillerObject(int, bool, v8::internal::AllocationType) [/Users/antoine/.nvm/versions/node/v12.9.1/bin/node]"
+    },
+    {
+      "pc": "0x00000001005e8217",
+      "symbol": "v8::internal::Runtime_AllocateInYoungGeneration(int, unsigned long*, v8::internal::Isolate*) [/Users/antoine/.nvm/versions/node/v12.9.1/bin/node]"
+    },
+    {
+      "pc": "0x0000000100927b99",
+      "symbol": "Builtins_CEntry_Return1_DontSaveFPRegs_ArgvOnStack_NoBuiltinExit [/Users/antoine/.nvm/versions/node/v12.9.1/bin/node]"
+    },
+    {
+      "pc": "0x0000000100987d62",
+      "symbol": "Builtins_CreateObjectLiteralHandler [/Users/antoine/.nvm/versions/node/v12.9.1/bin/node]"
+    }
+  ],
+  "javascriptHeap": {
+    "totalMemory": 2154393600,
+    "totalCommittedMemory": 2150649416,
+    "usedMemory": 2145753704,
+    "availableMemory": 47775400,
+    "memoryLimit": 2197815296,
+    "heapSpaces": {
+      "read_only_space": {
+        "memorySize": 262144,
+        "committedMemory": 31744,
+        "capacity": 261832,
+        "used": 31432,
+        "available": 230400
+      },
+      "new_space": {
+        "memorySize": 4194304,
+        "committedMemory": 1137424,
+        "capacity": 2094656,
+        "used": 85640,
+        "available": 2009016
+      },
+      "old_space": {
+        "memorySize": 2136059904,
+        "committedMemory": 2135804312,
+        "capacity": 2132480008,
+        "used": 2132460376,
+        "available": 19632
+      },
+      "code_space": {
+        "memorySize": 425984,
+        "committedMemory": 415296,
+        "capacity": 300640,
+        "used": 300640,
+        "available": 0
+      },
+      "map_space": {
+        "memorySize": 1314816,
+        "committedMemory": 1124192,
+        "capacity": 801600,
+        "used": 801600,
+        "available": 0
+      },
+      "large_object_space": {
+        "memorySize": 12087296,
+        "committedMemory": 12087296,
+        "capacity": 12070560,
+        "used": 12070560,
+        "available": 0
+      },
+      "code_large_object_space": {
+        "memorySize": 49152,
+        "committedMemory": 49152,
+        "capacity": 3456,
+        "used": 3456,
+        "available": 0
+      },
+      "new_large_object_space": {
+        "memorySize": 0,
+        "committedMemory": 0,
+        "capacity": 2094656,
+        "used": 0,
+        "available": 2094656
+      }
+    }
+  },
+  "resourceUsage": {
+    "userCpuSeconds": 233.999,
+    "kernelCpuSeconds": 29.9169,
+    "cpuConsumptionPercent": 9.74579,
+    "maxRss": 2287749562368,
+    "pageFaults": {
+      "IORequired": 280,
+      "IONotRequired": 1953087
+    },
+    "fsActivity": {
+      "reads": 0,
+      "writes": 0
+    }
+  },
+  "libuv": [
+  ],
+  "environmentVariables": {
+    "DB_HOST": "149.248.218.61",
+    "TERM_PROGRAM": "iTerm.app",
+    "NODE": "/Users/antoine/.nvm/versions/node/v12.9.1/bin/node",
+    "DB_NAME": "ethernal",
+    "INIT_CWD": "/Users/antoine/ethernal/ethernal/run",
+    "NVM_CD_FLAGS": "-q",
+    "TERM": "xterm-256color",
+    "SHELL": "/bin/zsh",
+    "npm_config_metrics_registry": "https://registry.npmjs.org/",
+    "DB_PORT": "10000",
+    "TMPDIR": "/var/folders/r1/b2f3j4nd5qg5wd3kw5491xkc0000gn/T/",
+    "npm_config_global_prefix": "/Users/antoine/.nvm/versions/node/v12.9.1",
+    "TERM_PROGRAM_VERSION": "3.2.6",
+    "COLOR": "1",
+    "TF_SHELL": "zsh",
+    "TERM_SESSION_ID": "w0t0p1:0EC467F3-7262-4E96-B2CF-CAB2D1B63D62",
+    "npm_config_noproxy": "",
+    "npm_config_local_prefix": "/Users/antoine/ethernal/ethernal/run",
+    "TF_ALIAS": "fuck",
+    "ZSH": "/Users/antoine/.oh-my-zsh",
+    "TF_SHELL_ALIASES": "-='cd -'\n...=../..\n....=../../..\n.....=../../../..\n......=../../../../..\n1='cd -'\n2='cd -2'\n3='cd -3'\n4='cd -4'\n5='cd -5'\n6='cd -6'\n7='cd -7'\n8='cd -8'\n9='cd -9'\n_=sudo\nafind='ack -il'\nd='dirs -v | head -10'\ng=git\nga='git add'\ngaa='git add --all'\ngap='git apply'\ngapa='git add --patch'\ngau='git add --update'\ngav='git add --verbose'\ngb='git branch'\ngbD='git branch -D'\ngba='git branch -a'\ngbd='git branch -d'\ngbda='git branch --no-color --merged | command grep -vE \"^(\\*|\\s*(master|develop|dev)\\s*$)\" | command xargs -n 1 git branch -d'\ngbl='git blame -b -w'\ngbnm='git branch --no-merged'\ngbr='git branch --remote'\ngbs='git bisect'\ngbsb='git bisect bad'\ngbsg='git bisect good'\ngbsr='git bisect reset'\ngbss='git bisect start'\ngc='git commit -v'\n'gc!'='git commit -v --amend'\ngca='git commit -v -a'\n'gca!'='git commit -v -a --amend'\ngcam='git commit -a -m'\n'gcan!'='git commit -v -a --no-edit --amend'\n'gcans!'='git commit -v -a -s --no-edit --amend'\ngcb='git checkout -b'\ngcd='git checkout develop'\ngcf='git config --list'\ngcl='git clone --recurse-submodules'\ngclean='git clean -fd'\ngcm='git checkout master'\ngcmsg='git commit -m'\n'gcn!'='git commit -v --no-edit --amend'\ngco='git checkout'\ngcount='git shortlog -sn'\ngcp='git cherry-pick'\ngcpa='git cherry-pick --abort'\ngcpc='git cherry-pick --continue'\ngcs='git commit -S'\ngcsm='git commit -s -m'\ngd='git diff'\ngdca='git diff --cached'\ngdct='git describe --tags `git rev-list --tags --max-count=1`'\ngdcw='git diff --cached --word-diff'\ngds='git diff --staged'\ngdt='git diff-tree --no-commit-id --name-only -r'\ngdw='git diff --word-diff'\ngf='git fetch'\ngfa='git fetch --all --prune'\ngfo='git fetch origin'\ngg='git gui citool'\ngga='git gui citool --amend'\nggpull='git pull origin $(git_current_branch)'\nggpur=ggu\nggpush='git push origin $(git_current_branch)'\nggsup='git branch --set-upstream-to=origin/$(git_current_branch)'\nghh='git help'\ngignore='git update-index --assume-unchanged'\ngignored='git ls-files -v | grep \"^[[:lower:]]\"'\ngit-svn-dcommit-push='git svn dcommit && git push github master:svntrunk'\ngk='\\gitk --all --branches'\ngke='\\gitk --all $(git log -g --pretty=%h)'\ngl='git pull'\nglg='git log --stat'\nglgg='git log --graph'\nglgga='git log --graph --decorate --all'\nglgm='git log --graph --max-count=10'\nglgp='git log --stat -p'\nglo='git log --oneline --decorate'\ngloburl='noglob urlglobber '\nglod='git log --graph --pretty='\\''%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset'\\'\nglods='git log --graph --pretty='\\''%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset'\\'' --date=short'\nglog='git log --oneline --decorate --graph'\ngloga='git log --oneline --decorate --graph --all'\nglol='git log --graph --pretty='\\''%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'\\'\nglola='git log --graph --pretty='\\''%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'\\'' --all'\nglols='git log --graph --pretty='\\''%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'\\'' --stat'\nglp=_git_log_prettily\nglum='git pull upstream master'\ngm='git merge'\ngma='git merge --abort'\ngmom='git merge origin/master'\ngmt='git mergetool --no-prompt'\ngmtvim='git mergetool --no-prompt --tool=vimdiff'\ngmum='git merge upstream/master'\ngp='git push'\ngpd='git push --dry-run'\ngpf='git push --force-with-lease'\n'gpf!'='git push --force'\ngpoat='git push origin --all && git push origin --tags'\ngpristine='git reset --hard && git clean -dfx'\ngpsup='git push --set-upstream origin $(git_current_branch)'\ngpu='git push upstream'\ngpv='git push -v'\ngr='git remote'\ngra='git remote add'\ngrb='git rebase'\ngrba='git rebase --abort'\ngrbc='git rebase --continue'\ngrbd='git rebase develop'\ngrbi='git rebase -i'\ngrbm='git rebase master'\ngrbs='git rebase --skip'\ngrep='grep  --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'\ngrh='git reset'\ngrhh='git reset --hard'\ngrm='git rm'\ngrmc='git rm --cached'\ngrmv='git remote rename'\ngrrm='git remote remove'\ngrset='git remote set-url'\ngrt='cd $(git rev-parse --show-toplevel || echo \".\")'\ngru='git reset --'\ngrup='git remote update'\ngrv='git remote -v'\ngsb='git status -sb'\ngsd='git svn dcommit'\ngsh='git show'\ngsi='git submodule init'\ngsps='git show --pretty=short --show-signature'\ngsr='git svn rebase'\ngss='git status -s'\ngst='git status'\ngsta='git stash save'\ngstaa='git stash apply'\ngstall='git stash --all'\ngstc='git stash clear'\ngstd='git stash drop'\ngstl='git stash list'\ngstp='git stash pop'\ngsts='git stash show --text'\ngsu='git submodule update'\ngts='git tag -s'\ngtv='git tag | sort -V'\ngunignore='git update-index --no-assume-unchanged'\ngunwip='git log -n 1 | grep -q -c \"\\-\\-wip\\-\\-\" && git reset HEAD~1'\ngup='git pull --rebase'\ngupa='git pull --rebase --autostash'\ngupav='git pull --rebase --autostash -v'\ngupv='git pull --rebase -v'\ngwch='git whatchanged -p --abbrev-commit --pretty=medium'\ngwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify -m \"--wip-- [skip ci]\"'\nhcp='heroku run rails console -a bannerman'\nhcs='heroku run rails console -a bannerman-staging'\nhistory=omz_history\nimgcat=/Users/antoine/.iterm2/imgcat\nimgls=/Users/antoine/.iterm2/imgls\nit2api=/Users/antoine/.iterm2/it2api\nit2attention=/Users/antoine/.iterm2/it2attention\nit2check=/Users/antoine/.iterm2/it2check\nit2copy=/Users/antoine/.iterm2/it2copy\nit2dl=/Users/antoine/.iterm2/it2dl\nit2getvar=/Users/antoine/.iterm2/it2getvar\nit2git=/Users/antoine/.iterm2/it2git\nit2profile=/Users/antoine/.iterm2/it2profile\nit2setcolor=/Users/antoine/.iterm2/it2setcolor\nit2setkeylabel=/Users/antoine/.iterm2/it2setkeylabel\nit2tip=/Users/antoine/.iterm2/it2tip\nit2ul=/Users/antoine/.iterm2/it2ul\nit2universion=/Users/antoine/.iterm2/it2universion\nl='ls -lah'\nla='ls -lAh'\nll='ls -lh'\nls='ls -G'\nlsa='ls -lah'\nmd='mkdir -p'\nplease=sudo\npython=python3\nrd=rmdir\nrun-help=man\nwhich-command=whence",
+    "PYTHONIOENCODING": "",
+    "NVM_DIR": "/Users/antoine/.nvm",
+    "USER": "antoine",
+    "COMMAND_MODE": "unix2003",
+    "npm_config_globalconfig": "/Users/antoine/.nvm/versions/node/v12.9.1/etc/npmrc",
+    "SSH_AUTH_SOCK": "/private/tmp/com.apple.launchd.F15uCao2Kh/Listeners",
+    "__CF_USER_TEXT_ENCODING": "0x1F5:0x0:0x0",
+    "npm_execpath": "/Users/antoine/.nvm/versions/node/v12.9.1/lib/node_modules/npm/bin/npx-cli.js",
+    "PAGER": "less",
+    "LSCOLORS": "Gxfxcxdxbxegedabagacad",
+    "PATH": "/Users/antoine/ethernal/ethernal/run/node_modules/.bin:/Users/antoine/ethernal/ethernal/node_modules/.bin:/Users/antoine/ethernal/node_modules/.bin:/Users/antoine/node_modules/.bin:/Users/node_modules/.bin:/node_modules/.bin:/Users/antoine/.nvm/versions/node/v12.9.1/lib/node_modules/npm/node_modules/@npmcli/run-script/lib/node-gyp-bin:/Users/antoine/ethernal/ethernal/run/node_modules/.bin:/Users/antoine/google-cloud-sdk/bin:/Users/antoine/.yarn/bin:/Users/antoine/.config/yarn/global/node_modules/.bin:/usr/local/opt/postgresql@10/bin:/usr/local/opt/opencv@4/bin:/Users/antoine/.rbenv/shims:/Users/antoine/.rbenv/shims:/usr/local/opt/opencv@4/bin:/Users/antoine/.nvm/versions/node/v12.9.1/bin:/Users/antoine/.rbenv/shims:/Users/antoine/.rbenv/shims:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/MacGPG2/bin:/Users/antoine/Library/Python/3.7/bin:/Users/antoine/.local/bin:/Users/antoine/Library/Python/3.9/bin",
+    "npm_package_json": "/Users/antoine/ethernal/ethernal/run/package.json",
+    "_": "/Users/antoine/ethernal/ethernal/run/node_modules/.bin/sequelize-cli",
+    "LaunchInstanceID": "C4BFF808-9876-4329-A611-9063F0A42D50",
+    "npm_config_userconfig": "/Users/antoine/.npmrc",
+    "npm_config_init_module": "/Users/antoine/.npm-init.js",
+    "npm_command": "exec",
+    "PWD": "/Users/antoine/ethernal/ethernal/run",
+    "DB_PASSWORD": "nGsLgE6yJF3jcrhF",
+    "npm_lifecycle_event": "npx",
+    "EDITOR": "vi",
+    "npm_package_name": "app",
+    "LANG": "en_US",
+    "ITERM_PROFILE": "Default",
+    "XPC_FLAGS": "0x0",
+    "npm_package_engines_node": ">= 16.0.0",
+    "npm_config_node_gyp": "/Users/antoine/.nvm/versions/node/v12.9.1/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js",
+    "RBENV_SHELL": "zsh",
+    "npm_package_version": "1.0.0",
+    "XPC_SERVICE_NAME": "0",
+    "DB_USERNAME": "postgres",
+    "SHLVL": "2",
+    "HOME": "/Users/antoine",
+    "COLORFGBG": "7;0",
+    "ITERM_SESSION_ID": "w0t0p1:0EC467F3-7262-4E96-B2CF-CAB2D1B63D62",
+    "npm_config_cache": "/Users/antoine/.npm",
+    "LESS": "-R",
+    "LOGNAME": "antoine",
+    "npm_lifecycle_script": "sequelize-cli \"db:migrate\" \"--env\" \"production\"",
+    "LC_CTYPE": "UTF-8",
+    "NVM_BIN": "/Users/antoine/.nvm/versions/node/v12.9.1/bin",
+    "npm_config_user_agent": "npm/7.24.2 node/v12.9.1 darwin x64 workspaces/false",
+    "DISPLAY": "/private/tmp/com.apple.launchd.uIVvnPDjyj/org.macosforge.xquartz:0",
+    "SECURITYSESSIONID": "186a7",
+    "npm_node_execpath": "/Users/antoine/.nvm/versions/node/v12.9.1/bin/node",
+    "npm_config_prefix": "/Users/antoine/.nvm/versions/node/v12.9.1",
+    "COLORTERM": "truecolor"
+  },
+  "userLimits": {
+    "core_file_size_blocks": {
+      "soft": 0,
+      "hard": "unlimited"
+    },
+    "data_seg_size_kbytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "file_size_blocks": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "max_locked_memory_bytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "max_memory_size_kbytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "open_files": {
+      "soft": 24576,
+      "hard": "unlimited"
+    },
+    "stack_size_bytes": {
+      "soft": 8388608,
+      "hard": 67104768
+    },
+    "cpu_time_seconds": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "max_user_processes": {
+      "soft": 2784,
+      "hard": 4176
+    },
+    "virtual_memory_kbytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    }
+  },
+  "sharedObjects": [
+    "/Users/antoine/.nvm/versions/node/v12.9.1/bin/node",
+    "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+    "/usr/lib/libSystem.B.dylib",
+    "/usr/lib/libc++.1.dylib",
+    "/usr/lib/libobjc.A.dylib",
+    "/usr/lib/libfakelink.dylib",
+    "/usr/lib/libDiagnosticMessagesClient.dylib",
+    "/usr/lib/libicucore.A.dylib",
+    "/usr/lib/libz.1.dylib",
+    "/usr/lib/libc++abi.dylib",
+    "/usr/lib/system/libcache.dylib",
+    "/usr/lib/system/libcommonCrypto.dylib",
+    "/usr/lib/system/libcompiler_rt.dylib",
+    "/usr/lib/system/libcopyfile.dylib",
+    "/usr/lib/system/libcorecrypto.dylib",
+    "/usr/lib/system/libdispatch.dylib",
+    "/usr/lib/system/libdyld.dylib",
+    "/usr/lib/system/libkeymgr.dylib",
+    "/usr/lib/system/liblaunch.dylib",
+    "/usr/lib/system/libmacho.dylib",
+    "/usr/lib/system/libquarantine.dylib",
+    "/usr/lib/system/libremovefile.dylib",
+    "/usr/lib/system/libsystem_asl.dylib",
+    "/usr/lib/system/libsystem_blocks.dylib",
+    "/usr/lib/system/libsystem_c.dylib",
+    "/usr/lib/system/libsystem_configuration.dylib",
+    "/usr/lib/system/libsystem_coreservices.dylib",
+    "/usr/lib/system/libsystem_darwin.dylib",
+    "/usr/lib/system/libsystem_dnssd.dylib",
+    "/usr/lib/system/libsystem_featureflags.dylib",
+    "/usr/lib/system/libsystem_info.dylib",
+    "/usr/lib/system/libsystem_m.dylib",
+    "/usr/lib/system/libsystem_malloc.dylib",
+    "/usr/lib/system/libsystem_networkextension.dylib",
+    "/usr/lib/system/libsystem_notify.dylib",
+    "/usr/lib/system/libsystem_sandbox.dylib",
+    "/usr/lib/system/libsystem_secinit.dylib",
+    "/usr/lib/system/libsystem_kernel.dylib",
+    "/usr/lib/system/libsystem_platform.dylib",
+    "/usr/lib/system/libsystem_pthread.dylib",
+    "/usr/lib/system/libsystem_symptoms.dylib",
+    "/usr/lib/system/libsystem_trace.dylib",
+    "/usr/lib/system/libunwind.dylib",
+    "/usr/lib/system/libxpc.dylib",
+    "/Users/antoine/ethernal/ethernal/node_modules/bufferutil/prebuilds/darwin-x64/node.napi.node",
+    "/Users/antoine/ethernal/ethernal/node_modules/utf-8-validate/prebuilds/darwin-x64/node.napi.node"
+  ]
+}
