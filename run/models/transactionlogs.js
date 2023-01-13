@@ -32,6 +32,13 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeCreateTokenTransfer(tokenTransfer) {
+        const existingTokenTransferCount = await sequelize.models.TokenTransfer.count({
+            where: { transactionLogId: this.id }
+        });
+
+        if (existingTokenTransferCount > 0)
+            return;
+
         const transactionReceipt = await this.getReceipt();
         const sanitizedTokenTransfer = sanitize({
             amount: tokenTransfer.amount,
