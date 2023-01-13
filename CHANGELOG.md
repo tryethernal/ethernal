@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.6.3] - 2023-01-13
+### Changed
+- Auto reenqueue migration
+
 ## [3.6.2] - 2023-01-13
 ### Changed
 - Changed how to migrate transfers & balance changes
