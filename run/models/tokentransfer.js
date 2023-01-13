@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeCreateBalanceChange(balanceChange) {
-        const existingChanges = await this.getTokenBalanceChanges({
+        const existingChangeCount = await this.countTokenBalanceChanges({
             where: {
                 transactionId: this.transactionId,
                 token: this.token,
@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
             }
         });
 
-        if (existingChanges.length) {
+        if (existingChangeCount > 0) {
             await this.update({ processed: true }, { transaction });
             return;
         }

@@ -11,6 +11,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.removeColumn('token_transfers', 'processed', { transaction });
+    await queryInterface.removeColumn('token_transfers', 'processed');
   }
 };
