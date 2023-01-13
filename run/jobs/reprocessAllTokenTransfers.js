@@ -30,5 +30,8 @@ module.exports = async job => {
             await log.safeCreateTokenTransfer(tokenTransfer);
     }
 
+    if (logs.length > 0)
+        await enqueue('reprocessAllTokenTransfers', `reprocessAllTokenTransfers-${Date.now()}`, { batchSize: data.batchSize });
+
     return;
 };
