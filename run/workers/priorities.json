@@ -7,7 +7,9 @@
     "medium": [
         "contractProcessing",
         "transactionProcessing",
-        "reloadErc721Token"
+        "reloadErc721Token",
+        "processTokenTransfer",
+        "reprocessAllTokenTransfers"
     ],
     "low": [
         "submitExplorerLead",

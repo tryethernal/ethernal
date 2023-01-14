@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "jest",
+    "test:update": "jest -u",
     "test:handles": "jest  --detectOpenHandles",
     "test:coverage": "jest --coverage"
   },

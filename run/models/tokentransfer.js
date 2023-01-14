@@ -4,6 +4,7 @@ const {
 } = require('sequelize');
 const { trigger } = require('../lib/pusher');
 const { enqueue } = require('../lib/queue');
+const { sanitize } = require('../lib/utils');
 
 module.exports = (sequelize, DataTypes) => {
   class TokenTransfer extends Model {
@@ -14,11 +15,42 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       TokenTransfer.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'transaction' });
+      TokenTransfer.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       TokenTransfer.hasOne(models.Contract, {
           sourceKey: 'token',
           foreignKey: 'address',
           as: 'contract'
       });
+      TokenTransfer.hasMany(models.TokenBalanceChange, { foreignKey: 'tokenTransferId', as: 'tokenBalanceChanges' });
+    }
+
+    async safeCreateBalanceChange(balanceChange) {
+        const existingChangeCount = await this.countTokenBalanceChanges({
+            where: {
+                transactionId: this.transactionId,
+                token: this.token,
+                address: balanceChange.address
+            }
+        });
+
+        if (existingChangeCount > 0) {
+            await this.update({ processed: true }, { transaction });
+            return;
+        }
+
+        return sequelize.transaction(async (transaction) => {
+            await this.createTokenBalanceChange(sanitize({
+                transactionId: this.transactionId,
+                workspaceId: this.workspaceId,
+                token: this.token,
+                address: balanceChange.address,
+                currentBalance: balanceChange.currentBalance,
+                previousBalance: balanceChange.previousBalance,
+                diff: balanceChange.diff
+            }), { transaction });
+
+            await this.update({ processed: true }, { transaction });
+        });
     }
   }
   TokenTransfer.init({
@@ -48,7 +80,9 @@ module.exports = (sequelize, DataTypes) => {
         }
     },
     transactionId: DataTypes.INTEGER,
+    transactionLogId: DataTypes.INTEGER,
     workspaceId: DataTypes.INTEGER,
+    processed: DataTypes.BOOLEAN
   }, {
     hooks: {
         async afterSave(tokenTransfer, options) {
@@ -62,11 +96,24 @@ module.exports = (sequelize, DataTypes) => {
                     },
                     {
                         model: sequelize.models.Workspace,
-                        attributes: ['id', 'public'],
-                        as: 'workspace'
+                        attributes: ['id', 'public', 'rpcServer', 'name'],
+                        as: 'workspace',
+                        include: {
+                            model: sequelize.models.User,
+                            attributes: ['firebaseUserId'],
+                            as: 'user'
+                        }
                     }
                 ]
             });
+
+            if (transaction.workspace.public) {
+                await enqueue('processTokenTransfer',
+                    `processTokenTransfer-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.id}`, {
+                        tokenTransferId: tokenTransfer.id
+                    }
+                );
+            }
 
             if (tokenTransfer.tokenId && transaction.workspace.public)
                 await enqueue('reloadErc721Token',

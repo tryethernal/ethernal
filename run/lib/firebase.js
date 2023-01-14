@@ -106,6 +106,31 @@ const getErc20ContractTransfers = async (workspaceId, address, page, itemsPerPag
     };
 };
 
+const getTokenTransferForProcessing = (tokenTransferId) => {
+    if (!tokenTransferId) throw new Error('Missing parameter');
+
+    return TokenTransfer.findOne({
+        where: { id: tokenTransferId },
+        include: [
+            {
+                model: Workspace,
+                as: 'workspace',
+                attributes: ['name', 'rpcServer', 'public'],
+                include: {
+                    model: User,
+                    as: 'user',
+                    attributes: ['firebaseUserId']
+                }
+            },
+            {
+                model: Transaction,
+                as: 'transaction',
+                attributes: ['blockNumber']
+            }
+        ]
+    });
+}
+
 const getContractLogs = async (workspaceId, address, signature, page, itemsPerPage, orderBy, order) => {
     if (!workspaceId || !address || !signature) throw new Error('Missing paramter.');
 
@@ -574,24 +599,18 @@ const storeTransactionData = async (userId, workspace, hash, data) => {
     return transaction.toJSON();
 };
 
-const storeTokenBalanceChanges = async (userId, workspace, transactionHash, tokenBalanceChanges) => {
-    if (!userId || !workspace || !transactionHash || !tokenBalanceChanges) throw new Error('Missing parameter.');
+const storeTokenBalanceChanges = async (userId, workspace, tokenTransferId, changes) => {
+    if (!userId || !workspace || !tokenTransferId || !changes) throw new Error('Missing parameter.');
 
-    if (Object.keys(tokenBalanceChanges).length) {
-        const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-        const transaction = await user.workspaces[0].findTransaction(transactionHash);
+    const user = await User.findByAuthIdWithWorkspace(userId, workspace);
+    const tokenTransfer = (await user.workspaces[0].getTokenTransfers({ 
+        where: { id :tokenTransferId }
+    }))[0];
 
-        if (!transaction)
-            throw new Error(`Couldn't find transaction`);
+    if (!tokenTransfer)
+        throw new Error(`Couldn't find token transfer`);
 
-        for (const [token, balanceChanges] of Object.entries(tokenBalanceChanges)) {
-            for (let i = 0; i < balanceChanges.length; i++)
-                await transaction.safeCreateTokenBalanceChange({
-                    token: token,
-                    ...balanceChanges[i]
-                });
-        }
-    }
+    return changes.forEach(async change => await tokenTransfer.safeCreateBalanceChange(change));
 };
 
 const storeFailedTransactionError = async (userId, workspace, transactionHash, error) => {
@@ -602,7 +621,7 @@ const storeFailedTransactionError = async (userId, workspace, transactionHash, e
         const transaction = await user.workspaces[0].findTransaction(transactionHash);
 
         if (!transaction)
-            throw new Error(`Couldn't find transaction ${transactionHash}`);
+            throw new Error(`Couldn't find transaction`);
 
         await transaction.updateFailedTransactionError({
             parsed: error.parsed,
@@ -857,5 +876,6 @@ module.exports = {
     getErc20ContractTransferVolume: getErc20ContractTransferVolume,
     getErc20ContractCumulativeSupply: getErc20ContractCumulativeSupply,
     getErc20TokenHolderHistory: getErc20TokenHolderHistory,
+    getTokenTransferForProcessing: getTokenTransferForProcessing,
     Workspace: Workspace
 };

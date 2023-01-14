@@ -6,6 +6,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.6.3] - 2023-01-13
+### Changed
+- Auto reenqueue migration
+
+## [3.6.2] - 2023-01-13
+### Changed
+- Changed how to migrate transfers & balance changes
+
+## [3.6.1] - 2023-01-12
+### Added
+- Same than before but I tagged too quickly...
+
+## [3.6.0] - 2023-01-12
+### Added
+- Prepare token_transfers & token_balance_changes migration
+
+## [3.5.7] - 2023-01-12
+### Fixed
+- Double token transfer processing
+
+## [3.5.6] - 2023-01-11
+### Fixed
+- Gas limit issue
+
+## [3.5.5] - 2023-01-11
+### Fixed
+- Issue with gas set when calling Metamask
+
+## [3.5.4] - 2023-01-11
+### Fixed
+- Onboarding when RPC doesn't support eth_getAccounts
+
+## [3.5.3] - 2023-01-11
+### Changed
+- Reset workspace more gradually
+
+## [3.5.2] - 2023-01-10
+### Fixed
+- CI
+
+## [3.5.1] - 2023-01-10
+### Fixed
+- Bug triggering validation error when processing some token transfers
+
+## [3.5.0] - 2023-01-10
+### Added
+- Added ids to token transfers & balance changes for better data reliability
+
 ## [3.4.6] - 2023-01-04
 ### Fixed
 - [Public Explorer] Remove Authorization header when authenticating with Pusher

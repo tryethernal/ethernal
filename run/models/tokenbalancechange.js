@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       TokenBalanceChange.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'transaction' });
       TokenBalanceChange.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
+      TokenBalanceChange.belongsTo(models.TokenTransfer, { foreignKey: 'tokenTransferId', as: 'tokenTransfer' });
       TokenBalanceChange.hasOne(models.Contract, {
           sourceKey: 'token',
           foreignKey: 'address',
@@ -31,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   TokenBalanceChange.init({
     transactionId: DataTypes.INTEGER,
+    tokenTransferId: DataTypes.INTEGER,
     workspaceId: DataTypes.INTEGER,
     token: {
         type: DataTypes.STRING,

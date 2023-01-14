@@ -6,6 +6,23 @@ const { sanitize } = require('../lib/utils');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
 const processContractVerification = require('../lib/processContractVerification');
+const { enqueue } = require('../lib/queue');
+
+router.get('/reprocessTokenTransfers', async (req, res) => {
+const data = req.query;
+
+    try {
+        if (data.secret != process.env.SECRET)
+            throw new Error(`Auth error`);
+
+        await enqueue('reprocessAllTokenTransfers', `reprocessAllTokenTransfers-${Date.now()}`, { batchSize: data.batchSize });
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.contracts.logs', error: error, data: { ...data, ...req.params }});
+        res.status(400).send(error.message);
+    }
+})
 
 router.get('/:address/stats', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
