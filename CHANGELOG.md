@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.6.5] - 2023-01-15
+### Fixed
+- Token balance change calculation
+
 ## [3.6.4] - 2023-01-14
 ### Fixed
 - Token balance change calculation wasn't correct if transfers happened in the token creation tx
