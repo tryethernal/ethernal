@@ -23,7 +23,7 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
         else
             throw 'Not a big number result'
     } catch(error) {
-        currentBalance = 0;
+        currentBalance = ethers.BigNumber.from('0');
     }
 
     if (blockNumber > 1) {
@@ -39,7 +39,7 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
             else
                 throw 'Not a big number result'
         }  catch(error) {
-            previousBalance = 0;
+            previousBalance = ethers.BigNumber.from('0');
         }
     }
 
