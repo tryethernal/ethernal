@@ -247,7 +247,6 @@ import AddressTransactionsList from './AddressTransactionsList';
 import ContractVerification from './ContractVerification';
 import TokenBalances from './TokenBalances';
 import ERC721Collection from './ERC721Collection';
-import UpgradeLink from './UpgradeLink';
 import ContractCallOptions from './ContractCallOptions';
 
 import FromWei from '../filters/FromWei';
@@ -263,7 +262,6 @@ export default {
         ContractWriteMethod,
         ImportArtifactModal,
         RemoveContractConfirmationModal,
-        UpgradeLink,
         AddressTransactionsList,
         TokenBalances,
         ContractVerification,

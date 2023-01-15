@@ -10,9 +10,6 @@ router.get('/:address/holderHistory', workspaceAuthMiddleware, async (req, res) 
         if (!data.workspace || !data.from || !data.to)
             throw new Error('Missing parameters.');
 
-        if (!data.workspace.public)
-            throw new Error('This endpoint is not available on private workspaces.');
-
         const volume = await db.getErc20TokenHolderHistory(data.workspace.id, req.params.address, data.from, data.to);
 
         res.status(200).json(volume);
@@ -28,9 +25,6 @@ router.get('/:address/cumulativeSupply', workspaceAuthMiddleware, async (req, re
         if (!data.workspace || !data.from || !data.to)
             throw new Error('Missing parameters.');
 
-        if (!data.workspace.public)
-            throw new Error('This endpoint is not available on private workspaces.');
-
         const volume = await db.getErc20ContractCumulativeSupply(data.workspace.id, req.params.address, data.from, data.to);
 
         res.status(200).json(volume);
@@ -45,9 +39,6 @@ router.get('/:address/transferVolume', workspaceAuthMiddleware, async (req, res)
     try {
         if (!data.workspace || !data.from || !data.to)
             throw new Error('Missing parameters.');
-
-        if (!data.workspace.public)
-            throw new Error('This endpoint is not available on private workspaces.');
 
         const volume = await db.getErc20ContractTransferVolume(data.workspace.id, req.params.address, data.from, data.to);
 

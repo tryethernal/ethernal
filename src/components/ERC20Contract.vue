@@ -16,13 +16,14 @@
                             <v-col cols="6">
                                 <small>Total Supply</small><br>
                                 <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
-                                <span v-else class="text-h6 ml-2">{{ formatNumber(contract.tokenTotalSupply, { decimals: contract.tokenDecimals }) }} {{ contract.tokenSymbol }}</span>
+                                <span class="text-h6 ml-2" v-else-if="contract.tokenTotalSupply">{{ formatNumber(contract.tokenTotalSupply, { decimals: contract.tokenDecimals }) }} {{ contract.tokenSymbol }}</span>
+                                <span class="text-h6 ml-2" v-else>N/A</span>
                             </v-col>
 
                             <v-col cols="6">
                                 <small>Decimals</small><br>
                                 <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
-                                <span v-else class="text-h6 ml-2">{{ contract.tokenDecimals }}</span>
+                                <span v-else class="text-h6 ml-2">{{ contract.tokenDecimals || 'N/A' }}</span>
                             </v-col>
                         </v-row>
 
@@ -30,15 +31,16 @@
                             <v-col cols="6">
                                 <small>Contract Name</small><br>
                                 <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
-                                <span v-else class="text-h6 ml-2">{{ contract.name }}</span>
+                                <span v-else class="text-h6 ml-2">{{ contract.name || 'N/A' }}</span>
                             </v-col>
 
                             <v-col cols="6">
                                 <small>Contract Creation</small><br>
                                 <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
-                                <span v-else class="ml-2">
+                                <span v-else-if="contract.creationTransaction && contract.creationTransaction.hash" class="ml-2">
                                     <Hash-Link :type="'transaction'" :hash="contract.creationTransaction.hash" />
                                 </span>
+                                <span v-else class="ml-2">N/A</span>
                             </v-col>
 
                         </v-row>
@@ -85,6 +87,7 @@
 
         <v-tabs v-model="tab">
             <v-tab id="transactionsTab" href="#transactions">Transactions</v-tab>
+            <v-tab id="interactionsTab" href="#interactions">Read / Write</v-tab>
             <v-tab id="holdersTab" href="#holders">Holders</v-tab>
             <v-tab id="transfersTab" href="#transfers">Transfers</v-tab>
             <v-tab id="analyticsTab" href="#analytics">Analytics</v-tab>
@@ -93,6 +96,10 @@
         <v-tabs-items :value="tab">
             <v-tab-item value="transactions">
                 <Address-Transactions-List :address="address" />
+            </v-tab-item>
+
+            <v-tab-item value="interactions">
+                <Contract-Interaction :address="address" />
             </v-tab-item>
 
             <v-tab-item value="holders">
@@ -115,8 +122,10 @@ const moment = require('moment');
 import { mapGetters } from 'vuex';
 
 const { formatNumber, formatContractPattern } = require('../lib/utils');
+const ERC20_ABI = require('../abis/erc20.json');
 
 import AddressTransactionsList from './AddressTransactionsList';
+import ContractInteraction from './ContractInteraction';
 import ERC20TokenHolders from './ERC20TokenHolders';
 import ERC20ContractAnalytics from './ERC20ContractAnalytics';
 import ERC20TokenTransfers from './ERC20TokenTransfers';
@@ -132,6 +141,7 @@ export default {
         StatNumber,
         HashLink,
         Metamask,
+        ContractInteraction,
         ERC20TokenHolders,
         ERC20ContractAnalytics,
         ERC20TokenTransfers
@@ -156,7 +166,7 @@ export default {
             if (data.account && data.isReady) {
                 this.loadingBalance = true;
                 this.server.callContractReadMethod(
-                    this.contract,
+                    { address: this.address, abi: ERC20_ABI },
                     'balanceOf(address)',
                     { from: null },
                     { 0: data.account },
@@ -195,7 +205,7 @@ export default {
             get() {
                 return this.$route.query.tab;
             }
-        },
+        }
     }
 }
 </script>
