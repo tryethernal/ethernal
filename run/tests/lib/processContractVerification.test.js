@@ -11,7 +11,7 @@ jest.mock('solc', () => ({
                         MyContract: {
                             evm: {
                                 bytecode: {
-                                    object: '123412341234123412341234123412340001'
+                                    object: '12341234123412341234123412341234000100011110001'
                                 }
                             }
                         }
@@ -24,7 +24,7 @@ jest.mock('solc', () => ({
 const solc = require('solc');
 
 jest.mock('solc/linker', () => ({
-    linkBytecode: jest.fn().mockReturnValue('12341234123412341234123412341234abcd0001')
+    linkBytecode: jest.fn().mockReturnValue('12341234123412341234123412341234abcd000100011110001')
 }));
 
 const processContractVerification = require('../../lib/processContractVerification');
@@ -61,7 +61,7 @@ describe('processContractVerification', () => {
     });
 
     it('Should handle imports', async () => {
-        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x123412341234123412341234123412340001' });
+        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x12341234123412341234123412341234000100011110001' });
 
         jest.spyOn(solc, 'loadRemoteVersion').mockImplementationOnce((compiler, cb) => {
             cb(null, {
@@ -73,7 +73,7 @@ describe('processContractVerification', () => {
                                 MyContract: {
                                     evm: {
                                         bytecode: {
-                                            object: '123412341234123412341234123412340001'
+                                            object: '12341234123412341234123412341234000100011110001'
                                         }
                                     }
                                 }
@@ -230,7 +230,7 @@ describe('processContractVerification', () => {
     });
 
     it('Should set the verification status to success if source code is matching', async () => {
-        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x123412341234123412341234123412340001' });
+        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x12341234123412341234123412341234000100011110001' });
 
         const message = {
             code: {
@@ -267,7 +267,7 @@ describe('processContractVerification', () => {
     });
 
     it('Should set the verification status to failed if source code is not matching', async () => {
-        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x567895678956789567895678956789567895678956789' });
+        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x567895678956789567895678956789567895678956789567895678956789567895678956789567895678956789567895678956789567895678956700010001111000167895678956678956678956678956678956678956678956678956678956678956789567895678956789567895678956789000100011110001' });
 
         const message = {
             code: {
@@ -302,7 +302,7 @@ describe('processContractVerification', () => {
     });
 
     it('Should link bytecode if libraries are passed', async () => {
-        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x12341234123412341234123412341234abcd0001' });
+        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x12341234123412341234123412341234abcd000100011110001' });
 
         const message = {
             code: {
@@ -342,7 +342,7 @@ describe('processContractVerification', () => {
     });
 
     it('Should append constructor arguments properly', async () => {
-        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x123412341234123412341234123412340001000abcd' });
+        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x12341234123412341234123412341234000100011110001000abcd' });
 
         const message = {
             code: {
