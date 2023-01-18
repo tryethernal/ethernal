@@ -240,7 +240,6 @@ module.exports = (sequelize, DataTypes) => {
     countErc20TokenTransfers() {
         return sequelize.models.TokenTransfer.count({
             where: {
-                tokenId: null,
                 workspaceId: this.workspaceId,
                 token: this.address
             }
@@ -262,21 +261,37 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     getErc20TokenTransfers(page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC') {
-        const sanitizedOrderBy = ['timestamp', 'transactionHash', 'blockNumber'].indexOf(orderBy) > - 1 ?
-            ['transaction', orderBy] : [orderBy];
+        let sanitizedOrderBy;
+        switch(orderBy) {
+            case 'timestamp':
+            case 'transactionHash':
+            case 'blockNumber':
+                sanitizedOrderBy = ['transaction', orderBy];
+                break;
+            case 'amount':
+                sanitizedOrderBy = [sequelize.cast(sequelize.col('"TokenTransfer".amount'), 'numeric')];
+                break;
+            default:
+                sanitizedOrderBy = [orderBy];
+                break;
+        }
 
         return sequelize.models.TokenTransfer.findAll({
             where: {
-                tokenId: null,
                 workspaceId: this.workspaceId,
                 token: this.address
             },
-            attributes: ['id', 'amount', 'src', 'dst', 'token'],
+            attributes: ['id', 'src', 'dst', 'token', [sequelize.cast(sequelize.col('"TokenTransfer".amount'), 'numeric'), 'amount'], 'tokenId'],
             include: [
                 {
                     model: sequelize.models.Transaction,
                     as: 'transaction',
                     attributes: ['hash', 'blockNumber', 'timestamp']
+                },
+                {
+                    model: sequelize.models.Contract,
+                    as: 'contract',
+                    attributes: ['id', 'patterns', 'tokenName', 'tokenSymbol', 'tokenDecimals']
                 }
             ],
             offset: (page - 1) * itemsPerPage,
@@ -348,12 +363,35 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     getFilteredLogs(signature, page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC') {
+        let sanitizedOrderBy;
+        switch(orderBy) {
+            case 'timestamp':
+                sanitizedOrderBy = ['receipt', 'transaction', orderBy];
+                break;
+            case 'blockNumber':
+                sanitizedOrderBy = ['receipt', orderBy];
+                break;
+            default:
+                sanitizedOrderBy = [orderBy];
+                break;
+        }
+
+        const where = sanitize({
+            address: this.address,
+            [Op.and]: signature ? sequelize.where(sequelize.json('topics')[0], Op.eq, signature) : null,
+            [Op.and]: sequelize.where(sequelize.col("contract.workspaceId"), Op.eq, sequelize.col("TransactionLog.workspaceId"))
+        });
         return sequelize.models.TransactionLog.findAll({
             include: [
                 {
                     model: sequelize.models.TransactionReceipt,
                     as: 'receipt',
-                    attributes: ['transactionHash', 'from', 'to']
+                    attributes: ['transactionHash', 'from', 'to', 'blockNumber'],
+                    include: {
+                        model: sequelize.models.Transaction,
+                        as: 'transaction',
+                        attributes: ['timestamp']
+                    }
                 },
                 {
                     model: sequelize.models.Contract,
@@ -361,22 +399,11 @@ module.exports = (sequelize, DataTypes) => {
                     attributes: ['id', 'name', 'abi', 'address', 'tokenName', 'tokenSymbol', 'tokenDecimals', 'patterns']
                 },
             ],
-            attributes: ['id', 'workspaceId', 'address', 'data', 'topics'],
-            where: {
-                address: this.address,
-                [Op.and]: sequelize.where(
-                    sequelize.json('topics')[0],
-                    Op.eq,
-                    signature
-                ),
-                [Op.and]: sequelize.where(sequelize.col("contract.workspaceId"),
-                  Op.eq,
-                  sequelize.col("TransactionLog.workspaceId")
-                )
-            },
+            attributes: ['id', 'workspaceId', 'address', 'data', 'topics', 'logIndex'],
+            where: where,
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
-            order: [[orderBy, order]]
+            order: [[...sanitizedOrderBy, order]]
         });
     }
 

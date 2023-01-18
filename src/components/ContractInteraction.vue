@@ -5,15 +5,13 @@
             <v-skeleton-loader v-if="loading" class="col-4" type="list-item-three-line"></v-skeleton-loader>
             <template v-else>
                 <Import-Artifact-Modal ref="importArtifactModal" v-if="currentWorkspace.isAdmin" />
-                <v-card-text v-if="contract.name || contract.abi">
-                    <div class="mb-1 success--text" v-if="isContractVerified">
-                        <v-icon class="success--text mr-1" small>mdi-check-circle</v-icon>Verified contract.
-                    </div>
-                    <template v-if="contract.name && contract.abi">
-                        ABI for "<b>{{ contract.name }}</b>" has been uploaded.<span v-if="currentWorkspace.isAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
-                    </template>
+                <v-card-text v-if="isContractVerified" class="mb-1 success--text">
+                    <v-icon class="success--text mr-1" small>mdi-check-circle</v-icon>Verified contract.
                 </v-card-text>
-                <v-card-text v-if="(!contract.name || !contract.abi) && currentWorkspace.isAdmin && contract.verificationStatus != 'success'">
+                <v-card-text v-if="contract.abi">
+                    An ABI has been uploaded.<span v-if="currentWorkspace.isAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
+                </v-card-text>
+                <v-card-text v-if="!contract.abi && currentWorkspace.isAdmin">
                     Upload an ABI to interact with the contract:
                     <ul>
                         <li>For Hardhat projects, you can use our <a href="https://github.com/tryethernal/hardhat-ethernal" target="_blank">plugin</a>.</li>

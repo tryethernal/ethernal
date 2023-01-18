@@ -43,7 +43,7 @@ router.get('/:address/logs', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
 
     try {
-        if (!data.workspace || !data.signature)
+        if (!data.workspace)
             throw new Error(`Missing parameters`);
 
         const logs = await db.getContractLogs(data.workspace.id, req.params.address, data.signature, data.page, data.itemsPerPage, data.orderBy, data.order);

@@ -2,13 +2,13 @@
     <span :class="`ml-${4 * displayDepth}`">
         <span v-if="!isArrayEl">{{ inputLabel }}</span>
         <span>
-            <template v-if="isFormattable">
+            <template v-if="isFormattable && !notInteractive">
                 (<template v-if="formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Raw</a></template>
                 <template v-if="!formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Formatted</a></template>)
             </template>
-            <span v-if="formatted">
+            <span v-if="formatted" :class="{ notInteractive: notInteractive }">
                 <span v-if="input.type == 'address'">
-                    <Hash-Link :type="'address'" :hash="value" :withName="true" />
+                    <Hash-Link :type="'address'" :hash="value" :withName="true" :notCopiable="notInteractive" />
                 </span>
                 <span v-else-if="input.type == 'tuple'">
                     { {{ '\n' }}
@@ -48,7 +48,7 @@ import HashLink from './HashLink';
 
 export default {
     name: 'FormattedSolVar',
-    props: ['input', 'value', 'depth', 'isArrayEl'],
+    props: ['input', 'value', 'depth', 'isArrayEl', 'notInteractive'],
     components: {
         HashLink,
         VueJsonPretty
@@ -118,3 +118,9 @@ export default {
     }
 }
 </script>
+<style scoped>
+/deep/ span.notInteractive a {
+    text-decoration: none;
+    color: white !important;
+}
+</style>

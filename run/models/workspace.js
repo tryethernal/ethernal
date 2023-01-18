@@ -45,6 +45,101 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    getFilteredAddressTokenTransfers(address, page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC') {
+        if (!address) throw new Error('Missing parameter');
+
+        let sanitizedOrderBy;
+        switch(orderBy) {
+            case 'timestamp':
+            case 'transactionHash':
+            case 'blockNumber':
+                sanitizedOrderBy = ['transaction', orderBy];
+                break;
+            case 'amount':
+                sanitizedOrderBy = [sequelize.cast(sequelize.col('"TokenTransfer".amount'), 'numeric')];
+                break;
+            default:
+                sanitizedOrderBy = [orderBy];
+                break;
+        }
+
+        return this.getTokenTransfers({
+            where: {
+                [Op.or]: [
+                    { src: address.toLowerCase() },
+                    { dst: address.toLowerCase() }
+                ]
+            },
+            include: [
+                {
+                    model: sequelize.models.Transaction,
+                    as: 'transaction',
+                    attributes: ['hash', 'blockNumber', 'timestamp']
+                },
+                {
+                    model: sequelize.models.Contract,
+                    as: 'contract',
+                    attributes: ['id', 'patterns', 'tokenName', 'tokenSymbol', 'tokenDecimals', 'abi']
+                }
+            ],
+            attributes: ['id', 'src', 'dst', 'token', [sequelize.cast(sequelize.col('"TokenTransfer".amount'), 'numeric'), 'amount']],
+            offset: (page - 1) * itemsPerPage,
+            limit: itemsPerPage,
+            order: [[...sanitizedOrderBy, order]]
+        })
+    }
+
+    countAddressTokenTransfers(address) {
+        if (!address) throw new Error('Missing parameter');
+
+        return this.countTokenTransfers({
+            where: {
+                [Op.or]: [
+                    { src: address.toLowerCase() },
+                    { dst: address.toLowerCase() }
+                ]
+            }
+        });
+    }
+
+    countAddressSentTransactions(address) {
+        if (!address) throw new Error('Missing parameter');
+
+        return this.countTransactions({
+            where: { from: address.toLowerCase() }
+        });
+    }
+
+    countAddressReceivedTransactions(address) {
+        if (!address) throw new Error('Missing parameter');
+
+        return this.countTransactions({
+            where: { to: address.toLowerCase() }
+        });
+    }
+
+    countAddressSentErc20TokenTransfers(address) {
+        if (!address) throw new Error('Missing parameter');
+
+        return this.countTokenTransfers({
+            where: {
+                src: address.toLowerCase(),
+                tokenId: null
+            }
+        });
+    }
+
+    countAddressReceivedErc20TokenTransfers(address) {
+        if (!address) throw new Error('Missing parameter');
+
+        return this.countTokenTransfers({
+            where: {
+                dst: address.toLowerCase(),
+                tokenId: null
+            }
+        });
+    }
+
     async getTransactionVolume(from, to) {
         if (!from || !to) return [];
         const [transactions, metadata] = await sequelize.query(`
@@ -385,7 +480,13 @@ module.exports = (sequelize, DataTypes) => {
             where: {
                 hash: hash
             },
-            attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId'],
+            attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId',
+                [Sequelize.literal(`
+                    (SELECT COUNT(*)::int
+                    FROM token_transfers AS token_transfers
+                    WHERE token_transfers."transactionId" = "Transaction".id)
+                `), 'tokenTransferCount']
+            ],
             order: [
                 [sequelize.literal('"traceSteps".'), 'id', 'asc']
             ],
@@ -433,26 +534,6 @@ module.exports = (sequelize, DataTypes) => {
                     model: sequelize.models.TokenBalanceChange,
                     attributes: ['token', 'address', 'currentBalance', 'previousBalance', 'diff', 'transactionId'],
                     as: 'tokenBalanceChanges'
-                },
-                {
-                    model: sequelize.models.TokenTransfer,
-                    attributes: ['amount', 'dst', 'src', 'token', 'tokenId'],
-                    as: 'tokenTransfers',
-                    include: [
-                        {
-                            model: sequelize.models.Contract,
-                            attributes: ['name', 'patterns', 'tokenDecimals', 'tokenSymbol', 'tokenName'],
-                            as: 'contract',
-                            where: {
-                                [Op.and]: sequelize.where(
-                                    sequelize.col("tokenTransfers.workspaceId"),
-                                    Op.eq,
-                                    sequelize.col("tokenTransfers->contract.workspaceId")
-                                ),
-                            },
-                            required: false
-                        }
-                    ]
                 },
                 {
                     model: sequelize.models.Block,

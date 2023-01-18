@@ -2,12 +2,10 @@
     <v-container fluid>
         <Token-Transfers
             :transfers="transfers"
-            :headers="headers"
             :loading="loading"
             :sortBy="currentOptions.sortBy[0]"
             :count="transferCount"
-            :withTransactionData="true"
-            :withTokenData="true"
+            :headers="headers"
             @pagination="onPagination"
             @update:options="getTransfers" />
     </v-container>
@@ -18,8 +16,8 @@ const moment = require('moment');
 import TokenTransfers from './TokenTransfers';
 
 export default {
-    name: 'ERC20TokenTransfers',
-    props: ['address', 'tokenDecimals', 'tokenSymbol'],
+    name: 'TransactionTokenTransfers',
+    props: ['hash', 'tokenDecimals', 'tokenSymbol'],
     components: {
         TokenTransfers,
     },
@@ -27,15 +25,14 @@ export default {
         loading: true,
         transfers: [],
         transferCount: 0,
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['from'], sortDesc: [true] },
         headers: [
-            { text: 'Mined On', value: 'timestamp' },
-            { text: 'Transaction', value: 'transactionHash' },
-            { text: 'Block', value: 'blockNumber' },
+            { text: 'Type', value: 'type' },
             { text: 'From', value: 'src' },
             { text: 'To', value: 'dst' },
+            { text: 'Token', value: 'token' },
             { text: 'Amount', value: 'amount' }
-        ],
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] }
+        ]
     }),
     methods: {
         moment: moment,
@@ -55,7 +52,7 @@ export default {
                 order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
             };
 
-            this.server.getErc20TokenTransfers(this.address, options)
+            this.server.getTransactionTokenTransfers(this.hash, options)
                 .then(({ data }) => {
                     this.transfers = data.items;
                     this.transferCount = data.total;

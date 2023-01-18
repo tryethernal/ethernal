@@ -8,6 +8,7 @@
             :count="transferCount"
             :withTransactionData="true"
             :withTokenData="true"
+            :address="address"
             @pagination="onPagination"
             @update:options="getTransfers" />
     </v-container>
@@ -18,8 +19,8 @@ const moment = require('moment');
 import TokenTransfers from './TokenTransfers';
 
 export default {
-    name: 'ERC20TokenTransfers',
-    props: ['address', 'tokenDecimals', 'tokenSymbol'],
+    name: 'AddressTokenTransfers',
+    props: ['address'],
     components: {
         TokenTransfers,
     },
@@ -29,7 +30,7 @@ export default {
         transferCount: 0,
         headers: [
             { text: 'Mined On', value: 'timestamp' },
-            { text: 'Transaction', value: 'transactionHash' },
+            { text: 'Transaction', value: 'transactionHash', sortable: false },
             { text: 'Block', value: 'blockNumber' },
             { text: 'From', value: 'src' },
             { text: 'To', value: 'dst' },
@@ -55,7 +56,7 @@ export default {
                 order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
             };
 
-            this.server.getErc20TokenTransfers(this.address, options)
+            this.server.getAddressTokenTransfers(this.address, options)
                 .then(({ data }) => {
                     this.transfers = data.items;
                     this.transferCount = data.total;

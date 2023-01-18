@@ -18,8 +18,8 @@ const moment = require('moment');
 import TokenTransfers from './TokenTransfers';
 
 export default {
-    name: 'ERC20TokenTransfers',
-    props: ['address', 'tokenDecimals', 'tokenSymbol'],
+    name: 'ERC721TokenTransfers',
+    props: ['address'],
     components: {
         TokenTransfers,
     },
@@ -29,11 +29,11 @@ export default {
         transferCount: 0,
         headers: [
             { text: 'Mined On', value: 'timestamp' },
-            { text: 'Transaction', value: 'transactionHash' },
+            { text: 'Transaction', value: 'transactionHash', sortable: false },
             { text: 'Block', value: 'blockNumber' },
             { text: 'From', value: 'src' },
             { text: 'To', value: 'dst' },
-            { text: 'Amount', value: 'amount' }
+            { text: 'Token', value: 'token', sortable: false }
         ],
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] }
     }),

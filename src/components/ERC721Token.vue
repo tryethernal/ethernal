@@ -57,7 +57,11 @@
 
             <v-col cols="12">
                 <h3 class="mb-2">Transfers</h3>
-                <Token-Transfers :transfers="transfers" :dense="true" :withTransactionData="true" />
+                <v-card outlined>
+                    <v-card-text>
+                        <Token-Transfers :transfers="transfers" :dense="true" :withTransactionData="true" />
+                    </v-card-text>
+                </v-card>
             </v-col>
         </v-row>
 

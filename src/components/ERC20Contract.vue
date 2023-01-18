@@ -29,9 +29,9 @@
 
                         <v-row>
                             <v-col cols="6">
-                                <small>Contract Name</small><br>
+                                <small>Contract</small><br>
                                 <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
-                                <span v-else class="text-h6 ml-2">{{ contract.name || 'N/A' }}</span>
+                                <Hash-Link class="ml-2" :type="'contract'" :hash="contract.address" :withName="true" />
                             </v-col>
 
                             <v-col cols="6">
@@ -40,7 +40,7 @@
                                 <span v-else-if="contract.creationTransaction && contract.creationTransaction.hash" class="ml-2">
                                     <Hash-Link :type="'transaction'" :hash="contract.creationTransaction.hash" />
                                 </span>
-                                <span v-else class="ml-2">N/A</span>
+                                <span v-else class="text-h6 ml-2">N/A</span>
                             </v-col>
 
                         </v-row>
