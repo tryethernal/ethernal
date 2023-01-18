@@ -124,10 +124,14 @@ module.exports = async function(db, payload) {
                 includedBytecodes.push({ data: removeMetadata(data.evm.bytecode.object), metadataLength: metadataLength });
             }
 
-        const compiledRuntimeBytecodeWithoutMetadata = `0x${stripBytecodeMetadata(bytecode, includedBytecodes)}${constructorArguments}`.toLowerCase();
+        const compiledRuntimeBytecodeWithoutMetadata = `0x${stripBytecodeMetadata(removeMetadata(bytecode), includedBytecodes)}${constructorArguments}`.toLowerCase();
 
         const deploymentTx = await db.getContractDeploymentTxByAddress(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress);
-        const deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length), includedBytecodes) + constructorArguments).toLowerCase();
+
+        let deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(removeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length)), includedBytecodes) + constructorArguments).toLowerCase();
+        if (!deployedRuntimeBytecodeWithoutMetadata.startsWith('0x'))
+            deployedRuntimeBytecodeWithoutMetadata = '0x' + deployedRuntimeBytecodeWithoutMetadata;
+
         if (compiledRuntimeBytecodeWithoutMetadata === deployedRuntimeBytecodeWithoutMetadata) {
             await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'success');
             await db.storeContractData(user.firebaseUserId, workspace.name, contractAddress, { name: contractName, abi: abi });
