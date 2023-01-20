@@ -61,7 +61,7 @@ export default {
                 const date14daysAgo = moment().subtract(14, 'days').format('YYYY-MM-DD');
                 const dateNow = moment().format('YYYY-MM-DD');
 
-                this.server.getErc20ContractTransferVolume(address, date14daysAgo, dateNow)
+                this.server.getTokenTransferVolume(address, date14daysAgo, dateNow)
                     .then(({ data }) => {
                         this.transferVolume = {
                             xLabels: data.map(t => moment(t.timestamp).format('DD/MM')),
@@ -71,7 +71,7 @@ export default {
                     .catch(console.log)
                     .finally(() => this.transferVolumeLoading = false);
 
-                this.server.getErc20ContractCumulativeSupply(address, date14daysAgo, dateNow)
+                this.server.getTokenCumulativeSupply(address, date14daysAgo, dateNow)
                     .then(({ data }) => {
                         this.cumulativeSupply = {
                             xLabels: data.map(t => moment(t.timestamp).format('DD/MM')),
@@ -81,7 +81,7 @@ export default {
                     .catch(console.log)
                     .finally(() => this.cumulativeSupplyLoading = false);
 
-                this.server.getErc20TokenHolderHistory(address, date14daysAgo, dateNow)
+                this.server.getTokenHolderHistory(address, date14daysAgo, dateNow)
                     .then(({ data }) => {
                         this.holderHistory = {
                             xLabels: data.map(t => moment(t.timestamp).format('DD/MM')),

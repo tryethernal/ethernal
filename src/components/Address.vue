@@ -73,7 +73,7 @@
                             <v-card-subtitle>ERC-20 Transfers</v-card-subtitle>
                             <v-skeleton-loader v-if="loading" type="list-item"></v-skeleton-loader>
                             <v-card-text v-else class="text-h4" align="center">
-                                {{ sentErc20TransferCount }}<v-icon>mdi-arrow-up-thin</v-icon><v-divider vertical class="mx-4"></v-divider> {{ receivedErc20TransferCount }}<v-icon>mdi-arrow-down-thin</v-icon>
+                                {{ sentErc20TokenTransferCount }}<v-icon>mdi-arrow-up-thin</v-icon><v-divider vertical class="mx-4"></v-divider> {{ receivedErc20TokenTransferCount }}<v-icon>mdi-arrow-down-thin</v-icon>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -163,8 +163,8 @@ export default {
                     .then(({ data }) => {
                         this.sentTransactionCount = data.sentTransactionCount;
                         this.receivedTransactionCount = data.receivedTransactionCount;
-                        this.sentErc20TransferCount = data.sentErc20TransferCount;
-                        this.receivedErc20TransferCount = data.receivedErc20TransferCount;
+                        this.sentErc20TokenTransferCount = data.sentErc20TokenTransferCount;
+                        this.receivedErc20TokenTransferCount = data.receivedErc20TokenTransferCount;
                     })
                     .finally(() => this.loading = false);
             }

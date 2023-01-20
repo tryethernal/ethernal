@@ -55,11 +55,11 @@
                     </v-col>
 
                     <v-col cols="12" sm="6" lg="6">
-                        <Stat-Number :loading="loadingStats" :title="'Transfers'" :value="contractStats.erc20TransferCount" />
+                        <Stat-Number :loading="loadingStats" :title="'Transfers'" :value="contractStats.tokenTransferCount" />
                     </v-col>
 
                     <v-col cols="12" sm="6" lg="6">
-                        <Stat-Number :loading="loadingStats" :title="'Circulating Supply'" :value="contractStats.erc20CirculatingSupply" :infoTooltip="'Number of minted tokens'" />
+                        <Stat-Number :loading="loadingStats" :title="'Circulating Supply'" :value="contractStats.tokenCirculatingSupply" :decimals="contract.tokenDecimals" :infoTooltip="'Number of minted tokens'" />
                     </v-col>
 
                     <v-col cols="12" sm="6" lg="6">

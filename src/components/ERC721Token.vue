@@ -59,7 +59,7 @@
                 <h3 class="mb-2">Transfers</h3>
                 <v-card outlined>
                     <v-card-text>
-                        <Token-Transfers :transfers="transfers" :dense="true" :withTransactionData="true" />
+                        <ERC-721-Token-Transfers :address="hash" />
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -148,7 +148,7 @@
 const moment = require('moment');
 import { mapGetters } from 'vuex';
 
-import TokenTransfers from './TokenTransfers';
+import ERC721TokenTransfers from './ERC721TokenTransfers';
 import ERC721TokenTransferModal from './ERC721TokenTransferModal';
 import HashLink from './HashLink';
 
@@ -156,7 +156,7 @@ export default {
     name: 'ERC721Token',
     props: ['hash', 'tokenId'],
     components: {
-        TokenTransfers,
+        ERC721TokenTransfers,
         ERC721TokenTransferModal,
         HashLink
     },

@@ -13,18 +13,18 @@
                     </v-card-subtitle>
                     <v-card-text>
                         <v-row>
-                            <v-col v-if="isErc20" cols="6">
+                            <v-col v-if="isErc20 || isErc721" cols="6">
                                 <small>Token Name</small><br>
                                 <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
                                 <span v-else-if="contract.tokenName" class="ml-2">
-                                    <Hash-Link :type="'token'" :hash="contract.address" :withName="true" :withTokenName="true" />
+                                    <Hash-Link :type="tokenType" :hash="contract.address" :withName="true" :withTokenName="true" />
                                 </span>
                                 <span v-else>
                                     N/A
                                 </span>
                             </v-col>
 
-                            <v-col v-if="isErc20" cols="6">
+                            <v-col v-if="isErc20 || isErc721" cols="6">
                                 <small>Token Symbol</small><br>
                                 <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
                                 <span v-else class="text-h6 ml-2">{{ contract.tokenSymbol || 'N/A' }}</span>
@@ -85,7 +85,7 @@
                             <v-card-subtitle>ERC-20 Transfers</v-card-subtitle>
                             <v-skeleton-loader v-if="loadingStats" type="list-item"></v-skeleton-loader>
                             <v-card-text v-else class="text-h4" align="center">
-                                {{ sentErc20TransferCount }}<v-icon>mdi-arrow-up-thin</v-icon><v-divider vertical class="mx-4"></v-divider> {{ receivedErc20TransferCount }}<v-icon>mdi-arrow-down-thin</v-icon>
+                                {{ sentErc20TokenTransferCount }}<v-icon>mdi-arrow-up-thin</v-icon><v-divider vertical class="mx-4"></v-divider> {{ receivedErc20TokenTransferCount }}<v-icon>mdi-arrow-down-thin</v-icon>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -163,8 +163,8 @@ export default {
             patterns: []
         },
         receivedTransactionCount: null,
-        sentErc20TransferCount: null,
-        receivedErc20TransferCount: null,
+        sentErc20TokenTransferCount: null,
+        receivedErc20TokenTransferCount: null,
         metamaskData: {},
         connectedAccountBalance: null,
     }),
@@ -187,8 +187,8 @@ export default {
                 this.server.getAddressStats(address)
                     .then(({ data }) => {
                         this.receivedTransactionCount = data.receivedTransactionCount;
-                        this.sentErc20TransferCount = data.sentErc20TransferCount;
-                        this.receivedErc20TransferCount = data.receivedErc20TransferCount;
+                        this.sentErc20TokenTransferCount = data.sentErc20TokenTransferCount;
+                        this.receivedErc20TokenTransferCount = data.receivedErc20TokenTransferCount;
                     })
                     .finally(() => this.loadingStats = false);
             }
@@ -201,6 +201,14 @@ export default {
         ]),
         isErc20() {
             return this.contract.patterns.indexOf('erc20') > -1;
+        },
+        isErc721() {
+            return this.contract.patterns.indexOf('erc721') > -1;
+        },
+        tokenType() {
+            if (this.isErc20) return 'token';
+            if (this.isErc721) return 'nft';
+            else return 'contract';
         },
         tab: {
             set(tab) {

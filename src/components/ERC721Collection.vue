@@ -49,11 +49,11 @@
                     </v-col>
 
                     <v-col cols="12" sm="6" lg="6">
-                        <Stat-Number :loading="loadingStats" :title="'Transfers'" :value="contractStats.erc20TransferCount" />
+                        <Stat-Number :loading="loadingStats" :title="'Transfers'" :value="contractStats.tokenTransferCount" />
                     </v-col>
 
                     <v-col cols="12" sm="6" lg="6">
-                        <Stat-Number :loading="loadingStats" :title="'Circulating Supply'" :value="parseInt(contractStats.erc20CirculatingSupply)" :infoTooltip="'Number of minted tokens'" />
+                        <Stat-Number :loading="loadingStats" :title="'Circulating Supply'" :value="contractStats.tokenCirculatingSupply" :decimals="0" :infoTooltip="'Number of minted tokens'" />
                     </v-col>
 
                     <v-col cols="12" sm="6" lg="6">
@@ -83,6 +83,7 @@
             <v-tab id="transactionsTab" href="#transactions">Transactions</v-tab>
             <v-tab id="interactionsTab" href="#interactions">Read / Write</v-tab>
             <v-tab id="holdersTab" href="#holders">Holders</v-tab>
+            <v-tab id="galleryTab" href="#gallery">Gallery</v-tab>
             <v-tab id="transfersTab" href="#transfers">Transfers</v-tab>
             <v-tab id="analyticsTab" href="#analytics">Analytics</v-tab>
         </v-tabs>
@@ -98,6 +99,10 @@
 
             <v-tab-item value="holders">
                 <ERC-20-Token-Holders :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
+            </v-tab-item>
+
+            <v-tab-item value="gallery">
+                <ERC-721-Gallery :address="address" :totalSupply="contract.tokenTotalSupply" :has721Enumerable="contract.has721Enumerable" />
             </v-tab-item>
 
             <v-tab-item value="analytics">
@@ -123,6 +128,7 @@ import ContractInteraction from './ContractInteraction';
 import ERC20TokenHolders from './ERC20TokenHolders';
 import ERC20ContractAnalytics from './ERC20ContractAnalytics';
 import ERC721TokenTransfers from './ERC721TokenTransfers';
+import ERC721Gallery from './ERC721Gallery';
 import StatNumber from './StatNumber';
 import HashLink from './HashLink';
 import Metamask from './Metamask';
@@ -138,7 +144,8 @@ export default {
         ContractInteraction,
         ERC20TokenHolders,
         ERC20ContractAnalytics,
-        ERC721TokenTransfers
+        ERC721TokenTransfers,
+        ERC721Gallery
     },
     data: () => ({
         loadingContract: true,

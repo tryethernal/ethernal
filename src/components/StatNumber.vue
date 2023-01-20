@@ -27,12 +27,15 @@
 </template>
 
 <script>
+const ethers = require('ethers');
 const { formatNumber } = require('../lib/utils');
+
 export default {
     name: 'StatNumber',
     props: ['type', 'title', 'value', 'loading', 'href', 'infoTooltip', 'decimals'],
     methods: {
-        formatNumber: formatNumber,
+        commify: ethers.utils.commify,
+        formatNumber: formatNumber
     },
     computed: {
         isValueDefined() {

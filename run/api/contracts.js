@@ -7,10 +7,16 @@ const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
 const processContractVerification = require('../lib/processContractVerification');
 const { enqueue } = require('../lib/queue');
+const { holderHistory, cumulativeSupply, transferVolume, holders, transfers } = require('./modules/tokens');
+
+router.get('/:address/holderHistory', workspaceAuthMiddleware, holderHistory);
+router.get('/:address/cumulativeSupply', workspaceAuthMiddleware, cumulativeSupply);
+router.get('/:address/transferVolume', workspaceAuthMiddleware, transferVolume);
+router.get('/:address/holders', workspaceAuthMiddleware, holders);
+router.get('/:address/transfers', workspaceAuthMiddleware, transfers);
 
 router.get('/reprocessTokenTransfers', async (req, res) => {
-const data = req.query;
-
+    const data = req.query;
     try {
         if (data.secret != process.env.SECRET)
             throw new Error(`Auth error`);
@@ -22,7 +28,7 @@ const data = req.query;
         logger.error(error.message, { location: 'get.api.contracts.logs', error: error, data: { ...data, ...req.params }});
         res.status(400).send(error.message);
     }
-})
+});
 
 router.get('/:address/stats', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
@@ -30,7 +36,7 @@ router.get('/:address/stats', workspaceAuthMiddleware, async (req, res) => {
         if (!data.workspace || !req.params.address)
             throw new Error('Missing parameter');
 
-        const result = await db.getContractStats(data.workspace.id, req.params.address);
+        const result = await db.getTokenStats(data.workspace.id, req.params.address);
 
         res.status(200).json(result);
     } catch(error) {

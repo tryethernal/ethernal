@@ -414,23 +414,23 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            getErc20TokenTransfers(address, options) {
+            getTokenTransfers(address, options) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     ...options
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc20Contracts/${address}/transfers`;
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/transfers`;
                 return axios.get(resource, { params });
             },
 
-            getErc20TokenHolders(address, options) {
+            getTokenHolders(address, options) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     ...options
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc20Contracts/${address}/holders`;
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/holders`;
                 return axios.get(resource, { params });
             },
 
@@ -578,36 +578,36 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            getErc20ContractTransferVolume(address, from, to) {
+            getTokenTransferVolume(address, from, to) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     from: from,
                     to: to
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc20Contracts/${address}/transferVolume`;
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/transferVolume`;
                 return axios.get(resource, { params });
             },
 
-            getErc20TokenHolderHistory(address, from, to) {
+            getTokenHolderHistory(address, from, to) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     from: from,
                     to: to
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc20Contracts/${address}/holderHistory`;
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/holderHistory`;
                 return axios.get(resource, { params });
             },
 
-            getErc20ContractCumulativeSupply(address, from, to) {
+            getTokenCumulativeSupply(address, from, to) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     from: from,
                     to: to
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc20Contracts/${address}/cumulativeSupply`;
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/cumulativeSupply`;
                 return axios.get(resource, { params });
             },
 

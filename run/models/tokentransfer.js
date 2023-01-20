@@ -1,9 +1,7 @@
 'use strict';
 const {
-  Model,
-  Sequelize
+  Model
 } = require('sequelize');
-const Op = Sequelize.Op;
 const { trigger } = require('../lib/pusher');
 const { enqueue } = require('../lib/queue');
 const { sanitize } = require('../lib/utils');
@@ -18,17 +16,10 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       TokenTransfer.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'transaction' });
       TokenTransfer.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
-      TokenTransfer.belongsTo(models.Contract, {
-          sourceKey: 'address',
-          foreignKey: 'token',
-          as: 'contract',
-          constraints: false,
-          scope: {
-              [Op.and]: sequelize.where(sequelize.col("TokenTransfer.workspaceId"),
-                  Op.eq,
-                  sequelize.col("contract.workspaceId")
-              )
-          }
+      TokenTransfer.hasOne(models.Contract, {
+          sourceKey: 'token',
+          foreignKey: 'address',
+          as: 'contract'
       });
       TokenTransfer.hasMany(models.TokenBalanceChange, { foreignKey: 'tokenTransferId', as: 'tokenBalanceChanges' });
     }
@@ -45,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
         if (existingChangeCount > 0)
             return;
 
-        return await this.createTokenBalanceChange(sanitize({
+        return this.createTokenBalanceChange(sanitize({
             transactionId: this.transactionId,
             workspaceId: this.workspaceId,
             token: this.token,
@@ -94,7 +85,7 @@ module.exports = (sequelize, DataTypes) => {
                 include: [
                     {
                         model: sequelize.models.TokenTransfer,
-                        attributes: ['id', 'src', 'dst', 'token'],
+                        attributes: ['src', 'dst', 'token'],
                         as: 'tokenTransfers'
                     },
                     {
@@ -110,13 +101,12 @@ module.exports = (sequelize, DataTypes) => {
                 ]
             });
 
-            if (transaction.workspace.public) {
+            if (transaction.workspace.public)
                 await enqueue('processTokenTransfer',
                     `processTokenTransfer-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.id}`, {
                         tokenTransferId: tokenTransfer.id
                     }
                 );
-            }
 
             if (tokenTransfer.tokenId) {
                 if (transaction.workspace.public) {
@@ -134,6 +124,15 @@ module.exports = (sequelize, DataTypes) => {
                     trigger(`private-contracts;workspace=${tokenTransfer.workspaceId}`, 'new', null);
                 }
             }
+
+            if (tokenTransfer.tokenId && transaction.workspace.public)
+                await enqueue('reloadErc721Token',
+                    `reloadErc721Token-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.tokenId}`, {
+                        workspaceId: tokenTransfer.workspaceId,
+                        address: tokenTransfer.token,
+                        tokenId: tokenTransfer.tokenId
+                    }
+                );
 
             if (!transaction.workspace.public)
                 trigger(`private-processableTransactions;workspace=${transaction.workspace.id}`, 'new', transaction.toJSON());

@@ -55,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    getErc20TokenHolderHistory(from, to) {
+    getTokenHolderHistory(from, to) {
         if (!from || !to) return new Promise(resolve => resolve([]));
 
         return sequelize.query(`
@@ -101,7 +101,7 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    getErc20CumulativeSupply(from, to) {
+    getTokenCumulativeSupply(from, to) {
         if (!from || !to) return new Promise(resolve => resolve([]));
 
         return sequelize.query(`
@@ -140,7 +140,7 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    getErc20TransferVolume(from, to) {
+    getTokenTransferVolume(from, to) {
         if (!from || !to) return new Promise(resolve => resolve([]));
 
         return sequelize.query(`
@@ -191,7 +191,7 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    getErc20TokenHolders(page = 1, itemsPerPage = 10, orderBy = 'amount', order = 'DESC') {
+    getTokenHolders(page = 1, itemsPerPage = 10, orderBy = 'amount', order = 'DESC') {
         const sanitizedOrderBy = ['address', 'amount', 'share'].indexOf(orderBy) > -1 ? orderBy : 'amount';
         const sanitizedOrder = ['desc', 'asc'].indexOf(order.toLowerCase()) > -1 ? order : 'DESC';
 
@@ -223,7 +223,7 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async countErc20TokenHolders() {
+    async countTokenHolders() {
         const result = await sequelize.models.TokenBalanceChange.findAll({
             where: {
                 workspaceId: this.workspaceId,
@@ -237,7 +237,7 @@ module.exports = (sequelize, DataTypes) => {
         return parseInt(result[0].count);
     }
 
-    countErc20TokenTransfers() {
+    countTokenTransfers() {
         return sequelize.models.TokenTransfer.count({
             where: {
                 workspaceId: this.workspaceId,
@@ -246,7 +246,7 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async getErc20TokenCirculatingSupply() {
+    async getTokenCirculatingSupply() {
         const result = await sequelize.models.TokenBalanceChange.findAll({
             where: {
                 workspaceId: this.workspaceId,
@@ -257,10 +257,10 @@ module.exports = (sequelize, DataTypes) => {
             ],
             raw: true,
         });
-        return result[0].sum;
+        return result[0].sum || 0;
     }
 
-    getErc20TokenTransfers(page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC') {
+    getTokenTransfers(page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC') {
         let sanitizedOrderBy;
         switch(orderBy) {
             case 'timestamp':
@@ -448,6 +448,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Contract.init({
+    isToken: {
+        type: DataTypes.VIRTUAL,
+        get() {
+            const patterns = this.getDataValue('patterns');
+            return patterns.indexOf('erc20') > -1 || patterns.indexOf('erc721') > -1;
+        }
+    },
     workspaceId: DataTypes.INTEGER,
     hashedBytecode: DataTypes.STRING,
     abi: DataTypes.JSON,

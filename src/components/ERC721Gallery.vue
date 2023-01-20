@@ -41,7 +41,7 @@
         <template v-else>
             <v-card outlined>
                 <v-card-text>
-                    Error while displaying your NFT collection (debug values: <code>has721Enumerable: {{ has721Enumerable }}</code>, <code>totalSupply: {{ totalSupply }}</code>.
+                    Error while displaying NFT collection.
                 </v-card-text>
             </v-card>
         </template>
