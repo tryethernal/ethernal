@@ -30,7 +30,7 @@ describe('getContractLogs', () => {
         jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce(null);
         db.getContractLogs(1, '0x123', '0x456')
             .catch(res => {
-                expect(res.message).toEqual(`Can't find a contract at 0x123.`);
+                expect(res.message).toEqual(`Can't find a contract at this address.`);
                 done();
             });
     });
