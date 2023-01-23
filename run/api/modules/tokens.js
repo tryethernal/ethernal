@@ -7,11 +7,11 @@ const holderHistory = async (req, res) => {
         if (!data.workspace || !data.from || !data.to)
             throw new Error('Missing parameters.');
 
-        const volume = await db.getTokenHolderHistory(data.workspace.id, req.params.address, data.from, data.to);
+        const history = await db.getTokenHolderHistory(data.workspace.id, req.params.address, data.from, data.to);
 
-        res.status(200).json(volume);
+        res.status(200).json(history);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.erc20Contracts.address.holderHistory', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.modules.tokens.holderHistory', error: error, data: data });
         res.status(400).send(error.message);
     }
 };
@@ -26,7 +26,7 @@ const cumulativeSupply = async (req, res) => {
 
         res.status(200).json(volume);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.erc20Contracts.address.cumulativeSupply', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.modules.tokens.cumulativeSupply', error: error, data: data });
         res.status(400).send(error.message);
     }
 };
@@ -41,7 +41,7 @@ const transferVolume = async (req, res) => {
 
         res.status(200).json(volume);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.erc20Contracts.address.transferVolume', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.modules.tokens.transferVolume', error: error, data: data });
         res.status(400).send(error.message);
     }
 };
@@ -56,7 +56,7 @@ const holders = async (req, res) => {
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.erc20Contracts.address.holders', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.modules.tokens.holders', error: error, data: data, queryParams: req.params });
         res.status(400).send(error.message);
     }
 };
@@ -71,7 +71,7 @@ const transfers = async (req, res) => {
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.erc20Contracts.address.transfers', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.modules.tokens.transfers', error: error, data: data, queryParams: req.params });
         res.status(400).send(error.message);
     }
 };

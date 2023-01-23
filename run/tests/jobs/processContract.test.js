@@ -123,7 +123,7 @@ describe('contractProcessing', () => {
     it('Should detect erc721 without an abi and store collection data', (done) => {
         jest.spyOn(axios, 'get').mockResolvedValueOnce(null);
         jest.spyOn(ethers, 'Contract').mockReturnValueOnce({
-            decimals: jest.fn().mockResolvedValue(null),
+            decimals: jest.fn().mockRejectedValue(null),
             symbol: jest.fn().mockResolvedValue(null),
             name: jest.fn().mockResolvedValue(null),
             totalSupply: jest.fn().mockResolvedValue(null)
