@@ -11,14 +11,14 @@
                     </v-card-subtitle>
                     <v-card-text>
                         <v-row>
-                            <v-col v-if="isErc20" cols="6">
+                            <v-col v-if="isErc20 || isErc721" cols="6">
                                 <small>Token Name</small><br>
                                 <span class="ml-2">
                                     <Hash-Link :type="'token'" :hash="contract.address" :withName="true" :withTokenName="true" />
                                 </span>
                             </v-col>
 
-                            <v-col v-if="isErc20" cols="6">
+                            <v-col v-if="isErc20 || isErc721" cols="6">
                                 <small>Token Symbol</small><br>
                                 <span class="text-h6 ml-2">{{ contract.tokenSymbol || 'N/A' }}</span>
                             </v-col>
