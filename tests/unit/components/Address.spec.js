@@ -1,9 +1,5 @@
 import flushPromises from 'flush-promises';
 import MockHelper from '../MockHelper';
-import ethereum from '../mocks/ethereum';
-
-jest.mock('@metamask/detect-provider');
-import detectEthereumProvider from '@metamask/detect-provider';
 import Address from '@/components/Address.vue';
 
 let helper;
@@ -46,7 +42,6 @@ describe('Address.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-
     it('Should display ERC20 contract stats', async () => {
         jest.spyOn(helper.mocks.server, 'getContract')
             .mockResolvedValueOnce({ data: {
@@ -67,6 +62,7 @@ describe('Address.vue', () => {
         });
 
         await flushPromises();
+        await flushPromises(); // Need that second one, not everything seems to be flushed here for some reason....
         expect(wrapper.html()).toMatchSnapshot();
     });
 
