@@ -12,9 +12,14 @@ describe('TokenTransfers.vue', () => {
 
     it('Should display erc721 token transfers', async () => {
         const wrapper = helper.mountFn(TokenTransfers, {
-            withTransactionData: true,
-            withTokenData: false,
             propsData: {
+                headers: [
+                    { text: 'Type', value: 'type' },
+                    { text: 'From', value: 'src' },
+                    { text: 'To', value: 'dst' },
+                    { text: 'Token', value: 'token' },
+                    { text: 'Amount', value: 'amount' }
+                ],
                 transfers: [
                     {
                         token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -46,45 +51,14 @@ describe('TokenTransfers.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should display token transfers', async () => {
-        const wrapper = helper.mountFn(TokenTransfers, {
-            propsData: {
-                withTransactionData: false,
-                withTokenData: true,
-                transfers: [
-                    {
-                        token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                        src: '0xC056255e6B1E6001852f9f20587A964cb89418e7',
-                        dst: '0x4f6742bADB049791CD9A37ea913f2BAC38d01279',
-                        amount: '100000000000000000'
-                    },
-                    {
-                        token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                        src: '0xC056255e6B1E6001852f9f20587A964cb89418e7',
-                        dst: '0x4f6742bADB049791CD9A37ea913f2BAC38d01279',
-                        amount: '100000000000000000'
-                    },
-                    {
-                        token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                        src: '0xC056255e6B1E6001852f9f20587A964cb89418e7',
-                        dst: '0x4f6742bADB049791CD9A37ea913f2BAC38d01279',
-                        amount: 1,
-                        tokenId: 1
-                    }
-                ]
-            },
-            stubs: ['Hash-Link']
-        });
-        await flushPromises();
-
-        expect(wrapper.html()).toMatchSnapshot();
-    });
-
     it('Should display fomatted amounts if info is present on token contract', async () => {
         const wrapper = helper.mountFn(TokenTransfers, {
             propsData: {
-                withTransactionData: false,
-                withTokenData: true,
+                headers: [
+                    { text: 'From', value: 'src' },
+                    { text: 'To', value: 'dst' },
+                    { text: 'Amount', value: 'amount' }
+                ],
                 transfers: [
                     {
                         token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',

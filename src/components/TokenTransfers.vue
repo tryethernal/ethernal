@@ -1,7 +1,7 @@
 <template>
     <v-data-table
         :loading="loading"
-        :hide-default-footer="count.length <= 10"
+        :hide-default-footer="transfers.length <= 10"
         :headers="headers"
         :sort-by="sortBy"
         :must-sort="true"
@@ -68,7 +68,6 @@ export default {
     },
     data: () => ({
         unformatted: false,
-        tableHeaders: [],
         decimals: {},
         symbols: {},
         type: {},

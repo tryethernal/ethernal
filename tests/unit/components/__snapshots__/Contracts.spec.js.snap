@@ -42,7 +42,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
         <tbody>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x0" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x0" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x0</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -53,7 +53,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x1" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x1" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x1</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -64,7 +64,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x2" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x2" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x2</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -75,7 +75,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x3" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x3" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x3</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -86,7 +86,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x4" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x4" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x4</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -97,7 +97,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x5" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x5" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x5</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -108,7 +108,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x6" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x6" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x6</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -119,7 +119,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x7" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x7" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x7</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -130,7 +130,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x8" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x8" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x8</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -141,7 +141,7 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x9" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x9" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x9</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -222,7 +222,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
         <tbody>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x0" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x0" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x0</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -233,7 +233,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x1" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x1" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x1</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -244,7 +244,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x2" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x2" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x2</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -255,7 +255,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x3" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x3" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x3</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -266,7 +266,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x4" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x4" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x4</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -277,7 +277,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x5" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x5" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x5</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -288,7 +288,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x6" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x6" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x6</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -299,7 +299,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x7" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x7" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x7</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -310,7 +310,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x8" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x8" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x8</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -321,7 +321,7 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x9" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x9" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">0x9</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -398,7 +398,7 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
         <tbody>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x0" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x0" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">My Contract</td>
             <td class="text-start"><span aria-haspopup="true" aria-expanded="false">
@@ -409,7 +409,7 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x1" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x1" type="contract"></hash-link-stub>
             </td>
             <td class="text-start">Another Contract</td>
             <td class="text-start"></td>
