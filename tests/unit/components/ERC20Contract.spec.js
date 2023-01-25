@@ -1,30 +1,32 @@
 import MockHelper from '../MockHelper';
-import flushPromises from 'flush-promises'
-import ERC721Collection from '@/components/ERC721Collection.vue';
+import flushPromises from 'flush-promises';
+import ERC20Contract from '@/components/ERC20Contract.vue';
 
-const helper = new MockHelper();
+let helper;
 const stubs = [
     'Hash-Link',
     'Stat-Number',
-    'Metamask',
     'Contract-Interaction',
-    'ERC-20-Token-Holders',
-    'ERC-721-Gallery',
-    'ERC-20-Contract-Analytics',
-    'ERC-721-Token-Transfers',
-    'Address-Transactions-List'
+    'ERC-2O-Token-Holders',
+    'ERC-2O-Contract-Analytics',
+    'ERC-2O-Token-Transfers',
+    'Metamask'
 ];
 
-describe('ERC721Collection.vue', () => {
-    beforeEach(() => jest.clearAllMocks());
+describe('ERC20Contract.vue', () => {
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        helper = new MockHelper();
+    });
 
     it('Should display contract info', async () => {
         jest.spyOn(helper.mocks.server, 'getContract')
             .mockResolvedValueOnce({ data: {
                 tokenName: 'Amalfi',
-                patterns: ['erc721'],
-                tokenTotalSupply: 10000,
-                tokenDecimals: null,
+                patterns: ['erc20'],
+                tokenTotalSupply: '1000000000',
+                tokenDecimals: 2,
                 address: '0x123',
                 creationTransaction: { hash: '0xabc' }
             }});
@@ -36,7 +38,7 @@ describe('ERC721Collection.vue', () => {
                 tokenCirculatingSupply: '1000000000',
             }});
 
-        const wrapper = helper.mountFn(ERC721Collection, {
+        const wrapper = helper.mountFn(ERC20Contract, {
             propsData: {
                 address: '0x123'
             },
@@ -66,7 +68,7 @@ describe('ERC721Collection.vue', () => {
                 tokenCirculatingSupply: 0,
             }});
 
-        const wrapper = helper.mountFn(ERC721Collection, {
+        const wrapper = helper.mountFn(ERC20Contract, {
             propsData: {
                 address: '0x123'
             },

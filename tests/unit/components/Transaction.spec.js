@@ -1,9 +1,16 @@
-const ethers = require('ethers');
 import flushPromises from 'flush-promises';
 import MockHelper from '../MockHelper';
 
 import Transaction from '@/components/Transaction.vue';
 import USDCTransferTx from '../fixtures/USDCTransferTx.json';
+
+const stubs = [
+    'HashLink',
+    'TransactionData',
+    'TraceStep',
+    'TransactionTokenTransfers',
+    'TokensBalanceDiff'
+];
 
 describe('Transaction.vue', () => {
     let helper;
@@ -18,9 +25,9 @@ describe('Transaction.vue', () => {
                 ...USDCTransferTx,
                 block: { gasLimit: '1000' },
                 traceSteps: [],
-                tokenTransfers: [],
-                formattedBalanceChanges: {},
                 receipt: { ...USDCTransferTx.receipt, status: 0 },
+                formattedBalanceChanges: {},
+                tokenTransferCount: 0,
                 parsedError: 'Error',
                 rawError: null
             }});
@@ -29,7 +36,7 @@ describe('Transaction.vue', () => {
             propsData: {
                 hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
             },
-            stubs: ['Hash-Link', 'Token-Transfers', 'Tokens-Balance-Diff', 'Transaction-Data', 'Trace-Step']
+            stubs: stubs
         });
         await flushPromises();
 
@@ -42,8 +49,8 @@ describe('Transaction.vue', () => {
                 ...USDCTransferTx,
                 block: { gasLimit: '1000' },
                 traceSteps: [],
-                tokenTransfers: [],
                 formattedBalanceChanges: {},
+                tokenTransferCount: 0,
                 receipt: { ...USDCTransferTx.receipt, status: 0 },
                 parsedError: null,
                 rawError: JSON.stringify({ message: 'this is an error'})
@@ -53,7 +60,7 @@ describe('Transaction.vue', () => {
             propsData: {
                 hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
             },
-            stubs: ['Hash-Link', 'Token-Transfers', 'Tokens-Balance-Diff', 'Transaction-Data', 'Trace-Step']
+            stubs: stubs
         });
         await flushPromises();
 
@@ -66,8 +73,8 @@ describe('Transaction.vue', () => {
                 ...USDCTransferTx,
                 block: { gasLimit: '1000' },
                 traceSteps: [],
-                tokenTransfers: [],
                 formattedBalanceChanges: {},
+                tokenTransferCount: 2,
                 receipt: { ...USDCTransferTx.receipt, status: 1 },
             }});
 
@@ -75,7 +82,7 @@ describe('Transaction.vue', () => {
             propsData: {
                 hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
             },
-            stubs: ['Hash-Link', 'Token-Transfers', 'Tokens-Balance-Diff', 'Transaction-Data', 'Trace-Step'],
+            stubs: stubs,
             getters: {
                 isPublicExplorer: jest.fn().mockReturnValue(true)
             }

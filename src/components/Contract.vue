@@ -1,15 +1,34 @@
 <template>
     <v-container fluid>
+        <v-alert v-if="notAContract" dense text type="warning">There doesn't seem to be a contract at this address</v-alert>
         <v-row class="mb-1">
             <v-col cols="12" lg="5">
                 <v-card outlined style="height: 100%">
                     <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
-                    <v-card-title v-else-if="contract.name">{{ contract.name }}</v-card-title>
-                    <v-card-subtitle>
+                    <template v-if="contract.name">
+                        <v-card-title>
+                            {{ contract.name }}
+                            <template v-if="isUserAdmin">
+                                <v-spacer></v-spacer>
+                                <Remove-Contract-Confirmation-Modal ref="removeContractConfirmationModal" />
+                                <v-btn x-small icon @click="openRemoveContractConfirmationModal()">
+                                    <v-icon color="red">mdi-delete</v-icon>
+                                </v-btn>
+                            </template>
+                        </v-card-title>
+                    </template>
+                    <v-card-subtitle style="display: flex;" class="justify-space-between">
                         <v-skeleton-loader v-if="loadingContract" type="chip"></v-skeleton-loader>
                         <v-chip v-else v-for="(pattern, idx) in contract.patterns" :key="idx" x-small class="success mr-2">
                             {{ formatContractPattern(pattern) }}
                         </v-chip>
+                        <template v-if="isUserAdmin && !contract.name">
+                            <v-spacer></v-spacer>
+                            <Remove-Contract-Confirmation-Modal ref="removeContractConfirmationModal" />
+                            <v-btn x-small icon @click="openRemoveContractConfirmationModal()">
+                                <v-icon color="red">mdi-delete</v-icon>
+                            </v-btn>
+                        </template>
                     </v-card-subtitle>
                     <v-card-text>
                         <v-row>
@@ -35,7 +54,7 @@
                                 <small>Address</small><br>
                                 <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
                                 <span v-else class="ml-2">
-                                    <Hash-Link :type="'address'" :hash="contract.address" />
+                                    <Hash-Link :type="'address'" :hash="address" />
                                 </span>
                             </v-col>
 
@@ -139,6 +158,7 @@ import ContractLogs from './ContractLogs';
 import ContractCode from './ContractCode';
 import HashLink from './HashLink';
 import FromWei from '../filters/FromWei';
+import RemoveContractConfirmationModal from './RemoveContractConfirmationModal';
 
 export default {
     name: 'Contract',
@@ -149,7 +169,8 @@ export default {
         ContractInteraction,
         ContractLogs,
         ContractStorage,
-        ContractCode
+        ContractCode,
+        RemoveContractConfirmationModal
     },
     filters: {
         FromWei
@@ -167,6 +188,7 @@ export default {
         receivedErc20TokenTransferCount: null,
         metamaskData: {},
         connectedAccountBalance: null,
+        notAContract: false
     }),
     mounted() {
         this.server.getAccountBalance(this.address).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
@@ -175,13 +197,22 @@ export default {
         moment: moment,
         formatNumber: formatNumber,
         formatContractPattern: formatContractPattern,
+        openRemoveContractConfirmationModal() {
+            this.$refs.removeContractConfirmationModal
+                .open({ address: this.address, workspace: this.currentWorkspace.name });
+        }
     },
     watch: {
         address: {
             immediate: true,
             handler(address) {
                 this.server.getContract(address)
-                    .then(({ data }) => this.contract = data)
+                    .then(({ data }) => {
+                        if (data)
+                            this.contract = data
+                        else
+                            this.notAContract = true;
+                    })
                     .finally(() => this.loadingContract = false);
 
                 this.server.getAddressStats(address)
@@ -197,7 +228,8 @@ export default {
     computed: {
         ...mapGetters([
             'currentWorkspace',
-            'chain'
+            'chain',
+            'isUserAdmin'
         ]),
         isErc20() {
             return this.contract.patterns.indexOf('erc20') > -1;

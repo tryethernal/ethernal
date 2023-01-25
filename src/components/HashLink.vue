@@ -60,7 +60,7 @@ export default {
         }
     },
     computed: {
-        formattedHash: function () {
+        formattedHash() {
             if (!this.hash) return;
             if (this.fullHash) {
                 return this.hash;
@@ -72,7 +72,7 @@ export default {
                 return `${this.hash.slice(0, 10)}...${this.hash.slice(-5)}`;
             }
         },
-        name: function() {
+        name() {
             if (this.withName) {
                 if (this.token && this.withTokenName) {
                     if (this.token.symbol && !this.withTokenName) return this.token.symbol;
@@ -84,8 +84,8 @@ export default {
         }
     },
     methods: {
-        link: function() { return `/${[this.type, this.hash].join('/')}`; },
-        copyHash: function() {
+        link() { return `/${[this.type, this.hash].join('/')}`; },
+        copyHash() {
             const webhookField = document.querySelector(`#copyElement-${this.hash}`);
             webhookField.setAttribute('type', 'text');
             webhookField.select();

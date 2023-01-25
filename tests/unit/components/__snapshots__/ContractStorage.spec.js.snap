@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ContractStorage.vue Should display admin error message 1`] = `
+<div class="container container--fluid">
+  <div class="mt-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__text">
+      Storage is not available on this contract. This is because the AST is not available. It can be for the following reasons:
+      <ul>
+        <li>This contract has been imported (AST is not available yet through imports).</li>
+        <li>You've synced the contract through the CLI/Hardhat plugin, but you didn't activate AST upload. you can do it by setting <code>uploadAst: true;</code> in your Hardhat config or by passing <code>--astUpload true</code> to the CLI.</li>
+        <li>You've synced the contract through the CLI/Hardhat plugin, but are on a free plan, meaning that AST for your contracts are deleted after 7 days. You need to push the contract again, or <a>upgrade your plan</a>.</li>
+      </ul> <br> <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/contracts/reading-variables">Read more</a> on how storage reading works.
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ContractStorage.vue Should display non admin error message 1`] = `
+<div class="container container--fluid">
+  <div class="mt-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__text">
+      Storage is not available on this contract.
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ContractStorage.vue Should display storage structure 1`] = `
+<div class="container container--fluid">
+  <h4>Variables</h4>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <!---->
+    <div class="v-card__text">
+      <storage-structure-stub storage="[object Object]"></storage-structure-stub>
+      <storage-structure-stub storage="[object Object]"></storage-structure-stub>
+      <storage-structure-stub storage="[object Object]"></storage-structure-stub>
+      <storage-structure-stub storage="[object Object]"></storage-structure-stub>
+      <storage-structure-stub storage="[object Object]"></storage-structure-stub>
+      <storage-structure-stub storage="[object Object]"></storage-structure-stub>
+      <storage-structure-stub storage="[object Object]"></storage-structure-stub>
+      <storage-structure-stub storage="[object Object]"></storage-structure-stub>
+      <storage-structure-stub storage="[object Object]"></storage-structure-stub>
+      <storage-structure-stub storage="[object Object]"></storage-structure-stub>
+      <storage-structure-stub storage="[object Object]"></storage-structure-stub>
+      <storage-structure-stub storage="[object Object]"></storage-structure-stub>
+    </div>
+    <!---->
+  </div>
+  <div class="row">
+    <div class="col col-3">
+      <h4>Transactions</h4>
+      <transaction-picker-stub transactions=""></transaction-picker-stub>
+    </div>
+    <div class="col col-9">
+      <h4>Data</h4>
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <!---->
+        <div class="v-card__text">
+          <transaction-data-stub abi="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]" transaction="[object Object]"></transaction-data-stub>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

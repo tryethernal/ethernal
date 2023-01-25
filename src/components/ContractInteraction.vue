@@ -4,14 +4,14 @@
         <v-card outlined class="mb-4">
             <v-skeleton-loader v-if="loading" class="col-4" type="list-item-three-line"></v-skeleton-loader>
             <template v-else>
-                <Import-Artifact-Modal ref="importArtifactModal" v-if="currentWorkspace.isAdmin" />
+                <Import-Artifact-Modal ref="importArtifactModal" v-if="isUserAdmin" />
                 <v-card-text v-if="isContractVerified" class="mb-1 success--text">
                     <v-icon class="success--text mr-1" small>mdi-check-circle</v-icon>Verified contract.
                 </v-card-text>
                 <v-card-text v-if="contract.abi">
-                    An ABI has been uploaded.<span v-if="currentWorkspace.isAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
+                    An ABI has been uploaded.<span v-if="isUserAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
                 </v-card-text>
-                <v-card-text v-if="!contract.abi && currentWorkspace.isAdmin">
+                <v-card-text v-if="!contract.abi && isUserAdmin">
                     Upload an ABI to interact with the contract:
                     <ul>
                         <li>For Hardhat projects, you can use our <a href="https://github.com/tryethernal/hardhat-ethernal" target="_blank">plugin</a>.</li>
@@ -19,7 +19,7 @@
                         <li>Or you can manually edit the contract name & ABI <a href="#" @click.stop="openImportArtifactModal()">here</a>.</li>
                     </ul>
                 </v-card-text>
-                <v-card-text v-if="!contract.name && !contract.abi && !currentWorkspace.isAdmin">
+                <v-card-text v-if="!contract.name && !contract.abi && !isUserAdmin">
                     This contract hasn't been verified yet.
                 </v-card-text>
             </template>
@@ -158,6 +158,7 @@ export default {
         ...mapGetters([
             'currentWorkspace',
             'accounts',
+            'isUserAdmin'
         ]),
         isContractVerified() {
             return this.contract.verificationStatus == 'success';

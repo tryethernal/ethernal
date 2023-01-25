@@ -41,6 +41,10 @@ jest.mock('@/plugins/server', () => ({
                 getApiToken: jest.fn(),
                 setCurrentWorkspace: jest.fn().mockResolvedValue(null),
                 getAddressStats: jest.fn(),
+                getContractStats: jest.fn(),
+                getTokenTransferVolume: jest.fn(),
+                getTokenCumulativeSupply: jest.fn(),
+                getTokenHolderHistory: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))

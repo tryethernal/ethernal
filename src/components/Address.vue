@@ -145,11 +145,7 @@ export default {
         this.server.getAccountBalance(this.address).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
     },
     methods: {
-        formatContractPattern: formatContractPattern,
-        openRemoveContractConfirmationModal: function() {
-            this.$refs.removeContractConfirmationModal
-                .open({ address: this.lowerHash, workspace: this.currentWorkspace.name });
-        }
+        formatContractPattern: formatContractPattern
     },
     watch: {
         address: {

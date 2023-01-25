@@ -85,8 +85,6 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'currentWorkspace',
-            'isUserAdmin',
             'isPublicExplorer'
         ]),
         isVerifiedContract() {
