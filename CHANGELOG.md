@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.6.8] - 2023-01-26
+### Fixed
+- Bug preventing some balance changes to be created in some cases
+
 ## [3.6.7] - 2023-01-18
 ### Fixed
 - Tests

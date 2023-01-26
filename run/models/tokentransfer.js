@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeCreateBalanceChange(balanceChange) {
-        const existingChangeCount = await this.countTokenBalanceChanges({
+        const existingChangeCount = await sequelize.models.TokenBalanceChange.count({
             where: {
                 transactionId: this.transactionId,
                 token: this.token,
@@ -33,24 +33,18 @@ module.exports = (sequelize, DataTypes) => {
             }
         });
 
-        if (existingChangeCount > 0) {
-            await this.update({ processed: true }, { transaction });
+        if (existingChangeCount > 0)
             return;
-        }
 
-        return sequelize.transaction(async (transaction) => {
-            await this.createTokenBalanceChange(sanitize({
-                transactionId: this.transactionId,
-                workspaceId: this.workspaceId,
-                token: this.token,
-                address: balanceChange.address,
-                currentBalance: balanceChange.currentBalance,
-                previousBalance: balanceChange.previousBalance,
-                diff: balanceChange.diff
-            }), { transaction });
-
-            await this.update({ processed: true }, { transaction });
-        });
+        return this.createTokenBalanceChange(sanitize({
+            transactionId: this.transactionId,
+            workspaceId: this.workspaceId,
+            token: this.token,
+            address: balanceChange.address,
+            currentBalance: balanceChange.currentBalance,
+            previousBalance: balanceChange.previousBalance,
+            diff: balanceChange.diff
+        }));
     }
   }
   TokenTransfer.init({
@@ -107,12 +101,28 @@ module.exports = (sequelize, DataTypes) => {
                 ]
             });
 
-            if (transaction.workspace.public) {
+            if (transaction.workspace.public)
                 await enqueue('processTokenTransfer',
                     `processTokenTransfer-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.id}`, {
                         tokenTransferId: tokenTransfer.id
                     }
                 );
+
+            if (tokenTransfer.tokenId) {
+                if (transaction.workspace.public) {
+                    await enqueue('reloadErc721Token',
+                        `reloadErc721Token-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.tokenId}`, {
+                            workspaceId: tokenTransfer.workspaceId,
+                            address: tokenTransfer.token,
+                            tokenId: tokenTransfer.tokenId
+                        }
+                    );
+                }
+                else {
+                    const contract = await tokenTransfer.getContract()
+                    await contract.update({ processed: false });
+                    trigger(`private-contracts;workspace=${tokenTransfer.workspaceId}`, 'new', null);
+                }
             }
 
             if (tokenTransfer.tokenId && transaction.workspace.public)
