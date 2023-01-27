@@ -46,6 +46,6 @@ module.exports = async job => {
             transaction: txSynced
         });
     } catch(error) {
-        return logger.error(error.message);
+        console.log(error);
     }
 };
