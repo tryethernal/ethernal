@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.6.10] - 2023-01-27
+### Fixed
+- Better queuing tracking
+
 ## [3.6.9] - 2023-01-27
 ### Fixed
 - Bug preventing some balance changes to be created in some cases

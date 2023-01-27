@@ -23,8 +23,8 @@ module.exports = async job => {
     const storedBlock = await db.storeBlock(data.userId, data.workspace, syncedBlock);
 
     for (let i = 0; i < block.transactions.length; i++) {
-        await enqueue('transactionSync', `transactionSync-${block.transactions[i].hash}`, { userId: data.userId, workspace: data.workspace, transaction: stringifyBns(block.transactions[i]), timestamp: block.timestamp });
+        await enqueue('transactionSync', `transactionSync-${data.workspace}-${block.transactions[i].hash}`, { userId: data.userId, workspace: data.workspace, transaction: stringifyBns(block.transactions[i]), timestamp: block.timestamp });
     }
 
-    return;
+    return true;
 };
