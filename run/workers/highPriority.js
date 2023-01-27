@@ -11,7 +11,7 @@ priorities['high'].forEach(jobName => {
         { concurrency: 1000 , connection },
     );
     worker.on('failed', (job, error) => {
-        logger.error(error.message, {
+        return logger.error(error.message, {
             location: `workers.highPriority.${jobName}`,
             error: error,
             data: job.data 
