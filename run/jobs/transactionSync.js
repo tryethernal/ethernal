@@ -1,4 +1,5 @@
 const express = require('express');
+const logger = require('../lib/logger');
 const { ProviderConnector } = require('../lib/rpc');
 const { sanitize, stringifyBns } = require('../lib/utils');
 const db = require('../lib/firebase');
