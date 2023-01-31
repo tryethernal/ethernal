@@ -26,6 +26,7 @@ const serverFunctions = {
     },
     _getWeb3Provider: function(url) {
         const rpcServer = new URL(url);
+
         let provider;
         if (rpcServer.protocol == 'http:' || rpcServer.protocol == 'https:') {
             provider = Web3.providers.HttpProvider;
@@ -33,10 +34,18 @@ const serverFunctions = {
         else if (rpcServer.protocol == 'ws:' || rpcServer.protocol == 'wss:') {
             provider = Web3.providers.WebsocketProvider;
         }
-        return new provider(url);
+
+        let options = {};
+        if (rpcServer.username.length || rpcServer.password.length)
+            options.headers = [
+                { name: 'Authorization', value: `Basic ${rpcServer.username}:${rpcServer.password}` }
+            ];
+
+        return new provider(rpcServer.origin, options);
     },
     _getProvider: function(url) {
         const rpcServer = new URL(url);
+
         let provider;
         if (rpcServer.protocol == 'http:' || rpcServer.protocol == 'https:') {
             provider = ethers.providers.JsonRpcProvider;
@@ -45,7 +54,16 @@ const serverFunctions = {
             provider = ethers.providers.WebSocketProvider;
         }
 
-        return new provider(url);
+        let authenticatedUrl = url;
+        if (rpcServer.username.length || rpcServer.password.length)
+            authenticatedUrl = {
+                url: rpcServer.origin,
+                user: rpcServer.username,
+                password: rpcServer.password
+            };
+
+        console.log(authenticatedUrl)
+        return new provider(authenticatedUrl);
     },
 
     // Public
@@ -97,15 +115,14 @@ const serverFunctions = {
     initRpcServer: async function(data) {
         try {
             const rpcProvider = new serverFunctions._getProvider(data.rpcServer);
-            const web3Rpc = new Web3(serverFunctions._getWeb3Provider(data.rpcServer));
-            var networkId = await web3Rpc.eth.net.getId();
+            const { chainId } = await rpcProvider.getNetwork()
             var latestBlockNumber = await rpcProvider.getBlockNumber();
             var latestBlock = await rpcProvider.getBlock(latestBlockNumber);
             var gasLimit = latestBlock.gasLimit.toString();
 
             var workspace = {
                 rpcServer: data.rpcServer,
-                networkId: networkId,
+                networkId: chainId,
                 settings: {
                     gasLimit: gasLimit
                 }
