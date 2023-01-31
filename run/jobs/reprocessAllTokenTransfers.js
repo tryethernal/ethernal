@@ -19,8 +19,7 @@ module.exports = async job => {
             },
             '$tokenTransfer.transactionLogId$': null
         },
-        limit: batchSize,
-        order: [['id', 'desc']]
+        limit: batchSize
     })
 
     for (let i = 0; i < logs.length; i++) {
