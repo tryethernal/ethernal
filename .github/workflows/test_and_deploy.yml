@@ -65,6 +65,7 @@ jobs:
         run: npm run test:unit
         env:
           VUE_APP_API_ROOT: http://localhost:8081
+          VUE_APP_ENABLE_BILLING: true
 
   create_release:
     if: startsWith(github.ref, 'refs/tags/v')
