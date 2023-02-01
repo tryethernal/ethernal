@@ -1,4 +1,5 @@
 const { ProviderConnector } = require('../lib/rpc');
+const { isMarketingEnabled } = require('../lib/flags');
 const db = require('../lib/firebase');
 
 module.exports = async job => {
@@ -6,7 +7,7 @@ module.exports = async job => {
     if (!data.workspaceId)
         throw new Error('Missing parameter.');
 
-    if (!process.env.ENABLE_INAPP_MARKETING)
+    if (!isMarketingEnabled)
         return;
 
     const workspace = await db.getWorkspaceById(data.workspaceId);

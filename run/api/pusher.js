@@ -1,10 +1,12 @@
 const express = require('express');
 const Pusher = require('pusher');
+const logger = require('../lib/logger');
+const { isPusherEnabled } = require('../lib/flags');
 const router = express.Router();
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 
 let pusher;
-if (process.env.PUSHER_APP_ID && process.env.PUSHER_KEY && process.env.PUSHER_SECRET) {
+if (isPusherEnabled) {
     pusher = new Pusher({
         appId: process.env.PUSHER_APP_ID,
         key: process.env.PUSHER_KEY,
@@ -14,9 +16,9 @@ if (process.env.PUSHER_APP_ID && process.env.PUSHER_KEY && process.env.PUSHER_SE
     });
 }
 
-const presenceMiddleware = async (next) => {
+const presenceMiddleware = async (req, res, next) => {
     try {
-        if (process.env.PUSHER_APP_ID && process.env.PUSHER_KEY && process.env.PUSHER_SECRET)
+        if (isPusherEnabled)
             next();
         else
             res.sendStatus(404);

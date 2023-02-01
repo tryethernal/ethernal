@@ -1,4 +1,5 @@
 const express = require('express');
+const { isStripeEnabled, isMarketingEnabled } = require('../lib/flags');
 const router = express.Router();
 
 const blocks = require('./blocks');
@@ -12,7 +13,6 @@ const pusher = require('./pusher');
 const explorers = require('./explorers');
 const search = require('./search');
 const stats = require('./stats');
-const marketing = require('./marketing');
 const erc721Collections = require('./erc721Collections');
 const erc721Tokens = require('./erc721Tokens');
 
@@ -28,13 +28,17 @@ router.use('/pusher', pusher);
 router.use('/explorers', explorers);
 router.use('/search', search);
 router.use('/stats', stats);
-router.use('/marketing', marketing);
 router.use('/erc721Collections', erc721Collections);
 router.use('/erc721Tokens', erc721Tokens);
 
-if (process.env.STRIPE_WEBHOOK_SECRET && process.env.STRIPE_SECRET_KEY) {
+if (isStripeEnabled) {
     const stripe = require('./stripe');
     router.use('/stripe', stripe);
+}
+
+if (isMarketingEnabled) {
+    const marketing = require('./marketing');
+    router.use('/marketing', marketing);
 }
 
 module.exports = router;

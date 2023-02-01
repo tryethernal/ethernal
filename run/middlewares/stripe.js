@@ -1,6 +1,6 @@
 const logger = require('../lib/logger');
 
-module.exports = async (next) => {
+module.exports = async (req, res, next) => {
     try {
         if (process.env.STRIPE_WEBHOOK_SECRET && process.env.STRIPE_SECRET_KEY)
             next();
