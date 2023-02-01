@@ -10,7 +10,6 @@ const accounts = require('./accounts');
 const addresses = require('./addresses');
 const pusher = require('./pusher');
 const explorers = require('./explorers');
-const stripe = require('./stripe');
 const search = require('./search');
 const stats = require('./stats');
 const marketing = require('./marketing');
@@ -27,11 +26,15 @@ router.use('/add', accounts);
 router.use('/addresses', addresses);
 router.use('/pusher', pusher);
 router.use('/explorers', explorers);
-router.use('/stripe', stripe);
 router.use('/search', search);
 router.use('/stats', stats);
 router.use('/marketing', marketing);
 router.use('/erc721Collections', erc721Collections);
 router.use('/erc721Tokens', erc721Tokens);
+
+if (process.env.STRIPE_WEBHOOK_SECRET && process.env.STRIPE_SECRET_KEY) {
+    const stripe = require('./stripe');
+    router.use('/stripe', stripe);
+}
 
 module.exports = router;

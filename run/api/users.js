@@ -55,19 +55,25 @@ router.post('/', async (req, res) => {
         if (!data.firebaseUserId)
             throw new Error('Missing parameter.');
 
+        const isStripeEnabled = process.env.STRIPE_SECRET_KEY && process.env.STRIPE_WEBHOOK_SECRET;
+
         const apiKey = uuidAPIKey.create().apiKey;
         const encryptedKey = encrypt(apiKey);
 
         const authUser = await getAuth().getUser(data.firebaseUserId);
-        const customer = await stripe.customers.create({
+
+        const customer = isStripeEnabled ? await stripe.customers.create({
             email: authUser.email
-        });
+        }) : { id: 'dummy' };
+
+        // If Stripe isn't setup we assume all users are premium
+        const plan = isStripeEnabled ? 'free' : 'premium';
 
         const user = await db.createUser(data.firebaseUserId, {
             email: authUser.email,
             apiKey: encryptedKey,
             stripeCustomerId: customer.id,
-            plan: 'free'
+            plan: plan
         });
 
         await enqueue('processUser', `processUser-${data.firebaseUserId}`, { uid: data.firebaseUserId });

@@ -62,7 +62,6 @@ const serverFunctions = {
                 password: rpcServer.password
             };
 
-        console.log(authenticatedUrl)
         return new provider(authenticatedUrl);
     },
 
@@ -467,15 +466,6 @@ export const serverPlugin = {
                     const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Collections/${contractAddress}/tokens`;
                     return axios.get(resource, { params });
                 }
-            },
-
-            setRemoteFlag() {
-                const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
-                };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/marketing/setRemoteFlag`;
-                return axios.post(resource, { data });
             },
 
             submitExplorerLead(email) {

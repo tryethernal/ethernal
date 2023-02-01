@@ -6,6 +6,9 @@ module.exports = async job => {
     if (!data.workspaceId)
         throw new Error('Missing parameter.');
 
+    if (!process.env.ENABLE_INAPP_MARKETING)
+        return;
+
     const workspace = await db.getWorkspaceById(data.workspaceId);
 
     try {

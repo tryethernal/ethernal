@@ -9,9 +9,11 @@ module.exports = {
         config
             .plugin('html')
             .tap(args => {
-                args[0]['enableAnalytics'] = !!process.env.VUE_APP_ENABLE_ANALYTICS;
-                args[0]['enableFeedback'] = process.env.VUE_APP_ENABLE_FEEDBACK;
-                return args;
+                return {
+                    enableAnalytics: !!process.env.VUE_APP_ENABLE_ANALYTICS,
+                    enableFeedback: process.env.VUE_APP_ENABLE_FEEDBACK
+                    ...args
+                };
             })
     },
     configureWebpack: {

@@ -365,11 +365,7 @@ export default {
 
                     if (!this.isPublicExplorer) {
                         this.server.getProductRoadToken().then(res => this.prAuthToken = res.data.token);
-                        this.server.getMarketingFlags().then(({ data: { isRemote }}) => {
-                            if (isRemote === null)
-                                this.server.setRemoteFlag();
-                            this.isRemote = !!isRemote;
-                        });
+                        this.server.getMarketingFlags().then(({ data: { isRemote }}) => this.isRemote = !!isRemote);
                     }
                 });
         },
