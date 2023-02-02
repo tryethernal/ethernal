@@ -11,7 +11,7 @@ exports[`TraceStep.vue Should display the formatted step 1`] = `
                 </span> <span class="primary mr-2 v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content">call</span></span>
         <!---->
         <hash-link-stub notcopiable="true" withname="true" fullhash="true" hash="0xab8e74017a8cc7c15ffccd726603790d26d7deca" type="address"></hash-link-stub><span>.claim(</span>
-        <div><span class="ml-8 ml-4"><span>uint256 _poolId: </span> <span><!----> <span><span>
+        <div><span class="ml-8 ml-4"><span>uint256 _poolId: </span> <span><!----> <span class=""><span>
                 2
             </span></span></span>
           </span></div><span class="ml-4">)</span>

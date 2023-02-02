@@ -37,11 +37,11 @@ exports[`Transaction.vue Should display parsed error messages 1`] = `
   <div class="row my-2">
     <div class="text-truncate col col-5">
       <div class="text-overline">From</div>
-      <hash-link-stub fullhash="true" hash="0xc056255e6b1e6001852f9f20587a964cb89418e7" type="address"></hash-link-stub>
+      <hashlink-stub fullhash="true" hash="0xc056255e6b1e6001852f9f20587a964cb89418e7" type="address"></hashlink-stub>
     </div>
     <div class="text-truncate col col-5">
       <div class="text-overline">To</div>
-      <hash-link-stub withname="true" fullhash="true" hash="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" type="address"></hash-link-stub>
+      <hashlink-stub withname="true" fullhash="true" hash="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" type="address"></hashlink-stub>
     </div>
   </div>
   <div class="row mb-4">
@@ -69,18 +69,9 @@ exports[`Transaction.vue Should display parsed error messages 1`] = `
       84,000
     </div>
   </div>
-  <div class="row my-2" style="display: none;">
-    <div class="col">
-      <h3 class="mb-2">Token Transfers</h3>
-      <token-transfers-stub withtokendata="true" transfers=""></token-transfers-stub>
-    </div>
-  </div>
-  <div class="row my-2" style="display: none;">
-    <div class="col">
-      <h3 class="mb-2">Balance Changes</h3>
-    </div>
-  </div>
-  <transaction-data-stub withoutstorageheader="true" transaction="[object Object]"></transaction-data-stub>
+  <!---->
+  <!---->
+  <transactiondata-stub withoutstorageheader="true" transaction="[object Object]"></transactiondata-stub>
   <!---->
 </div>
 `;
@@ -124,11 +115,11 @@ exports[`Transaction.vue Should display raw error messages 1`] = `
   <div class="row my-2">
     <div class="text-truncate col col-5">
       <div class="text-overline">From</div>
-      <hash-link-stub fullhash="true" hash="0xc056255e6b1e6001852f9f20587a964cb89418e7" type="address"></hash-link-stub>
+      <hashlink-stub fullhash="true" hash="0xc056255e6b1e6001852f9f20587a964cb89418e7" type="address"></hashlink-stub>
     </div>
     <div class="text-truncate col col-5">
       <div class="text-overline">To</div>
-      <hash-link-stub withname="true" fullhash="true" hash="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" type="address"></hash-link-stub>
+      <hashlink-stub withname="true" fullhash="true" hash="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" type="address"></hashlink-stub>
     </div>
   </div>
   <div class="row mb-4">
@@ -156,18 +147,9 @@ exports[`Transaction.vue Should display raw error messages 1`] = `
       84,000
     </div>
   </div>
-  <div class="row my-2" style="display: none;">
-    <div class="col">
-      <h3 class="mb-2">Token Transfers</h3>
-      <token-transfers-stub withtokendata="true" transfers=""></token-transfers-stub>
-    </div>
-  </div>
-  <div class="row my-2" style="display: none;">
-    <div class="col">
-      <h3 class="mb-2">Balance Changes</h3>
-    </div>
-  </div>
-  <transaction-data-stub withoutstorageheader="true" transaction="[object Object]"></transaction-data-stub>
+  <!---->
+  <!---->
+  <transactiondata-stub withoutstorageheader="true" transaction="[object Object]"></transactiondata-stub>
   <!---->
 </div>
 `;
@@ -190,11 +172,11 @@ exports[`Transaction.vue Should not display the menu if public explorer 1`] = `
   <div class="row my-2">
     <div class="text-truncate col col-5">
       <div class="text-overline">From</div>
-      <hash-link-stub fullhash="true" hash="0xc056255e6b1e6001852f9f20587a964cb89418e7" type="address"></hash-link-stub>
+      <hashlink-stub fullhash="true" hash="0xc056255e6b1e6001852f9f20587a964cb89418e7" type="address"></hashlink-stub>
     </div>
     <div class="text-truncate col col-5">
       <div class="text-overline">To</div>
-      <hash-link-stub withname="true" fullhash="true" hash="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" type="address"></hash-link-stub>
+      <hashlink-stub withname="true" fullhash="true" hash="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" type="address"></hashlink-stub>
     </div>
   </div>
   <div class="row mb-4">
@@ -222,18 +204,18 @@ exports[`Transaction.vue Should not display the menu if public explorer 1`] = `
       84,000
     </div>
   </div>
-  <div class="row my-2" style="display: none;">
+  <div class="row my-2">
     <div class="col">
       <h3 class="mb-2">Token Transfers</h3>
-      <token-transfers-stub withtokendata="true" transfers=""></token-transfers-stub>
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__text">
+          <transactiontokentransfers-stub hash="0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759" withtokendata="true"></transactiontokentransfers-stub>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="row my-2" style="display: none;">
-    <div class="col">
-      <h3 class="mb-2">Balance Changes</h3>
-    </div>
-  </div>
-  <transaction-data-stub withoutstorageheader="true" transaction="[object Object]"></transaction-data-stub>
+  <!---->
+  <transactiondata-stub withoutstorageheader="true" transaction="[object Object]"></transactiondata-stub>
   <!---->
 </div>
 `;

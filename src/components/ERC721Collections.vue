@@ -14,7 +14,7 @@
             item-key="address"
             @update:options="getTokens">
             <template v-slot:item.address="{ item }">
-                <Hash-Link :type="'address'" :hash="item.address" />
+                <Hash-Link :type="'nft'" :hash="item.address" />
             </template>
             <template v-slot:item.tokenName="{ item }">
                 {{ item.tokenName }}
@@ -23,7 +23,7 @@
                 {{ item.tokenSymbol }}
             </template>
             <template v-slot:item.tokenTotalSupply="{ item }">
-                {{ item.tokenTotalSupply ? parseInt(item.tokenTotalSupply).toLocaleString() : '' }}
+                {{ item.tokenTotalSupply ? parseInt(item.tokenTotalSupply).toLocaleString() : 'N/A' }}
             </template>
             <template v-slot:item.tags="{ item }">
                 <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" x-small class="success mr-2">

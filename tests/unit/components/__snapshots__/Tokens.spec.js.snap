@@ -22,7 +22,7 @@ exports[`Tokens.vue Should display token contracts 1`] = `
         <tbody>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x123" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x123" type="token"></hash-link-stub>
             </td>
             <td class="text-start">
               Ethernal
@@ -36,7 +36,7 @@ exports[`Tokens.vue Should display token contracts 1`] = `
           </tr>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x124" type="address"></hash-link-stub>
+              <hash-link-stub hash="0x124" type="token"></hash-link-stub>
             </td>
             <td class="text-start">
               USDC

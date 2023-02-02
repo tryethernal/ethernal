@@ -13,10 +13,10 @@
         </v-card-subtitle>
         <v-card-text class="text-h3" align="center">
             <v-skeleton-loader v-if="loading" type="list-item"></v-skeleton-loader>
-            <template v-else-if="!!value">
+            <template v-else-if="isValueDefined">
                 <router-link v-if="type == 'link'" style="text-decoration: none;" :to="href">{{ commify(value) }}</router-link>
                 <span v-else>
-                    {{ commify(value) }}
+                    {{ formatNumber(value, { short: true, decimals: decimals }) }}
                 </span>
             </template>
             <template v-else>
@@ -28,11 +28,19 @@
 
 <script>
 const ethers = require('ethers');
+const { formatNumber } = require('../lib/utils');
+
 export default {
     name: 'StatNumber',
-    props: ['type', 'title', 'value', 'loading', 'href', 'infoTooltip'],
+    props: ['type', 'title', 'value', 'loading', 'href', 'infoTooltip', 'decimals'],
     methods: {
         commify: ethers.utils.commify,
+        formatNumber: formatNumber
+    },
+    computed: {
+        isValueDefined() {
+            return this.value !== undefined && this.value !== null;
+        }
     }
 }
 </script>

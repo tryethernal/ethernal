@@ -14,9 +14,22 @@ const request = supertest(app);
 
 const BASE_URL = '/api/transactions'
 
-describe(`GET ${BASE_URL}/failedProcessable`, () => {
-    beforeEach(() => jest.clearAllMocks());
+beforeEach(() => jest.clearAllMocks());
 
+describe(`GET ${BASE_URL}/:hash/tokenTransfers`, () => {
+    it('Should return token transfers list', (done) => {
+        jest.spyOn(db, 'getTransactionTokenTransfers').mockResolvedValueOnce({ total: 1, items: [{ hash: '0x123' }]});
+
+        request.get(`${BASE_URL}/:hash/tokenTransfers`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ total: 1, items: [{ hash: '0x123' }]});
+                done();
+            });
+    });
+});
+
+describe(`GET ${BASE_URL}/failedProcessable`, () => {
     it('Should return failed non processed transactions', (done) => {
         jest.spyOn(db, 'getFailedProcessableTransactions').mockResolvedValueOnce([{ hash: '0x123' }]);
 
@@ -30,8 +43,6 @@ describe(`GET ${BASE_URL}/failedProcessable`, () => {
 });
 
 describe(`GET ${BASE_URL}/processable`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should return non processed transactions', (done) => {
         jest.spyOn(db, 'getProcessableTransactions').mockResolvedValueOnce([{ hash: '0x123' }]);
         
@@ -45,8 +56,6 @@ describe(`GET ${BASE_URL}/processable`, () => {
 });
 
 describe(`GET ${BASE_URL}`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should return transactions list', (done) => {
         jest.spyOn(db, 'getWorkspaceTransactions').mockResolvedValueOnce({
             items: [{ hash: '1234' }, { hash: 'abcd' }],
@@ -65,8 +74,6 @@ describe(`GET ${BASE_URL}`, () => {
 });
 
 describe(`GET ${BASE_URL}/:hash`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should return individual transaction', (done) => {
         jest.spyOn(db, 'getWorkspaceTransaction').mockResolvedValue({
             hash: '1234'
@@ -82,8 +89,6 @@ describe(`GET ${BASE_URL}/:hash`, () => {
 
 
 describe(`POST ${BASE_URL}/:hash/storage`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should return 200 status', (done) => {
         request.post(`${BASE_URL}/1234/storage`)
             .send({ data: { workspace: 'My Workspace', data: [{ my: 'data' }]}})
@@ -92,8 +97,6 @@ describe(`POST ${BASE_URL}/:hash/storage`, () => {
 });
 
 describe(`POST ${BASE_URL}/:hash/trace`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should store contract data, store trace & return 200 status', (done) => {
         jest.spyOn(db, 'canUserSyncContract').mockResolvedValue(true);
         request.post(`${BASE_URL}/1234/trace`)
@@ -120,8 +123,6 @@ describe(`POST ${BASE_URL}/:hash/trace`, () => {
 });
 
 describe(`POST ${BASE_URL}/:hash/tokenBalanceChanges`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should return 200 status', (done) => {
         request.post(`${BASE_URL}/1234/tokenBalanceChanges`)
             .send({ data: { workspace: 'My Workspace', tokenTransferId: 1, changes: [{ token: '0x123', address: '0x456', currentBalance: '0', previousBalance: '1', diff: '-1' }]}})
@@ -134,8 +135,6 @@ describe(`POST ${BASE_URL}/:hash/tokenBalanceChanges`, () => {
 });
 
 describe(`POST ${BASE_URL}/:hash/process`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should return 200 status', (done) => {
         jest.spyOn(db, 'getTransaction').mockResolvedValue({ hash: '1234' });
         request.post(`${BASE_URL}/1234/process`)
@@ -149,8 +148,6 @@ describe(`POST ${BASE_URL}/:hash/process`, () => {
 });
 
 describe(`POST ${BASE_URL}/:hash/error`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should return 200 status', (done) => {
         request.post(`${BASE_URL}/1234/error`)
             .send({ data: { workspace: 'My Workspace', error: { message: 'Wrong params' }}})
@@ -163,8 +160,6 @@ describe(`POST ${BASE_URL}/:hash/error`, () => {
 });
 
 describe(`POST ${BASE_URL}`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should return 200 status and not store contract data if it is not a deployment', (done) => {
         request.post(BASE_URL)
             .send({

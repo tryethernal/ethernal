@@ -5,6 +5,7 @@ const {
 } = require('sequelize');
 const { getTokenTransfer } = require('../lib/abi');
 const { sanitize } = require('../lib/utils');
+const { trigger } = require('../lib/pusher');
 const Op = Sequelize.Op;
 module.exports = (sequelize, DataTypes) => {
   class TransactionLog extends Model {
@@ -74,7 +75,9 @@ module.exports = (sequelize, DataTypes) => {
         async afterSave(log, options) {
             const tokenTransfer = getTokenTransfer(log);
             if (tokenTransfer)
-                return await log.safeCreateTokenTransfer(tokenTransfer);
+                await log.safeCreateTokenTransfer(tokenTransfer);
+
+            return trigger(`private-contractLog;workspace=${log.workspaceId};contract=${log.address}`, 'new', null);
         }
     },
     sequelize,

@@ -1,62 +1,79 @@
 import MockHelper from '../MockHelper';
 import flushPromises from 'flush-promises'
-
 import ERC721Collection from '@/components/ERC721Collection.vue';
 
 const helper = new MockHelper();
+const stubs = [
+    'Hash-Link',
+    'Stat-Number',
+    'Metamask',
+    'Contract-Interaction',
+    'ERC-20-Token-Holders',
+    'ERC-721-Gallery',
+    'ERC-20-Contract-Analytics',
+    'ERC-721-Token-Transfers',
+    'Address-Transactions-List'
+];
 
 describe('ERC721Collection.vue', () => {
     beforeEach(() => jest.clearAllMocks());
 
-    it('Should load & display tokens', async () => {
-        jest.spyOn(helper.mocks.server, 'getErc721Tokens')
-            .mockResolvedValue({ data: { total: 1, items: [{ tokenId: '1', owner: '0xabc', attributes: { name: 'Ethernal' }}]}});
-        
+    it('Should display contract info', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValueOnce({ data: {
+                tokenName: 'Amalfi',
+                patterns: ['erc721'],
+                tokenTotalSupply: 10000,
+                tokenDecimals: null,
+                address: '0x123',
+                creationTransaction: { hash: '0xabc' }
+            }});
+
+        jest.spyOn(helper.mocks.server, 'getContractStats')
+            .mockResolvedValueOnce({ data: {
+                tokenHolderCount: 1,
+                tokenTransferCount: 2,
+                tokenCirculatingSupply: '1000000000',
+            }});
+
         const wrapper = helper.mountFn(ERC721Collection, {
             propsData: {
-                address: 'Ox123',
-                totalSupply: 100,
-                has721Enumerable: true
+                address: '0x123'
             },
-            stubs: ['ERC721-Token-Card']
+            stubs: stubs
         });
+
         await flushPromises();
-        
-        expect(wrapper.vm.tokens.length).toEqual(12);
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should display info message if contract is not enumerable', async () => {
-        jest.spyOn(helper.mocks.server, 'getErc721Tokens')
-            .mockResolvedValue({ data: { total: 1, items: [{ tokenId: '1', owner: '0xabc', attributes: { name: 'Ethernal' }}]}});
-        
-        const wrapper = helper.mountFn(ERC721Collection, {
-            propsData: {
-                address: 'Ox123',
-                totalSupply: 100,
-                has721Enumerable: false
-            },
-            stubs: ['ERC721-Token-Card']
-        });
-        await flushPromises();
-        
-        expect(wrapper.html()).toMatchSnapshot();
-    });
+    it('Should display placeholders', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValueOnce({ data: {
+                name: 'Amalfi',
+                tokenName: null,
+                patterns: [],
+                tokenTotalSupply: null,
+                tokenDecimals: null,
+                address: '0x123',
+                creationTransaction: { hash: '0xabc' }
+            }});
 
-    it('Should display info message if contract is enumerable but there are no tokens minted', async () => {
-        jest.spyOn(helper.mocks.server, 'getErc721Tokens')
-            .mockResolvedValue({ data: { total: 0, items: []}});
-        
+        jest.spyOn(helper.mocks.server, 'getContractStats')
+            .mockResolvedValueOnce({ data: {
+                tokenHolderCount: 0,
+                tokenTransferCount: 0,
+                tokenCirculatingSupply: 0,
+            }});
+
         const wrapper = helper.mountFn(ERC721Collection, {
             propsData: {
-                address: 'Ox123',
-                totalSupply: 0,
-                has721Enumerable: true
+                address: '0x123'
             },
-            stubs: ['ERC721-Token-Card']
+            stubs: stubs
         });
+
         await flushPromises();
-        
         expect(wrapper.html()).toMatchSnapshot();
     });
 });

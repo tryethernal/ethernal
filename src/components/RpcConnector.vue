@@ -120,7 +120,7 @@ export default Vue.extend({
             this.processTransactions();
             this.processFailedTransactions();
             this.pusher.onNewContract(this.processContracts, this);
-            this.pusher.onNewProcessableTransactions((transaction) => this.server.processTransactions(this.currentWorkspace, [transaction]), this);
+            this.pusher.onNewProcessableTransactions((transaction) => this.server.processTransaction(this.currentWorkspace, transaction), this);
             this.pusher.onNewFailedTransactions((transaction) => this.server.processFailedTransactions([transaction], this.currentWorkspace.rpcServer), this);
         }
         this.pusher.onNewBlock((block) => this.$store.dispatch('updateCurrentBlock', block), this);

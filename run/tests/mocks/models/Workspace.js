@@ -49,6 +49,7 @@ const contract1 = {
     getFilteredLogs: jest.fn().mockResolvedValue([{ address: '0x123' }]),
     countFilteredLogs: jest.fn().mockResolvedValue(1),
     countErc721Tokens: jest.fn().mockResolvedValue(1),
+    getTokenTransfers: jest.fn(),
     toJSON: jest.fn().mockReturnValue({ id: 10, address: '0x123' })
 };
 
@@ -98,7 +99,8 @@ const workspace = {
     getProcessableTransactions: jest.fn(),
     getFailedProcessableTransactions: jest.fn(),
     findContractsByText: jest.fn().mockResolvedValue([contract1, contract2]),
-    findBlockByHash: jest.fn().mockResolvedValue(block1)
+    findBlockByHash: jest.fn().mockResolvedValue(block1),
+    countTokenTransfers: jest.fn()
 };
 
 const Workspace = {

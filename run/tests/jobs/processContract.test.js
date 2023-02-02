@@ -123,7 +123,7 @@ describe('contractProcessing', () => {
     it('Should detect erc721 without an abi and store collection data', (done) => {
         jest.spyOn(axios, 'get').mockResolvedValueOnce(null);
         jest.spyOn(ethers, 'Contract').mockReturnValueOnce({
-            decimals: jest.fn().mockResolvedValue(null),
+            decimals: jest.fn().mockRejectedValue(null),
             symbol: jest.fn().mockResolvedValue(null),
             name: jest.fn().mockResolvedValue(null),
             totalSupply: jest.fn().mockResolvedValue(null)
@@ -164,6 +164,18 @@ describe('contractProcessing', () => {
     it('Should fetch & store contract info as proxy if the workspace is public', (done) => {
         jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 1, name: 'My Workspace', public: true, rpcServer: 'http://rpc.ethernal.com' });
         jest.spyOn(db, 'getWorkspaceContractById').mockResolvedValue({ workspaceId: 1, address: '0x123', abi: [{ my: 'function' }]});
+        jest.spyOn(ethers, 'Contract').mockReturnValueOnce({
+            decimals: jest.fn().mockResolvedValue(18),
+            symbol: jest.fn().mockResolvedValue('ETL'),
+            name: jest.fn().mockResolvedValue('Ethernal'),
+            totalSupply: jest.fn().mockResolvedValue('1000')
+        });
+        ContractConnector.mockImplementation(() => ({
+            has721Metadata: jest.fn().mockResolvedValue(false),
+            has721Enumerable: jest.fn().mockResolvedValue(false),
+            has721Interface: jest.fn().mockResolvedValue(false),
+            getBytecode: jest.fn().mockResolvedValue('0x1234')
+        }));
 
         contractProcessing({
             data: {

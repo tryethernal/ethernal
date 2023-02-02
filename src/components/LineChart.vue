@@ -67,7 +67,7 @@ Vue.use(TrendChart);
 
 export default {
     name: 'LineChart',
-    props: ['xLabels', 'data', 'tooltipUnit'],
+    props: ['xLabels', 'data', 'tooltipUnit', 'tokenSymbol'],
     data: () => ({
         popper: null,
         tooltipData: null
@@ -108,6 +108,9 @@ export default {
     },
     computed: {
         formattedTooltipUnit() {
+            if (this.tokenSymbol)
+                return this.tokenSymbol;
+
             if (this.data && this.tooltipData && this.tooltipData.index)
                 return parseInt(this.data[this.tooltipData.index]) != 1 ? `${this.tooltipUnit}s` : this.tooltipUnit;
             else

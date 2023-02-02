@@ -39,6 +39,26 @@ module.exports = (sequelize, DataTypes) => {
       Transaction.hasMany(models.TransactionTraceStep, { foreignKey: 'transactionId', as: 'traceSteps' });
     }
 
+    getFilteredTokenTransfers(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'id') {
+        return sequelize.models.TokenTransfer.findAll({
+            where: { transactionId: this.id },
+            include: {
+                model: sequelize.models.Contract,
+                as: 'contract',
+                attribute: ['tokenSymbol', 'tokenDecimals']
+            },
+            offset: (page - 1) * itemsPerPage,
+            limit: itemsPerPage,
+            order: [[orderBy, order]]
+        });
+    }
+
+    countTokenTransfers() {
+        return sequelize.models.TokenTransfer.count({
+            where: { transactionId: this.id }
+        });
+    }
+
     getContract() {
         return sequelize.models.Contract.findOne({
             where: {
@@ -56,18 +76,7 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
-    async safeCreateTokenTransfer(tokenTransfer) {
-        const existingRecords = await this.getTokenTransfers({
-            where: sanitize({
-                dst: tokenTransfer.dst,
-                src: tokenTransfer.src,
-                token: tokenTransfer.token,
-                tokenId: tokenTransfer.tokenId
-            })
-        });
-        if (existingRecords.length > 0)
-            return null;
-
+    safeCreateTokenTransfer(tokenTransfer) {
         return this.createTokenTransfer(sanitize({
             workspaceId: this.workspaceId,
             dst: tokenTransfer.dst,

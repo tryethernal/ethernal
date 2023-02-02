@@ -105,14 +105,18 @@
                 </v-col>
             </v-row>
 
-            <v-row class="my-2" v-show="transaction.tokenTransfers.length">
+            <v-row class="my-2" v-if="transaction.tokenTransferCount > 0">
                 <v-col>
                     <h3 class="mb-2">Token Transfers</h3>
-                    <Token-Transfers :transfers="transaction.tokenTransfers" :withTokenData="true" />
+                    <v-card outlined>
+                        <v-card-text>
+                            <Transaction-Token-Transfers :hash="transaction.hash" :withTokenData="true" />
+                        </v-card-text>
+                    </v-card>
                 </v-col>
             </v-row>
 
-            <v-row class="my-2" v-show="Object.keys(transaction.formattedBalanceChanges).length">
+            <v-row class="my-2" v-if="Object.keys(transaction.formattedBalanceChanges).length > 0">
                 <v-col>
                     <h3 class="mb-2">Balance Changes</h3>
                     <Tokens-Balance-Diff v-for="(token, idx) in Object.keys(transaction.formattedBalanceChanges)"
@@ -148,7 +152,7 @@ import { mapGetters } from 'vuex';
 import HashLink from './HashLink';
 import TransactionData from './TransactionData';
 import TraceStep from './TraceStep';
-import TokenTransfers from './TokenTransfers';
+import TransactionTokenTransfers from './TransactionTokenTransfers';
 import TokensBalanceDiff from './TokensBalanceDiff';
 import FromWei from '../filters/FromWei';
 
@@ -159,7 +163,7 @@ export default {
         HashLink,
         TransactionData,
         TraceStep,
-        TokenTransfers,
+        TransactionTokenTransfers,
         TokensBalanceDiff
     },
     filters: {
@@ -173,13 +177,12 @@ export default {
             gasPrice: 0,
             gasLimit: 0,
             trace: null,
+            tokenTransferCount: 0,
             receipt: {
                 gasUsed: 0,
                 logs: []
             },
-            tokenTransfers: [],
-            tokenBalanceChanges: {},
-            formattedBalanceChanges: {},
+            formattedTokenBalanceChanges: {},
             block: {},
             contract: {},
             traceSteps: []

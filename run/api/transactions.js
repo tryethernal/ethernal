@@ -28,7 +28,7 @@ router.get('/processable', authMiddleware, async (req, res) => {
     try {
         const transactions = await db.getProcessableTransactions(data.firebaseUserId, data.workspace);
 
-        res.status(200).json(transactions);
+        res.status(200).json(transactions)
     } catch(error) {
         logger.error(error.message, { location: 'get.api.transactions.processable', error: error, data: data });
         res.status(400).send(error.message);
@@ -210,6 +210,22 @@ router.get('/:hash', workspaceAuthMiddleware, async (req, res) => {
         res.status(200).json(transaction);
     } catch(error) {
         logger.error(error.message, { location: 'get.api.transactions.hash', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
+router.get('/:hash/tokenTransfers', workspaceAuthMiddleware, async (req, res) => {
+    const data = req.query;
+
+    try {
+        if (!req.params.hash)
+            throw new Error('Missing parameter');
+
+        const result = await db.getTransactionTokenTransfers(data.workspace.id, req.params.hash, data.page, data.itemsPerPage, data.order);
+
+        res.status(200).json(result);
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.transactions.hash.tokenTransfers', error: error, data: data });
         res.status(400).send(error.message);
     }
 });

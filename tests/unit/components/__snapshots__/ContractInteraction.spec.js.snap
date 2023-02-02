@@ -1,0 +1,225 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ContractInteraction.vue Should display ABI editor & methods 1`] = `
+<div class="container container--fluid">
+  <h4>ABI</h4>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <import-artifact-modal-stub></import-artifact-modal-stub>
+    <!---->
+    <div class="v-card__text">
+      An ABI has been uploaded.<span> (<a href="#">Edit</a>)</span></div>
+    <!---->
+    <!---->
+  </div>
+  <h4>Call Options</h4>
+  <contract-call-options-stub accounts="0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA"></contract-call-options-stub>
+  <h4>Read Methods</h4>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div>
+      <div class="v-card__text">
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-12 col">
+            <contract-read-method-stub signature="_feeBasisPoints()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+          </div>
+        </div>
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-12 col">
+            <contract-read-method-stub signature="owner()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+          </div>
+        </div>
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-12 col">
+            <contract-read-method-stub signature="depositsOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+          </div>
+        </div>
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-12 col">
+            <contract-read-method-stub signature="maturityOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h4>Write Methods</h4>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div>
+      <div class="v-card__text">
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
+            <contract-write-method-stub signature="renounceOwnership()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+          </div>
+        </div>
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
+            <contract-write-method-stub signature="transferOwnership(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+          </div>
+        </div>
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
+            <contract-write-method-stub signature="setMaturity(address,uint256)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+          </div>
+        </div>
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
+            <contract-write-method-stub signature="deposit(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+          </div>
+        </div>
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
+            <contract-write-method-stub signature="withdraw()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ContractInteraction.vue Should display ABI uploader 1`] = `
+<div class="container container--fluid">
+  <h4>ABI</h4>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <import-artifact-modal-stub></import-artifact-modal-stub>
+    <!---->
+    <!---->
+    <div class="v-card__text">
+      Upload an ABI to interact with the contract:
+      <ul>
+        <li>For Hardhat projects, you can use our <a href="https://github.com/tryethernal/hardhat-ethernal" target="_blank">plugin</a>.</li>
+        <li>For other projects, you can use our <a href="https://github.com/tryethernal/ethernal-cli" target="_blank">CLI</a>.</li>
+        <li>Or you can manually edit the contract name &amp; ABI <a href="#">here</a>.</li>
+      </ul>
+    </div>
+    <!---->
+  </div>
+  <h4>Call Options</h4>
+  <contract-call-options-stub accounts="0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA"></contract-call-options-stub>
+  <h4>Read Methods</h4>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div>
+      <div class="v-card__text">
+        Upload this contract's ABI to use it here.
+      </div>
+    </div>
+  </div>
+  <h4>Write Methods</h4>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div>
+      <div class="v-card__text">
+        Upload this contract's ABI to use it here.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ContractInteraction.vue Should display unverified contract 1`] = `
+<div class="container container--fluid">
+  <h4>ABI</h4>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <!---->
+    <!---->
+    <!---->
+    <!---->
+    <div class="v-card__text">
+      This contract hasn't been verified yet.
+    </div>
+  </div>
+  <h4>Call Options</h4>
+  <contract-call-options-stub accounts="0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA"></contract-call-options-stub>
+  <h4>Read Methods</h4>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div>
+      <div class="v-card__text">
+        Upload this contract's ABI to use it here.
+      </div>
+    </div>
+  </div>
+  <h4>Write Methods</h4>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div>
+      <div class="v-card__text">
+        Upload this contract's ABI to use it here.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ContractInteraction.vue Should display verified contract 1`] = `
+<div class="container container--fluid">
+  <h4>ABI</h4>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <!---->
+    <div class="v-card__text mb-1 success--text"><i aria-hidden="true" class="v-icon notranslate success--text mr-1 mdi mdi-check-circle theme--light" style="font-size: 16px;"></i>Verified contract.
+    </div>
+    <div class="v-card__text">
+      An ABI has been uploaded.
+      <!---->
+    </div>
+    <!---->
+    <!---->
+  </div>
+  <h4>Call Options</h4>
+  <contract-call-options-stub accounts="0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA"></contract-call-options-stub>
+  <h4>Read Methods</h4>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div>
+      <div class="v-card__text">
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-12 col">
+            <contract-read-method-stub signature="_feeBasisPoints()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+          </div>
+        </div>
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-12 col">
+            <contract-read-method-stub signature="owner()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+          </div>
+        </div>
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-12 col">
+            <contract-read-method-stub signature="depositsOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+          </div>
+        </div>
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-12 col">
+            <contract-read-method-stub signature="maturityOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <h4>Write Methods</h4>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div>
+      <div class="v-card__text">
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
+            <contract-write-method-stub signature="renounceOwnership()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+          </div>
+        </div>
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
+            <contract-write-method-stub signature="transferOwnership(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+          </div>
+        </div>
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
+            <contract-write-method-stub signature="setMaturity(address,uint256)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+          </div>
+        </div>
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
+            <contract-write-method-stub signature="deposit(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+          </div>
+        </div>
+        <div class="row pb-4">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
+            <contract-write-method-stub signature="withdraw()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

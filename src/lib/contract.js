@@ -121,7 +121,7 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
 
         const contract = new ContractConnector(rpcServer, contractAddress, [...ERC721_ABI, ...ERC721_ENUMERABLE_ABI, ...ERC721_METADATA_ABI]);
 
-        if (!abi) {
+        if (patterns.indexOf('erc721') == -1) {
             try {
                 const isErc721 = await contract.has721Interface();
                 if (isErc721)

@@ -36,8 +36,6 @@ module.exports = async job => {
 
     if (changes.length > 0)
         await db.storeTokenBalanceChanges(user.firebaseUserId, workspace.name, tokenTransfer.id, changes);
-    else
-        await tokenTransfer.update({ processed: true });
 
     return true;
 };

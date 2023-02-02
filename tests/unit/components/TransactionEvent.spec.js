@@ -13,6 +13,18 @@ describe('TransactionEvent.vue', () => {
         helper = new MockHelper();
     });
 
+    it('Should display short version', async () => {
+        const wrapper = helper.mountFn(TransactionEvent, {
+            propsData: {
+                log: LogProp,
+                short: true
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should load erc20 abi if event is detected', async () => {
         const wrapper = helper.mountFn(TransactionEvent, {
             propsData: {

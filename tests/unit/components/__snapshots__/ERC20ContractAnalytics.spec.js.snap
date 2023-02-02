@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ERC20ContractAnalytics.vue Should display contract analytics 1`] = `
+<div class="container container--fluid">
+  <div class="row">
+    <div class="col-md-6 col-12">
+      <div class="px-1 v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__subtitle">Transfer Volume (14 Days) - UTC Time</div>
+        <line-chart-stub tooltipunit="transfer" data="2,2" xlabels="01/01,01/01" index="0"></line-chart-stub>
+      </div>
+    </div>
+    <div class="col-md-6 col-12">
+      <div class="px-1 v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__subtitle">Circulating Supply (14 Days) - UTC Time</div>
+        <line-chart-stub tokensymbol="ETL" data="0.2,0.2" xlabels="01/01,01/01" index="0"></line-chart-stub>
+      </div>
+    </div>
+    <div class="col-md-6 col-12">
+      <div class="px-1 v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__subtitle">Holder Count (14 Days) - UTC Time</div>
+        <line-chart-stub tooltipunit="holder" data="2,2" xlabels="01/01,01/01" index="0"></line-chart-stub>
+      </div>
+    </div>
+  </div>
+</div>
+`;

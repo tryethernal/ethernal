@@ -29,10 +29,14 @@
                 <v-textarea dense outlined disabled :value="transaction.data"></v-textarea>
             </v-col>
         </v-row>
-        <v-row class="my-2">
+        <v-row class="my-2" v-if="transaction.receipt.logs.length > 0">
             <v-col>
-                <h3  class="mb-2" v-if="transaction.receipt.logs.length > 0">Emitted Events</h3>
-                <Transaction-Event v-for="(log, idx) in transaction.receipt.logs" :log="log" :key="idx" />
+                <h3 class="mb-2">Emitted Events</h3>
+                <v-card outlined class="my-2" v-for="(log, idx) in transaction.receipt.logs" :key="idx">
+                    <v-card-text>
+                        <Transaction-Event :log="log" />
+                    </v-card-text>
+                </v-card>
             </v-col>
         </v-row>
     </div>

@@ -6,9 +6,11 @@
             </template>
             Verified contract.
         </v-tooltip>
-        <router-link v-if="hash" :to="link()">{{ name }}</router-link>
+        <router-link v-if="hash && !unlink" :to="link()">{{ name }}</router-link>
+        <template v-else>{{ name }}</template>
         <span v-if="tokenId">
-            &nbsp;(<router-link :to="`/address/${hash}/${tokenId}`">#{{ tokenId }}</router-link>)</span>
+            &nbsp;(<router-link :to="`/address/${hash}/${tokenId}`">#{{ tokenId }}</router-link>)
+        </span>
         <span v-if="hash && !copied && !notCopiable">
             &nbsp; <v-icon @click="copyHash()" x-small>mdi-content-copy</v-icon><input type="hidden" :id="`copyElement-${hash}`" :value="hash">
         </span>
@@ -22,7 +24,7 @@ const { sanitize } = require('../lib/utils');
 
 export default {
     name: 'HashLink',
-    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName', 'xsHash', 'tokenId'],
+    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName', 'xsHash', 'tokenId', 'unlink'],
     data: () => ({
         copied: false,
         token: null,
@@ -58,7 +60,7 @@ export default {
         }
     },
     computed: {
-        formattedHash: function () {
+        formattedHash() {
             if (!this.hash) return;
             if (this.fullHash) {
                 return this.hash;
@@ -70,9 +72,9 @@ export default {
                 return `${this.hash.slice(0, 10)}...${this.hash.slice(-5)}`;
             }
         },
-        name: function() {
+        name() {
             if (this.withName) {
-                if (this.token) {
+                if (this.token && this.withTokenName) {
                     if (this.token.symbol && !this.withTokenName) return this.token.symbol;
                     if (this.token.name) return this.token.name;
                 }
@@ -82,8 +84,8 @@ export default {
         }
     },
     methods: {
-        link: function() { return `/${[this.type, this.hash].join('/')}`; },
-        copyHash: function() {
+        link() { return `/${[this.type, this.hash].join('/')}`; },
+        copyHash() {
             const webhookField = document.querySelector(`#copyElement-${this.hash}`);
             webhookField.setAttribute('type', 'text');
             webhookField.select();
