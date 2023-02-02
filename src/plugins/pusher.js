@@ -26,6 +26,12 @@ export const pusherPlugin = {
             }
 
         Vue.prototype.pusher = {
+            onNewContractLog(handler, address, context) {
+                const workspaceId = store.getters.currentWorkspace.id;
+                const channel = pusher.subscribe(`private-contractLog;workspace=${workspaceId};contract=${address}`);
+                return channel.bind('new', handler, context);
+            },
+
             onUpdatedAccount(handler, context) {
                 const workspaceId = store.getters.currentWorkspace.id;
                 const channel = pusher.subscribe(`private-accounts;workspace=${workspaceId}`);

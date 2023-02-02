@@ -256,8 +256,10 @@ const serverFunctions = {
             if (ethers.BigNumber.isBigNumber(res[0]))
                 currentBalance = res[0];
             else
-                throw 'Not a big number result'
-        } catch(_error) {/* */}
+                currentBalance = ethers.BigNumber.from('0')
+        } catch(_error) {
+            currentBalance = ethers.BigNumber.from('0')
+        }
 
         if (block > 1) {
             try {
@@ -272,8 +274,10 @@ const serverFunctions = {
                 if (ethers.BigNumber.isBigNumber(res[0]))
                     previousBalance = res[0];
                 else
-                    throw 'Not a big number result'
-            } catch(_error) {/* */}
+                    previousBalance = ethers.BigNumber.from('0');
+            } catch(_error) {
+                previousBalance = ethers.BigNumber.from('0');
+            }
         }
 
         return {
@@ -330,6 +334,55 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            getAddressTokenTransfers(address, options) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/addresses/${address}/tokenTransfers`;
+                return axios.get(resource, { params });
+            },
+
+            getAddressStats(address) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/addresses/${address}/stats`;
+                return axios.get(resource, { params });
+            },
+
+            getTransactionTokenBalanceChanges(transactionHash, options) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${transactionHash}/tokenBalanceChanges`;
+                return axios.get(resource, { params });
+            },
+
+            getTransactionTokenTransfers(transactionHash, options) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${transactionHash}/tokenTransfers`;
+                return axios.get(resource, { params });
+            },
+
+            getContractLogs(address, options) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/logs`;
+                return axios.get(resource, { params });
+            },
+
             updateContractWatchedPaths(address, paths) {
                 const data = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
@@ -365,6 +418,35 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                 };
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/users/me/apiToken`;
+                return axios.get(resource, { params });
+            },
+
+            getContractStats(address) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/stats`;
+                return axios.get(resource, { params });
+            },
+
+            getTokenTransfers(address, options) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/transfers`;
+                return axios.get(resource, { params });
+            },
+
+            getTokenHolders(address, options) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/holders`;
                 return axios.get(resource, { params });
             },
 
@@ -500,6 +582,39 @@ export const serverPlugin = {
                     to: to
                 };
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/stats/wallets`;
+                return axios.get(resource, { params });
+            },
+
+            getTokenTransferVolume(address, from, to) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    from: from,
+                    to: to
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/transferVolume`;
+                return axios.get(resource, { params });
+            },
+
+            getTokenHolderHistory(address, from, to) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    from: from,
+                    to: to
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/holderHistory`;
+                return axios.get(resource, { params });
+            },
+
+            getTokenCumulativeSupply(address, from, to) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    from: from,
+                    to: to
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/cumulativeSupply`;
                 return axios.get(resource, { params });
             },
 

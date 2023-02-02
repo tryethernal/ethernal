@@ -12,6 +12,19 @@ describe('FormattedSolVar.vue', () => {
         helper = new MockHelper();
     });
 
+    it('Should remove link styling', () => {
+        const wrapper = helper.mountFn(FormattedSolVar, {
+            propsData: {
+                input: { type: 'address' },
+                value: '0x123',
+                notInteractive: true
+            },
+            stubs: ['Hash-Link']
+        });
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should display data:image as img tag', () => {
         const wrapper = helper.mountFn(FormattedSolVar, {
             propsData: {

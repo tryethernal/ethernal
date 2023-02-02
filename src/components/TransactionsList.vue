@@ -26,14 +26,14 @@
                         <v-icon v-bind="attrs" v-on="on" small v-show="txStatus(item) == 'unknown'" color="grey lighten-1" class="mr-2">mdi-help-circle</v-icon>
                     </span>
                 </template>
-                <span v-show="txStatus(item) == 'succeeded'">Suceeded Transaction</span>
+                <span v-show="txStatus(item) == 'succeeded'">Succeeded Transaction</span>
                 <span v-show="txStatus(item) == 'failed'">Failed Transaction</span>
                 <span v-show="txStatus(item) == 'unknown'">Unkown Transaction Status</span>
             </v-tooltip>
             <Hash-Link :type="'transaction'" :hash="item.hash" />
         </template>
         <template v-slot:item.method="{ item }">
-            <v-tooltip v-if="item.methodDetails && Object.keys(item.methodDetails).length" top :open-delay="150">
+            <v-tooltip v-if="item.methodDetails && Object.keys(item.methodDetails).length" top :open-delay="150" color="grey darken-1" content-class="tooltip">
                 <template v-slot:activator="{ on, attrs }">
                     <v-chip class="primary lighten-1" v-bind="attrs" v-on="on" label small>
                         <span class="color--text methodName">{{ getMethodName(item) }}</span>
@@ -169,18 +169,18 @@ export default {
 
             return 'failed';
         },
-        onPagination: function(pagination) {
+        onPagination(pagination) {
             this.$emit('pagination', pagination);
         },
-        getMethodName: function(transaction) {
+        getMethodName(transaction) {
             if (!transaction.methodDetails) return this.getSighash(transaction);
             return transaction.methodDetails.name ? transaction.methodDetails.name : this.getSighash(transaction);
         },
-        getMethodLabel: function(methodDetails) {
+        getMethodLabel(methodDetails) {
             if (!methodDetails) return null;
             return methodDetails.label ? methodDetails.label : null;
         },
-        getSighash: function(transaction) {
+        getSighash(transaction) {
             return transaction.data && transaction.data != '0x' ? transaction.data.slice(0, 10) : null;
         }
     },
@@ -198,5 +198,8 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.tooltip {
+    opacity: 1!important;
 }
 </style>

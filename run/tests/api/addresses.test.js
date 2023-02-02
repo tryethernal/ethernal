@@ -11,6 +11,30 @@ const BASE_URL = '/api/addresses';
 
 beforeEach(() => jest.clearAllMocks());
 
+describe(`GET ${BASE_URL}/:address/tokenTransfers`, () => {
+    it('Should return address token transfers', (done) => {
+        jest.spyOn(db, 'getAddressTokenTransfers').mockResolvedValueOnce({ items: [], count: 0});
+        request.get(`${BASE_URL}/0x123/tokenTransfers`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ items: [], count: 0});
+                done();
+            });
+    });
+});
+
+describe(`GET ${BASE_URL}/:address/stats`, () => {
+    it('Should return token stats', (done) => {
+        jest.spyOn(db, 'getAddressStats').mockResolvedValueOnce({ sentTransactionCount: 20 });
+        request.get(`${BASE_URL}/0x123/stats`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ sentTransactionCount: 20 });
+                done();
+            });
+    });
+});
+
 describe(`GET ${BASE_URL}/:address/balances`, () => {
     it('Should return the list of token balances', (done) => {
         jest.spyOn(db, 'getAddressLatestTokenBalances').mockResolvedValueOnce([{ id: 1, token: '0xabcd' }]);

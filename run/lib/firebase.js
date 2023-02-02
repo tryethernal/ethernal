@@ -10,6 +10,150 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const getAddressTokenTransfers = async (workspaceId, address, page, itemsPerPage, order, orderBy) => {
+    if (!workspaceId || !address) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+
+    const transfers = await workspace.getFilteredAddressTokenTransfers(address, page, itemsPerPage, order, orderBy);
+    const transferCount = await workspace.countAddressTokenTransfers(address);
+
+    return {
+        items: transfers.map(t => t.toJSON()),
+        total: transferCount
+    };
+};
+
+const getAddressStats = async (workspaceId, address) => {
+    if (!workspaceId || !address) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+
+    const sentTransactionCount = await workspace.countAddressSentTransactions(address);
+    const receivedTransactionCount = await workspace.countAddressReceivedTransactions(address);
+    const sentErc20TokenTransferCount = await workspace.countAddressSentErc20TokenTransfers(address);
+    const receivedErc20TokenTransferCount = await workspace.countAddressReceivedErc20TokenTransfers(address);
+
+    return {
+        sentTransactionCount: sentTransactionCount,
+        receivedTransactionCount: receivedTransactionCount,
+        sentErc20TokenTransferCount: sentErc20TokenTransferCount,
+        receivedErc20TokenTransferCount: receivedErc20TokenTransferCount
+    };
+};
+
+const getTransactionTokenTransfers = async (workspaceId, transactionHash, page, itemsPerPage, order, orderBy) => {
+    if (!workspaceId || !transactionHash) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    const transaction = await workspace.findTransaction(transactionHash);
+
+    if (!transaction)
+        throw new Error('Cannot find transaction');
+
+    const transfers = await transaction.getFilteredTokenTransfers(page, itemsPerPage, order, orderBy);
+    const transferCount = await transaction.countTokenTransfers();
+
+    return {
+        items: transfers.map(t => t.toJSON()),
+        total: transferCount
+    };
+};
+
+const getTokenHolderHistory = async (workspaceId, address, from, to) => {
+    if (!workspaceId || !address || !from || !to) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    const contract = await workspace.findContractByAddress(address);
+
+    if (!contract)
+        throw new Error(`Can't find contract at this address`);
+
+    return contract.getTokenHolderHistory(from, to);
+};
+
+const getTokenCumulativeSupply = async (workspaceId, address, from, to) => {
+    if (!workspaceId || !address || !from || !to) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    const contract = await workspace.findContractByAddress(address);
+
+    if (!contract)
+        throw new Error(`Can't find contract at this address`);
+
+    return contract.getTokenCumulativeSupply(from, to);
+};
+
+const getTokenTransferVolume = async (workspaceId, address, from, to) => {
+    if (!workspaceId || !address || !from || !to) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    const contract = await workspace.findContractByAddress(address);
+
+    if (!contract)
+        throw new Error(`Can't find contract at this address`);
+
+    return contract.getTokenTransferVolume(from, to);
+};
+
+const getTokenHolders = async (workspaceId, address, page, itemsPerPage, orderBy, order) => {
+    if (!workspaceId || !address) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    const contract = await workspace.findContractByAddress(address);
+
+    if (!contract)
+        throw new Error(`Can't find contract at this address`);
+
+    const holders = await contract.getTokenHolders(page, itemsPerPage, orderBy, order);
+    const holderCount = await contract.countTokenHolders();
+
+    return {
+        items: holders,
+        total: holderCount
+    };
+};
+
+const getTokenStats = async (workspaceId, address) => {
+    if (!workspaceId || !address) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    const contract = await workspace.findContractByAddress(address);
+
+    if (!contract)
+        throw new Error(`Can't find contract at this address`);
+
+    const tokenHolderCount = await contract.countTokenHolders();
+    const transactionCount = await contract.countTransactions();
+    const tokenTransferCount = await contract.countTokenTransfers();
+    const tokenCirculatingSupply = await contract.getTokenCirculatingSupply();
+
+    return {
+        tokenHolderCount: tokenHolderCount,
+        transactionCount: transactionCount,
+        tokenTransferCount: tokenTransferCount,
+        tokenCirculatingSupply: tokenCirculatingSupply
+    };
+};
+
+const getTokenTransfers = async (workspaceId, address, page, itemsPerPage, orderBy, order) => {
+    if (!workspaceId || !address) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    const contract = await workspace.findContractByAddress(address);
+
+    if (!contract)
+        throw new Error(`Can't find contract at this address.`);
+
+    const transfers = await contract.getTokenTransfers(page, itemsPerPage, orderBy, order);
+    const transferCount = await contract.countTokenTransfers();
+
+    return {
+        items: transfers.map(t => t.toJSON()),
+        total: transferCount,
+    };
+};
+
 const getTokenTransferForProcessing = (tokenTransferId) => {
     if (!tokenTransferId) throw new Error('Missing parameter');
 
@@ -36,13 +180,13 @@ const getTokenTransferForProcessing = (tokenTransferId) => {
 }
 
 const getContractLogs = async (workspaceId, address, signature, page, itemsPerPage, orderBy, order) => {
-    if (!workspaceId || !address || !signature) throw new Error('Missing paramter.');
+    if (!workspaceId || !address) throw new Error('Missing paramter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
     const contract = await workspace.findContractByAddress(address);
 
     if (!contract)
-        throw new Error(`Can't find a contract at ${address}.`);
+        throw new Error(`Can't find a contract at this address.`);
 
     const filteredLogs = await contract.getFilteredLogs(signature, page, itemsPerPage, orderBy, order);
     const logCount = await contract.countFilteredLogs(signature)
@@ -774,6 +918,15 @@ module.exports = {
     getContractByWorkspaceId: getContractByWorkspaceId,
     storeContractDataWithWorkspaceId: storeContractDataWithWorkspaceId,
     getContractLogs: getContractLogs,
+    getTokenTransfers: getTokenTransfers,
+    getTokenStats: getTokenStats,
+    getTokenHolders: getTokenHolders,
+    getTokenTransferVolume: getTokenTransferVolume,
+    getTokenCumulativeSupply: getTokenCumulativeSupply,
+    getTokenHolderHistory: getTokenHolderHistory,
     getTokenTransferForProcessing: getTokenTransferForProcessing,
+    getTransactionTokenTransfers: getTransactionTokenTransfers,
+    getAddressStats: getAddressStats,
+    getAddressTokenTransfers: getAddressTokenTransfers,
     Workspace: Workspace
 };

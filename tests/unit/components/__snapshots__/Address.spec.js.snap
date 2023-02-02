@@ -1,160 +1,42 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Address.vue Should display the "Edit" button under the contract tab if there is an ABI & it is a public explorer & as admin 1`] = `
-<div class="container container--fluid">
-  <div class="row mb-2">
-    <div class="col-sm-12 col-md-6 col-lg-3 col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          Balance: 0.00000000000001 Ether
-        </div>
-      </div>
-    </div>
-    <div class="spacer"></div>
-    <div class="col-sm-12 col-md-6 col-lg-3 col align-self-end">
-      <div class="v-dialog__container">
-        <!---->
-      </div> <button type="button" class="v-btn v-btn--outlined theme--light v-size--small error--text"><span class="v-btn__content">
-                Remove contract
-            </span></button>
-    </div>
-  </div>
-  <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="transition: none;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="true" role="tab" class="v-tab v-tab--active" id="contractTab">Contract</a> <a tabindex="0" href="#code" aria-selected="false" role="tab" class="v-tab" id="codeTab">Code</a> <a tabindex="0" href="#storage" aria-selected="false" role="tab" class="v-tab" id="storageTab">Storage</a> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20Balances">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721Balances">ERC-721 Tokens</a>
-          <!---->
-        </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-    </div>
-  </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
-    <div class="v-window__container">
-      <transition-stub name="">
-        <div class="v-window-item" id="transactions" style="display: none;">
-          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
-        </div>
-      </transition-stub>
-      <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="contract" style="">
-          <h4>Artifact</h4>
-          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-            <!---->
-            <div class="v-dialog__container">
-              <!---->
-            </div>
-            <div class="v-card__text">
-              <!---->
-              Artifact for "<b>Amalfi</b>" has been uploaded.<span> (<a href="#">Edit</a>)</span>
-            </div>
-            <!---->
-            <!---->
-          </div>
-          <h4>Call Options</h4>
-          <contract-call-options-stub accounts="0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA"></contract-call-options-stub>
-          <h4>Read Methods</h4>
-          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-            <div>
-              <div class="v-card__text">
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <contract-read-method-stub signature="_feeBasisPoints()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <contract-read-method-stub signature="owner()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <contract-read-method-stub signature="depositsOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <contract-read-method-stub signature="maturityOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <h4>Write Methods</h4>
-          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-            <div>
-              <div class="v-card__text">
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <contract-write-method-stub signature="renounceOwnership()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <contract-write-method-stub signature="transferOwnership(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <contract-write-method-stub signature="setMaturity(address,uint256)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <contract-write-method-stub signature="deposit(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <contract-write-method-stub signature="withdraw()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </transition-stub>
-      <transition-stub name="" style="display: none;">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <!---->
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Address.vue Should display the bytecode by default if present 1`] = `
-<div class="container container--fluid">
-  <div class="row mb-2">
-    <div class="col-sm-12 col-md-6 col-lg-3 col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          Balance: 0.00000000000001 ether
-        </div>
-      </div>
-    </div>
-    <div class="spacer"></div>
+exports[`Address.vue Should display EOA accounts stats 1`] = `
+<div class="container container--fluid" hash="0x123">
+  <div class="row mb-1">
     <!---->
+    <div class="col-lg-7 col-12">
+      <div class="row">
+        <div class="col col-12">
+          <div class="v-card v-sheet v-sheet--outlined theme--light">
+            <div class="v-card__subtitle">Balance</div>
+            <div align="center" class="v-card__text text-h4">
+              0.00000000000001 Ether
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-6 col-12">
+          <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+            <div class="v-card__subtitle">Transactions</div>
+            <div align="center" class="v-card__text text-h4">
+              1<i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-up-thin theme--light"></i>
+              <hr role="separator" aria-orientation="vertical" class="mx-4 v-divider v-divider--vertical theme--light">
+              2<i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-down-thin theme--light"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-12">
+          <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+            <div class="v-card__subtitle">ERC-20 Transfers</div>
+            <div align="center" class="v-card__text text-h4">
+              3<i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-up-thin theme--light"></i>
+              <hr role="separator" aria-orientation="vertical" class="mx-4 v-divider v-divider--vertical theme--light"> 4<i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-down-thin theme--light"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="v-tabs theme--light">
     <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
@@ -165,8 +47,7 @@ exports[`Address.vue Should display the bytecode by default if present 1`] = `
         <div class="v-slide-group__content v-tabs-bar__content">
           <div class="v-tabs-slider-wrapper" style="transition: none;">
             <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="false" role="tab" class="v-tab" id="contractTab">Contract</a> <a tabindex="0" href="#code" aria-selected="true" role="tab" class="v-tab v-tab--active" id="codeTab">Code</a> <a tabindex="0" href="#storage" aria-selected="false" role="tab" class="v-tab" id="storageTab">Storage</a> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20Balances">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721Balances">ERC-721 Tokens</a>
-          <!---->
+          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active" id="transactionsTab">Transactions</a> <a tabindex="0" href="#transfers" aria-selected="false" role="tab" class="v-tab" id="transfersTab">Transfers</a> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20BalancesTab">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721BalancesTab">ERC-721 Tokens</a>
         </div>
       </div>
       <div class="v-slide-group__next v-slide-group__next--disabled">
@@ -177,28 +58,8 @@ exports[`Address.vue Should display the bytecode by default if present 1`] = `
   <div class="v-window v-item-group theme--light v-tabs-items">
     <div class="v-window__container">
       <transition-stub name="">
-        <div class="v-window-item" id="transactions" style="display: none;">
-          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
-        </div>
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="" style="display: none;">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <div class="v-window-item" id="storage" style="display: none;">
-          <div class="mt-4 v-card v-sheet v-sheet--outlined theme--light">
-            <div class="v-card__text">
-              Storage is not available on this contract. This is because the AST is not available. It can be for the following reasons:
-              <ul>
-                <li>This contract has been imported (AST is not available yet through imports).</li>
-                <li>You've synced the contract through the CLI/Hardhat plugin, but you didn't activate AST upload. you can do it by setting <code>uploadAst: true;</code> in your Hardhat config or by passing <code>--astUpload true</code> to the CLI.</li>
-                <li>You've synced the contract through the CLI/Hardhat plugin, but are on a free plan, meaning that AST for your contracts are deleted after 7 days. You need to push the contract again, or <a>upgrade your plan</a>.</li>
-              </ul> <br> <a target="_blank" href="https://doc.tryethernal.com/dashboard-pages/contracts/reading-variables">Read more</a> on how storage reading works.
-            </div>
-          </div>
+        <div class="v-window-item v-window-item--active" id="transactions">
+          <address-transactions-list-stub></address-transactions-list-stub>
         </div>
       </transition-stub>
       <transition-stub name="">
@@ -208,1217 +69,160 @@ exports[`Address.vue Should display the bytecode by default if present 1`] = `
         <!---->
       </transition-stub>
       <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="code">
-          <div class="mt-2 v-item-group theme--light v-expansion-panels">
-            <!---->
-            <div aria-expanded="true" class="v-expansion-panel mb-2 v-expansion-panel--active v-item--active"><button type="button" aria-expanded="true" class="v-expansion-panel-header v-expansion-panel-header--active">
-                <h4>Bytecode</h4>
-                <transition-stub name="fade-transition">
-                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-                </transition-stub>
-              </button>
-              <transition-stub name="expand-transition">
-                <div class="v-expansion-panel-content">
-                  <div class="v-expansion-panel-content__wrap">
-                    <div class="v-input v-textarea v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                      <div class="v-input__control">
-                        <div class="v-input__slot">
-                          <fieldset aria-hidden="true">
-                            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                          </fieldset>
-                          <div class="v-text-field__slot"><textarea disabled="disabled" id="input-531" rows="5"></textarea></div>
-                          <div class="v-input__append-inner"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-content-copy theme--light" style="font-size: 16px;"></i></span></button></div>
-                        </div>
-                        <div class="v-text-field__details">
-                          <div class="v-messages theme--light">
-                            <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                          </div>
-                        </div>
-                      </div>
-                    </div> <input type="hidden" id="copyElement" value="0x123456">
-                  </div>
-                </div>
-              </transition-stub>
-            </div>
-            <div aria-expanded="false" class="v-expansion-panel"><button type="button" class="v-expansion-panel-header">
-                <h4>Assembly</h4>
-                <transition-stub name="fade-transition">
-                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-                </transition-stub>
-              </button>
-              <transition-stub name="expand-transition">
-                <!---->
-              </transition-stub>
-            </div>
-          </div>
-        </div>
+        <!---->
       </transition-stub>
-      <!---->
     </div>
   </div>
 </div>
 `;
 
-exports[`Address.vue Should display the contract interaction interface under the contract tab if there is an ABI & it is a public explorer 1`] = `
-<div class="container container--fluid">
-  <div class="row mb-2">
-    <div class="col-sm-12 col-md-6 col-lg-3 col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
+exports[`Address.vue Should display ERC20 contract stats 1`] = `
+<div class="container container--fluid" hash="0x123">
+  <div class="row mb-1">
+    <div class="col-lg-5 col-12">
+      <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+        <div class="v-card__title">ERC20 Contract</div>
+        <div class="v-card__subtitle"><span class="success mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">
+                        ERC 20
+                    </span></span></div>
         <div class="v-card__text">
-          Balance: 0.00000000000001 ether
-        </div>
-      </div>
-    </div>
-    <div class="spacer"></div>
-    <!---->
-  </div>
-  <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="transition: none;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="true" role="tab" class="v-tab v-tab--active" id="contractTab">Contract</a> <a tabindex="0" href="#code" aria-selected="false" role="tab" class="v-tab" id="codeTab">Code</a>
-          <!----> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20Balances">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721Balances">ERC-721 Tokens</a>
-          <!---->
-        </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-    </div>
-  </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
-    <div class="v-window__container">
-      <transition-stub name="">
-        <div class="v-window-item" id="transactions" style="display: none;">
-          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
-        </div>
-      </transition-stub>
-      <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="contract">
-          <h4>Artifact</h4>
-          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-            <!---->
-            <!---->
-            <div class="v-card__text">
-              <!---->
-              Artifact for "<b>Amalfi</b>" has been uploaded.
-              <!---->
-            </div>
-            <!---->
-            <!---->
-          </div>
-          <h4>Call Options</h4>
-          <contract-call-options-stub accounts="0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA"></contract-call-options-stub>
-          <h4>Read Methods</h4>
-          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-            <div>
-              <div class="v-card__text">
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <div>
-                      <div class="pb-1 font-weight-bold">_feeBasisPoints</div>
-                      <div>=&gt; uint256</div>
-                      <div id="call" style="display: none;"></div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <div>
-                      <div class="pb-1 font-weight-bold">owner</div>
-                      <div>=&gt; address</div>
-                      <div id="call" style="display: none;"></div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <div>
-                      <div class="pb-1 font-weight-bold">depositsOf</div>
-                      <div class="v-input py-1 col-3 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-243" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-243" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div>=&gt; uint256</div>
-                      <div id="call" style="display: none;"></div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <div>
-                      <div class="pb-1 font-weight-bold">maturityOf</div>
-                      <div class="v-input py-1 col-3 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-246" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-246" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div>=&gt; uint256</div>
-                      <div id="call" style="display: none;"></div>
-                      <div id="call" class="grey lighten-3 pa-2" style="display: none;">
-
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <h4>Write Methods</h4>
-          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-            <div>
-              <div class="v-card__text">
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <div>
-                      <div class="font-weight-bold">renounceOwnership</div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-254" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-254" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <div>
-                      <div class="font-weight-bold">transferOwnership</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-257" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address newOwner</label><input disabled="disabled" id="input-257" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-262" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-262" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <div>
-                      <div class="font-weight-bold">setMaturity</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-265" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-265" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-266" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">uint256 maturity</label><input disabled="disabled" id="input-266" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-271" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-271" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <div>
-                      <div class="font-weight-bold">deposit</div>
-                      <div class="v-input py-1 v-input--hide-details v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                        <div class="v-input__control">
-                          <div class="v-input__slot">
-                            <fieldset aria-hidden="true">
-                              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                            </fieldset>
-                            <div class="v-text-field__slot"><label for="input-274" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">address payee</label><input disabled="disabled" id="input-274" type="text"></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-279" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-279" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <div>
-                      <div class="font-weight-bold">withdraw</div>
-                      <div class="grey lighten-3 pa-2 mt-1" style="display: none;">
-                        <div style="display: none;"></div>
-                        <div style="display: none;">
-                          Tx: <a href="/transaction/null" target="_blank"></a></div>
-                        <div style="display: none;">
-                          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
-                              <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
-                            </svg>
-                            <div class="v-progress-circular__info"></div>
-                          </div>Waiting for receipt...
-                        </div>
-                        <div class="mt-1" style="display: none;">
-                          Status: Failed
-                          <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-check-circle theme--light success--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" class="v-icon notranslate mr-2 align-with-text mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px;"></i>
-                        </div>
-                        <div style="display: none;">
-                          Couldn't get receipt.
-                        </div>
-                      </div>
-                      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
-                      <div class="col-4 px-0 py-1">
-                        <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <fieldset aria-hidden="true">
-                                <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                              </fieldset>
-                              <div class="v-text-field__slot"><label for="input-286" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Value (in undefined)</label><input small="" disabled="disabled" id="input-286" type="number"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> <button type="button" disabled="disabled" class="mt-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Query</span></button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </transition-stub>
-      <transition-stub name="" style="display: none;">
-        <!---->
-      </transition-stub>
-      <!---->
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <!---->
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Address.vue Should display the contract storage structure 1`] = `
-<div class="container container--fluid">
-  <div class="row mb-2">
-    <div class="col-sm-12 col-md-6 col-lg-3 col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          Balance: 0.00000000000001 Ether
-        </div>
-      </div>
-    </div>
-    <div class="spacer"></div>
-    <div class="col-sm-12 col-md-6 col-lg-3 col align-self-end">
-      <div class="v-dialog__container">
-        <!---->
-      </div> <button type="button" class="v-btn v-btn--outlined theme--light v-size--small error--text"><span class="v-btn__content">
-                Remove contract
-            </span></button>
-    </div>
-  </div>
-  <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="transition: none;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="false" role="tab" class="v-tab" id="contractTab">Contract</a> <a tabindex="0" href="#code" aria-selected="false" role="tab" class="v-tab" id="codeTab">Code</a> <a tabindex="0" href="#storage" aria-selected="true" role="tab" class="v-tab v-tab--active" id="storageTab">Storage</a> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20Balances">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721Balances">ERC-721 Tokens</a>
-          <!---->
-        </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-    </div>
-  </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
-    <div class="v-window__container">
-      <transition-stub name="">
-        <div class="v-window-item" id="transactions" style="display: none;">
-          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
-        </div>
-      </transition-stub>
-      <transition-stub name="">
-        <div class="v-window-item" id="contract" style="display: none;">
-          <h4>Artifact</h4>
-          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-            <!---->
-            <div class="v-dialog__container">
-              <!---->
-            </div>
-            <div class="v-card__text">
-              <!---->
-              Artifact for "<b>Amalfi</b>" has been uploaded.<span> (<a href="#">Edit</a>)</span>
-            </div>
-            <!---->
-            <!---->
-          </div>
-          <h4>Call Options</h4>
-          <contract-call-options-stub accounts="0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA"></contract-call-options-stub>
-          <h4>Read Methods</h4>
-          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-            <div>
-              <div class="v-card__text">
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <contract-read-method-stub signature="_feeBasisPoints()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <contract-read-method-stub signature="owner()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <contract-read-method-stub signature="depositsOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <contract-read-method-stub signature="maturityOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <h4>Write Methods</h4>
-          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-            <div>
-              <div class="v-card__text">
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <contract-write-method-stub signature="renounceOwnership()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <contract-write-method-stub signature="transferOwnership(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <contract-write-method-stub signature="setMaturity(address,uint256)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <contract-write-method-stub signature="deposit(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <contract-write-method-stub signature="withdraw()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </transition-stub>
-      <transition-stub name="" style="display: none;">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="storage">
-          <h4>Structure</h4>
-          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-            <!---->
-            <div class="v-card__text">
-              <div>
-                <div class="v-dialog__container">
-                  <!---->
-                </div>
-                mapping(address =&gt; uint256) _balances:
-                <button type="button" class="v-btn v-btn--icon v-btn--outlined v-btn--round theme--light v-size--x-small primary--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-plus theme--light"></i></span></button>
-              </div>
-              <div>
-                <div class="v-dialog__container">
-                  <!---->
-                </div>
-                mapping(address =&gt; mapping(address =&gt; uint256)) _allowances:
-                <button type="button" class="v-btn v-btn--icon v-btn--outlined v-btn--round theme--light v-size--x-small primary--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-plus theme--light"></i></span></button>
-              </div>
-              <div>
-                <div class="v-dialog__container">
-                  <!---->
-                </div>
-                uint256 _totalSupply;
-                <!---->
-              </div>
-              <div>
-                <div class="v-dialog__container">
-                  <!---->
-                </div>
-                string _name;
-                <!---->
-              </div>
-              <div>
-                <div class="v-dialog__container">
-                  <!---->
-                </div>
-                string _symbol;
-                <!---->
-              </div>
-              <div>
-                <div class="v-dialog__container">
-                  <!---->
-                </div>
-
-                <!---->
-              </div>
-              <div>
-                <div class="v-dialog__container">
-                  <!---->
-                </div>
-                string TOKEN_NAME;
-                <!---->
-              </div>
-              <div>
-                <div class="v-dialog__container">
-                  <!---->
-                </div>
-                string TOKEN_SYMBOL;
-                <!---->
-              </div>
-              <div>
-                <div class="v-dialog__container">
-                  <!---->
-                </div>
-                uint256 val;
-                <!---->
-              </div>
-              <div>
-                <div class="v-dialog__container">
-                  <!---->
-                </div>
-                uint256 TOTAL_SUPPLY;
-                <!---->
-              </div>
-              <div>
-                <div class="v-dialog__container">
-                  <!---->
-                </div>
-
-                <!---->
-              </div>
-              <div>
-                <div class="v-dialog__container">
-                  <!---->
-                </div>
-
-                <!---->
-              </div>
-            </div>
-            <!---->
-          </div>
           <div class="row">
-            <div class="col col-3">
-              <h4>Transactions</h4>
-              <div class="v-card v-sheet v-sheet--outlined theme--light">
-                <div class="v-card__text"><i>No transactions here yet.</i></div>
-              </div>
+            <div class="col col-6"><small>Token Name</small><br> <span class="ml-2"><hash-link-stub withtokenname="true" withname="true" hash="0x123" type="token"></hash-link-stub></span></div>
+            <div class="col col-6"><small>Token Symbol</small><br> <span class="text-h6 ml-2">ERC</span></div>
+            <div class="col col-6"><small>Contract</small><br>
+              <hash-link-stub withname="true" hash="0x123" type="contract" class="ml-2"></hash-link-stub>
             </div>
-            <div class="col col-9">
-              <h4>Data</h4>
-              <div class="v-card v-sheet v-sheet--outlined theme--light">
-                <!---->
-                <div class="v-card__text">
-                  <div><i>Select a transaction.</i></div>
-                </div>
-              </div>
+            <div class="col col-6"><small>Contract Creation</small><br> <span class="ml-2">N/A</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-7 col-12">
+      <div class="row">
+        <div class="col col-12">
+          <div class="v-card v-sheet v-sheet--outlined theme--light">
+            <div class="v-card__subtitle">Balance</div>
+            <div align="center" class="v-card__text text-h4">
+              0.00000000000001 Ether
             </div>
           </div>
         </div>
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <!---->
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Address.vue Should display the contract verification UI if it is a public explorer & contract is verified 1`] = `
-<div class="container container--fluid">
-  <div class="row mb-2">
-    <div class="col-sm-12 col-md-6 col-lg-3 col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          Balance: 0.00000000000001 ether
-        </div>
       </div>
-    </div>
-    <div class="spacer"></div>
-    <!---->
-  </div>
-  <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="transition: none;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="false" role="tab" class="v-tab" id="contractTab">Contract</a> <a tabindex="0" href="#code" aria-selected="true" role="tab" class="v-tab v-tab--active" id="codeTab">Code</a>
-          <!----> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20Balances">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721Balances">ERC-721 Tokens</a>
-          <!---->
-        </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-    </div>
-  </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
-    <div class="v-window__container">
-      <transition-stub name="">
-        <div class="v-window-item" id="transactions" style="display: none;">
-          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
-        </div>
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="" style="display: none;">
-        <!---->
-      </transition-stub>
-      <!---->
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="code" style="">
-          <div class="mt-2 v-item-group theme--light v-expansion-panels">
-            <div aria-expanded="false" class="v-expansion-panel mb-2 v-expansion-panel--next-active"><button type="button" class="v-expansion-panel-header">
-                <h4>Contract Verification
-                  <!---->
-                </h4>
-                <transition-stub name="fade-transition">
-                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-                </transition-stub>
-              </button>
-              <transition-stub name="expand-transition">
-                <!---->
-              </transition-stub>
-            </div>
-            <div aria-expanded="true" class="v-expansion-panel mb-2 v-expansion-panel--active v-item--active"><button type="button" aria-expanded="true" class="v-expansion-panel-header v-expansion-panel-header--active">
-                <h4>Bytecode</h4>
-                <transition-stub name="fade-transition">
-                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-                </transition-stub>
-              </button>
-              <transition-stub name="expand-transition">
-                <div class="v-expansion-panel-content">
-                  <div class="v-expansion-panel-content__wrap">
-                    No bytecode for this contract. Redeploy to upload it.
-                  </div>
-                </div>
-              </transition-stub>
-            </div>
-            <div aria-expanded="false" class="v-expansion-panel"><button type="button" class="v-expansion-panel-header">
-                <h4>Assembly</h4>
-                <transition-stub name="fade-transition">
-                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-                </transition-stub>
-              </button>
-              <transition-stub name="expand-transition">
-                <!---->
-              </transition-stub>
-            </div>
-          </div>
-        </div>
-      </transition-stub>
-      <!---->
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Address.vue Should display the contract verified text if it is a public explorer & contract is verified 1`] = `
-<div class="container container--fluid">
-  <div class="row mb-2">
-    <div class="col-sm-12 col-md-6 col-lg-3 col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          Balance: 0.00000000000001 ether
-        </div>
-      </div>
-    </div>
-    <div class="spacer"></div>
-    <!---->
-  </div>
-  <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="transition: none;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="false" role="tab" class="v-tab" id="contractTab">Contract</a> <a tabindex="0" href="#code" aria-selected="true" role="tab" class="v-tab v-tab--active" id="codeTab">Code</a>
-          <!----> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20Balances">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721Balances">ERC-721 Tokens</a>
-          <!---->
-        </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-    </div>
-  </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
-    <div class="v-window__container">
-      <transition-stub name="">
-        <div class="v-window-item" id="transactions" style="display: none;">
-          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
-        </div>
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="" style="display: none;">
-        <!---->
-      </transition-stub>
-      <!---->
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="code">
-          <div class="mt-2 v-item-group theme--light v-expansion-panels">
-            <div aria-expanded="false" class="v-expansion-panel mb-2 v-expansion-panel--next-active"><button type="button" class="v-expansion-panel-header">
-                <h4>Contract Verification<span class="ml-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check-circle theme--light success--text" style="font-size: 16px;"></i></span></h4>
-                <transition-stub name="fade-transition">
-                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-                </transition-stub>
-              </button>
-              <transition-stub name="expand-transition">
-                <!---->
-              </transition-stub>
-            </div>
-            <div aria-expanded="true" class="v-expansion-panel mb-2 v-expansion-panel--active v-item--active"><button type="button" aria-expanded="true" class="v-expansion-panel-header v-expansion-panel-header--active">
-                <h4>Bytecode</h4>
-                <transition-stub name="fade-transition">
-                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-                </transition-stub>
-              </button>
-              <transition-stub name="expand-transition">
-                <div class="v-expansion-panel-content">
-                  <div class="v-expansion-panel-content__wrap">
-                    No bytecode for this contract. Redeploy to upload it.
-                  </div>
-                </div>
-              </transition-stub>
-            </div>
-            <div aria-expanded="false" class="v-expansion-panel"><button type="button" class="v-expansion-panel-header">
-                <h4>Assembly</h4>
-                <transition-stub name="fade-transition">
-                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-                </transition-stub>
-              </button>
-              <transition-stub name="expand-transition">
-                <!---->
-              </transition-stub>
-            </div>
-          </div>
-        </div>
-      </transition-stub>
-      <!---->
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Address.vue Should display the storage tab on contract page if in public explorer mode 1`] = `
-<div class="container container--fluid">
-  <div class="row mb-2">
-    <div class="col-sm-12 col-md-6 col-lg-3 col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          Balance: 0.00000000000001 Ether
-        </div>
-      </div>
-    </div>
-    <div class="spacer"></div>
-    <!---->
-  </div>
-  <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="transition: none;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active">Transactions</a> <a tabindex="0" href="#contract" aria-selected="false" role="tab" class="v-tab" id="contractTab">Contract</a> <a tabindex="0" href="#code" aria-selected="false" role="tab" class="v-tab" id="codeTab">Code</a> <a tabindex="0" href="#storage" aria-selected="false" role="tab" class="v-tab" id="storageTab">Storage</a> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20Balances">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721Balances">ERC-721 Tokens</a>
-          <!---->
-        </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-    </div>
-  </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
-    <div class="v-window__container">
-      <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="transactions">
-          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
-        </div>
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="" style="display: none;">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <!---->
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Address.vue Should not display the storage tab on contract page if in public explorer mode 1`] = `
-<div class="container container--fluid">
-  <div class="row mb-2">
-    <div class="col-sm-12 col-md-6 col-lg-3 col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          Balance: 0.00000000000001 Ether
-        </div>
-      </div>
-    </div>
-    <div class="spacer"></div>
-    <!---->
-  </div>
-  <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="transition: none;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active">Transactions</a> <a tabindex="0" href="#contract" aria-selected="false" role="tab" class="v-tab" id="contractTab">Contract</a> <a tabindex="0" href="#code" aria-selected="false" role="tab" class="v-tab" id="codeTab">Code</a>
-          <!----> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20Balances">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721Balances">ERC-721 Tokens</a>
-          <!---->
-        </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-    </div>
-  </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
-    <div class="v-window__container">
-      <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="transactions">
-          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
-        </div>
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="" style="display: none;">
-        <!---->
-      </transition-stub>
-      <!---->
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <div class="v-window-item" id="code" style="display: none;">
-          <div class="mt-2 v-item-group theme--light v-expansion-panels">
-            <div aria-expanded="false" class="v-expansion-panel mb-2 v-expansion-panel--next-active"><button type="button" class="v-expansion-panel-header">
-                <h4>Contract Verification
-                  <!---->
-                </h4>
-                <transition-stub name="fade-transition">
-                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-                </transition-stub>
-              </button>
-              <transition-stub name="expand-transition">
-                <!---->
-              </transition-stub>
-            </div>
-            <div aria-expanded="true" class="v-expansion-panel mb-2 v-expansion-panel--active v-item--active"><button type="button" aria-expanded="true" class="v-expansion-panel-header v-expansion-panel-header--active">
-                <h4>Bytecode</h4>
-                <transition-stub name="fade-transition">
-                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-                </transition-stub>
-              </button>
-              <transition-stub name="expand-transition">
-                <div class="v-expansion-panel-content">
-                  <div class="v-expansion-panel-content__wrap">
-                    No bytecode for this contract. Redeploy to upload it.
-                  </div>
-                </div>
-              </transition-stub>
-            </div>
-            <div aria-expanded="false" class="v-expansion-panel"><button type="button" class="v-expansion-panel-header">
-                <h4>Assembly</h4>
-                <transition-stub name="fade-transition">
-                  <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-                </transition-stub>
-              </button>
-              <transition-stub name="expand-transition">
-                <!---->
-              </transition-stub>
-            </div>
-          </div>
-        </div>
-      </transition-stub>
-      <!---->
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Address.vue Should say the contract is verified if it is a public explorer 1`] = `
-<div class="container container--fluid">
-  <div class="row mb-2">
-    <div class="col-sm-12 col-md-6 col-lg-3 col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          Balance: 0.00000000000001 Ether
-        </div>
-      </div>
-    </div>
-    <div class="spacer"></div>
-    <div class="col-sm-12 col-md-6 col-lg-3 col align-self-end">
-      <div class="v-dialog__container">
-        <!---->
-      </div> <button type="button" class="v-btn v-btn--outlined theme--light v-size--small error--text"><span class="v-btn__content">
-                Remove contract
-            </span></button>
-    </div>
-  </div>
-  <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="transition: none;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="false" role="tab" class="v-tab">Transactions</a> <a tabindex="0" href="#contract" aria-selected="true" role="tab" class="v-tab v-tab--active" id="contractTab">Contract</a> <a tabindex="0" href="#code" aria-selected="false" role="tab" class="v-tab" id="codeTab">Code</a>
-          <!----> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20Balances">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721Balances">ERC-721 Tokens</a>
-          <!---->
-        </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-    </div>
-  </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
-    <div class="v-window__container">
-      <transition-stub name="">
-        <div class="v-window-item" id="transactions" style="display: none;">
-          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
-        </div>
-      </transition-stub>
-      <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="contract" style="">
-          <h4>Artifact</h4>
-          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-            <!---->
-            <div class="v-dialog__container">
+      <div class="row">
+        <div class="col-lg-6 col-12">
+          <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+            <div class="v-card__subtitle">Transactions</div>
+            <div align="center" class="v-card__text text-h4">
+              <!---->
+              2
               <!---->
             </div>
-            <div class="v-card__text">
-              <div class="mb-1 success--text"><i aria-hidden="true" class="v-icon notranslate success--text mr-1 mdi mdi-check-circle theme--light" style="font-size: 16px;"></i>Verified contract.
-              </div>
-              Artifact for "<b>Amalfi</b>" has been uploaded.<span> (<a href="#">Edit</a>)</span>
-            </div>
-            <!---->
-            <!---->
           </div>
-          <h4>Call Options</h4>
-          <contract-call-options-stub accounts="0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA"></contract-call-options-stub>
-          <h4>Read Methods</h4>
-          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-            <div>
-              <div class="v-card__text">
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <contract-read-method-stub signature="_feeBasisPoints()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <contract-read-method-stub signature="owner()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <contract-read-method-stub signature="depositsOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-12 col">
-                    <contract-read-method-stub signature="maturityOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <h4>Write Methods</h4>
-          <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
-            <div>
-              <div class="v-card__text">
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <contract-write-method-stub signature="renounceOwnership()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <contract-write-method-stub signature="transferOwnership(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <contract-write-method-stub signature="setMaturity(address,uint256)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <contract-write-method-stub signature="deposit(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
-                  </div>
-                </div>
-                <div class="row pb-4">
-                  <div class="col-sm-12 col-md-6 col-lg-3 col">
-                    <contract-write-method-stub signature="withdraw()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-write-method-stub>
-                  </div>
-                </div>
-              </div>
+        </div>
+        <div class="col-lg-6 col-12">
+          <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+            <div class="v-card__subtitle">ERC-20 Transfers</div>
+            <div align="center" class="v-card__text text-h4">
+              3<i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-up-thin theme--light"></i>
+              <hr role="separator" aria-orientation="vertical" class="mx-4 v-divider v-divider--vertical theme--light"> 4<i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-down-thin theme--light"></i>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+  <div class="v-tabs theme--light">
+    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text" data-booted="true">
+      <div class="v-slide-group__prev v-slide-group__prev--disabled">
+        <transition-stub name="fade-transition"></transition-stub>
+      </div>
+      <div class="v-slide-group__wrapper">
+        <div class="v-slide-group__content v-tabs-bar__content">
+          <div class="v-tabs-slider-wrapper" style="height: 2px; left: 0px; width: 0px;">
+            <div class="v-tabs-slider"></div>
+          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active" id="transactionsTab">Transactions</a> <a tabindex="0" href="#transfers" aria-selected="false" role="tab" class="v-tab" id="transfersTab">Transfers</a> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20BalancesTab">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721BalancesTab">ERC-721 Tokens</a>
+        </div>
+      </div>
+      <div class="v-slide-group__next v-slide-group__next--disabled">
+        <transition-stub name="fade-transition"></transition-stub>
+      </div>
+    </div>
+  </div>
+  <div class="v-window v-item-group theme--light v-tabs-items">
+    <div class="v-window__container">
+      <transition-stub name="v-window-x-transition">
+        <div class="v-window-item v-window-item--active" id="transactions">
+          <address-transactions-list-stub></address-transactions-list-stub>
+        </div>
       </transition-stub>
-      <transition-stub name="" style="display: none;">
+      <transition-stub name="v-window-x-transition">
         <!---->
       </transition-stub>
-      <!---->
-      <transition-stub name="">
+      <transition-stub name="v-window-x-transition">
         <!---->
       </transition-stub>
-      <transition-stub name="">
+      <transition-stub name="v-window-x-transition">
         <!---->
       </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <!---->
     </div>
   </div>
 </div>
 `;
 
-exports[`Address.vue Should sync the balance when loaded 1`] = `
-<div class="container container--fluid">
-  <div class="row mb-2">
-    <div class="col-sm-12 col-md-6 col-lg-3 col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
+exports[`Address.vue Should display ERC721 contract stats 1`] = `
+<div class="container container--fluid" hash="0x123">
+  <div class="row mb-1">
+    <div class="col-lg-5 col-12">
+      <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+        <div class="v-card__title">ERC721 Contract</div>
+        <div class="v-card__subtitle"><span class="success mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">
+                        ERC 721
+                    </span></span></div>
         <div class="v-card__text">
-          Balance: 0.00000000000001 Ether
+          <div class="row">
+            <div class="col col-6"><small>Token Name</small><br> <span class="ml-2"><hash-link-stub withtokenname="true" withname="true" hash="0x123" type="token"></hash-link-stub></span></div>
+            <div class="col col-6"><small>Token Symbol</small><br> <span class="text-h6 ml-2">ERC</span></div>
+            <div class="col col-6"><small>Contract</small><br>
+              <hash-link-stub withname="true" hash="0x123" type="contract" class="ml-2"></hash-link-stub>
+            </div>
+            <div class="col col-6"><small>Contract Creation</small><br> <span class="ml-2">N/A</span></div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="spacer"></div>
-    <!---->
+    <div class="col-lg-7 col-12">
+      <div class="row">
+        <div class="col col-12">
+          <div class="v-card v-sheet v-sheet--outlined theme--light">
+            <div class="v-card__subtitle">Balance</div>
+            <div align="center" class="v-card__text text-h4">
+              0.00000000000001 Ether
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-6 col-12">
+          <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+            <div class="v-card__subtitle">Transactions</div>
+            <div align="center" class="v-card__text text-h4">
+              <!---->
+              2
+              <!---->
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-12">
+          <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+            <div class="v-card__subtitle">ERC-20 Transfers</div>
+            <div align="center" class="v-card__text text-h4">
+              3<i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-up-thin theme--light"></i>
+              <hr role="separator" aria-orientation="vertical" class="mx-4 v-divider v-divider--vertical theme--light"> 4<i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-down-thin theme--light"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="v-tabs theme--light">
     <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
@@ -1429,11 +233,7 @@ exports[`Address.vue Should sync the balance when loaded 1`] = `
         <div class="v-slide-group__content v-tabs-bar__content">
           <div class="v-tabs-slider-wrapper" style="transition: none;">
             <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active">Transactions</a>
-          <!---->
-          <!---->
-          <!----> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20Balances">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721Balances">ERC-721 Tokens</a>
-          <!---->
+          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active" id="transactionsTab">Transactions</a> <a tabindex="0" href="#transfers" aria-selected="false" role="tab" class="v-tab" id="transfersTab">Transfers</a> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20BalancesTab">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721BalancesTab">ERC-721 Tokens</a>
         </div>
       </div>
       <div class="v-slide-group__next v-slide-group__next--disabled">
@@ -1445,28 +245,18 @@ exports[`Address.vue Should sync the balance when loaded 1`] = `
     <div class="v-window__container">
       <transition-stub name="">
         <div class="v-window-item v-window-item--active" id="transactions">
-          <address-transactions-list-stub address="0x123"></address-transactions-list-stub>
+          <address-transactions-list-stub></address-transactions-list-stub>
         </div>
       </transition-stub>
       <transition-stub name="">
         <!---->
       </transition-stub>
-      <transition-stub name="" style="display: none;">
-        <!---->
-      </transition-stub>
       <transition-stub name="">
         <!---->
       </transition-stub>
       <transition-stub name="">
         <!---->
       </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <!---->
     </div>
   </div>
 </div>

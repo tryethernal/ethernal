@@ -1,4 +1,5 @@
 const Web3 = require('web3');
+const ethers = require('ethers');
 
 export const sanitize = function(obj) {
     return Object.fromEntries(
@@ -49,5 +50,23 @@ export const formatContractPattern = function(pattern) {
             return 'ERC 721';
         default:
             return pattern;
+    }
+};
+
+export const formatNumber = (number, options = {}) => {
+    if (number === undefined || number === null) return;
+    const formatUnits = ethers.utils.formatUnits;
+    const BigNumber = ethers.BigNumber;
+    const formatter = Intl.NumberFormat('en-US', { style: 'decimal', notation: 'compact', maximumFractionDigits: 4 });
+    const decimals = options.decimals === 0 ? 0 : (options.decimals || 18);
+
+    if (options.short) {
+        if (BigNumber.isBigNumber(number) || typeof number == 'string')
+            return formatter.format(formatUnits(BigNumber.from(number), decimals));
+        else
+            return formatter.format(number);
+    }
+    else {
+        return ethers.utils.commify(formatUnits(BigNumber.from(number), decimals).split('.')[0]);
     }
 };

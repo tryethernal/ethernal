@@ -13,6 +13,9 @@ import Settings from '../components/Settings.vue';
 import Overview from '../components/Overview.vue';
 import ERC721Token from '../components/ERC721Token.vue';
 import ERC721Collections from '../components/ERC721Collections.vue';
+import ERC721Collection from '../components/ERC721Collection.vue';
+import ERC20Contract from '../components/ERC20Contract.vue';
+import Contract from '../components/Contract.vue';
 
 const redirectIfLoggedIn = function (to, from, next) {
     if (auth().currentUser) {
@@ -38,13 +41,15 @@ const routes = [
     { path: '/accounts', component: Accounts, beforeEnter: redirectIfLoggedOut },
     { path: '/transaction/:hash', component: Transaction, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/tx/:hash', component: Transaction, props: true, beforeEnter: redirectIfLoggedOut },
-    { path: '/address/:hash', component: Address, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/address/:address', component: Address, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/address/:hash/:tokenId', component: ERC721Token, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/token/:hash/:tokenId', component: ERC721Token, props: true, beforeEnter: redirectIfLoggedOut },
-    { path: '/token/:hash', component: Address, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/token/:address', component: ERC20Contract, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/contract/:address', component: Contract, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/contracts', component: Contracts, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/tokens', component: Tokens, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/nfts', component: ERC721Collections, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/nft/:address', component: ERC721Collection, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/settings', component: Settings, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '*', redirect: '/overview' }
 ];

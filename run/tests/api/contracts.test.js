@@ -14,9 +14,21 @@ const request = supertest(app);
 
 const BASE_URL = '/api/contracts';
 
-describe(`GET ${BASE_URL}/:address/logs`, () => {
-    beforeEach(() => jest.clearAllMocks());
+beforeEach(() => jest.clearAllMocks());
 
+describe(`GET ${BASE_URL}/:address/stats`, () => {
+    it('Should return stats with 200 status code', (done) => {
+        jest.spyOn(db, 'getTokenStats').mockResolvedValue({ total: 1, items: [{ address: 'Ox123' }]});
+        request.get(`${BASE_URL}/0x123/stats?workspace=My+Workspace`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ total: 1, items: [{ address: 'Ox123' }]});
+                done();
+            });
+    });
+});
+
+describe(`GET ${BASE_URL}/:address/logs`, () => {
     it('Should fail if no contract at address', (done) => {
         jest.spyOn(db, 'getContractLogs').mockRejectedValue(new Error(`Can't find a contract at 0x123.`));
         request.get(`${BASE_URL}/0x123/logs?signature=0x456&firebaseUserId=123&workspace=My+Workspace`)
@@ -39,8 +51,6 @@ describe(`GET ${BASE_URL}/:address/logs`, () => {
 });
 
 describe(`POST ${BASE_URL}/:address/watchedPaths`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should update the watchedPaths field', (done) => {
         request.post(`${BASE_URL}/0x123/watchedPaths`)
             .send({ data: { workspace: 'My Workspace', address: '0x123', watchedPaths: JSON.stringify([]) }})
@@ -55,8 +65,6 @@ describe(`POST ${BASE_URL}/:address/watchedPaths`, () => {
 });
 
 describe(`GET ${BASE_URL}/processable`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should return contracts with 200 status code', (done) => {
         jest.spyOn(db, 'getUnprocessedContracts').mockResolvedValue([{ address: '0x123' }]);
         request.get(`${BASE_URL}/processable?firebaseUserId=123&workspace=My+Workspace`)
@@ -70,8 +78,6 @@ describe(`GET ${BASE_URL}/processable`, () => {
 });
 
 describe(`POST ${BASE_URL}/:address`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should store contract data and return 200 status code', (done) => {
         db.canUserSyncContract.mockResolvedValue(true);
         request.post(`${BASE_URL}/0x123`)
@@ -100,8 +106,6 @@ describe(`POST ${BASE_URL}/:address`, () => {
 });
 
 describe(`POST ${BASE_URL}/:address/tokenProperties`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should set token properties and return 200 status code', (done) => {
         const properties = {
             patterns: [],
@@ -156,8 +160,6 @@ describe(`POST ${BASE_URL}/:address/tokenProperties`, () => {
 });
 
 describe(`POST ${BASE_URL}/:address/remove`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should return 200 status code', (done) => {
         request.post(`${BASE_URL}/0x123/remove`)
             .send({ data: { workspace: 'My Workspace' }})
@@ -170,8 +172,6 @@ describe(`POST ${BASE_URL}/:address/remove`, () => {
 });
 
 describe(`POST ${BASE_URL}/:address/verify`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should return 200 status code', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ userId: 1, workspaceId: 1 });
         jest.spyOn(db, 'getContract').mockResolvedValueOnce({ address: '0x123' });
@@ -285,8 +285,6 @@ describe(`POST ${BASE_URL}/:address/verify`, () => {
 });
 
 describe(`GET ${BASE_URL}/:address`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should return 200 status code', (done) => {
         jest.spyOn(db, 'getWorkspaceContract').mockResolvedValue({ address: '0x123' });
         request.get(`${BASE_URL}/0x123`)
@@ -300,8 +298,6 @@ describe(`GET ${BASE_URL}/:address`, () => {
 });
 
 describe(`GET ${BASE_URL}`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should return 200 status code', (done) => {
         jest.spyOn(db, 'getWorkspaceContracts').mockResolvedValue({ items: [{ address: '0x123' }], total: 10 });
         request.get(BASE_URL)
