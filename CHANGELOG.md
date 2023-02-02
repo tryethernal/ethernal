@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.7.0] - 2021-02-02
+### Changed
+- Major overhaul of the token page, added token stats. Feel free to give feedback on Discord
+
 ## [3.6.16] - 2023-01-31
 ### Changed
 - Optimize migration script for speed
