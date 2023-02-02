@@ -90,7 +90,7 @@
             <v-tab id="interactionsTab" href="#interactions">Read / Write</v-tab>
             <v-tab id="holdersTab" href="#holders">Holders</v-tab>
             <v-tab id="transfersTab" href="#transfers">Transfers</v-tab>
-            <v-tab id="analyticsTab" href="#analytics">Analytics</v-tab>
+            <v-tab style="display: none;" id="analyticsTab" href="#analytics">Analytics</v-tab>
         </v-tabs>
 
         <v-tabs-items :value="tab">
