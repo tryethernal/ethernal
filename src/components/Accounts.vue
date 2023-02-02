@@ -47,7 +47,7 @@
             </template>
             <template v-slot:item.balance="{ item }">
                 <span v-if="item.balance">
-                    {{ item.balance | fromWei('ether', chain.token)  }}
+                    {{ item.balance | fromWei('ether', chain.token) }}
                 </span>
                 <span v-else>N/A</span>
             </template>

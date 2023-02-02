@@ -10,13 +10,29 @@ describe('HashLink.vue', () => {
         helper = new MockHelper();
     });
 
+    it('Should not create links', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+             .mockResolvedValue({ data: { name: 'My Contract', tokenName: 'Ethernal' }});
+        const wrapper = helper.mountFn(HashLink, {
+            propsData: {
+                type: 'address',
+                hash: '0xed5af388653567af2f388e6224dc7c4b3241c544',
+                unlink: true,
+                notCopiable: true,
+                withName: true
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should display smaller hash if xsHash option is passed', async () => {
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
                 type: 'address',
                 hash: '0xed5af388653567af2f388e6224dc7c4b3241c544',
-                xsHash: true                
-            }
+                xsHash: true            }
         });
         await flushPromises();
 

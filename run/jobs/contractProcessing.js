@@ -27,12 +27,14 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
         promises.push(erc20contract.name());
         promises.push(erc20contract.totalSupply());
 
-        await Promise.all(promises).then(res => {
-            decimals = res[0];
-            symbol = res[1];
-            name = res[2];
-            totalSupply = res[3] && res[3].toString();
-        });
+        try {
+            await Promise.all(promises).then(res => {
+                decimals = res[0];
+                symbol = res[1];
+                name = res[2];
+                totalSupply = res[3] && res[3].toString();
+            });
+        } catch(_error){}
 
         if (decimals && symbol && name) {
             tokenData = sanitize({
@@ -53,9 +55,10 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
 
         const contract = new ContractConnector(rpcServer, contractAddress, ERC721_ABI);
 
-        if (!abi) {
+        if (patterns.indexOf('erc721') == -1) {
             try {
                 const isErc721 = await contract.has721Interface();
+
                 if (isErc721)
                     patterns.push('erc721');
             } catch(_error) {}

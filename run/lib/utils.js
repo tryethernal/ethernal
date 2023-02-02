@@ -52,4 +52,4 @@ module.exports = {
     stringifyBns: _stringifyBns,
     isJson: _isJson,
     getEnv: getEnv
-}
+};
