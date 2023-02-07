@@ -154,7 +154,7 @@ const getTokenTransfers = async (workspaceId, address, page, itemsPerPage, order
     };
 };
 
-const getTokenTransferForProcessing = (tokenTransferId) => {
+const getTokenTransferForProcessing = async (tokenTransferId) => {
     if (!tokenTransferId) throw new Error('Missing parameter');
 
     return TokenTransfer.findOne({
@@ -430,7 +430,7 @@ const getAddressTransactions = async (workspaceId, address, page, itemsPerPage, 
     const workspace = await Workspace.findByPk(workspaceId);
     const transactions = await workspace.getFilteredTransactions(page, itemsPerPage, order, orderBy, address);
     const totalTransactionCount = await workspace.countTransactions({
-        where: { [Op.or]: [{ to: address }, { from: address }] }
+        where: { [Op.or]: [{ to: address.toLowerCase() }, { from: address.toLowerCase() }] }
     });
     return {
         items: transactions.map(t => t.toJSON()),

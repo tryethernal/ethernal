@@ -126,6 +126,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         set(value) {
             this.setDataValue('from', value.toLowerCase());
+        },
+        get() {
+            return this.getDataValue('from') ? this.getDataValue('from').toLowerCase() : null;
         }
     },
     gasLimit: DataTypes.STRING,
@@ -150,6 +153,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         set(value) {
             this.setDataValue('to', value.toLowerCase());
+        },
+        get() {
+            return this.getDataValue('to') ? this.getDataValue('to').toLowerCase() : null;
         }
     },
     transactionIndex: DataTypes.INTEGER,
