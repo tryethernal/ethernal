@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.7.4] - 2021-02-07
+### Fixed
+- Total Supply
+
 ## [3.7.3] - 2021-02-07
 ### Fixed
 - Case insensitive addresses
