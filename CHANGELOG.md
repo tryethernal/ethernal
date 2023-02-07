@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.7.3] - 2021-02-07
+### Fixed
+- Case insensitive addresses
+
 ## [3.7.2] - 2021-02-02
 ### Fixed
 - Tests
@@ -30,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Bug preventing from creating workspace with RPC including Basic auth
 
-## [3.6.13] - 2023-01-27
+## [3.6.13] - 2023-01-27$
 ### Fixed
 - Logger
 
