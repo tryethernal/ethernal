@@ -16,7 +16,7 @@
             <template v-else-if="isValueDefined">
                 <router-link v-if="type == 'link'" style="text-decoration: none;" :to="href">{{ commify(value) }}</router-link>
                 <span v-else>
-                    {{ formatNumber(value, { short: true, decimals: decimals }) }}
+                    {{ formatNumber(value, { short: !long, decimals: decimals }) }}
                 </span>
             </template>
             <template v-else>
@@ -32,7 +32,7 @@ const { formatNumber } = require('../lib/utils');
 
 export default {
     name: 'StatNumber',
-    props: ['type', 'title', 'value', 'loading', 'href', 'infoTooltip', 'decimals'],
+    props: ['type', 'title', 'value', 'loading', 'href', 'infoTooltip', 'decimals', 'long'],
     methods: {
         commify: ethers.utils.commify,
         formatNumber: formatNumber

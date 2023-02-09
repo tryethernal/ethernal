@@ -22,6 +22,18 @@ exports[`StatNumber.vue Should show a number 1`] = `
 </div>
 `;
 
+exports[`StatNumber.vue Should show the full number 1`] = `
+<div class="v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__subtitle">
+    <div class="">Stat</div>
+    <!---->
+  </div>
+  <div align="center" class="v-card__text text-h3"><span>
+                83,742,318
+            </span></div>
+</div>
+`;
+
 exports[`StatNumber.vue Should show the info tooltip 1`] = `
 <div class="v-card v-sheet v-sheet--outlined theme--light">
   <div class="v-card__subtitle">

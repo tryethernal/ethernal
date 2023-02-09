@@ -2,7 +2,7 @@
     <v-container fluid>
         <v-row>
             <v-col cols="12" sm="6" lg="3" v-if="publicExplorer.totalSupply">
-                <Stat-Number :title="'Total Supply'" :value="publicExplorer.totalSupply" />
+                <Stat-Number :title="'Total Supply'" :value="publicExplorer.totalSupply" :long="true" />
             </v-col>
         </v-row>
 
