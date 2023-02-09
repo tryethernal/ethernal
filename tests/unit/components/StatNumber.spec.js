@@ -23,6 +23,18 @@ describe('StatNumber.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
+    it('Should show the full number', () => {
+        const wrapper = helper.mountFn(StatNumber, {
+            propsData: {
+                title: 'Stat',
+                value: "83742318000000000000000000",
+                loading: false,
+                long: true
+            }
+        });
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should show a number', () => {
         const wrapper = helper.mountFn(StatNumber, {
             propsData: {
