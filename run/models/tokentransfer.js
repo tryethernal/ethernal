@@ -34,18 +34,24 @@ module.exports = (sequelize, DataTypes) => {
             }
         });
 
-        if (existingChangeCount > 0)
+        if (existingChangeCount > 0) {
+            await this.update({ processed: true });
             return;
+        }
 
-        return this.createTokenBalanceChange(sanitize({
-            transactionId: this.transactionId,
-            workspaceId: this.workspaceId,
-            token: this.token,
-            address: balanceChange.address,
-            currentBalance: balanceChange.currentBalance,
-            previousBalance: balanceChange.previousBalance,
-            diff: balanceChange.diff
-        }));
+        return sequelize.transaction(async (transaction) => {
+            await this.createTokenBalanceChange(sanitize({
+                transactionId: this.transactionId,
+                workspaceId: this.workspaceId,
+                token: this.token,
+                address: balanceChange.address,
+                currentBalance: balanceChange.currentBalance,
+                previousBalance: balanceChange.previousBalance,
+                diff: balanceChange.diff
+            }), { transaction });
+
+            await this.update({ processed: true }, { transaction });
+        });
     }
   }
   TokenTransfer.init({

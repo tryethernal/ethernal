@@ -1,7 +1,7 @@
 <template>
     <v-data-table
         :loading="loading"
-        :hide-default-footer="transfers.length <= 10"
+        :hide-default-footer="count <= 10"
         :headers="headers"
         :sort-by="sortBy"
         :must-sort="true"

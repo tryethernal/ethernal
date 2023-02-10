@@ -23,12 +23,14 @@ module.exports = async job => {
 
     if (tokenTransfer.src != '0x0000000000000000000000000000000000000000') {
         const balanceChange = await getBalanceChange(tokenTransfer.src, tokenTransfer.token, transaction.blockNumber, workspace.rpcServer);
+        console.log(balanceChange)
         if (balanceChange && balanceChange.diff != '0')
             changes.push(balanceChange);
     }
 
     if (tokenTransfer.dst != '0x0000000000000000000000000000000000000000') {
         const balanceChange = await getBalanceChange(tokenTransfer.dst, tokenTransfer.token, transaction.blockNumber, workspace.rpcServer);
+        console.log(balanceChange)
         if (balanceChange && balanceChange.diff != '0')
             changes.push(balanceChange);
     }
