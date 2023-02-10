@@ -1,6 +1,7 @@
 const ethers = require('ethers');
 const { parseTrace, processTrace } = require('./trace');
 const { enqueue } = require('./queue');
+const logger = require('./logger');
 const ERC721_ABI = require('./abis/erc721.json');
 const ERC721_ENUMERABLE_ABI = require('./abis/erc721Enumerable.json');
 const ERC721_METADATA_ABI = require('./abis/erc721Metadata.json');
@@ -21,9 +22,13 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
         if (ethers.BigNumber.isBigNumber(res[0]))
             currentBalance = res[0];
         else
-            throw 'Not a big number result'
+            if (res.startsWith && res.startsWith('call revert exception'))
+                currentBalance = ethers.BigNumber.from('0');
+            else
+                throw new Error(res);
     } catch(error) {
-        currentBalance = ethers.BigNumber.from('0');
+        logger.error(error.message, { location: 'lib.rpc', error: error, data: arguments });
+        throw error;
     }
 
     if (blockNumber > 1) {
@@ -34,12 +39,17 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
             };
 
             const res = await contract.callReadMethod('balanceOf(address)', { 0: address }, options);
+
             if (ethers.BigNumber.isBigNumber(res[0]))
                 previousBalance = res[0];
             else
-                throw 'Not a big number result'
+            if (res.startsWith && res.startsWith('call revert exception'))
+                previousBalance = ethers.BigNumber.from('0');
+            else
+                throw new Error(res);
         }  catch(error) {
-            previousBalance = ethers.BigNumber.from('0');
+            logger.error(error.message, { location: 'lib.rpc', error: error, data: arguments });
+            throw error;
         }
     }
 

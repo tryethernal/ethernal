@@ -1,6 +1,7 @@
 'use strict';
 const {
-  Model
+  Model,
+  QueryTypes
 } = require('sequelize');
 const { trigger } = require('../lib/pusher');
 const { enqueue } = require('../lib/queue');
@@ -33,18 +34,24 @@ module.exports = (sequelize, DataTypes) => {
             }
         });
 
-        if (existingChangeCount > 0)
+        if (existingChangeCount > 0) {
+            await this.update({ processed: true });
             return;
+        }
 
-        return this.createTokenBalanceChange(sanitize({
-            transactionId: this.transactionId,
-            workspaceId: this.workspaceId,
-            token: this.token,
-            address: balanceChange.address,
-            currentBalance: balanceChange.currentBalance,
-            previousBalance: balanceChange.previousBalance,
-            diff: balanceChange.diff
-        }));
+        return sequelize.transaction(async (transaction) => {
+            await this.createTokenBalanceChange(sanitize({
+                transactionId: this.transactionId,
+                workspaceId: this.workspaceId,
+                token: this.token,
+                address: balanceChange.address,
+                currentBalance: balanceChange.currentBalance,
+                previousBalance: balanceChange.previousBalance,
+                diff: balanceChange.diff
+            }), { transaction });
+
+            await this.update({ processed: true }, { transaction });
+        });
     }
   }
   TokenTransfer.init({
@@ -79,7 +86,7 @@ module.exports = (sequelize, DataTypes) => {
     processed: DataTypes.BOOLEAN
   }, {
     hooks: {
-        async afterSave(tokenTransfer, options) {
+        async afterCreate(tokenTransfer, options) {
             const transaction = await tokenTransfer.getTransaction({
                 attributes: ['blockNumber', 'hash'],
                 include: [
@@ -101,12 +108,16 @@ module.exports = (sequelize, DataTypes) => {
                 ]
             });
 
-            if (transaction.workspace.public)
-                await enqueue('processTokenTransfer',
-                    `processTokenTransfer-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.id}`, {
-                        tokenTransferId: tokenTransfer.id
-                    }
-                );
+            if (transaction.workspace.public) {
+                // We want this to fail if it is not in a transaction
+                options.transaction.afterCommit(() => {
+                    return enqueue('processTokenTransfer',
+                        `processTokenTransfer-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.id}`, {
+                            tokenTransferId: tokenTransfer.id
+                        }
+                    );
+                });
+            }
 
             if (tokenTransfer.tokenId) {
                 if (transaction.workspace.public) {

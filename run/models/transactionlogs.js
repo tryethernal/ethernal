@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       TransactionLog.hasOne(models.TokenTransfer, { foreignKey: 'transactionLogId', as: 'tokenTransfer' });
     }
 
-    async safeCreateTokenTransfer(tokenTransfer) {
+    async safeCreateTokenTransfer(tokenTransfer, transaction) {
         const existingTokenTransferCount = await sequelize.models.TokenTransfer.count({
             where: { transactionLogId: this.id }
         });
@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
             transactionId: transactionReceipt.transactionId,
             workspaceId: this.workspaceId
         });
-        return this.createTokenTransfer(sanitizedTokenTransfer);
+        return this.createTokenTransfer(sanitizedTokenTransfer, { transaction: transaction });
     }
   }
   TransactionLog.init({
@@ -72,10 +72,10 @@ module.exports = (sequelize, DataTypes) => {
     raw: DataTypes.JSON
   }, {
     hooks: {
-        async afterSave(log, options) {
+        async afterCreate(log, options) {
             const tokenTransfer = getTokenTransfer(log);
             if (tokenTransfer)
-                await log.safeCreateTokenTransfer(tokenTransfer);
+                await log.safeCreateTokenTransfer(tokenTransfer, options.transaction);
 
             return trigger(`private-contractLog;workspace=${log.workspaceId};contract=${log.address}`, 'new', null);
         }

@@ -21,7 +21,7 @@ router.get('/reprocessTokenTransfers', async (req, res) => {
         if (data.secret != process.env.SECRET)
             throw new Error(`Auth error`);
 
-        await enqueue('reprocessAllTokenTransfers', `reprocessAllTokenTransfers-${Date.now()}`, { batchSize: data.batchSize });
+        await enqueue('reprocessAllTokenTransfers', `reprocessAllTokenTransfers-${Date.now()}`, { workspaceId: data.workspaceId });
 
         res.sendStatus(200);
     } catch(error) {
