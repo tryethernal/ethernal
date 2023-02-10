@@ -1,6 +1,7 @@
 const ethers = require('ethers');
 const { parseTrace, processTrace } = require('./trace');
 const { enqueue } = require('./queue');
+const logger = require('./logger');
 const ERC721_ABI = require('./abis/erc721.json');
 const ERC721_ENUMERABLE_ABI = require('./abis/erc721Enumerable.json');
 const ERC721_METADATA_ABI = require('./abis/erc721Metadata.json');
@@ -26,7 +27,7 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
             else
                 throw new Error(res);
     } catch(error) {
-        console.log(error)
+        logger.error(error.message, { location: 'lib.rpc', error: error, data: arguments });
         throw error;
     }
 
@@ -38,7 +39,7 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
             };
 
             const res = await contract.callReadMethod('balanceOf(address)', { 0: address }, options);
-            console.log(res)
+
             if (ethers.BigNumber.isBigNumber(res[0]))
                 previousBalance = res[0];
             else
@@ -47,7 +48,7 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
             else
                 throw new Error(res);
         }  catch(error) {
-            console.log(error)
+            logger.error(error.message, { location: 'lib.rpc', error: error, data: arguments });
             throw error;
         }
     }
