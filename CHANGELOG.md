@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.7.6] - 2021-02-10
+### Changed
+- Updated token processing script for more reliable balance change tracking
+
 ## [3.7.5] - 2021-02-07
 ### Changed
 - Show full total supply on overview
