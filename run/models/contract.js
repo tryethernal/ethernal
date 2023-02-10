@@ -452,6 +452,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.VIRTUAL,
         get() {
             const patterns = this.getDataValue('patterns');
+            if (!patterns)
+                return false;
             return patterns.indexOf('erc20') > -1 || patterns.indexOf('erc721') > -1;
         }
     },
