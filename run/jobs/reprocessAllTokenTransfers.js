@@ -13,6 +13,8 @@ module.exports = async job => {
     if (!data.workspaceId)
         return false;
 
+    const batchSize = data.batchSize || 10;
+
     const transfers = await sequelize.query(`
         SELECT distinct token_transfers.id, token_transfers."transactionId", token_transfers.token, token_balance_changes.address, src, dst
         FROM token_transfers
@@ -20,7 +22,7 @@ module.exports = async job => {
         lEFT JOIN workspaces on token_transfers."workspaceId" = workspaces.id
         WHERE address IS NULL AND token_transfers.processed = false
         AND workspaces.id = :workspaceId
-        ORDER BY token_transfers."transactionId" DESC
+        LIMIT ${batchSize}
     `, {
         replacements: {
             workspaceId: data.workspaceId
