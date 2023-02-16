@@ -105,7 +105,15 @@ module.exports = (sequelize, DataTypes) => {
         if (!from || !to) return new Promise(resolve => resolve([]));
 
         return sequelize.query(`
-            WITH days as (
+            WITH init as (
+                SELECT coalesce(sum(diff::numeric), 0) as supply
+                FROM token_balance_changes
+                LEFT JOIN transactions ON token_balance_changes."transactionId" = transactions.id
+                WHERE token_balance_changes.token = :token
+                AND token_balance_changes."workspaceId" = :workspaceId
+                AND transactions.timestamp::date < :from
+            ),
+            days as (
                 SELECT
                     date_trunc('day', d) as day
                 FROM generate_series(timestamp :from, timestamp :to, interval  '1 day') d
@@ -127,8 +135,9 @@ module.exports = (sequelize, DataTypes) => {
 
             SELECT
                 day AS timestamp,
-                sum(supply) OVER (order by day asc rows between unbounded preceding and current row) AS "cumulativeSupply"
+                (sum(data.supply) OVER (order by day asc rows between unbounded preceding and current row)) + init.supply AS "cumulativeSupply"
             FROM data
+            CROSS JOIN init
         `, {
             replacements: {
                 from: from,
