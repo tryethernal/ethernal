@@ -180,7 +180,7 @@ const getTokenTransferForProcessing = async (tokenTransferId) => {
 }
 
 const getContractLogs = async (workspaceId, address, signature, page, itemsPerPage, orderBy, order) => {
-    if (!workspaceId || !address) throw new Error('Missing paramter.');
+    if (!workspaceId || !address) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
     const contract = await workspace.findContractByAddress(address);
