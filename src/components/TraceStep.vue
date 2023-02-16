@@ -12,7 +12,7 @@
                         |-->
                     </span>
                     <v-chip small class="primary mr-2">{{ this.step.op }}</v-chip>
-                    <v-chip v-if="this.step.contract.proxyContract" small class="primary mr-2">PROXY</v-chip>
+                    <v-chip v-if="this.step.contract && this.step.contract.proxyContract" small class="primary mr-2">PROXY</v-chip>
                     <Hash-Link :type="'address'" :hash="step.address" :notCopiable="true" :fullHash="true" :withName="true" /><span v-if="transactionDescription">.{{ transactionDescription.functionFragment.name }}(</span>
                     <template v-if="transactionDescription">
                         <div v-for="(input, index) in transactionDescription.functionFragment.inputs" :key="`in-${index}`">
@@ -31,6 +31,12 @@
                                 <Formatted-Sol-Var :input="transactionDescription.functionFragment.outputs[0]" :value="decodeOutput(0)" />
                             </template>
                         </template>
+                    </template>
+                    <template v-else>
+                        <ul>
+                            <li><b>Input:</b> {{ step.input }}</li>
+                            <li><b>Output:</b> {{ step.returnData }}</li>
+                        </ul>
                     </template>
                 </v-card-text>
             </v-card>
@@ -65,9 +71,10 @@ export default {
         }
     },
     watch: {
-        'step.contract.abi': {
+        'step.contract': {
             immediate: true,
             handler() {
+                if (!this.step.contract) return;
                 if (this.step.input && this.step.contract.abi) {
                     try {
                         const contract = this.step.contract.proxyContract ? this.step.contract.proxyContract : this.step.contract;
