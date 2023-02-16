@@ -261,7 +261,7 @@ export default {
             this.updateSuccess = false;
             this.updateError = false;
 
-            this.server.updateWorkspaceSettings(this.currentWorkspace.name, { advancedOptions: { tracing: this.settings.tracing }})
+            this.server.updateWorkspaceSettings({ advancedOptions: { tracing: this.settings.tracing }})
                 .then(() => {
                     this.updateSuccess = true;
                     this.$store.dispatch('updateCurrentWorkspace', this.settings);
