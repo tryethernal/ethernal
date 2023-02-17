@@ -75,7 +75,10 @@ module.exports = (sequelize, DataTypes) => {
                         AND (
                             SELECT SUM(diff::numeric) AS value
                             FROM token_balance_changes
-                            WHERE token_balance_changes."workspaceId" = :workspaceId AND token_balance_changes.token = :token AND transactions.timestamp::date <= days.day
+                            LEFT JOIN transactions ON token_balance_changes."transactionId" = transactions.id
+                            WHERE token_balance_changes."workspaceId" = :workspaceId
+                            AND token_balance_changes.token = :token
+                            AND transactions.timestamp::date <= days.day
                             AND token_balance_changes.address = address
                         )::numeric > 0 
                         AND token_balance_changes."workspaceId" = :workspaceId
