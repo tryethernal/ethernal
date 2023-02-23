@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.7.11] - 2021-02-23
+## Fixed
+- Connection to authenticated provider
+
 ## [3.7.10] - 2021-02-16
 ## Fixed
 - Performance improvement on token holder history
