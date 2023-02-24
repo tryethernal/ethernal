@@ -3,9 +3,10 @@ const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
 const stripeLib = require('../lib/stripe');
+const stripeMiddleware = require('../middlewares/stripe');
 const logger = require('../lib/logger');
 
-router.post('/', async (req, res) => {
+router.post('/', stripeMiddleware, async (req, res) => {
     try {
         const sig = req.headers['stripe-signature'];
         const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;

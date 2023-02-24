@@ -1,5 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const logger = require('../lib/logger');
+const { isStripeEnabled } = require('../lib/flags');
 const { getAuth } = require('firebase-admin/auth');
 const uuidAPIKey = require('uuid-apikey');
 const express = require('express');
@@ -59,15 +60,19 @@ router.post('/', async (req, res) => {
         const encryptedKey = encrypt(apiKey);
 
         const authUser = await getAuth().getUser(data.firebaseUserId);
-        const customer = await stripe.customers.create({
+
+        const customer = isStripeEnabled ? await stripe.customers.create({
             email: authUser.email
-        });
+        }) : { id: 'dummy' };
+
+        // If Stripe isn't setup we assume all users are premium
+        const plan = isStripeEnabled ? 'free' : 'premium';
 
         const user = await db.createUser(data.firebaseUserId, {
             email: authUser.email,
             apiKey: encryptedKey,
             stripeCustomerId: customer.id,
-            plan: 'free'
+            plan: plan
         });
 
         await enqueue('processUser', `processUser-${data.firebaseUserId}`, { uid: data.firebaseUserId });
