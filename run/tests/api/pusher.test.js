@@ -1,4 +1,5 @@
 require('../mocks/lib/queue');
+require('../mocks/lib/flags');
 require('../mocks/middlewares/workspaceAuth');
 require('../mocks/lib/pusher');
 
@@ -11,7 +12,10 @@ const request = supertest(app);
 const BASE_URL = '/api/pusher';
 
 describe(`GET ${BASE_URL}/authorization`, () => {
-    beforeEach(() => jest.clearAllMocks());
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
 
      it('Should return a 200 with a response', (done) => {
         request.post(`${BASE_URL}/authorization`)

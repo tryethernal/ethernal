@@ -1,4 +1,5 @@
 require('../mocks/lib/firebase');
+require('../mocks/lib/flags');
 require('../mocks/middlewares/auth');
 require('../mocks/lib/queue');
 jest.mock('jsonwebtoken', () => ({
@@ -50,32 +51,6 @@ describe(`POST ${BASE_URL}/submitExplorerLead`, () => {
                 expect(enqueue).toHaveBeenCalledWith('submitExplorerLead', expect.anything(),
                     { workspace: 'ethernal', email: 'antoine@tryethernal.com' }
                 );
-                done();
-            });
-    });
-});
-
-describe(`POST ${BASE_URL}/setRemoteFlag`, () => {
-     it('Should process workspace if flag is not set', (done) => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ name: 'ethernal', isRemote: null });
-        request.post(`${BASE_URL}/setRemoteFlag`)
-            .send({ data: { uid: '123', workspace: 'ethernal' }})
-            .expect(200)
-            .then(() => {
-                expect(enqueue).toHaveBeenCalledWith('processWorkspace', expect.anything(),
-                    { uid: '123', workspace: 'ethernal' }
-                );
-                done();
-            });
-    });
-
-     it('Should not process workspace if flag is set', (done) => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ isRemote: true });
-        request.post(`${BASE_URL}/setRemoteFlag`)
-            .send({ data: { uid: '123', workspace: 'ethernal' }})
-            .expect(200)
-            .then(() => {
-                expect(enqueue).not.toHaveBeenCalled();
                 done();
             });
     });
