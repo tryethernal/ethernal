@@ -28,7 +28,6 @@ const _sanitize = (obj) => {
                 if (typeof v == 'string' && v.length == 42 && v.startsWith('0x'))
                     return [_, v.toLowerCase()];
                 else if (typeof v == 'string' && numberize.indexOf(_) > -1 && v.startsWith('0x')) {
-                    console.log(_, parseInt(v, 16))
                     return [_, parseInt(v, 16)];
                 }
                 else

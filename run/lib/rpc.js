@@ -87,7 +87,11 @@ class ProviderConnector {
     }
 
     async fetchTransactionReceipt(transactionHash) {
-        return await this.provider.getTransactionReceipt(transactionHash)
+        try {
+            return await this.provider.getTransactionReceipt(transactionHash);
+        } catch(_error) {
+            return await this.provider.send('eth_getTransactionReceipt', [transactionHash]);
+        }
     }
 
     async fetchNetworkId() {
