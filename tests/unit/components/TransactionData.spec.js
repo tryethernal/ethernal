@@ -32,7 +32,8 @@ describe('TransactionData.vue', () => {
         const wrapper = helper.mountFn(TransactionData, {
             propsData: {
                 transaction: TransactionProp
-            }
+            },
+            stubs: ['Transaction-Function-Call', 'Transaction-Event']
         });
         expect(wrapper.html()).toMatchSnapshot();
     });
