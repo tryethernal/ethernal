@@ -1,8 +1,9 @@
 const logger = require('../lib/logger');
+const { isStripeEnabled } = require('../lib/flags');
 
 module.exports = async (req, res, next) => {
     try {
-        if (process.env.STRIPE_WEBHOOK_SECRET && process.env.STRIPE_SECRET_KEY)
+        if (isStripeEnabled)
             next();
         else
             res.sendStatus(404);

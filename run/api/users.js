@@ -1,5 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const logger = require('../lib/logger');
+const { isStripeEnabled } = require('../lib/flags');
 const { getAuth } = require('firebase-admin/auth');
 const uuidAPIKey = require('uuid-apikey');
 const express = require('express');
@@ -54,8 +55,6 @@ router.post('/', async (req, res) => {
     try {
         if (!data.firebaseUserId)
             throw new Error('Missing parameter.');
-
-        const isStripeEnabled = process.env.STRIPE_SECRET_KEY && process.env.STRIPE_WEBHOOK_SECRET;
 
         const apiKey = uuidAPIKey.create().apiKey;
         const encryptedKey = encrypt(apiKey);
