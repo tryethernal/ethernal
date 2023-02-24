@@ -389,6 +389,7 @@ module.exports = (sequelize, DataTypes) => {
         }
 
         const where = sanitize({
+            workspaceId: this.workspaceId,
             address: this.address,
             [Op.and]: signature ? sequelize.where(sequelize.json('topics')[0], Op.eq, signature) : null,
             [Op.and]: sequelize.where(sequelize.col("contract.workspaceId"), Op.eq, sequelize.col("TransactionLog.workspaceId"))
