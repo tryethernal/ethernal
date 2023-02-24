@@ -65,6 +65,10 @@ exports[`Transaction.vue Should display parsed error messages 1`] = `
       <div class="text-overline">Block</div> <a href="#/block/13012562" class="">13012562</a>
     </div>
     <div class="col-sm-12 col-md-6 col-lg-2 col">
+      <div class="text-overline">Mined At</div>
+      08/07 2:33:37 PM<br> <small>a few seconds ago</small>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Gas Limit</div>
       84,000
     </div>
@@ -143,6 +147,10 @@ exports[`Transaction.vue Should display raw error messages 1`] = `
       <div class="text-overline">Block</div> <a href="#/block/13012562" class="">13012562</a>
     </div>
     <div class="col-sm-12 col-md-6 col-lg-2 col">
+      <div class="text-overline">Mined At</div>
+      08/07 2:33:37 PM<br> <small>a few seconds ago</small>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Gas Limit</div>
       84,000
     </div>
@@ -198,6 +206,10 @@ exports[`Transaction.vue Should not display the menu if public explorer 1`] = `
   <div class="row mb-4">
     <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Block</div> <a href="#/block/13012562" class="">13012562</a>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
+      <div class="text-overline">Mined At</div>
+      08/07 2:33:37 PM<br> <small>a few seconds ago</small>
     </div>
     <div class="col-sm-12 col-md-6 col-lg-2 col">
       <div class="text-overline">Gas Limit</div>

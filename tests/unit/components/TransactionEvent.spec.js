@@ -13,12 +13,28 @@ describe('TransactionEvent.vue', () => {
         helper = new MockHelper();
     });
 
+    it('Should display in raw mode if no topics', async () => {
+        const wrapper = helper.mountFn(TransactionEvent, {
+            propsData: {
+                log: {
+                    ...LogProp,
+                    topics: null
+                }
+            },
+            stubs: ['Hash-Link', 'Formatted-Sol-Var']
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should display short version', async () => {
         const wrapper = helper.mountFn(TransactionEvent, {
             propsData: {
                 log: LogProp,
                 short: true
-            }
+            },
+            stubs: ['Hash-Link', 'Formatted-Sol-Var']
         });
         await flushPromises();
 
@@ -29,7 +45,8 @@ describe('TransactionEvent.vue', () => {
         const wrapper = helper.mountFn(TransactionEvent, {
             propsData: {
                 log: LogProp
-            }
+            },
+            stubs: ['Hash-Link', 'Formatted-Sol-Var']
         });
         await flushPromises();
 
@@ -70,7 +87,8 @@ describe('TransactionEvent.vue', () => {
         const wrapper = helper.mountFn(TransactionEvent, {
             propsData: {
                 log: LogProp
-            }
+            },
+            stubs: ['Hash-Link', 'Formatted-Sol-Var']
         });
         expect(wrapper.html()).toMatchSnapshot();
     });    
