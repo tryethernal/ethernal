@@ -6,13 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.8.1] - 2023-02-24
-### Fixed
-- Only display workspace logs
-
 ## [3.8.0] - 2023-02-23
 ### Changed
 - Allow non standard data to be stored. JSON formatted event logs will be displayed if they are not EVM compliant instead of erroring
+
+### Fixed
+- Only display workspace logs
 
 ## [3.7.12] - 2021-02-23
 ## Fixed
