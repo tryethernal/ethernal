@@ -4,18 +4,22 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     const transaction = await queryInterface.sequelize.transaction();
     try {
-        await queryInterface.changeColumn('transaction_logs', 'address', { type: Sequelize.STRING, allowNull: true }, { transaction });
-        await queryInterface.changeColumn('transaction_logs', 'blockHash', { type: Sequelize.STRING, allowNull: true }, { transaction });
-        await queryInterface.changeColumn('transaction_logs', 'blockNumber', { type: Sequelize.INTEGER, allowNull: true }, { transaction });
-        await queryInterface.changeColumn('transaction_logs', 'data', { type: Sequelize.TEXT, allowNull: true }, { transaction });
-        await queryInterface.changeColumn('transaction_logs', 'logIndex', { type: Sequelize.INTEGER, allowNull: true }, { transaction });
-        await queryInterface.changeColumn('transaction_logs', 'topics', { type: Sequelize.ARRAY(Sequelize.STRING), allowNull: true }, { transaction });
-        await queryInterface.changeColumn('transaction_logs', 'transactionHash', { type: Sequelize.STRING, allowNull: true }, { transaction });
-        await queryInterface.changeColumn('transaction_logs', 'transactionIndex', { type: Sequelize.INTEGER, allowNull: true }, { transaction });
 
-        await queryInterface.changeColumn('transaction_receipts', 'byzantium', { type: Sequelize.BOOLEAN, allowNull: true }, { transaction });
-        await queryInterface.changeColumn('transaction_receipts', 'confirmations', { type: Sequelize.INTEGER, allowNull: true }, { transaction });
-        await queryInterface.changeColumn('transaction_receipts', 'type', { type: Sequelize.INTEGER, allowNull: true }, { transaction });
+        await queryInterface.sequelize.query(`
+            ALTER TABLE "transaction_logs"
+                ALTER COLUMN "address" DROP NOT NULL,
+                ALTER COLUMN "blockHash" DROP NOT NULL,
+                ALTER COLUMN "data" DROP NOT NULL,
+                ALTER COLUMN "logIndex" DROP NOT NULL,
+                ALTER COLUMN "topics" DROP NOT NULL,
+                ALTER COLUMN "transactionHash" DROP NOT NULL,
+                ALTER COLUMN "transactionIndex" DROP NOT NULL;
+
+            ALTER TABLE "transaction_receipts"
+                ALTER COLUMN "byzantium" DROP NOT NULL,
+                ALTER COLUMN "confirmations" DROP NOT NULL,
+                ALTER COLUMN "type" DROP NOT NULL;
+        `, { transaction });
 
         await transaction.commit();
     } catch(error) {
@@ -25,25 +29,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    const transaction = await queryInterface.sequelize.transaction();
-    try {
-        await queryInterface.changeColumn('transaction_logs', 'address', { type: Sequelize.STRING, allowNull: false }, { transaction });
-        await queryInterface.changeColumn('transaction_logs', 'blockHash', { type: Sequelize.STRING, allowNull: false }, { transaction });
-        await queryInterface.changeColumn('transaction_logs', 'blockNumber', { type: Sequelize.INTEGER, allowNull: false }, { transaction });
-        await queryInterface.changeColumn('transaction_logs', 'data', { type: Sequelize.TEXT, allowNull: false }, { transaction });
-        await queryInterface.changeColumn('transaction_logs', 'logIndex', { type: Sequelize.INTEGER, allowNull: false }, { transaction });
-        await queryInterface.changeColumn('transaction_logs', 'topics', { type: Sequelize.ARRAY(Sequelize.STRING), allowNull: false }, { transaction });
-        await queryInterface.changeColumn('transaction_logs', 'transactionHash', { type: Sequelize.STRING, allowNull: false }, { transaction });
-        await queryInterface.changeColumn('transaction_logs', 'transactionIndex', { type: Sequelize.INTEGER, allowNull: false }, { transaction });
-
-        await queryInterface.changeColumn('transaction_receipts', 'byzantium', { type: Sequelize.BOOLEAN, allowNull: false }, { transaction });
-        await queryInterface.changeColumn('transaction_receipts', 'confirmations', { type: Sequelize.INTEGER, allowNull: false }, { transaction });
-        await queryInterface.changeColumn('transaction_receipts', 'type', { type: Sequelize.INTEGER, allowNull: false }, { transaction });
-
-        await transaction.commit();
-    } catch(error) {
-        console.log(error);
-        await transaction.rollback();
-    }
+    
   }
 };
