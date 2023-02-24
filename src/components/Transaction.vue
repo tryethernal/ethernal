@@ -100,6 +100,11 @@
                     <router-link :to="'/block/' + transaction.blockNumber">{{ transaction.blockNumber }}</router-link>
                 </v-col>
                 <v-col lg="2" md="6" sm="12">
+                    <div class="text-overline">Mined At</div>
+                    {{ moment(transaction.block.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
+                    <small>{{ moment(transaction.block.timestamp).fromNow() }}</small>
+                </v-col>
+                <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Gas Limit</div>
                     {{ parseInt(transaction.gasLimit || transaction.block.gasLimit).toLocaleString() }}
                 </v-col>
@@ -148,6 +153,7 @@
 </template>
 
 <script>
+const moment = require('moment');
 import { mapGetters } from 'vuex';
 import HashLink from './HashLink';
 import TransactionData from './TransactionData';
@@ -202,6 +208,7 @@ export default {
         }
     },
     methods: {
+        moment: moment,
         reprocessTransaction: function() {
             this.processing = true
             this.server

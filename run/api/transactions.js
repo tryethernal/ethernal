@@ -42,7 +42,6 @@ router.post('/', authMiddleware, async (req, res) => {
         if (!data.uid ||  !data.workspace || !data.block || !data.transaction)
             throw new Error('Missing parameter.');
 
-        const promises = [];
         const transaction = data.transaction;
         const receipt = data.transactionReceipt;
 

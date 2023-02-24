@@ -386,18 +386,25 @@ module.exports = (sequelize, DataTypes) => {
 
                 for (let i = 0; i < receipt.logs.length; i++) {
                     const log = receipt.logs[i];
-                    await storedReceipt.createLog(sanitize({
-                        workspaceId: storedTx.workspaceId,
-                        address: log.address,
-                        blockHash: log.blockHash,
-                        blockNumber: log.blockNumber,
-                        data: log.data,
-                        logIndex: log.logIndex,
-                        topics: log.topics,
-                        transactionHash: log.transactionHash,
-                        transactionIndex: log.transactionIndex,
-                        raw: log
-                    }), { transaction: sequelizeTransaction });
+                    try {
+                        await storedReceipt.createLog(sanitize({
+                            workspaceId: storedTx.workspaceId,
+                            address: log.address,
+                            blockHash: log.blockHash,
+                            blockNumber: log.blockNumber,
+                            data: log.data,
+                            logIndex: log.logIndex,
+                            topics: log.topics,
+                            transactionHash: log.transactionHash,
+                            transactionIndex: log.transactionIndex,
+                            raw: log
+                        }), { transaction: sequelizeTransaction });
+                    } catch(error) {
+                        await storedReceipt.createLog(sanitize({
+                            workspaceId: storedTx.workspaceId,
+                            raw: log
+                        }), { transaction: sequelizeTransaction });
+                    }
                 }
             }
 
@@ -480,7 +487,7 @@ module.exports = (sequelize, DataTypes) => {
             where: {
                 hash: hash
             },
-            attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId',
+            attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId', 'raw',
                 [Sequelize.literal(`
                     (SELECT COUNT(*)::int
                     FROM token_transfers AS token_transfers
@@ -493,12 +500,12 @@ module.exports = (sequelize, DataTypes) => {
             include: [
                 {
                     model: sequelize.models.TransactionReceipt,
-                    attributes: ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'cumulativeGasUsed'],
+                    attributes: ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'cumulativeGasUsed', 'raw'],
                     as: 'receipt',
                     include: [
                         {
                             model: sequelize.models.TransactionLog,
-                            attributes: ['address', 'data', 'logIndex', 'topics'],
+                            attributes: ['address', 'data', 'logIndex', 'topics', 'raw'],
                             as: 'logs'
                         }
                     ]

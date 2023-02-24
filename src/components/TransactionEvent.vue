@@ -1,5 +1,10 @@
 <template>
-    <div v-if="short" class="my-3">
+    <div v-if="rawMode" class="my-3">
+        <b>Emitter:</b> <Hash-Link :type="'address'" :hash="log.address"></Hash-Link><br>
+        <b>Data:</b>
+        <Formatted-Sol-Var :input="{ type: 'string' }" :value="JSON.stringify(log.raw)" :notInteractive="true" :isArrayEl="true" class="ml-4" />
+    </div>
+    <div v-else-if="short" class="my-3">
         <v-tooltip top :open-delay="150" color="grey darken-1" content-class="tooltip">
             <template v-slot:activator="{ on, attrs }">
                 <v-chip class="primary lighten-1" v-bind="attrs" v-on="on" label small>
@@ -59,13 +64,16 @@ export default {
     },
     data: () => ({
         parsedLog: null,
-        contract: null
+        contract: null,
+        rawMode: false
     }),
     mounted() {
+        if (!this.log.topics) return this.rawMode = true;
+
         if (this.log.contract && this.log.contract.abi) {
             this.parsedLog = decodeLog(this.log, this.log.contract.abi);
         }
-        else {
+        else if (this.log.topics) {
             const abi = findAbiForEvent(this.log.topics[0]);
             if (abi)
                 this.parsedLog = decodeLog(this.log, abi);
@@ -86,7 +94,7 @@ export default {
     },
     computed: {
         eventLabel() {
-            return this.parsedLog && this.parsedLog.name || this.log.topics[0];
+            return this.parsedLog && this.parsedLog.name || this.log.topcis && this.log.topics[0];
         }
     }
 }
