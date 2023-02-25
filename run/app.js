@@ -11,7 +11,6 @@ const queues = require('./queues');
 
 const api = require('./api');
 const webhooks = require('./webhooks');
-const jobs = require('./jobs');
 
 require('./scheduler');
 

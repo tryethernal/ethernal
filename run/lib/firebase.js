@@ -473,7 +473,7 @@ const getUser = async (id, extraFields = []) => {
 const createUser = async (uid, data) => {
     if (!uid || !data) throw new Error('Missing parameter.');
 
-    const user = await User.safeCreate(uid, data.email, data.apiKey, data.stripeCustomerId, data.plan);
+    const user = await User.safeCreate(uid, data.email, data.apiKey, data.stripeCustomerId, data.plan, data.explorerSubscriptionId, data.passwordHash, data.passwordSalt);
     return user ? user.toJSON() : null;
 };
 
