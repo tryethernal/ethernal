@@ -11,7 +11,6 @@ const queues = require('./queues');
 
 const api = require('./api');
 const webhooks = require('./webhooks');
-const jobs = require('./jobs');
 
 require('./scheduler');
 
@@ -29,9 +28,7 @@ app.use(express.json({
 }));
 app.use(express.urlencoded({ extended: true }));
 
-if (process.env.CORS_DOMAIN)
-    app.use(cors({ origin: process.env.CORS_DOMAIN, methods: ['GET', 'POST', 'OPTIONS'] }));
-
+app.use(cors({ origin: '*', methods: ['GET', 'POST', 'OPTIONS'] }));
 
 const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath('/bull');

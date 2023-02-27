@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.8.2] - 2023-02-27
+### Added
+- [Firebase Auth Migration] Store Firebase encrypted hashes on signup
+- [Firebase Auth Migration] Script to migrate existing hashes
+
 ## [3.8.1] - 2023-02-24
 ### Changed
 - Flagged some feature to make it easier to self host

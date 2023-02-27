@@ -1,5 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const logger = require('../lib/logger');
+const { isStripeEnabled } = require('../lib/flags');
 const { getAuth } = require('firebase-admin/auth');
 const uuidAPIKey = require('uuid-apikey');
 const express = require('express');
@@ -8,6 +9,21 @@ const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
 const authMiddleware = require('../middlewares/auth');
 const { encrypt } = require('../lib/crypto');
+
+router.post('/getFirebaseHashes', async (req, res) => {
+    const data = req.query;
+    try {
+        if (data.secret != process.env.SECRET)
+            throw new Error(`Auth error`);
+
+        await enqueue('batchInsertFirebasePasswordHashes', `batchInsertFirebasePasswordHashes-${Date.now()}`, { secret: data.secret });
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.contracts.logs', error: error, data: { ...data, ...req.params }});
+        res.status(400).send(error.message);
+    }
+});
 
 router.get('/me/apiToken', authMiddleware, async (req, res) => {
     const data = req.body.data;
@@ -59,15 +75,22 @@ router.post('/', async (req, res) => {
         const encryptedKey = encrypt(apiKey);
 
         const authUser = await getAuth().getUser(data.firebaseUserId);
-        const customer = await stripe.customers.create({
+
+        // Workaround until we make the stripeCustomerId column nullable
+        const customer = isStripeEnabled ? await stripe.customers.create({
             email: authUser.email
-        });
+        }) : { id: 'dummy' };
+
+        // If Stripe isn't setup we assume all users are premium
+        const plan = isStripeEnabled ? 'free' : 'premium';
 
         const user = await db.createUser(data.firebaseUserId, {
             email: authUser.email,
             apiKey: encryptedKey,
             stripeCustomerId: customer.id,
-            plan: 'free'
+            plan: plan,
+            passwordHash: authUser.passwordHash,
+            passwordSalt: authUser.passwordSalt,
         });
 
         await enqueue('processUser', `processUser-${data.firebaseUserId}`, { uid: data.firebaseUserId });

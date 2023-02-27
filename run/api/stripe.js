@@ -4,13 +4,14 @@ const db = require('../lib/firebase');
 const logger = require('../lib/logger');    
 const { sanitize } = require('../lib/utils');
 const authMiddleware = require('../middlewares/auth');
+const stripeMiddleware = require('../middlewares/stripe');
 const router = express.Router();
 
 const PLANS = {
     premium: 'price_1JlwH8JG8RHJCKOzUJ3nGjT0'
 };
 
-router.post('/createCheckoutSession', authMiddleware, async (req, res) => {
+router.post('/createCheckoutSession', [authMiddleware, stripeMiddleware], async (req, res) => {
     const data = { ...req.query, ...req.body.data };
     try {
         const user = await db.getUser(data.uid, ['stripeCustomerId']);
@@ -41,7 +42,7 @@ router.post('/createCheckoutSession', authMiddleware, async (req, res) => {
     }
 });
 
-router.post('/createPortalSession', authMiddleware, async (req, res) => {
+router.post('/createPortalSession', [authMiddleware, stripeMiddleware], async (req, res) => {
     const data = { ...req.query, ...req.body.data };
     try {
         const user = await db.getUser(data.uid, ['stripeCustomerId']);
