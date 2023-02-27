@@ -89,8 +89,8 @@ router.post('/', async (req, res) => {
             apiKey: encryptedKey,
             stripeCustomerId: customer.id,
             plan: plan,
-            // passwordHash: authUser.passwordHash,
-            // passwordSalt: authUser.passwordSalt,
+            passwordHash: authUser.passwordHash,
+            passwordSalt: authUser.passwordSalt,
         });
 
         await enqueue('processUser', `processUser-${data.firebaseUserId}`, { uid: data.firebaseUserId });
