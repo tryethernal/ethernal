@@ -16,11 +16,11 @@ module.exports = async job => {
             });
 
             if (listUsersResult.pageToken) {
-                listAllUsers(listUsersResult.pageToken);
+                await listAllUsers(listUsersResult.pageToken);
             }
         };
 
-        listAllUsers();
+        await listAllUsers();
 
         return true;
     } catch(error) {
