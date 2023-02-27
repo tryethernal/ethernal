@@ -1,3 +1,6 @@
+const { initializeApp } = require('firebase-admin/app');
+initializeApp();
+
 const { Worker } = require('bullmq');
 const connection = require('../config/redis')[process.env.NODE_ENV || 'production'];
 const jobs = require('../jobs');
