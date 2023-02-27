@@ -8,13 +8,17 @@
             )
         </v-card-text>
          <v-card-text v-else>
+            <div style="float: right;">
+                <a :class="{ underlined: displayUtf8Data }" @click="switchDataFormatting('hex')">Hex</a> | <a :class="{ underlined: !displayUtf8Data }" @click="switchDataFormatting('utf8')">UTF-8</a>
+            </div>
             <b>Signature:</b> {{ sigHash }}<br>
-            <b>Data:</b> {{ data }}
+            <b>Data:</b> {{ convertedData }}
         </v-card-text>
     </v-card>
 </template>
 <script>
 import { ethers } from 'ethers';
+const web3 = require('web3');
 import { findAbiForFunction } from '@/lib/abi';
 import FormattedSolVar from './FormattedSolVar';
 
@@ -25,7 +29,8 @@ export default {
         FormattedSolVar
     },
     data: () => ({
-        parsedTransactionData: null
+        parsedTransactionData: null,
+        displayUtf8Data: false
     }),
     mounted: function() {
         const contractAbi = this.abi ? this.abi : findAbiForFunction(this.data.slice(0, 10));
@@ -36,6 +41,9 @@ export default {
         }
     },
     methods: {
+        switchDataFormatting(formatting) {
+            this.displayUtf8Data = formatting == 'utf8';
+        },
         getSignatureFromFragment: function(fragment) {
             if (!fragment.inputs.length)
                 return `${fragment.name}()`;
@@ -44,7 +52,15 @@ export default {
         }
     },
     computed: {
-        sigHash: function() { return this.data && this.data != '0x' ? this.data.slice(0, 10) : null }
+        sigHash() { return this.data && this.data != '0x' ? this.data.slice(0, 10) : null },
+        convertedData() {
+            return this.displayUtf8Data ? web3.utils.hexToAscii(this.data) : this.data;
+        },
     }
 }
 </script>
+<style scoped>
+.underlined {
+    text-decoration: underline;
+}
+</style>
