@@ -19,7 +19,8 @@ exports[`TransactionFunctionCall.vue Should display transaction call 1`] = `
 
 exports[`TransactionFunctionCall.vue Should display warning if no ABI 1`] = `
 <div class="v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__text"><b>Signature:</b> 0xb9059cbb<br> <b>Data:</b> 0xb9059cbb23456789
+  <div class="v-card__text">
+    <div style="float: right;"><a class="">Hex</a> | <a class="underlined">UTF-8</a></div> <b>Signature:</b> 0xb9059cbb<br> <b>Data:</b> 0xb9059cbb23456789
   </div>
 </div>
 `;
