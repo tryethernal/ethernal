@@ -22,8 +22,7 @@ export const pusherPlugin = {
                     })
                 }
             }) : {
-                subscribe: () => {},
-                bind: () => {}
+                subscribe: () => ({ bind: () => {} }),
             }
 
         Vue.prototype.pusher = {

@@ -94,7 +94,14 @@ export default {
                         this.$emit('workspaceCreated', data);
                         this.loading = false;
                     })
-                    .catch(() => { throw 'Error while creating workspace' });
+                    .catch(error => {
+                        if (error.response) {
+                            this.errorMessage = error.response.data;
+                            this.loading = false;
+                        }
+                        else
+                            throw new Error('Error while creating workspace');
+                    });
             } catch(error) {
                 console.log(error);
                 this.loading = false;

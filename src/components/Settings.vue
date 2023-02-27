@@ -2,7 +2,7 @@
     <v-container fluid>
         <v-tabs v-model="tab" class="mb-2">
             <v-tab href="#workspace">Workspace</v-tab>
-            <v-tab href="#billing">Billing</v-tab>
+            <v-tab v-if="isBillingEnabled" href="#billing">Billing</v-tab>
             <v-tab href="#account">Account</v-tab>
         </v-tabs>
 
@@ -142,7 +142,7 @@
                 </v-row>
             </v-tab-item>
 
-            <v-tab-item value="billing">
+            <v-tab-item v-if="isBillingEnabled" value="billing">
                 <Billing />
             </v-tab-item>
 
@@ -212,6 +212,7 @@ export default {
                 value: 'actions'
             }
         ],
+        isBillingEnabled: process.env.VUE_APP_ENABLE_BILLING,
         availableChains: [],
         settings: {},
         workspaces: [],

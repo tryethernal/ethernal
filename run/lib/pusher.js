@@ -11,7 +11,7 @@ const pusher = isPusherPresent ?
         cluster: 'eu',
         useTLS: true
     }) :
-    {}
+    { trigger: () => new Promise(resolve => resolve()) };
 
 module.exports = {
     trigger: (channel, event, data) => {

@@ -65,26 +65,4 @@ router.post('/submitExplorerLead', authMiddleware, async (req, res) => {
     }
 });
 
-router.post('/setRemoteFlag', authMiddleware, async (req, res) => {
-    const data = { ...req.query, ...req.body.data };
-    try {
-        if (!data.workspace)
-            throw new Error('Missing parameters.');
-
-        const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
-
-        if (workspace.isRemote == null) {
-            await enqueue('processWorkspace', `processWorkspace-${data.uid}-${workspace.name}`, {
-                uid: data.uid,
-                workspace: workspace.name,
-            });
-        }
-
-        res.sendStatus(200);
-    } catch(error) {
-        logger.error(error.message, { location: 'post.api.marketing.setRemoteFlag', error: error, data: data });
-        res.status(400).send(error.message);
-    }
-});
-
 module.exports = router;

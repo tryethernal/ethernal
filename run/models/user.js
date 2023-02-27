@@ -62,8 +62,8 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    static async safeCreate(firebaseUserId, email, apiKey, stripeCustomerId, plan, explorerSubscriptionId, transaction) {
-        if (!firebaseUserId || !email || !apiKey || !stripeCustomerId || !plan) throw '[User.createUser] Missing parameter';
+    static async safeCreate(firebaseUserId, email, apiKey, stripeCustomerId, plan, explorerSubscriptionId, passwordHash, passwordSalt) {
+        if (!firebaseUserId || !email || !apiKey || !stripeCustomerId || !plan || !passwordHash || !passwordSalt) throw new Error('[User.createUser] Missing parameter');
         
         const existingUser = await User.findOne({
             where: {
@@ -83,7 +83,9 @@ module.exports = (sequelize, DataTypes) => {
             apiKey: apiKey,
             stripeCustomerId: stripeCustomerId,
             plan: plan,
-            explorerSubscriptionId: explorerSubscriptionId
+            explorerSubscriptionId: explorerSubscriptionId,
+            passwordHash: passwordHash,
+            passwordSalt: passwordSalt
         }));
     }
 
@@ -138,6 +140,8 @@ module.exports = (sequelize, DataTypes) => {
     plan: DataTypes.STRING,
     stripeCustomerId: DataTypes.STRING,
     explorerSubscriptionId: DataTypes.STRING,
+    passwordHash: DataTypes.STRING,
+    passwordSalt: DataTypes.STRING,
     isPremium: {
         type: DataTypes.VIRTUAL,
         get() {

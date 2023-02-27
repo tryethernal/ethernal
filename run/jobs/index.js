@@ -3,6 +3,8 @@ module.exports = {
     blockSync: require('./blockSync'),
     transactionSync: require('./transactionSync'),
     batchBlockSync: require('./batchBlockSync'),
+    batchInsertFirebasePasswordHashes: require('./batchInsertFirebasePasswordHashes'),
+    insertFirebaseHashes: require('./insertFirebaseHashes'),
 
     // Medium Priority
     contractProcessing: require('./contractProcessing'),

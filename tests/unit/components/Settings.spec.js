@@ -24,6 +24,15 @@ describe('Settings.vue', () => {
         });
     });
 
+    it('Should not display the Billing tab if stripe is disabled', async () => {
+        jest.spyOn(helper.mocks.server, 'getWorkspaces')
+            .mockResolvedValueOnce({ data: [{ id: 'Hardhat', name: 'Hardhat', rpcServer: 'http://localhost:1234' }]})
+        const wrapper = helper.mountFn(Settings);
+        await wrapper.setData({ isBillingEnabled: false });
+        await new Promise(process.nextTick);
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should load the settings page', async () => {
         jest.spyOn(helper.mocks.server, 'getWorkspaces')
             .mockResolvedValueOnce({ data: [{ id: 'Hardhat', name: 'Hardhat', rpcServer: 'http://localhost:1234' }]})

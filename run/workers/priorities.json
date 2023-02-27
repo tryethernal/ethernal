@@ -2,7 +2,9 @@
     "high": [
         "blockSync",
         "transactionSync",
-        "batchBlockSync"
+        "batchBlockSync",
+        "batchInsertFirebasePasswordHashes",
+        "insertFirebaseHashes"
     ],
     "medium": [
         "contractProcessing",
