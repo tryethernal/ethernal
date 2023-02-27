@@ -63,7 +63,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async safeCreate(firebaseUserId, email, apiKey, stripeCustomerId, plan, explorerSubscriptionId, passwordHash, passwordSalt) {
-        if (!firebaseUserId || !email || !apiKey || !stripeCustomerId || !plan || !passwordHash || !passwordSalt) throw new Error('[User.createUser] Missing parameter');
+        if (!firebaseUserId || !email || !apiKey || !stripeCustomerId || !plan) throw new Error('[User.createUser] Missing parameter');
         
         const existingUser = await User.findOne({
             where: {
