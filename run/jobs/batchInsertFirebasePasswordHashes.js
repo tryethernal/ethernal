@@ -12,7 +12,7 @@ module.exports = async job => {
         const listAllUsers = async nextPageToken => {
             const listUsersResult = await getAuth().listUsers(500, nextPageToken);
             listUsersResult.users.forEach(async userRecord => {
-                await enqueue('insertFirebaseHashes', `insertFirebaseHashes-${Date.now()}`, { firebaseUser: userRecord, secret: data.secret });
+                await enqueue('insertFirebaseHashes', `insertFirebaseHashes-${userRecord.uid}`, { firebaseUser: userRecord, secret: data.secret });
             });
 
             if (listUsersResult.pageToken) {

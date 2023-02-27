@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.8.5] - 2023-02-27
+### Fixed
+- [Firebase Auth Migration] Track jobs with ids
+
 ## [3.8.4] - 2023-02-27
 ### Fixed
 - [Firebase Auth Migration] Await script
