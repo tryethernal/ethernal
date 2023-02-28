@@ -6,6 +6,7 @@ const authMiddleware = require('../middlewares/auth');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const { processTransactions } = require('../lib/transactions');
 const { enqueue } = require('../lib/queue');
+const { transactionFn } = require('../lib/codeRunner');
 
 const router = express.Router();
 
@@ -205,8 +206,13 @@ router.get('/:hash', workspaceAuthMiddleware, async (req, res) => {
             throw new Error('Missing parameter');
 
         const transaction = await db.getWorkspaceTransaction(data.workspace.id, req.params.hash);
+        const customTransactionFunction = await db.getCustomTransactionFunction(data.workspace.id);
+        
+        customFields = customTransactionFunction ?
+            transactionFn(customTransactionFunction, transaction.raw) :
+            {};
 
-        res.status(200).json(transaction);
+        res.status(200).json({ ...transaction, extraFields: customFields });
     } catch(error) {
         logger.error(error.message, { location: 'get.api.transactions.hash', error: error, data: data });
         res.status(400).send(error.message);
