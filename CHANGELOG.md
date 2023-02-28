@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.8.8] - 2023-02-28
+### Fixed
+- Accidentally disabled billing in prod
+
 ## [3.8.7] - 2023-02-27
 ### Changed
 - Temporarily allow null password hash/salt
