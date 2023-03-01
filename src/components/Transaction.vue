@@ -95,18 +95,26 @@
                 </v-col>
             </v-row>
             <v-row class="mb-4">
-                <v-col lg="2" md="6" sm="12">
-                    <div class="text-overline">Block</div>
-                    <router-link :to="'/block/' + transaction.blockNumber">{{ transaction.blockNumber }}</router-link>
-                </v-col>
-                <v-col lg="2" md="6" sm="12">
-                    <div class="text-overline">Mined At</div>
-                    {{ moment(transaction.block.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
-                    <small>{{ moment(transaction.block.timestamp).fromNow() }}</small>
-                </v-col>
-                <v-col lg="2" md="6" sm="12">
-                    <div class="text-overline">Gas Limit</div>
-                    {{ parseInt(transaction.gasLimit || transaction.block.gasLimit).toLocaleString() }}
+                <v-col lg="8" md="6" sm="12">
+                    <v-row>
+                        <v-col lg="3" md="6" sm="12">
+                            <div class="text-overline">Block</div>
+                            <router-link :to="'/block/' + transaction.blockNumber">{{ transaction.blockNumber }}</router-link>
+                        </v-col>
+                        <v-col lg="3" md="6" sm="12">
+                            <div class="text-overline">Mined At</div>
+                            {{ moment(transaction.block.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
+                            <small>{{ moment(transaction.block.timestamp).fromNow() }}</small>
+                        </v-col>
+                        <v-col lg="3" md="6" sm="12">
+                            <div class="text-overline">Gas Limit</div>
+                            {{ parseInt(transaction.gasLimit || transaction.block.gasLimit).toLocaleString() }}
+                        </v-col>
+                        <v-col lg="3" md="6" sm="12" v-for="(field, idx) in transaction.extraFields" :key="idx">
+                            <div class="text-overline">{{ field.name }}</div>
+                            <Custom-Field :name="field.name" :value="field.value" :type="field.type" :label="field.lable" :decimals="field.decimals" :symbol="field.symbol" />
+                        </v-col>
+                    </v-row>
                 </v-col>
             </v-row>
 
@@ -160,6 +168,7 @@ import TransactionData from './TransactionData';
 import TraceStep from './TraceStep';
 import TransactionTokenTransfers from './TransactionTokenTransfers';
 import TokensBalanceDiff from './TokensBalanceDiff';
+import CustomField from './CustomField';
 import FromWei from '../filters/FromWei';
 
 export default {
@@ -170,7 +179,8 @@ export default {
         TransactionData,
         TraceStep,
         TransactionTokenTransfers,
-        TokensBalanceDiff
+        TokensBalanceDiff,
+        CustomField
     },
     filters: {
         FromWei

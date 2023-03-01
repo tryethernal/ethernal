@@ -2,10 +2,12 @@ require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/lib/transactions');
 require('../mocks/lib/queue');
+require('../mocks/lib/codeRunner');
 require('../mocks/middlewares/workspaceAuth');
 require('../mocks/middlewares/auth');
 const db = require('../../lib/firebase');
 const { processTransactions } = require('../../lib/transactions');
+const { transactionFn } = require('../../lib/codeRunner');
 const { enqueue } = require('../../lib/queue');
 
 const supertest = require('supertest');
@@ -81,7 +83,21 @@ describe(`GET ${BASE_URL}/:hash`, () => {
         request.get(`${BASE_URL}/1234`)
             .expect(200)
             .then(({ body }) => {
-                expect(body).toEqual({ hash: '1234' });
+                expect(body).toEqual({ hash: '1234', extraFields: {} });
+                done();
+            });
+    });
+
+    it('Should return individual transaction with extra fields', (done) => {
+        jest.spyOn(db, 'getWorkspaceTransaction').mockResolvedValue({
+            hash: '1234'
+        });
+        jest.spyOn(db, 'getCustomTransactionFunction').mockReturnValue(function() { return 'ok' });
+        transactionFn.mockReturnValue({ field: 'ok' });
+        request.get(`${BASE_URL}/1234`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ hash: '1234', extraFields: { field: 'ok' }});
                 done();
             });
     });

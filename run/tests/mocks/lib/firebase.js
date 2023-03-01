@@ -76,6 +76,7 @@ jest.mock('../../../lib/firebase', () => {
         getTokenTransfers: jest.fn(),
         getTokenStats: jest.fn(),
         getTransactionTokenTransfers: jest.fn(),
+        getCustomTransactionFunction: jest.fn(),
         Workspace: Workspace
     }
 });
