@@ -41,6 +41,7 @@
     "stripe": "^9.8.0",
     "uuid-apikey": "^1.5.3",
     "vm2": "^3.9.14",
+    "web3": "^1.8.2",
     "winston": "^3.8.2"
   },
   "devDependencies": {
