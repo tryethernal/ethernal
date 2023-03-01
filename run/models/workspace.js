@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Workspace.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
       Workspace.hasOne(models.Explorer, { foreignKey: 'workspaceId', as: 'explorer' });
+      Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'custom_fields' });
       Workspace.hasMany(models.Block, { foreignKey: 'workspaceId', as: 'blocks' });
       Workspace.hasMany(models.Transaction, { foreignKey: 'workspaceId', as: 'transactions' });
       Workspace.hasMany(models.TransactionReceipt, { foreignKey: 'workspaceId', as: 'receipts' });
@@ -43,6 +44,17 @@ module.exports = (sequelize, DataTypes) => {
                 name: name
             }
         });
+    }
+
+    async getCustomTransactionFunction() {
+       const custom_field = await sequelize.models.CustomField.findOne({
+           where: {
+               workspaceId: this.id,
+               location: 'transaction'
+           }
+       });
+
+       return custom_field ? custom_field.function : null;
     }
 
     getFilteredAddressTokenTransfers(address, page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC') {

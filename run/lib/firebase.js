@@ -10,6 +10,14 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const getCustomTransactionFunction = async (workspaceId) => {
+    if (!workspaceId) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+
+    return await workspace.getCustomTransactionFunction();
+};
+
 const getAddressTokenTransfers = async (workspaceId, address, page, itemsPerPage, order, orderBy) => {
     if (!workspaceId || !address) throw new Error('Missing parameter');
 
@@ -928,5 +936,6 @@ module.exports = {
     getTransactionTokenTransfers: getTransactionTokenTransfers,
     getAddressStats: getAddressStats,
     getAddressTokenTransfers: getAddressTokenTransfers,
+    getCustomTransactionFunction: getCustomTransactionFunction,
     Workspace: Workspace
 };
