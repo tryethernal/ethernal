@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.9.0] - 2023-03-01
+### Added
+- [Public Explorer] Customizable transaction fields
+- [Firebase Auth Migration] Logging to figure out what's wrong during signup
+
 ## [3.8.8] - 2023-02-28
 ### Fixed
 - Accidentally disabled billing in prod
