@@ -75,7 +75,7 @@ router.post('/', async (req, res) => {
         const encryptedKey = encrypt(apiKey);
 
         const authUser = await getAuth().getUser(data.firebaseUserId);
-
+        logger.info(authUser.email, { user: authUser });
         // Workaround until we make the stripeCustomerId column nullable
         const customer = isStripeEnabled ? await stripe.customers.create({
             email: authUser.email
