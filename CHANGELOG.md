@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.9.3] - 2023-03-02
+### Fixed
+- ERC-721 Token transfers views were _always_ displaying ALL tokens transfers. It is now filterable by tokenId
+
 ## [3.9.2] - 2023-03-02
 ### Fixed
 - [Public Explorer] Fix bug preventing gallery from being displayed
