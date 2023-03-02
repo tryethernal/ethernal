@@ -59,7 +59,7 @@
                 <h3 class="mb-2">Transfers</h3>
                 <v-card outlined>
                     <v-card-text>
-                        <ERC-721-Token-Transfers :address="hash" />
+                        <ERC-721-Token-Transfers :address="hash" :tokenId="tokenId" />
                     </v-card-text>
                 </v-card>
             </v-col>
