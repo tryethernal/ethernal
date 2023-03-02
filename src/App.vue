@@ -345,6 +345,7 @@ export default {
                     networkId: data.chainId,
                     rpcServer: data.rpcServer,
                     storageEnabled: data.workspace.storageEnabled,
+                    erc721LoadingEnabled: data.workspace.erc721LoadingEnabled,
                     id: data.workspaceId,
                     defaultAccount: data.workspace.defaultAccount,
                     gasPrice: data.workspace.gasPrice,
