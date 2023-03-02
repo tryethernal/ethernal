@@ -330,7 +330,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Transaction,
-                    attributes: ['hash', 'timestamp'],
+                    attributes: ['hash', 'timestamp', 'blockNumber'],
                     as: 'transaction'
                 }
             ],
