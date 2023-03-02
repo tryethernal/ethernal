@@ -112,7 +112,7 @@
                         </v-col>
                         <v-col lg="3" md="6" sm="12" v-for="(field, idx) in transaction.extraFields" :key="idx">
                             <div class="text-overline">{{ field.name }}</div>
-                            <Custom-Field :name="field.name" :value="field.value" :type="field.type" :label="field.lable" :decimals="field.decimals" :symbol="field.symbol" />
+                            <Custom-Field :name="field.name" :value="field.value" :type="field.type" :label="field.label" :decimals="field.decimals" :symbol="field.symbol" />
                         </v-col>
                     </v-row>
                 </v-col>
