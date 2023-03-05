@@ -64,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
 
     static async safeCreate(firebaseUserId, email, apiKey, stripeCustomerId, plan, explorerSubscriptionId, passwordHash, passwordSalt) {
         if (!firebaseUserId || !email || !apiKey || !stripeCustomerId || !plan) throw new Error('[User.createUser] Missing parameter');
-        
+
         const existingUser = await User.findOne({
             where: {
                 [Op.or]: [
@@ -75,7 +75,7 @@ module.exports = (sequelize, DataTypes) => {
         })
 
         if (existingUser)
-            return;
+            throw new Error('This email address is already registered.');
 
         return User.create(sanitize({
             firebaseUserId: firebaseUserId,

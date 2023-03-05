@@ -76,8 +76,22 @@ export default {
             this.signInMode = !this.signInMode;
         },
         signIn() {
+            this.loading = true;
             this.server.signIn(this.email, this.password)
-                .then()
+                .then(({ data: { user }}) => {
+                    this.$store.dispatch('updateUser', user).then(() => document.location.href = '/transactions');
+                })
+                .catch(console.log)
+                .finally(() => this.loading = false);
+        },
+        signUp() {
+            this.loading = true;
+            this.server.signUp(this.email, this.password)
+                .then(({ data: { user }}) => {
+                    this.$store.dispatch('updateUser', user).then(() => document.location.href = '/transactions');
+                })
+                .catch(console.log)
+                .finally(() => this.loading = false);
         }
     }
 }

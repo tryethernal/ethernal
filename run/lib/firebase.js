@@ -10,6 +10,11 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const getUserByEmail = async (email) => {
+    const user = await User.findOne({ where: { email: email }, include: 'currentWorkspace' });
+    return user.toJSON();
+};
+
 const getCustomTransactionFunction = async (workspaceId) => {
     if (!workspaceId) throw new Error('Missing parameter');
 
@@ -937,5 +942,6 @@ module.exports = {
     getAddressStats: getAddressStats,
     getAddressTokenTransfers: getAddressTokenTransfers,
     getCustomTransactionFunction: getCustomTransactionFunction,
+    getUserByEmail: getUserByEmail,
     Workspace: Workspace
 };

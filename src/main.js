@@ -5,7 +5,6 @@ import VueRouter from 'vue-router';
 
 import vuetify from './plugins/vuetify';
 import router from './plugins/router';
-import { dbPlugin, auth } from './plugins/firebase';
 import { serverPlugin } from './plugins/server';
 import store from './plugins/store';
 import { firestorePlugin } from 'vuefire';
@@ -17,7 +16,6 @@ Vue.use(VueRouter);
 Vue.use(firestorePlugin);
 Vue.use(require('vue-moment'));
 
-Vue.use(dbPlugin);
 Vue.use(serverPlugin, { store: store });
 
 const isEthernalDomain = window.location.host.endsWith(process.env.VUE_APP_MAIN_DOMAIN);
@@ -38,23 +36,26 @@ new Vue({
     vuetify,
     store: store,
     router,
-    mounted: function() {
-        auth().onAuthStateChanged(this.authStateChanged);
+    mounted() {
+        if (!store.getters.publicExplorerMode)
+            this.server.getCurrentUser()
+                .then(({ data }) => this.authStateChanged(data))
+                .catch(() => this.authStateChanged(null))
+        else
+            this.authStateChanged(null);
     },
     methods: {
-        authStateChanged: function(user) {
+        authStateChanged(user) {
             if (user && process.env.VUE_APP_ENABLE_ANALYTICS && window.location.host == 'app.tryethernal.com') {
                 LogRocket.init(process.env.VUE_APP_LOGROCKET_ID);
             }
 
             const currentPath = this.$router.currentRoute.path;
-            const isPublicExplorer = store.getters.isPublicExplorer;
+            const publicExplorerMode = store.getters.publicExplorerMode;
 
-            store.dispatch('updateUser', user);
-            if (user && !isPublicExplorer)
-                store.dispatch('updateCurrentWorkspace', { firebaseUserId: user.uid });
+            store.dispatch('updateUser', user || {});
 
-            if (currentPath != '/auth' && !user && !isPublicExplorer) {
+            if (currentPath != '/auth' && !user && !publicExplorerMode) {
                 return this.$router.push('/auth');
             }
             if (currentPath == '/auth' && user) {

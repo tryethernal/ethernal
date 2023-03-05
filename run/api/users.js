@@ -7,8 +7,11 @@ const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
+const { randomUUID } = require('crypto');
 const authMiddleware = require('../middlewares/auth');
 const { encrypt } = require('../lib/crypto');
+const localAuth = require('../middlewares/passportLocalStrategy');
+const tokenAuth = require('../middlewares/passportTokenStrategy');
 
 router.post('/getFirebaseHashes', async (req, res) => {
     const data = req.query;
@@ -21,6 +24,51 @@ router.post('/getFirebaseHashes', async (req, res) => {
         res.sendStatus(200);
     } catch(error) {
         logger.error(error.message, { location: 'get.api.contracts.logs', error: error, data: { ...data, ...req.params }});
+        res.status(400).send(error.message);
+    }
+});
+
+router.post('/signin', localAuth, async (req, res) => {
+    try {
+        res.status(200).json({ user: req.user });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.users.me.signin', error: error, user: req.user });
+        res.status(400).send(error.message);
+    }
+});
+
+router.post('/signup', async (req, res) => {
+    const data = req.body;
+
+    try {
+        if (!data.email || !data.password)
+            throw new Error('Missing parameter.');
+
+        const apiKey = uuidAPIKey.create().apiKey;
+        const encryptedKey = encrypt(apiKey);
+        const firebaseUserId = randomUUID();
+
+        // Workaround until we make the stripeCustomerId column nullable
+        const customer = isStripeEnabled ? await stripe.customers.create({
+            email: data.email
+        }) : { id: 'dummy' };
+
+        // If Stripe isn't setup we assume all users are premium
+        const plan = isStripeEnabled ? 'free' : 'premium';
+
+        const user = await db.createUser(firebaseUserId, {
+            email: data.email,
+            apiKey: encryptedKey,
+            stripeCustomerId: customer.id,
+            plan: plan
+        });
+        console.log(user)
+
+        await enqueue('processUser', `processUser-${firebaseUserId}`, { uid: firebaseUserId });
+
+        res.status(200).json({ user });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.users', error: error, data: data });
         res.status(400).send(error.message);
     }
 });
@@ -51,9 +99,8 @@ router.post('/me/setCurrentWorkspace', authMiddleware, async (req, res) => {
     }
 });
 
-router.get('/me', authMiddleware, async (req, res) => {
+router.get('/me', tokenAuth, async (req, res) => {
     const data = req.body.data;
-
     try {
         const user = await db.getUser(data.uid, ['apiToken', 'apiKey']);
 

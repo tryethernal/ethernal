@@ -327,13 +327,24 @@ export const serverPlugin = {
 
         axios.interceptors.request.use(
             config => {
-                if (store.getters.user.apiToken)
-                    config.headers['Authorization'] = `Bearer ${store.getters.user.apiToken}`;
+                const apiToken = localStorage.getItem('apiToken');
+                if (apiToken)
+                    config.headers['Authorization'] = `Bearer ${apiToken}`;
                 return config;
             }
         );
 
         Vue.prototype.server = {
+            signUp(email, password) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/signup`;
+                return axios.post(resource, { email, password });
+            },
+
+            signIn(email, password) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/signin`;
+                return axios.post(resource, { email, password });
+            },
+
             getAddressTokenTransfers(address, options) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
@@ -740,7 +751,6 @@ export const serverPlugin = {
 
             async getCurrentUser() {
                 const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId
                 };
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/users/me`;
