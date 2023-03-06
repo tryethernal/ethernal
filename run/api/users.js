@@ -1,6 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const logger = require('../lib/logger');
-const { isStripeEnabled } = require('../lib/flags');
+const { isStripeEnabled, isSendgridEnabled } = require('../lib/flags');
 const { getAuth } = require('firebase-admin/auth');
 const uuidAPIKey = require('uuid-apikey');
 const express = require('express');
@@ -9,9 +9,52 @@ const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
 const { randomUUID } = require('crypto');
 const authMiddleware = require('../middlewares/auth');
-const { encrypt } = require('../lib/crypto');
+const { encrypt, decode } = require('../lib/crypto');
 const localAuth = require('../middlewares/passportLocalStrategy');
 const tokenAuth = require('../middlewares/passportTokenStrategy');
+
+router.post('/resetPassword', async (req, res) => {
+    const data = req.body;
+
+    try {
+        if (!data.token || !data.password)
+            throw new Error('Missing parameter.');
+
+        const tokenData = decode(data.token);
+
+        if (!tokenData.expiresAt || !tokenData.email)
+            throw new Error('Invalid link, please send another password reset request.')
+
+        if (parseInt(tokenData.expiresAt) < Date.now())
+            throw new Error('This password reset link has expired.')
+
+        await db.setUserPassword(tokenData.email, data.password);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.users.resetPassword', error: error, data: data});
+        res.status(400).send(error.message);
+    }
+});
+
+router.post('/sendResetPasswordEmail', async (req, res) => {
+    const data = req.body;
+
+    try {
+        if (!isSendgridEnabled)
+            throw new Error('Sendgrid has not been enabled.');
+
+        if (!data.email)
+            throw new Error('Missing parameter.');
+
+        await enqueue('sendResetPasswordEmail', `sendResetPasswordEmail-${Date.now()}`, { email: data.email });
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.users.sendResetPasswordEmail', error: error, data: data});
+        res.status(400).send(error.message);
+    }
+});
 
 router.post('/getFirebaseHashes', async (req, res) => {
     const data = req.query;

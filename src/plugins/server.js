@@ -335,6 +335,16 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            resetPassword(token, password) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/resetPassword`;
+                return axios.post(resource, { token, password });
+            },
+
+            sendResetPasswordEmail(email) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/sendResetPasswordEmail`;
+                return axios.post(resource, { email });
+            },
+
             signUp(email, password) {
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/users/signup`;
                 return axios.post(resource, { email, password });

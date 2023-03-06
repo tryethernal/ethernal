@@ -1,15 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-const { FirebaseScrypt } = require('firebase-scrypt');
+const { firebaseVerify } = require('../lib/crypto');
 const db = require('../lib/firebase');
-
-const firebaseParameters = {
-    algorithm: 'SCRYPT',
-    signerKey: '7i3cf/CI8fTHydv0ckbA9SInLkTg/16EAr9vwaNqrVHLMTImrS301cH3CUENtp4W9tjIO1YpCW8eqwHHWtgYSQ==',
-    saltSeparator: 'Bw==',
-    rounds: 8,
-    memCost: 14,
-};
 
 const strategy = new LocalStrategy(
     { usernameField: 'email' },
@@ -19,8 +11,7 @@ const strategy = new LocalStrategy(
         if (!user)
             return cb(null, false, { message: 'Invalid email or password.' });
 
-        const scrypt = new FirebaseScrypt(firebaseParameters);
-        const isPasswordValid = await scrypt.hash(password, user.passwordSalt);
+        const isPasswordValid = await firebaseVerify(password, user.passwordSalt, user.passwordHash);
 
         if (!isPasswordValid)
             return cb(null, false, { message: 'Invalid email or password.' });
@@ -31,4 +22,12 @@ const strategy = new LocalStrategy(
 
 passport.use(strategy);
 
-module.exports = passport.authenticate('local', { session: false });
+module.exports = (req, res, next) => {
+    return passport.authenticate('local', { session: false }, (err, user, info) => {
+        if (err || !user)
+            return res.status(400).send('Invalid email or password.');
+
+        req.user = user;
+        next();
+    })(req, res, next);
+};

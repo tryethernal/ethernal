@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const models = require('../models');
+const { firebaseHash }  = require('./crypto');
 
 const Op = Sequelize.Op;
 const User = models.User;
@@ -10,9 +11,23 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const setUserPassword = async (email, password) => {
+    if (!email || !password)
+        throw new Error('Missig parameter');
+
+    const user = await User.findOne({ where: { email: email }});
+
+    if (!user)
+        throw new Error(`Can't find user with this email address.`);
+
+    const { passwordHash, passwordSalt } = await firebaseHash(password);
+
+    return user.update({ passwordHash, passwordSalt });
+};
+
 const getUserByEmail = async (email) => {
     const user = await User.findOne({ where: { email: email }, include: 'currentWorkspace' });
-    return user.toJSON();
+    return user ? user.toJSON() : null;
 };
 
 const getCustomTransactionFunction = async (workspaceId) => {
@@ -943,5 +958,6 @@ module.exports = {
     getAddressTokenTransfers: getAddressTokenTransfers,
     getCustomTransactionFunction: getCustomTransactionFunction,
     getUserByEmail: getUserByEmail,
+    setUserPassword: setUserPassword,
     Workspace: Workspace
 };
