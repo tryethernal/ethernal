@@ -1,4 +1,5 @@
 const passport = require('passport');
+const { getAuth } = require('firebase-admin/auth');
 const CustomStrategy = require('passport-custom');
 const db = require('../lib/firebase');
 const { decode, decrypt } = require('../lib/crypto');
@@ -29,6 +30,15 @@ const strategy = new CustomStrategy(
             }
             else
                 return cb(null, false, { message: 'Invalid authorization header.' });
+        }
+        else if (req.query.firebaseAuthToken) {
+            const firebaseUser = await getAuth().verifyIdToken(req.query.firebaseAuthToken);
+            if (firebaseUser) {
+                const user = await db.getUser(firebaseUser.user_id, ['apiKey']);
+                req.body.data = { ...req.body.data, uid: firebaseUser.user_id };
+                return cb(null, user);
+            }
+            return cb(null, false, { message: 'Invalid authentication token.' });
         }
         else
             return cb(null, false, { message: 'Invalid authorization header.' });

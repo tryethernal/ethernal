@@ -135,7 +135,7 @@ export default {
         valid: false,
         error: null,
         loading: false,
-        mode: 'forgottenPwd',
+        mode: 'signup',
         email: null,
         password: null
     }),

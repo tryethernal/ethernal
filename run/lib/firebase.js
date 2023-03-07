@@ -11,6 +11,15 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const updateUserFirebaseHash = async (email, passwordSalt, passwordHash) => {
+    if (!email || !passwordSalt || !passwordHash)
+        throw new Error('Missing parameter');
+
+    const user = await User.findOne({ where: { email: email }});
+
+    return user.update({ passwordSalt, passwordHash });
+};
+
 const setUserPassword = async (email, password) => {
     if (!email || !password)
         throw new Error('Missig parameter');
@@ -959,5 +968,6 @@ module.exports = {
     getCustomTransactionFunction: getCustomTransactionFunction,
     getUserByEmail: getUserByEmail,
     setUserPassword: setUserPassword,
+    updateUserFirebaseHash: updateUserFirebaseHash,
     Workspace: Workspace
 };

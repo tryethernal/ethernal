@@ -1,6 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const logger = require('../lib/logger');
-const { isStripeEnabled, isSendgridEnabled } = require('../lib/flags');
+const { isStripeEnabled, isSendgridEnabled, isFirebaseAuthEnabled } = require('../lib/flags');
 const { getAuth } = require('firebase-admin/auth');
 const uuidAPIKey = require('uuid-apikey');
 const express = require('express');
@@ -9,9 +9,24 @@ const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
 const { randomUUID } = require('crypto');
 const authMiddleware = require('../middlewares/auth');
-const { encrypt, decode } = require('../lib/crypto');
+const { encrypt, decode, firebaseHash } = require('../lib/crypto');
 const localAuth = require('../middlewares/passportLocalStrategy');
 const tokenAuth = require('../middlewares/passportTokenStrategy');
+
+const findUser = async (email, nextPageToken) => {
+    const listUsersResult = await getAuth().listUsers(1, nextPageToken);
+    let result = null;
+    listUsersResult.users.forEach(async userRecord => {
+        if (userRecord.email == email)
+            result = userRecord;
+    });
+
+    if (listUsersResult.pageToken && !result) {
+        return await findUser(email, listUsersResult.pageToken);
+    }
+
+    return result;
+};
 
 router.post('/resetPassword', async (req, res) => {
     const data = req.body;
@@ -28,7 +43,15 @@ router.post('/resetPassword', async (req, res) => {
         if (parseInt(tokenData.expiresAt) < Date.now())
             throw new Error('This password reset link has expired.')
 
-        await db.setUserPassword(tokenData.email, data.password);
+        if (isFirebaseAuthEnabled) {
+            const user = await db.getUserByEmail(tokenData.email);
+            await getAuth().updateUser(user.firebaseUserId, { password: data.password });
+            const firebaseUser = await findUser(tokenData.email);
+            const { passwordSalt, passwordHash } = firebaseUser;
+            await db.updateUserFirebaseHash(tokenData.email, passwordSalt, passwordHash);
+        }
+        else
+            await db.setUserPassword(tokenData.email, data.password);
 
         res.sendStatus(200);
     } catch(error) {
@@ -89,7 +112,15 @@ router.post('/signup', async (req, res) => {
 
         const apiKey = uuidAPIKey.create().apiKey;
         const encryptedKey = encrypt(apiKey);
-        const firebaseUserId = randomUUID();
+
+        let uid, passwordSalt, passwordHash;
+        if (isFirebaseAuthEnabled) {
+            await getAuth().createUser({ email: data.email, password: data.password });
+            const firebaseUser = await findUser(data.email);
+            ({ uid, passwordSalt, passwordHash } = firebaseUser);
+        }
+        else
+            ({ uid, passwordSalt, passwordHash } = { uid: randomUUID(), ...firebaseHash(data.password) });
 
         // Workaround until we make the stripeCustomerId column nullable
         const customer = isStripeEnabled ? await stripe.customers.create({
@@ -99,15 +130,16 @@ router.post('/signup', async (req, res) => {
         // If Stripe isn't setup we assume all users are premium
         const plan = isStripeEnabled ? 'free' : 'premium';
 
-        const user = await db.createUser(firebaseUserId, {
+        const user = await db.createUser(uid, {
             email: data.email,
             apiKey: encryptedKey,
             stripeCustomerId: customer.id,
-            plan: plan
+            plan: plan,
+            passwordSalt,
+            passwordHash
         });
-        console.log(user)
 
-        await enqueue('processUser', `processUser-${firebaseUserId}`, { uid: firebaseUserId });
+        await enqueue('processUser', `processUser-${uid}`, { uid: uid });
 
         res.status(200).json({ user });
     } catch(error) {
