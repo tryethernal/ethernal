@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
             include: {
                 model: sequelize.models.Contract,
                 as: 'contract',
-                attribute: ['tokenSymbol', 'tokenDecimals']
+                attributes: ['tokenSymbol', 'tokenDecimals']
             },
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,

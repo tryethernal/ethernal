@@ -1,8 +1,10 @@
 'use strict';
 const {
   Model,
+  Sequelize,
   QueryTypes
 } = require('sequelize');
+const Op = Sequelize.Op
 const { trigger } = require('../lib/pusher');
 const { enqueue } = require('../lib/queue');
 const { sanitize } = require('../lib/utils');
@@ -15,12 +17,22 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      TokenTransfer.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'transaction' });
+      TokenTransfer.belongsTo(models.Transaction, {
+          foreignKey: 'transactionId',
+          as: 'transaction',
+      });
       TokenTransfer.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       TokenTransfer.hasOne(models.Contract, {
           sourceKey: 'token',
           foreignKey: 'address',
-          as: 'contract'
+          as: 'contract',
+          scope: {
+            [Op.and]: sequelize.where(sequelize.col("TokenTransfer.workspaceId"),
+                Op.eq,
+                sequelize.col("contract.workspaceId")
+            ),
+          },
+          constraints: false
       });
       TokenTransfer.hasMany(models.TokenBalanceChange, { foreignKey: 'tokenTransferId', as: 'tokenBalanceChanges' });
     }
