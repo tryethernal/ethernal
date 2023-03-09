@@ -14,7 +14,7 @@ const localAuth = require('../middlewares/passportLocalStrategy');
 const tokenAuth = require('../middlewares/passportTokenStrategy');
 
 const findUser = async (email, nextPageToken) => {
-    const listUsersResult = await getAuth().listUsers(1, nextPageToken);
+    const listUsersResult = await getAuth().listUsers(500, nextPageToken);
     let result = null;
     listUsersResult.users.forEach(async userRecord => {
         if (userRecord.email == email)
@@ -25,7 +25,7 @@ const findUser = async (email, nextPageToken) => {
         return await findUser(email, listUsersResult.pageToken);
     }
 
-    return result;
+    return result;    
 };
 
 router.post('/resetPassword', async (req, res) => {
@@ -43,7 +43,7 @@ router.post('/resetPassword', async (req, res) => {
         if (parseInt(tokenData.expiresAt) < Date.now())
             throw new Error('This password reset link has expired.')
 
-        if (isFirebaseAuthEnabled) {
+        if (isFirebaseAuthEnabled()) {
             const user = await db.getUserByEmail(tokenData.email);
             await getAuth().updateUser(user.firebaseUserId, { password: data.password });
             const firebaseUser = await findUser(tokenData.email);
@@ -64,7 +64,7 @@ router.post('/sendResetPasswordEmail', async (req, res) => {
     const data = req.body;
 
     try {
-        if (!isSendgridEnabled)
+        if (!isSendgridEnabled())
             throw new Error('Sendgrid has not been enabled.');
 
         if (!data.email)
@@ -114,7 +114,7 @@ router.post('/signup', async (req, res) => {
         const encryptedKey = encrypt(apiKey);
 
         let uid, passwordSalt, passwordHash;
-        if (isFirebaseAuthEnabled) {
+        if (isFirebaseAuthEnabled()) {
             await getAuth().createUser({ email: data.email, password: data.password });
             const firebaseUser = await findUser(data.email);
             ({ uid, passwordSalt, passwordHash } = firebaseUser);
