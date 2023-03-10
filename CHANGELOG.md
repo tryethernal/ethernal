@@ -6,9 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.9.5] - 2023-03-10
+### Fixed
+- Token transfers display wasn't showing token type/formatting
+
 ## [3.9.4] - 2023-03-09
 ### Fixed
-- Token transfers could be returned duplicated by the API 
+- Token transfers could be returned duplicated by the API
 
 ## [3.9.3] - 2023-03-02
 ### Fixed
