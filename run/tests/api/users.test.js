@@ -109,11 +109,13 @@ describe(`POST ${BASE_URL}/signin`, () => {
     });
 });
 
-describe.only(`POST ${BASE_URL}/signup`, () => {
+describe(`POST ${BASE_URL}/signup`, () => {
     beforeEach(() => jest.clearAllMocks());
 
-    it('Should create firebase user', (done) => {
-        request.post(`${BASE_URL}/signin`)
+    it('Should return created user when firebase auth is disabled', (done) => {
+        jest.spyOn(flags, 'isFirebaseAuthEnabled').mockReturnValueOnce(false);
+        jest.spyOn(db, 'createUser').mockResolvedValueOnce({ id: 1 });
+        request.post(`${BASE_URL}/signup`)
             .send({ email: 'antoine@tryethernal.com', password: '123' })
             .expect(200)
             .then(({ body: { user }}) => {
@@ -122,7 +124,16 @@ describe.only(`POST ${BASE_URL}/signup`, () => {
             });
     });
 
-    it('')
+    it('Should return created user when firebase auth is enabled', (done) => {
+        jest.spyOn(db, 'createUser').mockResolvedValueOnce({ id: 1 });
+        request.post(`${BASE_URL}/signup`)
+            .send({ email: 'antoine@tryethernal.com', password: '123' })
+            .expect(200)
+            .then(({ body: { user }}) => {
+                expect(user).toEqual({ id: 1 });
+                done();
+            });
+    });
 });
 
 describe(`GET ${BASE_URL}/me/apiToken`, () => {

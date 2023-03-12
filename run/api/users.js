@@ -174,7 +174,7 @@ router.post('/me/setCurrentWorkspace', authMiddleware, async (req, res) => {
     }
 });
 
-router.get('/me', tokenAuth, async (req, res) => {
+router.get('/me', authMiddleware, async (req, res) => {
     const data = req.body.data;
     try {
         const user = await db.getUser(data.uid, ['apiToken', 'apiKey']);

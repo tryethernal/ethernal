@@ -5,7 +5,6 @@ const { decode, decrypt } = require('../lib/crypto');
 const logger = require('../lib/logger');
 
 module.exports = async (req, res, next) => {
-    console.log(req, res)
     if (req.user) next();
 
     const pusherData =  sanitize({ socket_id: req.body.socket_id, channel_name: req.body.channel_name, firebaseAuthToken: req.body.firebaseAuthToken, firebaseUserId: req.body.firebaseUserId });

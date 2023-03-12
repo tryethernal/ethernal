@@ -6,10 +6,10 @@ const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 const IV_LENGTH = 16;
 const firebaseParameters = {
     algorithm: 'SCRYPT',
-    signerKey: '7i3cf/CI8fTHydv0ckbA9SInLkTg/16EAr9vwaNqrVHLMTImrS301cH3CUENtp4W9tjIO1YpCW8eqwHHWtgYSQ==',
-    saltSeparator: 'Bw==',
-    rounds: 8,
-    memCost: 14,
+    signerKey: process.env.FIREBASE_SIGNER_KEY,
+    saltSeparator: process.env.FIREBASE_SALT_SEPARATOR,
+    rounds: process.env.FIREBASE_ROUNDS,
+    memCost: process.env.FIREBASE_MEM_COST,
 };
 
 module.exports = {

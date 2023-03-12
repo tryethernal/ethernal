@@ -5,13 +5,13 @@ const { isSendgridEnabled } = require('../lib/flags');
 module.exports = async job => {
     const data = job.data;
 
-    if (isSendgridEnabled())
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-    else
+    if (!isSendgridEnabled())
         throw new Error('Sendgrid has not been enabled.');
 
     if (!data.email)
         throw new Error('Missing parameter.');
+
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
     const jwt = encode({
         email: data.email,

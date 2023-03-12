@@ -1,3 +1,9 @@
+/*
+    This middleware checks that Stripe is enabled.
+    If not, a 404 is sent
+*/
+
+
 const logger = require('../lib/logger');
 const { isStripeEnabled } = require('../lib/flags');
 

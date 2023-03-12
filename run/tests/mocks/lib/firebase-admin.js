@@ -4,7 +4,8 @@ jest.mock('firebase-admin/auth', () => ({
             verifyIdToken: jest.fn().mockResolvedValue({ user_id: '123' }),
             getUser: jest.fn().mockResolvedValue({ email: 'antoine@tryethernal.com' }),
             updateUser: jest.fn().mockResolvedValue(),
-            listUsers: jest.fn().mockResolvedValue({ users: [{ email: 'antoine@tryethernal.com', passwordSalt: 'salt', passwordHash: 'hash' }]})
+            listUsers: jest.fn().mockResolvedValue({ users: [{ email: 'antoine@tryethernal.com', passwordSalt: 'salt', passwordHash: 'hash' }]}),
+            createUser: jest.fn()
         };
     })
 }));
