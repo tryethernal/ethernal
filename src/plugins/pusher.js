@@ -7,7 +7,7 @@ export const pusherPlugin = {
     async install(Vue, options) {
         const store = options.store;
         const apiToken = localStorage.getItem('apiToken');
-        console.log(store.getters.currentWorkspace)
+
         const pusher = process.env.VUE_APP_PUSHER_KEY ?
             new Pusher(process.env.VUE_APP_PUSHER_KEY, {
                 cluster: 'eu',
