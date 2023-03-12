@@ -42,7 +42,7 @@
                                             <small><a @click="switchMode('forgottenPwd')">Forgot My Password</a></small>
                                         </div>
                                         <v-spacer></v-spacer>
-                                        <v-btn id="signIn" :disabled="!valid" :loading="loading" color="primary" type="submit">Sign In</v-btn>
+                                        <v-btn :disabled="!valid" :loading="loading" color="primary" type="submit">Sign In</v-btn>
                                     </v-card-actions>
                                 </v-form>
                             </v-card-text>
