@@ -8,12 +8,12 @@ const LocalStrategy = require('passport-local');
 
 const strategy = require('./strategies/local');
 
-const strategy = new LocalStrategy(
+const localStrategy = new LocalStrategy(
     { usernameField: 'email' },
     strategy
 );
 
-passport.use(strategy);
+passport.use(localStrategy);
 
 module.exports = (req, res, next) => {
     return passport.authenticate('local', { session: false }, (err, user, info) => {
