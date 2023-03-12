@@ -123,12 +123,12 @@ router.post('/signup', async (req, res) => {
             ({ uid, passwordSalt, passwordHash } = { uid: randomUUID(), ...firebaseHash(data.password) });
 
         // Workaround until we make the stripeCustomerId column nullable
-        const customer = isStripeEnabled ? await stripe.customers.create({
+        const customer = isStripeEnabled() ? await stripe.customers.create({
             email: data.email
         }) : { id: 'dummy' };
 
         // If Stripe isn't setup we assume all users are premium
-        const plan = isStripeEnabled ? 'free' : 'premium';
+        const plan = isStripeEnabled() ? 'free' : 'premium';
 
         const user = await db.createUser(uid, {
             email: data.email,
@@ -199,12 +199,12 @@ router.post('/', async (req, res) => {
         const authUser = await getAuth().getUser(data.firebaseUserId);
 
         // Workaround until we make the stripeCustomerId column nullable
-        const customer = isStripeEnabled ? await stripe.customers.create({
+        const customer = isStripeEnabled() ? await stripe.customers.create({
             email: authUser.email
         }) : { id: 'dummy' };
 
         // If Stripe isn't setup we assume all users are premium
-        const plan = isStripeEnabled ? 'free' : 'premium';
+        const plan = isStripeEnabled() ? 'free' : 'premium';
 
         const user = await db.createUser(data.firebaseUserId, {
             email: authUser.email,

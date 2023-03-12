@@ -9,7 +9,7 @@ const { isStripeEnabled } = require('../lib/flags');
 
 module.exports = async (req, res, next) => {
     try {
-        if (isStripeEnabled)
+        if (isStripeEnabled())
             next();
         else
             res.sendStatus(404);
