@@ -1,3 +1,7 @@
+/*
+    This middleware sets up a basic auth mechanism to access the BullMQ UI at /bull
+*/
+
 const auth = require('basic-auth');
 
 module.exports = (req, res, next) => {

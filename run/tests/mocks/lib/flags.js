@@ -1,5 +1,7 @@
 jest.mock('../../../lib/flags', () => ({
-    isStripeEnabled: true,
-    isMarketingEnabled: true,
-    isPusherEnabled: true
+    isStripeEnabled: jest.fn(() => true),
+    isMarketingEnabled: jest.fn(() => true),
+    isPusherEnabled: jest.fn(() => true),
+    isSendgridEnabled: jest.fn(() => true),
+    isFirebaseAuthEnabled: jest.fn(() => true)
 }));

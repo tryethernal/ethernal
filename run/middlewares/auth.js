@@ -5,6 +5,8 @@ const { decode, decrypt } = require('../lib/crypto');
 const logger = require('../lib/logger');
 
 module.exports = async (req, res, next) => {
+    if (req.user) next();
+
     const pusherData =  sanitize({ socket_id: req.body.socket_id, channel_name: req.body.channel_name, firebaseAuthToken: req.body.firebaseAuthToken, firebaseUserId: req.body.firebaseUserId });
     const authorizationHeader = req.headers['authorization'];
     const data = { ...req.body.data, ...req.query, ...pusherData };
@@ -31,6 +33,7 @@ module.exports = async (req, res, next) => {
                     throw new Error(`Invalid authorization header`);
 
                 req.body.data.uid = jwtData.firebaseUserId;
+                req.query.firebaseUserId = jwtData.firebaseUserId;
                 next();
             }
             else
