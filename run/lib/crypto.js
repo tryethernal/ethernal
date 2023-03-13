@@ -8,8 +8,8 @@ const firebaseParameters = {
     algorithm: 'SCRYPT',
     signerKey: process.env.FIREBASE_SIGNER_KEY,
     saltSeparator: process.env.FIREBASE_SALT_SEPARATOR,
-    rounds: process.env.FIREBASE_ROUNDS,
-    memCost: process.env.FIREBASE_MEM_COST,
+    rounds: parseInt(process.env.FIREBASE_ROUNDS),
+    memCost: parseInt(process.env.FIREBASE_MEM_COST),
 };
 
 module.exports = {

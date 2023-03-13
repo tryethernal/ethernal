@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.10.1] - 2023-03-13
+### Fixed
+- [Firebase Auth Migration] Firebase mem cost parameter
+
 ## [3.10.0] - 2023-03-13
 ### Changed
 - [Firebase Auth Migration] Auth is now done by the backend, not by Firebase. We still need to create a Firebase user. This will be removed after a while once most clients (Hardhat plugins & CLI) will have upgraded.
