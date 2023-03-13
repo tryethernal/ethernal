@@ -5,6 +5,7 @@ module.exports = {
     batchBlockSync: require('./batchBlockSync'),
     batchInsertFirebasePasswordHashes: require('./batchInsertFirebasePasswordHashes'),
     insertFirebaseHashes: require('./insertFirebaseHashes'),
+    sendResetPasswordEmail: require('./sendResetPasswordEmail'),
 
     // Medium Priority
     contractProcessing: require('./contractProcessing'),

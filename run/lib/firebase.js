@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const models = require('../models');
+const { firebaseHash }  = require('./crypto');
 
 const Op = Sequelize.Op;
 const User = models.User;
@@ -9,6 +10,34 @@ const Workspace = models.Workspace;
 const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
+
+const updateUserFirebaseHash = async (email, passwordSalt, passwordHash) => {
+    if (!email || !passwordSalt || !passwordHash)
+        throw new Error('Missing parameter');
+
+    const user = await User.findOne({ where: { email: email }});
+
+    return user.update({ passwordSalt, passwordHash });
+};
+
+const setUserPassword = async (email, password) => {
+    if (!email || !password)
+        throw new Error('Missig parameter');
+
+    const user = await User.findOne({ where: { email: email }});
+
+    if (!user)
+        throw new Error(`Can't find user with this email address.`);
+
+    const { passwordHash, passwordSalt } = await firebaseHash(password);
+
+    return user.update({ passwordHash, passwordSalt });
+};
+
+const getUserByEmail = async (email) => {
+    const user = await User.findOne({ where: { email: email }, include: 'currentWorkspace' });
+    return user ? user.toJSON() : null;
+};
 
 const getCustomTransactionFunction = async (workspaceId) => {
     if (!workspaceId) throw new Error('Missing parameter');
@@ -937,5 +966,8 @@ module.exports = {
     getAddressStats: getAddressStats,
     getAddressTokenTransfers: getAddressTokenTransfers,
     getCustomTransactionFunction: getCustomTransactionFunction,
+    getUserByEmail: getUserByEmail,
+    setUserPassword: setUserPassword,
+    updateUserFirebaseHash: updateUserFirebaseHash,
     Workspace: Workspace
 };

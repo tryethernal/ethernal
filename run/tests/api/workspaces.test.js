@@ -79,6 +79,7 @@ describe(`POST ${BASE_URL}`, () => {
             .send({ data: { name: 'My Workspace', workspaceData: { notvalid: 'ok', rpcServer: 'http://localhost:8545' }}})
             .expect(200)
             .then(() => {
+                expect(db.setCurrentWorkspace).toHaveBeenCalled();
                 expect(db.createWorkspace).toHaveBeenCalledWith('123', {
                     name: 'My Workspace',
                     rpcServer: 'http://localhost:8545',

@@ -127,6 +127,9 @@ router.post('/', authMiddleware, async (req, res) => {
 
         const workspace = await db.createWorkspace(data.uid, filteredWorkspaceData);
 
+        if (!user.currentWorkspace)
+            await db.setCurrentWorkspace(user.firebaseUserId, filteredWorkspaceData.name);
+
         res.status(200).json(workspace);
     } catch(error) {
         logger.error(error.message, { location: 'post.api.workspaces', error: error, data: data });
