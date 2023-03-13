@@ -6,7 +6,7 @@ const router = express.Router();
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 
 let pusher;
-if (isPusherEnabled) {
+if (isPusherEnabled()) {
     pusher = new Pusher({
         appId: process.env.PUSHER_APP_ID,
         key: process.env.PUSHER_KEY,
@@ -18,7 +18,7 @@ if (isPusherEnabled) {
 
 const presenceMiddleware = async (req, res, next) => {
     try {
-        if (isPusherEnabled)
+        if (isPusherEnabled())
             next();
         else
             res.sendStatus(404);

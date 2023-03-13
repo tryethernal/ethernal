@@ -31,12 +31,12 @@ router.use('/stats', stats);
 router.use('/erc721Collections', erc721Collections);
 router.use('/erc721Tokens', erc721Tokens);
 
-if (isStripeEnabled) {
+if (isStripeEnabled()) {
     const stripe = require('./stripe');
     router.use('/stripe', stripe);
 }
 
-if (isMarketingEnabled) {
+if (isMarketingEnabled()) {
     const marketing = require('./marketing');
     router.use('/marketing', marketing);
 }

@@ -45,6 +45,10 @@ jest.mock('@/plugins/server', () => ({
                 getTokenTransferVolume: jest.fn(),
                 getTokenCumulativeSupply: jest.fn(),
                 getTokenHolderHistory: jest.fn(),
+                signIn: jest.fn(),
+                signUp: jest.fn(),
+                sendResetPasswordEmail: jest.fn(),
+                resetPassword: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))
