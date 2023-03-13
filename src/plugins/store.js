@@ -88,6 +88,9 @@ export default new Vuex.Store({
         },
         updateUser({ commit }, user) {
             if (user) {
+                if (user.apiToken)
+                    localStorage.setItem('apiToken', user.apiToken);
+
                 commit('SET_USER', sanitize({
                     uid: user.uid,
                     email: user.email,
@@ -96,6 +99,7 @@ export default new Vuex.Store({
                     plan: user.plan,
                     apiToken: user.apiToken
                 }));
+
                 if (process.env.VUE_APP_ENABLE_ANALYTICS)
                     LogRocket.identify(user.uid, { email: user.email });
             }
@@ -134,11 +138,12 @@ export default new Vuex.Store({
         }
     },
     getters: {
+        publicExplorerMode: state => state.publicExplorer.slug || state.publicExplorer.domain,
         accounts: state => state.accounts,
         firebaseIdToken: state => state.user.firebaseIdToken || '',
         theme: state => state.publicExplorer.theme,
-        isUserLoggedIn: state => !!state.user.uid,
-        isUserAdmin: state => state.currentWorkspace && state.user.uid == state.currentWorkspace.firebaseUserId,
+        isUserLoggedIn: state => !!state.user.apiToken,
+        isUserAdmin: state => state.currentWorkspace && state.user.id == state.currentWorkspace.userId,
         isPublicExplorer: state => !!state.publicExplorer.slug || !!state.publicExplorer.domain || (state.currentWorkspace.public && state.user.uid == state.currentWorkspace.firebaseUserId),
         publicExplorer: state => state.publicExplorer,
         user: state => {

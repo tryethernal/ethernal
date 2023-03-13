@@ -1,5 +1,4 @@
 import VueRouter from 'vue-router';
-import { auth } from './firebase';
 import Blocks from '../components/Blocks.vue';
 import Block from '../components/Block.vue';
 import Transactions from '../components/Transactions.vue';
@@ -17,16 +16,19 @@ import ERC721Collection from '../components/ERC721Collection.vue';
 import ERC20Contract from '../components/ERC20Contract.vue';
 import Contract from '../components/Contract.vue';
 
+const auth = () => {
+    return { currentUser: router.app.$store.getters.user };
+}
+
 const redirectIfLoggedIn = function (to, from, next) {
-    if (auth().currentUser) {
+    if (auth().currentUser.id) {
         next(to || { path: '/transactions' });
     }
     else next();
 };
 
 const redirectIfLoggedOut = function (to, from, next) {
-    const isPublicExplorer = router.app.$store.getters.isPublicExplorer;
-    if (!auth().currentUser && !isPublicExplorer) {
+    if (!auth().currentUser.id && !router.app.$store.getters.publicExplorerMode) {
         next({ path: '/auth', query: { next: document.location.pathname, ...to.query }});
     }
     else next();

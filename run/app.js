@@ -1,6 +1,7 @@
 const { initializeApp } = require('firebase-admin/app');
 const express = require('express');
 const cors = require('cors');
+const passport = require('passport');
 
 const { ExpressAdapter } = require('@bull-board/express');
 const { createBullBoard } = require('@bull-board/api');

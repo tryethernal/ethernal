@@ -85,7 +85,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link :to="'/settings?tab=workspace'" v-if="currentWorkspace.isAdmin">
+                <v-list-item link :to="'/settings?tab=workspace'" v-if="isUserAdmin">
                     <v-list-item-icon>
                         <v-icon>mdi-cog</v-icon>
                     </v-list-item-icon>
@@ -182,7 +182,6 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import store from './plugins/store';
 import { pusherPlugin } from './plugins/pusher';
 import { mapGetters } from 'vuex';
-import { auth } from './plugins/firebase';
 import RpcConnector from './components/RpcConnector';
 import OnboardingModal from './components/OnboardingModal';
 import PublicExplorerExplainerModal from './components/PublicExplorerExplainerModal';
@@ -214,14 +213,27 @@ export default {
         ethereum: null,
         drawer: null
     }),
-    created: function() {
+    mounted() {
         detectEthereumProvider().then(provider => {
             if (!provider || provider !== window.ethereum) return;
             this.ethereum = provider;
         });
         this.isOverlayActive = true;
-        if (this.isPublicExplorer)
-            return this.initPublicExplorer();
+        if (this.publicExplorerMode) {
+            this.initPublicExplorer();
+        }
+        else {
+            this.server.getCurrentUser()
+                .then(({ data }) => {
+                    data.currentWorkspace ?
+                        this.initWorkspace(data.currentWorkspace) :
+                        this.launchOnboarding();
+                })
+                .catch(() => {
+                    this.isOverlayActive = false;
+                    this.routerComponent = 'router-view';
+                })
+        }
     },
     methods: {
         toggleMenu() {
@@ -250,19 +262,15 @@ export default {
         openPublicExplorerExplainerModal() {
             this.$refs.publicExplorerExplainerModal.open();
         },
-        logOut: function() {
-            const isPublicExplorer = this.isPublicExplorer;
-            this.$store.dispatch('updateUser', null);
-            auth().signOut().then(() => {
-                if (isPublicExplorer)
-                    document.location.reload();
-            });
+        logOut() {
+            localStorage.clear();
+            document.location.reload();
         },
-        launchOnboarding: function() {
+        launchOnboarding() {
             this.isOverlayActive = false;
             this.$refs.onboardingModal.open();
         },
-        initPublicExplorer: function() {
+        initPublicExplorer() {
             if (this.publicExplorer.domain)
                 this.server.getPublicExplorerByDomain(this.publicExplorer.domain)
                     .then(this.setupPublicExplorer);
@@ -270,7 +278,7 @@ export default {
                 this.server.getPublicExplorerBySlug(this.publicExplorer.slug)
                     .then(this.setupPublicExplorer);
         },
-        updateTabInfo: function(logo, name) {
+        updateTabInfo(logo, name) {
             if (logo) {
                 const favicon = document.getElementById('favicon');
                 favicon.href = logo;
@@ -278,7 +286,7 @@ export default {
 
             document.title = name;
         },
-        setupPublicExplorer: function({ data }) {
+        setupPublicExplorer({ data }) {
             if (!data)
                 return;
 
@@ -353,72 +361,21 @@ export default {
                 });
             });
         },
-        initWorkspace: function(data) {
-            if (!data.firebaseUserId || !data.name) return;
-            const isAdmin = !!auth().currentUser && auth().currentUser.uid == data.firebaseUserId;
-            this.$store.dispatch('updateOnboardedStatus', true);
-            this.$store.dispatch('updateCurrentWorkspace', { isAdmin: isAdmin, ...data })
-                .then(() => {
-                    Vue.use(pusherPlugin, { store: store });
-                    this.isOverlayActive = false;
-                    this.appBarComponent = 'rpc-connector';
-                    this.routerComponent = 'router-view';
-
-                    if (!this.isPublicExplorer) {
-                        this.server.getProductRoadToken().then(res => this.prAuthToken = res.data.token);
-                        this.server.getMarketingFlags().then(({ data: { isRemote }}) => this.isRemote = !!isRemote);
-                    }
-                });
-        },
-        initPrivateExplorer: function() {
-            const firebaseUserId = auth().currentUser.uid;
-            this.$store.dispatch('updateUser', { uid: firebaseUserId, email: auth().currentUser.email });
-            this.db.getIdToken().then((token) => {
-                this.$store.dispatch('updateFirebaseIdToken', token);
-                this.server.getCurrentUser().then(({ data }) => {
-                    const user = data;
-
-                    if (!user && !this.isPublicExplorer) {
-                        this.server.createUser(firebaseUserId).then(({ data }) => {
-                            this.$store.dispatch('updateUser', { plan: data.plan, id: data.id, apiToken: data.apiToken });
-                            this.launchOnboarding()
-                        });
-                    }
-                    else {
-                        if (this.isPublicExplorer) return;
-
-                        this.db.getIdToken().then((token) => {
-                            this.$store.dispatch('updateFirebaseIdToken', token);
-                        });
-
-                        this.$store.dispatch('updateUser', { plan: user.plan, id: user.id, apiToken: data.apiToken });
-
-                        if (user.currentWorkspace)
-                            this.initWorkspace({ ...user.currentWorkspace, firebaseUserId: firebaseUserId });
-                        else {
-                            if (user.workspaces.length > 0)
-                                this.server.setCurrentWorkspace(user.workspaces[0].name)
-                                    .then(() => this.initWorkspace({ ...user.workspaces[0], firebaseUserId: firebaseUserId }));
-                            else
-                                this.launchOnboarding();
-                        }
-                    }
-                }).catch(() => {
-                    return this.logOut();
-                });
-            });
-        }
-    },
-    watch: {
-        '$store.getters.user': function(user, previousUser) {
-            if (!previousUser.uid && !!user.uid && !this.isPublicExplorer) {
-                this.initPrivateExplorer();
-            }
-            if (!user.uid && !this.isPublicExplorer) {
+        initWorkspace(workspace) {
+            Promise.all([
+                this.$store.dispatch('updateCurrentWorkspace', workspace),
+                this.$store.dispatch('updateOnboardedStatus', true)
+            ]).then(() => {
                 Vue.use(pusherPlugin, { store: store });
                 this.isOverlayActive = false;
+                this.appBarComponent = 'rpc-connector';
                 this.routerComponent = 'router-view';
-            }
+
+                if (!this.publicExplorerMode && process.env.VUE_APP_ENABLE_MARKETING) {
+                    this.server.getProductRoadToken().then(res => this.prAuthToken = res.data.token);
+                    this.server.getMarketingFlags().then(({ data: { isRemote }}) => this.isRemote = !!isRemote);
+                }
+            });
         }
     },
     computed: {
@@ -429,7 +386,8 @@ export default {
             'currentWorkspace',
             'user',
             'isUserLoggedIn',
-            'isUserAdmin'
+            'isUserAdmin',
+            'publicExplorerMode'
         ]),
         hasNetworkInfo() {
             return this.publicExplorer && this.publicExplorer.name && this.publicExplorer.domain && this.publicExplorer.token;
@@ -437,8 +395,8 @@ export default {
         formattedExpectedChainId() {
             return `0x${parseInt(this.currentWorkspace.networkId).toString(16)}`;
         },
-        isAuthPage: function() { return this.$route.path.indexOf('/auth') > -1 },
-        canDisplaySides: function() { return (this.isUserLoggedIn || this.isPublicExplorer) && !this.isAuthPage }
+        isAuthPage() { return this.$route.path.indexOf('/auth') > -1 },
+        canDisplaySides() { return (this.isUserLoggedIn || this.isPublicExplorer) && !this.isAuthPage }
     }
 };
 </script>
