@@ -92,7 +92,7 @@ export default new Vuex.Store({
                     localStorage.setItem('apiToken', user.apiToken);
 
                 commit('SET_USER', sanitize({
-                    uid: user.uid,
+                    uid: user.firebaseUserId,
                     email: user.email,
                     loggedIn: true,
                     id: user.id,
@@ -101,7 +101,7 @@ export default new Vuex.Store({
                 }));
 
                 if (process.env.VUE_APP_ENABLE_ANALYTICS)
-                    LogRocket.identify(user.uid, { email: user.email });
+                    LogRocket.identify(user.firebaseUserId, { email: user.email });
             }
             else {
                 commit('SET_USER', null);
