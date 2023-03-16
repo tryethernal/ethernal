@@ -28,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
     privateKey: {
          type: DataTypes.STRING,
          get() {
-            return this.getDataValue('privateKey') ? decrypt(this.getDataValue('privateKey')).slice(0, 64) : null;
+             const slicedKey = decrypt(this.getDataValue('privateKey')).startsWith('0x') ? decrypt(this.getDataValue('privateKey')).slice(0, 66) : decrypt(this.getDataValue('privateKey')).slice(0, 64);
+            return this.getDataValue('privateKey') ? slicedKey : null;
          }
     }
   }, {

@@ -171,7 +171,8 @@ const serverFunctions = {
             });
             if (data.options.privateKey) {
                 // Bad hack due to some issue in how we use the crypto library that result in some junk being appended to the decrypted pk
-                signer = new ethers.Wallet(data.options.privateKey.slice(0, 66), provider);
+                const slicedKey = data.options.privateKey.startsWith('0x') ? data.options.privateKey.slice(0, 68) : data.options.privateKey.slice(0, 66);
+                signer = new ethers.Wallet(slicedKey, provider);
             }
             else {
                 signer = provider.getSigner(data.options.from);
