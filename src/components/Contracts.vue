@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <template v-if="currentWorkspace.isAdmin">
+        <template v-if="isUserAdmin">
             <v-alert v-if="removedContract" dense text type="success">Contract at address <b>{{ removedContract }}</b> has been successfully removed.</v-alert>
             <v-alert dense text v-show="!canImport" type="warning">Free plan users are limited to 10 synced contracts. Remove some contracts or <Upgrade-Link @goToBilling="goToBilling" :emit="true">upgrade</Upgrade-Link> to the Premium plan for more.</v-alert>
             <Import-Contract-Modal ref="importContractModal" />
@@ -19,7 +19,7 @@
             }"
             item-key="address"
             @update:options="getContracts">
-            <template v-slot:top v-if="currentWorkspace.isAdmin">
+            <template v-slot:top v-if="isUserAdmin">
                 <v-toolbar flat dense class="py-0">
                     <v-spacer></v-spacer>
                     <v-btn small depressed color="primary" class="mr-2" @click="openImportContractModal()">
@@ -50,7 +50,7 @@
                     </v-tooltip>
                 </template>
             </template>
-            <template v-slot:item.remove="{ item }" v-if="currentWorkspace.isAdmin">
+            <template v-slot:item.remove="{ item }" v-if="isUserAdmin">
                 <v-btn x-small icon @click="openRemoveContractConfirmationModal(item.address)">
                     <v-icon>mdi-delete</v-icon>
                 </v-btn>
@@ -144,7 +144,8 @@ export default {
     computed: {
         ...mapGetters([
             'user',
-            'currentWorkspace'
+            'currentWorkspace',
+            'isUserAdmin'
         ]),
         canImport: function() {
             return this.contracts.length < 10 || this.user.plan != 'free';
