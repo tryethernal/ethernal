@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.10.3] - 2023-03-16
+### Fixed
+- Fix import contract UI button
+- Fix account unlock with private key
+
 ## [3.10.2] - 2023-03-15
 ### Fixed
 - Logrocket analytics
