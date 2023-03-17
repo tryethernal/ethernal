@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.10.5] - 2023-03-17
+### Fixed
+- Tests
+
 ## [3.10.4] - 2023-03-17
 ### Fixed
 - Fix API token display
