@@ -4,7 +4,7 @@
             <v-col cols="6">
                 <h4>Api Token</h4>
                 <v-card outlined class="mb-4">
-                    <v-card-text v-if="apiToken && !loading">
+                    <v-card-text v-if="apiToken">
                         <v-text-field id="apiToken" append-icon="mdi-content-copy" readonly @click:append="copyToken()" outlined dense hide-details="auto" :value="apiToken" v-show="apiToken"></v-text-field>
                         <input type="hidden" id="copyElement" :value="apiToken">
                     </v-card-text>
@@ -17,19 +17,15 @@
     </div>
 </template>
 <script>
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'Account',
     data: () => ({
         apiToken: null,
-        loading: false
     }),
-    mounted: function() {
-        this.loading = true;
-        this.server.getApiToken()
-            .then(({ data: { apiToken }}) => this.apiToken = apiToken)
-            .catch(console.log)
-            .finally(() => this.loading = false);
+    mounted() {
+        this.apiToken = this.user.apiToken
     },
     methods: {
         copyToken: function() {
@@ -48,6 +44,11 @@ export default {
                 window.getSelection().removeAllRanges();
             }
         }
+    },
+    computed: {
+        ...mapGetters([
+            'user'
+        ])
     }
 }
 </script>

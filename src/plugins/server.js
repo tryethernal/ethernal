@@ -424,25 +424,6 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            async createUser(firebaseUserId) {
-                const data = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
-                    firebaseUserId: firebaseUserId,
-                };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/users`;
-                return axios.post(resource, { data });
-            },
-
-            async getApiToken() {
-                const params = {
-                    firebaseAuthToken: await Vue.prototype.db.getIdToken(),
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
-                };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/me/apiToken`;
-                return axios.get(resource, { params });
-            },
-
             getContractStats(address) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
