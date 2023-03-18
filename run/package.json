@@ -16,7 +16,7 @@
   "author": "Antoine de Chevigné",
   "license": "Apache-2.0",
   "dependencies": {
-    "@bull-board/express": "^4.6.4",
+    "@bull-board/express": "^5.0.0",
     "@google-cloud/logging": "^9.8.3",
     "@newrelic/winston-enricher": "^4.0.1",
     "@sendgrid/mail": "^7.7.0",
