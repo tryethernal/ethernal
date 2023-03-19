@@ -1,5 +1,4 @@
 const CopyPlugin = require("copy-webpack-plugin");
-const WorkerPlugin = require('worker-plugin')
 process.env.VUE_APP_VERSION = process.env.COMMIT_REF ? process.env.COMMIT_REF.slice(-5) : '/';
 
 module.exports = {
@@ -24,16 +23,12 @@ module.exports = {
             disableHostCheck: true,
             allowedHosts: ['app.ethernal.local', '.ethernal.explorer']
         },
-        output: {
-            globalObject: 'this'
-        },
         plugins: [
             new CopyPlugin({
                 patterns: [
                     { from: './_redirects', to: './' }
                 ]
-            }),
-            new WorkerPlugin({ globalObject: 'self', preserveTypeModule: true })
+            })
         ],
         externals: {
             fsevents: "require('fsevents')",
