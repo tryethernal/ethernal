@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.10.7] - 2023-03-21
+### Fixed
+- Bug causing accounts not being synced properly
+
 ## [3.10.6] - 2023-03-18
 ### Changed
 - Upgraded bullboard for bug fixes
