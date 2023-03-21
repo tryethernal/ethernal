@@ -121,24 +121,13 @@ export default Vue.extend({
             this.pusher.onNewContract(this.processContracts, this);
             this.pusher.onNewProcessableTransactions((transaction) => this.server.processTransaction(this.currentWorkspace, transaction), this);
             this.pusher.onNewFailedTransactions((transaction) => this.server.processFailedTransactions([transaction], this.currentWorkspace.rpcServer), this);
-            this.startBrowserSync();
+            if (this.currentWorkspace.browserSyncEnabled)
+                this.$store.dispatch('startBrowserSync');
         }
         this.pusher.onNewBlock((block) => this.$store.dispatch('updateCurrentBlock', block), this);
     },
     methods: {
         formatContractPattern,
-        startBrowserSync() {
-            const worker = new Worker('@/workers/sync.worker.js', { type: 'module' });
-            worker.postMessage({ action: 'startRpcListener', workspace: this.currentWorkspace });
-            console.log(worker);
-            // if (window.Worker) {
-            //     const worker = new Worker('../workers/sync.worker.js');
-            //     worker.postMessage({ action: 'startRpcListener', workspace: this.currentWorkspace });
-            // }
-            // else {
-            //     console.log('Web workers are not supported');
-            // }
-        },
         toggleMenu() {
             this.$emit('toggleMenu');
         },

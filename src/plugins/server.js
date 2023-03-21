@@ -416,7 +416,7 @@ export const serverPlugin = {
             },
 
             getProcessableContracts() {
-                 const params = {
+                const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };

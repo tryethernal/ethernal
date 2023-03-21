@@ -768,7 +768,8 @@ module.exports = (sequelize, DataTypes) => {
     isRemote: DataTypes.BOOLEAN,
     dataRetentionLimit: DataTypes.INTEGER,
     storageEnabled: DataTypes.BOOLEAN,
-    erc721LoadingEnabled: DataTypes.BOOLEAN
+    erc721LoadingEnabled: DataTypes.BOOLEAN,
+    browserSyncEnabled: DataTypes.BOOLEAN
   }, {
     hooks: {
         afterSave(workspace, options) {

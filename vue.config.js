@@ -1,4 +1,5 @@
 const CopyPlugin = require("copy-webpack-plugin");
+const WorkerPlugin = require('worker-plugin');
 process.env.VUE_APP_VERSION = process.env.COMMIT_REF ? process.env.COMMIT_REF.slice(-5) : '/';
 
 module.exports = {
@@ -17,6 +18,19 @@ module.exports = {
             })
     },
     configureWebpack: {
+        // module: {
+        //     rules: [
+        //         {
+        //             test: /\.worker\.js$/,
+        //             use: {
+        //                 loader: "worker-loader",
+        //                 options: {
+        //                     inline: "fallback",
+        //                 }
+        //             }
+        //         }
+        //     ]
+        // },
         devServer: {
             host: '0.0.0.0',
             hot: true,
@@ -28,7 +42,8 @@ module.exports = {
                 patterns: [
                     { from: './_redirects', to: './' }
                 ]
-            })
+            }),
+            new WorkerPlugin()
         ],
         externals: {
             fsevents: "require('fsevents')",

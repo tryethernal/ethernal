@@ -11,6 +11,17 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const updateBrowserSync = async (workspaceId, newValue) => {
+    if (!workspaceId || newValue === undefined || newValue === null)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Cannot find workspace');
+
+    return workspace.update({ browserSyncEnabled: newValue });
+};
+
 const updateUserFirebaseHash = async (email, passwordSalt, passwordHash) => {
     if (!email || !passwordSalt || !passwordHash)
         throw new Error('Missing parameter');
@@ -969,5 +980,6 @@ module.exports = {
     getUserByEmail: getUserByEmail,
     setUserPassword: setUserPassword,
     updateUserFirebaseHash: updateUserFirebaseHash,
+    updateBrowserSync: updateBrowserSync,
     Workspace: Workspace
 };

@@ -3,6 +3,7 @@ const { stringifyBns, sanitize } = require('../lib/utils');
 const db = require('../lib/firebase');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
+const browserSyncMiddleware = require('../middlewares/browserSync');
 const logger = require('../lib/logger');
 const { enqueue } = require('../lib/queue');
 
@@ -62,7 +63,7 @@ router.get('/:number', workspaceAuthMiddleware, async (req, res) => {
     }
 });
 
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res) => {
     const data = req.body.data;
 
     try {
