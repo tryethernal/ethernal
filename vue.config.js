@@ -18,19 +18,6 @@ module.exports = {
             })
     },
     configureWebpack: {
-        // module: {
-        //     rules: [
-        //         {
-        //             test: /\.worker\.js$/,
-        //             use: {
-        //                 loader: "worker-loader",
-        //                 options: {
-        //                     inline: "fallback",
-        //                 }
-        //             }
-        //         }
-        //     ]
-        // },
         devServer: {
             host: '0.0.0.0',
             hot: true,
