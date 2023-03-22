@@ -5,6 +5,7 @@ require('../mocks/lib/queue');
 require('../mocks/lib/codeRunner');
 require('../mocks/middlewares/workspaceAuth');
 require('../mocks/middlewares/auth');
+require('../mocks/middlewares/browserSync');
 const db = require('../../lib/firebase');
 const { processTransactions } = require('../../lib/transactions');
 const { transactionFn } = require('../../lib/codeRunner');
