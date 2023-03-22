@@ -30,7 +30,7 @@ const getProvider = function(url) {
 
 class ContractConnector {
 
-     INTERFACE_IDS = {
+    INTERFACE_IDS = {
          '721': '0x80ac58cd',
          '721Metadata': '0x5b5e139f',
          '721Enumerable': '0x780e9d63'

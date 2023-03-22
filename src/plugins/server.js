@@ -36,10 +36,12 @@ const serverFunctions = {
         }
 
         let options = {};
-        if (rpcServer.username.length || rpcServer.password.length)
+        if (rpcServer.username.length || rpcServer.password.length) {
+            const base64Credentials = btoa(`${rpcServer.username}:${rpcServer.password}`);
             options.headers = [
-                { name: 'Authorization', value: `Basic ${rpcServer.username}:${rpcServer.password}` }
+                { name: 'Authorization', value: `Basic ${base64Credentials}` }
             ];
+        }
 
         return new provider(rpcServer.origin, options);
     },
@@ -113,8 +115,11 @@ const serverFunctions = {
     },
     initRpcServer: async function(data) {
         try {
-            const rpcProvider = new serverFunctions._getProvider(data.rpcServer);
-            const { chainId } = await rpcProvider.getNetwork()
+            const rpcProvider = serverFunctions._getProvider(data.rpcServer);
+
+            // We use web3 here, because for some reason ethers.js doesn't thrown an error if it can't connect to the rpc server
+            const web3Provider = new Web3(serverFunctions._getWeb3Provider(data.rpcServer));
+            const chainId = await web3Provider.eth.net.getId()
             var latestBlockNumber = await rpcProvider.getBlockNumber();
             var latestBlock = await rpcProvider.getBlock(latestBlockNumber);
             var gasLimit = latestBlock.gasLimit.toString();
@@ -129,9 +134,11 @@ const serverFunctions = {
 
             return workspace;
         } catch(error) {
-            console.log(error);
-            const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || "Can't connect to the server";
-            throw { reason: reason };
+            const reason = error.body ? JSON.parse(error.body).error.message : error.reason || error.message || null;
+            if (reason)
+                throw new Error(reason);
+            else
+                throw error;
         }
     },
     callContractReadMethod: async function(data) {

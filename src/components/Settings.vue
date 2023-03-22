@@ -300,7 +300,7 @@ export default {
         },
         openCreateWorkspaceModal: function() {
             this.$refs.createWorkspaceModal
-                .open({ workspaces: this.workspaces.map(ws => ws.id) })
+                .open({ workspaces: this.workspaces.map(ws => ws.name) })
                 .then((workspaceCreated) => {
                     if (workspaceCreated) {
                         document.location.reload();

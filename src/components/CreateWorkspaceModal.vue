@@ -40,10 +40,7 @@ export default {
         },
         onWorkspaceCreated: function(workspaceData) {
             this.server.setCurrentWorkspace(workspaceData.name)
-                .then(() => {
-                    this.$store.dispatch('updateCurrentWorkspace', { ...workspaceData.workspace, name: workspaceData.name, localNetwork: workspaceData.localNetwork, chain: workspaceData.chain });
-                });
-                this.close(true);
+                .then(() => document.location = '/blocks');
         },
         goToBilling: function() {
             this.close(false);

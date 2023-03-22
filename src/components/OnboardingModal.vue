@@ -11,8 +11,8 @@
                 <Create-Workspace :existingWorkspaces="[]" @workspaceCreated="onWorkspaceCreated" />
             </v-stepper-content>
 
-            <v-stepper-step step="2" :complete="stepperIndex > 3">Listening for blocks</v-stepper-step>
-            <v-stepper-content step="3">
+            <v-stepper-step step="2" :complete="stepperIndex > 3">Start synchronizing</v-stepper-step>
+            <v-stepper-content step="2">
                 <p v-if="!canExit">
                     Waiting for a block...
                     <v-progress-linear indeterminate color="primary" class="mb-0" ></v-progress-linear>
@@ -53,12 +53,13 @@ export default {
             this.stepperIndex = 2;
             this.$store.dispatch('updateCurrentWorkspace', workspace)
                 .then(() => {
+                    this.$store.dispatch('startBrowserSync');
                     Vue.use(pusherPlugin, { store: store });
                     this.pusher.onNewBlock(() => this.canExit = true, this);
                 });
         },
         goToDashboard: function() {
-            document.location.href = '/transactions';
+            document.location.href = '/blocks';
         },
         open: function() {
             this.dialog = true;

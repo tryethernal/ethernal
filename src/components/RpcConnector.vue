@@ -59,7 +59,7 @@
             </template>
             <template v-if="isUserAdmin">
                 <v-divider vertical inset class="mx-2"></v-divider>
-                {{ currentWorkspace.rpcServer }}
+                <span :title="currentWorkspace.rpcServer" style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">{{ formattedCurrentRpcServer }}</span>
             </template>
             <div v-show="currentBlock.number">
                 <v-divider vertical inset class="mx-2"></v-divider>
@@ -95,7 +95,7 @@ export default Vue.extend({
         page: null,
         isFeedbackEnabled: false,
     }),
-    created: function() {
+    created() {
         this.getAccounts();
         this.page = this.$route.path;
 
@@ -131,25 +131,25 @@ export default Vue.extend({
         toggleMenu() {
             this.$emit('toggleMenu');
         },
-        clearSearchBar: function() {
+        clearSearchBar() {
             this.search = null;
             this.showSearchBar = false;
         },
-        getItemText: function() {
+        getItemText() {
             return this.search;
         },
-        processContracts: function() {
+        processContracts() {
             this.processingContracts = true;
             this.server.processContracts(this.currentWorkspace.rpcServer)
                 .catch(console.log)
                 .finally(() => this.processingContracts = false );
         },
-        processTransactions: function() {
+        processTransactions() {
             this.server.getProcessableTransactions()
                 .then(({ data }) => data.forEach(transaction => this.server.processTransaction(this.currentWorkspace, transaction)))
                 .catch(console.log);
         },
-        processFailedTransactions: function() {
+        processFailedTransactions() {
             this.server.getFailedProcessableTransactions()
                 .then(({ data }) => this.server.processFailedTransactions(data, this.currentWorkspace))
                 .catch(console.log);
@@ -160,7 +160,7 @@ export default Vue.extend({
         }
     },
     watch: {
-        searchSelectedItem: function(item) {
+        searchSelectedItem(item) {
             switch(item.type) {
                 case 'address':
                 case 'contract':
@@ -175,7 +175,7 @@ export default Vue.extend({
             }
 
         },
-        search: function(val) {
+        search(val) {
             if (!val) return this.searchItems = [];
             if (val === this.model || typeof val == 'object') return;
 
@@ -213,7 +213,16 @@ export default Vue.extend({
             'currentBlock',
             'isUserAdmin'
         ]),
-        orderedItems: function() {
+        formattedCurrentRpcServer() {
+            try {
+                const url = new URL(this.currentWorkspace.rpcServer);
+                return url.origin;
+            } catch(error) {
+                console.log(error)
+                return this.currentWorkspace && this.currentWorkspace.rpcServer || '';
+            }
+        },
+        orderedItems() {
             const items = {
                 'address': [],
                 'transaction': [],
