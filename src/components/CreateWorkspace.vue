@@ -26,15 +26,24 @@
                     No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave & Safari 👀!).
                 </div>
             </div>
-            <v-text-field outlined v-model="name" id="workspaceName" label="Name*" placeholder="My Ethereum Project" hide-details="auto" class="mb-2" required></v-text-field>
-            <v-text-field outlined v-model="rpcServer" id="workspaceServer" label="RPC Server*" placeholder="ws://localhost:8545" hide-details="auto" class="mb-2" required></v-text-field>
-            <v-select outlined required label="Chain" v-model="chain" :items="availableChains" hide-details="auto"></v-select>
-        </v-card-text>
+            <v-form @submit.prevent="createWorkspace(name, rpcServer)" v-model="valid">
+                <v-text-field
+                    :rules="[v => !!v || 'Name is required']"
+                    outlined v-model="name" id="workspaceName" label="Name*" placeholder="My Ethereum Project" hide-details="auto" class="mb-2" required></v-text-field>
+                <v-text-field
+                    :rules="[
+                        v => this.isUrlValid(v) || 'RPC needs to be a valid URL',
+                        v => !!v || 'RPC server is required'
+                    ]"
+                    outlined v-model="rpcServer" id="workspaceServer" label="RPC Server*" placeholder="ws://localhost:8545" hide-details="auto" class="mb-2" required></v-text-field>
+                <v-select outlined required label="Chain" v-model="chain" :items="availableChains" hide-details="auto"></v-select>
 
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn id="createWorkspace" :loading="loading" color="primary" :disabled="!name || !rpcServer" @click="createWorkspace(name, rpcServer)">Create</v-btn>
-        </v-card-actions>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn id="createWorkspace" :loading="loading" color="primary" :disabled="!valid" type="submit">Create</v-btn>
+                </v-card-actions>
+            </v-form>
+        </v-card-text>
     </v-card>
 </template>
 <script>
@@ -53,7 +62,8 @@ export default {
         localNetwork: false,
         detectedNetworks: [],
         noNetworks: false,
-        workspace: null
+        workspace: null,
+        valid: false
     }),
     mounted() {
         this.availableChains = Object.values(this.chains).map((chain) => ({ text: chain.name, value: chain.slug }));
