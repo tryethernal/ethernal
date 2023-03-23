@@ -80,6 +80,7 @@ jest.mock('../../../lib/firebase', () => {
         getUserByEmail: jest.fn(),
         updateUserFirebaseHash: jest.fn(),
         setUserPassword: jest.fn(),
+        updateBrowserSync: jest.fn(),
         Workspace: Workspace
     }
 });

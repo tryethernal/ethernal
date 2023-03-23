@@ -9,8 +9,7 @@ const ERC721_METADATA_ABI = require('../abis/erc721Metadata.json');
 const getProvider = function(url) {
     const rpcServer = new URL(url);
 
-    let provider = ethers.providers.WebSocketProvider;
-
+    let provider;
     if (rpcServer.protocol == 'http:' || rpcServer.protocol == 'https:') {
         provider = ethers.providers.JsonRpcProvider;
     }
@@ -18,12 +17,20 @@ const getProvider = function(url) {
         provider = ethers.providers.WebSocketProvider;
     }
 
-    return new provider(url);
+    let authenticatedUrl = url;
+    if (rpcServer.username.length || rpcServer.password.length)
+        authenticatedUrl = {
+            url: rpcServer.origin,
+            user: rpcServer.username,
+            password: rpcServer.password
+        };
+
+    return new provider(authenticatedUrl);
 };
 
 class ContractConnector {
 
-     INTERFACE_IDS = {
+    INTERFACE_IDS = {
          '721': '0x80ac58cd',
          '721Metadata': '0x5b5e139f',
          '721Enumerable': '0x780e9d63'

@@ -3,6 +3,7 @@ require('../mocks/lib/firebase');
 require('../mocks/lib/queue');
 require('../mocks/middlewares/workspaceAuth');
 require('../mocks/middlewares/auth');
+require('../mocks/middlewares/browserSync');
 const db = require('../../lib/firebase');
 const { enqueue } = require('../../lib/queue');
 

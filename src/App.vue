@@ -20,6 +20,14 @@
                     <v-list-item-subtitle class="color--text">{{ version }}</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
+            <v-list-item v-if="currentWorkspace.browserSyncEnabled">
+                <v-alert text :icon="false" type="warning">
+                    <v-progress-circular size="16" width="2" indeterminate color="warning"></v-progress-circular>
+                    <a class="warning--text pl-2" @click.stop="openBrowserSyncExplainerModal()">
+                        <span style="text-decoration: underline;">Browser Sync</span>
+                    </a>
+                </v-alert>
+            </v-list-item>
 
             <v-list dense nav class="side--text">
                 <v-list-item link :to="'/overview'" v-if="isPublicExplorer">
@@ -163,6 +171,7 @@
 
         <Onboarding-Modal ref="onboardingModal" />
         <Public-Explorer-Explainer-Modal ref="publicExplorerExplainerModal" v-if="isRemote" />
+        <Browser-Sync-Explainer-Modal ref="browserSyncExplainerModal" v-if="currentWorkspace.browserSyncEnabled" />
 
         <v-app-bar :style="styles" app dense fixed flat v-if="canDisplaySides">
             <component @toggleMenu="toggleMenu" :is="appBarComponent"></component>
@@ -185,6 +194,7 @@ import { mapGetters } from 'vuex';
 import RpcConnector from './components/RpcConnector';
 import OnboardingModal from './components/OnboardingModal';
 import PublicExplorerExplainerModal from './components/PublicExplorerExplainerModal';
+import BrowserSyncExplainerModal from './components/BrowserSyncExplainerModal';
 
 export default {
     name: 'App',
@@ -192,6 +202,7 @@ export default {
         RpcConnector,
         OnboardingModal,
         PublicExplorerExplainerModal,
+        BrowserSyncExplainerModal,
         Icon
     },
     data: () => ({
@@ -261,6 +272,9 @@ export default {
         },
         openPublicExplorerExplainerModal() {
             this.$refs.publicExplorerExplainerModal.open();
+        },
+        openBrowserSyncExplainerModal() {
+            this.$refs.browserSyncExplainerModal.open();
         },
         logOut() {
             localStorage.clear();

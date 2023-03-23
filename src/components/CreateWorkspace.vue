@@ -6,13 +6,6 @@
         <v-card-text v-else>
             <v-alert v-show="errorMessage" dense text type="error" v-html="errorMessage"></v-alert>
             <div class="mb-2">
-                <v-alert type="warning" class="my-2" v-if="isUsingBrave">
-                    By default, Brave is preventing websites from making requests to localhost. This will prevent you from connecting to a local blockchain. If you want to do so, you'll need to <a href="https://support.brave.com/hc/en-us/articles/360023646212-How-do-I-configure-global-and-site-specific-Shields-settings-" target="_blank">disable Shields</a> for this website (app.tryethernal.com).<br>
-                    If you want to connect to a remote chain, or are not using Brave, you can ignore this message.
-                    <div class="text-right">
-                        <a href="#" @click.prevent="isUsingBrave = false">Dismiss</a>
-                    </div>
-                </v-alert>
                 <v-alert type="warning" class="my-2" v-if="isUsingSafari">
                     Safari is preventing websites from making CORS requests to localhost. This will prevent you from connecting to a local blockchain. If you want to do so, you'll need to use another browser.
                     If you want to connect to a remote chain, or are not using Safari, you can ignore this message.
@@ -33,23 +26,24 @@
                     No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave & Safari 👀!).
                 </div>
             </div>
-            <v-alert type="warning" class="my-2" v-show="displayLocalNetworkWarning">
-                It looks like you are trying to connect to a server running on your local network.<br>
-                If it is not accessible through https, you will need to <a href="https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html" target="_blank">allow mixed content</a> for this domain (app.tryethernal.com) in order for Ethernal to be able to send request to it.<br>
-                Another option is to setup a public URL such as <a href="https://ngrok.com/" target="_blank">ngrok</a>.
-                <div class="text-right mt-2">
-                    <a href="#" @click.prevent="dismissedLocalWarning = true">Dismiss</a>
-                </div>
-            </v-alert>
-            <v-text-field outlined v-model="name" id="workspaceName" label="Name*" placeholder="My Ethereum Project" hide-details="auto" class="mb-2" required></v-text-field>
-            <v-text-field outlined v-model="rpcServer" id="workspaceServer" label="RPC Server*" placeholder="ws://localhost:8545" hide-details="auto" class="mb-2" required></v-text-field>
-            <v-select outlined required label="Chain" v-model="chain" :items="availableChains" hide-details="auto"></v-select>
-        </v-card-text>
+            <v-form @submit.prevent="createWorkspace(name, rpcServer)" v-model="valid">
+                <v-text-field
+                    :rules="[v => !!v || 'Name is required']"
+                    outlined v-model="name" id="workspaceName" label="Name*" placeholder="My Ethereum Project" hide-details="auto" class="mb-2" required></v-text-field>
+                <v-text-field
+                    :rules="[
+                        v => this.isUrlValid(v) || 'RPC needs to be a valid URL',
+                        v => !!v || 'RPC server is required'
+                    ]"
+                    outlined v-model="rpcServer" id="workspaceServer" label="RPC Server*" placeholder="ws://localhost:8545" hide-details="auto" class="mb-2" required></v-text-field>
+                <v-select outlined required label="Chain" v-model="chain" :items="availableChains" hide-details="auto"></v-select>
 
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn id="createWorkspace" :loading="loading" color="primary" :disabled="!name || !rpcServer" @click="createWorkspace(name, rpcServer)">Create</v-btn>
-        </v-card-actions>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn id="createWorkspace" :loading="loading" color="primary" :disabled="!valid" type="submit">Create</v-btn>
+                </v-card-actions>
+            </v-form>
+        </v-card-text>
     </v-card>
 </template>
 <script>
@@ -57,7 +51,6 @@ const ipaddr = require('ipaddr.js');
 import { mapGetters } from 'vuex';
 export default {
     name: 'CreateWorkspace',
-    props: ['existingWorkspaces'],
     data: () => ({
         availableChains: [],
         chain: 'ethereum',
@@ -65,64 +58,68 @@ export default {
         loading: false,
         name: null,
         rpcServer: null,
-        showTips: false,
         localNetwork: false,
         detectedNetworks: [],
-        isUsingBrave: false,
         noNetworks: false,
-        dismissedLocalWarning: false
+        workspace: null,
+        valid: false
     }),
-    mounted: function() {
-        this.isBrave().then(res => this.isUsingBrave = res);
+    mounted() {
         this.availableChains = Object.values(this.chains).map((chain) => ({ text: chain.name, value: chain.slug }));
     },
     methods: {
-        isBrave: async function() {
-            return navigator.brave && await navigator.brave.isBrave() || false;
-        },
-        createWorkspace: async function(name, rpcServer) {
+        async createWorkspace(name, rpcServer) {
+            this.loading = true;
             try {
-                this.loading = true;
-                if (this.existingWorkspaces.indexOf(name) > -1) {
-                    throw { reason: 'A workspace with this name already exists.' };
-                }
-
-                const workspace = await this.server.initRpcServer(rpcServer);
-
-                this.server.createWorkspace(name, { ...workspace, chain: this.chain })
-                    .then(({ data }) => {
-                        this.$emit('workspaceCreated', data);
-                        this.loading = false;
-                    })
-                    .catch(error => {
-                        if (error.response) {
-                            this.errorMessage = error.response.data;
-                            this.loading = false;
-                        }
-                        else
-                            throw new Error('Error while creating workspace');
-                    });
+                this.workspace = await this.server.initRpcServer(rpcServer);
             } catch(error) {
-                console.log(error);
                 this.loading = false;
-                if (error.reason) {
-                    if (error.reason.indexOf('Invalid JSON RPC response') > -1 || error.reason.indexOf('connection not open on send()') > -1) {
-                        if (rpcServer.startsWith('http://'))
-                            return this.errorMessage = `Can't connect to <b>${rpcServer}</b>. If you are connecting to a remote chain, make sure you've allowed app.tryethernal.com to <a href="https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html" target="_blank">load insecure content</a>, or use https.`
-                        else if (rpcServer.startsWith('ws'))
-                            return this.errorMessage = `Can't connect to <b>${rpcServer}</b>. Make sure the network is up or try connecting over http or https`;
-                        else
-                            return this.errorMessage = `Can't connect to <b>${rpcServer}</b>.`;
-                    }
-                    return this.errorMessage = error.reason;
+                if (error.message.indexOf('Invalid URL') > -1)
+                    return this.errorMessage = `
+                        URL of the rpc server looks invalid. Make sure you entered a valid ws(s) or http(s) url.
+                    `;
+                else if (this.localNetwork && (rpcServer.startsWith('http://') || rpcServer.startsWith('ws://'))) {
+                    return this.errorMessage = `
+                        Can't connect to rpc server, 
+                        make sure your node is up, and reachable from the browser.<br>
+                        If you are using Brave, you'll need to disable Shields. 
+                        Try disabling adblockers as well.<br>
+                        Another option is to setup a public URL such as <a href="https://ngrok.com/" target="_blank">ngrok</a>, and use https to connect.
+                    `;
                 }
-                if (error.code && error.code == 1006) {
-                    return this.errorMessage = `Can't connect to <b>${rpcServer}</b>. Make sure the following request works and is returning a chain id: <code>curl -k --location --request POST ${rpcServer} -H "Content-Type: application/json" --data '{"method":"eth_chainId","params":[],"id":1,"jsonrpc":"2.0"}'</code>`;
+                else if (!this.localNetwork && (rpcServer.startsWith('http://') || rpcServer.startsWith('ws://'))) {
+                    return this.errorMessage = `
+                        Can't connect to remote rpc server.<br>
+                        Make sure your node is up, supports "eth_chainId" & "net_version" requests, and that you've allowed app.tryethernal.com to 
+                        <a href="https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html" target="_blank">load insecure content</a>.<br>
+                        Try using a secure connection (https or wss) if possible.
+                    `;
                 }
-                this.errorMessage = error.message ? error.message : error;
+                else if (!this.localNetwork && rpcServer.startsWith('wss://')) {
+                    return this.errorMessage = `
+                        Can't connect to remote rpc server. 
+                        Make sure your node is up, and supports "eth_chainId" & "net_version" requests. 
+                        Try using https if possible.
+                    `;
+                }
+                else
+                    return this.errorMessage = `
+                        Can't connect to remote rpc server.<br>
+                        Make sure your node is up, and supports "eth_chainId" & "net_version" requests.
+                    `;
             }
+
+            this.server.createWorkspace(name, { ...this.workspace, chain: this.chain })
+                .then(({ data }) => this.$emit('workspaceCreated', data))
+                .catch(error => {
+                    if (error.response && error.response.data)
+                        return this.errorMessage = error.response.data;
+                    else
+                        return this.errorMessage = 'Error while creating workspace';
+                })
+                .finally(() => this.loading = false)
         },
-        detectNetwork: function() {
+        detectNetwork() {
             this.noNetworks = false;
             this.server.searchForLocalChains().then((res) => {
                 this.detectedNetworks = res;
@@ -131,7 +128,7 @@ export default {
                 }
             });
         },
-        isUrlValid: function(url) {
+        isUrlValid(url) {
             try {
                 new URL(url);
                 return true;
@@ -139,7 +136,7 @@ export default {
                 return false;
             }
         },
-        goToBilling: function() {
+        goToBilling() {
             this.$emit('goToBilling');
         }
     },
@@ -148,15 +145,12 @@ export default {
             'user',
             'chains'
         ]),
-        isUsingSafari: function() {
+        isUsingSafari() {
             return navigator.vendor.match(/apple/i) && !navigator.userAgent.match(/crios/i) && !navigator.userAgent.match(/fxios/i);
         },
-        displayLocalNetworkWarning: function() {
-            return this.localNetwork && this.isUrlValid(this.rpcServer) && ['localhost', '127.0.0.1'].indexOf(new URL(this.rpcServer).hostname) == -1 && !this.dismissedLocalWarning
-        }
     },
     watch: {
-        rpcServer: function() {
+        rpcServer() {
             try {
                 if (!this.isUrlValid(this.rpcServer)) {
                     return;
