@@ -52,7 +52,7 @@
             </p>
 
             <p>
-                Run <code>ETHERNAL_API_TOKEN={{ user.apiToken }} ethernal listen</code><v-icon @click="copyCliCommand()" x-small>mdi-content-copy</v-icon><br><br>
+                Run <code>ETHERNAL_API_TOKEN={{ user.apiToken }} ethernal listen -w "{{ currentWorkspace.name }}"</code><v-icon @click="copyCliCommand()" x-small>mdi-content-copy</v-icon><br><br>
                 And you are good to go :) the CLI will automatically synchronize all blocks and transactions.<br>
             </p>
             <input type="hidden" id="copyCliCommandElement" :value="`ETHERNAL_API_TOKEN=${ user.apiToken } ethernal listen`">
@@ -132,7 +132,8 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'user'
+            'user',
+            'currentWorkspace'
         ])
     }
 }

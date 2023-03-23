@@ -51,7 +51,6 @@ const ipaddr = require('ipaddr.js');
 import { mapGetters } from 'vuex';
 export default {
     name: 'CreateWorkspace',
-    props: ['existingWorkspaces'],
     data: () => ({
         availableChains: [],
         chain: 'ethereum',

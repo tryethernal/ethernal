@@ -8,10 +8,10 @@
             </v-stepper-step>
             <v-stepper-content step="1">
                 <span class="text-body-2">Workspaces allow you to separate your different projects/server. You'll be able to add more and switch between them later.</span>
-                <Create-Workspace :existingWorkspaces="[]" @workspaceCreated="onWorkspaceCreated" />
+                <Create-Workspace @workspaceCreated="onWorkspaceCreated" />
             </v-stepper-content>
 
-            <v-stepper-step step="2" :complete="stepperIndex > 3">Start synchronizing</v-stepper-step>
+            <v-stepper-step step="2" :complete="stepperIndex > 2">Start synchronizing</v-stepper-step>
             <v-stepper-content step="2">
                 <p v-if="!canExit">
                     Waiting for a block...
@@ -22,7 +22,7 @@
                 </p>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn outlined color="primary" @click="stepperIndex = 2">Back</v-btn>
+                    <v-btn outlined color="primary" @click="stepperIndex = 1">Back</v-btn>
                     <v-btn :outlined="!canExit" color="primary" :disabled="!canExit" @click="goToDashboard()">Go to Dashboard</v-btn>
                 </v-card-actions>
             </v-stepper-content>
