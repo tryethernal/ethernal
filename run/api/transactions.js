@@ -4,6 +4,7 @@ const { stringifyBns, sanitize } = require('../lib/utils');
 const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
+const browserSyncMiddleware = require('../middlewares/browserSync');
 const { processTransactions } = require('../lib/transactions');
 const { enqueue } = require('../lib/queue');
 const { transactionFn } = require('../lib/codeRunner');
@@ -36,7 +37,7 @@ router.get('/processable', authMiddleware, async (req, res) => {
     }
 });
 
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res) => {
     const data = req.body.data;
 
     try {

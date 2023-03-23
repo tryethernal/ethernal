@@ -6,7 +6,7 @@
             <v-spacer></v-spacer>
             <v-btn icon @click="close(false)"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
-        <Create-Workspace :existingWorkspaces="existingWorkspaces" @workspaceCreated="onWorkspaceCreated" @goToBilling="goToBilling" />
+        <Create-Workspace @workspaceCreated="onWorkspaceCreated" @goToBilling="goToBilling" />
     </v-card>
 </v-dialog>
 </template>
@@ -22,11 +22,9 @@ export default {
         dialog: false,
         resolve: null,
         reject: null,
-        existingWorkspaces: []
     }),
     methods: {
-        open: function(options) {
-            this.existingWorkspaces = options && options.workspaces ? options.workspaces : [];
+        open: function() {
             this.dialog = true;
             return new Promise((resolve, reject) => {
                 this.resolve = resolve;
@@ -40,10 +38,7 @@ export default {
         },
         onWorkspaceCreated: function(workspaceData) {
             this.server.setCurrentWorkspace(workspaceData.name)
-                .then(() => {
-                    this.$store.dispatch('updateCurrentWorkspace', { ...workspaceData.workspace, name: workspaceData.name, localNetwork: workspaceData.localNetwork, chain: workspaceData.chain });
-                });
-                this.close(true);
+                .then(() => document.location = '/blocks');
         },
         goToBilling: function() {
             this.close(false);

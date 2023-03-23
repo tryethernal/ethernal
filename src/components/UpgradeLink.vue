@@ -7,7 +7,7 @@ export default {
     props: ['emit'],
     methods: {
         goToBilling: function() {
-            if (this.emit)
+            if (this.$emit)
                 this.$emit('goToBilling');
             else
                 this.$router.push({ path: '/settings', query: { tab: 'billing' }});

@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OnboardingModal.vue Should let the user create a new workspace 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 1000px;">
+        <div class="v-stepper v-stepper--is-booted v-stepper--vertical v-sheet theme--light">
+          <h3 class="ml-6 mt-4">Ethernal Onboarding</h3>
+          <div tabindex="-1" class="v-stepper__step v-stepper__step--complete"><span class="v-stepper__step__step primary"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light"></i></span>
+            <div class="v-stepper__label">
+              Create a new workspace
+              <small style="">Hardhat - </small>
+            </div>
+          </div>
+          <transition-stub name="tab-transition">
+            <div class="v-stepper__content">
+              <div class="v-stepper__wrapper" style="height: 0px;"><span class="text-body-2">Workspaces allow you to separate your different projects/server. You'll be able to add more and switch between them later.</span>
+                <create-workspace-stub></create-workspace-stub>
+              </div>
+            </div>
+          </transition-stub>
+          <div tabindex="-1" class="v-stepper__step v-stepper__step--active"><span class="v-stepper__step__step primary">2</span>
+            <div class="v-stepper__label">Start synchronizing</div>
+          </div>
+          <transition-stub name="tab-transition">
+            <div class="v-stepper__content">
+              <div class="v-stepper__wrapper" style="height: 0px;">
+                <p>
+                  Waiting for a block...
+                <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-linear mb-0 v-progress-linear--visible theme--light" style="height: 4px;">
+                  <div class="v-progress-linear__background primary" style="opacity: 0.3; left: 0%; width: 100%;"></div>
+                  <div class="v-progress-linear__buffer"></div>
+                  <transition-stub name="fade-transition">
+                    <div class="v-progress-linear__indeterminate v-progress-linear__indeterminate--active">
+                      <div class="v-progress-linear__indeterminate long primary"></div>
+                      <div class="v-progress-linear__indeterminate short primary"></div>
+                    </div>
+                  </transition-stub>
+                </div>
+                </p>
+                <div class="v-card__actions">
+                  <div class="spacer"></div> <button type="button" class="v-btn v-btn--outlined theme--light v-size--default primary--text"><span class="v-btn__content">Back</span></button> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--outlined theme--light v-size--default"><span class="v-btn__content">Go to Dashboard</span></button>
+                </div>
+              </div>
+            </div>
+          </transition-stub>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;

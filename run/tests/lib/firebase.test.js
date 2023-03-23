@@ -10,6 +10,28 @@ const db = require('../../lib/firebase');
 
 beforeEach(() => jest.clearAllMocks());
 
+describe('updateBrowserSync', () => {
+    it('Should update browser sync if it can find the workspace', (done) => {
+        const update = jest.fn();
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ update });
+        db.updateBrowserSync(1, false).then(() => {
+            expect(update).toHaveBeenCalledWith({ browserSyncEnabled: false });
+            done();
+        });
+    });
+
+    it('Should throw an error if it cannot find the workspace', async () => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        await expect(db.updateBrowserSync(1, false))
+            .rejects.toThrow('Cannot find workspace');
+    });
+
+    it('Should throw an error if parameters are invalid', async () => {
+        await expect(db.updateBrowserSync(1))
+            .rejects.toThrow('Missing parameter');
+    });
+});
+
 describe('getAddressTokenTransfers', () => {
     it('Should return token transfers if transaction exists', (done) => {
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({

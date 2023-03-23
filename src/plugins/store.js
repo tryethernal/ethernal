@@ -80,9 +80,27 @@ export default new Vuex.Store({
                 ...state.user,
                 firebaseIdToken: token
             }
+        },
+        UPDATE_BROWSER_SYNC_STATUS(state, status) {
+            state.currentWorkspace = {
+                ...state.currentWorkspace,
+                browserSyncEnabled: status
+            }
         }
     },
     actions: {
+        startBrowserSync({ commit, getters }) {
+            const rpcListenerWorker = new Worker('../workers/blockSyncer.worker.js', { type: 'module' });
+            rpcListenerWorker.onmessage = () => commit('UPDATE_BROWSER_SYNC_STATUS', false);
+            rpcListenerWorker.postMessage({
+                rpcServer: getters.currentWorkspace.rpcServer,
+                apiToken: getters.user.apiToken,
+                workspace: getters.currentWorkspace.name
+            });
+        },
+        updateBrowserSyncStatus({ commit }, status) {
+            commit('UPDATE_BROWSER_SYNC_STATUS', status);
+        },
         updateAccounts({ commit }, accounts) {
             commit('SET_ACCOUNTS', accounts);
         },
