@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const { sanitize } = require('../lib/utils');
 module.exports = (sequelize, DataTypes) => {
   class Explorer extends Model {
     /**
@@ -12,6 +13,21 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Explorer.belongsTo(models.User, { foreignKey: 'userId', as: 'admin' });
       Explorer.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
+    }
+
+    static safeCreateExplorer(explorer) {
+        return Explorer.create(sanitize({
+            userId: explorer.userId,
+            workspaceId: explorer.workspaceId,
+            chainId: explorer.chainId,
+            name: explorer.name,
+            rpcServer: explorer.rpcServer,
+            slug: explorer.slug,
+            themes: explorer.themes,
+            totalSupply: explorer.totalSupply,
+            domain: explorer.domain,
+            token: explorer.token
+        }));
     }
 
     static findBySlug(slug) {
