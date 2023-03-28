@@ -120,7 +120,7 @@ router.post('/signup', async (req, res) => {
             ({ uid, passwordSalt, passwordHash } = firebaseUser);
         }
         else
-            ({ uid, passwordSalt, passwordHash } = { uid: randomUUID(), ...firebaseHash(data.password) });
+            ({ uid, passwordSalt, passwordHash } = { uid: randomUUID(), ...(await firebaseHash(data.password)) });
 
         // Workaround until we make the stripeCustomerId column nullable
         const customer = isStripeEnabled() ? await stripe.customers.create({
