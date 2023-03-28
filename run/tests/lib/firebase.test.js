@@ -10,6 +10,28 @@ const db = require('../../lib/firebase');
 
 beforeEach(() => jest.clearAllMocks());
 
+describe('createExplorer', () => {
+    it('Should return an explorer if it has been created', (done) => {
+        db.createExplorer(1, 1, 1, 'test', 'test', 'test').then(explorer => {
+            expect(explorer).toEqual({ name: 'Ethernal', slug: 'ethernal' })
+            done();
+        });
+    });
+
+    it('Should return null if explorer was not created', (done) => {
+        jest.spyOn(Explorer, 'safeCreateExplorer').mockResolvedValueOnce(null);
+        db.createExplorer(1, 1, 1, 'test', 'test', 'test').then(explorer => {
+            expect(explorer).toEqual(null)
+            done();
+        });
+    });
+
+    it('THrow an error if parameters are missing', async () => {
+        await expect(db.createExplorer(1))
+            .rejects.toThrow('Missing parameter');
+    });
+});
+
 describe('updateBrowserSync', () => {
     it('Should update browser sync if it can find the workspace', (done) => {
         const update = jest.fn();

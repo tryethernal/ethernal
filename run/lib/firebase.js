@@ -11,6 +11,25 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const createExplorer = async (userId, workspaceId, chainId, name, rpcServer, slug, themes, totalSupply, domain, token) => {
+    if (!userId || !workspaceId || !chainId || !name || !rpcServer || !slug)
+        throw new Error('Missing parameter');
+
+    const explorer = await Explorer.safeCreateExplorer({
+        userId: userId,
+        workspaceId: workspaceId,
+        chainId: chainId,
+        name: name,
+        rpcServer: rpcServer,
+        slug: slug,
+        themes: themes,
+        totalSupply: totalSupply,
+        domain: domain,
+        token: token
+    });
+    return explorer ? explorer.toJSON() : null;
+};
+
 const updateBrowserSync = async (workspaceId, newValue) => {
     if (!workspaceId || newValue === undefined || newValue === null)
         throw new Error('Missing parameter');
@@ -981,5 +1000,6 @@ module.exports = {
     setUserPassword: setUserPassword,
     updateUserFirebaseHash: updateUserFirebaseHash,
     updateBrowserSync: updateBrowserSync,
+    createExplorer: createExplorer,
     Workspace: Workspace
 };
