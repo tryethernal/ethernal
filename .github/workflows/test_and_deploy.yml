@@ -134,6 +134,7 @@ jobs:
           VUE_APP_MAIN_DOMAIN: ${{ secrets.MAIN_DOMAIN }}
           VUE_APP_PUSHER_KEY: ${{ secrets.PUSHER_KEY }}
           VUE_APP_ENABLE_ANALYTICS: true
+          VUE_APP_ENABLE_MARKETING: true
           COMMIT_REF: ${{ github.sha }}
 
       - uses: nwtgck/actions-netlify@v2.0.0

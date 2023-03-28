@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.11.1] - 2023-03-28
+### Fixed
+- Dsiplay Public Explore prompt
+
 ## [3.11.0] - 2023-03-23
 ### Added
 - Browser sync as default for new workspaces. Workspaces will start syncing as soon as they are created. This will make onboarding *much* easier! Browser sync will automatically be deactivated when blocks will be synced from one of the plugins.
