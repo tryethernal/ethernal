@@ -123,6 +123,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
+          target: prod_all
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ethernal:latest,${{ secrets.DOCKERHUB_USERNAME }}/ethernal:v23456789
             #${{ needs.create_release.outputs.current_version }}
 
@@ -191,7 +192,7 @@ jobs:
       - name: Build & push docker image
         run: |
           flyctl auth docker
-          docker build -t registry.fly.io/ethernal:${{ github.sha }} .
+          docker build --target prod_back -t registry.fly.io/ethernal:${{ github.sha }} .
           docker push registry.fly.io/ethernal:${{ github.sha }}
 
   release_front:

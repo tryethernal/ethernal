@@ -1,19 +1,16 @@
 FROM node:16 AS front
 WORKDIR /client
-
 ENV VUE_APP_NODE_ENV=production
 ENV VUE_APP_API_ROOT=http://app.VUE_APP_MAIN_DOMAIN_PLACEHOLDER
 ENV VUE_APP_MAIN_DOMAIN=VUE_APP_MAIN_DOMAIN_PLACEHOLDER
 ENV VUE_APP_PUSHER_KEY=VUE_APP_PUSHER_KEY_PLACEHOLDER
-
 COPY public/ ./public/
 COPY src/ ./src/
 COPY babel.config.js .firebaserc package.json yarn.lock vue.config.js _redirects ./
 RUN yarn install
 RUN yarn build
 
-FROM node:16 AS base
-
+FROM node:16 AS back
 ENV ENCRYPTION_KEY=
 ENV ENCRYPTION_JWT_SECRET=
 ENV APP_URL=
@@ -33,7 +30,6 @@ ENV SECRET=secret
 ENV PORT=8888
 ENV NODE_ENV=production
 ENV CORS_DOMAIN=*
-
 WORKDIR /app
 COPY run/api ./api
 COPY run/config ./config
@@ -49,15 +45,15 @@ COPY run/scheduler.js .
 COPY run/workers ./workers/
 COPY run/package*.json ./
 
-FROM base AS dev
+FROM back AS dev_back
 RUN npm install
 RUN npm install nodemon -g
 
-FROM base AS prod
+FROM back AS prod_back
 COPY ethernal-95a14-19f78a7e26cc.json ./ethernal-95a14-19f78a7e26cc.json
 RUN npm ci --only=production
 
-FROM base AS web
+FROM back AS prod_all
 RUN mkdir dist
 COPY web_entrypoint.sh ./web_entrypoint.sh
 RUN chmod +x ./web_entrypoint.sh

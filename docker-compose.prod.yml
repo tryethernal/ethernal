@@ -42,7 +42,7 @@ services:
     restart: always
     ports:
       -  '8888:8888'
-    image: antoinedc44/ethernal:latest
+    image: antoinedc44/ethernal:v23456789
     command: /bin/sh ./web_entrypoint.sh
     env_file: .env.prod
     links:
@@ -53,19 +53,19 @@ services:
     <<: *backend
     container_name: highPriority
     ports: []
-    image: antoinedc44/ethernal:latest
+    image: antoinedc44/ethernal:v23456789
     command: node workers/highPriority.js
 
   medium_priority_worker:
     <<: *backend
     container_name: mediumPriority
     ports: []
-    image: antoinedc44/ethernal:latest
+    image: antoinedc44/ethernal:v23456789
     command: node workers/mediumPriority.js
 
   low_priority_worker:
     <<: *backend
     container_name: lowPriority
     ports: []
-    image: antoinedc44/ethernal:latest
+    image: antoinedc44/ethernal:v23456789
     command: node workers/lowPriority.js
