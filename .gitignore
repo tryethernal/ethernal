@@ -15,6 +15,7 @@ ethernal-95a14-19f78a7e26cc.json
 run/logfile
 
 functions/report*
+start_explorer.js
 
 # local env files
 .env.*

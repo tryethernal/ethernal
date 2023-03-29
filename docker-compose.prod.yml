@@ -38,6 +38,7 @@ services:
     depends_on:
       - postgres
       - redis
+    pull_policy: always
     restart: always
     ports:
       -  '8888:8888'
