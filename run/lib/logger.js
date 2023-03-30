@@ -9,7 +9,7 @@ const logger = createLogger({
 
 let newrelicWinstonFormatter, transport;
 
-if (process.env.NODE_ENV == 'production') {
+if (process.env.NEW_RELIC_APP_NAME) {
     const newrelicFormatter = require('@newrelic/winston-enricher');
     newrelicWinstonFormatter = newrelicFormatter(require('winston'));
 }
