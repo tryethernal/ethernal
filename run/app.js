@@ -1,3 +1,4 @@
+const path = require('path');
 const { initializeApp } = require('firebase-admin/app');
 const express = require('express');
 const cors = require('cors');
@@ -42,5 +43,12 @@ app.use('/api', api);
 app.use('/webhooks', webhooks);
 
 app.use('/bull', bullboardMiddlewere, serverAdapter.getRouter());
+
+if (process.env.SERVE_FRONTEND) {
+    app.use(express.static('dist'));
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+    });
+}
 
 module.exports = app;

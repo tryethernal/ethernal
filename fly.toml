@@ -10,7 +10,7 @@ kill_timeout = 5
 
 [build]
   dockerfile = "Dockerfile"
-  build-target = "prod"
+  build-target = "prod_back"
 
 [env]
 

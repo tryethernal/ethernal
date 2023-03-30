@@ -1,0 +1,71 @@
+version: '3.9'
+
+networks:
+  ethernal:
+    driver: bridge  
+
+volumes:
+  nginx:
+    driver: local
+  db:
+    driver: local
+  redis:
+    driver: local
+
+services:
+  postgres:
+    networks:
+      - ethernal
+    image: postgres:14.1-alpine
+    restart: always
+    env_file: .env.prod
+    volumes: 
+      - db:/var/lib/postgresql/data
+
+  redis:
+    networks:
+      - ethernal
+    image: redis:6.2-alpine
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - redis:/data
+
+  web: &backend
+    networks:
+      - ethernal
+    container_name: web
+    depends_on:
+      - postgres
+      - redis
+    pull_policy: always
+    restart: always
+    ports:
+      -  '8888:8888'
+    image: antoinedc44/ethernal:v23456789
+    command: /bin/sh ./web_entrypoint.sh
+    env_file: .env.prod
+    links:
+      - postgres
+      - redis
+
+  high_priority_worker:
+    <<: *backend
+    container_name: highPriority
+    ports: []
+    image: antoinedc44/ethernal:v23456789
+    command: node workers/highPriority.js
+
+  medium_priority_worker:
+    <<: *backend
+    container_name: mediumPriority
+    ports: []
+    image: antoinedc44/ethernal:v23456789
+    command: node workers/mediumPriority.js
+
+  low_priority_worker:
+    <<: *backend
+    container_name: lowPriority
+    ports: []
+    image: antoinedc44/ethernal:v23456789
+    command: node workers/lowPriority.js

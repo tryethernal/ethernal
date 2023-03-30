@@ -1,4 +1,4 @@
-FROM node:16 AS base
+FROM node:16
 
 ENV HOST=0.0.0.0
 
@@ -7,8 +7,6 @@ WORKDIR /app
 COPY public/ ./public/
 COPY src/ ./src/
 COPY babel.config.js .firebaserc package.json yarn.lock vue.config.js _redirects ./
-
-FROM base AS dev
 RUN yarn install
 EXPOSE 8080
 CMD ["yarn", "serve"]
