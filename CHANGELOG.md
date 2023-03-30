@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.11.4] - 2023-03-30
+### Fixed
+- [Public Explorer] Pusher bug preventing real time updates
+
+### Changed
+- Docker images tagging
+
 ## [3.11.3] - 2023-03-30
 ### Changed
 - Prod Dockerfile image now default to https on the frontend
