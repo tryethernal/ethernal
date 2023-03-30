@@ -18,7 +18,7 @@ export const pusherPlugin = {
                     endpoint: `${process.env.VUE_APP_API_ROOT}/api/pusher/authorization`,
                     headersProvider: () => apiToken ? { 'Authorization': `Bearer ${apiToken}` } : {},
                     params: sanitize({
-                        firebaseUserId: store.getters.user.firebaseUserId,
+                        firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                         workspace: store.getters.currentWorkspace.name
                     })
                 }
