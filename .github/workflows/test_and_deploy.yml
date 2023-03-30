@@ -102,8 +102,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   publish_docker_image:
-    # if: startsWith(github.ref, 'refs/tags/v')
-    # needs: [create_release]
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [create_release]
     runs-on: ubuntu-latest
     environment: production
 
@@ -124,8 +124,7 @@ jobs:
           file: ./Dockerfile
           push: true
           target: prod_all
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ethernal:latest,${{ secrets.DOCKERHUB_USERNAME }}/ethernal:v23456789
-            #${{ needs.create_release.outputs.current_version }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ethernal:latest,${{ secrets.DOCKERHUB_USERNAME }}/ethernal:${{ needs.create_release.outputs.current_version }}
 
   deploy_front:
     if: startsWith(github.ref, 'refs/tags/v')
