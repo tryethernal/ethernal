@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.11.3] - 2023-03-30
+### Changed
+- Prod Dockerfile image now default to https on the frontend
+
 ## [3.11.2] - 2023-03-28
 ### Added
 - Dockerfile for self-hosted production environment - It will be pushed to Docker Hub @antoinedc44/ethernal for each release.
