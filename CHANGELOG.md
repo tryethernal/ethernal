@@ -6,9 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.11.2] - 2023-03-28
+### Added
+- Dockerfile for self-hosted production environment - It will be pushed to Docker Hub @antoinedc44/ethernal for each release.
+- API endpoint to create explorers
+
+### Fixed
+- Encryption when creating user without Firebase auth enabled
+
 ## [3.11.1] - 2023-03-28
 ### Fixed
-- Dsiplay Public Explore prompt
+- Display Public Explore prompt
 
 ## [3.11.0] - 2023-03-23
 ### Added
