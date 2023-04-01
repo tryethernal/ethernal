@@ -5,6 +5,7 @@ const {
 } = require('sequelize');
 const { sanitize } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
+const logger = require('../lib/logger');
 const moment = require('moment');
 
 const Op = Sequelize.Op;
@@ -412,6 +413,7 @@ module.exports = (sequelize, DataTypes) => {
                             raw: log
                         }), { transaction: sequelizeTransaction });
                     } catch(error) {
+                        logger.error(error.message, { location: 'models.workspaces', error: error, transaction: transaction });
                         await storedReceipt.createLog(sanitize({
                             workspaceId: storedTx.workspaceId,
                             raw: log
