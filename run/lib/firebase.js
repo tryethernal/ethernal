@@ -11,6 +11,20 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const syncFullBlock = async (workspaceId, block) => {
+    if (!workspaceId || !block) throw new Error('Missing parameter.');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    const existingBlock = await user.workspaces[0].findBlockByNumber(block.number);
+
+    if (existingBlock)
+        return null;
+    else {
+        const newBlock = await user.workspaces[0].safeCreateFullBlock(block);
+        return newBlock.toJSON();
+    }
+};
+
 const createExplorer = async (userId, workspaceId, chainId, name, rpcServer, slug, themes, totalSupply, domain, token) => {
     if (!userId || !workspaceId || !chainId || !name || !rpcServer || !slug)
         throw new Error('Missing parameter');

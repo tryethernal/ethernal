@@ -327,6 +327,111 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    /*
+        It's all or nothing, we make sure we synchronize all the block info, ie:
+        - Block
+        - Transactions
+        - Receipt
+        - Logs
+        It takes longer, but we avoid inconsistencies, such as a block not displaying all transactions
+    */
+    safeCreateFullBlock(block) {
+        return sequelize.transaction(async sequelizeTransaction => {
+            const storedBlock = await this.createBlock(sanitize({
+                baseFeePerGas: block.baseFeePerGas,
+                difficulty: block.difficulty,
+                extraData: block.extraData,
+                gasLimit: block.gasLimit,
+                gasUsed: block.gasUsed,
+                hash: block.hash,
+                miner: block.miner,
+                nonce: block.nonce,
+                number: block.number,
+                parentHash: block.parentHash,
+                timestamp: block.timestamp,
+                transactionsCount: block.transactions ? block.transactions.length : 0,
+                raw: block
+            }), { transaction: sequelizeTransaction });
+
+            for (let i = 0; i < block.transactions.length; i++) {
+                const transaction = block.transactions[i];
+                const storedTx = await this.createTransaction(sanitize({
+                    blockHash: transaction.blockHash,
+                    blockNumber: transaction.blockNumber,
+                    blockId: blockId,
+                    chainId: transaction.chainId,
+                    confirmations: transaction.confirmations,
+                    creates: transaction.creates,
+                    data: transaction.data,
+                    parsedError: transaction.parsedError,
+                    rawError: transaction.rawError,
+                    from: transaction.from,
+                    gasLimit: transaction.gasLimit,
+                    gasPrice: transaction.gasPrice,
+                    hash: transaction.hash,
+                    methodLabel: transaction.methodLabel,
+                    methodName: transaction.methodName,
+                    methodSignature: transaction.methodSignature,
+                    nonce: transaction.nonce,
+                    r: transaction.r,
+                    s: transaction.s,
+                    timestamp: transaction.timestamp,
+                    to: transaction.to,
+                    transactionIndex: transaction.transactionIndex,
+                    type_: transaction.type,
+                    v: transaction.v,
+                    value: transaction.value,
+                    raw: transaction
+                }), { transaction: sequelizeTransaction });
+
+                const receipt = transaction.receipt;
+                const storedReceipt = await storedTx.createReceipt(sanitize({
+                    workspaceId: storedTx.workspaceId,
+                    blockHash: receipt.blockHash,
+                    blockNumber: receipt.blockNumber,
+                    byzantium: receipt.byzantium,
+                    confirmations: receipt.confirmations,
+                    contractAddress: receipt.contractAddress,
+                    cumulativeGasUsed: receipt.cumulativeGasUsed,
+                    from: receipt.from,
+                    gasUsed: receipt.gasUsed,
+                    logsBloom: receipt.logsBloom,
+                    status: receipt.status,
+                    to: receipt.to,
+                    transactionHash: receipt.transactionHash,
+                    transactionIndex: receipt.transactionIndex,
+                    type_: receipt.type,
+                    raw: receipt
+                }), { transaction: sequelizeTransaction });
+
+                for (let i = 0; i < receipt.logs.length; i++) {
+                    const log = receipt.logs[i];
+                    try {
+                        await storedReceipt.createLog(sanitize({
+                            workspaceId: storedTx.workspaceId,
+                            address: log.address,
+                            blockHash: log.blockHash,
+                            blockNumber: log.blockNumber,
+                            data: log.data,
+                            logIndex: log.logIndex,
+                            topics: log.topics,
+                            transactionHash: log.transactionHash,
+                            transactionIndex: log.transactionIndex,
+                            raw: log
+                        }), { transaction: sequelizeTransaction });
+                    } catch(error) {
+                        await storedReceipt.createLog(sanitize({
+                            workspaceId: storedTx.workspaceId,
+                            raw: log
+                        }), { transaction: sequelizeTransaction });
+                    }
+                }
+            }
+
+            return storedBlock;
+        });
+    }
+
     safeCreateBlock(block) {
         return this.createBlock(sanitize({
             baseFeePerGas: block.baseFeePerGas,

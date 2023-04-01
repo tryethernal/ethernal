@@ -19,12 +19,27 @@ module.exports = async job => {
     if (!block)
         throw new Error("Couldn't fetch block from provider");
 
-    const syncedBlock = sanitize(stringifyBns({ ...block, transactions: block.transactions.map(tx => stringifyBns(tx)) }));
-    const storedBlock = await db.storeBlock(data.userId, data.workspace, syncedBlock);
-
-    for (let i = 0; i < block.transactions.length; i++) {
-        await enqueue('transactionSync', `transactionSync-${data.workspace}-${block.transactions[i].hash}`, { userId: data.userId, workspace: data.workspace, transaction: stringifyBns(block.transactions[i]), timestamp: block.timestamp });
+    const formattedBlock = {
+        block,
+        transactions: [],
     }
+    for (let i = 0; i < block.transactions.length; i++) {
+        const transaction = block.transactions[i];
+        const receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
+
+        if (!receipt)
+            throw new Error("Failed fetching receipt");
+
+        formattedBlock.transactions.push({
+            ...transaction,
+            receipt
+        });
+
+        if (formattedBlock.transactions.length != block.transactions.length)
+            throw new Error('Missing transactions');
+    }
+
+    await db.syncFullBlock(workspace.id, formattedBlock);
 
     return true;
 };
