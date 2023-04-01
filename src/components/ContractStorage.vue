@@ -173,7 +173,7 @@ export default {
             'isUserAdmin'
         ]),
         isStorageAvailable() {
-            return this.contract && this.contract.ast && this.contract.ast.dependencies && Object.keys(this.contract.ast.dependencies).length > 0;
+            return this.contract && this.contract.ast && this.contract.ast.dependencies;
         }
     }
 }
