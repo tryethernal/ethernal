@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.11.5] - 2023-03-31
+### Fixed
+- Contract storage was not available if contract doesn't have dependencies
+
+### Added
+- Logging
+
 ## [3.11.4] - 2023-03-30
 ### Fixed
 - [Public Explorer] Pusher bug preventing real time updates
