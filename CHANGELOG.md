@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.11.6] - 2023-03-31
+### Fixed
+- ERC721 token transfer processing bug for private explorers
+
 ## [3.11.5] - 2023-03-31
 ### Fixed
 - Contract storage was not available if contract doesn't have dependencies
