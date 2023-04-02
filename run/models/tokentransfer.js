@@ -37,6 +37,15 @@ module.exports = (sequelize, DataTypes) => {
       TokenTransfer.hasMany(models.TokenBalanceChange, { foreignKey: 'tokenTransferId', as: 'tokenBalanceChanges' });
     }
 
+    getContract() {
+        return sequelize.models.Contract.findOne({
+            where: {
+                workspaceId: this.workspaceId,
+                address: this.token
+            }
+        });
+    }
+
     async safeCreateBalanceChange(balanceChange) {
         const existingChangeCount = await sequelize.models.TokenBalanceChange.count({
             where: {
