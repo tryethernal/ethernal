@@ -178,14 +178,32 @@ module.exports = (sequelize, DataTypes) => {
                 return {};
         }
     },
-    workspaceId: DataTypes.INTEGER
+    workspaceId: DataTypes.INTEGER,
+    state: DataTypes.ENUM('syncing', 'ready'),
+    isReady: {
+        type: DataTypes.VIRTUAL,
+        get() {
+            return this.getDataValue('status') === 'ready';
+        }
+    },
+    isSyncing: {
+        type: DataTypes.VIRTUAL,
+        get() {
+            return this.getDataValue('status') === 'syncing';
+        }
+    }
   }, {
     hooks: {
-        afterSave(transaction, options) {
-            trigger(`private-transactions;workspace=${transaction.workspaceId}`, 'new', null);
+        async afterSave(transaction, options) {
+            if (transaction.isReady)
+                await enqueue('transactionProcessing', `transactionProcessing-${transaction.workspaceId}-${transaction.hash}-${Date.now()}`, { 
+                    transactionId: transaction.id
+                }, 1);
+
+            await trigger(`private-transactions;workspace=${transaction.workspaceId}`, 'new', null);
             if (transaction.to)
-                trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.to}`, 'new', null);
-            trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.from}`, 'new', null);
+                await trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.to}`, 'new', null);
+            return trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.from}`, 'new', null);
         }
     },
     sequelize,

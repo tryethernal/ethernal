@@ -19,6 +19,8 @@ module.exports = async job => {
     if (!block)
         throw new Error("Couldn't fetch block from provider");
 
+    const syncPartialBlock = await db.syncPartialBlock(workspace.id, block);
+
     const formattedBlock = {
         block,
         transactions: [],
@@ -39,7 +41,7 @@ module.exports = async job => {
             throw new Error('Missing transactions');
     }
 
-    await db.syncFullBlock(workspace.id, formattedBlock);
+    // await db.syncFullBlock(workspace.id, formattedBlock);
 
     return true;
 };

@@ -328,14 +328,12 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     /*
-        It's all or nothing, we make sure we synchronize all the block info, ie:
-        - Block
-        - Transactions
-        - Receipt
-        - Logs
-        It takes longer, but we avoid inconsistencies, such as a block not displaying all transactions
+        Syncing the full block can take some time if there are a lot of transactions,
+        logs, token transfers to create etc, so we create a partial block with only
+        the data returned by eth_getBlockByNumber (with transactions).
+        This allows us to show the user that we are indexing the block, and display progress as well
     */
-    safeCreateFullBlock(block) {
+    safeCreatePartialBlock(block) {
         return sequelize.transaction(async sequelizeTransaction => {
             const storedBlock = await this.createBlock(sanitize({
                 baseFeePerGas: block.baseFeePerGas,
@@ -350,6 +348,7 @@ module.exports = (sequelize, DataTypes) => {
                 parentHash: block.parentHash,
                 timestamp: block.timestamp,
                 transactionsCount: block.transactions ? block.transactions.length : 0,
+                status: 'syncing',
                 raw: block
             }), { transaction: sequelizeTransaction });
 
@@ -358,7 +357,7 @@ module.exports = (sequelize, DataTypes) => {
                 const storedTx = await this.createTransaction(sanitize({
                     blockHash: transaction.blockHash,
                     blockNumber: transaction.blockNumber,
-                    blockId: blockId,
+                    blockId: storedBlock.id,
                     chainId: transaction.chainId,
                     confirmations: transaction.confirmations,
                     creates: transaction.creates,
@@ -375,7 +374,76 @@ module.exports = (sequelize, DataTypes) => {
                     nonce: transaction.nonce,
                     r: transaction.r,
                     s: transaction.s,
-                    timestamp: transaction.timestamp,
+                    timestamp: block.timestamp,
+                    to: transaction.to,
+                    transactionIndex: transaction.transactionIndex,
+                    type_: transaction.type,
+                    v: transaction.v,
+                    value: transaction.value,
+                    status: 'syncing',
+                    raw: transaction
+                }), { transaction: sequelizeTransaction });
+            }
+
+            return storedBlock;
+        });
+    }
+
+    /*
+        It's all or nothing, we make sure we synchronize all the block info, ie:
+        - Block
+        - Transactions
+        - Receipt
+        - Logs
+        It takes longer, but we avoid inconsistencies, such as a block not displaying all transactions
+    */
+    safeCreateFullBlock(data) {
+        return sequelize.transaction(async sequelizeTransaction => {
+            const block = data.block;
+            const transactions = data.transactions;
+
+            if (block.transactions.length != transactions.length)
+                return await sequelizeTransaction.rollback();
+
+            const storedBlock = await this.createBlock(sanitize({
+                baseFeePerGas: block.baseFeePerGas,
+                difficulty: block.difficulty,
+                extraData: block.extraData,
+                gasLimit: block.gasLimit,
+                gasUsed: block.gasUsed,
+                hash: block.hash,
+                miner: block.miner,
+                nonce: block.nonce,
+                number: block.number,
+                parentHash: block.parentHash,
+                timestamp: block.timestamp,
+                transactionsCount: block.transactions ? block.transactions.length : 0,
+                raw: block
+            }), { transaction: sequelizeTransaction });
+
+            for (let i = 0; i < transactions.length; i++) {
+                const transaction = transactions[i];
+                const storedTx = await this.createTransaction(sanitize({
+                    blockHash: transaction.blockHash,
+                    blockNumber: transaction.blockNumber,
+                    blockId: storedBlock.id,
+                    chainId: transaction.chainId,
+                    confirmations: transaction.confirmations,
+                    creates: transaction.creates,
+                    data: transaction.data,
+                    parsedError: transaction.parsedError,
+                    rawError: transaction.rawError,
+                    from: transaction.from,
+                    gasLimit: transaction.gasLimit,
+                    gasPrice: transaction.gasPrice,
+                    hash: transaction.hash,
+                    methodLabel: transaction.methodLabel,
+                    methodName: transaction.methodName,
+                    methodSignature: transaction.methodSignature,
+                    nonce: transaction.nonce,
+                    r: transaction.r,
+                    s: transaction.s,
+                    timestamp: block.timestamp,
                     to: transaction.to,
                     transactionIndex: transaction.transactionIndex,
                     type_: transaction.type,
@@ -385,6 +453,10 @@ module.exports = (sequelize, DataTypes) => {
                 }), { transaction: sequelizeTransaction });
 
                 const receipt = transaction.receipt;
+
+                if (!receipt)
+                    return await sequelizeTransaction.rollback();
+
                 const storedReceipt = await storedTx.createReceipt(sanitize({
                     workspaceId: storedTx.workspaceId,
                     blockHash: receipt.blockHash,
@@ -420,6 +492,7 @@ module.exports = (sequelize, DataTypes) => {
                             raw: log
                         }), { transaction: sequelizeTransaction });
                     } catch(error) {
+                        logger.error(error.message, { location: 'models.workspaces', error: error, transaction: transaction });
                         await storedReceipt.createLog(sanitize({
                             workspaceId: storedTx.workspaceId,
                             raw: log

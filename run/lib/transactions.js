@@ -40,7 +40,7 @@ const getTxSynced = async (uid, workspace, transaction, receipt, timestamp) => {
     });
 };
 
-const processTransactions = async (userId, workspaceName, transactions) => {
+const processTransactions = async (transactions) => {
     for (let i = 0; i < transactions.length; i++) {
         let contract;
         const transaction = transactions[i];

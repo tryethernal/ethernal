@@ -11,16 +11,30 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
-const syncFullBlock = async (workspaceId, block) => {
+const syncPartialBlock = async (workspaceId, block) => {
     if (!workspaceId || !block) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
-    const existingBlock = await user.workspaces[0].findBlockByNumber(block.number);
+    const existingBlock = await workspace.findBlockByNumber(data.block.number);
 
     if (existingBlock)
         return null;
     else {
-        const newBlock = await user.workspaces[0].safeCreateFullBlock(block);
+        const newBlock = await workspace.safeCreatePartialBlock(block);
+        return newBlock.toJSON();
+    }
+};
+
+const syncFullBlock = async (workspaceId, data) => {
+    if (!workspaceId || !data) throw new Error('Missing parameter.');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    const existingBlock = await workspace.findBlockByNumber(data.block.number);
+
+    if (existingBlock)
+        return null;
+    else {
+        const newBlock = await workspace.safeCreateFullBlock(data);
         return newBlock.toJSON();
     }
 };
@@ -1015,5 +1029,6 @@ module.exports = {
     updateUserFirebaseHash: updateUserFirebaseHash,
     updateBrowserSync: updateBrowserSync,
     createExplorer: createExplorer,
+    syncFullBlock: syncFullBlock,
     Workspace: Workspace
 };

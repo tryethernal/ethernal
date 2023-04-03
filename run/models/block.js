@@ -36,7 +36,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     transactionsCount: DataTypes.INTEGER,
     raw: DataTypes.JSON,
-    workspaceId: DataTypes.INTEGER
+    workspaceId: DataTypes.INTEGER,
+    state: DataTypes.ENUM('syncing', 'ready')
   }, {
     hooks: {
         afterSave(block, options) {
