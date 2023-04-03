@@ -6,7 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.11.6] - 2023-03-31
+## [3.11.7] - 2023-04-03
+### Fixed
+- Bug preventing some RPC endpoints (include Alchemy ones) to be checked properly when creating a workspace
+
+## [3.11.6] - 2023-04-01
 ### Fixed
 - ERC721 token transfer processing bug for private explorers
 
