@@ -43,7 +43,7 @@ const serverFunctions = {
             ];
         }
 
-        return new provider(rpcServer.origin, options);
+        return new provider(`${rpcServer.origin}${rpcServer.pathname}${rpcServer.search}`, options);
     },
     _getProvider: function(url) {
         const rpcServer = new URL(url);
