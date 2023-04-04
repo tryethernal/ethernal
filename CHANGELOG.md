@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.11.8] - 2023-04-04
+### Changed
+- Force uniqueness in job names (to avoid completed jobs to block new ones)
+
 ## [3.11.7] - 2023-04-03
 ### Fixed
 - Bug preventing some RPC endpoints (include Alchemy ones) to be checked properly when creating a workspace
