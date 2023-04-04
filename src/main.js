@@ -21,12 +21,12 @@ Vue.use(serverPlugin, { store: store });
 const isEthernalDomain = window.location.host.endsWith(process.env.VUE_APP_MAIN_DOMAIN);
 
 if (isEthernalDomain) {
-    const splits = window.location.host.split('.');
-    const domain = splits[splits.length - 2];
-    const publicExplorerSlug = splits.slice(0, splits.indexOf(domain)).join('.');
-
-    if (!publicExplorerSlug.endsWith('app'))
-        store.dispatch('updatePublicExplorerSlug', publicExplorerSlug);
+    const splitDomain = window.location.host.split('.')
+    // URL needs to start with app and must be at least a subdomain
+    if(!window.location.host.startsWith('app.')
+        && splitDomain.length > 2) {
+        store.dispatch('updatePublicExplorerSlug', splitDomain[0]);
+    }
 }
 else {
     store.dispatch('updatePublicExplorerDomain', window.location.host);
