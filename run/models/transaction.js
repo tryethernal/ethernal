@@ -183,13 +183,13 @@ module.exports = (sequelize, DataTypes) => {
     isReady: {
         type: DataTypes.VIRTUAL,
         get() {
-            return this.getDataValue('status') === 'ready';
+            return this.getDataValue('state') === 'ready';
         }
     },
     isSyncing: {
         type: DataTypes.VIRTUAL,
         get() {
-            return this.getDataValue('status') === 'syncing';
+            return this.getDataValue('state') === 'syncing';
         }
     }
   }, {

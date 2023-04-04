@@ -303,7 +303,7 @@ module.exports = (sequelize, DataTypes) => {
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
             order: [[orderBy, order]],
-            attributes: ['blockNumber', 'from', 'gasPrice', 'hash', 'methodDetails', 'data', 'timestamp', 'to', 'value', 'workspaceId'],
+            attributes: ['blockNumber', 'from', 'gasPrice', 'hash', 'methodDetails', 'data', 'timestamp', 'to', 'value', 'workspaceId', 'state'],
             include: [
                 {
                     model: sequelize.models.TransactionReceipt,
@@ -348,7 +348,7 @@ module.exports = (sequelize, DataTypes) => {
                 parentHash: block.parentHash,
                 timestamp: block.timestamp,
                 transactionsCount: block.transactions ? block.transactions.length : 0,
-                status: 'syncing',
+                state: 'syncing',
                 raw: block
             }), { transaction: sequelizeTransaction });
 
@@ -380,7 +380,7 @@ module.exports = (sequelize, DataTypes) => {
                     type_: transaction.type,
                     v: transaction.v,
                     value: transaction.value,
-                    status: 'syncing',
+                    state: 'syncing',
                     raw: transaction
                 }), { transaction: sequelizeTransaction });
             }
@@ -405,53 +405,32 @@ module.exports = (sequelize, DataTypes) => {
             if (block.transactions.length != transactions.length)
                 return await sequelizeTransaction.rollback();
 
-            const storedBlock = await this.createBlock(sanitize({
-                baseFeePerGas: block.baseFeePerGas,
-                difficulty: block.difficulty,
-                extraData: block.extraData,
-                gasLimit: block.gasLimit,
-                gasUsed: block.gasUsed,
-                hash: block.hash,
-                miner: block.miner,
-                nonce: block.nonce,
-                number: block.number,
-                parentHash: block.parentHash,
-                timestamp: block.timestamp,
-                transactionsCount: block.transactions ? block.transactions.length : 0,
-                raw: block
-            }), { transaction: sequelizeTransaction });
+            const [, [storedBlock]] = await sequelize.models.Block.update(
+                { state: 'ready' },
+                {
+                    where: {
+                        workspaceId: this.id,
+                        number: block.number
+                    },
+                    returning: true
+                },
+                { transaction: sequelizeTransaction }
+            );
 
             for (let i = 0; i < transactions.length; i++) {
                 const transaction = transactions[i];
-                const storedTx = await this.createTransaction(sanitize({
-                    blockHash: transaction.blockHash,
-                    blockNumber: transaction.blockNumber,
-                    blockId: storedBlock.id,
-                    chainId: transaction.chainId,
-                    confirmations: transaction.confirmations,
-                    creates: transaction.creates,
-                    data: transaction.data,
-                    parsedError: transaction.parsedError,
-                    rawError: transaction.rawError,
-                    from: transaction.from,
-                    gasLimit: transaction.gasLimit,
-                    gasPrice: transaction.gasPrice,
-                    hash: transaction.hash,
-                    methodLabel: transaction.methodLabel,
-                    methodName: transaction.methodName,
-                    methodSignature: transaction.methodSignature,
-                    nonce: transaction.nonce,
-                    r: transaction.r,
-                    s: transaction.s,
-                    timestamp: block.timestamp,
-                    to: transaction.to,
-                    transactionIndex: transaction.transactionIndex,
-                    type_: transaction.type,
-                    v: transaction.v,
-                    value: transaction.value,
-                    raw: transaction
-                }), { transaction: sequelizeTransaction });
-
+                const [, [storedTx]] = await sequelize.models.Transaction.update(
+                    { state: 'ready' },
+                    {
+                        where: {
+                            workspaceId: this.id,
+                            hash: transaction.hash
+                        },
+                        returning: true
+                    },
+                    { transaction: sequelizeTransaction }
+                );
+                console.log(storedTx)
                 const receipt = transaction.receipt;
 
                 if (!receipt)
@@ -679,7 +658,7 @@ module.exports = (sequelize, DataTypes) => {
             where: {
                 hash: hash
             },
-            attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId', 'raw',
+            attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId', 'raw', 'state',
                 [Sequelize.literal(`
                     (SELECT COUNT(*)::int
                     FROM token_transfers AS token_transfers

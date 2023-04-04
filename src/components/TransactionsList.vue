@@ -9,6 +9,7 @@
         :headers="headers"
         :hide-default-footer="dense"
         :hide-default-header="dense"
+        :item-class= "rowClasses"
         :footer-props="{
             itemsPerPageOptions: [10, 25, 100]
         }"
@@ -20,15 +21,15 @@
         <template v-slot:item.hash="{ item }">
             <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
-                    <span v-if="item.receipt">
-                        <v-icon v-bind="attrs" v-on="on" small v-show="txStatus(item) == 'succeeded'" color="success lighten-1" class="mr-2">mdi-check-circle</v-icon>
-                        <v-icon v-bind="attrs" v-on="on" small v-show="txStatus(item) == 'failed'" color="error lighten-1" class="mr-2">mdi-alert-circle</v-icon>
-                        <v-icon v-bind="attrs" v-on="on" small v-show="txStatus(item) == 'unknown'" color="grey lighten-1" class="mr-2">mdi-help-circle</v-icon>
-                    </span>
+                    <v-icon v-bind="attrs" v-on="on" small v-show="txStatus(item) == 'succeeded'" color="success lighten-1" class="mr-2">mdi-check-circle</v-icon>
+                    <v-icon v-bind="attrs" v-on="on" small v-show="txStatus(item) == 'failed'" color="error lighten-1" class="mr-2">mdi-alert-circle</v-icon>
+                    <v-icon v-bind="attrs" v-on="on" small v-show="txStatus(item) == 'unknown'" color="grey lighten-1" class="mr-2">mdi-help-circle</v-icon>
+                    <v-progress-circular v-bind="attrs" v-on="on" size="16" width="2" indeterminate color="primary" v-show="txStatus(item) == 'syncing'" class="mr-2"></v-progress-circular>
                 </template>
                 <span v-show="txStatus(item) == 'succeeded'">Succeeded Transaction</span>
                 <span v-show="txStatus(item) == 'failed'">Failed Transaction</span>
                 <span v-show="txStatus(item) == 'unknown'">Unkown Transaction Status</span>
+                <span v-show="txStatus(item) == 'syncing'">Indexing Transaction...</span>
             </v-tooltip>
             <Hash-Link :type="'transaction'" :hash="item.hash" />
         </template>
@@ -156,9 +157,16 @@ export default {
     },
     methods: {
         moment: moment,
+        rowClasses(item) {
+            if (item.state == 'syncing')
+                return 'isSyncing'
+        },
         txStatus(item) {
-            if (!item || !item.receipt)
-                return 'unknown';
+            if (!item) return 'unknown';
+
+            if (item.state == 'syncing') return 'syncing';
+
+            if (!item.receipt) return 'unknown';
 
             const receipt = item.receipt;
             if (receipt.status !== null && receipt.status !== undefined)
@@ -192,6 +200,10 @@ export default {
 }
 </script>
 <style scoped>
+/deep/ .isSyncing {
+    font-style: italic;
+    opacity: 0.7;
+}
 .methodName {
     display: block;
     max-width: 11ch;

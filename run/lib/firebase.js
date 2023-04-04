@@ -15,7 +15,7 @@ const syncPartialBlock = async (workspaceId, block) => {
     if (!workspaceId || !block) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
-    const existingBlock = await workspace.findBlockByNumber(data.block.number);
+    const existingBlock = await workspace.findBlockByNumber(block.number);
 
     if (existingBlock)
         return null;
@@ -31,12 +31,12 @@ const syncFullBlock = async (workspaceId, data) => {
     const workspace = await Workspace.findByPk(workspaceId);
     const existingBlock = await workspace.findBlockByNumber(data.block.number);
 
-    if (existingBlock)
-        return null;
-    else {
+    if (existingBlock) {
         const newBlock = await workspace.safeCreateFullBlock(data);
         return newBlock.toJSON();
     }
+    else
+        return null;
 };
 
 const createExplorer = async (userId, workspaceId, chainId, name, rpcServer, slug, themes, totalSupply, domain, token) => {
@@ -1030,5 +1030,6 @@ module.exports = {
     updateBrowserSync: updateBrowserSync,
     createExplorer: createExplorer,
     syncFullBlock: syncFullBlock,
+    syncPartialBlock: syncPartialBlock,
     Workspace: Workspace
 };

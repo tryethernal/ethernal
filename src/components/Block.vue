@@ -1,7 +1,10 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col cols="12">
+            <v-col cols="6">
+                <v-alert dense text type="warning" class="my-2" v-if="block.state == 'syncing'">
+                    Block has been picked up, and is currently still being processed.
+                </v-alert>
                 <h2>Block {{ block.number }}</h2>
             </v-col>
         </v-row>

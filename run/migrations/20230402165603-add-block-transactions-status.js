@@ -5,12 +5,14 @@ module.exports = {
     try {
         await queryInterface.addColumn('blocks', 'state', {
             type: Sequelize.DataTypes.ENUM('syncing', 'ready'),
-            allowNull: false
+            allowNull: false,
+            defaultValue: 'ready'
         });
 
         await queryInterface.addColumn('transactions', 'state', {
             type: Sequelize.DataTypes.ENUM('syncing', 'ready'),
-            allowNull: false
+            allowNull: false,
+            defaultValue: 'ready'
         });
 
         await transaction.commit();

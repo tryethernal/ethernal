@@ -41,7 +41,7 @@ module.exports = async job => {
             throw new Error('Missing transactions');
     }
 
-    // await db.syncFullBlock(workspace.id, formattedBlock);
+    await db.syncFullBlock(workspace.id, formattedBlock);
 
     return true;
 };

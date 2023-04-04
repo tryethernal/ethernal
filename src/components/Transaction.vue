@@ -3,6 +3,10 @@
         <template v-if="transaction.hash">
             <v-row>
                 <v-col>
+                    <v-alert dense text type="warning" class="my-2" v-if="transaction.state == 'syncing'">
+                        Transaction has been picked up, and is currently still being processed.
+                        Once it's finished, additional data will be displayed here.
+                    </v-alert>
                     <h2 class="text-truncate mb-2">Tx {{ transaction.hash }}</h2>
                 </v-col>
                 <template v-if="!isPublicExplorer">
