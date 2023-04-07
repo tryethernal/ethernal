@@ -97,15 +97,16 @@ export default {
                 }
                 else if (!this.localNetwork && rpcServer.startsWith('wss://')) {
                     return this.errorMessage = `
-                        Can't connect to remote rpc server. 
-                        Make sure your node is up, and supports "eth_chainId" & "net_version" requests. 
+                        Can't connect to remote rpc server. Is your node up?<br>
+                        Check as well that your node supports "eth_chainId" & "net_version" requests.<br>
                         Try using https if possible.
                     `;
                 }
                 else
                     return this.errorMessage = `
-                        Can't connect to remote rpc server.<br>
-                        Make sure your node is up, and supports "eth_chainId" & "net_version" requests.
+                        Can't connect to remote rpc server. Is your node up?<br>
+                        Make sure CORS settings are allowing "app.${process.env.VUE_APP_MAIN_DOMAIN}" to connect to it.<br>
+                        Check as well that your node supports "eth_chainId" & "net_version" requests.<br>
                     `;
             }
 
