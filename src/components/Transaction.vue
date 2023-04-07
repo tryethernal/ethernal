@@ -211,18 +211,25 @@ export default {
         parsedLogsData: [],
         processing: false
     }),
+    mounted() {
+        this.pusher.onNewTransaction(data => {
+            if (data.hash == this.hash)
+                this.loadTransaction(this.hash);
+        }, this);
+    },
     watch: {
         hash: {
             immediate: true,
-            handler(hash) {
-                this.server.getTransaction(hash)
-                    .then(({ data }) => this.transaction = data)
-                    .catch(console.log);
-            }
+            handler(hash) { this.loadTransaction(hash); }
         }
     },
     methods: {
         moment: moment,
+        loadTransaction(hash) {
+            this.server.getTransaction(hash)
+                .then(({ data }) => this.transaction = data)
+                .catch(console.log);
+        },
         reprocessTransaction: function() {
             this.processing = true
             this.server

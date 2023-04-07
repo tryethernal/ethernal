@@ -40,10 +40,8 @@ module.exports = async job => {
                 });
         }
 
-        return await enqueue(`transactionProcessing`, `transactionProcessing-${storedTx.id}`, {
-            userId: data.userId,
-            workspace: data.workspace,
-            transaction: txSynced
+        return await enqueue('transactionProcessing', `transactionProcessing-${storedTx.id}`, {
+            transactionId: storedTx.id
         });
     } catch(error) {
         console.log(error);

@@ -6,6 +6,7 @@ const {
 
 const Op = Sequelize.Op
 const { sanitize } = require('../lib/utils');
+const { enqueue } = require('../lib/queue');
 const { trigger } = require('../lib/pusher');
 let { getTransactionMethodDetails } = require('../lib/abi');
 const moment = require('moment');
@@ -195,15 +196,21 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     hooks: {
         async afterSave(transaction, options) {
-            if (transaction.isReady)
-                await enqueue('transactionProcessing', `transactionProcessing-${transaction.workspaceId}-${transaction.hash}-${Date.now()}`, { 
-                    transactionId: transaction.id
-                }, 1);
+            const afterSaveFn = async () => {
+                if (transaction.isReady)
+                    await enqueue('transactionProcessing', `transactionProcessing-${transaction.workspaceId}-${transaction.hash}`, { 
+                        transactionId: transaction.id
+                    }, 1);
 
-            await trigger(`private-transactions;workspace=${transaction.workspaceId}`, 'new', null);
-            if (transaction.to)
-                await trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.to}`, 'new', null);
-            return trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.from}`, 'new', null);
+                await trigger(`private-transactions;workspace=${transaction.workspaceId}`, 'new', { hash: transaction.hash });
+                if (transaction.to)
+                    await trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.to}`, 'new', null);
+                return trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.from}`, 'new', null);
+            };
+            if (options.transaction)
+                return options.transaction.afterCommit(afterSaveFn);
+            else
+                return afterSaveFn();
         }
     },
     sequelize,

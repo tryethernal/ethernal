@@ -41,7 +41,14 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     hooks: {
         afterSave(block, options) {
-            trigger(`private-blocks;workspace=${block.workspaceId}`, 'new', { number: block.number });
+            const afterSaveFn = () => {
+                trigger(`private-blocks;workspace=${block.workspaceId}`, 'new', { number: block.number });
+            };
+
+            if (options.transaction)
+                return options.transaction.afterCommit(afterSaveFn);
+            else
+                return afterSaveFn();
         }
     },
     sequelize,

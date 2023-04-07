@@ -48,19 +48,26 @@ export default {
         },
         loading: true
     }),
+    mounted() {
+        this.pusher.onNewBlock(data => {
+            if (data.number == this.number)
+                this.loadBlock(this.number);
+        }, this);
+    },
     methods: {
-        moment: moment
+        moment: moment,
+        loadBlock(number) {
+            this.loading = true;
+            this.server.getBlock(number, true)
+                .then(({ data }) => this.block = data)
+                .catch(console.log)
+                .finally(() => this.loading = false);
+        }
     },
     watch: {
         number: {
             immediate: true,
-            handler(number) {
-                this.loading = true;
-                this.server.getBlock(number, true)
-                    .then(({ data }) => this.block = data)
-                    .catch(console.log)
-                    .finally(() => this.loading = false);
-            }
+            handler(number) { this.loadBlock(number); }
         }
     }
 }

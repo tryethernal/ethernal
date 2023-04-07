@@ -24,14 +24,14 @@ export default {
         loading: true,
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] }
     }),
-    mounted: function() {
+    mounted() {
         this.pusher.onNewTransaction(() => this.getTransactions(this.currentOptions), this);
     },
     methods: {
-        onPagination: function(options) {
+        onPagination(options) {
             this.getTransactions(options);
         },
-        getTransactions: function(newOptions) {
+        getTransactions(newOptions) {
             this.loading = true;
 
             if (newOptions)

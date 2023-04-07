@@ -40,10 +40,13 @@ const getTxSynced = async (uid, workspace, transaction, receipt, timestamp) => {
     });
 };
 
-const processTransactions = async (transactions) => {
-    for (let i = 0; i < transactions.length; i++) {
+const processTransactions = async (transactionIds) => {
+    for (let i = 0; i < transactionIds.length; i++) {
         let contract;
-        const transaction = transactions[i];
+        const transactionId = transactionIds[i];
+        const transaction = await db.getTransactionForProcessing(transactionId);
+        const userId = transaction.workspace.user.firebaseUserId;
+        const workspaceName = transaction.workspace.name;
 
         if (transaction.to)
             contract = await db.getContractData(userId, workspaceName, transaction.to);

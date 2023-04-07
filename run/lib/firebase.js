@@ -11,6 +11,24 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 
+const getTransactionForProcessing = transactionId => {
+    if (!transactionId) throw new Error('Missing parameter.');
+
+    return Transaction.findOne({
+        where: { id: transactionId },
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            attributes: ['id', 'name'],
+            include: {
+                model: User,
+                as: 'user',
+                attributes: ['id', 'firebaseUserId']
+            }
+        }
+    })
+};
+
 const syncPartialBlock = async (workspaceId, block) => {
     if (!workspaceId || !block) throw new Error('Missing parameter.');
 
@@ -1031,5 +1049,6 @@ module.exports = {
     createExplorer: createExplorer,
     syncFullBlock: syncFullBlock,
     syncPartialBlock: syncPartialBlock,
+    getTransactionForProcessing: getTransactionForProcessing,
     Workspace: Workspace
 };

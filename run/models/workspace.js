@@ -412,9 +412,10 @@ module.exports = (sequelize, DataTypes) => {
                         workspaceId: this.id,
                         number: block.number
                     },
-                    returning: true
-                },
-                { transaction: sequelizeTransaction }
+                    individualHooks: true,
+                    returning: true,
+                    transaction: sequelizeTransaction
+                }
             );
 
             for (let i = 0; i < transactions.length; i++) {
@@ -426,13 +427,13 @@ module.exports = (sequelize, DataTypes) => {
                             workspaceId: this.id,
                             hash: transaction.hash
                         },
-                        returning: true
-                    },
-                    { transaction: sequelizeTransaction }
+                        individualHooks: true,
+                        returning: true,
+                        transaction: sequelizeTransaction
+                    }
                 );
-                console.log(storedTx)
-                const receipt = transaction.receipt;
 
+                const receipt = transaction.receipt;
                 if (!receipt)
                     return await sequelizeTransaction.rollback();
 
