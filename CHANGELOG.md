@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.11.9] - 2023-04-07
+### Changed
+- Add CORS warning in case the app can't connect to the remote RPC when creating a workspace
+
 ## [3.11.8] - 2023-04-04
 ### Changed
 - Force uniqueness in job names (to avoid completed jobs to block new ones)
