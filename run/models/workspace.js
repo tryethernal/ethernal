@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Workspace.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
       Workspace.hasOne(models.Explorer, { foreignKey: 'workspaceId', as: 'explorer' });
+      Workspace.hasOne(models.IntegrityCheck, { foreignKey: 'workspaceId', as: 'integrityCheck' });
       Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'custom_fields' });
       Workspace.hasMany(models.Block, { foreignKey: 'workspaceId', as: 'blocks' });
       Workspace.hasMany(models.Transaction, { foreignKey: 'workspaceId', as: 'transactions' });
@@ -45,6 +46,17 @@ module.exports = (sequelize, DataTypes) => {
                 name: name
             }
         });
+    }
+
+    async safeCreateOrUpdateIntegrityCheck(blockId) {
+        if (!blockId) throw new Error('Missing parameter');
+
+        const integrityCheck = await this.getIntegrityCheck();
+
+        if (integrityCheck)
+            return integrityCheck.update({ blockId: blockId });
+        else
+            return this.createIntegrityCheck({ blockId: blockId });
     }
 
     async getCustomTransactionFunction() {
@@ -334,6 +346,7 @@ module.exports = (sequelize, DataTypes) => {
         This allows us to show the user that we are indexing the block, and display progress as well
     */
     safeCreatePartialBlock(block) {
+        console.log(block)
         return sequelize.transaction(async sequelizeTransaction => {
             const storedBlock = await this.createBlock(sanitize({
                 baseFeePerGas: block.baseFeePerGas,
@@ -397,13 +410,14 @@ module.exports = (sequelize, DataTypes) => {
         - Logs
         It takes longer, but we avoid inconsistencies, such as a block not displaying all transactions
     */
-    safeCreateFullBlock(data) {
-        return sequelize.transaction(async sequelizeTransaction => {
+    async safeCreateFullBlock(data) {
+        const sequelizeTransaction = await sequelize.transaction();
+        try {
             const block = data.block;
             const transactions = data.transactions;
 
             if (block.transactions.length != transactions.length)
-                return await sequelizeTransaction.rollback();
+                throw new Error('Missing transactions in block.');
 
             const [, [storedBlock]] = await sequelize.models.Block.update(
                 { state: 'ready' },
@@ -435,7 +449,7 @@ module.exports = (sequelize, DataTypes) => {
 
                 const receipt = transaction.receipt;
                 if (!receipt)
-                    return await sequelizeTransaction.rollback();
+                    throw new Error('Missing transaction receipt.');
 
                 const storedReceipt = await storedTx.createReceipt(sanitize({
                     workspaceId: storedTx.workspaceId,
@@ -472,7 +486,6 @@ module.exports = (sequelize, DataTypes) => {
                             raw: log
                         }), { transaction: sequelizeTransaction });
                     } catch(error) {
-                        logger.error(error.message, { location: 'models.workspaces', error: error, transaction: transaction });
                         await storedReceipt.createLog(sanitize({
                             workspaceId: storedTx.workspaceId,
                             raw: log
@@ -480,9 +493,23 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 }
             }
-
+            await sequelizeTransaction.commit();
             return storedBlock;
-        });
+        } catch(error) {
+            await sequelizeTransaction.rollback();
+            // If we can't store the full block, we delete partial data
+            await this.safeDestroyBlock(data.block.number);
+            throw error;
+        }
+    }
+
+    async safeDestroyBlock(blockNumber) {
+        const [block] = await this.getBlocks({ where: { workspaceId: this.id, number: blockNumber }});
+
+        // No need to throw an error if the block we are trying to destroy does not exist
+        if (!block) return;
+
+        return block.destroy();
     }
 
     safeCreateBlock(block) {
@@ -929,8 +956,14 @@ module.exports = (sequelize, DataTypes) => {
     dataRetentionLimit: DataTypes.INTEGER,
     storageEnabled: DataTypes.BOOLEAN,
     erc721LoadingEnabled: DataTypes.BOOLEAN,
-    browserSyncEnabled: DataTypes.BOOLEAN
+    browserSyncEnabled: DataTypes.BOOLEAN,
+    integrityChecksEnabled: DataTypes.BOOLEAN
   }, {
+    scopes: {
+        withIntegrityChecks: {
+            integrityChecksEnabled: true
+        }
+    },
     hooks: {
         afterSave(workspace, options) {
             return enqueue('processWorkspace', `processWorkspace-${workspace.id}-${workspace.name}`, {

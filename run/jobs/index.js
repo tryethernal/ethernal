@@ -18,5 +18,7 @@ module.exports = {
     submitExplorerLead: require('./submitExplorerLead'),
     processWorkspace: require('./processWorkspace'),
     processUser: require('./processUser'),
-    enforceDataRetentionForWorkspace: require('./enforceDataRetentionForWorkspace')
+    enforceDataRetentionForWorkspace: require('./enforceDataRetentionForWorkspace'),
+    integrityCheckStarter: require('./integrityCheckStarter'),
+    integrityCheck: require('./integrityCheck')
 };

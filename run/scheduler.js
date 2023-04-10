@@ -9,4 +9,12 @@ const { enqueue } = require('./lib/queue');
         10,
         { pattern: '0 0 * * *' }
     );
+
+    await enqueue(
+        'integrityCheckStarter',
+        'integrityCheckStarter',
+        {},
+        10,
+        { every: 1000, limit: 1 }
+    );
 })();

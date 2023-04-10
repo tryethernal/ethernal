@@ -10,6 +10,18 @@ const Workspace = models.Workspace;
 const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
+const IntegrityCheck = models.IntegrityCheck;
+
+const updateWorkspaceIntegrityCheck = async (workspaceId, blockId) => {
+    if (!workspaceId || !blockId) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+
+    if (!workspace)
+        throw new Error('Cannot find workspace');
+
+    return workspace.safeCreateOrUpdateIntegrityCheck(blockId);
+};
 
 const getTransactionForProcessing = transactionId => {
     if (!transactionId) throw new Error('Missing parameter.');
