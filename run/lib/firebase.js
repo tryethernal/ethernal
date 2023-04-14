@@ -12,15 +12,15 @@ const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 const IntegrityCheck = models.IntegrityCheck;
 
-const updateWorkspaceIntegrityCheck = async (workspaceId, blockId) => {
-    if (!workspaceId || !blockId) throw new Error('Missing parameter');
+const updateWorkspaceIntegrityCheck = async (workspaceId, { blockId, status }) => {
+    if (!workspaceId || (!blockId && !status)) throw new Error('Missing parameter');
 
     const workspace = await Workspace.findByPk(workspaceId);
 
     if (!workspace)
         throw new Error('Cannot find workspace');
 
-    return workspace.safeCreateOrUpdateIntegrityCheck(blockId);
+    return workspace.safeCreateOrUpdateIntegrityCheck({ blockId, status });
 };
 
 const getTransactionForProcessing = transactionId => {
@@ -1062,5 +1062,6 @@ module.exports = {
     syncFullBlock: syncFullBlock,
     syncPartialBlock: syncPartialBlock,
     getTransactionForProcessing: getTransactionForProcessing,
+    updateWorkspaceIntegrityCheck: updateWorkspaceIntegrityCheck,
     Workspace: Workspace
 };

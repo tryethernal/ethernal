@@ -18,8 +18,21 @@ module.exports = (sequelize, DataTypes) => {
   IntegrityCheck.init({
     workspaceId: DataTypes.INTEGER,
     blockId: DataTypes.INTEGER,
+    status: DataTypes.ENUM('healthy', 'recovering'),
     createdAt: DataTypes.DATE,
-    updatedAT: DataTypes.DATE
+    updatedAt: DataTypes.DATE,
+    isRecovering: {
+        type: DataTypes.VIRTUAL,
+        get() {
+            return this.getDataValue('status') == 'recovering';
+        }
+    },
+    isHealthy: {
+        type: DataTypes.VIRTUAL,
+        get() {
+            return this.getDataValue('status') == 'healthy';
+        }
+    },
   }, {
     sequelize,
     modelName: 'IntegrityCheck',

@@ -89,6 +89,10 @@ class ProviderConnector {
         this.provider = getProvider(server);
     }
 
+    fetchLatestBlock() {
+        return this.provider.getBlock();
+    }
+
     async fetchBlockWithTransactions(blockNumber) {
         return await this.provider.getBlockWithTransactions(blockNumber);
     }

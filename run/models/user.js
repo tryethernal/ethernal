@@ -55,7 +55,8 @@ module.exports = (sequelize, DataTypes) => {
                     as: 'workspaces',
                     where: {
                         name: workspaceName
-                    }
+                    },
+                    include: 'integrityCheck'
                 },
                 'currentWorkspace'
             ]

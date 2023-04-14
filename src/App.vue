@@ -102,6 +102,15 @@
                     </v-list-item-content>
                 </v-list-item>
 
+                <v-list-item link :to="'/status'">
+                    <v-list-item-icon>
+                        <v-icon>mdi-heart-circle</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>Status</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
                 <v-list-item class="primary--text" link v-if="isRemote" @click="openPublicExplorerExplainerModal()">
                     <v-list-item-icon>
                         <v-icon color="primary">mdi-earth</v-icon>

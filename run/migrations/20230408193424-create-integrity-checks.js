@@ -30,14 +30,19 @@ module.exports = {
                     tableName: 'blocks'
                 }
             },
-            createdAt: {
+          },
+          status: {
+              type: Sequelize.DataTypes.ENUM('healthy', 'recovering'),
               allowNull: false,
-              type: Sequelize.DATE
-            },
-            updatedAt: {
-              allowNull: false,
-              type: Sequelize.DATE
-            }
+              defaultValue: 'healthy'
+          },
+          createdAt: {
+            allowNull: false,
+            type: Sequelize.DATE
+          },
+          updatedAt: {
+            allowNull: false,
+            type: Sequelize.DATE
           }
         }, { transaction });
 

@@ -40,9 +40,20 @@ module.exports = (sequelize, DataTypes) => {
     state: DataTypes.ENUM('syncing', 'ready')
   }, {
     hooks: {
-        afterSave(block, options) {
-            const afterSaveFn = () => {
+        async afterSave(block, options) {
+            const afterSaveFn = async () => {
                 trigger(`private-blocks;workspace=${block.workspaceId}`, 'new', { number: block.number });
+                const integrityCheck = await sequelize.models.IntegrityCheck.findOne({
+                    where: { workspaceId: block.workspaceId },
+                    include: {
+                        model: sequelize.models.Block,
+                        as: 'block'
+                    }
+                });
+
+                if (integrityCheck && block.number < integrityCheck.block.number) {
+                    await integrityCheck.update({ blockId: block.id });
+                }
             };
 
             if (options.transaction)

@@ -27,7 +27,8 @@ module.exports = async job => {
         await enqueue('blockSync', `blockSync-batch-${data.userId}-${data.workspace}-${i}`, {
             userId: data.userId,
             workspace: data.workspace,
-            blockNumber: i
+            blockNumber: i,
+            source: data.source || 'batchSync'
         });
     }
 

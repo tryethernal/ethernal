@@ -5,6 +5,7 @@ const {
 } = require('sequelize');
 const { sanitize } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
+const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
 const moment = require('moment');
 
@@ -48,15 +49,19 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async safeCreateOrUpdateIntegrityCheck(blockId) {
-        if (!blockId) throw new Error('Missing parameter');
+    getProvider() {
+        return new ProviderConnector(this.rpcServer);
+    }
+
+    async safeCreateOrUpdateIntegrityCheck({ blockId, status }) {
+        if (!blockId && !status) throw new Error('Missing parameter');
 
         const integrityCheck = await this.getIntegrityCheck();
 
         if (integrityCheck)
-            return integrityCheck.update({ blockId: blockId });
+            return integrityCheck.update(sanitize({ blockId, status }));
         else
-            return this.createIntegrityCheck({ blockId: blockId });
+            return this.createIntegrityCheck(sanitize({ blockId, status }));
     }
 
     async getCustomTransactionFunction() {
@@ -346,7 +351,6 @@ module.exports = (sequelize, DataTypes) => {
         This allows us to show the user that we are indexing the block, and display progress as well
     */
     safeCreatePartialBlock(block) {
-        console.log(block)
         return sequelize.transaction(async sequelizeTransaction => {
             const storedBlock = await this.createBlock(sanitize({
                 baseFeePerGas: block.baseFeePerGas,
@@ -853,14 +857,18 @@ module.exports = (sequelize, DataTypes) => {
         if (dayInterval)
             filter['where']['createdAt'] = { [Op.lt]: sequelize.literal(`NOW() - interval '${dayInterval} day'`)};
 
-        return sequelize.transaction(async (transaction) => {
-            await sequelize.models.TokenBalanceChange.destroy(filter, { transaction });
-            await sequelize.models.TokenTransfer.destroy(filter, { transaction });
-            await sequelize.models.Transaction.destroy(filter, { transaction });
-            await sequelize.models.Block.destroy(filter, { transaction });
-            await sequelize.models.Contract.destroy(filter, { transaction });
-            await sequelize.models.Account.destroy(filter, { transaction });
-        });
+        return sequelize.transaction(
+            {  deferrable: Sequelize.Deferrable.SET_DEFERRED },
+            async (transaction) => {
+                await sequelize.models.IntegrityCheck.destroy(filter, { transaction });
+                await sequelize.models.TokenBalanceChange.destroy(filter, { transaction });
+                await sequelize.models.TokenTransfer.destroy(filter, { transaction });
+                await sequelize.models.Transaction.destroy(filter, { transaction });
+                await sequelize.models.Block.destroy(filter, { transaction });
+                await sequelize.models.Contract.destroy(filter, { transaction });
+                await sequelize.models.Account.destroy(filter, { transaction });
+            }
+        );
     }
 
     async removeContractByAddress(address) {
@@ -957,13 +965,13 @@ module.exports = (sequelize, DataTypes) => {
     storageEnabled: DataTypes.BOOLEAN,
     erc721LoadingEnabled: DataTypes.BOOLEAN,
     browserSyncEnabled: DataTypes.BOOLEAN,
-    integrityChecksEnabled: DataTypes.BOOLEAN
-  }, {
-    scopes: {
-        withIntegrityChecks: {
-            integrityChecksEnabled: true
+    integrityCheckStartBlockNumber: {
+        type: DataTypes.INTEGER,
+        get() {
+            return Math.max(this.getDataValue('integrityCheckStartBlockNumber'), 0);
         }
-    },
+    }
+  }, {
     hooks: {
         afterSave(workspace, options) {
             return enqueue('processWorkspace', `processWorkspace-${workspace.id}-${workspace.name}`, {

@@ -12,6 +12,11 @@ module.exports = async job => {
 
     const workspace = await db.getWorkspaceByName(data.userId, data.workspace);
 
+    if (data.source == 'recovery' && workspace.integrityCheck && workspace.integrityCheck.isHealthy)
+        await db.updateWorkspaceIntegrityCheck(workspace.id, { status: 'recovering' });
+    else if (data.source != 'recovery' && workspace.integrityCheck && workspace.integrityCheck.isRecovering)
+        await db.updateWorkspaceIntegrityCheck(workspace.id, { status: 'healthy' });
+
     const providerConnector = new ProviderConnector(workspace.rpcServer);
 
     const block = await providerConnector.fetchBlockWithTransactions(data.blockNumber);

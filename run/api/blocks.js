@@ -82,10 +82,11 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res) => {
             if (block.number === undefined || block.number === null)
                 throw Error('Missing block number.');
 
-            await enqueue(`blockSync`, `blockSync-${workspace.id}-${block.number}-${Date.now()}`, {
+            await enqueue(`blockSync`, `blockSync-${workspace.id}-${block.number}`, {
                 userId: data.uid,
                 workspace: data.workspace,
-                blockNumber: data.block.number
+                blockNumber: data.block.number,
+                source: 'api'
             }, 1);
         }
         else {

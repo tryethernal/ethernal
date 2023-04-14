@@ -2,14 +2,14 @@
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.addColumn('workspaces', 'integrityChecksEnabled', {
-      type: Sequelize.DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false
+    await queryInterface.addColumn('workspaces', 'integrityCheckStartBlockNumber', {
+      type: Sequelize.DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: null
     });
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.removeColumn('workspaces', 'integrityChecksEnabled');
+    await queryInterface.removeColumn('workspaces', 'integrityCheckStartBlockNumber');
   }
 };

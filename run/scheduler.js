@@ -15,6 +15,6 @@ const { enqueue } = require('./lib/queue');
         'integrityCheckStarter',
         {},
         10,
-        { every: 1000, limit: 1 }
+        { every: 30 * 1000 }
     );
 })();
