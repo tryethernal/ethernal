@@ -100,16 +100,7 @@ describe('transactionSync', () => {
                 timestamp: 123
             }
         }).then(() => {
-            expect(enqueue).toHaveBeenCalledWith('transactionProcessing', expect.anything(), {
-                userId: '123',
-                workspace: 'My Workspace',
-                transaction: {
-                    hash: '0x123',
-                    to: '0xabcd',
-                    receipt: { status: 1 },
-                    timestamp: 123,
-                }
-            });
+            expect(enqueue).toHaveBeenCalledWith('transactionProcessing', expect.anything(), { transactionId: 1 });
             done();
         });
     });

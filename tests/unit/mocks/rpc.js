@@ -21,10 +21,7 @@ jest.mock('../../../src/lib/rpc', () => {
                         { hash: '0x789' }
                     ]
                 }),
-            fetchTransactionReceipt: jest.fn()
-                .mockResolvedValue({
-                    status: 1
-                })
+            fetchTransactionReceipt: jest.fn().mockResolvedValue({ status: 1 })
         })),
         ERC721Connector: jest.fn().mockImplementation(() => ({
             tokenByIndex: jest.fn().mockResolvedValue('0'),

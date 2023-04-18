@@ -52,6 +52,17 @@ const getTransactionForProcessing = transactionId => {
     })
 };
 
+const revertPartialBlock = async (blockId) => {
+    if (!blockId) throw new Error('Missing parameter.');
+
+    const block = await Block.findByPk(blockId);
+
+    if (!block)
+        return null;
+    
+    return block.revertIfPartial();
+};
+
 const syncPartialBlock = async (workspaceId, block) => {
     if (!workspaceId || !block) throw new Error('Missing parameter.');
 
@@ -60,10 +71,9 @@ const syncPartialBlock = async (workspaceId, block) => {
 
     if (existingBlock)
         return null;
-    else {
-        const newBlock = await workspace.safeCreatePartialBlock(block);
-        return newBlock.toJSON();
-    }
+
+    const newBlock = await workspace.safeCreatePartialBlock(block);
+    return newBlock.toJSON();
 };
 
 const syncFullBlock = async (workspaceId, data) => {
@@ -1075,5 +1085,6 @@ module.exports = {
     getTransactionForProcessing: getTransactionForProcessing,
     updateWorkspaceIntegrityCheck: updateWorkspaceIntegrityCheck,
     updateWorkspaceRpcHealthCheck: updateWorkspaceRpcHealthCheck,
+    revertPartialBlock: revertPartialBlock,
     Workspace: Workspace
 };

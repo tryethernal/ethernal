@@ -16,6 +16,13 @@ module.exports = (sequelize, DataTypes) => {
       Block.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       Block.hasMany(models.Transaction, { foreignKey: 'blockId', as: 'transactions' });
     }
+
+    async revertIfPartial() {
+        if (this.state !== 'syncing')
+            return;
+
+        this.destroy();
+    }
   }
   Block.init({
     baseFeePerGas: DataTypes.STRING,

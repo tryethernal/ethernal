@@ -518,18 +518,18 @@ module.exports = (sequelize, DataTypes) => {
         } catch(error) {
             await sequelizeTransaction.rollback();
             // If we can't store the full block, we delete partial data
-            await this.safeDestroyBlock(data.block.number);
+            await this.safeDestroyPartialBlock(data.block.number);
             throw error;
         }
     }
 
-    async safeDestroyBlock(blockNumber) {
+    async safeDestroyPartialBlock(blockNumber) {
         const [block] = await this.getBlocks({ where: { workspaceId: this.id, number: blockNumber }});
 
-        // No need to throw an error if the block we are trying to destroy does not exist
-        if (!block) return;
+        // No need to throw an error if the block we are trying to destroy does not exist or is not partial
+        if (!block || block.state !== 'syncing') return;
 
-        return block.destroy();
+        return block.revertIfPartial();
     }
 
     safeCreateBlock(block) {

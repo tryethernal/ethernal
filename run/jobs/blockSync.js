@@ -2,6 +2,7 @@ const { ProviderConnector } = require('../lib/rpc');
 const { sanitize, stringifyBns } = require('../lib/utils');
 const db = require('../lib/firebase');
 const transactionsLib = require('../lib/transactions');
+const logger = require('../lib/logger');
 const { enqueue } = require('../lib/queue');
 
 module.exports = async job => {
@@ -24,26 +25,30 @@ module.exports = async job => {
     if (!block)
         throw new Error("Couldn't fetch block from provider");
 
-    const syncPartialBlock = await db.syncPartialBlock(workspace.id, block);
+    const partialBlock = await db.syncPartialBlock(workspace.id, block);
 
     const formattedBlock = {
         block,
         transactions: [],
-    }
-    for (let i = 0; i < block.transactions.length; i++) {
-        const transaction = block.transactions[i];
-        const receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
+    };
 
-        if (!receipt)
-            throw new Error("Failed fetching receipt");
+    try {
+        for (let i = 0; i < block.transactions.length; i++) {
+            const transaction = block.transactions[i];
+            const receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
 
-        formattedBlock.transactions.push({
-            ...transaction,
-            receipt
-        });
+            if (!receipt)
+                throw new Error('Failed to fetch receipt');
 
-        if (formattedBlock.transactions.length != block.transactions.length)
-            throw new Error('Missing transactions');
+            formattedBlock.transactions.push({
+                ...transaction,
+                receipt
+            });
+        }
+    } catch(error) {
+        await db.revertPartialBlock(partialBlock.id);
+        logger.error(error.message, { location: 'jobs.blockSync', error: error, data: data });
+        throw error;
     }
 
     await db.syncFullBlock(workspace.id, formattedBlock);

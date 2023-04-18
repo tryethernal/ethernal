@@ -82,6 +82,11 @@ jest.mock('../../../lib/firebase', () => {
         setUserPassword: jest.fn(),
         updateBrowserSync: jest.fn(),
         createExplorer: jest.fn(),
+        syncPartialBlock: jest.fn(),
+        syncFullBlock: jest.fn(),
+        revertPartialBlock: jest.fn(),
+        updateWorkspaceIntegrityCheck: jest.fn(),
+        getTransactionForProcessing: jest.fn(),
         Workspace: Workspace
     }
 });
