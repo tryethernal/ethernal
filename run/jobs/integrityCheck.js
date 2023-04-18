@@ -42,7 +42,7 @@ module.exports = async job => {
     });
 
     if (workspace.integrityCheckStartBlockNumber === null || workspace.integrityCheckStartBlockNumber === undefined)
-        return false;
+        return 'Integrity checks not enabled';
 
     /*
         We don't want to start integrity checks if the sync has never been initiated.
@@ -51,7 +51,12 @@ module.exports = async job => {
     */
     const blockCount = await workspace.countBlocks();
     if (blockCount == 0)
-        return false;
+        return 'No block synced yet';
+
+    const [lowestBlock] = await workspace.getBlocks({
+        order: [['number', 'ASC']],
+        limit: 1
+    });
 
     let lowerBlock;
     /*
@@ -59,7 +64,7 @@ module.exports = async job => {
         the latest checked one (if we've changed it for example), we start from the
         starting block defined on the workspace.
     */
-    if (!workspace.integrityCheck || workspace.integrityCheckStartBlockNumber < workspace.integrityCheck.block.number) {
+    if (!workspace.integrityCheck || workspace.integrityCheckStartBlockNumber < lowestBlock.number) {
         ([lowerBlock] = await workspace.getBlocks({
             where: { number: workspace.integrityCheckStartBlockNumber },
         }));
@@ -89,7 +94,7 @@ module.exports = async job => {
     });
 
     if (!lowerBlock || !upperBlock)
-        return false;
+        return 'Missing lower block or upper block';
 
     if (lowerBlock.number == upperBlock.number) {
         const provider = workspace.getProvider();
@@ -100,7 +105,6 @@ module.exports = async job => {
             we recover the range of missing blocks
         */
         const diff = moment.unix(latestBlock.timestamp).diff(moment(upperBlock.timestamp), 'seconds');
-
         if (diff > DELAY_BEFORE_RECOVERY) {
             await enqueue('batchBlockSync', `batchBlockSync-${workspace.id}`, {
                 userId: workspace.user.firebaseUserId,
@@ -142,12 +146,15 @@ module.exports = async job => {
         If we just handled a gap, We can't update latest block checked because sync is done asynchronously.
         So we just wait for the first run with no gaps.
     */
+    console.log(gaps)
+    console.log(lowerBlock.number, upperBlock.number)
     if (!gaps.length) {
         if (lowerBlock.number != upperBlock.number)
             await db.updateWorkspaceIntegrityCheck(workspace.id, { blockId: upperBlock.id });
     }
     else {
-        gaps.forEach(async gap => {
+        for (let i = 0; i < gaps.length; i++) {
+            const gap = gaps[i];
             if (gap.blockStart && gap.blockEnd)
                 await enqueue('batchBlockSync', `batchBlockSync-${workspace.id}`, {
                     userId: workspace.user.firebaseUserId,
@@ -156,7 +163,7 @@ module.exports = async job => {
                     to: gap.blockEnd,
                     source: 'integrityCheck'
                 });
-        });
+        }
     }
 
     return true;

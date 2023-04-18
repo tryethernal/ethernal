@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       Workspace.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
       Workspace.hasOne(models.Explorer, { foreignKey: 'workspaceId', as: 'explorer' });
       Workspace.hasOne(models.IntegrityCheck, { foreignKey: 'workspaceId', as: 'integrityCheck' });
+      Workspace.hasOne(models.RpcHealthCheck, { foreignKey: 'workspaceId', as: 'rpcHealthCheck' });
       Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'custom_fields' });
       Workspace.hasMany(models.Block, { foreignKey: 'workspaceId', as: 'blocks' });
       Workspace.hasMany(models.Transaction, { foreignKey: 'workspaceId', as: 'transactions' });
@@ -53,11 +54,26 @@ module.exports = (sequelize, DataTypes) => {
         return new ProviderConnector(this.rpcServer);
     }
 
+    async safeCreateOrUpdateRpcHealthCheck(isReachable) {
+        if (isReachable === null || isReachable === undefined)
+            throw new Error('Missing parameter');
+
+        const rpcHealthCheck = await this.getRpcHealthCheck();
+
+        if (rpcHealthCheck) {
+            // This is necessary otherwise Sequelize won't update the value with no other changes
+            rpcHealthCheck.changed('updatedAt', true);
+            return rpcHealthCheck.update({ isReachable, updatedAt: new Date() });
+        }
+        else
+            return this.createRpcHealthCheck({ isReachable });
+    }
+
     async safeCreateOrUpdateIntegrityCheck({ blockId, status }) {
         if (!blockId && !status) throw new Error('Missing parameter');
 
         const integrityCheck = await this.getIntegrityCheck();
-
+        console.log(blockId, status)
         if (integrityCheck)
             return integrityCheck.update(sanitize({ blockId, status }));
         else
@@ -965,6 +981,8 @@ module.exports = (sequelize, DataTypes) => {
     storageEnabled: DataTypes.BOOLEAN,
     erc721LoadingEnabled: DataTypes.BOOLEAN,
     browserSyncEnabled: DataTypes.BOOLEAN,
+    rpcHealthCheckEnabled: DataTypes.BOOLEAN,
+    statusPageEnabled: DataTypes.BOOLEAN,
     integrityCheckStartBlockNumber: {
         type: DataTypes.INTEGER,
         get() {

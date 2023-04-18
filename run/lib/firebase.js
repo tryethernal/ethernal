@@ -12,6 +12,17 @@ const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 const IntegrityCheck = models.IntegrityCheck;
 
+const updateWorkspaceRpcHealthCheck = async (workspaceId, isReachable) => {
+    if (!workspaceId || isReachable === null || isReachable === undefined) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+
+    if (!workspace)
+        throw new Error('Cannot find workspace');
+
+    return workspace.safeCreateOrUpdateRpcHealthCheck(isReachable);
+};
+
 const updateWorkspaceIntegrityCheck = async (workspaceId, { blockId, status }) => {
     if (!workspaceId || (!blockId && !status)) throw new Error('Missing parameter');
 
@@ -1063,5 +1074,6 @@ module.exports = {
     syncPartialBlock: syncPartialBlock,
     getTransactionForProcessing: getTransactionForProcessing,
     updateWorkspaceIntegrityCheck: updateWorkspaceIntegrityCheck,
+    updateWorkspaceRpcHealthCheck: updateWorkspaceRpcHealthCheck,
     Workspace: Workspace
 };

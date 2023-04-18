@@ -51,9 +51,11 @@ module.exports = async (req, res, next) => {
             return res.sendStatus(404);
 
         // Continue if workspace is public or we are requesting a workspace that we own
-        if (workspace.public || (firebaseUser && data.firebaseUserId && data.firebaseUserId == firebaseUser.user_id)) {
+        req.query.authenticated = firebaseUser.user_id && data.firebaseUserId && data.firebaseUserId == firebaseUser.user_id;
+        if (workspace.public || req.query.authenticated) {
             req.query.firebaseUserId = data.firebaseUserId;
             req.query.workspace = workspace;
+
             next();
         }
         else

@@ -345,6 +345,7 @@ export const serverPlugin = {
         Vue.prototype.server = {
             getExplorerStatus() {
                 const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/status`;

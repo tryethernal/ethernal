@@ -20,6 +20,8 @@
         "processUser",
         "enforceDataRetentionForWorkspace",
         "integrityCheckStarter",
-        "integrityCheck"
+        "integrityCheck",
+        "rpcHealthCheck",
+        "rpcHealthCheckStarter"
     ]
 }

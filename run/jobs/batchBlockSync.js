@@ -18,6 +18,7 @@ module.exports = async job => {
             workspace: data.workspace,
             from: end,
             to: parseInt(data.to),
+            source: data.source || 'batchSync'
         });
     }
     else

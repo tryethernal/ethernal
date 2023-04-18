@@ -102,7 +102,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link :to="'/status'">
+                <v-list-item link :to="'/status'" v-if="isUserAdmin || currentWorkspace.statusPageEnabled">
                     <v-list-item-icon>
                         <v-icon>mdi-heart-circle</v-icon>
                     </v-list-item-icon>
@@ -377,6 +377,7 @@ export default {
                     rpcServer: data.rpcServer,
                     storageEnabled: data.workspace.storageEnabled,
                     erc721LoadingEnabled: data.workspace.erc721LoadingEnabled,
+                    statusPageEnabled: data.workspace.statusPageEnabled,
                     id: data.workspaceId,
                     defaultAccount: data.workspace.defaultAccount,
                     gasPrice: data.workspace.gasPrice,

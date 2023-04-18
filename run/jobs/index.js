@@ -20,5 +20,7 @@ module.exports = {
     processUser: require('./processUser'),
     enforceDataRetentionForWorkspace: require('./enforceDataRetentionForWorkspace'),
     integrityCheckStarter: require('./integrityCheckStarter'),
-    integrityCheck: require('./integrityCheck')
+    integrityCheck: require('./integrityCheck'),
+    rpcHealthCheck: require('./rpcHealthCheck'),
+    rpcHealthCheckStarter: require('./rpcHealthCheckStarter')
 };

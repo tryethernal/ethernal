@@ -1,6 +1,21 @@
 const ethers = require('ethers');
 
+const DEFAULT_PROMISE_TIMEOUT = 10 * 1000;
+
 const getEnv = () => process.env.NODE_ENV;
+
+const withTimeout = (promise, delay = DEFAULT_PROMISE_TIMEOUT) => {
+    const timeout = new Promise((resolve, reject) =>
+        setTimeout(
+            () => reject(`Timed out after ${delay} ms.`),
+            delay
+        )
+    );
+    return Promise.race([
+        promise,
+        timeout
+    ]);
+}
 
 const isStringifiedBN = function(obj) {
     if (!obj)
@@ -54,5 +69,6 @@ module.exports = {
     sanitize: _sanitize,
     stringifyBns: _stringifyBns,
     isJson: _isJson,
-    getEnv: getEnv
+    getEnv: getEnv,
+    withTimeout: withTimeout
 };
