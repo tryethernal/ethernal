@@ -1,6 +1,5 @@
 const express = require('express');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
-const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 const { sanitize } = require('../lib/utils');
 const router = express.Router();
@@ -14,7 +13,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
         if (!workspace.statusPageEnabled && !data.authenticated)
             return res.sendStatus(404);
 
-        if (workspace.integrityCheckStartBlockNumber === null || workspace.integrityCheckStartBlockNumber === undefined || !workspace.rpcHealthCheckEnabled)
+        if ((workspace.integrityCheckStartBlockNumber === null || workspace.integrityCheckStartBlockNumber === undefined) && !workspace.rpcHealthCheckEnabled)
             throw new Error('Status is not available on this workspace');
 
         const integrityCheck = workspace.integrityCheck || {};
@@ -31,7 +30,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
         res.status(200).json(result);
     } catch(error) {
         logger.error(error.message, { location: 'api.status', error: error });
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
