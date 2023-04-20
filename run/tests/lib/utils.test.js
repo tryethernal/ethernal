@@ -6,6 +6,16 @@ const {
 } = require('../../lib/utils');
 
 describe('sanitize', () => {
+    it('Should numberize whitelisted fields', () => {
+        const obj = { blockNumber: '0x123' };
+        expect(sanitize(obj)).toEqual({ blockNumber: 291 });
+    });
+
+    it('Should stringify BigNumber', () => {
+        const obj = { blockNumber: ethers.BigNumber.from('123456') };
+        expect(sanitize(obj)).toEqual({ blockNumber: '123456' });
+    });
+
     it('Should clear null keys', () => {
         const obj = {
             a: 1,

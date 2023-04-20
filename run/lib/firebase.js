@@ -57,16 +57,17 @@ const revertPartialBlock = async (blockId) => {
 
     const block = await Block.findByPk(blockId);
 
-    if (!block)
-        return null;
-    
-    return block.revertIfPartial();
+    return block ? block.revertIfPartial() : null;
 };
 
 const syncPartialBlock = async (workspaceId, block) => {
     if (!workspaceId || !block) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
+
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
     const existingBlock = await workspace.findBlockByNumber(block.number);
 
     if (existingBlock)
@@ -80,6 +81,10 @@ const syncFullBlock = async (workspaceId, data) => {
     if (!workspaceId || !data) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
+
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
     const existingBlock = await workspace.findBlockByNumber(data.block.number);
 
     if (existingBlock) {

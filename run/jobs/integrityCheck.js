@@ -10,14 +10,11 @@
 
 */
 
-const { Sequelize, QueryTypes } = require('sequelize');
-
 const models = require('../models');
 const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
 const moment = require('moment');
 
-const sequelize = models.sequelize;
 const Workspace = models.Workspace;
 
 const DELAY_BEFORE_RECOVERY = 2 * 60;
@@ -116,38 +113,12 @@ module.exports = async job => {
         }
     }
 
-    const gaps = await sequelize.query(`
-        SELECT * FROM (
-            SELECT
-                LAG(MAX("number")) OVER (order by group_id) + 1 AS "blockStart",
-                MIN("number") - 1 AS "blockEnd"
-            FROM (  
-                SELECT
-                    "workspaceId", "number",
-                    "number" - row_number() OVER (ORDER BY "number") as group_id
-                FROM blocks
-                WHERE "workspaceId" = :workspaceId
-                AND number >= :lowerBound
-                AND number <= :upperBound
-            ) s
-            GROUP BY group_id
-        ) q
-        WHERE "blockStart" IS NOT NULL;
-    `, {
-        replacements: {
-            workspaceId: workspace.id,
-            lowerBound: lowerBlock.number,
-            upperBound: upperBlock.number
-        },
-        type: QueryTypes.SELECT
-    });
+    const gaps = await workspace.findBlockGaps(lowerBlock.number, upperBlock.number);
 
     /*
         If we just handled a gap, We can't update latest block checked because sync is done asynchronously.
         So we just wait for the first run with no gaps.
     */
-    console.log(gaps)
-    console.log(lowerBlock.number, upperBlock.number)
     if (!gaps.length) {
         if (lowerBlock.number != upperBlock.number)
             await db.updateWorkspaceIntegrityCheck(workspace.id, { blockId: upperBlock.id });

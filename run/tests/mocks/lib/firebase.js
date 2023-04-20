@@ -87,6 +87,7 @@ jest.mock('../../../lib/firebase', () => {
         revertPartialBlock: jest.fn(),
         updateWorkspaceIntegrityCheck: jest.fn(),
         getTransactionForProcessing: jest.fn(),
+        updateWorkspaceRpcHealthCheck: jest.fn(),
         Workspace: Workspace
     }
 });

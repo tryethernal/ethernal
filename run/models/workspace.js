@@ -54,6 +54,37 @@ module.exports = (sequelize, DataTypes) => {
         return new ProviderConnector(this.rpcServer);
     }
 
+    findBlockGaps(lowerBound, upperBound) {
+        if (lowerBound === undefined || lowerBound === null || upperBound === undefined || upperBound === null)
+            throw new Error('Missing parameter');
+
+        return sequelize.query(`
+            SELECT * FROM (
+                SELECT
+                    LAG(MAX("number")) OVER (order by group_id) + 1 AS "blockStart",
+                    MIN("number") - 1 AS "blockEnd"
+                FROM (  
+                    SELECT
+                        "workspaceId", "number",
+                        "number" - row_number() OVER (ORDER BY "number") as group_id
+                    FROM blocks
+                    WHERE "workspaceId" = :workspaceId
+                    AND number >= :lowerBound
+                    AND number <= :upperBound
+                ) s
+                GROUP BY group_id
+            ) q
+            WHERE "blockStart" IS NOT NULL;
+        `, {
+            replacements: {
+                workspaceId: this.id,
+                lowerBound: lowerBound,
+                upperBound: upperBound
+            },
+            type: QueryTypes.SELECT
+        });
+    }
+
     async safeCreateOrUpdateRpcHealthCheck(isReachable) {
         if (isReachable === null || isReachable === undefined)
             throw new Error('Missing parameter');
