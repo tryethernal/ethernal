@@ -4,6 +4,7 @@ exports[`Transaction.vue Should display parsed error messages 1`] = `
 <div class="container container--fluid">
   <div class="row">
     <div class="col">
+      <!---->
       <h2 class="text-truncate mb-2">Tx 0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759</h2>
     </div>
     <div class="spacer"></div>
@@ -88,6 +89,7 @@ exports[`Transaction.vue Should display raw error messages 1`] = `
 <div class="container container--fluid">
   <div class="row">
     <div class="col">
+      <!---->
       <h2 class="text-truncate mb-2">Tx 0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759</h2>
     </div>
     <div class="spacer"></div>
@@ -174,6 +176,7 @@ exports[`Transaction.vue Should not display the menu if public explorer 1`] = `
 <div class="container container--fluid">
   <div class="row">
     <div class="col">
+      <!---->
       <h2 class="text-truncate mb-2">Tx 0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759</h2>
     </div>
     <!---->

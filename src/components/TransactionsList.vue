@@ -102,58 +102,21 @@ export default {
     mounted() {
         if (!this.dense)
             this.headers = [
-                {
-                    text: 'Txn Hash',
-                    value: 'hash',
-                    align: 'start',
-                },
-                {
-                    text: 'Method',
-                    value: 'method',
-                    sortable: false
-                },
-                {
-                    text: 'Block',
-                    value: 'blockNumber'
-                },
-                {
-                    text: 'Mined On',
-                    value: 'timestamp'
-                },
-                {
-                    text: 'From',
-                    value: 'from'
-                },
-                {
-                    text: 'To',
-                    value: 'to'
-                },
-                {
-                    text: 'Value',
-                    value: 'value'
-                },
-                {
-                    text: 'Fee',
-                    value: 'fee',
-                    sortable: false
-                }
-            ]
+                { text: 'Txn Hash', value: 'hash', align: 'start' },
+                { text: 'Method', value: 'method', sortable: false },
+                { text: 'Block', value: 'blockNumber' },
+                { text: 'Mined On', value: 'timestamp' },
+                { text: 'From', value: 'from' },
+                { text: 'To', value: 'to' },
+                { text: 'Value', value: 'value' },
+                { text: 'Fee', value: 'fee', sortable: false }
+            ];
         else
             this.headers = [
-                {
-                    text: 'Txn Hash',
-                    value: 'hash',
-                    align: 'start',
-                },
-                {
-                    text: 'Mined On',
-                    value: 'timestamp'
-                },
-                {
-                    text: 'From',
-                    value: 'from'
-                }
-            ]
+                { text: 'Txn Hash', value: 'hash', align: 'start' },
+                { text: 'Mined On', value: 'timestamp' },
+                { text: 'From', value: 'from' }
+            ];
     },
     methods: {
         moment: moment,

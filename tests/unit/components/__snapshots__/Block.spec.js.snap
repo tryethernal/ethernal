@@ -3,7 +3,8 @@
 exports[`Block.vue Should show the block component 1`] = `
 <div class="container container--fluid">
   <div class="row">
-    <div class="col col-12">
+    <div class="col col-6">
+      <!---->
       <h2>Block 1</h2>
     </div>
   </div>
