@@ -16,6 +16,13 @@ module.exports = (sequelize, DataTypes) => {
       Block.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       Block.hasMany(models.Transaction, { foreignKey: 'blockId', as: 'transactions' });
     }
+
+    async revertIfPartial() {
+        if (this.state !== 'syncing')
+            return;
+
+        this.destroy();
+    }
   }
   Block.init({
     baseFeePerGas: DataTypes.STRING,
@@ -36,11 +43,30 @@ module.exports = (sequelize, DataTypes) => {
     },
     transactionsCount: DataTypes.INTEGER,
     raw: DataTypes.JSON,
-    workspaceId: DataTypes.INTEGER
+    workspaceId: DataTypes.INTEGER,
+    state: DataTypes.ENUM('syncing', 'ready')
   }, {
     hooks: {
-        afterSave(block, options) {
-            trigger(`private-blocks;workspace=${block.workspaceId}`, 'new', { number: block.number });
+        async afterSave(block, options) {
+            const afterSaveFn = async () => {
+                trigger(`private-blocks;workspace=${block.workspaceId}`, 'new', { number: block.number });
+                const integrityCheck = await sequelize.models.IntegrityCheck.findOne({
+                    where: { workspaceId: block.workspaceId },
+                    include: {
+                        model: sequelize.models.Block,
+                        as: 'block'
+                    }
+                });
+
+                if (integrityCheck && block.number < integrityCheck.block.number) {
+                    await integrityCheck.update({ blockId: block.id });
+                }
+            };
+
+            if (options.transaction)
+                return options.transaction.afterCommit(afterSaveFn);
+            else
+                return afterSaveFn();
         }
     },
     sequelize,

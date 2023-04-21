@@ -89,6 +89,10 @@ class ProviderConnector {
         this.provider = getProvider(server);
     }
 
+    fetchLatestBlock() {
+        return this.provider.getBlock();
+    }
+
     async fetchBlockWithTransactions(blockNumber) {
         return await this.provider.getBlockWithTransactions(blockNumber);
     }
@@ -102,12 +106,8 @@ class ProviderConnector {
     }
 
     async fetchNetworkId() {
-        try {
-            const { chainId } = await this.provider.getNetwork();
-            return chainId;
-        } catch(error) {
-            throw error;
-        }
+        const { chainId } = await this.provider.getNetwork();
+        return chainId;
     }
 }
 

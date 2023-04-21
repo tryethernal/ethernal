@@ -10,6 +10,90 @@ const Workspace = models.Workspace;
 const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
+const IntegrityCheck = models.IntegrityCheck;
+
+const updateWorkspaceRpcHealthCheck = async (workspaceId, isReachable) => {
+    if (!workspaceId || isReachable === null || isReachable === undefined) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+
+    if (!workspace)
+        throw new Error('Cannot find workspace');
+
+    return workspace.safeCreateOrUpdateRpcHealthCheck(isReachable);
+};
+
+const updateWorkspaceIntegrityCheck = async (workspaceId, { blockId, status }) => {
+    if (!workspaceId || (!blockId && !status)) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+
+    if (!workspace)
+        throw new Error('Cannot find workspace');
+
+    return workspace.safeCreateOrUpdateIntegrityCheck({ blockId, status });
+};
+
+const getTransactionForProcessing = transactionId => {
+    if (!transactionId) throw new Error('Missing parameter.');
+
+    return Transaction.findOne({
+        where: { id: transactionId },
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            attributes: ['id', 'name'],
+            include: {
+                model: User,
+                as: 'user',
+                attributes: ['id', 'firebaseUserId']
+            }
+        }
+    })
+};
+
+const revertPartialBlock = async (blockId) => {
+    if (!blockId) throw new Error('Missing parameter.');
+
+    const block = await Block.findByPk(blockId);
+
+    return block ? block.revertIfPartial() : null;
+};
+
+const syncPartialBlock = async (workspaceId, block) => {
+    if (!workspaceId || !block) throw new Error('Missing parameter.');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    const existingBlock = await workspace.findBlockByNumber(block.number);
+
+    if (existingBlock)
+        return null;
+
+    const newBlock = await workspace.safeCreatePartialBlock(block);
+    return newBlock.toJSON();
+};
+
+const syncFullBlock = async (workspaceId, data) => {
+    if (!workspaceId || !data) throw new Error('Missing parameter.');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    const existingBlock = await workspace.findBlockByNumber(data.block.number);
+
+    if (existingBlock) {
+        const newBlock = await workspace.safeCreateFullBlock(data);
+        return newBlock.toJSON();
+    }
+    else
+        return null;
+};
 
 const createExplorer = async (userId, workspaceId, chainId, name, rpcServer, slug, themes, totalSupply, domain, token) => {
     if (!userId || !workspaceId || !chainId || !name || !rpcServer || !slug)
@@ -1001,5 +1085,11 @@ module.exports = {
     updateUserFirebaseHash: updateUserFirebaseHash,
     updateBrowserSync: updateBrowserSync,
     createExplorer: createExplorer,
+    syncFullBlock: syncFullBlock,
+    syncPartialBlock: syncPartialBlock,
+    getTransactionForProcessing: getTransactionForProcessing,
+    updateWorkspaceIntegrityCheck: updateWorkspaceIntegrityCheck,
+    updateWorkspaceRpcHealthCheck: updateWorkspaceRpcHealthCheck,
+    revertPartialBlock: revertPartialBlock,
     Workspace: Workspace
 };

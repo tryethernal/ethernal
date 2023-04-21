@@ -17,6 +17,7 @@ dist
 **/functions/.runtimeconfig.json
 ganache-db
 **/run/.env
+.git/
 
 firebase-export-*
 .firebase

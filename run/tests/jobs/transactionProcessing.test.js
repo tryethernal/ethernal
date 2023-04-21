@@ -7,12 +7,6 @@ afterAll(() => jest.clearAllMocks());
 
 describe('transactionProcessing', () => {
     it('Should succeed', (done) => {
-        transactionProcessing({
-            data: {
-                userId: '123',
-                workspace: 'My Workspace',
-                transaction: { hash: '0x123' }
-            }
-        }).then(done);
+        transactionProcessing({ data: { transactionId: 1 }}).then(done);
     });
 });

@@ -3,6 +3,10 @@
         <template v-if="transaction.hash">
             <v-row>
                 <v-col>
+                    <v-alert dense text type="warning" class="my-2" v-if="transaction.state == 'syncing'">
+                        Transaction has been picked up, and is currently still being processed.
+                        Once it's finished, additional data will be displayed here.
+                    </v-alert>
                     <h2 class="text-truncate mb-2">Tx {{ transaction.hash }}</h2>
                 </v-col>
                 <template v-if="!isPublicExplorer">
@@ -207,18 +211,25 @@ export default {
         parsedLogsData: [],
         processing: false
     }),
+    mounted() {
+        this.pusher.onNewTransaction(data => {
+            if (data.hash == this.hash)
+                this.loadTransaction(this.hash);
+        }, this);
+    },
     watch: {
         hash: {
             immediate: true,
-            handler(hash) {
-                this.server.getTransaction(hash)
-                    .then(({ data }) => this.transaction = data)
-                    .catch(console.log);
-            }
+            handler(hash) { this.loadTransaction(hash); }
         }
     },
     methods: {
         moment: moment,
+        loadTransaction(hash) {
+            this.server.getTransaction(hash)
+                .then(({ data }) => this.transaction = data)
+                .catch(console.log);
+        },
         reprocessTransaction: function() {
             this.processing = true
             this.server

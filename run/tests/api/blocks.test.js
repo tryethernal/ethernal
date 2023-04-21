@@ -79,7 +79,8 @@ describe(`POST ${BASE_URL}`, () => {
                 expect(enqueue).toHaveBeenCalledWith('blockSync', expect.anything(), {
                     userId: '123',
                     workspace: 'My Workspace',
-                    blockNumber: 123
+                    blockNumber: 123,
+                    source: 'api'
                 }, expect.anything());
                 done();
             });

@@ -9,6 +9,7 @@
         :server-items-length="blockCount"
         :hide-default-footer="dense"
         :hide-default-header="dense"
+        :item-class="rowClasses"
         :footer-props="{
             itemsPerPageOptions: [10, 25, 100]
         }"
@@ -18,6 +19,14 @@
             No blocks found
         </template>
         <template v-slot:item.number="{ item }">
+            <template>
+                <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-progress-circular v-if="item.state == 'syncing'" v-bind="attrs" v-on="on" size="16" width="2" indeterminate color="primary" class="mr-2"></v-progress-circular>
+                    </template>
+                    <span v-if="item.state == 'syncing'">Indexing block...</span>
+                </v-tooltip>
+            </template>
             <router-link :to="'/block/' + item.number">{{item.number}}</router-link>
         </template>
         <template v-slot:item.timestamp="{ item }">
@@ -47,51 +56,24 @@ export default {
         loading: true,
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['number'], sortDesc: [true] }
     }),
-    mounted: function() {
+    mounted() {
         this.pusher.onNewBlock(() => this.getBlocks(this.currentOptions), this);
-        if (this.dense) {
-            this.headers = [
-                {
-                    text: 'Block',
-                    value: 'number'
-                },
-                {
-                    text: 'Mined On',
-                    value: 'timestamp'
-                },
-                {
-                    text: 'Transaction Count',
-                    value: 'transactionNumber',
-                    sortable: false
-                }
-            ]
-        }
-        else {
-            this.headers = [
-                {
-                    text: 'Block',
-                    value: 'number'
-                },
-                {
-                    text: 'Mined On',
-                    value: 'timestamp'
-                },
-                {
-                    text: 'Gas Used',
-                    value: 'gasUsed',
-                    sortable: false
-                },
-                {
-                    text: 'Transaction Count',
-                    value: 'transactionNumber',
-                    sortable: false
-                }
-            ]
-        }
+
+        this.headers.push(
+            { text: 'Block', value: 'number' },
+            { text: 'Mined On', value: 'timestamp' }
+        );
+        if (!this.dense)
+            this.headers.push({ text: 'Gas Used', value: 'gasUsed', sortable: false });
+        this.headers.push({ text: 'Transaction Count', value: 'transactionNumber', sortable: false });
     },
     methods: {
         moment: moment,
-        getBlocks: function(newOptions) {
+        rowClasses(item) {
+            if (item.state == 'syncing')
+                return 'isSyncing'
+        },
+        getBlocks(newOptions) {
             this.loading = true;
 
             if (newOptions)
@@ -113,3 +95,9 @@ export default {
     }
 }
 </script>
+<style scoped>
+/deep/ .isSyncing {
+    font-style: italic;
+    opacity: 0.7;
+}
+</style>

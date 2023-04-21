@@ -124,7 +124,10 @@ export default Vue.extend({
             if (this.currentWorkspace.browserSyncEnabled)
                 this.$store.dispatch('startBrowserSync');
         }
-        this.pusher.onNewBlock((block) => this.$store.dispatch('updateCurrentBlock', block), this);
+        this.pusher.onNewBlock(block => {
+            if (block.number > this.currentBlock.number)
+                this.$store.dispatch('updateCurrentBlock', block);
+        }, this);
     },
     methods: {
         formatContractPattern,

@@ -68,12 +68,6 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res) => {
                 });
         }
 
-        await enqueue('transactionProcessing', `transactionProcessing-${txSynced.hash}`, { 
-            userId: data.uid,
-            workspace: data.workspace,
-            transaction: txSynced
-        }, 1);
-       
        res.sendStatus(200);
     } catch(error) {
         logger.error(error.message, { location: 'post.api.transactions', error: error, data: data });
@@ -105,7 +99,7 @@ router.post('/:hash/process', authMiddleware, async (req, res) => {
             throw new Error('Missing parameter.');
 
         const transaction = await db.getTransaction(data.uid, data.workspace, req.params.hash);
-        await processTransactions(data.uid, data.workspace, [transaction]);
+        await processTransactions([transaction.id]);
 
         res.sendStatus(200);
     } catch(error) {

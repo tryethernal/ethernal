@@ -3,6 +3,7 @@ jest.mock('../../../lib/utils', () => {
     return {
         getEnv: jest.fn().mockReturnValue('test'),
         getFunctionSignatureForTransaction: jest.fn(),
-        sanitize: actual.sanitize
+        sanitize: actual.sanitize,
+        withTimeout: jest.fn()
     }
 });

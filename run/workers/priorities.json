@@ -18,6 +18,10 @@
         "submitExplorerLead",
         "processWorkspace",
         "processUser",
-        "enforceDataRetentionForWorkspace"
+        "enforceDataRetentionForWorkspace",
+        "integrityCheckStarter",
+        "integrityCheck",
+        "rpcHealthCheck",
+        "rpcHealthCheckStarter"
     ]
 }

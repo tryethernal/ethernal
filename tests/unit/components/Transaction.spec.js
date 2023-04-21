@@ -20,6 +20,31 @@ describe('Transaction.vue', () => {
         jest.spyOn(Date, 'now').mockImplementation(() => new Date('2022-08-07T12:33:37.000Z'));
     });
 
+    it('Should display indexing warning', async () => {
+        jest.spyOn(helper.mocks.server, 'getTransaction')
+            .mockResolvedValue({ data: {
+                ...USDCTransferTx,
+                block: { gasLimit: '1000' },
+                traceSteps: [],
+                receipt: { ...USDCTransferTx.receipt, status: 0 },
+                formattedBalanceChanges: {},
+                tokenTransferCount: 0,
+                parsedError: 'Error',
+                rawError: null,
+                state: 'syncing'
+            }});
+
+        const wrapper = helper.mountFn(Transaction, {
+            propsData: {
+                hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
+            },
+            stubs: stubs
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should display parsed error messages', async () => {
         jest.spyOn(helper.mocks.server, 'getTransaction')
             .mockResolvedValue({ data: {

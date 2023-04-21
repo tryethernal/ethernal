@@ -1,7 +1,10 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col cols="12">
+            <v-col cols="6">
+                <v-alert dense text type="warning" class="my-2" v-if="block.state == 'syncing'">
+                    Block has been picked up, and is currently still being processed.
+                </v-alert>
                 <h2>Block {{ block.number }}</h2>
             </v-col>
         </v-row>
@@ -45,19 +48,26 @@ export default {
         },
         loading: true
     }),
+    mounted() {
+        this.pusher.onNewBlock(data => {
+            if (data.number == this.number)
+                this.loadBlock(this.number);
+        }, this);
+    },
     methods: {
-        moment: moment
+        moment: moment,
+        loadBlock(number) {
+            this.loading = true;
+            this.server.getBlock(number, true)
+                .then(({ data }) => this.block = data)
+                .catch(console.log)
+                .finally(() => this.loading = false);
+        }
     },
     watch: {
         number: {
             immediate: true,
-            handler(number) {
-                this.loading = true;
-                this.server.getBlock(number, true)
-                    .then(({ data }) => this.block = data)
-                    .catch(console.log)
-                    .finally(() => this.loading = false);
-            }
+            handler(number) { this.loadBlock(number); }
         }
     }
 }

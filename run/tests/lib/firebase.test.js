@@ -10,6 +10,105 @@ const db = require('../../lib/firebase');
 
 beforeEach(() => jest.clearAllMocks());
 
+describe('updateWorkspaceRpcHealthCheck', () => {
+    it('Should update the healtcheck', (done) => {
+        db.updateWorkspaceRpcHealthCheck(1, true)
+            .then(() => {
+                expect(workspace.safeCreateOrUpdateRpcHealthCheck).toHaveBeenCalledWith(true);
+                done();
+            });
+    });
+
+    it('Should throw an error if workspace does not exist', async () => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        await expect(db.updateWorkspaceRpcHealthCheck(1, true))
+            .rejects.toThrow('Cannot find workspace');
+    });
+});
+
+describe('updateWorkspaceIntegrityCheck', () => {
+    it('Should update the status', (done) => {
+        db.updateWorkspaceIntegrityCheck(1, { status: 'healthy' })
+            .then(() => {
+                expect(workspace.safeCreateOrUpdateIntegrityCheck).toHaveBeenCalledWith({ blockId: undefined, status: 'healthy' });
+                done();
+            });
+    });
+
+    it('Should update the block', (done) => {
+        db.updateWorkspaceIntegrityCheck(1, { blockId: 1 })
+            .then(() => {
+                expect(workspace.safeCreateOrUpdateIntegrityCheck).toHaveBeenCalledWith({ blockId: 1, status: undefined });
+                done();
+            });
+    });
+
+    it('Should throw an error if missing block & status', async () => {
+        await expect(db.updateWorkspaceIntegrityCheck(1, {}))
+            .rejects.toThrow('Missing parameter');
+    });
+
+    it('Should throw an error if workspace does not exist', async () => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        await expect(db.updateWorkspaceIntegrityCheck(1, { blockId: 1 }))
+            .rejects.toThrow('Cannot find workspace');
+    });
+});
+
+describe('syncPartialBlock', () => {
+    it('Should return a serialized partial block', (done) => {
+        jest.spyOn(workspace, 'findBlockByNumber').mockResolvedValueOnce(null);
+        jest.spyOn(workspace, 'safeCreatePartialBlock').mockResolvedValueOnce({ toJSON: () => ({ id: 1 })});
+        db.syncPartialBlock(1, { block: { number: 1 }})
+            .then(block => {
+                expect(block).toEqual({ id: 1});
+                done();
+            });
+    });
+
+    it('Should return null if block is already here', (done) => {
+        jest.spyOn(workspace, 'findBlockByNumber').mockResolvedValueOnce({ id: 1 });
+        db.syncPartialBlock(1, { block: { number: 1 }})
+            .then(block => {
+                expect(block).toEqual(null);
+                done();
+            });
+    })
+
+    it('Should throw an error if workspace does not exist', async () => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        await expect(db.syncPartialBlock(1, {}))
+            .rejects.toThrow('Could not find workspace');
+    });
+});
+
+describe('syncFullBlock', () => {
+    it('Should return a serialized full block', (done) => {
+        jest.spyOn(workspace, 'findBlockByNumber').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(workspace, 'safeCreateFullBlock').mockResolvedValueOnce({ toJSON: () => ({ id: 1 })});
+        db.syncFullBlock(1, { block: { number: 1 }})
+            .then(block => {
+                expect(block).toEqual({ id: 1});
+                done();
+            });
+    });
+
+    it('Should return null if block does not exist', (done) => {
+        jest.spyOn(workspace, 'findBlockByNumber').mockResolvedValueOnce(null);
+        db.syncFullBlock(1, { block: { number: 1 }})
+            .then(block => {
+                expect(block).toEqual(null);
+                done();
+            });
+    });
+
+    it('Should throw an error if workspace does not exist', async () => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        await expect(db.syncFullBlock(1, {}))
+            .rejects.toThrow('Could not find workspace');
+    });
+});
+
 describe('createExplorer', () => {
     it('Should return an explorer if it has been created', (done) => {
         db.createExplorer(1, 1, 1, 'test', 'test', 'test').then(explorer => {

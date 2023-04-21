@@ -15,6 +15,7 @@ const search = require('./search');
 const stats = require('./stats');
 const erc721Collections = require('./erc721Collections');
 const erc721Tokens = require('./erc721Tokens');
+const status = require('./status');
 
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
@@ -30,6 +31,7 @@ router.use('/search', search);
 router.use('/stats', stats);
 router.use('/erc721Collections', erc721Collections);
 router.use('/erc721Tokens', erc721Tokens);
+router.use('/status', status);
 
 if (isStripeEnabled()) {
     const stripe = require('./stripe');

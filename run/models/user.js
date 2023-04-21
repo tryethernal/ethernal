@@ -55,7 +55,18 @@ module.exports = (sequelize, DataTypes) => {
                     as: 'workspaces',
                     where: {
                         name: workspaceName
-                    }
+                    },
+                    include: [
+                        {
+                            model: sequelize.models.IntegrityCheck,
+                            as: 'integrityCheck',
+                            include: 'block'
+                        },
+                        {
+                            model: sequelize.models.RpcHealthCheck,
+                            as: 'rpcHealthCheck'
+                        }
+                    ]
                 },
                 'currentWorkspace'
             ]

@@ -196,7 +196,7 @@ describe('contractProcessing', () => {
     });
 
     it('Should reprocess all contract transactions', (done) => {
-        jest.spyOn(db, 'getContractTransactions').mockResolvedValue([{ hash: '0x123' }, { hash: '0x456' }]);
+        jest.spyOn(db, 'getContractTransactions').mockResolvedValue([{ id: 123 }, { id: 124 }]);
 
         contractProcessing({
             data: {
@@ -204,10 +204,7 @@ describe('contractProcessing', () => {
                 contractId: 2
             }
         }).then(() => {
-            expect(transactionsLib.processTransactions).toHaveBeenCalledWith('123', 'My Workspace', [
-                { hash: '0x123' },
-                { hash: '0x456' }
-            ]);
+            expect(transactionsLib.processTransactions).toHaveBeenCalledWith([ 123, 124 ]);
             done();
         });
     });

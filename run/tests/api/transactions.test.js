@@ -153,12 +153,12 @@ describe(`POST ${BASE_URL}/:hash/tokenBalanceChanges`, () => {
 
 describe(`POST ${BASE_URL}/:hash/process`, () => {
     it('Should return 200 status', (done) => {
-        jest.spyOn(db, 'getTransaction').mockResolvedValue({ hash: '1234' });
+        jest.spyOn(db, 'getTransaction').mockResolvedValue({ id: 1234 });
         request.post(`${BASE_URL}/1234/process`)
             .send({ data: { workspace: 'My Workspace' }})
             .expect(200)
             .then(() => {
-                expect(processTransactions).toHaveBeenCalledWith('123', 'My Workspace', [{ hash: '1234' }]);
+                expect(processTransactions).toHaveBeenCalledWith([1234]);
                 done();
             });
     });
@@ -202,11 +202,6 @@ describe(`POST ${BASE_URL}`, () => {
                         timestamp: 123456
                     }
                 );
-                expect(enqueue).toHaveBeenCalledWith('transactionProcessing', expect.anything(), {
-                    userId: '123',
-                    workspace: 'My Workspace',
-                    transaction: expect.anything(),
-                }, 1);
                 done();
             });
     });
@@ -246,11 +241,6 @@ describe(`POST ${BASE_URL}`, () => {
                         timestamp: 123456
                     }
                 );
-                expect(enqueue).toHaveBeenCalledWith('transactionProcessing', expect.anything(), {
-                    userId: '123',
-                    workspace: 'My Workspace',
-                    transaction: expect.anything()
-                }, 1);
                 done();
             });
     });

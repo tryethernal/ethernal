@@ -38,6 +38,7 @@ describe('batchBlockSync', () => {
                 workspace: expect.anything(),
                 from: 201,
                 to: 9840,
+                source: 'batchSync'
             });
             done();
         });
