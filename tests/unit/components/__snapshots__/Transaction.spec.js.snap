@@ -1,5 +1,97 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Transaction.vue Should display indexing warning 1`] = `
+<div class="container container--fluid">
+  <div class="row">
+    <div class="col">
+      <div role="alert" class="v-alert my-2 v-sheet theme--dark v-alert--dense v-alert--text warning--text">
+        <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-exclamation theme--dark warning--text"></i>
+          <div class="v-alert__content">
+            Transaction has been picked up, and is currently still being processed.
+            Once it's finished, additional data will be displayed here.
+          </div>
+        </div>
+      </div>
+      <h2 class="text-truncate mb-2">Tx 0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759</h2>
+    </div>
+    <div class="spacer"></div>
+    <div align="right" class="col">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px; display: none;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+          <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+        </svg>
+        <div class="v-progress-circular__info"></div>
+      </div>
+      <div class="v-menu">
+        <!---->
+      </div><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default" role="button" aria-haspopup="true" aria-expanded="false"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-dots-vertical theme--light"></i></span></button>
+    </div>
+  </div> <span class="success mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-check theme--light" style="font-size: 16px;"></i>Transaction Succeeded
+        </span></span> <span class="error mr-2 v-chip v-chip--no-color theme--light v-size--small"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-alert-circle theme--light" style="font-size: 16px;"></i>
+            Transaction Failed
+        </span></span> <span class="grey mr-2 v-chip v-chip--no-color theme--light v-size--small" style="display: none;"><span class="v-chip__content"><i aria-hidden="true" class="v-icon notranslate white--text mr-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
+            Unknown Transaction Status
+        </span></span>
+  <!---->
+  <div class="row mt-2">
+    <div class="col">
+      <div class="text-overline">Error Message</div>
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__text" style="white-space: pre-wrap;">
+          Error
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row my-2">
+    <div class="text-truncate col col-5">
+      <div class="text-overline">From</div>
+      <hashlink-stub fullhash="true" hash="0xc056255e6b1e6001852f9f20587a964cb89418e7" type="address"></hashlink-stub>
+    </div>
+    <div class="text-truncate col col-5">
+      <div class="text-overline">To</div>
+      <hashlink-stub withname="true" fullhash="true" hash="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" type="address"></hashlink-stub>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
+      <div class="text-overline">Gas Used</div> <span>43,713</span>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
+      <div class="text-overline">Gas Price</div>
+      59 gwei
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
+      <div class="text-overline">Cost</div> <span>0.002579067 Ether</span>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-2 col">
+      <div class="text-overline">Value</div>
+      0 Ether
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-sm-12 col-md-6 col-lg-8 col">
+      <div class="row">
+        <div class="col-sm-12 col-md-6 col-lg-3 col">
+          <div class="text-overline">Block</div> <a href="#/block/13012562" class="">13012562</a>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-3 col">
+          <div class="text-overline">Mined At</div>
+          08/07 2:33:37 PM<br> <small>a few seconds ago</small>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-3 col">
+          <div class="text-overline">Gas Limit</div>
+          84,000
+        </div>
+      </div>
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <transactiondata-stub withoutstorageheader="true" transaction="[object Object]"></transactiondata-stub>
+  <!---->
+</div>
+`;
+
 exports[`Transaction.vue Should display parsed error messages 1`] = `
 <div class="container container--fluid">
   <div class="row">

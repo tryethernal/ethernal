@@ -88,8 +88,6 @@ const moment = require('moment');
 
 export default {
     name: 'ExplorerStatus',
-    components: {
-    },
     data: () => ({
         syncStatus: null,
         latestCheckedBlock: null,
