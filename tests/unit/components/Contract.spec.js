@@ -48,7 +48,7 @@ describe('Contract.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should display only address & creation if not a token', async () => {
+    it('Should display only address & creation if not a token', (done) => {
         jest.spyOn(helper.mocks.server, 'getContract')
             .mockResolvedValueOnce({ data: {
                 name: 'Contract',
@@ -63,8 +63,10 @@ describe('Contract.vue', () => {
             stubs: stubs
         });
 
-        await flushPromises();
-        expect(wrapper.html()).toMatchSnapshot();
+        setTimeout(() => {
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 2000);
     });
 
 
