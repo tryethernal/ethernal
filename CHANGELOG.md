@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.12.0] - 2023-04-21
+### Added
+- [Public Explorer] Integrity checks: a background process makes sure no blocks are missing, blocks are now guaranteed to be fully synced (block/txs/logs) or not at all
+- [Public Explorer] Status page showing the integrity of the explorer, and the health of the RPC (both can be displayed or not to the end user)
+
 ## [3.11.9] - 2023-04-07
 ### Changed
 - Add CORS warning in case the app can't connect to the remote RPC when creating a workspace
