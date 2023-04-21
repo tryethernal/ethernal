@@ -1,9 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Block.vue Should show a message if the block is syncing 1`] = `
+<div class="container container--fluid">
+  <div class="row">
+    <div class="col col-6">
+      <div role="alert" class="v-alert my-2 v-sheet theme--dark v-alert--dense v-alert--text warning--text">
+        <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-exclamation theme--dark warning--text"></i>
+          <div class="v-alert__content">
+            Block has been picked up, and is currently still being processed.
+          </div>
+        </div>
+      </div>
+      <h2>Block 1</h2>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-sm-12 col-md-12 col-lg-2 col">
+      <div class="v-subheader text-overline theme--light">Gas Limit</div>
+      1,000,000,000
+    </div>
+    <hr role="separator" aria-orientation="vertical" class="v-divider v-divider--vertical theme--light">
+    <div class="col-sm-12 col-md-12 col-lg-2 col">
+      <div class="v-subheader text-overline theme--light">Mined On</div>
+      10/18 8:28:41 PM<br> <small>in 2 months</small>
+    </div>
+    <hr role="separator" aria-orientation="vertical" class="v-divider v-divider--vertical theme--light">
+    <div class="col-sm-12 col-md-12 col-lg-8 col">
+      <div class="v-subheader text-overline theme--light">Hash</div> <span style="overflow-wrap: break-word;">0x98c6edb3bb1124680a97661c1f5794d60617abb57bd1e611d81fc5b941f36d30</span>
+    </div>
+  </div>
+  <h4>Transactions</h4>
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
+    <transactions-list-stub count="1" transactions="[object Object]"></transactions-list-stub>
+  </div>
+</div>
+`;
+
 exports[`Block.vue Should show the block component 1`] = `
 <div class="container container--fluid">
   <div class="row">
-    <div class="col col-12">
+    <div class="col col-6">
+      <!---->
       <h2>Block 1</h2>
     </div>
   </div>

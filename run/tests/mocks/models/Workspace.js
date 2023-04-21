@@ -100,12 +100,17 @@ const workspace = {
     getFailedProcessableTransactions: jest.fn(),
     findContractsByText: jest.fn().mockResolvedValue([contract1, contract2]),
     findBlockByHash: jest.fn().mockResolvedValue(block1),
-    countTokenTransfers: jest.fn()
+    countTokenTransfers: jest.fn(),
+    safeCreateFullBlock: jest.fn(),
+    safeCreatePartialBlock: jest.fn(),
+    safeCreateOrUpdateIntegrityCheck: jest.fn(),
+    safeCreateOrUpdateRpcHealthCheck: jest.fn()
 };
 
 const Workspace = {
     findByPk: jest.fn().mockResolvedValue(workspace),
-    findAll: jest.fn()
+    findAll: jest.fn(),
+    findOne: jest.fn()
 };
 
 module.exports = {

@@ -18,6 +18,12 @@ const TransactionReceipt = require('../fixtures/TransactionReceipt.json');
 
 beforeEach(() => jest.clearAllMocks());
 
+const workspace = {
+    id: 1,
+    name: 'hardhat',
+    user: { id: 1, firebaseUserId: '123' }
+};
+
 describe('processTransactions ', () => {
     getTokenTransfer.mockReturnValue({ token: '0x123', src: '0x456', dst: '0x789' });
     jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ rpcServer: 'http://localhost:8545', public: true, name: 'hardhat' });
@@ -27,7 +33,10 @@ describe('processTransactions ', () => {
             call: jest.fn().mockResolvedValue('0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000a48656c6c6f6f6f6f6f6f00000000000000000000000000000000000000000000')
         }));
 
-        await processTransactions('123', 'hardhat', [{ ...Transaction, receipt: { status: 0, ...Transaction }}]);
+        const transaction = { ...Transaction, receipt: { status: 0, ...Transaction }, workspace };
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce(transaction);
+
+        await processTransactions([1]);
 
         expect(db.storeFailedTransactionError).toHaveBeenCalledWith('123', 'hardhat', Transaction.hash, { parsed: true, message: 'Helloooooo\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000' });
     });
@@ -41,7 +50,10 @@ describe('processTransactions ', () => {
             })
         }));
 
-        await processTransactions('123', 'hardhat', [{ ...Transaction, receipt: { status: 0, ...Transaction.receipt }}]);
+        const transaction = { ...Transaction, receipt: { status: 0, ...Transaction.receipt }, workspace };
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce(transaction);
+
+        await processTransactions([1]);
 
         expect(db.storeFailedTransactionError).toHaveBeenCalledWith('123', 'hardhat', Transaction.hash, { parsed: true, message: 'Helloooooo' });
     });
@@ -55,7 +67,10 @@ describe('processTransactions ', () => {
             })
         }));
 
-        await processTransactions('123', 'hardhat', [{ ...Transaction, receipt: { status: 0, ...Transaction.receipt }}]);
+        const transaction = { ...Transaction, receipt: { status: 0, ...Transaction.receipt }, workspace };
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce(transaction);
+
+        await processTransactions([1]);
 
         expect(db.storeFailedTransactionError).toHaveBeenCalledWith('123', 'hardhat', Transaction.hash, { parsed: false, message: { error: { message2: 'Helloooooo' }} });
     });
@@ -69,7 +84,10 @@ describe('processTransactions ', () => {
             })
         }));
 
-        await processTransactions('123', 'hardhat', [{ ...Transaction, receipt: { status: 0, ...Transaction.receipt }}]);
+        const transaction = { ...Transaction, receipt: { status: 0, ...Transaction.receipt }, workspace };
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce(transaction);
+
+        await processTransactions([1]);
 
         expect(db.storeFailedTransactionError).toHaveBeenCalledWith('123', 'hardhat', Transaction.hash, { parsed: false, message: { message: 'Helloooooo' } });
     });
@@ -79,9 +97,11 @@ describe('processTransactions ', () => {
         const saveTraceMock = jest.spyOn(Tracer.prototype, 'saveTrace');
         jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ rpcServer: 'http://localhost.com', tracing: 'other', public: true });
 
-        await processTransactions('123', 'hardhat', [Transaction]);
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, workspace });
 
-        expect(processTraceMock).toHaveBeenCalledWith(Transaction);
+        await processTransactions([1]);
+
+        expect(processTraceMock).toHaveBeenCalledWith({ ...Transaction, workspace });
         expect(saveTraceMock).toHaveBeenCalledWith('123', 'hardhat');
     });
 
@@ -89,7 +109,9 @@ describe('processTransactions ', () => {
         const processTraceMock = jest.spyOn(Tracer.prototype, 'process');
         jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ rpcServer: 'http://localhost:8545', public: false });
 
-        await processTransactions('123', 'hardhat', [Transaction]);
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, workspace });
+
+        await processTransactions([1]);
 
         expect(processTraceMock).not.toHaveBeenCalledWith(Transaction);
     });
@@ -97,7 +119,9 @@ describe('processTransactions ', () => {
     it('Should store token as new contracts if workspace is public', async () => {
         getTokenTransfer.mockReturnValue({ token: '0x123', src: '0x456', dst: '0x789' });
 
-        await processTransactions('123', 'hardhat', [{ ...Transaction, receipt: TransactionReceipt }]);
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, receipt: TransactionReceipt, workspace });
+
+        await processTransactions([1]);
         expect(db.storeContractData).toHaveBeenCalledTimes(1);
     });
 
@@ -105,8 +129,9 @@ describe('processTransactions ', () => {
         jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ public: false });
 
         getTokenTransfer.mockReturnValue({ token: '0x123', src: '0x456', dst: '0x789' });
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, workspace });
 
-        await processTransactions('123', 'hardhat', [Transaction]);
+        await processTransactions([1]);
 
         expect(db.storeContractData).not.toHaveBeenCalled();
     });

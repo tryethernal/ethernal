@@ -5,6 +5,7 @@ const {
 } = require('sequelize');
 const { sanitize } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
+const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
 const moment = require('moment');
 
@@ -18,6 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Workspace.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
       Workspace.hasOne(models.Explorer, { foreignKey: 'workspaceId', as: 'explorer' });
+      Workspace.hasOne(models.IntegrityCheck, { foreignKey: 'workspaceId', as: 'integrityCheck' });
+      Workspace.hasOne(models.RpcHealthCheck, { foreignKey: 'workspaceId', as: 'rpcHealthCheck' });
       Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'custom_fields' });
       Workspace.hasMany(models.Block, { foreignKey: 'workspaceId', as: 'blocks' });
       Workspace.hasMany(models.Transaction, { foreignKey: 'workspaceId', as: 'transactions' });
@@ -45,6 +48,67 @@ module.exports = (sequelize, DataTypes) => {
                 name: name
             }
         });
+    }
+
+    getProvider() {
+        return new ProviderConnector(this.rpcServer);
+    }
+
+    findBlockGaps(lowerBound, upperBound) {
+        if (lowerBound === undefined || lowerBound === null || upperBound === undefined || upperBound === null)
+            throw new Error('Missing parameter');
+
+        return sequelize.query(`
+            SELECT * FROM (
+                SELECT
+                    LAG(MAX("number")) OVER (order by group_id) + 1 AS "blockStart",
+                    MIN("number") - 1 AS "blockEnd"
+                FROM (  
+                    SELECT
+                        "workspaceId", "number",
+                        "number" - row_number() OVER (ORDER BY "number") as group_id
+                    FROM blocks
+                    WHERE "workspaceId" = :workspaceId
+                    AND number >= :lowerBound
+                    AND number <= :upperBound
+                ) s
+                GROUP BY group_id
+            ) q
+            WHERE "blockStart" IS NOT NULL;
+        `, {
+            replacements: {
+                workspaceId: this.id,
+                lowerBound: lowerBound,
+                upperBound: upperBound
+            },
+            type: QueryTypes.SELECT
+        });
+    }
+
+    async safeCreateOrUpdateRpcHealthCheck(isReachable) {
+        if (isReachable === null || isReachable === undefined)
+            throw new Error('Missing parameter');
+
+        const rpcHealthCheck = await this.getRpcHealthCheck();
+
+        if (rpcHealthCheck) {
+            // This is necessary otherwise Sequelize won't update the value with no other changes
+            rpcHealthCheck.changed('updatedAt', true);
+            return rpcHealthCheck.update({ isReachable, updatedAt: new Date() });
+        }
+        else
+            return this.createRpcHealthCheck({ isReachable });
+    }
+
+    async safeCreateOrUpdateIntegrityCheck({ blockId, status }) {
+        if (!blockId && !status) throw new Error('Missing parameter');
+
+        const integrityCheck = await this.getIntegrityCheck();
+        console.log(blockId, status)
+        if (integrityCheck)
+            return integrityCheck.update(sanitize({ blockId, status }));
+        else
+            return this.createIntegrityCheck(sanitize({ blockId, status }));
     }
 
     async getCustomTransactionFunction() {
@@ -303,7 +367,7 @@ module.exports = (sequelize, DataTypes) => {
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
             order: [[orderBy, order]],
-            attributes: ['blockNumber', 'from', 'gasPrice', 'hash', 'methodDetails', 'data', 'timestamp', 'to', 'value', 'workspaceId'],
+            attributes: ['blockNumber', 'from', 'gasPrice', 'hash', 'methodDetails', 'data', 'timestamp', 'to', 'value', 'workspaceId', 'state'],
             include: [
                 {
                     model: sequelize.models.TransactionReceipt,
@@ -325,6 +389,178 @@ module.exports = (sequelize, DataTypes) => {
                 }
             ]
         });
+    }
+
+    /*
+        Syncing the full block can take some time if there are a lot of transactions,
+        logs, token transfers to create etc, so we create a partial block with only
+        the data returned by eth_getBlockByNumber (with transactions).
+        This allows us to show the user that we are indexing the block, and display progress as well
+    */
+    safeCreatePartialBlock(block) {
+        return sequelize.transaction(async sequelizeTransaction => {
+            const storedBlock = await this.createBlock(sanitize({
+                baseFeePerGas: block.baseFeePerGas,
+                difficulty: block.difficulty,
+                extraData: block.extraData,
+                gasLimit: block.gasLimit,
+                gasUsed: block.gasUsed,
+                hash: block.hash,
+                miner: block.miner,
+                nonce: block.nonce,
+                number: block.number,
+                parentHash: block.parentHash,
+                timestamp: block.timestamp,
+                transactionsCount: block.transactions ? block.transactions.length : 0,
+                state: 'syncing',
+                raw: block
+            }), { transaction: sequelizeTransaction });
+
+            for (let i = 0; i < block.transactions.length; i++) {
+                const transaction = block.transactions[i];
+                const storedTx = await this.createTransaction(sanitize({
+                    blockHash: transaction.blockHash,
+                    blockNumber: transaction.blockNumber,
+                    blockId: storedBlock.id,
+                    chainId: transaction.chainId,
+                    confirmations: transaction.confirmations,
+                    creates: transaction.creates,
+                    data: transaction.data,
+                    parsedError: transaction.parsedError,
+                    rawError: transaction.rawError,
+                    from: transaction.from,
+                    gasLimit: transaction.gasLimit,
+                    gasPrice: transaction.gasPrice,
+                    hash: transaction.hash,
+                    methodLabel: transaction.methodLabel,
+                    methodName: transaction.methodName,
+                    methodSignature: transaction.methodSignature,
+                    nonce: transaction.nonce,
+                    r: transaction.r,
+                    s: transaction.s,
+                    timestamp: block.timestamp,
+                    to: transaction.to,
+                    transactionIndex: transaction.transactionIndex,
+                    type_: transaction.type,
+                    v: transaction.v,
+                    value: transaction.value,
+                    state: 'syncing',
+                    raw: transaction
+                }), { transaction: sequelizeTransaction });
+            }
+
+            return storedBlock;
+        });
+    }
+
+    /*
+        It's all or nothing, we make sure we synchronize all the block info, ie:
+        - Block
+        - Transactions
+        - Receipt
+        - Logs
+        It takes longer, but we avoid inconsistencies, such as a block not displaying all transactions
+    */
+    async safeCreateFullBlock(data) {
+        const sequelizeTransaction = await sequelize.transaction();
+        try {
+            const block = data.block;
+            const transactions = data.transactions;
+
+            if (block.transactions.length != transactions.length)
+                throw new Error('Missing transactions in block.');
+
+            const [, [storedBlock]] = await sequelize.models.Block.update(
+                { state: 'ready' },
+                {
+                    where: {
+                        workspaceId: this.id,
+                        number: block.number
+                    },
+                    individualHooks: true,
+                    returning: true,
+                    transaction: sequelizeTransaction
+                }
+            );
+
+            for (let i = 0; i < transactions.length; i++) {
+                const transaction = transactions[i];
+                const [, [storedTx]] = await sequelize.models.Transaction.update(
+                    { state: 'ready' },
+                    {
+                        where: {
+                            workspaceId: this.id,
+                            hash: transaction.hash
+                        },
+                        individualHooks: true,
+                        returning: true,
+                        transaction: sequelizeTransaction
+                    }
+                );
+
+                const receipt = transaction.receipt;
+                if (!receipt)
+                    throw new Error('Missing transaction receipt.');
+
+                const storedReceipt = await storedTx.createReceipt(sanitize({
+                    workspaceId: storedTx.workspaceId,
+                    blockHash: receipt.blockHash,
+                    blockNumber: receipt.blockNumber,
+                    byzantium: receipt.byzantium,
+                    confirmations: receipt.confirmations,
+                    contractAddress: receipt.contractAddress,
+                    cumulativeGasUsed: receipt.cumulativeGasUsed,
+                    from: receipt.from,
+                    gasUsed: receipt.gasUsed,
+                    logsBloom: receipt.logsBloom,
+                    status: receipt.status,
+                    to: receipt.to,
+                    transactionHash: receipt.transactionHash,
+                    transactionIndex: receipt.transactionIndex,
+                    type_: receipt.type,
+                    raw: receipt
+                }), { transaction: sequelizeTransaction });
+
+                for (let i = 0; i < receipt.logs.length; i++) {
+                    const log = receipt.logs[i];
+                    try {
+                        await storedReceipt.createLog(sanitize({
+                            workspaceId: storedTx.workspaceId,
+                            address: log.address,
+                            blockHash: log.blockHash,
+                            blockNumber: log.blockNumber,
+                            data: log.data,
+                            logIndex: log.logIndex,
+                            topics: log.topics,
+                            transactionHash: log.transactionHash,
+                            transactionIndex: log.transactionIndex,
+                            raw: log
+                        }), { transaction: sequelizeTransaction });
+                    } catch(error) {
+                        await storedReceipt.createLog(sanitize({
+                            workspaceId: storedTx.workspaceId,
+                            raw: log
+                        }), { transaction: sequelizeTransaction });
+                    }
+                }
+            }
+            await sequelizeTransaction.commit();
+            return storedBlock;
+        } catch(error) {
+            await sequelizeTransaction.rollback();
+            // If we can't store the full block, we delete partial data
+            await this.safeDestroyPartialBlock(data.block.number);
+            throw error;
+        }
+    }
+
+    async safeDestroyPartialBlock(blockNumber) {
+        const [block] = await this.getBlocks({ where: { workspaceId: this.id, number: blockNumber }});
+
+        // No need to throw an error if the block we are trying to destroy does not exist or is not partial
+        if (!block || block.state !== 'syncing') return;
+
+        return block.revertIfPartial();
     }
 
     safeCreateBlock(block) {
@@ -501,7 +737,7 @@ module.exports = (sequelize, DataTypes) => {
             where: {
                 hash: hash
             },
-            attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId', 'raw',
+            attributes: ['id', 'blockNumber', 'data', 'parsedError', 'rawError', 'from', 'formattedBalanceChanges', 'gasLimit', 'gasPrice', 'hash', 'timestamp', 'to', 'value', 'storage', 'workspaceId', 'raw', 'state',
                 [Sequelize.literal(`
                     (SELECT COUNT(*)::int
                     FROM token_transfers AS token_transfers
@@ -668,14 +904,18 @@ module.exports = (sequelize, DataTypes) => {
         if (dayInterval)
             filter['where']['createdAt'] = { [Op.lt]: sequelize.literal(`NOW() - interval '${dayInterval} day'`)};
 
-        return sequelize.transaction(async (transaction) => {
-            await sequelize.models.TokenBalanceChange.destroy(filter, { transaction });
-            await sequelize.models.TokenTransfer.destroy(filter, { transaction });
-            await sequelize.models.Transaction.destroy(filter, { transaction });
-            await sequelize.models.Block.destroy(filter, { transaction });
-            await sequelize.models.Contract.destroy(filter, { transaction });
-            await sequelize.models.Account.destroy(filter, { transaction });
-        });
+        return sequelize.transaction(
+            {  deferrable: Sequelize.Deferrable.SET_DEFERRED },
+            async (transaction) => {
+                await sequelize.models.IntegrityCheck.destroy(filter, { transaction });
+                await sequelize.models.TokenBalanceChange.destroy(filter, { transaction });
+                await sequelize.models.TokenTransfer.destroy(filter, { transaction });
+                await sequelize.models.Transaction.destroy(filter, { transaction });
+                await sequelize.models.Block.destroy(filter, { transaction });
+                await sequelize.models.Contract.destroy(filter, { transaction });
+                await sequelize.models.Account.destroy(filter, { transaction });
+            }
+        );
     }
 
     async removeContractByAddress(address) {
@@ -771,7 +1011,15 @@ module.exports = (sequelize, DataTypes) => {
     dataRetentionLimit: DataTypes.INTEGER,
     storageEnabled: DataTypes.BOOLEAN,
     erc721LoadingEnabled: DataTypes.BOOLEAN,
-    browserSyncEnabled: DataTypes.BOOLEAN
+    browserSyncEnabled: DataTypes.BOOLEAN,
+    rpcHealthCheckEnabled: DataTypes.BOOLEAN,
+    statusPageEnabled: DataTypes.BOOLEAN,
+    integrityCheckStartBlockNumber: {
+        type: DataTypes.INTEGER,
+        get() {
+            return Math.max(this.getDataValue('integrityCheckStartBlockNumber'), 0);
+        }
+    }
   }, {
     hooks: {
         afterSave(workspace, options) {

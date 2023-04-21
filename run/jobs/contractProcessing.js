@@ -238,7 +238,7 @@ module.exports = async job => {
     const transactions = await db.getContractTransactions(user.firebaseUserId, workspace.name, contract.address);
 
     try {
-        await transactionsLib.processTransactions(user.firebaseUserId, workspace.name, transactions);
+        await transactionsLib.processTransactions(transactions.map(t => t.id));
     } catch(error) {
         logger.error(error.message, { location: 'jobs.contractProcessing', error: error, data: data });
     }
