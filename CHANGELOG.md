@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.12.1] - 2023-04-21
+### Fixed
+- Tentative performance fix for long running blockSync jobs
+
 ## [3.12.0] - 2023-04-21
 ### Added
 - [Public Explorer] Integrity checks: a background process makes sure no blocks are missing, blocks are now guaranteed to be fully synced (block/txs/logs) or not at all
