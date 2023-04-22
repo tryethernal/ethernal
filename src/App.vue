@@ -102,7 +102,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link :to="'/status'" v-if="isUserAdmin || currentWorkspace.statusPageEnabled">
+                <v-list-item link :to="'/status'" v-if="(isUserAdmin && isPublicExplorer) || currentWorkspace.statusPageEnabled">
                     <v-list-item-icon>
                         <v-icon>mdi-heart-circle</v-icon>
                     </v-list-item-icon>
