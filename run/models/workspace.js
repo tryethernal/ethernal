@@ -1,7 +1,8 @@
 'use strict';
 const {
   Model,
-  Sequelize
+  Sequelize,
+  QueryTypes
 } = require('sequelize');
 const { sanitize } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
@@ -104,7 +105,7 @@ module.exports = (sequelize, DataTypes) => {
         if (!blockId && !status) throw new Error('Missing parameter');
 
         const integrityCheck = await this.getIntegrityCheck();
-        console.log(blockId, status)
+
         if (integrityCheck)
             return integrityCheck.update(sanitize({ blockId, status }));
         else
@@ -397,7 +398,7 @@ module.exports = (sequelize, DataTypes) => {
         the data returned by eth_getBlockByNumber (with transactions).
         This allows us to show the user that we are indexing the block, and display progress as well
     */
-    safeCreatePartialBlock(block) {
+    async safeCreatePartialBlock(block) {
         return sequelize.transaction(async sequelizeTransaction => {
             const storedBlock = await this.createBlock(sanitize({
                 baseFeePerGas: block.baseFeePerGas,
@@ -462,35 +463,20 @@ module.exports = (sequelize, DataTypes) => {
         It takes longer, but we avoid inconsistencies, such as a block not displaying all transactions
     */
     async safeCreateFullBlock(data) {
-        const sequelizeTransaction = await sequelize.transaction();
         try {
-            const block = data.block;
-            const transactions = data.transactions;
+            return await sequelize.transaction(async sequelizeTransaction => {
+                const block = data.block;
+                const transactions = data.transactions;
 
-            if (block.transactions.length != transactions.length)
-                throw new Error('Missing transactions in block.');
+                if (block.transactions.length != transactions.length)
+                    throw new Error('Missing transactions in block.');
 
-            const [, [storedBlock]] = await sequelize.models.Block.update(
-                { state: 'ready' },
-                {
-                    where: {
-                        workspaceId: this.id,
-                        number: block.number
-                    },
-                    individualHooks: true,
-                    returning: true,
-                    transaction: sequelizeTransaction
-                }
-            );
-
-            for (let i = 0; i < transactions.length; i++) {
-                const transaction = transactions[i];
-                const [, [storedTx]] = await sequelize.models.Transaction.update(
+                const [, [storedBlock]] = await sequelize.models.Block.update(
                     { state: 'ready' },
                     {
                         where: {
                             workspaceId: this.id,
-                            hash: transaction.hash
+                            number: block.number
                         },
                         individualHooks: true,
                         returning: true,
@@ -498,57 +484,71 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 );
 
-                const receipt = transaction.receipt;
-                if (!receipt)
-                    throw new Error('Missing transaction receipt.');
+                for (let i = 0; i < transactions.length; i++) {
+                    const transaction = transactions[i];
+                    const [, [storedTx]] = await sequelize.models.Transaction.update(
+                        { state: 'ready' },
+                        {
+                            where: {
+                                workspaceId: this.id,
+                                hash: transaction.hash
+                            },
+                            individualHooks: true,
+                            returning: true,
+                            transaction: sequelizeTransaction
+                        }
+                    );
 
-                const storedReceipt = await storedTx.createReceipt(sanitize({
-                    workspaceId: storedTx.workspaceId,
-                    blockHash: receipt.blockHash,
-                    blockNumber: receipt.blockNumber,
-                    byzantium: receipt.byzantium,
-                    confirmations: receipt.confirmations,
-                    contractAddress: receipt.contractAddress,
-                    cumulativeGasUsed: receipt.cumulativeGasUsed,
-                    from: receipt.from,
-                    gasUsed: receipt.gasUsed,
-                    logsBloom: receipt.logsBloom,
-                    status: receipt.status,
-                    to: receipt.to,
-                    transactionHash: receipt.transactionHash,
-                    transactionIndex: receipt.transactionIndex,
-                    type_: receipt.type,
-                    raw: receipt
-                }), { transaction: sequelizeTransaction });
+                    const receipt = transaction.receipt;
+                    if (!receipt)
+                        throw new Error('Missing transaction receipt.');
 
-                for (let i = 0; i < receipt.logs.length; i++) {
-                    const log = receipt.logs[i];
-                    try {
-                        await storedReceipt.createLog(sanitize({
-                            workspaceId: storedTx.workspaceId,
-                            address: log.address,
-                            blockHash: log.blockHash,
-                            blockNumber: log.blockNumber,
-                            data: log.data,
-                            logIndex: log.logIndex,
-                            topics: log.topics,
-                            transactionHash: log.transactionHash,
-                            transactionIndex: log.transactionIndex,
-                            raw: log
-                        }), { transaction: sequelizeTransaction });
-                    } catch(error) {
-                        await storedReceipt.createLog(sanitize({
-                            workspaceId: storedTx.workspaceId,
-                            raw: log
-                        }), { transaction: sequelizeTransaction });
+                    const storedReceipt = await storedTx.createReceipt(sanitize({
+                        workspaceId: storedTx.workspaceId,
+                        blockHash: receipt.blockHash,
+                        blockNumber: receipt.blockNumber,
+                        byzantium: receipt.byzantium,
+                        confirmations: receipt.confirmations,
+                        contractAddress: receipt.contractAddress,
+                        cumulativeGasUsed: receipt.cumulativeGasUsed,
+                        from: receipt.from,
+                        gasUsed: receipt.gasUsed,
+                        logsBloom: receipt.logsBloom,
+                        status: receipt.status,
+                        to: receipt.to,
+                        transactionHash: receipt.transactionHash,
+                        transactionIndex: receipt.transactionIndex,
+                        type_: receipt.type,
+                        raw: receipt
+                    }), { transaction: sequelizeTransaction });
+
+                    for (let i = 0; i < receipt.logs.length; i++) {
+                        const log = receipt.logs[i];
+                        try {
+                            await storedReceipt.createLog(sanitize({
+                                workspaceId: storedTx.workspaceId,
+                                address: log.address,
+                                blockHash: log.blockHash,
+                                blockNumber: log.blockNumber,
+                                data: log.data,
+                                logIndex: log.logIndex,
+                                topics: log.topics,
+                                transactionHash: log.transactionHash,
+                                transactionIndex: log.transactionIndex,
+                                raw: log
+                            }), { transaction: sequelizeTransaction });
+                        } catch(error) {
+                            await storedReceipt.createLog(sanitize({
+                                workspaceId: storedTx.workspaceId,
+                                raw: log
+                            }), { transaction: sequelizeTransaction });
+                        }
                     }
                 }
-            }
-            await sequelizeTransaction.commit();
-            return storedBlock;
+
+                return storedBlock;
+            });
         } catch(error) {
-            await sequelizeTransaction.rollback();
-            // If we can't store the full block, we delete partial data
             await this.safeDestroyPartialBlock(data.block.number);
             throw error;
         }
