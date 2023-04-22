@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.12.2] - 2023-04-21
+### Changed
+- Scheduler intervals to prod values
+
+### Removed
+- Status link in private explorers
+
 ## [3.12.1] - 2023-04-21
 ### Fixed
 - Tentative performance fix for long running blockSync jobs
