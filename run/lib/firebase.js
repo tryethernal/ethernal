@@ -89,7 +89,7 @@ const syncFullBlock = async (workspaceId, data) => {
 
     if (existingBlock) {
         const newBlock = await workspace.safeCreateFullBlock(data);
-        return newBlock.toJSON();
+        return newBlock ? newBlock.toJSON() : null;
     }
     else
         return null;

@@ -69,7 +69,6 @@ describe('Contract.vue', () => {
         }, 2000);
     });
 
-
     it('Should display token info if available', async () => {
         jest.spyOn(helper.mocks.server, 'getContract')
             .mockResolvedValueOnce({ data: {
