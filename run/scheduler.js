@@ -1,8 +1,8 @@
 const jobs = require('./jobs');
 const { enqueue } = require('./lib/queue');
 
-const INTEGRITY_CHECK_INTERVAL = 30 * 1000;
-const RPC_HEALTH_CHECK_INTERVAL = 5 * 1000;
+const INTEGRITY_CHECK_INTERVAL = 5 * 60 * 1000;
+const RPC_HEALTH_CHECK_INTERVAL = 1 * 60 * 1000;
 
 (async () => {
     await enqueue(
