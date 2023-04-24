@@ -9,7 +9,7 @@ module.exports = async job => {
     const data = job.data;
 
     if (!data.userId || !data.workspace || data.blockNumber === undefined || data.blockNumber === null)
-        throw new Error('Missing parameter.');
+        return 'Missing parameter';
 
     const workspace = await db.getWorkspaceByName(data.userId, data.workspace);
 
