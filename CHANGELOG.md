@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.12.3] - 2023-04-21
+### Changed
+- Retturn instead of throwing error in some jobs if parameters are missing
+
 ## [3.12.2] - 2023-04-21
 ### Changed
 - Scheduler intervals to prod values
