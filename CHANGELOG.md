@@ -6,9 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.12.4] - 2023-04-26
+### Fixed
+- Dev Dockerfile package issue
+
+### Changed
+- Integrity checks work as expected when updating the start block number
+- [Public Explorer] Now possible to host on more than one subdomain level deep (ex sub.sub.app.com)
+
 ## [3.12.3] - 2023-04-21
 ### Changed
-- Retturn instead of throwing error in some jobs if parameters are missing
+- Return instead of throwing error in some jobs if parameters are missing
 
 ## [3.12.2] - 2023-04-21
 ### Changed
