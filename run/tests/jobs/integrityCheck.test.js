@@ -73,6 +73,24 @@ describe('integrityCheck', () => {
         }, 1);
     });
 
+    it('Should update latest checked if integrityCheckStartBlockNumber > latest checked', async () => {
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            countBlocks: jest.fn().mockResolvedValueOnce(1),
+            getBlocks: jest.fn().mockResolvedValue([{ id: 1, number: 5 }]),
+            integrityCheckStartBlockNumber: 5,
+            integrityCheck: { block: { number: 2 }},
+            id: 1,
+            name: 'hardhat',
+            user: { firebaseUserId: '123', name: 'hardhat' },
+            getProvider: () => ({ fetchLatestBlock: jest.fn().mockResolvedValueOnce({ timestamp: 123, number: 4 }) }),
+            findBlockGaps: jest.fn().mockResolvedValueOnce([])
+        });
+
+        await integrityCheck(job);
+
+        expect(db.updateWorkspaceIntegrityCheck).toHaveBeenCalledWith(1, { blockId: 1 });
+    });
+
     it('Should return if no lower block', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             countBlocks: jest.fn().mockResolvedValueOnce(1),
@@ -95,7 +113,9 @@ describe('integrityCheck', () => {
             integrityCheck: { block: {}},
             id: 1,
             name: 'hardhat',
-            user: { firebaseUserId: '123', name: 'hardhat' }
+            user: { firebaseUserId: '123', name: 'hardhat' },
+            getProvider: () => ({ fetchLatestBlock: jest.fn().mockResolvedValueOnce({ timestamp: 123, number: 4 }) }),
+            findBlockGaps: jest.fn().mockResolvedValueOnce([])
         });
 
         expect(await integrityCheck(job)).toEqual('Missing lower block or upper block');

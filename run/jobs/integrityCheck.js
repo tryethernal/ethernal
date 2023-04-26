@@ -57,11 +57,15 @@ module.exports = async job => {
 
     let lowerBlock;
     /*
-        If we are just starting to check integrity, or if the start block is below
+        If we are just starting to check integrity, or if the start block is below/above
         the latest checked one (if we've changed it for example), we start from the
         starting block defined on the workspace.
     */
-    if (!workspace.integrityCheck || workspace.integrityCheckStartBlockNumber < lowestBlock.number) {
+    if (
+        !workspace.integrityCheck
+        || workspace.integrityCheckStartBlockNumber < lowestBlock.number
+        || (workspace.integrityCheck.block && workspace.integrityCheckStartBlockNumber > workspace.integrityCheck.block.number)
+    ) {
         ([lowerBlock] = await workspace.getBlocks({
             where: { number: workspace.integrityCheckStartBlockNumber },
         }));
