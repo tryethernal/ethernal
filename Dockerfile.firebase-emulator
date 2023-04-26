@@ -2,7 +2,7 @@ FROM node:16
 
 WORKDIR /src
 
-RUN echo 'deb http://ftp.debian.org/debian stretch-backports main' | tee /etc/apt/sources.list.d/stretch-backports.list
+RUN echo 'deb http://archive.debian.org/debian stretch main contrib non-free' | tee /etc/apt/sources.list.d/stretch-backports.list
 
 RUN apt-get update && \
     apt-get install -y openjdk-11-jre-headless && \
