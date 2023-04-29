@@ -39,16 +39,26 @@ const getTransactionForProcessing = transactionId => {
 
     return Transaction.findOne({
         where: { id: transactionId },
-        include: {
-            model: Workspace,
-            as: 'workspace',
-            attributes: ['id', 'name'],
-            include: {
-                model: User,
-                as: 'user',
-                attributes: ['id', 'firebaseUserId']
+        include: [
+            {
+                model: TransactionReceipt,
+                as: 'receipt',
+            },
+            {
+                model: TokenTransfer,
+                as: 'tokenTransfers'
+            },
+            {
+                model: Workspace,
+                as: 'workspace',
+                attributes: ['id', 'name'],
+                include: {
+                    model: User,
+                    as: 'user',
+                    attributes: ['id', 'firebaseUserId']
+                }
             }
-        }
+        ]
     })
 };
 

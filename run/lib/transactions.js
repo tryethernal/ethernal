@@ -1,4 +1,5 @@
 const ethers = require('ethers');
+const moment = require('moment');
 const db = require('./firebase');
 const { getFunctionSignatureForTransaction } = require('./utils');
 let { getTokenTransfer } = require('./abi');
@@ -48,8 +49,18 @@ const processTransactions = async (transactionIds) => {
         const userId = transaction.workspace.user.firebaseUserId;
         const workspaceName = transaction.workspace.name;
 
-        if (transaction.to)
+        if (transaction.to) {
             contract = await db.getContractData(userId, workspaceName, transaction.to);
+        }
+        else if (transaction.receipt) {
+            const canSync = await db.canUserSyncContract(userId, workspaceName, transaction.receipt.contractAddress);
+            if (canSync) {
+                await db.storeContractData(userId, workspaceName, transaction.receipt.contractAddress, {
+                    address: transaction.receipt.contractAddress,
+                    timestamp: moment(transaction.timestamp).unix()
+                });
+            }
+        }
 
         if (contract && contract.proxy)
             contract = await db.getContractData(userId, workspaceName, contract.proxy);
@@ -57,15 +68,12 @@ const processTransactions = async (transactionIds) => {
         const workspace = await db.getWorkspaceByName(userId, workspaceName);
 
         try {
-            if (workspace && workspace.public && transaction.receipt && transaction.receipt.logs) {
-                const tokenTransfers = [];
-                for (let i = 0; i < transaction.receipt.logs.length; i++) {
-                    const tt = getTokenTransfer(transaction.receipt.logs[i]);
-                    if (tt) tokenTransfers.push(tt);
-                }
-
+            if (workspace && workspace.public && transaction.tokenTransfers) {
+                const tokenTransfers = transaction.tokenTransfers;
                 for (let i = 0; i < tokenTransfers.length; i++) {
-                    await db.storeContractData(userId, workspaceName, tokenTransfers[i].token, { address: tokenTransfers[i].token })
+                    const canSync = await db.canUserSyncContract(userId, workspaceName, tokenTransfers[i].token);
+                    if (canSync)
+                        await db.storeContractData(userId, workspaceName, tokenTransfers[i].token, { address: tokenTransfers[i].token });
                 }
             }
         } catch(_error) {}

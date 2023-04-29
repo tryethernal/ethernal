@@ -68,11 +68,17 @@ export default {
                 value: 'tags'
             }
         ],
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] }
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] },
+        newNftPusherHandler: null,
+        destroyedContractPusherHandler: null
     }),
     mounted: function() {
-        this.pusher.onNewToken(() => this.getTokens(this.currentOptions), this);
-        this.pusher.onDestroyedContract(() => this.getTokens(this.currentOptions), this);
+        this.newNftPusherHandler = this.pusher.onNewNft(() => this.getTokens(this.currentOptions), this);
+        this.destroyedContractPusherHandler = this.pusher.onDestroyedContract(() => this.getTokens(this.currentOptions), this);
+    },
+    destroyed() {
+        this.newNftPusherHandler();
+        this.destroyedContractPusherHandler.unbind(null, null, this);
     },
     methods: {
         getTokens: function(newOptions) {

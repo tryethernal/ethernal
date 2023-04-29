@@ -115,18 +115,22 @@ export default {
                 'Custom on-premise deployment',
                 'Payment in crypto'
             ]
-        }
+        },
+        pusherUnsubscribe: null
     }),
     mounted: function() {
         if (this.justUpgraded) {
             this.subscriptionButtonLoading = true;
-            this.pusher.onUserUpdated((user) => {
+            this.pusherUnsubscribe = this.pusher.onUserUpdated((user) => {
                 if (user.plan == 'premium') {
                     this.$store.dispatch('updateUserPlan', { plan: 'premium' });
                     this.subscriptionButtonLoading = false;
                 }
             }, this);
         }
+    },
+    destroyed() {
+        this.pusherUnsubscribe();
     },
     methods: {
         openStripePortal: function() {
