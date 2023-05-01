@@ -23,20 +23,24 @@ export const pusherPlugin = {
                     })
                 }
             }) : {
-                subscribe: () => ({ bind: () => {} }),
+                subscribe: () => ({ bind: () => {}, unbind: () => {} }),
             }
 
         Vue.prototype.pusher = {
             onNewContractLog(handler, address, context) {
                 const workspaceId = store.getters.currentWorkspace.id;
-                const channel = pusher.subscribe(`private-contractLog;workspace=${workspaceId};contract=${address}`);
-                return channel.bind('new', handler, context);
+                const channelString = `private-contractLog;workspace=${workspaceId};contract=${address}`;
+                const channel = pusher.subscribe(channelString);
+                channel.bind('new', handler, context);
+                return () => pusher.unsubscribe(channelString);
             },
 
             onUpdatedAccount(handler, context) {
                 const workspaceId = store.getters.currentWorkspace.id;
-                const channel = pusher.subscribe(`private-accounts;workspace=${workspaceId}`);
-                return channel.bind('updated', handler, context);
+                const channelString = `private-accounts;workspace=${workspaceId}`;
+                const channel = pusher.subscribe(channelString);
+                channel.bind('updated', handler, context);
+                return () => pusher.unsubscribe(channelString);
             },
 
             onNewFailedTransactions(handler, context) {
@@ -53,7 +57,8 @@ export const pusherPlugin = {
 
             onNewBlock(handler, context) {
                 const workspaceId = store.getters.currentWorkspace.id;
-                const channel = pusher.subscribe(`private-blocks;workspace=${workspaceId}`);
+                const channelString = `private-blocks;workspace=${workspaceId}`;
+                const channel = pusher.subscribe(channelString);
                 return channel.bind('new', handler, context);
             },
 
@@ -65,7 +70,8 @@ export const pusherPlugin = {
 
             onDestroyedContract(handler, context) {
                 const workspaceId = store.getters.currentWorkspace.id;
-                const channel = pusher.subscribe(`private-contracts;workspace=${workspaceId}`);
+                const channelString = `private-contracts;workspace=${workspaceId}`;
+                const channel = pusher.subscribe(channelString);
                 return channel.bind('destroyed', handler, context);
             },
 
@@ -74,20 +80,34 @@ export const pusherPlugin = {
                 const params = [`workspace=${workspaceId}`];
                 if (address)
                     params.push(`address=${address}`)
-                const channel = pusher.subscribe(`private-transactions;${params.join(';')}`);
-                return channel.bind('new', handler, context);
+                const channelString = `private-transactions;${params.join(';')}`;
+                const channel = pusher.subscribe(channelString);
+                channel.bind('new', handler, context);
+                return () => pusher.unsubscribe(channelString);
             },
 
             onNewToken(handler, context) {
                 const workspaceId = store.getters.currentWorkspace.id;
-                const channel = pusher.subscribe(`private-tokens;workspace=${workspaceId}`);
-                return channel.bind('new', handler, context);
+                const channelString = `private-tokens;workspace=${workspaceId}`;
+                const channel = pusher.subscribe(channelString);
+                channel.bind('new', handler, context);
+                return () => pusher.unsubscribe(channelString);
+            },
+
+            onNewNft(handler, context) {
+                const workspaceId = store.getters.currentWorkspace.id;
+                const channelString = `private-nft;workspace=${workspaceId}`;
+                const channel = pusher.subscribe(channelString);
+                channel.bind('new', handler, context);
+                return () => pusher.unsubscribe(channelString);
             },
 
             onUserUpdated(handler, context) {
                 const userId = store.getters.user.id;
-                const channel = pusher.subscribe(`private-cache-users;id=${userId}`);
-                return channel.bind('updated', handler, context);
+                const channelString = `private-cache-users;id=${userId}`;
+                const channel = pusher.subscribe(channelString);
+                channel.bind('updated', handler, context);
+                return () => pusher.unsubscribe(channelString);
             }
         }
     }

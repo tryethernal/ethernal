@@ -94,7 +94,7 @@ export default {
     },
     computed: {
         eventLabel() {
-            return this.parsedLog && this.parsedLog.name || this.log.topcis && this.log.topics[0];
+            return this.parsedLog && this.parsedLog.name || this.log.topics && this.log.topics[0];
         }
     }
 }

@@ -22,10 +22,17 @@ export default {
         transactions: [],
         transactionCount: 0,
         loading: true,
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] }
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] },
+        pusherHandler: null
     }),
     mounted() {
-        this.pusher.onNewTransaction(() => this.getTransactions(this.currentOptions), this);
+        this.pusherHandler = this.pusher.onNewBlock(data => {
+            if (data.withTransactions > 0)
+                this.getTransactions()
+        }, this);
+    },
+    destroyed() {
+        this.pusherHandler.unbind(null, null, this);
     },
     methods: {
         onPagination(options) {
