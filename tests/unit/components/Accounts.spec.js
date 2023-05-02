@@ -16,7 +16,7 @@ describe('Accounts.vue', () => {
 
         const wrapper = helper.mountFn(Accounts, { stubs: ['Hash-Link'] });
         await flushPromises();
-        
+
         expect(wrapper.html()).toMatchSnapshot();
     });
 });
