@@ -232,15 +232,6 @@ describe(`POST ${BASE_URL}`, () => {
                         timestamp: 123456
                     }
                 );
-                expect(db.storeContractData).toHaveBeenCalledWith(
-                    '123',
-                    'My Workspace',
-                    '0x1234',
-                    {
-                        address: '0x1234',
-                        timestamp: 123456
-                    }
-                );
                 done();
             });
     });

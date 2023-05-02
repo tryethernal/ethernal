@@ -516,8 +516,6 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
         afterDestroy(contract, options) {
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'destroyed', null);
-            if (contract.patterns.indexOf('erc20') > -1)
-                trigger(`private-tokens;workspace=${contract.workspaceId}`, 'destroyed', null);
         },
         beforeUpdate(contract, options) {
             if (contract._changed.size > 0 && !contract._changed.has('processed') && !contract._changed.has('totalSupply'))
@@ -527,6 +525,8 @@ module.exports = (sequelize, DataTypes) => {
             trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
             if (contract.patterns.indexOf('erc20') > -1)
                 trigger(`private-tokens;workspace=${contract.workspaceId}`, 'new', null);
+            else if (contract.patterns.indexOf('erc721') > -1)
+                trigger(`private-nft;workspace=${contract.workspaceId}`, 'new', null);
 
             return enqueue(`contractProcessing`, `contractProcessing-${contract.id}`, { contractId: contract.id, workspaceId: contract.workspaceId });
         },
@@ -536,6 +536,8 @@ module.exports = (sequelize, DataTypes) => {
 
             if (contract.patterns.indexOf('erc20') > -1)
                 trigger(`private-tokens;workspace=${contract.workspaceId}`, 'new', null);
+            else if (contract.patterns.indexOf('erc721') > -1)
+                trigger(`private-nft;workspace=${contract.workspaceId}`, 'new', null);
 
             return enqueue(`contractProcessing`, `contractProcessing-${contract.id}`, { contractId: contract.id, workspaceId: contract.workspaceId });
         }

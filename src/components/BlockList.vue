@@ -54,10 +54,11 @@ export default {
         blockCount: 0,
         headers: [],
         loading: true,
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['number'], sortDesc: [true] }
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['number'], sortDesc: [true] },
+        pusherChannelHandler: null
     }),
     mounted() {
-        this.pusher.onNewBlock(() => this.getBlocks(this.currentOptions), this);
+        this.pusherChannelHandler = this.pusher.onNewBlock(() => this.getBlocks(this.currentOptions), this);
 
         this.headers.push(
             { text: 'Block', value: 'number' },
@@ -66,6 +67,9 @@ export default {
         if (!this.dense)
             this.headers.push({ text: 'Gas Used', value: 'gasUsed', sortable: false });
         this.headers.push({ text: 'Transaction Count', value: 'transactionNumber', sortable: false });
+    },
+    destroyed() {
+        this.pusherChannelHandler.unbind(null, null, this);
     },
     methods: {
         moment: moment,

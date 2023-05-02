@@ -1,4 +1,3 @@
-import flushPromises from 'flush-promises';
 import MockHelper from '../MockHelper';
 
 import OnboardingModal from '@/components/OnboardingModal.vue';

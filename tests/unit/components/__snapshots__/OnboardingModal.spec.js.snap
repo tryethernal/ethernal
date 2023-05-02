@@ -40,7 +40,7 @@ exports[`OnboardingModal.vue Should let the user create a new workspace 1`] = `
                 </div>
                 </p>
                 <div class="v-card__actions">
-                  <div class="spacer"></div> <button type="button" class="v-btn v-btn--outlined theme--light v-size--default primary--text"><span class="v-btn__content">Back</span></button> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--outlined theme--light v-size--default"><span class="v-btn__content">Go to Dashboard</span></button>
+                  <div class="spacer"></div> <button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--outlined theme--light v-size--default"><span class="v-btn__content">Go to Dashboard</span></button>
                 </div>
               </div>
             </div>

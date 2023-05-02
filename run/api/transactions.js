@@ -58,16 +58,6 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res) => {
 
         const storedTx = await db.storeTransaction(data.uid, data.workspace, txSynced);
 
-        if (!txSynced.to && sTransactionReceipt) {
-            const canSync = await db.canUserSyncContract(data.uid, data.workspace, sTransactionReceipt.contractAddress);
-
-            if (canSync)
-                await db.storeContractData(data.uid, data.workspace, sTransactionReceipt.contractAddress, {
-                    address: sTransactionReceipt.contractAddress,
-                    timestamp: data.block.timestamp
-                });
-        }
-
        res.sendStatus(200);
     } catch(error) {
         logger.error(error.message, { location: 'post.api.transactions', error: error, data: data });

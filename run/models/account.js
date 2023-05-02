@@ -41,10 +41,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Account',
     tableName: 'accounts',
     hooks: {
-        afterUpdate(account, options) {
-            trigger(`private-accounts;workspace=${account.workspaceId}`, 'updated', null);
-        },
-        afterSave(account, options) {
+        afterSave(account) {
             trigger(`private-accounts;workspace=${account.workspaceId}`, 'updated', null);
         }
     }

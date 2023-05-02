@@ -46,13 +46,17 @@ export default {
         block: {
             gasLimit: 0
         },
-        loading: true
+        loading: true,
+        pusherChannelHandler: null
     }),
     mounted() {
-        this.pusher.onNewBlock(data => {
+        this.pusherChannelHandler = this.pusher.onNewBlock(data => {
             if (data.number == this.number)
                 this.loadBlock(this.number);
         }, this);
+    },
+    destroy() {
+        this.pusherChannelHandler.unbind(null, null, this);
     },
     methods: {
         moment: moment,

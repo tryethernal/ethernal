@@ -22,7 +22,6 @@
                 </p>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn outlined color="primary" @click="stepperIndex = 1">Back</v-btn>
                     <v-btn :outlined="!canExit" color="primary" :disabled="!canExit" @click="goToDashboard()">Go to Dashboard</v-btn>
                 </v-card-actions>
             </v-stepper-content>
@@ -47,6 +46,7 @@ export default {
         reject: null,
         stepperIndex: 1,
         canExit: false,
+        pusherChannelHandler: null
     }),
     methods: {
         onWorkspaceCreated: async function(workspace) {
@@ -55,7 +55,10 @@ export default {
                 .then(() => {
                     this.$store.dispatch('startBrowserSync');
                     Vue.use(pusherPlugin, { store: store });
-                    this.pusher.onNewBlock(() => this.canExit = true, this);
+                    this.pusherChannelHandler = this.pusher.onNewBlock(() => {
+                        this.canExit = true;
+                        this.pusherChannelHandler.unbind(null, null, this);
+                    }, this);
                 });
         },
         goToDashboard: function() {

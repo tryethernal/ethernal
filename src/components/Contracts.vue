@@ -97,14 +97,20 @@ export default {
                 value: 'tags'
             }
         ],
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] }
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] },
+        newContractPusherHandler: null,
+        destroyedContractPusherHandler: null
     }),
     mounted: function() {
         if (this.currentWorkspace.isAdmin)
             this.headers.push({ text: '', value: 'remove' });
 
-        this.pusher.onNewContract(() => this.getContracts(this.currentOptions), this);
-        this.pusher.onDestroyedContract(() => this.getContracts(this.currentOptions), this);
+        this.newContractPusherHandler = this.pusher.onNewContract(() => this.getContracts(this.currentOptions), this);
+        this.destroyedContractPusherHandler = this.pusher.onDestroyedContract(() => this.getContracts(this.currentOptions), this);
+    },
+    destroyed() {
+        this.newContractPusherHandler.unbind(null, null, this);
+        this.destroyedContractPusherHandler.unbind(null, null, this);
     },
     methods: {
         moment: moment,

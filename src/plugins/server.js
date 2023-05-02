@@ -1,7 +1,18 @@
 import { ethers } from 'ethers';
 const Web3 = require('web3');
 const Decoder = require('@truffle/decoder');
-const axios = require('axios');
+const Axios = require('axios');
+let setupCache;
+if (process.env.NODE_ENV == 'development')
+    ({ setupCache } = require('axios-cache-interceptor/dev'));
+else
+    ({ setupCache } = require('axios-cache-interceptor'));
+
+const axios = setupCache(Axios, {
+    debug: console.log,
+    ttl: 0
+});
+const CACHE_TTL = 2000;
 
 import { Storage } from '../lib/storage';
 import { sanitize } from '../lib/utils';
@@ -686,7 +697,7 @@ export const serverPlugin = {
                     ...options
                 };
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/blocks`;
-                return axios.get(resource, { params });
+                return axios.get(resource, { params, cache: { ttl: CACHE_TTL }});
             },
 
             getBlock(number, withTransactions = true) {
@@ -706,7 +717,7 @@ export const serverPlugin = {
                     ...options
                 };
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions`;
-                return axios.get(resource, { params });
+                return axios.get(resource, { params, cache: { ttl: store.getters.currentWorkspace.public ? CACHE_TTL : 0 }});
             },
 
             getTransaction(hash) {
@@ -733,8 +744,8 @@ export const serverPlugin = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}`;
-                return axios.get(resource, { params });
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address.toLowerCase()}`;
+                return axios.get(resource, { params, cache: { ttl: 5000 } });
             },
 
             getAddressTransactions(address, options) {

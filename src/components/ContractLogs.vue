@@ -59,13 +59,17 @@ export default {
             { text: 'Transaction', value: 'transactionHash', sortable: false },
             { text: 'Block', value: 'blockNumber' }
         ],
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] }
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] },
+        pusherChannelHandler: null
     }),
+    destroy() {
+        this.pusherChannelHandler.unbind(null, null, this);
+    },
     methods: {
         moment: moment,
         onPagination(options) {
             this.getTransfers(options);
-            this.pusher.onNewContractLog(() => this.getTransfers(this.currentOptions), this.address, this);
+            this.pusherChannelHandler = this.pusher.onNewContractLog(() => this.getTransfers(this.currentOptions), this.address, this);
         },
         getTransfers(newOptions) {
             this.loading = true;

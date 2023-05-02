@@ -107,14 +107,21 @@ export default {
             'transactionVolume14Days': {},
             'walletVolume14Days': {}
         },
+        pusherHandler: null
     }),
     mounted() {
         this.getTransactions();
         this.getGlobalStats();
         this.getTransactionVolume();
         this.getWalletVolume();
-        this.pusher.onNewTransaction(() => this.getTransactions(), this);
+        this.pusherHandler = this.pusher.onNewBlock(data => {
+            if (data.withTransactions > 0)
+                this.getTransactions()
+        }, this);
         this.chart = this.$refs.chart;
+    },
+    destroyed() {
+        this.pusherHandler.unbind(null, null, this);
     },
     methods: {
         moment: moment,

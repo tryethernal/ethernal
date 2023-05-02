@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       IntegrityCheck.belongsTo(models.Block, { foreignKey: 'blockId', as: 'block' });
     }
   }
+
   IntegrityCheck.init({
     workspaceId: DataTypes.INTEGER,
     blockId: DataTypes.INTEGER,

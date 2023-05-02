@@ -202,10 +202,10 @@ module.exports = (sequelize, DataTypes) => {
                         transactionId: transaction.id
                     }, 1);
 
-                await trigger(`private-transactions;workspace=${transaction.workspaceId}`, 'new', { hash: transaction.hash });
+                await trigger(`private-transactions;workspace=${transaction.workspaceId}`, 'new', { hash: transaction.hash, state: transaction.state });
                 if (transaction.to)
-                    await trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.to}`, 'new', null);
-                return trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.from}`, 'new', null);
+                    await trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.to}`, 'new', { hash: transaction.hash });
+                return trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.from}`, 'new', { hash: transaction.hash });
             };
             if (options.transaction)
                 return options.transaction.afterCommit(afterSaveFn);
