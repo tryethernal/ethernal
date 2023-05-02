@@ -84,12 +84,16 @@ export default {
             { text: 'Balance', value: 'balance' }
         ],
         loading: false,
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['address'], sortDesc: [true] }
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['address'], sortDesc: [true] },
+        pusherUnsubscribe: null
     }),
     mounted() {
-        this.pusher.onUpdatedAccount(() => this.getAccounts());
+        this.pusherUnsubscribe = this.pusher.onUpdatedAccount(() => this.getAccounts());
         if (this.isUserAdmin)
             this.headers.push({ text: 'Actions', value: 'actions' });
+    },
+    destroyed() {
+        this.pusherUnsubscribe();
     },
     methods: {
         syncAccounts() {

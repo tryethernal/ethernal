@@ -24,6 +24,7 @@
     "@vue-stripe/vue-stripe": "^4.2.5",
     "abi-decoder": "^2.3.0",
     "axios": "^0.21.1",
+    "axios-cache-interceptor": "1",
     "chokidar": "^3.5.0",
     "copy-webpack-plugin": "^6.3.2",
     "core-js": "^3.6.5",

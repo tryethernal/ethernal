@@ -209,13 +209,17 @@ export default {
         },
         jsonInterface: null,
         parsedLogsData: [],
-        processing: false
+        processing: false,
+        pusherUnsubscribe: null
     }),
     mounted() {
-        this.pusher.onNewTransaction(data => {
+        this.pusherUnsubscribe = this.pusher.onNewTransaction(data => {
             if (data.hash == this.hash)
                 this.loadTransaction(this.hash);
         }, this);
+    },
+    destroyed() {
+        this.pusherUnsubscribe();
     },
     watch: {
         hash: {

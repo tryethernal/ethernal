@@ -24,10 +24,14 @@ export default {
         transactions: [],
         transactionCount: 0,
         loading: true,
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] }
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] },
+        pusherUnsubscribe: null
     }),
     mounted: function() {
-        this.pusher.onNewTransaction(() => this.getTransactions(this.currentOptions), this, this.address);
+        this.pusherUnsubscribe = this.pusher.onNewTransaction(() => this.getTransactions(this.currentOptions), this, this.address);
+    },
+    destroyed() {
+        this.pusherUnsubscribe();
     },
     methods: {
         onPagination: function(options) {

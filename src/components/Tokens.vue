@@ -61,11 +61,17 @@ export default {
                 value: 'tags'
             }
         ],
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] }
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] },
+        newTokenPusherHandler: null,
+        destroyedContractPusherHandler: null
     }),
     mounted: function() {
-        this.pusher.onNewToken(() => this.getTokens(this.currentOptions), this);
-        this.pusher.onDestroyedContract(() => this.getTokens(this.currentOptions), this);
+        this.newTokenPusherHandler = this.pusher.onNewToken(() => this.getTokens(this.currentOptions), this);
+        this.destroyedContractPusherHandler = this.pusher.onDestroyedContract(() => this.getTokens(this.currentOptions), this);
+    },
+    destroyed() {
+        this.newTokenPusherHandler();
+        this.destroyedContractPusherHandler.unbind(null, null, this);
     },
     methods: {
         getTokens: function(newOptions) {

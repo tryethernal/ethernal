@@ -117,9 +117,13 @@ describe('processTransactions ', () => {
     });
 
     it('Should store token as new contracts if workspace is public', async () => {
-        getTokenTransfer.mockReturnValue({ token: '0x123', src: '0x456', dst: '0x789' });
-
-        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, receipt: TransactionReceipt, workspace });
+        jest.spyOn(db, 'canUserSyncContract').mockResolvedValueOnce(true);
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({
+            ...Transaction,
+            tokenTransfers: [{ token: '0x123', src: '0x456', dst: '0x789' }],
+            receipt: TransactionReceipt,
+            workspace
+        });
 
         await processTransactions([1]);
         expect(db.storeContractData).toHaveBeenCalledTimes(1);

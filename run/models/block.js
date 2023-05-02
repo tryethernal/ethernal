@@ -49,18 +49,11 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
         async afterSave(block, options) {
             const afterSaveFn = async () => {
-                trigger(`private-blocks;workspace=${block.workspaceId}`, 'new', { number: block.number });
-                const integrityCheck = await sequelize.models.IntegrityCheck.findOne({
-                    where: { workspaceId: block.workspaceId },
-                    include: {
-                        model: sequelize.models.Block,
-                        as: 'block'
-                    }
-                });
-
-                if (integrityCheck && block.number < integrityCheck.block.number) {
-                    await integrityCheck.update({ blockId: block.id });
-                }
+                // We only refresh the frontend in real time if that's a recent block to avoid spamming requests
+                const workspace = await block.getWorkspace();
+                const [latestBlock] = await workspace.getBlocks({ order: [['number', 'DESC']], limit: 1 });
+                if (latestBlock.number - block.number < 10)
+                  await trigger(`private-blocks;workspace=${block.workspaceId}`, 'new', { number: block.number, withTransactions: block.transactionsCount > 0 });
             };
 
             if (options.transaction)
