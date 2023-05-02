@@ -23,16 +23,16 @@ export default {
         transactionCount: 0,
         loading: true,
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] },
-        pusherHandler: null
+        pusherUnsubscribe: null,
     }),
     mounted() {
-        this.pusherHandler = this.pusher.onNewBlock(data => {
-            if (data.withTransactions > 0)
-                this.getTransactions()
-        }, this);
+        this.pusherUnsubscribe = this.pusher.onNewTransaction(transaction => {
+            if (this.hashes(transaction.state).indexOf(transaction.hash) == -1)
+                this.getTransactions(this.currentOptions);
+        }, this, this.address);
     },
     destroyed() {
-        this.pusherHandler.unbind(null, null, this);
+        this.pusherUnsubscribe();
     },
     methods: {
         onPagination(options) {
@@ -58,6 +58,11 @@ export default {
                 .catch(console.log)
                 .finally(() => this.loading = false);
         },
-    }
+        hashes(state) {
+            return this.transactions
+                .filter(t => t.state == state)
+                .map(t => t.hash)
+        }
+    },
 }
 </script>

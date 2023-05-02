@@ -2,10 +2,14 @@ import { ethers } from 'ethers';
 const Web3 = require('web3');
 const Decoder = require('@truffle/decoder');
 const Axios = require('axios');
-const { setupCache } = require('axios-cache-interceptor/dev');
+let setupCache;
+if (process.env.NODE_ENV == 'development')
+    ({ setupCache } = require('axios-cache-interceptor/dev'));
+else
+    ({ setupCache } = require('axios-cache-interceptor'));
+
 const axios = setupCache(Axios, {
     debug: console.log,
-    // headerInterpreter: () => 'dont cache',
     ttl: 0
 });
 const CACHE_TTL = 2000;
@@ -713,7 +717,7 @@ export const serverPlugin = {
                     ...options
                 };
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions`;
-                return axios.get(resource, { params, cache: { ttl: CACHE_TTL }});
+                return axios.get(resource, { params, cache: { ttl: store.getters.currentWorkspace.public ? CACHE_TTL : 0 }});
             },
 
             getTransaction(hash) {
