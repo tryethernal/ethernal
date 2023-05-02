@@ -33,7 +33,7 @@ describe('authMiddleware', () => {
         await secret(req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(401);
-        expect(send).toHaveBeenCalledWith(new Error('Invalid secret'));
+        expect(send).toHaveBeenCalledWith('Invalid secret');
         expect(next).not.toHaveBeenCalled();
     });
 });
