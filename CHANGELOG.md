@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.12.5] - 2023-05-02
+### Changed
+- Performance improvement by sending way less requests to the backend
+
 ## [3.12.4] - 2023-04-26
 ### Fixed
 - Dev Dockerfile package issue
