@@ -11,6 +11,6 @@ module.exports = (req, res, next) => {
             throw new Error('Invalid secret')
     } catch(error) {
         logger.error(error.message, { location: 'middleware.secret', error: error });
-        res.status(401).send(error);
+        res.status(401).send(error.message);
     }
 }
