@@ -69,6 +69,19 @@ module.exports = (sequelize, DataTypes) => {
             ]
         });
     }
+
+    safeUpdateSettings(settings) {
+        const ALLOWED_SETTINGS = ['name', 'slug', 'token', 'totalSupply', 'statusPageEnabled'];
+
+        const filteredSettings = {};
+        Object.keys(settings).forEach(key => {
+            if (ALLOWED_SETTINGS.indexOf(key) > -1)
+                filteredSettings[key] = settings[key];
+        });
+
+        if (Object.keys(filteredSettings).length > 0)
+            return this.update(filteredSettings);
+    }
   }
   Explorer.init({
     userId: DataTypes.INTEGER,

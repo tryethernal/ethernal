@@ -12,6 +12,59 @@ const Explorer = models.Explorer;
 const TokenBalanceChange = models.TokenBalanceChange;
 const IntegrityCheck = models.IntegrityCheck;
 
+const updateExplorerSettings = async (explorerId, settings) => {
+    if (!explorerId || !settings) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findByPk(explorerId);
+    console.log(settings)
+    return explorer.safeUpdateSettings(settings);
+};
+
+const updateExplorerWorkspace = async (explorerId, workspaceId) => {
+    if (!explorerId || !workspaceId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findbyPk(explorerId);
+    const workspace = await Explorer.findByPk(workspaceId);
+
+    if (explorer.userId != workspace.userId)
+        throw new Error('Invalid workspace');
+
+    return Explorer.update({ workspaceId: workspace.id, rpcServer: workspace.rpcServer, chainId: workspace.networkId });
+};
+
+const getExplorerById = (id) => {
+    if (!id) throw new Error('Missing parameter');
+
+    return Explorer.findByPk(id, {
+        include: [
+            {
+                model: Workspace,
+                as: 'workspace'
+            }
+        ]
+    });
+}
+
+const getUserExplorers = (firebaseUserId) => {
+    if (!firebaseUserId) throw new Error('Missing parameter');
+
+    return Explorer.findAll({
+        where: {
+            '$admin.firebaseUserId$': firebaseUserId
+        },
+        include: [
+            {
+                model: Workspace,
+                as: 'workspace'
+            },
+            {
+                model: User,
+                as: 'admin'
+            }
+        ]
+    })
+}
+
 const updateWorkspaceRpcHealthCheck = async (workspaceId, isReachable) => {
     if (!workspaceId || isReachable === null || isReachable === undefined) throw new Error('Missing parameter');
 
@@ -1101,5 +1154,9 @@ module.exports = {
     updateWorkspaceIntegrityCheck: updateWorkspaceIntegrityCheck,
     updateWorkspaceRpcHealthCheck: updateWorkspaceRpcHealthCheck,
     revertPartialBlock: revertPartialBlock,
+    getUserExplorers: getUserExplorers,
+    getExplorerById: getExplorerById,
+    updateExplorerSettings: updateExplorerSettings,
+    updateExplorerWorkspace: updateExplorerWorkspace,    
     Workspace: Workspace
 };

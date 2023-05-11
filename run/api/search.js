@@ -1,8 +1,51 @@
 const express = require('express');
+const { isGoogleApiEnabled } = require('../lib/flags');
+const axios = require('axios');
 const router = express.Router();
 const logger = require('../lib/logger');
 const db = require('../lib/firebase');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
+const authMiddleware = require('../middlewares/auth');
+
+router.get('/icons', authMiddleware, async (req, res) => {
+    const data = req.query;
+    try {
+        if (!data.icon)
+            throw new Error('Missing parameters');
+
+        const rawIcons = (await axios.get(`https://raw.githubusercontent.com/Templarian/MaterialDesign-SVG/master/meta.json`)).data;
+        const icons = rawIcons.filter(ri => {
+            const labels = [ri.name, ...ri.aliases, ...ri.tags, ...ri.styles];
+            for (let i = 0; i < labels.length; i++)
+                if (labels[i].includes(data.icon))
+                    return true;
+        });
+
+        res.status(200).json(icons)
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.search', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
+router.get('/fonts', authMiddleware, async (req, res) => {
+    const data = req.query;
+    try {
+        if (!isGoogleApiEnabled())
+            return res.sendStatus(404);
+
+        if (!data.font)
+            throw new Error('Missing parameters');
+
+        const rawFonts = (await axios.get(`https://www.googleapis.com/webfonts/v1/webfonts?key=${process.env.GOOGLE_API_KEY}`)).data;
+        const fonts = rawFonts.items.filter(rf => rf.family.toLowerCase().includes(data.font)).map(rf => rf.family);
+
+        res.status(200).json(fonts)
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.search', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
 
 router.get('/', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;

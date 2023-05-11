@@ -354,6 +354,39 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            getExplorerMode(domain) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/search?domain=${domain}`;
+                return axios.get(resource, { cache: { ttl: 100 }});
+            },
+
+            updateExplorerSettings(slug, settings) {
+                const data = {
+                    ...settings
+                };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${slug}/settings`;
+                return axios.post(resource, { data }, { cache: { ttl: 0 }});
+            },
+
+            searchIcon(query) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/search/icons?icon=${query}`;
+                return axios.get(resource, { cache: { ttl: 100 }});
+            },
+
+            searchFont(query) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/search/fonts?font=${query}`;
+                return axios.get(resource, { cache: { ttl: 100 }});
+            },
+
+            getExplorers() {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers`;
+                return axios.get(resource);
+            },
+
+            getExplorer(slug) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${slug}`;
+                return axios.get(resource);
+            },
+
             getExplorerStatus() {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
@@ -789,7 +822,7 @@ export const serverPlugin = {
                 const params = {
                     domain: domain
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers`;
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/search`;
                 return axios.get(resource, { params });
             },
 
@@ -797,7 +830,7 @@ export const serverPlugin = {
                 const params = {
                     slug: slug
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers`;
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/search`;
                 return axios.get(resource, { params });
             },
 

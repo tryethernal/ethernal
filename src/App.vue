@@ -15,7 +15,7 @@
             <v-list-item v-else>
                 <v-list-item-content>
                     <v-list-item-title class="logo">
-                        {{ publicExplorer.name || 'Ethernal' }}
+                        {{ publicExplorer ? publicExplorer.name : 'Ethernal' }}
                     </v-list-item-title>
                     <v-list-item-subtitle class="color--text">{{ version }}</v-list-item-subtitle>
                 </v-list-item-content>
@@ -93,6 +93,17 @@
                     </v-list-item-content>
                 </v-list-item>
 
+                <v-list-item link :to="'/status'" v-if="(isUserAdmin && currentWorkspace.public) || currentWorkspace.statusPageEnabled">
+                    <v-list-item-icon>
+                        <v-icon>mdi-heart-circle</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>Status</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
+                <v-divider class="my-4"></v-divider>
+
                 <v-list-item link :to="'/settings?tab=workspace'" v-if="isUserAdmin">
                     <v-list-item-icon>
                         <v-icon>mdi-cog</v-icon>
@@ -102,12 +113,12 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link :to="'/status'" v-if="(isUserAdmin && currentWorkspace.public) || currentWorkspace.statusPageEnabled">
+                <v-list-item link :to="'/explorers'" v-if="isUserAdmin">
                     <v-list-item-icon>
-                        <v-icon>mdi-heart-circle</v-icon>
+                        <v-icon>mdi-earth</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                        <v-list-item-title>Status</v-list-item-title>
+                        <v-list-item-title>Public Explorers</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -194,6 +205,7 @@
 
 <script>
 import { Icon } from '@iconify/vue2';
+import LogRocket from 'logrocket';
 import WebFont from 'webfontloader';
 import Vue from 'vue';
 import detectEthereumProvider from '@metamask/detect-provider';
@@ -239,12 +251,13 @@ export default {
             this.ethereum = provider;
         });
         this.isOverlayActive = true;
-        if (this.publicExplorerMode) {
-            this.initPublicExplorer();
-        }
-        else {
+        this.publicExplorer ? this.setupPublicExplorer() : this.setupPrivateExplorer();
+    },
+    methods: {
+        setupPrivateExplorer() {
             this.server.getCurrentUser()
                 .then(({ data }) => {
+                    this.authStateChanged(data);
                     data.currentWorkspace ?
                         this.initWorkspace(data.currentWorkspace) :
                         this.launchOnboarding();
@@ -252,10 +265,9 @@ export default {
                 .catch(() => {
                     this.isOverlayActive = false;
                     this.routerComponent = 'router-view';
+                    this.authStateChanged(null);
                 })
-        }
-    },
-    methods: {
+        },
         toggleMenu() {
             this.drawer = !this.drawer;
         },
@@ -293,14 +305,6 @@ export default {
             this.isOverlayActive = false;
             this.$refs.onboardingModal.open();
         },
-        initPublicExplorer() {
-            if (this.publicExplorer.domain)
-                this.server.getPublicExplorerByDomain(this.publicExplorer.domain)
-                    .then(this.setupPublicExplorer);
-            else
-                this.server.getPublicExplorerBySlug(this.publicExplorer.slug)
-                    .then(this.setupPublicExplorer);
-        },
         updateTabInfo(logo, name) {
             if (logo) {
                 const favicon = document.getElementById('favicon');
@@ -309,80 +313,88 @@ export default {
 
             document.title = name;
         },
-        setupPublicExplorer({ data }) {
-            if (!data)
-                return;
+        authStateChanged(user) {
+            if (user && process.env.VUE_APP_ENABLE_ANALYTICS && window.location.host == 'app.tryethernal.com') {
+                LogRocket.init(process.env.VUE_APP_LOGROCKET_ID);
+            }
 
-            this.$store.dispatch('setPublicExplorerData', {
-                name: data.name,
-                token: data.token,
-                domain: data.domain,
-                chainId: data.chainId,
-                theme: data.themes.default,
-                slug: data.slug,
-                totalSupply: data.totalSupply
-            }).then(() => {
-                if (data.themes) {
-                    const lightTheme = data.themes.light || {};
-                    const darkTheme = data.themes.dark || {};
-                    const font = data.themes.font;
-                    this.$vuetify.theme.dark = data.themes.default == 'dark';
+            const currentPath = this.$router.currentRoute.path;
+            const publicExplorerMode = store.getters.publicExplorerMode;
 
-                    if (data.themes.logo)
-                        this.logo = data.themes.logo;
+            store.dispatch('updateUser', user || {});
 
-                    this.updateTabInfo(data.themes.favicon, data.name);
+            if (currentPath != '/auth' && !user && !publicExplorerMode) {
+                return this.$router.push('/auth');
+            }
+            if (currentPath == '/auth' && user) {
+                const queryParams = { ...this.$route.query };
+                delete queryParams.next;
+                return this.$router.push({ path: this.$route.query.next || '/transactions', query: queryParams});
+            }
+        },
+        setupPublicExplorer() {
+            const data = this.publicExplorer;
+            console.log(data)
+            if (data.themes) {
+                const lightTheme = data.themes.light || {};
+                const darkTheme = data.themes.dark || {};
+                const font = data.themes.font;
+                this.$vuetify.theme.dark = data.themes.default == 'dark';
 
-                    if (data.themes.links)
-                        this.links = data.themes.links;
+                if (data.themes.logo)
+                    this.logo = data.themes.logo;
 
-                    if (data.themes.banner)
-                        this.banner = data.themes.banner;
+                this.updateTabInfo(data.themes.favicon, data.name);
 
-                    Object.keys(lightTheme).forEach((key) => {
-                        switch (key) {
-                            case 'background':
-                                this.$set(this.styles, 'background', lightTheme[key]);
-                                break;
-                            default:
-                                this.$vuetify.theme.themes.light[key] = lightTheme[key];
-                        }
-                    });
+                if (data.themes.links)
+                    this.links = data.themes.links;
 
-                    Object.keys(darkTheme).forEach((key) => {
-                        switch (key) {
-                            case 'background':
-                                this.$set(this.styles, 'background', darkTheme[key]);
-                                break;
-                            default:
-                                this.$vuetify.theme.themes.dark[key] = darkTheme[key];
-                        }
-                    });
+                if (data.themes.banner)
+                    this.banner = data.themes.banner;
 
-                    if (font)
-                        WebFont.load({
-                            fontactive: () => {
-                                this.$set(this.styles, 'fontFamily', font);
-                            },
-                            google: {
-                                families: [`${font}:100,300,400,500,700,900&display=swap`]
-                            }
-                        });
-                }
-
-                this.initWorkspace({
-                    firebaseUserId: data.admin.firebaseUserId,
-                    name: data.workspace.name,
-                    networkId: data.chainId,
-                    rpcServer: data.rpcServer,
-                    storageEnabled: data.workspace.storageEnabled,
-                    erc721LoadingEnabled: data.workspace.erc721LoadingEnabled,
-                    statusPageEnabled: data.workspace.statusPageEnabled,
-                    id: data.workspaceId,
-                    defaultAccount: data.workspace.defaultAccount,
-                    gasPrice: data.workspace.gasPrice,
-                    gasLimit: data.workspace.gasLimit
+                Object.keys(lightTheme).forEach((key) => {
+                    switch (key) {
+                        case 'background':
+                            this.$set(this.styles, 'background', lightTheme[key]);
+                            break;
+                        default:
+                            this.$vuetify.theme.themes.light[key] = lightTheme[key];
+                    }
                 });
+
+                Object.keys(darkTheme).forEach((key) => {
+                    switch (key) {
+                        case 'background':
+                            this.$set(this.styles, 'background', darkTheme[key]);
+                            break;
+                        default:
+                            this.$vuetify.theme.themes.dark[key] = darkTheme[key];
+                    }
+                });
+
+                if (font)
+                    WebFont.load({
+                        fontactive: () => {
+                            this.$set(this.styles, 'fontFamily', font);
+                        },
+                        google: {
+                            families: [`${font}:100,300,400,500,700,900&display=swap`]
+                        }
+                    });
+            }
+
+            this.initWorkspace({
+                firebaseUserId: data.admin.firebaseUserId,
+                name: data.workspace.name,
+                networkId: data.chainId,
+                rpcServer: data.rpcServer,
+                storageEnabled: data.workspace.storageEnabled,
+                erc721LoadingEnabled: data.workspace.erc721LoadingEnabled,
+                statusPageEnabled: data.workspace.statusPageEnabled,
+                id: data.workspaceId,
+                defaultAccount: data.workspace.defaultAccount,
+                gasPrice: data.workspace.gasPrice,
+                gasLimit: data.workspace.gasLimit
             });
         },
         initWorkspace(workspace) {

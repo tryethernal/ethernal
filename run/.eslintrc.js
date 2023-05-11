@@ -9,6 +9,6 @@ module.exports = {
       "eslint:recommended",
     ],
     rules: {
-      quotes: ["error"],
+      quotes: [2, "single"],
     },
 };

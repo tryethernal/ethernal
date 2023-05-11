@@ -5,6 +5,31 @@ const db = require('../lib/firebase');
 const secretMiddleware = require('../middlewares/secret');
 const authMiddleware = require('../middlewares/auth');
 
+router.post('/:id/settings', authMiddleware, async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        const explorer = await db.getExplorerById(req.params.id);
+        if (!explorer)
+            throw new Error('Could not find explorer.');
+
+        if (data.workspace && data.workspace != explorer.workspace.name) {
+            const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
+            if (!workspace)
+                throw new Error('Invalid workspace.');
+            else
+                await db.updateExplorerWorkspace(explorer.id, workspace.id);
+        }
+
+        await db.updateExplorerSettings(explorer.id, data);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.explorers.settings', error: error, data: data, queryParams: req.params });
+        res.status(400).send(error.message);
+    }
+});
+
 router.post('/', [authMiddleware, secretMiddleware], async (req, res) => {
     const data = req.body.data;
 
@@ -38,24 +63,57 @@ router.post('/', [authMiddleware, secretMiddleware], async (req, res) => {
     }
 });
 
-router.get('/', async (req, res) => {
+router.get('/search', async (req, res) => {
     const data = req.query;
 
     try {
-        if (!data.domain && !data.slug)
+        if (!data.domain)
             throw new Error('Missing parameters.')
 
         let explorer;
 
-        if (data.domain)
-            explorer = await db.getPublicExplorerParamsByDomain(data.domain);
+        if (data.domain == `app.${process.env.APP_DOMAIN}`)
+            return res.sendStatus(200);
+        else if (data.domain.endsWith(process.env.APP_DOMAIN)) {
+            const slug = data.domain.split(`.${process.env.APP_DOMAIN}`)[0];
+            explorer = await db.getPublicExplorerParamsBySlug(slug);
+        }
         else
-            explorer = await db.getPublicExplorerParamsBySlug(data.slug);
+            explorer = await db.getPublicExplorerParamsByDomain(data.domain);
 
         if (explorer)
-            res.status(200).json(explorer);
+            res.status(200).json({ explorer });
         else
             throw new Error('Could not find explorer.');
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.explorers.search', error: error, data: data, queryParams: req.params });
+        res.status(400).send(error.message);
+    }
+});
+
+router.get('/:id', authMiddleware, async (req, res) => {
+    const data = req.params;
+
+    try {
+        if (!data.id)
+            throw new Error('Missing parameters.')
+
+        const explorer = await db.getExplorerById(data.id);
+
+        res.status(200).json(explorer);
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.explorers.id', error: error, data: data, queryParams: req.params });
+        res.status(400).send(error.message);
+    }
+});
+
+router.get('/', authMiddleware, async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        const explorers = await db.getUserExplorers(data.uid)
+
+        res.status(200).json(explorers)
     } catch(error) {
         logger.error(error.message, { location: 'get.api.explorers', error: error, data: data, queryParams: req.params });
         res.status(400).send(error.message);

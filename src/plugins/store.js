@@ -9,15 +9,7 @@ export default new Vuex.Store({
     state: {
         user: {},
         currentBlock: {},
-        publicExplorer: {
-            name: null,
-            slug: null,
-            token: null,
-            chainId: null,
-            domain: null,
-            theme: 'light',
-            totalSupply: null
-        },
+        publicExplorer: null,
         currentWorkspace: {
             storageEnabled: true,
             userId: '',
@@ -142,27 +134,21 @@ export default new Vuex.Store({
         updateOnboardedStatus({ commit }, status) {
             commit('SET_ONBOARDED_STATUS', status);
         },
-        updatePublicExplorerSlug({ commit }, slug) {
-            commit('SET_PUBLIC_EXPLORER_SLUG', slug);
-        },
         setPublicExplorerData({ commit }, data) {
             commit('SET_PUBLIC_EXPLORER_DATA', data);
-        },
-        updatePublicExplorerDomain({ commit }, domain) {
-            commit('SET_PUBLIC_EXPLORER_DOMAIN', domain);
         },
         updateFirebaseIdToken({ commit }, token) {
             commit('SET_FIREBASE_ID_TOKEN', token);
         }
     },
     getters: {
-        publicExplorerMode: state => state.publicExplorer.slug || state.publicExplorer.domain,
+        publicExplorerMode: state => !!state.publicExplorer,
         accounts: state => state.accounts,
         firebaseIdToken: state => state.user.firebaseIdToken || '',
         theme: state => state.publicExplorer.theme,
         isUserLoggedIn: state => !!state.user.apiToken,
         isUserAdmin: state => state.currentWorkspace && state.user.id == state.currentWorkspace.userId,
-        isPublicExplorer: state => !!state.publicExplorer.slug || !!state.publicExplorer.domain || (state.currentWorkspace.public && state.user.uid == state.currentWorkspace.firebaseUserId),
+        isPublicExplorer: state => state.publicExplorer && (!!state.publicExplorer.slug || !!state.publicExplorer.domain || (state.currentWorkspace.public && state.user.uid == state.currentWorkspace.firebaseUserId)),
         publicExplorer: state => state.publicExplorer,
         user: state => {
             return { ...state.user, plan: state.user.plan || 'free' };
