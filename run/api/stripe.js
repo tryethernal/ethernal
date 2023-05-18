@@ -7,15 +7,11 @@ const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const router = express.Router();
 
-const PLANS = {
-    premium: 'price_1JlwH8JG8RHJCKOzUJ3nGjT0'
-};
-
 router.post('/createCheckoutSession', [authMiddleware, stripeMiddleware], async (req, res) => {
     const data = { ...req.query, ...req.body.data };
     try {
         const user = await db.getUser(data.uid, ['stripeCustomerId']);
-        const selectedPlan = PLANS[data.plan];
+        const selectedPlan = await db.getStripePlan(data.plan);
 
         if (!selectedPlan)
             throw new Error('Invalid plan.');
@@ -27,12 +23,12 @@ router.post('/createCheckoutSession', [authMiddleware, stripeMiddleware], async 
             payment_method_types: ['card'],
             line_items: [
                 {
-                    price: selectedPlan,
+                    price: selectedPlan.stripePriceId,
                     quantity: 1
                 }
             ],
-            success_url: `${process.env.APP_URL}/settings?tab=billing&status=upgraded`,
-            cancel_url: `${process.env.APP_URL}/settings?tab=billing`
+            success_url: `${process.env.APP_URL}${data.successPath}`,
+            cancel_url: `${process.env.APP_URL}${data.cancelPath}`
         }));
         
         res.status(200).json({ url: session.url });

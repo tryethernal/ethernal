@@ -9,27 +9,45 @@ const Transaction = models.Transaction;
 const Workspace = models.Workspace;
 const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
-const TokenBalanceChange = models.TokenBalanceChange;
-const IntegrityCheck = models.IntegrityCheck;
+const StripePlan = models.StripePlan;
+const StripeSubscription = models.StripeSubscription;
+
+const getStripePlan = async (slug) => {
+    const plan = await StripePlan.findOne({
+        where: { slug }
+    });
+    return plan ? plan.toJSON() : null;
+}
+
+const updateExplorerBranding = async (explorerId, branding) => {
+    if (!explorerId || !branding) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findByPk(explorerId);
+    return explorer.safeUpdateBranding(branding);
+};
 
 const updateExplorerSettings = async (explorerId, settings) => {
     if (!explorerId || !settings) throw new Error('Missing parameter');
 
     const explorer = await Explorer.findByPk(explorerId);
-    console.log(settings)
     return explorer.safeUpdateSettings(settings);
 };
 
 const updateExplorerWorkspace = async (explorerId, workspaceId) => {
     if (!explorerId || !workspaceId) throw new Error('Missing parameter');
 
-    const explorer = await Explorer.findbyPk(explorerId);
-    const workspace = await Explorer.findByPk(workspaceId);
+    const explorer = await Explorer.findByPk(explorerId);
+    if (!explorer)
+        throw new Error('Cannot find explorer');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Cannot find workspace')
 
     if (explorer.userId != workspace.userId)
         throw new Error('Invalid workspace');
 
-    return Explorer.update({ workspaceId: workspace.id, rpcServer: workspace.rpcServer, chainId: workspace.networkId });
+    return explorer.update({ workspaceId: workspace.id, rpcServer: workspace.rpcServer, chainId: workspace.networkId });
 };
 
 const getExplorerById = (id) => {
@@ -37,6 +55,15 @@ const getExplorerById = (id) => {
 
     return Explorer.findByPk(id, {
         include: [
+            {
+                model: StripeSubscription,
+                as: 'stripeSubscription',
+                include: { model: StripePlan, as: 'stripePlan' }
+            },
+            {
+                model: User,
+                as: 'admin'
+            },
             {
                 model: Workspace,
                 as: 'workspace'
@@ -1157,6 +1184,8 @@ module.exports = {
     getUserExplorers: getUserExplorers,
     getExplorerById: getExplorerById,
     updateExplorerSettings: updateExplorerSettings,
-    updateExplorerWorkspace: updateExplorerWorkspace,    
+    updateExplorerWorkspace: updateExplorerWorkspace,
+    updateExplorerBranding: updateExplorerBranding,
+    getStripePlan: getStripePlan,
     Workspace: Workspace
 };

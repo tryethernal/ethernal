@@ -890,6 +890,7 @@ module.exports = (sequelize, DataTypes) => {
 
     updateSettings(data) {
         return this.update(sanitize({
+            statusPageEnabled: data.statusPageEnabled,
             chain: data.chain,
             rpcServer: data.rpcServer,
             tracing: data.advancedOptions && data.advancedOptions.tracing,

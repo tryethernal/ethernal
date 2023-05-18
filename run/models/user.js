@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Workspace, { foreignKey: 'userId', as: 'workspaces' });
       User.hasOne(models.Workspace, { foreignKey: 'id', sourceKey: 'currentWorkspaceId', as: 'currentWorkspace' });
       User.hasMany(models.Explorer, { foreignKey: 'userId', as: 'explorers' });
+      User.hasOne(models.StripeSubscription, { foreignKey: 'userId', as: 'stripeSubscription' });
     }
 
     static findByAuthId(firebaseUserId, extraFields = []) {

@@ -143,7 +143,7 @@ export default {
         },
         subscribeToPlan: function(plan) {
             this.subscriptionButtonLoading = true;
-            this.server.createStripeCheckoutSession(plan)
+            this.server.createStripeCheckoutSession(plan, `/settings?tab=billing&status=upgraded`, `settings?tab=billing`)
                 .then(({ data }) => {
                     document.location.href = data.url;
                 })

@@ -7,6 +7,8 @@
                     <h4>Settings</h4>
                     <v-card outlined class="mb-4">
                         <v-card-text>
+                            <v-alert v-show="settingsUpdated" dense text type="success">Settings updated</v-alert>
+                            <v-alert v-show="settingsUpdateError" dense text type="error">{{ settingsUpdateError }}</v-alert>
                             <v-form @submit.prevent="updateExplorerSettings()" v-model="valid">
                                 <v-row>
                                     <v-col>
@@ -29,31 +31,50 @@
                                             dense
                                             outlined
                                             v-model="explorer.name"
-                                            id="name"
                                             label="Name"></v-text-field>
                                         <v-text-field
+                                            class="mb-2"
                                             dense
                                             outlined
                                             v-model="explorer.slug"
                                             :suffix="`.${mainDomain}`"
-                                            id="domain"
-                                            label="Domain"></v-text-field>
+                                            hint="Your explorer will always be reachable at this address"
+                                            persistent-hint
+                                            label="Ethernal Domain"></v-text-field>
                                         <v-text-field
+                                            class="mb-2"
                                             dense
                                             outlined
+                                            :disabled="!explorer.capabilities.customDomain"
+                                            :hint="explorer.capabilities.customDomain ? '' : 'Upgrade your plan to add a custom domain name'"
+                                            persistent-hint
+                                            v-model="explorer.domain"
+                                            label="Custom Domain"></v-text-field>
+                                        <v-text-field
+                                            class="mb-2"
+                                            dense
+                                            outlined
+                                            :disabled="!explorer.capabilities.nativeToken"
+                                            :hint="explorer.capabilities.nativeToken ? '' : 'Upgrade your plan to customize your native token symbol'"
                                             v-model="explorer.token"
-                                            id="token"
+                                            persistent-hint
                                             label="Native Token"></v-text-field>
                                         <v-text-field
                                             dense
                                             outlined
+                                            type="number"
+                                            :disabled="!explorer.capabilities.totalSupply"
+                                            :hint="explorer.capabilities.totalSupply ? `In ether: ${formatTotalSupply()}` : 'Upgrade your plan to display a total supply'"
+                                            persistent-hint
                                             hide-details="auto"
                                             v-model="explorer.totalSupply"
-                                            id="totalSupply"
                                             label="Total Supply (in wei)"></v-text-field>
                                         <v-checkbox
                                             v-if="currentWorkspace"
+                                            :disabled="!explorer.capabilities.statusPage"
                                             v-model="currentWorkspace.statusPageEnabled"
+                                            :hint="explorer.capabilities.statusPage ? '' : 'Upgrade your plan to enable the status page'"
+                                            persistent-hint
                                             label="Public Status Page Enabled"></v-checkbox>
                                     </v-col>
                                 </v-row>
@@ -70,10 +91,13 @@
                     <v-card outlined>
                         <v-card-text>
                             <div>
-                                Plan: <b>Explorer 150 - <span class="success--text">Active</span></b>
+                                Plan: <b>Explorer {{ explorer.plan }} - <span class="success--text">Active</span></b>
                             </div>
                             <div>
-                                Monthly Transaction Quota: <b>12 / 10,000</b> (Resetting on 06-06-2023)
+                                Monthly Transaction Quota: <b>12 / {{ explorer.capabilities.txLimit.toLocaleString() }}</b> (Resetting on 06-06-2023)
+                            </div>
+                            <div>
+                                <v-btn color="primary" @click="upgrade()">Upgrade</v-btn>
                             </div>
                         </v-card-text>
                     </v-card>
@@ -83,8 +107,10 @@
                 <v-col v-if="explorer.themes">
                     <h4>Branding</h4>
                     <v-card outlined class="mb-4">
-                        <v-form @submit.prevent="updateColors()" v-model="valid">
+                        <v-form @submit.prevent="updateBranding()" v-model="valid">
                             <v-card-text>
+                                <v-alert v-show="brandingUpdated" dense text type="success">Branding updated</v-alert>
+                                <v-alert v-show="brandingUpdateError" dense text type="error">{{ brandingUpdateError }}</v-alert>
                                 <v-row>
                                     <v-col cols="6">
                                         <div v-for="(key, idx) in Object.keys(themes.light)" :key="idx">
@@ -111,7 +137,6 @@
                                             dense
                                             outlined
                                             v-model="themes.logo"
-                                            id="logoUrl"
                                             label="Logo URL">
                                             <template v-slot:prepend v-if="themes.logo">
                                                 <v-img :src="themes.logo" max-width="150" class="mb-4"></v-img>
@@ -121,7 +146,6 @@
                                             dense
                                             outlined
                                             v-model="themes.favicon"
-                                            id="faviconUrl"
                                             label="Favicon URL">
                                             <template v-slot:prepend v-if="themes.favicon">
                                                 <v-img :src="themes.favicon" class="mb-4"></v-img>
@@ -141,18 +165,17 @@
                                             dense
                                             outlined
                                             v-model="themes.banner"
-                                            id="banner"
                                             label="Banner Text"></v-text-field>
                                         <h4 class="mb-2">Links</h4>
 
-                                        <New-Explorer-Link v-for="(link, idx) in explorerLinks" :name="link.name" :url="link.url" :icon="link.icon" :index="idx" :uid="link.uid" :key="link.uid" @updated="onUpdatedExplorerLink" @removed="onRemovedExplorerLink" />
+                                        <New-Explorer-Link v-for="(link, idx) in themes.links" :name="link.name" :url="link.url" :icon="link.icon" :index="idx" :uid="link.uid" :key="link.uid" @updated="onUpdatedExplorerLink" @removed="onRemovedExplorerLink" />
 
                                         <a @click.stop="addExplorerLink()">Add</a>
                                     </v-col>
                                 </v-row>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn id="updateExplorer" :loading="loading" color="primary" :disabled="!valid" type="submit">Update</v-btn>
+                                    <v-btn :loading="loading" color="primary" :disabled="!valid" type="submit">Update</v-btn>
                                 </v-card-actions>
                             </v-card-text>
                         </v-form>
@@ -168,6 +191,7 @@
 
 <script>
 import NewExplorerLink from './NewExplorerLink.vue';
+import { formatNumber } from '../lib/utils';
 
 export default {
     name: 'Explorer',
@@ -176,6 +200,10 @@ export default {
         NewExplorerLink
     },
     data: () => ({
+        settingsUpdated: false,
+        brandingUpdated: false,
+        settingsUpdateError: null,
+        brandingUpdateError: null,
         mainDomain: process.env.VUE_APP_MAIN_DOMAIN,
         explorerName: null,
         currentWorkspace: null,
@@ -193,18 +221,31 @@ export default {
         }
     }),
     methods: {
-        onUpdatedExplorerLink(data) {
-            this.explorerLinks[data.index] = data.link;
+        upgrade() {
+            this.server.createStripeCheckoutSession('explorer-50', `/explorers/${this.id}?status=upgraded`, `/explorers/${this.id}`)
+                .then(({ data }) => {
+                    document.location.href = data.url;
+                })
+                .catch((error) => {
+                    alert('An error occured while setting up the payment processor. Please retry.')
+                    console.log(error);
+                })
+                .finally(() => this.subscriptionButtonLoading = false);
         },
-        onRemovedExplorerLink(data) {
-            const newArray = [];
-            for (let i = 0; i < this.explorerLinks.length; i++)
-                if (data.uid != this.explorerLinks[i].uid)
-                    newArray.push(this.explorerLinks[i]);
-            this.explorerLinks = newArray;
+        formatTotalSupply() {
+            if (!this.explorer && !this.explorer.totalSupply) return '';
+            return formatNumber(this.explorer.totalSupply)
+        },
+        onUpdatedExplorerLink(data) {
+            this.themes.links[data.index] = data.link;
+        },
+        onRemovedExplorerLink(uid) {
+            const index = this.themes.links.map(l => l.uid).indexOf(uid);
+            if (index >= 0)
+                this.themes.links.splice(index, 1);
         },
         addExplorerLink() {
-            this.explorerLinks.push({ url: null, name: null, icon: null, uid: Math.floor(Math.random() * 10000) });
+            this.themes.links.push({ url: null, name: null, icon: null, uid: Math.floor(Math.random() * 10000) });
         },
         loadExplorer(id) {
             this.loading = true;
@@ -216,30 +257,54 @@ export default {
                 .then(({ data }) => {
                     this.explorer = data;
                     this.explorerName = data.name;
-                    this.themes.light = data.themes.light || { ...this.$vuetify.theme.themes.light };
+                    this.themes = data.themes;
+                    this.themes.light = { ...this.$vuetify.theme.themes.light, ...data.themes.light };
                     this.explorerLinks = data.themes.links || [];
                     this.currentWorkspace = data.workspace;
-                    if (this.themes.logo)
-                        this.isLogoUrlValid = true;
                 })
                 .catch(console.log)
                 .finally(() => this.loading = false);
         },
         updateExplorerSettings() {
             this.loading = true;
+            this.settingsUpdated = false;
+            this.settingsUpdateError = false;
             const settings = {
                 workspace: this.currentWorkspace.name,
                 name: this.explorer.name,
                 slug: this.explorer.slug,
                 token: this.explorer.token,
                 totalSupply: this.explorer.totalSupply,
-                statusPageEnabled: this.explorer.statusPageEnabled,
+                statusPageEnabled: this.currentWorkspace.statusPageEnabled,
             };
 
             this.server.updateExplorerSettings(this.id, settings)
-                .then(() => this.loadExplorer(this.id))
-                .catch(console.log)
+                .then(() => {
+                    this.settingsUpdated = true;
+                    this.loadExplorer(this.id);
+                })
+                .catch(error => {
+                    if (error.response)
+                        this.settingsUpdateError = error.response.data;
+                })
                 .finally(() => this.loading = false);
+        },
+        updateBranding() {
+            this.loading = true;
+            this.brandingUpdated = false;
+            this.brandingUpdateError = null;
+            this.server.updateExplorerBranding(this.id, this.themes)
+                .then(() => {
+                    this.brandingUpdated = true;
+                    this.loadExplorer(this.id);
+                })
+                .catch(error => {
+                    if (error.response)
+                        this.brandingUpdateError = error.response.data;
+                })
+                .finally(() => {
+                    this.loading = false
+                });
         }
     },
     watch: {
@@ -256,6 +321,6 @@ export default {
                 .catch(console.log)
                 .finally(() => this.fontSearchLoading = false);
         }
-    }
+    },
 }
 </script>

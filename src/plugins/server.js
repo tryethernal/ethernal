@@ -354,16 +354,18 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            updateExplorerBranding(explorerId, data) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/branding`;
+                return axios.post(resource, { data }, { cache: { ttl: 0 }});
+            },
+
             getExplorerMode(domain) {
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/search?domain=${domain}`;
                 return axios.get(resource, { cache: { ttl: 100 }});
             },
 
-            updateExplorerSettings(slug, settings) {
-                const data = {
-                    ...settings
-                };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${slug}/settings`;
+            updateExplorerSettings(explorerId, data) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/settings`;
                 return axios.post(resource, { data }, { cache: { ttl: 0 }});
             },
 
@@ -882,10 +884,12 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            createStripeCheckoutSession(plan) {
+            createStripeCheckoutSession(plan, successPath, cancelPath) {
                 const data = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    plan: plan
+                    plan,
+                    successPath,
+                    cancelPath
                 };
 
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/createCheckoutSession`;

@@ -102,7 +102,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-divider class="my-4"></v-divider>
+                <v-divider v-if="isUserAdmin" class="my-4"></v-divider>
 
                 <v-list-item link :to="'/settings?tab=workspace'" v-if="isUserAdmin">
                     <v-list-item-icon>
@@ -334,7 +334,7 @@ export default {
         },
         setupPublicExplorer() {
             const data = this.publicExplorer;
-            console.log(data)
+
             if (data.themes) {
                 const lightTheme = data.themes.light || {};
                 const darkTheme = data.themes.dark || {};

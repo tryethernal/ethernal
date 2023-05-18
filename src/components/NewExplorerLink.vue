@@ -22,17 +22,21 @@
                 </v-text-field>
             </v-col>
             <v-col cols="4" :class="{ 'pb-1': index == 0, 'py-0': index > 0 }">
-                <v-autocomplete small outlined dense :append-icon="link.icon ? `mdi-${link.icon}` : ''"
+                <v-autocomplete small outlined dense :append-icon="link.icon ? `${link.icon}` : ''"
                     label="Icon"
                     v-model="link.icon"
                     :items="icons"
                     :loading="loading"
                     :search-input.sync="queryIcon"
                     item-text="name"
-                    item-value="name"
-                    hide-no-data
+                    :item-value="getItemValue"
+                    auto-select-first
                     persistent-hint
+                    hide-no-data
                     no-filter>
+                    <template v-slot:item="data">
+                        {{ data.item.name }}
+                    </template>
                     <template v-slot:append-outer>
                         <v-btn icon small  @click="remove()">
                             <v-icon color="error">mdi-delete</v-icon>
@@ -60,18 +64,21 @@ export default {
             icon: this.icon,
             uid: this.uid
         };
+        if (this.icon)
+            this.icons.push({ name: this.icon.split('mdi-')[1] });
     },
     methods: {
         remove() {
-            this.$emit('removed', { uid: this.uid });
-        }
+            this.$emit('removed', this.uid);
+        },
+        getItemValue: data => `mdi-${data.name}`,
     },
     watch: {
         'link.url': function() { this.$emit('updated', { link: this.link, index: this.index }) },
         'link.name': function() { this.$emit('updated', { link: this.link, index: this.index }) },
         'link.icon': function() { this.$emit('updated', { link: this.link, index: this.index }) },
         queryIcon(query) {
-            if (!query) return this.icons = [];
+            if (!query) return;
 
             this.loading = true;
             this.server.searchIcon(query)

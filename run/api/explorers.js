@@ -5,12 +5,29 @@ const db = require('../lib/firebase');
 const secretMiddleware = require('../middlewares/secret');
 const authMiddleware = require('../middlewares/auth');
 
+router.post('/:id/branding', authMiddleware, async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        const explorer = await db.getExplorerById(req.params.id);
+        if (!explorer || explorer.admin.firebaseUserId != data.uid)
+            throw new Error('Could not find explorer.');
+
+        await db.updateExplorerBranding(explorer.id, data);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.explorers.settings', error: error, data: data, queryParams: req.params });
+        res.status(400).send(error.message);
+    }
+});
+
 router.post('/:id/settings', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
     try {
         const explorer = await db.getExplorerById(req.params.id);
-        if (!explorer)
+        if (!explorer || explorer.admin.firebaseUserId != data.uid)
             throw new Error('Could not find explorer.');
 
         if (data.workspace && data.workspace != explorer.workspace.name) {
@@ -22,6 +39,9 @@ router.post('/:id/settings', authMiddleware, async (req, res) => {
         }
 
         await db.updateExplorerSettings(explorer.id, data);
+
+        if (data.statusPageEnabled !== undefined && data.statusPageEnabled !== null)
+            await db.updateWorkspaceSettings(data.uid, data.workspace, { statusPageEnabled: data.statusPageEnabled });
 
         res.sendStatus(200);
     } catch(error) {
@@ -99,6 +119,9 @@ router.get('/:id', authMiddleware, async (req, res) => {
             throw new Error('Missing parameters.')
 
         const explorer = await db.getExplorerById(data.id);
+
+        if (!explorer || explorer.admin.firebaseUserId != req.body.data.uid)
+            throw new Error('Could not find explorer.');
 
         res.status(200).json(explorer);
     } catch(error) {

@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Explorer.belongsTo(models.User, { foreignKey: 'userId', as: 'admin' });
       Explorer.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
+      Explorer.hasOne(models.StripeSubscription, { foreignKey: 'explorerId', as: 'stripeSubscription' });
     }
 
     static safeCreateExplorer(explorer) {
@@ -81,6 +82,28 @@ module.exports = (sequelize, DataTypes) => {
 
         if (Object.keys(filteredSettings).length > 0)
             return this.update(filteredSettings);
+    }
+
+    safeUpdateBranding(branding) {
+        const ALLOWED_OPTIONS = ['light', 'logo', 'favicon', 'font', 'links', 'banner'];
+        const ALLOWED_COLORS = ['primary', 'secondary', 'accent', 'error', 'info', 'success', 'warning', 'background'];
+
+        const filteredOptions = {};
+        Object.keys(branding).forEach(key => {
+            if (ALLOWED_OPTIONS.indexOf(key) > -1)
+                filteredOptions[key] = branding[key];
+        });
+
+        if (filteredOptions['light']) {
+            const filteredColors = {};
+            Object.keys(filteredOptions['light']).forEach(key => {
+                if (ALLOWED_COLORS.indexOf(key) > -1)
+                    filteredColors[key] = filteredOptions['light'][key];
+            });
+            filteredOptions['light'] = filteredColors;
+        }
+
+        return this.update({ themes: { ...this.themes, ...filteredOptions }});
     }
   }
   Explorer.init({
