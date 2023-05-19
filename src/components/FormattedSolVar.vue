@@ -82,7 +82,7 @@ export default {
     },
     computed: {
         displayDepth: function() {
-            return this.depth ? this.depth : 1;
+            return this.depth !== undefined && this.depth !== null ? this.depth : 1;
         },
         isInputArray: function() {
             return !!this.input.arrayChildren;

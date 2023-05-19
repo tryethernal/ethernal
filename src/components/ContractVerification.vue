@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <div>
         <v-alert v-if="verificationSuccess" text type="success">Contract has been verified successfully!</v-alert>
         <v-alert v-if="verificationErrorMessage" text type="error">{{ verificationErrorMessage }}</v-alert>
         <v-form ref="form" v-model="canSubmit">
@@ -166,7 +166,7 @@
             </v-card>
         </v-form>
         <v-btn class="primary" :disabled="!canSubmit" :loading="loading" depressed @click="submit()">Verify</v-btn>
-    </v-container>
+    </div>
 </template>
 
 <script>
