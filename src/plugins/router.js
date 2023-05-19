@@ -31,7 +31,6 @@ const redirectIfLoggedIn = function (to, from, next) {
 };
 
 const redirectIfLoggedOut = function (to, from, next) {
-    console.log(router.app.$store.getters.publicExplorerMode)
     if (!auth().currentUser.id && !router.app.$store.getters.publicExplorerMode) {
         next({ path: '/auth', query: { next: document.location.pathname, ...to.query }});
     }

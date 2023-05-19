@@ -56,6 +56,12 @@ services:
       - "8080:8080"
     volumes:
       - ./src:/app/src
+      - type: bind
+        source: package.json
+        target: /app/package.json
+      - type: bind
+        source: yarn.lock
+        target: /app/yarn.lock
     build:
       context: .
       dockerfile: Dockerfile.front

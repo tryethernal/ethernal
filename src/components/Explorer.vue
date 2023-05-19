@@ -45,8 +45,8 @@
                                             class="mb-2"
                                             dense
                                             outlined
-                                            :disabled="!explorer.capabilities.customDomain"
-                                            :hint="explorer.capabilities.customDomain ? '' : 'Upgrade your plan to add a custom domain name'"
+                                            :disabled="!capabilities.customDomain"
+                                            :hint="capabilities.customDomain ? '' : 'Upgrade your plan to add a custom domain name'"
                                             persistent-hint
                                             v-model="explorer.domain"
                                             label="Custom Domain"></v-text-field>
@@ -54,8 +54,8 @@
                                             class="mb-2"
                                             dense
                                             outlined
-                                            :disabled="!explorer.capabilities.nativeToken"
-                                            :hint="explorer.capabilities.nativeToken ? '' : 'Upgrade your plan to customize your native token symbol'"
+                                            :disabled="!capabilities.nativeToken"
+                                            :hint="capabilities.nativeToken ? '' : 'Upgrade your plan to customize your native token symbol'"
                                             v-model="explorer.token"
                                             persistent-hint
                                             label="Native Token"></v-text-field>
@@ -63,17 +63,17 @@
                                             dense
                                             outlined
                                             type="number"
-                                            :disabled="!explorer.capabilities.totalSupply"
-                                            :hint="explorer.capabilities.totalSupply ? `In ether: ${formatTotalSupply()}` : 'Upgrade your plan to display a total supply'"
+                                            :disabled="!capabilities.totalSupply"
+                                            :hint="capabilities.totalSupply ? `In ether: ${formatTotalSupply()}` : 'Upgrade your plan to display a total supply'"
                                             persistent-hint
                                             hide-details="auto"
                                             v-model="explorer.totalSupply"
                                             label="Total Supply (in wei)"></v-text-field>
                                         <v-checkbox
                                             v-if="currentWorkspace"
-                                            :disabled="!explorer.capabilities.statusPage"
+                                            :disabled="!capabilities.statusPage"
                                             v-model="currentWorkspace.statusPageEnabled"
-                                            :hint="explorer.capabilities.statusPage ? '' : 'Upgrade your plan to enable the status page'"
+                                            :hint="capabilities.statusPage ? '' : 'Upgrade your plan to enable the status page'"
                                             persistent-hint
                                             label="Public Status Page Enabled"></v-checkbox>
                                     </v-col>
@@ -94,7 +94,7 @@
                                 Plan: <b>Explorer {{ explorer.plan }} - <span class="success--text">Active</span></b>
                             </div>
                             <div>
-                                Monthly Transaction Quota: <b>12 / {{ explorer.capabilities.txLimit.toLocaleString() }}</b> (Resetting on 06-06-2023)
+                                Monthly Transaction Quota: <b>12 / {{ capabilities.txLimit.toLocaleString() }}</b> (Resetting on 06-06-2023)
                             </div>
                             <div>
                                 <v-btn color="primary" @click="upgrade()">Upgrade</v-btn>
@@ -216,6 +216,7 @@ export default {
         valid: false,
         loading: true,
         explorer: null,
+        capabilities: null,
         themes: {
             links: []
         }
@@ -261,6 +262,10 @@ export default {
                     this.themes.light = { ...this.$vuetify.theme.themes.light, ...data.themes.light };
                     this.explorerLinks = data.themes.links || [];
                     this.currentWorkspace = data.workspace;
+                    this.capabilities = data.stripeSubscription.stripePlan.capabilities;
+                    console.log(this.themes.font)
+                    if (this.themes.font)
+                        this.fonts.push(this.themes.font);
                 })
                 .catch(console.log)
                 .finally(() => this.loading = false);
@@ -313,7 +318,7 @@ export default {
             handler(id) { this.loadExplorer(id); }
         },
         queryFont(query) {
-            if (!query) return this.fonts = [];
+            if (!query || query == this.themes.font) return;
 
             this.fontSearchLoading = true;
             this.server.searchFont(this.queryFont)

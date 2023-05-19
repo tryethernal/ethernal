@@ -354,6 +354,11 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            getCompilerVersions() {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/external/compilers`;
+                return axios.get(resource);
+            },
+
             updateExplorerBranding(explorerId, data) {
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/branding`;
                 return axios.post(resource, { data }, { cache: { ttl: 0 }});

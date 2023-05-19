@@ -12,6 +12,22 @@ const Explorer = models.Explorer;
 const StripePlan = models.StripePlan;
 const StripeSubscription = models.StripeSubscription;
 
+const storeContractVerificationData = async (workspaceId, address, verificationData) => {
+    if (!workspaceId || !address || !verificationData) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+
+    if (!workspace.public)
+        throw new Error('This is a private workspace');
+
+    const contract = await workspace.getContractByAddress(address);
+
+    if (!contract)
+        throw new Error('Cannot find contract');
+
+    return contract.safeCreateVerification(verificationData);
+};
+
 const getStripePlan = async (slug) => {
     const plan = await StripePlan.findOne({
         where: { slug }
@@ -1187,5 +1203,6 @@ module.exports = {
     updateExplorerWorkspace: updateExplorerWorkspace,
     updateExplorerBranding: updateExplorerBranding,
     getStripePlan: getStripePlan,
+    storeContractVerificationData: storeContractVerificationData,
     Workspace: Workspace
 };

@@ -2,9 +2,7 @@
     <v-container fluid>
         <v-alert v-if="verificationSuccess" text type="success">Contract has been verified successfully!</v-alert>
         <v-alert v-if="verificationErrorMessage" text type="error">{{ verificationErrorMessage }}</v-alert>
-        <v-form
-            ref="form"
-            v-model="canSubmit">
+        <v-form ref="form" v-model="canSubmit">
             <h4>Compiler Settings</h4>
             <v-card outlined class="mb-2">
                 <v-card-text>
@@ -94,6 +92,8 @@
                             <v-file-input
                                 v-model="files"
                                 :rules="[v => !!v || 'At least one file is required.', v => v && v.length > 0 || 'At least one file is required.']"
+                                :hint="'To add multiple files, select them all at once.'"
+                                persistent-hint
                                 accept=".sol"
                                 small-chips
                                 multiple
@@ -170,7 +170,6 @@
 </template>
 
 <script>
-const axios = require('axios');
 const { sanitize } = require('../lib/utils');
 import { mapGetters } from 'vuex';
 
@@ -218,7 +217,7 @@ export default {
     mounted() {
         this.parameters.address = this.address;
         this.parameters.slug = this.publicExplorer.slug;
-        axios.get('https://raw.githubusercontent.com/ethereum/solc-bin/gh-pages/bin/list.json')
+        this.server.getCompilerVersions()
             .then(({ data }) => {
                 for (let i = 0; i < data.builds.length; i++) {
                     this.allCompilerVersions.unshift(`v${data.builds[i].longVersion}`);

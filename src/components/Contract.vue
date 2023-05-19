@@ -138,7 +138,7 @@
             </v-tab-item>
 
             <v-tab-item value="code">
-                <Contract-Code :address="address" />
+                <Contract-Code :contract="contract" />
             </v-tab-item>
         </v-tabs-items>
     </v-container>
