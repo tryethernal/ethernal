@@ -6,19 +6,17 @@
             </v-card-text>
         </v-card>
         <template v-else>
-            <template v-if="isPublicExplorer">
-                <v-card v-if="isVerifiedContract" outlined class="mb-6">
-                    <v-card-text>
-                        <Contract-Verification-Info :contract="contract" />
-                    </v-card-text>
-                </v-card>
-                <v-card v-else outlined class="mb-6">
-                    <v-card-title>Contract Verification</v-card-title>
-                    <v-card-text>
-                        <Contract-Verification :address="contract.address" />
-                    </v-card-text>
-                </v-card>
-            </template>
+            <v-card v-if="isPublicExplorer && isVerifiedContract" outlined class="mb-6">
+                <v-card-text>
+                    <Contract-Verification-Info :contract="contract" />
+                </v-card-text>
+            </v-card>
+            <v-card v-else outlined class="mb-6">
+                <v-card-title>Contract Verification</v-card-title>
+                <v-card-text>
+                    <Contract-Verification :address="contract.address" />
+                </v-card-text>
+            </v-card>
 
             <v-card v-if="displayConstructorArguments" outlined class="mb-6">
                 <v-card-title>
@@ -29,12 +27,21 @@
                     </span>
                 </v-card-title>
                 <v-card-text>
-                    <ul v-if="formattedConstructorArguments">
-                        <li v-for="(arg, idx) in decodedConstructorArguments" :key="idx">
-                            <Formatted-Sol-Var :input="arg" :notInteractive="true" :value="arg.value" :depth="0" />
-                        </li>
-                    </ul>
+                    <template v-if="formattedConstructorArguments">
+                        <div v-for="(arg, idx) in decodedConstructorArguments" :key="idx" style="white-space: pre;">
+                            <Formatted-Sol-Var :input="arg" :notInteractive="true" :value="arg.value" />
+                        </div>
+                    </template>
                     <span v-else>{{ zeroXifiedConstructorArguments }}</span>
+                </v-card-text>
+            </v-card>
+
+            <v-card v-if="displayLibraries" outlined class="mb-6">
+                <v-card-title>Libraries</v-card-title>
+                <v-card-text>
+                    <div v-for="(libraryName, idx) in Object.keys(contract.verification.libraries)" :key="idx">
+                        {{ libraryName }} => {{ contract.verification.libraries[libraryName] }}
+                    </div>
                 </v-card-text>
             </v-card>
 
@@ -105,10 +112,18 @@ export default {
         displayConstructorArguments() {
             return this.isPublicExplorer && this.contract.verification && this.contract.verification.constructorArguments;
         },
+        displayLibraries() {
+            return this.isPublicExplorer && this.contract.verification && Object.keys(this.contract.verification.libraries).length > 0;
+        },
         decodedConstructorArguments() {
             const iface = new ethers.utils.Interface(this.contract.abi);
             const constructorInputs = JSON.parse(iface.deploy.format(ethers.utils.FormatTypes.json)).inputs;
-            const decodedInputs = ethers.utils.defaultAbiCoder.decode(iface.deploy.inputs.map(i => i.type), this.zeroXifiedConstructorArguments);
+            const decodedInputs = ethers.utils.defaultAbiCoder.decode(iface.deploy.inputs.map(i => {
+                if (i.type == 'tuple')
+                    return `tuple(${i.components.map(c => c.type).join(',')})`;
+                else
+                    return i.type;
+            }), this.zeroXifiedConstructorArguments);
             const decoded = [];
             for (let i = 0; i < decodedInputs.length; i++) {
                 decoded.push({

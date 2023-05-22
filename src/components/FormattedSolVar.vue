@@ -29,7 +29,9 @@
                 <span v-else-if="isInputArray">
                     [{{ '\n' }}
                         <span v-for="(el, idx) in value" :key="idx">
-                            <Formatted-Sol-Var :input="input.arrayChildren" :value="el" :depth="displayDepth + 1" :isArrayEl="true" />{{ '\n' }}
+                            <Formatted-Sol-Var v-if="input.arrayChildren" :input="input.arrayChildren" :value="el" :depth="displayDepth + 1" :isArrayEl="true" />
+                            <Formatted-Sol-Var v-else :input="{type: 'string'}" :value="el" :depth="displayDepth + 1" :isArrayEl="true" />
+                            {{ '\n' }}
                         </span>
                     <span :class="`ml-${4 * displayDepth}`">]</span>
                 </span>
@@ -85,7 +87,7 @@ export default {
             return this.depth !== undefined && this.depth !== null ? this.depth : 1;
         },
         isInputArray: function() {
-            return !!this.input.arrayChildren;
+            return !!this.input.arrayChildren || this.input.type.endsWith('[]');
         },
         isFormattable: function() {
             return ['address', 'string'].indexOf(this.input.type) > -1;

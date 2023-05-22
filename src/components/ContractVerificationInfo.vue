@@ -22,11 +22,13 @@
 </template>
 
 <script>
+const editor = require('vue2-ace-editor');
+
 export default {
     name: 'ContractVerificationInfo',
     props: ['contract'],
     components: {
-        editor: require('vue2-ace-editor')
+        editor: editor
     },
     mounted() {
         for (let i = 0; i < this.contract.verification.sources.length; i++) {
