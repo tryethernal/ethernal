@@ -2,7 +2,7 @@
     <span :class="`ml-${4 * displayDepth}`">
         <span v-if="!isArrayEl">{{ inputLabel }}</span>
         <span>
-            <template v-if="isFormattable && !notInteractive">
+            <template v-if="isFormattable && !notInteractive && input.type != 'address' && formatString(value) != value">
                 (<template v-if="formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Raw</a></template>
                 <template v-if="!formatted"><a id="switchFormatted" @click="formatted = !formatted">Display Formatted</a></template>)
             </template>
