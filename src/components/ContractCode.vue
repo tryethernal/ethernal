@@ -120,6 +120,11 @@ export default {
         decodedConstructorArguments() {
             const iface = new ethers.utils.Interface(this.contract.abi);
             const constructorInputs = JSON.parse(iface.deploy.format(ethers.utils.FormatTypes.json)).inputs;
+
+            /*
+                This won't handle well tuples in tuples, but hopefully it'll be good enough for now.
+                I'd say that I'll improve later, but we all know it's probably never going to happen
+            */
             const decodedInputs = ethers.utils.defaultAbiCoder.decode(iface.deploy.inputs.map(i => {
                 if (i.type == 'tuple')
                     return `tuple(${i.components.map(c => c.type).join(',')})`;
