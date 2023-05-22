@@ -55,6 +55,16 @@ module.exports = (sequelize, DataTypes) => {
         return new ProviderConnector(this.rpcServer);
     }
 
+    async getContractByAddress(address) {
+        if (!address) throw new Error('Missing parameter');
+
+        const contracts = await this.getContracts({
+            where: { address }
+        });
+
+        return contracts[0];
+    }
+
     findBlockGaps(lowerBound, upperBound) {
         if (lowerBound === undefined || lowerBound === null || upperBound === undefined || upperBound === null)
             throw new Error('Missing parameter');
@@ -855,6 +865,16 @@ module.exports = (sequelize, DataTypes) => {
                     model: sequelize.models.Transaction,
                     attributes: ['blockNumber', 'hash'],
                     as: 'creationTransaction',
+                },
+                {
+                    model: sequelize.models.ContractVerification,
+                    as: 'verification',
+                    include: [
+                        {
+                            model: sequelize.models.ContractSource,
+                            as: 'sources'
+                        }
+                    ]
                 }
             ]
         });
@@ -890,6 +910,7 @@ module.exports = (sequelize, DataTypes) => {
 
     updateSettings(data) {
         return this.update(sanitize({
+            statusPageEnabled: data.statusPageEnabled,
             chain: data.chain,
             rpcServer: data.rpcServer,
             tracing: data.advancedOptions && data.advancedOptions.tracing,

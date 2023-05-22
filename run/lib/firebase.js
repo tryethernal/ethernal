@@ -9,8 +9,104 @@ const Transaction = models.Transaction;
 const Workspace = models.Workspace;
 const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
-const TokenBalanceChange = models.TokenBalanceChange;
-const IntegrityCheck = models.IntegrityCheck;
+const StripePlan = models.StripePlan;
+const StripeSubscription = models.StripeSubscription;
+
+const storeContractVerificationData = async (workspaceId, address, verificationData) => {
+    if (!workspaceId || !address || !verificationData) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+
+    if (!workspace.public)
+        throw new Error('This is a private workspace');
+
+    const contract = await workspace.getContractByAddress(address);
+
+    if (!contract)
+        throw new Error('Cannot find contract');
+
+    return contract.safeCreateVerification(verificationData);
+};
+
+const getStripePlan = async (slug) => {
+    const plan = await StripePlan.findOne({
+        where: { slug }
+    });
+    return plan ? plan.toJSON() : null;
+}
+
+const updateExplorerBranding = async (explorerId, branding) => {
+    if (!explorerId || !branding) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findByPk(explorerId);
+    return explorer.safeUpdateBranding(branding);
+};
+
+const updateExplorerSettings = async (explorerId, settings) => {
+    if (!explorerId || !settings) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findByPk(explorerId);
+    return explorer.safeUpdateSettings(settings);
+};
+
+const updateExplorerWorkspace = async (explorerId, workspaceId) => {
+    if (!explorerId || !workspaceId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findByPk(explorerId);
+    if (!explorer)
+        throw new Error('Cannot find explorer');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Cannot find workspace')
+
+    if (explorer.userId != workspace.userId)
+        throw new Error('Invalid workspace');
+
+    return explorer.update({ workspaceId: workspace.id, rpcServer: workspace.rpcServer, chainId: workspace.networkId });
+};
+
+const getExplorerById = (id) => {
+    if (!id) throw new Error('Missing parameter');
+
+    return Explorer.findByPk(id, {
+        include: [
+            {
+                model: StripeSubscription,
+                as: 'stripeSubscription',
+                include: { model: StripePlan, as: 'stripePlan' }
+            },
+            {
+                model: User,
+                as: 'admin'
+            },
+            {
+                model: Workspace,
+                as: 'workspace'
+            }
+        ]
+    });
+}
+
+const getUserExplorers = (firebaseUserId) => {
+    if (!firebaseUserId) throw new Error('Missing parameter');
+
+    return Explorer.findAll({
+        where: {
+            '$admin.firebaseUserId$': firebaseUserId
+        },
+        include: [
+            {
+                model: Workspace,
+                as: 'workspace'
+            },
+            {
+                model: User,
+                as: 'admin'
+            }
+        ]
+    })
+}
 
 const updateWorkspaceRpcHealthCheck = async (workspaceId, isReachable) => {
     if (!workspaceId || isReachable === null || isReachable === undefined) throw new Error('Missing parameter');
@@ -1101,5 +1197,12 @@ module.exports = {
     updateWorkspaceIntegrityCheck: updateWorkspaceIntegrityCheck,
     updateWorkspaceRpcHealthCheck: updateWorkspaceRpcHealthCheck,
     revertPartialBlock: revertPartialBlock,
+    getUserExplorers: getUserExplorers,
+    getExplorerById: getExplorerById,
+    updateExplorerSettings: updateExplorerSettings,
+    updateExplorerWorkspace: updateExplorerWorkspace,
+    updateExplorerBranding: updateExplorerBranding,
+    getStripePlan: getStripePlan,
+    storeContractVerificationData: storeContractVerificationData,
     Workspace: Workspace
 };
