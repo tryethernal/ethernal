@@ -2,51 +2,7 @@
 
 exports[`ContractCode.vue Should display contract verification info if public explorer and verified 1`] = `
 <div class="container container--fluid">
-  <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__text">
-      <contract-verification-info-stub contract="[object Object]"></contract-verification-info-stub>
-    </div>
-  </div>
-  <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__title">
-      Constructor Arguments
-      <div class="spacer"></div> <span class="text-caption"><a class="underlined">Formatted</a> | <a class="">Raw</a></span>
-    </div>
-    <div class="v-card__text">
-      <div style="white-space: pre;"><span class="ml-4"><span>string baseURI: </span> <span><!----> <span class="notInteractive"><span><span>abcd</span></span></span></span></span></div>
-      <div style="white-space: pre;"><span class="ml-4"><span>tuple obj: </span> <span><!----> <span class="notInteractive"><span>
-                { 
-
-                <span><span class="ml-8"><span>string targetURI: </span> <span><!----> <span class=""><span><span>abcd</span></span></span></span></span>
-
-        </span><span><span class="ml-8"><span>string[] tagStrings: </span> <span><!----> <span class=""><span>
-                [
-
-                    <span><span class="ml-12"><!----> <span><!----> <span class=""><span><span>a</span></span></span></span></span>
-
-
-        </span><span><span class="ml-12"><!----> <span><!----> <span class=""><span><span>b</span></span></span></span></span>
-
-
-        </span> <span class="ml-8">]</span></span></span></span></span>
-
-        </span><span><span class="ml-8"><span>bool enrich: </span> <span><!----> <span class=""><span>
-                true
-            </span></span></span></span>
-
-        </span><span><span class="ml-8"><span>uint256 number: </span> <span><!----> <span class="" style="white-space: break-spaces;">5</span></span></span>
-
-        </span> <span class="ml-4"> }</span></span></span></span></span></div>
-    </div>
-  </div>
-  <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__title">Libraries</div>
-    <div class="v-card__text">
-      <div>
-        Library =&gt; 0x12345
-      </div>
-    </div>
-  </div>
+  <contract-verification-info-stub contract="[object Object]"></contract-verification-info-stub>
   <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
     <div class="v-card__title">Bytecode</div>
     <div class="v-card__text">
@@ -56,7 +12,7 @@ exports[`ContractCode.vue Should display contract verification info if public ex
             <fieldset aria-hidden="true">
               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
             </fieldset>
-            <div class="v-text-field__slot"><textarea disabled="disabled" id="input-17" rows="5"></textarea></div>
+            <div class="v-text-field__slot"><textarea disabled="disabled" id="input-6" rows="5"></textarea></div>
             <div class="v-input__append-inner"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-content-copy theme--light" style="font-size: 16px;"></i></span></button></div>
           </div>
           <div class="v-text-field__details">
@@ -79,14 +35,7 @@ exports[`ContractCode.vue Should display contract verification info if public ex
 
 exports[`ContractCode.vue Should display the contract verification panel for public explorers 1`] = `
 <div class="container container--fluid">
-  <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
-    <div class="v-card__title">Contract Verification</div>
-    <div class="v-card__text">
-      <contract-verification-stub></contract-verification-stub>
-    </div>
-  </div>
-  <!---->
-  <!---->
+  <contract-verification-stub></contract-verification-stub>
   <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
     <div class="v-card__title">Bytecode</div>
     <div class="v-card__text">
@@ -96,7 +45,7 @@ exports[`ContractCode.vue Should display the contract verification panel for pub
             <fieldset aria-hidden="true">
               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
             </fieldset>
-            <div class="v-text-field__slot"><textarea disabled="disabled" id="input-30" rows="5"></textarea></div>
+            <div class="v-text-field__slot"><textarea disabled="disabled" id="input-18" rows="5"></textarea></div>
             <div class="v-input__append-inner"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-content-copy theme--light" style="font-size: 16px;"></i></span></button></div>
           </div>
           <div class="v-text-field__details">
