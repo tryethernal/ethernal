@@ -1,58 +1,117 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ContractCode.vue Should display the contract verification panel for public explorers 1`] = `
+exports[`ContractCode.vue Should display contract verification info if public explorer and verified 1`] = `
 <div class="container container--fluid">
-  <div class="mt-2 v-item-group theme--light v-expansion-panels">
-    <div aria-expanded="false" class="v-expansion-panel mb-2 v-expansion-panel--next-active"><button type="button" class="v-expansion-panel-header">
-        <h4>Contract Verification
-          <!---->
-        </h4>
-        <transition-stub name="fade-transition">
-          <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-        </transition-stub>
-      </button>
-      <transition-stub name="expand-transition">
-        <!---->
-      </transition-stub>
+  <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__text">
+      <contract-verification-info-stub contract="[object Object]"></contract-verification-info-stub>
     </div>
-    <div aria-expanded="true" class="v-expansion-panel mb-2 v-expansion-panel--active v-item--active"><button type="button" aria-expanded="true" class="v-expansion-panel-header v-expansion-panel-header--active">
-        <h4>Bytecode</h4>
-        <transition-stub name="fade-transition">
-          <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-        </transition-stub>
-      </button>
-      <transition-stub name="expand-transition">
-        <div class="v-expansion-panel-content">
-          <div class="v-expansion-panel-content__wrap">
-            <div class="v-input v-textarea v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
-              <div class="v-input__control">
-                <div class="v-input__slot">
-                  <fieldset aria-hidden="true">
-                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                  </fieldset>
-                  <div class="v-text-field__slot"><textarea disabled="disabled" id="input-19" rows="5"></textarea></div>
-                  <div class="v-input__append-inner"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-content-copy theme--light" style="font-size: 16px;"></i></span></button></div>
-                </div>
-                <div class="v-text-field__details">
-                  <div class="v-messages theme--light">
-                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                  </div>
-                </div>
-              </div>
-            </div> <input type="hidden" id="copyElement" value="0x60">
+  </div>
+  <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">
+      Constructor Arguments
+      <div class="spacer"></div> <span class="text-caption"><a class="underlined">Formatted</a> | <a class="">Raw</a></span>
+    </div>
+    <div class="v-card__text">
+      <div style="white-space: pre;"><span class="ml-4"><span>string baseURI: </span> <span><!----> <span class="notInteractive"><span><span>abcd</span></span></span></span></span></div>
+      <div style="white-space: pre;"><span class="ml-4"><span>tuple obj: </span> <span><!----> <span class="notInteractive"><span>
+                { 
+
+                <span><span class="ml-8"><span>string targetURI: </span> <span><!----> <span class=""><span><span>abcd</span></span></span></span></span>
+
+        </span><span><span class="ml-8"><span>string[] tagStrings: </span> <span><!----> <span class=""><span>
+                [
+
+                    <span><span class="ml-12"><!----> <span><!----> <span class=""><span><span>a</span></span></span></span></span>
+
+
+        </span><span><span class="ml-12"><!----> <span><!----> <span class=""><span><span>b</span></span></span></span></span>
+
+
+        </span> <span class="ml-8">]</span></span></span></span></span>
+
+        </span><span><span class="ml-8"><span>bool enrich: </span> <span><!----> <span class=""><span>
+                true
+            </span></span></span></span>
+
+        </span><span><span class="ml-8"><span>uint256 number: </span> <span><!----> <span class="" style="white-space: break-spaces;">5</span></span></span>
+
+        </span> <span class="ml-4"> }</span></span></span></span></span></div>
+    </div>
+  </div>
+  <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">Libraries</div>
+    <div class="v-card__text">
+      <div>
+        Library =&gt; 0x12345
+      </div>
+    </div>
+  </div>
+  <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">Bytecode</div>
+    <div class="v-card__text">
+      <div class="v-input v-textarea v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><textarea disabled="disabled" id="input-17" rows="5"></textarea></div>
+            <div class="v-input__append-inner"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-content-copy theme--light" style="font-size: 16px;"></i></span></button></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
           </div>
         </div>
-      </transition-stub>
+      </div> <input type="hidden" id="copyElement" value="0x60">
     </div>
-    <div aria-expanded="false" class="v-expansion-panel"><button type="button" class="v-expansion-panel-header">
-        <h4>Assembly</h4>
-        <transition-stub name="fade-transition">
-          <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-        </transition-stub>
-      </button>
-      <transition-stub name="expand-transition">
-        <!---->
-      </transition-stub>
+  </div>
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">Assembly</div>
+    <div class="v-card__text">
+      <div class="hljs">abc</div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ContractCode.vue Should display the contract verification panel for public explorers 1`] = `
+<div class="container container--fluid">
+  <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">Contract Verification</div>
+    <div class="v-card__text">
+      <contract-verification-stub></contract-verification-stub>
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">Bytecode</div>
+    <div class="v-card__text">
+      <div class="v-input v-textarea v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+        <div class="v-input__control">
+          <div class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-text-field__slot"><textarea disabled="disabled" id="input-30" rows="5"></textarea></div>
+            <div class="v-input__append-inner"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-content-copy theme--light" style="font-size: 16px;"></i></span></button></div>
+          </div>
+          <div class="v-text-field__details">
+            <div class="v-messages theme--light">
+              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+            </div>
+          </div>
+        </div>
+      </div> <input type="hidden" id="copyElement" value="0x60">
+    </div>
+  </div>
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">Assembly</div>
+    <div class="v-card__text">
+      <div class="hljs">abc</div>
     </div>
   </div>
 </div>
@@ -60,32 +119,16 @@ exports[`ContractCode.vue Should display the contract verification panel for pub
 
 exports[`ContractCode.vue Should not display the contract verification panel if not public explorer 1`] = `
 <div class="container container--fluid">
-  <div class="mt-2 v-item-group theme--light v-expansion-panels">
-    <!---->
-    <div aria-expanded="false" class="v-expansion-panel mb-2 v-expansion-panel--next-active"><button type="button" class="v-expansion-panel-header">
-        <h4>Bytecode</h4>
-        <transition-stub name="fade-transition">
-          <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-        </transition-stub>
-      </button>
-      <transition-stub name="expand-transition">
-        <!---->
-      </transition-stub>
+  <!---->
+  <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">Bytecode</div>
+    <div class="v-card__text">
+      No bytecode for this contract. Redeploy to upload it.
     </div>
-    <div aria-expanded="true" class="v-expansion-panel v-expansion-panel--active v-item--active"><button type="button" aria-expanded="true" class="v-expansion-panel-header v-expansion-panel-header--active">
-        <h4>Assembly</h4>
-        <transition-stub name="fade-transition">
-          <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
-        </transition-stub>
-      </button>
-      <transition-stub name="expand-transition">
-        <div class="v-expansion-panel-content">
-          <div class="v-expansion-panel-content__wrap">
-            No assembly for this contract. Redeploy to upload it.
-          </div>
-        </div>
-      </transition-stub>
-    </div>
+  </div>
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">Assembly</div>
+    <div class="v-card__text"><span>No assembly for this contract. Redeploy to upload it.</span></div>
   </div>
 </div>
 `;

@@ -70,7 +70,7 @@ exports[`ContractReadMethod.vue Should display the result even if it is not an a
   <div id="call" style="">
     <div class="my-1 v-card v-sheet v-sheet--outlined theme--light">
       <div class="v-card__text py-2 ma-0 px-1">
-        <div style="white-space: pre;"><span class="ml-4"><span>uint256: </span> <span><!----> 1234</span></span></div>
+        <div style="white-space: pre;"><span class="ml-4"><span>uint256: </span> <span><!----> <span class="" style="white-space: break-spaces;">1234</span></span></span></div>
       </div>
     </div>
   </div>
@@ -87,7 +87,7 @@ exports[`ContractReadMethod.vue Should handle big number results 1`] = `
   <div id="call" style="">
     <div class="my-1 v-card v-sheet v-sheet--outlined theme--light">
       <div class="v-card__text py-2 ma-0 px-1">
-        <div style="white-space: pre;"><span class="ml-4"><span>uint256: </span> <span><!----> 50000000000000000000</span></span></div>
+        <div style="white-space: pre;"><span class="ml-4"><span>uint256: </span> <span><!----> <span class="" style="white-space: break-spaces;">50000000000000000000</span></span></span></div>
       </div>
     </div>
   </div>
@@ -104,12 +104,12 @@ exports[`ContractReadMethod.vue Should handle multiple results 1`] = `
   <div id="call" style="">
     <div class="my-1 v-card v-sheet v-sheet--outlined theme--light">
       <div class="v-card__text py-2 ma-0 px-1">
-        <div style="white-space: pre;"><span class="ml-4"><span>uint256: </span> <span><!----> 1</span></span></div>
+        <div style="white-space: pre;"><span class="ml-4"><span>uint256: </span> <span><!----> <span class="" style="white-space: break-spaces;">1</span></span></span></div>
       </div>
     </div>
     <div class="my-1 v-card v-sheet v-sheet--outlined theme--light">
       <div class="v-card__text py-2 ma-0 px-1">
-        <div style="white-space: pre;"><span class="ml-4"><span>uint256: </span> <span><!----> 2</span></span></div>
+        <div style="white-space: pre;"><span class="ml-4"><span>uint256: </span> <span><!----> <span class="" style="white-space: break-spaces;">2</span></span></span></div>
       </div>
     </div>
   </div>
