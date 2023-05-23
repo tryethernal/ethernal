@@ -5,7 +5,7 @@
                 <v-row>
                     <v-col cols="6"><b>Contract Name:</b> {{ contract.verification.contractName }}</v-col>
                     <v-col cols="6">
-                        <b>Optimizer:</b> <span v-if="contract.runs"><b>Yes</b> with <b>{{ contract.runs }}</b> runs</span>
+                        <b>Optimizer:</b> <span v-if="contract.verification.runs"><b>Yes</b> with <b>{{ contract.verification.runs }}</b> runs</span>
                         <span v-else>No</span>
                     </v-col>
                 </v-row>
