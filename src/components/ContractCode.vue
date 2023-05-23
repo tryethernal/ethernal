@@ -61,7 +61,7 @@ export default {
             'isPublicExplorer'
         ]),
         isVerifiedContract() {
-            return this.contract.verificationStatus == 'success';
+            return this.contract.verification;
         },
         highlightedAsm() {
             return this.contract.asm && hljs.highlight(this.contract.asm, { language: 'x86asm' }).value
