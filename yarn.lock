@@ -3893,6 +3893,16 @@ accepts@~1.3.8:
     mime-types "~2.1.34"
     negotiator "0.6.3"
 
+ace-code@^1.22.0:
+  version "1.22.0"
+  resolved "https://registry.yarnpkg.com/ace-code/-/ace-code-1.22.0.tgz#f79cd3d39a30ce35ea6c4a22999d89eca1952aa6"
+  integrity sha512-vj9kZxTjWt0/Ag21BkR23sjH12BfP3r1VtLV16ldb+21UIA/clhRxD5nKy34QkzmCT4Sfu6QKJNttjXuTO+0vw==
+
+ace-mode-solidity@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/ace-mode-solidity/-/ace-mode-solidity-0.1.1.tgz#a1b49c732f2bf1bfacd3b181ba0c21575a36b918"
+  integrity sha512-OFDYb2DpSUdY/st3o+efbBof4e3M5zFXE8p1DwXNSoeGVT5+8/3KKwX6uhkuKipZ9VgqtPDSJLNcIY1+KSsrIw==
+
 acorn-globals@^6.0.0:
   version "6.0.0"
   resolved "https://registry.npmjs.org/acorn-globals/-/acorn-globals-6.0.0.tgz"
@@ -4563,6 +4573,11 @@ brace-expansion@^1.1.7:
   dependencies:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
+
+brace@^0.11.0:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/brace/-/brace-0.11.1.tgz#4896fcc9d544eef45f4bb7660db320d3b379fe58"
+  integrity sha512-Fc8Ne62jJlKHiG/ajlonC4Sd66Pq68fFwK4ihJGNZpGqboc324SQk+lRvMzpPRuJOmfrJefdG8/7JdWX4bzJ2Q==
 
 braces@^2.3.1, braces@^2.3.2:
   version "2.3.2"
@@ -14042,6 +14057,13 @@ vue-trend-chart@^0.15.3:
   version "0.15.3"
   resolved "https://registry.npmjs.org/vue-trend-chart/-/vue-trend-chart-0.15.3.tgz"
   integrity sha512-DkGC36pgZUOsn8t9cK65kHIW62nVOhKV951v7ZfM8BWepfgU4cOoIlztEqfY+pC5WtC4rRBoXs/fQ4aIDRPlQw==
+
+vue2-ace-editor@^0.0.15:
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/vue2-ace-editor/-/vue2-ace-editor-0.0.15.tgz#569b208e54ae771ae1edd3b8902ac42f0edc74e3"
+  integrity sha512-e3TR9OGXc71cGpvYcW068lNpRcFt3+OONCC81oxHL/0vwl/V3OgqnNMw2/RRolgQkO/CA5AjqVHWmANWKOtNnQ==
+  dependencies:
+    brace "^0.11.0"
 
 vue@^2.6.11:
   version "2.6.12"

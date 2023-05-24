@@ -354,6 +354,11 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            getCompilerVersions() {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/external/compilers`;
+                return axios.get(resource);
+            },
+
             getExplorerStatus() {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,

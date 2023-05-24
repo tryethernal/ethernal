@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ContractVerificationInfo.vue Should display code / constructor arguments / libraries 1`] = `
+<div>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__text">
+      <div class="row">
+        <div class="col col-6"><b>Contract Name:</b> My Contract</div>
+        <div class="col col-6"><b>Optimizer:</b> <span><b>Yes</b> with <b>200</b> runs</span></div>
+      </div>
+      <div class="row">
+        <div class="col col-6"><b>Compiler Version:</b> compiler</div>
+        <div class="col col-6"><b>EVM Version:</b> london</div>
+      </div>
+      <hr role="separator" aria-orientation="horizontal" class="my-6 v-divider theme--light">
+      <div class="row">
+        <div class="col">
+          <h5>File 1 of 1: File.sol</h5>
+          <div style="height: 500px; width: 100%" class="editor ace_editor ace-chrome"><textarea class="ace_text-input" wrap="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="opacity: 0;"></textarea>
+            <div class="ace_gutter" aria-hidden="true">
+              <div class="ace_layer ace_gutter-layer ace_folding-enabled"></div>
+              <div class="ace_gutter-active-line"></div>
+            </div>
+            <div class="ace_scroller">
+              <div class="ace_content">
+                <div class="ace_layer ace_print-margin-layer">
+                  <div class="ace_print-margin" style="left: 4px; visibility: hidden;"></div>
+                </div>
+                <div class="ace_layer ace_marker-layer"></div>
+                <div class="ace_layer ace_text-layer" style="padding: 0px 4px;"></div>
+                <div class="ace_layer ace_marker-layer"></div>
+                <div class="ace_layer ace_cursor-layer ace_hidden-cursors">
+                  <div class="ace_cursor"></div>
+                </div>
+              </div>
+            </div>
+            <div class="ace_scrollbar ace_scrollbar-v" style="display: none; width: 20px;">
+              <div class="ace_scrollbar-inner" style="width: 20px;"></div>
+            </div>
+            <div class="ace_scrollbar ace_scrollbar-h" style="display: none; height: 20px;">
+              <div class="ace_scrollbar-inner" style="height: 20px;"></div>
+            </div>
+            <div style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; overflow: hidden;">
+              <div style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; overflow: visible;"></div>
+              <div style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; overflow: visible;">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">
+      Constructor Arguments
+      <div class="spacer"></div> <span class="text-caption"><a class="underlined">Formatted</a> | <a class="">Raw</a></span>
+    </div>
+    <div class="v-card__text">
+      <div style="white-space: pre;">
+        <formatted-sol-var-stub notinteractive="true" value="abcd" input="[object Object]"></formatted-sol-var-stub>
+      </div>
+      <div style="white-space: pre;">
+        <formatted-sol-var-stub notinteractive="true" value="abcd,a,b,true,5" input="[object Object]"></formatted-sol-var-stub>
+      </div>
+    </div>
+  </div>
+  <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">Libraries</div>
+    <div class="v-card__text">
+      <div>
+        Library =&gt; 0x12345
+      </div>
+    </div>
+  </div>
+</div>
+`;

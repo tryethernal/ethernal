@@ -8,6 +8,7 @@ import router from './plugins/router';
 import { serverPlugin } from './plugins/server';
 import store from './plugins/store';
 import { firestorePlugin } from 'vuefire';
+import 'ace-mode-solidity/build/remix-ide/mode-solidity.js';
 
 import App from './App.vue';
 
