@@ -181,9 +181,6 @@ router.post('/:address/verify', async (req, res) => {
         if (!contract)
             throw new Error(`Couldn't find contract at address ${address}`);
 
-        if (contract.verificationStatus == 'success')
-            throw new Error('Contract has already been verified.');
-
         // if (contract.verificationStatus == 'pending')
         //     throw new Error('There already is an ongoing verification for this contract.');
 

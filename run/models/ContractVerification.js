@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     contractName: DataTypes.STRING,
     runs: DataTypes.INTEGER,
     libraries: DataTypes.JSON,
-    constructorArguments: DataTypes.JSON,
+    constructorArguments: DataTypes.TEXT,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE
   }, {

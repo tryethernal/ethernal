@@ -32,7 +32,6 @@ jest.mock('../../../lib/firebase', () => {
         getContractDeploymentTxByAddress: jest.fn(),
         getWorkspaceByName: jest.fn(),
         getContractData: jest.fn(),
-        storeTokenBalanceChanges: jest.fn(),
         storeTransactionTokenTransfers: jest.fn(),
         getWorkspaceContractById: jest.fn(),
         getWorkspaceById: jest.fn(),
@@ -48,7 +47,6 @@ jest.mock('../../../lib/firebase', () => {
         getUserbyStripeCustomerId: jest.fn(),
         updateUserPlan: jest.fn(),
         getPublicExplorerParamsByDomain: jest.fn(),
-        getPublicExplorerParamsBySlug: jest.fn(),
         searchForNumber: jest.fn(),
         getAddressLatestTokenBalances: jest.fn(),
         getWalletVolume: jest.fn(),
@@ -88,6 +86,7 @@ jest.mock('../../../lib/firebase', () => {
         updateWorkspaceIntegrityCheck: jest.fn(),
         getTransactionForProcessing: jest.fn(),
         updateWorkspaceRpcHealthCheck: jest.fn(),
+        storeContractVerificationData: jest.fn(),
         Workspace: Workspace
     }
 });

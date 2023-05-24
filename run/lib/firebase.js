@@ -27,6 +27,7 @@ const storeContractVerificationData = async (workspaceId, address, verificationD
 
     return contract.safeCreateVerification(verificationData);
 };
+<<<<<<< HEAD
 
 const getStripePlan = async (slug) => {
     const plan = await StripePlan.findOne({
@@ -107,6 +108,8 @@ const getUserExplorers = (firebaseUserId) => {
         ]
     })
 }
+=======
+>>>>>>> develop
 
 const updateWorkspaceRpcHealthCheck = async (workspaceId, isReachable) => {
     if (!workspaceId || isReachable === null || isReachable === undefined) throw new Error('Missing parameter');
@@ -1197,12 +1200,15 @@ module.exports = {
     updateWorkspaceIntegrityCheck: updateWorkspaceIntegrityCheck,
     updateWorkspaceRpcHealthCheck: updateWorkspaceRpcHealthCheck,
     revertPartialBlock: revertPartialBlock,
+<<<<<<< HEAD
     getUserExplorers: getUserExplorers,
     getExplorerById: getExplorerById,
     updateExplorerSettings: updateExplorerSettings,
     updateExplorerWorkspace: updateExplorerWorkspace,
     updateExplorerBranding: updateExplorerBranding,
     getStripePlan: getStripePlan,
+=======
+>>>>>>> develop
     storeContractVerificationData: storeContractVerificationData,
     Workspace: Workspace
 };

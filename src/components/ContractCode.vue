@@ -6,44 +6,10 @@
             </v-card-text>
         </v-card>
         <template v-else>
-            <v-card v-if="isPublicExplorer && isVerifiedContract" outlined class="mb-6">
-                <v-card-text>
-                    <Contract-Verification-Info :contract="contract" />
-                </v-card-text>
-            </v-card>
-            <v-card v-else outlined class="mb-6">
-                <v-card-title>Contract Verification</v-card-title>
-                <v-card-text>
-                    <Contract-Verification :address="contract.address" />
-                </v-card-text>
-            </v-card>
-
-            <v-card v-if="displayConstructorArguments" outlined class="mb-6">
-                <v-card-title>
-                    Constructor Arguments
-                    <v-spacer></v-spacer>
-                    <span class="text-caption">
-                        <a :class="{ underlined: formattedConstructorArguments }" @click="formattedConstructorArguments = true">Formatted</a> | <a :class="{ underlined: !formattedConstructorArguments }" @click="formattedConstructorArguments = false">Raw</a>
-                    </span>
-                </v-card-title>
-                <v-card-text>
-                    <template v-if="formattedConstructorArguments">
-                        <div v-for="(arg, idx) in decodedConstructorArguments" :key="idx" style="white-space: pre;">
-                            <Formatted-Sol-Var :input="arg" :notInteractive="true" :value="arg.value" />
-                        </div>
-                    </template>
-                    <span v-else>{{ zeroXifiedConstructorArguments }}</span>
-                </v-card-text>
-            </v-card>
-
-            <v-card v-if="displayLibraries" outlined class="mb-6">
-                <v-card-title>Libraries</v-card-title>
-                <v-card-text>
-                    <div v-for="(libraryName, idx) in Object.keys(contract.verification.libraries)" :key="idx">
-                        {{ libraryName }} => {{ contract.verification.libraries[libraryName] }}
-                    </div>
-                </v-card-text>
-            </v-card>
+            <template v-if="isPublicExplorer">
+                <Contract-Verification-Info v-if="isVerifiedContract" :contract="contract" />
+                <Contract-Verification v-else :address="contract.address" />
+            </template>
 
             <v-card outlined class="mb-6">
                 <v-card-title>Bytecode</v-card-title>
@@ -75,24 +41,20 @@
 
 <script>
 import 'highlight.js/styles/vs2015.css';
-const ethers = require('ethers');
 const hljs = require('highlight.js');
 import { mapGetters } from 'vuex';
 import ContractVerification from './ContractVerification';
 import ContractVerificationInfo from './ContractVerificationInfo';
-import FormattedSolVar from './FormattedSolVar';
 
 export default {
     name: 'ContractCode',
     props: ['contract'],
     components: {
         ContractVerification,
-        ContractVerificationInfo,
-        FormattedSolVar
+        ContractVerificationInfo
     },
     data: () => ({
-        loading: false,
-        formattedConstructorArguments: true
+        loading: false
     }),
     computed: {
         ...mapGetters([
@@ -104,34 +66,10 @@ export default {
                 `0x${this.contract.verification.constructorArguments}`;
         },
         isVerifiedContract() {
-            return this.contract.verificationStatus == 'success';
+            return this.contract.verification;
         },
         highlightedAsm() {
             return this.contract.asm && hljs.highlight(this.contract.asm, { language: 'x86asm' }).value
-        },
-        displayConstructorArguments() {
-            return this.isPublicExplorer && this.contract.verification && this.contract.verification.constructorArguments;
-        },
-        displayLibraries() {
-            return this.isPublicExplorer && this.contract.verification && Object.keys(this.contract.verification.libraries).length > 0;
-        },
-        decodedConstructorArguments() {
-            const iface = new ethers.utils.Interface(this.contract.abi);
-            const constructorInputs = JSON.parse(iface.deploy.format(ethers.utils.FormatTypes.json)).inputs;
-            const decodedInputs = ethers.utils.defaultAbiCoder.decode(iface.deploy.inputs.map(i => {
-                if (i.type == 'tuple')
-                    return `tuple(${i.components.map(c => c.type).join(',')})`;
-                else
-                    return i.type;
-            }), this.zeroXifiedConstructorArguments);
-            const decoded = [];
-            for (let i = 0; i < decodedInputs.length; i++) {
-                decoded.push({
-                    ...constructorInputs[i],
-                    value: decodedInputs[i]
-                });
-            }
-            return decoded;
         }
     }
 }
@@ -147,8 +85,5 @@ export default {
     font-weight: 600;
     text-transform: uppercase;
     height: 50vh
-}
-.underlined {
-    text-decoration: underline;
 }
 </style>

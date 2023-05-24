@@ -1,6 +1,6 @@
 {
   "name": "ethernal",
-  "version": "3.12.8",
+  "version": "3.13.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -28,7 +28,7 @@
     "@truffle/expect": "^0.0.15",
     "@vue-stripe/vue-stripe": "^4.2.5",
     "abi-decoder": "^2.3.0",
-    "ace-code": "^1.21.1",
+    "ace-code": "^1.22.0",
     "ace-mode-solidity": "^0.1.1",
     "axios": "^0.21.1",
     "axios-cache-interceptor": "1",
