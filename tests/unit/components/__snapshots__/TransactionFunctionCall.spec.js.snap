@@ -11,7 +11,7 @@ exports[`TransactionFunctionCall.vue Should display transaction call 1`] = `
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xc00e94Cb662C3520282E6f5717214004A7f26888" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></span>
       <!----></span></span></span></span></span>
     </div>
-    <div class="ml-4" style="white-space: pre;"><span class="ml-4"><span>uint256 rawAmount: </span> <span><!----> 1</span></span></div>
+    <div class="ml-4" style="white-space: pre;"><span class="ml-4"><span>uint256 rawAmount: </span> <span><!----> <span class="" style="white-space: break-spaces;">1</span></span></span></div>
     )
   </div>
 </div>
@@ -33,9 +33,11 @@ exports[`TransactionFunctionCall.vue Should handle arrays as parameters 1`] = `
     <div class="ml-4" style="white-space: pre;"><span class="ml-4"><span>uint256[] values: </span> <span><!----> <span class=""><span>
                 [
 
-                    <span><span class="ml-8"><!----> <span><!----> 1</span></span>
+                    <span><span class="ml-8"><!----> <span><!----> <span class="" style="white-space: break-spaces;">1</span></span></span>
 
-      </span><span><span class="ml-8"><!----> <span><!----> 3</span></span>
+
+      </span><span><span class="ml-8"><!----> <span><!----> <span class="" style="white-space: break-spaces;">3</span></span></span>
+
 
       </span> <span class="ml-4">]</span></span></span></span></span></div>
     )
@@ -54,7 +56,7 @@ exports[`TransactionFunctionCall.vue Should load erc20 abi if function is detect
         &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xc00e94Cb662C3520282E6f5717214004A7f26888" value="0xc00e94Cb662C3520282E6f5717214004A7f26888"></span>
       <!----></span></span></span></span></span>
     </div>
-    <div class="ml-4" style="white-space: pre;"><span class="ml-4"><span>uint256 _value: </span> <span><!----> 1</span></span></div>
+    <div class="ml-4" style="white-space: pre;"><span class="ml-4"><span>uint256 _value: </span> <span><!----> <span class="" style="white-space: break-spaces;">1</span></span></span></div>
     )
   </div>
 </div>
