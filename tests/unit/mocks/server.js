@@ -50,6 +50,7 @@ jest.mock('@/plugins/server', () => ({
                 sendResetPasswordEmail: jest.fn(),
                 resetPassword: jest.fn(),
                 getExplorerStatus: jest.fn(),
+                getCompilerVersions: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))

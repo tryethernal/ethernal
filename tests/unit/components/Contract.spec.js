@@ -1,9 +1,7 @@
 import flushPromises from 'flush-promises';
 import MockHelper from '../MockHelper';
-import ethereum from '../mocks/ethereum';
 
 jest.mock('@metamask/detect-provider');
-import detectEthereumProvider from '@metamask/detect-provider';
 import Contract from '@/components/Contract.vue';
 
 let helper;

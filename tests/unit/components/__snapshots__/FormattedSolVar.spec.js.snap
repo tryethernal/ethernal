@@ -71,5 +71,5 @@ exports[`FormattedSolVar.vue Should remove link styling 1`] = `<span class="ml-4
 exports[`FormattedSolVar.vue Should switch the value to raw hash 1`] = `
 <span class="ml-4"><span>address: </span> <span>
             (<!----> <a id="switchFormatted">Display Formatted</a>)
-         0x123</span></span>
+         <span class="" style="white-space: break-spaces;">0x123</span></span></span>
 `;

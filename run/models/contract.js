@@ -53,6 +53,36 @@ module.exports = (sequelize, DataTypes) => {
               )
           },
       });
+      Contract.hasOne(models.ContractVerification, { foreignKey: 'contractId', as: 'verification' });
+      Contract.hasMany(models.ContractSource, { foreignKey: 'contractId', as: 'sources' });
+    }
+
+    safeCreateVerification(verificationData) {
+        console.log(verificationData)
+        const { compilerVersion, evmVersion, runs, sources, libraries, constructorArguments, contractName } = verificationData;
+
+        if (!compilerVersion || !evmVersion || !sources)
+            throw new Error('Missing parameter');
+
+        return sequelize.transaction(async transaction => {
+            const contractVerification = await this.createVerification({
+                workspaceId: this.workspaceId,
+                compilerVersion, evmVersion, runs, constructorArguments, libraries, contractName
+            }, { transaction });
+
+            const keys = Object.keys(sources);
+            for (let i = 0; i < keys.length; i++) {
+                const source = sources[keys[i]].content;
+                await this.createSource({
+                    workspaceId: this.workspaceId,
+                    contractVerificationId: contractVerification.id,
+                    fileName: keys[i],
+                    content: source
+                }, { transaction });
+            }
+
+            return contractVerification;
+        });
     }
 
     getTokenHolderHistory(from, to) {

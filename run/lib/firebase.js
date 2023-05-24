@@ -9,8 +9,24 @@ const Transaction = models.Transaction;
 const Workspace = models.Workspace;
 const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
-const TokenBalanceChange = models.TokenBalanceChange;
-const IntegrityCheck = models.IntegrityCheck;
+const StripePlan = models.StripePlan;
+const StripeSubscription = models.StripeSubscription;
+
+const storeContractVerificationData = async (workspaceId, address, verificationData) => {
+    if (!workspaceId || !address || !verificationData) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+
+    if (!workspace.public)
+        throw new Error('This is a private workspace');
+
+    const contract = await workspace.getContractByAddress(address);
+
+    if (!contract)
+        throw new Error('Cannot find contract');
+
+    return contract.safeCreateVerification(verificationData);
+};
 
 const updateWorkspaceRpcHealthCheck = async (workspaceId, isReachable) => {
     if (!workspaceId || isReachable === null || isReachable === undefined) throw new Error('Missing parameter');
@@ -1101,5 +1117,6 @@ module.exports = {
     updateWorkspaceIntegrityCheck: updateWorkspaceIntegrityCheck,
     updateWorkspaceRpcHealthCheck: updateWorkspaceRpcHealthCheck,
     revertPartialBlock: revertPartialBlock,
+    storeContractVerificationData: storeContractVerificationData,
     Workspace: Workspace
 };

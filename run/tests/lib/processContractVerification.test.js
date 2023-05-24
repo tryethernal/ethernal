@@ -85,6 +85,7 @@ describe('processContractVerification', () => {
         });
 
         const message = {
+            compilerVersion: '1',
             code: {
                 sources: { source: 'source' },
                 imports: { 'Import.sol': { contents: 'import' }}
@@ -104,6 +105,15 @@ describe('processContractVerification', () => {
             '0x123',
             'success'
         );
+        expect(db.storeContractVerificationData).toHaveBeenCalledWith(1, '0x123', {
+            compilerVersion: '1',
+            constructorArguments: '',
+            contractName: 'MyContract',
+            evmVersion: 'london',
+            sources: message.code.sources,
+            libraries: undefined,
+            runs: undefined
+        });
     });
 
     it('Should throw an error if imports are missing', async () => {
@@ -264,6 +274,7 @@ describe('processContractVerification', () => {
             '0x123',
             expect.anything()
         );
+        expect(db.storeContractVerificationData).toHaveBeenCalled();
     });
 
     it('Should set the verification status to failed if source code is not matching', async () => {
@@ -305,6 +316,9 @@ describe('processContractVerification', () => {
         jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x12341234123412341234123412341234abcd000100011110001' });
 
         const message = {
+            compilerVersion: '1',
+            evmVersion: 'berlin',
+            runs: 200,
             code: {
                 sources: { source: 'source' },
                 imports: { import: { contents: 'import' }},
@@ -339,12 +353,24 @@ describe('processContractVerification', () => {
             '0x123',
             expect.anything()
         );
+        expect(db.storeContractVerificationData).toHaveBeenCalledWith(1, '0x123', {
+            compilerVersion: '1',
+            constructorArguments: '',
+            contractName: 'MyContract',
+            evmVersion: 'berlin',
+            sources: message.code.sources,
+            libraries: { MyLibrary: '0xabcd' },
+            runs: 200
+        });
     });
 
     it('Should append constructor arguments properly', async () => {
         jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x12341234123412341234123412341234000100011110001000abcd' });
 
         const message = {
+            compilerVersion: '1',
+            evmVersion: 'berlin',
+            runs: 200,
             code: {
                 sources: { source: 'source' },
                 imports: { import: { contents: 'import' }}
@@ -377,6 +403,15 @@ describe('processContractVerification', () => {
             '0x123',
             expect.anything()
         );
+        expect(db.storeContractVerificationData).toHaveBeenCalledWith(1, '0x123', {
+            compilerVersion: '1',
+            constructorArguments: '000abcd',
+            contractName: 'MyContract',
+            evmVersion: 'berlin',
+            sources: message.code.sources,
+            libraries: undefined,
+            runs: 200
+        });
     });
 
     it('Should set the verification status to failed if there is an error during the process', async () => {
