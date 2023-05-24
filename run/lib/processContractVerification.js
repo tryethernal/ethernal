@@ -124,16 +124,23 @@ module.exports = async function(db, payload) {
                 includedBytecodes.push({ data: removeMetadata(data.evm.bytecode.object), metadataLength: metadataLength });
             }
 
-        const compiledRuntimeBytecodeWithoutMetadata = `0x${stripBytecodeMetadata(removeMetadata(bytecode), includedBytecodes)}${constructorArguments}`.toLowerCase();
+        const compiledRuntimeBytecodeWithoutMetadata = `0x${stripBytecodeMetadata(bytecode, includedBytecodes)}${constructorArguments}`.toLowerCase();
 
         const deploymentTx = await db.getContractDeploymentTxByAddress(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress);
 
-        let deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(removeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length)), includedBytecodes) + constructorArguments).toLowerCase();
+        let deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length), includedBytecodes) + constructorArguments).toLowerCase();
         if (!deployedRuntimeBytecodeWithoutMetadata.startsWith('0x'))
             deployedRuntimeBytecodeWithoutMetadata = '0x' + deployedRuntimeBytecodeWithoutMetadata;
 
-        if (compiledRuntimeBytecodeWithoutMetadata === deployedRuntimeBytecodeWithoutMetadata) {
+            if (compiledRuntimeBytecodeWithoutMetadata === deployedRuntimeBytecodeWithoutMetadata) {
             await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'success');
+            const verificationData = {
+                compilerVersion, constructorArguments, runs, contractName,
+                evmVersion: evmVersion || VALID_EVM_VERSIONS[VALID_EVM_VERSIONS.length - 1],
+                sources: code.sources,
+                libraries: code.libraries
+            };
+            await db.storeContractVerificationData(publicExplorerParams.workspaceId, contractAddress, verificationData);
             await db.storeContractData(user.firebaseUserId, workspace.name, contractAddress, { name: contractName, abi: abi });
             return {
                 verificationSucceded: true

@@ -1,6 +1,6 @@
 {
   "name": "ethernal",
-  "version": "3.12.8",
+  "version": "3.13.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -23,6 +23,8 @@
     "@truffle/expect": "^0.0.15",
     "@vue-stripe/vue-stripe": "^4.2.5",
     "abi-decoder": "^2.3.0",
+    "ace-code": "^1.22.0",
+    "ace-mode-solidity": "^0.1.1",
     "axios": "^0.21.1",
     "axios-cache-interceptor": "1",
     "chokidar": "^3.5.0",
@@ -44,6 +46,7 @@
     "vue-moment": "^4.1.0",
     "vue-router": "^3.4.9",
     "vue-trend-chart": "^0.15.3",
+    "vue2-ace-editor": "^0.0.15",
     "vuefire": "^2.2.5",
     "vuetify": "^2.3.9",
     "vuex": "^3.6.0",
