@@ -91,7 +91,7 @@
                     <v-card outlined>
                         <v-card-text>
                             <div>
-                                Plan: <b>Explorer {{ explorer.plan }} - <span class="success--text">Active</span></b>
+                                Plan: <b>{{ explorer.stripeSubscription.stripePlan.name }}</b> | <b class="success--text">Active</b>
                             </div>
                             <div>
                                 Monthly Transaction Quota: <b>12 / {{ capabilities.txLimit.toLocaleString() }}</b> (Resetting on 06-06-2023)
