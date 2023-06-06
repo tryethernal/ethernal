@@ -11,16 +11,8 @@ module.exports = async job => {
     const start = parseInt(data.from);
     let end = parseInt(data.to);
 
-    if (end - start >= MAX_CONCURRENT_BATCHES) {
+    if (end - start >= MAX_CONCURRENT_BATCHES)
         end = start + MAX_CONCURRENT_BATCHES;
-        await enqueue('batchBlockSync', `batchBlockSync-${data.userId}-${data.workspace}-${end}-${parseInt(data.to)}`, {
-            userId: data.userId,
-            workspace: data.workspace,
-            from: end,
-            to: parseInt(data.to),
-            source: data.source || 'batchSync'
-        });
-    }
 
     if (end > start) {
         const jobs = [];
@@ -35,6 +27,16 @@ module.exports = async job => {
                 }
             });
         }
-        return bulkEnqueue('blockSync', jobs);
+
+        await bulkEnqueue('blockSync', jobs);
+
+        if (parseInt(data.to) - start >= MAX_CONCURRENT_BATCHES)
+            await enqueue('batchBlockSync', `batchBlockSync-${data.userId}-${data.workspace}-${end}-${parseInt(data.to)}`, {
+                userId: data.userId,
+                workspace: data.workspace,
+                from: end,
+                to: parseInt(data.to),
+                source: data.source || 'batchSync'
+            });
     }
 };
