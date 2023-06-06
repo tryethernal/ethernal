@@ -1,4 +1,5 @@
-const { enqueue } = require('../lib/queue');
+const { enqueue, bulkEnqueue } = require('../lib/queue');
+const MAX_CONCURRENT_BATCHES = 2000;
 
 module.exports = async job => {
     const data = job.data;
@@ -7,7 +8,6 @@ module.exports = async job => {
         return 'Missing parameter.';
     }
 
-    const MAX_CONCURRENT_BATCHES = 200;
     const start = parseInt(data.from);
     let end = parseInt(data.to);
 
@@ -21,17 +21,20 @@ module.exports = async job => {
             source: data.source || 'batchSync'
         });
     }
-    else
-        end += 1;
 
-    for (let i = start; i < end; i++) {
-        await enqueue('blockSync', `blockSync-batch-${data.userId}-${data.workspace}-${i}`, {
-            userId: data.userId,
-            workspace: data.workspace,
-            blockNumber: i,
-            source: data.source || 'batchSync'
-        });
+    if (end > start) {
+        const jobs = [];
+        for (let i = start; i <= end; i++) {
+            jobs.push({
+                name: `blockSync-batch-${data.userId}-${data.workspace}-${i}`,
+                data: {
+                    userId: data.userId,
+                    workspace: data.workspace,
+                    blockNumber: i,
+                    source: data.source || 'batchSync'
+                }
+            });
+        }
+        return bulkEnqueue('blockSync', jobs);
     }
-
-    return;
 };
