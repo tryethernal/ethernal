@@ -14,7 +14,7 @@ module.exports = async job => {
     if (end - start >= MAX_CONCURRENT_BATCHES)
         end = start + MAX_CONCURRENT_BATCHES;
 
-    if (end > start) {
+    if (end >= start) {
         const jobs = [];
         for (let i = start; i <= end; i++) {
             jobs.push({
