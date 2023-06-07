@@ -136,7 +136,7 @@ describe('integrityCheck', () => {
 
         await integrityCheck(job);
 
-        expect(enqueue).toHaveBeenCalledWith('batchBlockSync', 'batchBlockSync-1', {
+        expect(enqueue).toHaveBeenCalledWith('batchBlockSync', 'batchBlockSync-1-1-4', {
             userId: '123',
             workspace: 'hardhat',
             from: 1,
