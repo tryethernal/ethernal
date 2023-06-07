@@ -131,7 +131,7 @@ module.exports = async job => {
         for (let i = 0; i < gaps.length; i++) {
             const gap = gaps[i];
             if (gap.blockStart && gap.blockEnd)
-                await enqueue('batchBlockSync', `batchBlockSync-${workspace.id}`, {
+                await enqueue('batchBlockSync', `batchBlockSync-${workspace.id}-${gap.blockStart}-${gap.blockEnd}`, {
                     userId: workspace.user.firebaseUserId,
                     workspace: workspace.name,
                     from: gap.blockStart,

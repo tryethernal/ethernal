@@ -182,14 +182,14 @@ describe('integrityCheck', () => {
         await integrityCheck(job);
 
         expect(db.updateWorkspaceIntegrityCheck).toHaveBeenCalledWith(1, { blockId: 2 });
-        expect(enqueue).toHaveBeenCalledWith('batchBlockSync', 'batchBlockSync-1', {
+        expect(enqueue).toHaveBeenCalledWith('batchBlockSync', 'batchBlockSync-1-1-5', {
             userId: '123',
             workspace: 'hardhat',
             from: 1,
             to: 5,
             source: 'integrityCheck'
         });
-        expect(enqueue).toHaveBeenCalledWith('batchBlockSync', 'batchBlockSync-1', {
+        expect(enqueue).toHaveBeenCalledWith('batchBlockSync', 'batchBlockSync-1-8-8', {
             userId: '123',
             workspace: 'hardhat',
             from: 8,
