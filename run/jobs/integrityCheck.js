@@ -12,12 +12,13 @@
 
 const models = require('../models');
 const db = require('../lib/firebase');
-const { enqueue } = require('../lib/queue');
+const { enqueue, bulkEnqueue } = require('../lib/queue');
 const moment = require('moment');
 
 const Workspace = models.Workspace;
 
 const DELAY_BEFORE_RECOVERY = 2 * 60;
+const MAX_GAPS_BATCHES = 2000;
 
 module.exports = async job => {
     const data = job.data;
@@ -128,17 +129,24 @@ module.exports = async job => {
             await db.updateWorkspaceIntegrityCheck(workspace.id, { blockId: upperBlock.id });
     }
     else {
-        for (let i = 0; i < gaps.length; i++) {
+        const batches = [];
+        for (let i = 0; i < Math.min(gaps.length, MAX_GAPS_BATCHES); i++) {
             const gap = gaps[i];
-            if (gap.blockStart && gap.blockEnd)
-                await enqueue('batchBlockSync', `batchBlockSync-${workspace.id}-${gap.blockStart}-${gap.blockEnd}`, {
-                    userId: workspace.user.firebaseUserId,
-                    workspace: workspace.name,
-                    from: gap.blockStart,
-                    to: gap.blockEnd,
-                    source: 'integrityCheck'
+            if (gap.blockStart && gap.blockEnd) {
+                batches.push({
+                    name:  `batchBlockSync-${workspace.id}-${gap.blockStart}-${gap.blockEnd}`,
+                    data: {
+                        userId: workspace.user.firebaseUserId,
+                        workspace: workspace.name,
+                        from: gap.blockStart,
+                        to: gap.blockEnd,
+                        source: 'integrityCheck'
+                    }
                 });
+            }
         }
+
+        await bulkEnqueue('batchBlockSync', batches);
     }
 
     return true;
