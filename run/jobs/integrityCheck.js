@@ -107,7 +107,7 @@ module.exports = async job => {
         */
         const diff = moment.unix(latestBlock.timestamp).diff(moment(upperBlock.timestamp), 'seconds');
         if (diff > DELAY_BEFORE_RECOVERY) {
-            await enqueue('batchBlockSync', `batchBlockSync-${workspace.id}`, {
+            await enqueue('batchBlockSync', `batchBlockSync-${workspace.id}-${upperBlock.number}-${latestBlock.number}`, {
                 userId: workspace.user.firebaseUserId,
                 workspace: workspace.name,
                 from: upperBlock.number,
