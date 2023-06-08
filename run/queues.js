@@ -7,7 +7,10 @@ priorities['high'].forEach(jobName => {
     queues[jobName] = new Queue(jobName, {
         defaultJobOptions: {
             attempts: 50,
-            removeOnComplete: 100,
+            removeOnComplete: {
+                count: 100,
+                age: 4 * 60
+            },
             timeout: 30000,
             backoff: {
                 type: 'exponential',
