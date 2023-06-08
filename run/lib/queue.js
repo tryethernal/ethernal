@@ -1,7 +1,7 @@
 const queues = require("../queues");
 const { sanitize } = require("./utils");
 
-const uniqueQueues = ["transactionSync"];
+const uniqueQueues = ["blockSync", "batchBlockSync"];
 
 const enqueue = (queueName, jobName, data, priority = 10, repeat) => {
     const jobId = uniqueQueues.indexOf(queueName) > -1 ? jobName : null;
