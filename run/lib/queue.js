@@ -10,10 +10,11 @@ const enqueue = (queueName, jobName, data, priority = 10, repeat) => {
 
 const bulkEnqueue = (queueName, jobData) => {
     const jobs = jobData.map(job => {
-        return {
-            name: uniqueQueues.indexOf(queueName) < 0 ? `${job.name}-${Date.now()}` : job.name,
-            data: job.data
-        }  
+        return sanitize({
+            name: job.name,
+            data: job.data,
+            jobId: uniqueQueues.indexOf(queueName) < 0 ? job.name : null
+        })
     })
     return queues[queueName].addBulk(jobs);
 };
