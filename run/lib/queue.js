@@ -13,7 +13,7 @@ const bulkEnqueue = (queueName, jobData) => {
         return sanitize({
             name: job.name,
             data: job.data,
-            jobId: uniqueQueues.indexOf(queueName) > -1 ? job.name : null
+            opts: { jobId: uniqueQueues.indexOf(queueName) > -1 ? job.name : null }
         })
     })
     return queues[queueName].addBulk(jobs);
