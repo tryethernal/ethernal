@@ -12,12 +12,15 @@
 
 const models = require('../models');
 const db = require('../lib/firebase');
-const { enqueue } = require('../lib/queue');
+const { enqueue, bulkEnqueue } = require('../lib/queue');
+const { withTimeout } = require('../lib/utils');
 const moment = require('moment');
 
 const Workspace = models.Workspace;
 
 const DELAY_BEFORE_RECOVERY = 2 * 60;
+const MAX_GAPS_BATCHES = 2000;
+const FETCH_LATEST_TIMEOUT = 10 * 1000;
 
 module.exports = async job => {
     const data = job.data;
@@ -99,15 +102,19 @@ module.exports = async job => {
 
     if (lowerBlock.number == upperBlock.number) {
         const provider = workspace.getProvider();
-        const latestBlock = await provider.fetchLatestBlock();
-
+        let latestBlock;
+        try {
+            latestBlock = await withTimeout(provider.fetchLatestBlock(), FETCH_LATEST_TIMEOUT);
+        } catch(_error) {
+            return "Couldn't reach network";
+        }
         /*
             If the latest block stored is more than 2 minutes away from the latest block on chain,
             we recover the range of missing blocks
         */
         const diff = moment.unix(latestBlock.timestamp).diff(moment(upperBlock.timestamp), 'seconds');
         if (diff > DELAY_BEFORE_RECOVERY) {
-            await enqueue('batchBlockSync', `batchBlockSync-${workspace.id}`, {
+            await enqueue('batchBlockSync', `batchBlockSync-${workspace.id}-${upperBlock.number}-${latestBlock.number}`, {
                 userId: workspace.user.firebaseUserId,
                 workspace: workspace.name,
                 from: upperBlock.number,
@@ -128,16 +135,29 @@ module.exports = async job => {
             await db.updateWorkspaceIntegrityCheck(workspace.id, { blockId: upperBlock.id });
     }
     else {
-        for (let i = 0; i < gaps.length; i++) {
-            const gap = gaps[i];
-            if (gap.blockStart && gap.blockEnd)
-                await enqueue('batchBlockSync', `batchBlockSync-${workspace.id}`, {
-                    userId: workspace.user.firebaseUserId,
-                    workspace: workspace.name,
-                    from: gap.blockStart,
-                    to: gap.blockEnd,
-                    source: 'integrityCheck'
-                });
+        const batchedGaps = [];
+        for (let i = 0; i < gaps.length; i += MAX_GAPS_BATCHES)
+            batchedGaps.push(gaps.slice(i, i + MAX_GAPS_BATCHES));
+
+        for (let i = 0; i < batchedGaps.length; i++) {
+            const batches = [];
+            const gaps = batchedGaps[i];
+            for (let j = 0; j < gaps.length; j++) {
+                const gap = gaps[j];
+                if (gap.blockStart && gap.blockEnd) {
+                    batches.push({
+                        name:  `batchBlockSync-${workspace.id}-${gap.blockStart}-${gap.blockEnd}`,
+                        data: {
+                            userId: workspace.user.firebaseUserId,
+                            workspace: workspace.name,
+                            from: gap.blockStart,
+                            to: gap.blockEnd,
+                            source: 'integrityCheck'
+                        }
+                    });
+                }
+            }
+            await bulkEnqueue('batchBlockSync', batches);
         }
     }
 

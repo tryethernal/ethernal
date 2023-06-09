@@ -9,7 +9,7 @@ require('../mocks/lib/queue');
 
 const moment = require('moment');
 const db = require('../../lib/firebase');
-const { enqueue } = require('../../lib/queue');
+const { enqueue, bulkEnqueue } = require('../../lib/queue');
 const integrityCheck = require('../../jobs/integrityCheck');
 
 beforeEach(() => jest.clearAllMocks());
@@ -136,7 +136,7 @@ describe('integrityCheck', () => {
 
         await integrityCheck(job);
 
-        expect(enqueue).toHaveBeenCalledWith('batchBlockSync', 'batchBlockSync-1', {
+        expect(enqueue).toHaveBeenCalledWith('batchBlockSync', 'batchBlockSync-1-1-4', {
             userId: '123',
             workspace: 'hardhat',
             from: 1,
@@ -165,7 +165,7 @@ describe('integrityCheck', () => {
         expect(db.updateWorkspaceIntegrityCheck).toHaveBeenCalledWith(1, { blockId: 2 });
     });
 
-    it('Should update integrity on start & enqueue a batch per gap', async () => {
+    it('Should update integrity on start & enqueue gaps', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn()
@@ -182,19 +182,27 @@ describe('integrityCheck', () => {
         await integrityCheck(job);
 
         expect(db.updateWorkspaceIntegrityCheck).toHaveBeenCalledWith(1, { blockId: 2 });
-        expect(enqueue).toHaveBeenCalledWith('batchBlockSync', 'batchBlockSync-1', {
-            userId: '123',
-            workspace: 'hardhat',
-            from: 1,
-            to: 5,
-            source: 'integrityCheck'
-        });
-        expect(enqueue).toHaveBeenCalledWith('batchBlockSync', 'batchBlockSync-1', {
-            userId: '123',
-            workspace: 'hardhat',
-            from: 8,
-            to: 8,
-            source: 'integrityCheck'
-        });
+        expect(bulkEnqueue).toHaveBeenCalledWith('batchBlockSync', [
+            {
+                name: 'batchBlockSync-1-1-5', 
+                data: {
+                    userId: '123',
+                    workspace: 'hardhat',
+                    from: 1,
+                    to: 5,
+                    source: 'integrityCheck'
+                }
+            },
+            {
+                name: 'batchBlockSync-1-8-8',
+                data: {
+                    userId: '123',
+                    workspace: 'hardhat',
+                    from: 8,
+                    to: 8,
+                    source: 'integrityCheck'
+                }
+            }
+        ]);
     });
 });

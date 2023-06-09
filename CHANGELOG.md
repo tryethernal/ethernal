@@ -4,9 +4,71 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.13.17] - 2023-06-08
+### Changed
+- Queues settings
+
+## [3.13.16] - 2023-06-08
+### Fixed
+- bulkEnqueue logic for jobId
+
+## [3.13.15] - 2023-06-08
+### Changed
+- Changed bulkEnqueue uniqueness
+
+## [3.13.14] - 2023-06-08
+### Changed
+- Queues tuning
+
+## [3.13.13] - 2023-06-07
+### Added
+- Timeout chain request in integrityCheck
+- Queue all block gaps
+
+## [3.13.12] - 2023-06-07
+### Changed
+- Fixed block sync
+
+## [3.13.11] - 2023-06-07
+### Changed
+- Improve integrity checks enqueuing
+
+## [3.13.10] - 2023-06-07
+### Changed
+- Improve integrity checks batching
+
+## [3.13.9] - 2023-06-07
+### Fixed
+- Test
+
+## [3.13.8] - 2023-06-07
+### Changed
+- Improve integrity checks batching
+
+## [3.13.7] - 2023-06-07
+### Changed
+- Remove uniqueness for repeatable queues
+
+## [3.13.6] - 2023-06-06
+### Changed
+- Improved enqueuing system
+
+## [3.13.5] - 2023-06-06
+### Changed
+- Improved block batching for large ranges
+
+## [3.13.4] - 2023-06-06
+### Changed
+- Improved block batching for large ranges
+
+## [3.13.3] - 2023-06-06
+### Changed
+- Improved block batching for large ranges
+
 ## [3.13.2] - 2023-05-24
 ### Fixed
 - Deployment issue
+
 ## [3.13.1] - 2023-05-24
 ### Fixed
 - Deployment issue
