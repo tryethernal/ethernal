@@ -21,6 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     userId: DataTypes.INTEGER,
     stripePlanId: DataTypes.INTEGER,
     stripeId: DataTypes.STRING,
+    status: DataTypes.ENUM('active', 'pending_cancelation'),
+    cycleEndsAt: DataTypes.DATE,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
   }, {

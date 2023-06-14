@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const models = require('../models');
 const { firebaseHash }  = require('./crypto');
+const explorer = require('../models/explorer');
 
 const Op = Sequelize.Op;
 const User = models.User;
@@ -11,6 +12,64 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const StripePlan = models.StripePlan;
 const StripeSubscription = models.StripeSubscription;
+
+const deleteExplorerSubscription = async (userId, explorerId, stripeId) => {
+    if (!userId || !explorerId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            userId: userId
+        }
+    });
+
+    return explorer.safeDeleteSubscription(stripeId);
+};
+
+const cancelExplorerSubscription = async (userId, explorerId) => {
+    if (!userId || !explorerId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            userId: userId
+        }
+    });
+
+    return explorer.safeCancelSubscription();
+};
+
+const updateExplorerSubscription = async (userId, explorerId, stripePlanId) => {
+    if (!userId || !explorerId || !stripePlanId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            userId: userId
+        }
+    });
+
+    return explorer.safeUpdateSubscription(stripePlanId);
+};
+
+const createExplorerSubscription = async (userId, explorerId, stripePlanId, stripeId, cycleEndsAt) => {
+    if (!userId || !explorerId || !stripePlanId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            userId: userId
+        }
+    });
+
+    return explorer.safeCreateSubscription(stripePlanId, stripeId, cycleEndsAt);
+}
+
+const getExplorerPlans = () => {
+    return StripePlan.findAll({
+        attributes: ['capabilities', 'id', 'name', 'slug', 'stripePriceId']
+    });
+};
 
 const storeContractVerificationData = async (workspaceId, address, verificationData) => {
     if (!workspaceId || !address || !verificationData) throw new Error('Missing parameter');
@@ -66,10 +125,11 @@ const updateExplorerWorkspace = async (explorerId, workspaceId) => {
     return explorer.update({ workspaceId: workspace.id, rpcServer: workspace.rpcServer, chainId: workspace.networkId });
 };
 
-const getExplorerById = (id) => {
+const getExplorerById = (userId, id) => {
     if (!id) throw new Error('Missing parameter');
 
     return Explorer.findByPk(id, {
+        where: { userId: userId },
         include: [
             {
                 model: StripeSubscription,
@@ -1204,5 +1264,10 @@ module.exports = {
     updateExplorerBranding: updateExplorerBranding,
     getStripePlan: getStripePlan,
     storeContractVerificationData: storeContractVerificationData,
+    getExplorerPlans: getExplorerPlans,
+    createExplorerSubscription: createExplorerSubscription,
+    updateExplorerSubscription: updateExplorerSubscription,
+    cancelExplorerSubscription: cancelExplorerSubscription,
+    deleteExplorerSubscription: deleteExplorerSubscription,
     Workspace: Workspace
 };

@@ -71,6 +71,34 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    safeCreateSubscription(stripePlanId, stripeId, cycleEndsAt) {
+        if (!stripePlanId || !stripeId) throw new Error('Missing parameter');
+
+        return this.createStripeSubscription({
+            stripePlanId: stripePlanId,
+            stripeId: stripeId,
+            cycleEndsAt: cycleEndsAt
+        });
+    }
+
+    async safeUpdateSubscription(stripePlanId) {
+        if (!stripePlanId) throw new Error('Missing parameter');
+
+        const stripeSubscription = await this.getStripeSubscription();
+        return stripeSubscription.update({ stripePlanId: stripePlanId });
+    }
+
+    async safeCancelSubscription() {
+        const stripeSubscription = await this.getStripeSubscription();
+        return stripeSubscription.update({ status: 'pending_cancelation' });
+    }
+
+    async safeDeleteSubscription(stripeId) {
+        const stripeSubscription = await this.getStripeSubscription();
+        if (stripeSubscription.stripeId == stripeId)
+            await stripeSubscription.destroy();
+    }
+
     safeUpdateSettings(settings) {
         const ALLOWED_SETTINGS = ['name', 'slug', 'token', 'totalSupply', 'statusPageEnabled'];
 
@@ -116,7 +144,8 @@ module.exports = (sequelize, DataTypes) => {
     slug: DataTypes.STRING,
     themes: DataTypes.JSON,
     token: DataTypes.STRING,
-    totalSupply: DataTypes.STRING
+    totalSupply: DataTypes.STRING,
+    deactivatedAt: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Explorer',

@@ -1,6 +1,8 @@
 <template>
     <v-container fluid>
+        <Update-Explorer-Plan-Modal ref="updateExplorerPlanModalRef" />
         <template v-if="explorer">
+            <v-alert text type="error" v-if="!explorer.stripeSubscription">This explorer is not active. To activate it, choose a plan <a @click="openUpdateExplorerPlanModal()">here</a>.</v-alert>
             <h2>{{ explorerName }}</h2>
             <v-row>
                 <v-col cols="6">
@@ -89,16 +91,14 @@
                 <v-col cols="6">
                     <h4>Billing</h4>
                     <v-card outlined>
-                        <v-card-text>
-                            <div>
-                                Plan: <b>{{ explorer.stripeSubscription.stripePlan.name }}</b> | <b class="success--text">Active</b>
-                            </div>
-                            <div>
-                                Monthly Transaction Quota: <b>12 / {{ capabilities.txLimit.toLocaleString() }}</b> (Resetting on 06-06-2023)
-                            </div>
-                            <div>
-                                <v-btn color="primary" @click="upgrade()">Upgrade</v-btn>
-                            </div>
+                        <v-card-text v-if="explorer.stripeSubscription">
+                            <div>Plan: <b>{{ explorer.stripeSubscription.stripePlan.name }}</b></div>
+                            <div>Status: <b class="success--text">{{ formattedExplorerStatus }}</b></div>
+                            <div>Monthly Transaction Quota: <b>12 / {{ capabilities.txLimit.toLocaleString() }}</b> (Resetting on {{ moment(explorer.stripeSubscription.cycleEndsAt) | moment('MM-DD-YY') }})</div>
+                            <div><v-btn color="primary" @click="openUpdateExplorerPlanModal()">Update Plan</v-btn></div>
+                        </v-card-text>
+                        <v-card-text v-else>
+                            No current subscription.
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -106,9 +106,10 @@
             <v-row>
                 <v-col v-if="explorer.themes">
                     <h4>Branding</h4>
-                    <v-card outlined class="mb-4">
+                    <v-card outlined :disabled="!capabilities.branding" class="mb-4">
                         <v-form @submit.prevent="updateBranding()" v-model="valid">
                             <v-card-text>
+                                <v-alert text type="warning">Upgrade your plan to activate branding customization.</v-alert>
                                 <v-alert v-show="brandingUpdated" dense text type="success">Branding updated</v-alert>
                                 <v-alert v-show="brandingUpdateError" dense text type="error">{{ brandingUpdateError }}</v-alert>
                                 <v-row>
@@ -190,14 +191,17 @@
 </template>
 
 <script>
+const moment = require('moment');
 import NewExplorerLink from './NewExplorerLink.vue';
+import UpdateExplorerPlanModal from './UpdateExplorerPlanModal';
 import { formatNumber } from '../lib/utils';
 
 export default {
     name: 'Explorer',
     props: ['id'],
     components: {
-        NewExplorerLink
+        NewExplorerLink,
+        UpdateExplorerPlanModal
     },
     data: () => ({
         settingsUpdated: false,
@@ -222,17 +226,7 @@ export default {
         }
     }),
     methods: {
-        upgrade() {
-            this.server.createStripeCheckoutSession('explorer-50', `/explorers/${this.id}?status=upgraded`, `/explorers/${this.id}`)
-                .then(({ data }) => {
-                    document.location.href = data.url;
-                })
-                .catch((error) => {
-                    alert('An error occured while setting up the payment processor. Please retry.')
-                    console.log(error);
-                })
-                .finally(() => this.subscriptionButtonLoading = false);
-        },
+        moment: moment,
         formatTotalSupply() {
             if (!this.explorer && !this.explorer.totalSupply) return '';
             return formatNumber(this.explorer.totalSupply)
@@ -262,8 +256,7 @@ export default {
                     this.themes.light = { ...this.$vuetify.theme.themes.light, ...data.themes.light };
                     this.explorerLinks = data.themes.links || [];
                     this.currentWorkspace = data.workspace;
-                    this.capabilities = data.stripeSubscription.stripePlan.capabilities;
-                    console.log(this.themes.font)
+                    this.capabilities = data.stripeSubscription ? data.stripeSubscription.stripePlan.capabilities : {};
                     if (this.themes.font)
                         this.fonts.push(this.themes.font);
                 })
@@ -310,6 +303,22 @@ export default {
                 .finally(() => {
                     this.loading = false
                 });
+        },
+        openUpdateExplorerPlanModal() {
+            this.$refs.updateExplorerPlanModalRef.open({
+                explorerId: this.explorer.id,
+                currentPlanSlug: this.explorer.stripeSubscription && this.explorer.stripeSubscription.stripePlan.slug
+            }).then(this.loadExplorer);
+        }
+    },
+    computed: {
+        formattedExplorerStatus() {
+            if (this.explorer.stripeSubscription.status == 'active')
+                return 'Active';
+            else if (this.explorer.stripeSubscription.status == 'pending_cancelation')
+                return 'Pending Cancelation';
+            else
+                return 'N/A';
         }
     },
     watch: {

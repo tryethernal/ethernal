@@ -354,6 +354,23 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            cancelExplorerSubscription(explorerId) {
+                const data = { explorerId };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/cancelExplorerSubscription`;
+                return axios.post(resource, { data }, { cache: { ttl: 0 }});
+            },
+
+            updateExplorerSubscription(explorerId, newStripePlanSlug) {
+                const data = { explorerId, newStripePlanSlug };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/updateExplorerSubscription`;
+                return axios.post(resource, { data }, { cache: { ttl: 0 }});
+            },
+
+            getExplorerPlans() {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/plans`;
+                return axios.get(resource);
+            },
+
             getCompilerVersions() {
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/external/compilers`;
                 return axios.get(resource);
@@ -889,12 +906,13 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            createStripeCheckoutSession(plan, successPath, cancelPath) {
+            createStripeCheckoutSession(plan, successPath, cancelPath, metadata = {}) {
                 const data = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     plan,
                     successPath,
-                    cancelPath
+                    cancelPath,
+                    metadata
                 };
 
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/createCheckoutSession`;

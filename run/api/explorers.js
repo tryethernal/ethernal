@@ -4,13 +4,25 @@ const logger = require('../lib/logger');
 const db = require('../lib/firebase');
 const secretMiddleware = require('../middlewares/secret');
 const authMiddleware = require('../middlewares/auth');
+const stripeMiddleware = require('../middlewares/stripe');
+
+router.get('/plans', [authMiddleware, stripeMiddleware], async (req, res) => {
+    try {
+        const plans = await db.getExplorerPlans();
+
+        res.status(200).json(plans);
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.explorers.plans', error: error });
+        res.status(400).send(error.message);
+    }
+});
 
 router.post('/:id/branding', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
     try {
-        const explorer = await db.getExplorerById(req.params.id);
-        if (!explorer || explorer.admin.firebaseUserId != data.uid)
+        const explorer = await db.getExplorerById(data.user.id, req.params.id);
+        if (!explorer)
             throw new Error('Could not find explorer.');
 
         await db.updateExplorerBranding(explorer.id, data);
@@ -26,8 +38,8 @@ router.post('/:id/settings', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
     try {
-        const explorer = await db.getExplorerById(req.params.id);
-        if (!explorer || explorer.admin.firebaseUserId != data.uid)
+        const explorer = await db.getExplorerById(data.user.id, req.params.id);
+        if (!explorer)
             throw new Error('Could not find explorer.');
 
         if (data.workspace && data.workspace != explorer.workspace.name) {
@@ -118,9 +130,9 @@ router.get('/:id', authMiddleware, async (req, res) => {
         if (!data.id)
             throw new Error('Missing parameters.')
 
-        const explorer = await db.getExplorerById(data.id);
+        const explorer = await db.getExplorerById(req.body.data.user.id, data.id);
 
-        if (!explorer || explorer.admin.firebaseUserId != req.body.data.uid)
+        if (!explorer)
             throw new Error('Could not find explorer.');
 
         res.status(200).json(explorer);

@@ -7,6 +7,56 @@ const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const router = express.Router();
 
+router.post('/cancelExplorerSubscription', [authMiddleware, stripeMiddleware], async (req, res) => {
+    const data = req.body.data;
+    try {
+        const explorer = await db.getExplorerById(data.user.id, data.explorerId);
+
+        if (!explorer || !explorer.stripeSubscription)
+            throw new Error(`Can't find explorer.`);
+
+        const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
+        await stripe.subscriptions.update(subscription.id, {
+            cancel_at_period_end: true,
+        });
+        await db.cancelExplorerSubscription(data.user.id, explorer.id);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.stripe.cancelExplorerSubscription', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
+router.post('/updateExplorerSubscription', [authMiddleware, stripeMiddleware], async (req, res) => {
+    const data = req.body.data;
+    try {
+        const explorer = await db.getExplorerById(data.user.id, data.explorerId);
+
+        if (!explorer)
+            throw new Error(`Can't find explorer.`);
+
+        const stripePlan = await db.getStripePlan(data.newStripePlanSlug);
+
+        const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
+        await stripe.subscriptions.update(subscription.id, {
+            cancel_at_period_end: false,
+            proration_behavior: 'always_invoice',
+            items: [{
+                id: subscription.items.data[0].id,
+                price: stripePlan.stripePriceId
+            }]
+        });
+
+        await db.updateExplorerSubscription(data.user.id, explorer.id, stripePlan.id);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.stripe.updateExplorerSubscription', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
 router.post('/createCheckoutSession', [authMiddleware, stripeMiddleware], async (req, res) => {
     const data = { ...req.query, ...req.body.data };
     try {
@@ -16,11 +66,18 @@ router.post('/createCheckoutSession', [authMiddleware, stripeMiddleware], async 
         if (!selectedPlan)
             throw new Error('Invalid plan.');
 
+        if (data.metadata && data.metadata.explorerId) {
+            const explorer = await db.getExplorerById(user.id, data.metadata.explorerId)
+            if (!explorer)
+                throw new Error('Invalid metadata');
+        }
+
         const session = await stripe.checkout.sessions.create(sanitize({
             mode: 'subscription',
             client_reference_id: user.id,
             customer: user.stripeCustomerId,
             payment_method_types: ['card'],
+            subscription_data: { metadata: data.metadata },
             line_items: [
                 {
                     price: selectedPlan.stripePriceId,

@@ -3,7 +3,45 @@ const moment = require('moment');
 const { sanitize } = require('./utils');
 const Analytics = require('./analytics');
 const db = require('./firebase');
+const models = require('../models');
 const analytics = new Analytics(process.env.MIXPANEL_API_TOKEN);
+
+const deleteExplorerSubscription = async (stripeSubscription) => {
+    if (stripeSubscription.status != 'canceled')
+        return;
+
+    const explorerId = stripeSubscription.metadata.explorerId;
+
+    const user = await db.getUserbyStripeCustomerId(stripeSubscription.customer);
+    const explorer = await db.getExplorerById(user.id, explorerId);
+
+    if (!explorer || !explorer.stripeSubscription || explorer.stripeSubscription.stripeId != stripeSubscription.id)
+        return;
+
+    await db.deleteExplorerSubscription(user.id, explorerId, stripeSubscription.id);
+}
+
+const updateExplorerSubscription = async (stripeSubscription) => {
+    const explorerId = stripeSubscription.metadata.explorerId;
+
+    const user = await db.getUserbyStripeCustomerId(stripeSubscription.customer);
+    const explorer = await db.getExplorerById(user.id, explorerId);
+
+    if (!explorer)
+        return;
+
+    if (stripeSubscription.cancel_at_period_end == true) {
+        return await db.cancelExplorerSubscription(user.id, explorerId);
+    }
+
+    const priceId = stripeSubscription.items.data[0].price.id;
+    const stripePlan = await models.StripePlan.findOne({ where: { stripePriceId: priceId }});
+
+    if (explorer.stripeSubscription)
+        await db.updateExplorerSubscription(user.id, explorerId, stripePlan.id);
+    else
+        await db.createExplorerSubscription(user.id, explorerId, stripePlan.id, stripeSubscription.id, new Date(stripeSubscription.current_period_end * 1000));
+}
 
 const updatePlan = async (stripeSubscription) => {
     const user = await db.getUserbyStripeCustomerId(stripeSubscription.customer);
@@ -40,11 +78,17 @@ const updatePlan = async (stripeSubscription) => {
 
 module.exports = {
     handleStripeSubscriptionUpdate: async (data) => {
-        await updatePlan(data);
+        if (data.metadata.explorerId)
+            await updateExplorerSubscription(data);
+        else
+            await updatePlan(data);
     },
 
     handleStripeSubscriptionDeletion: async (data) => {
-        await updatePlan(data);
+        if (data.metadata.explorerId)
+            await deleteExplorerSubscription(data);
+        else
+            await updatePlan(data);
     },
 
     handleStripePaymentSucceeded: async (data) => {

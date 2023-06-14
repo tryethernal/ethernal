@@ -14,14 +14,14 @@ module.exports = async (req, res, next) => {
     try {
         let firebaseUser;
 
-        req.body.data = req.body.data || {};
+        req.body.data = req.body.data || {};
 
         if (authorizationHeader) {
             const headerSplit = authorizationHeader.split('Bearer ');
             if (headerSplit.length > 1) {
                 const jwtData = decode(headerSplit[1]);
 
-                const user = await db.getUser(jwtData.firebaseUserId, ['apiKey']);
+                const user = await db.getUser(jwtData.firebaseUserId, ['apiKey', 'stripeCustomerId']);
 
                 if (!user)
                     throw new Error(`Invalid firebaseUserId`);
@@ -32,6 +32,7 @@ module.exports = async (req, res, next) => {
                 if (!user)
                     throw new Error(`Invalid authorization header`);
 
+                req.body.data.user = user;
                 req.body.data.uid = jwtData.firebaseUserId;
                 req.query.firebaseUserId = jwtData.firebaseUserId;
                 next();
