@@ -123,7 +123,9 @@ class Tracer {
             this.transaction = transaction;
             const rawTrace = await this.provider.send('debug_traceTransaction', [transaction.hash, {}]);
             this.parsedTrace = await parseTrace(transaction.from, rawTrace, this.provider);
+            console.log(this.parsedTrace)
         } catch(error) {
+            console.log(error)
             if (!error.error || error.error.code != '-32601') {
                 throw error;
             }

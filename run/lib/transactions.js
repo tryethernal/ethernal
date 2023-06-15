@@ -46,6 +46,10 @@ const processTransactions = async (transactionIds) => {
         let contract;
         const transactionId = transactionIds[i];
         const transaction = await db.getTransactionForProcessing(transactionId);
+
+        if (!transaction)
+            continue;
+
         const userId = transaction.workspace.user.firebaseUserId;
         const workspaceName = transaction.workspace.name;
 
@@ -77,14 +81,18 @@ const processTransactions = async (transactionIds) => {
                 }
             }
         } catch(_error) {}
-
+        console.log(workspace)
         if (workspace && workspace.public) {
+            console.log(workspace.tracing)
+            console.log(workspace.tracing == 'other')
             if (workspace.tracing == 'other') {
                 try {
                     const tracer = new Tracer(workspace.rpcServer, db);
                     await tracer.process(transaction);
                     await tracer.saveTrace(userId, workspaceName);
-                } catch(_error) {}
+                } catch(_error) {
+                    console.log(_error)
+                }
             }
 
             let errorObject;
