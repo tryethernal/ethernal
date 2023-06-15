@@ -53,7 +53,8 @@ exports.parseTrace = async (from, trace, provider) => {
                 }
 
                 const address = `0x${log.stack[log.stack.length - 2].slice(-40)}`.toLowerCase();
-                const value = ethers.BigNumber.from(log.stack[log.stack.length - 3]).toString();
+                const strippedValue = ethers.utils.hexStripZeros(log.stack[log.stack.length - 3].startsWith('0x') ? log.stack[log.stack.length - 3] : `0x${log.stack[log.stack.length - 3]}`);
+                const value = strippedValue != '0x' ? ethers.BigNumber.from(strippedValue).toString() : null;
                 const bytecode = await provider.getCode(address);
                 parsedOps.push({
                     value,
