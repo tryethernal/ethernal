@@ -2,6 +2,9 @@ const ethers = require('ethers');
 const { parseTrace, processTrace } = require('./trace');
 const { enqueue } = require('./queue');
 const logger = require('./logger');
+const { withTimeout } = require('./utils');
+
+const NETWORK_TIMEOUT = 10 * 1000;
 const ERC721_ABI = require('./abis/erc721.json');
 const ERC721_ENUMERABLE_ABI = require('./abis/erc721Enumerable.json');
 const ERC721_METADATA_ABI = require('./abis/erc721Metadata.json');
@@ -156,7 +159,7 @@ class ContractConnector {
 
     async callReadMethod(method, params, options) {
         try {
-            return await this.contract.functions[method](...Object.values(params), options);
+            return await withTimeout(this.contract.functions[method](...Object.values(params), options), NETWORK_TIMEOUT);
         } catch(error) {
             return (error.body ? JSON.parse(error.body).error.message : error.reason) || error.message || "Can't connect to the server";
         }
@@ -164,7 +167,7 @@ class ContractConnector {
 
     async getBytecode() {
         try {
-            return await this.provider.getCode(this.contract.address);
+            return await withTimeout(this.provider.getCode(this.contract.address), NETWORK_TIMEOUT);
         } catch(error) {
             return (error.body ? JSON.parse(error.body).error.message : error.reason) || error.message || "Can't connect to the server";
         }
@@ -172,7 +175,7 @@ class ContractConnector {
 
     has721Interface() {
         try {
-            return this.contract.supportsInterface(this.INTERFACE_IDS['721']);
+            return withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721']), NETWORK_TIMEOUT);
         } catch(_error) {
             return new Promise(resolve => resolve(false));
         }
@@ -180,7 +183,7 @@ class ContractConnector {
 
     has721Metadata() {
         try {
-            return this.contract.supportsInterface(this.INTERFACE_IDS['721Metadata']);
+            return withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721Metadata']), NETWORK_TIMEOUT);
          } catch(_error) {
              return new Promise(resolve => resolve(false));
          }
@@ -188,7 +191,7 @@ class ContractConnector {
 
     has721Enumerable() {
         try {
-            return this.contract.supportsInterface(this.INTERFACE_IDS['721Enumerable']);
+            return withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721Enumerable']), NETWORK_TIMEOUT);
         } catch(_error) {
             return new Promise(resolve => resolve(false));
         }
@@ -269,8 +272,9 @@ class ERC721Connector {
         }
     }
 
-    symbol() {
+    async symbol() {
         try {
+            // await new Promise(resolve => setTimeout(resolve, 20000));
             return this.contract.symbol();
         } catch(_error) {
             return new Promise(resolve => resolve(null));
@@ -297,12 +301,12 @@ class ERC721Connector {
         if (!this.interfaces.enumerable)
             throw new Error('This method is only available on ERC721 implemeting the Enumerable interface');;
 
-        const totalSupply = await this.totalSupply();
+        const totalSupply = await withTimeout(this.totalSupply(), NETWORK_TIMEOUT);
         if (!totalSupply)
             throw new Error(`totalSupply() doesn't seem to be implemented. Can't enumerate tokens`);
 
         for (let i = 0; i < totalSupply; i++) {
-            const tokenId = await this.tokenByIndex(i);
+            const tokenId = await withTimeout(this.tokenByIndex(i), NETWORK_TIMEOUT);
             await enqueue('reloadErc721Token',
                 `reloadErc721Token-${workspaceId}-${this.address}-${tokenId}`, {
                     workspaceId: workspaceId,

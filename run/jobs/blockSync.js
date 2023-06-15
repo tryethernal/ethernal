@@ -1,9 +1,9 @@
 const { ProviderConnector } = require('../lib/rpc');
-const { sanitize, stringifyBns } = require('../lib/utils');
 const db = require('../lib/firebase');
-const transactionsLib = require('../lib/transactions');
 const logger = require('../lib/logger');
-const { enqueue } = require('../lib/queue');
+const { withTimeout } = require('../lib/utils');
+
+const NETWORK_TIMEOUT = 10 * 1000;
 
 module.exports = async job => {
     const data = job.data;
@@ -20,7 +20,7 @@ module.exports = async job => {
 
     const providerConnector = new ProviderConnector(workspace.rpcServer);
 
-    const block = await providerConnector.fetchBlockWithTransactions(data.blockNumber);
+    const block = await withTimeout(providerConnector.fetchBlockWithTransactions(data.blockNumber), NETWORK_TIMEOUT);
 
     if (!block)
         throw new Error("Couldn't fetch block from provider");
@@ -35,7 +35,7 @@ module.exports = async job => {
     try {
         for (let i = 0; i < block.transactions.length; i++) {
             const transaction = block.transactions[i];
-            const receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
+            const receipt = await withTimeout(providerConnector.fetchTransactionReceipt(transaction.hash), NETWORK_TIMEOUT);
 
             if (!receipt)
                 throw new Error('Failed to fetch receipt');

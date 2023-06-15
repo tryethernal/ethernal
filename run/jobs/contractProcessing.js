@@ -1,17 +1,15 @@
 const axios = require('axios');
-const express = require('express');
 const ethers = require('ethers');
-const { sanitize } = require('../lib/utils');
+const { sanitize, withTimeout } = require('../lib/utils');
 const yasold = require('../lib/yasold');
 const { isErc20, isErc721 } = require('../lib/contract');
-const SELECTORS = require('../lib/abis/selectors.json');
 const db = require('../lib/firebase');
 const { ContractConnector, ERC721Connector, getProvider } = require('../lib/rpc');
 const logger = require('../lib/logger');
 const { trigger } = require('../lib/pusher');
 const transactionsLib = require('../lib/transactions');
-const router = express.Router();
 
+const NETWORK_TIMEOUT = 10 * 1000;
 const ERC721_ABI = require('../lib/abis/erc721.json');
 const ERC20_ABI = require('../lib/abis/erc20.json');
 
@@ -28,13 +26,15 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
         promises.push(erc20contract.totalSupply());
 
         try {
-            await Promise.all(promises).then(res => {
+            await withTimeout(Promise.all(promises).then(res => {
                 decimals = res[0];
                 symbol = res[1];
                 name = res[2];
                 totalSupply = res[3] && res[3].toString();
-            });
-        } catch(_error){}
+            }), NETWORK_TIMEOUT);
+        } catch(_error){
+            if (_error == 'TIMEOUT') throw _error;
+        }
 
         if (decimals && symbol && name) {
             tokenData = sanitize({
@@ -61,7 +61,9 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
 
                 if (isErc721)
                     patterns.push('erc721');
-            } catch(_error) {}
+            } catch(_error) {
+                if (_error.message == 'TIMEOUT') throw _error;
+            }
         }
 
         if (patterns.indexOf('erc721') > -1) {
@@ -69,9 +71,9 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
             has721Enumerable = await contract.has721Enumerable();
 
             const erc721Connector = new ERC721Connector(rpcServer, contractAddress, { metadata: has721Metadata, enumerable: has721Enumerable });
-            symbol = await erc721Connector.symbol();
-            name = await erc721Connector.name();
-            totalSupply = await erc721Connector.totalSupply();
+            symbol = await withTimeout(erc721Connector.symbol(), NETWORK_TIMEOUT);
+            name = await withTimeout(erc721Connector.name(), NETWORK_TIMEOUT);
+            totalSupply = await withTimeout(erc721Connector.totalSupply(), NETWORK_TIMEOUT);
 
             tokenData = sanitize({
                 symbol: symbol,
@@ -90,6 +92,7 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
             has721Enumerable: has721Enumerable
         };
     } catch(_error) {
+        if (_error == 'TIMEOUT') throw new Error(_error);
         return {
             patterns: []
         };
@@ -138,7 +141,7 @@ const fetchEtherscanData = async (address, chain) => {
     }
 
     const endpoint = `https://api.${scannerHost}/api?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`;
-    const response = await axios.get(endpoint);
+    const response = await withTimeout(axios.get(endpoint), NETWORK_TIMEOUT);
 
     return response ? response.data : null;
 };
@@ -165,7 +168,7 @@ module.exports = async job => {
     if (!data.contractId)
         throw new Error('Missing parameter.');
 
-    let scannerMetadata = {}, tokenPatterns = [], asm, bytecode, hashedBytecode;
+    let scannerMetadata = {}, asm, bytecode, hashedBytecode;
 
     const workspace = await db.getWorkspaceById(data.workspaceId);
     const contract = await db.getWorkspaceContractById(workspace.id, data.contractId);
@@ -196,7 +199,7 @@ module.exports = async job => {
     }
 
     const metadata = sanitize({
-        name: contract.name || localMetadata.name || scannerMetadata.name,
+        name: contract.name || localMetadata.name || scannerMetadata.name,
         abi: contract.abi || localMetadata.abi || scannerMetadata.abi,
         proxy: scannerMetadata.proxy,
         bytecode: bytecode,
@@ -205,21 +208,30 @@ module.exports = async job => {
     });
 
     if (workspace.public && !contract.processed) {
-        const tokenData = await findPatterns(workspace.rpcServer, contract.address, metadata.abi);
-        await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, sanitize({
-            ...tokenData,
-            processed: true,
-        }));
+        try {
+            const tokenData = await findPatterns(workspace.rpcServer, contract.address, metadata.abi);
+            await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, sanitize({
+                ...tokenData,
+                processed: true,
+            }));
 
-        if (tokenData.patterns.indexOf('erc721') > -1 && tokenData.has721Enumerable && workspace.erc721LoadingEnabled) {
-            const erc721 = new ERC721Connector(workspace.rpcServer, contract.address, {
-                metadata: tokenData.has721Metadata,
-                enumerable: tokenData.has721Enumerable
-            });
+            if (tokenData.patterns.indexOf('erc721') > -1 && tokenData.has721Enumerable && workspace.erc721LoadingEnabled) {
+                const erc721 = new ERC721Connector(workspace.rpcServer, contract.address, {
+                    metadata: tokenData.has721Metadata,
+                    enumerable: tokenData.has721Enumerable
+                });
 
-            try {
-                const collection = await erc721.fetchAndStoreAllTokens(workspace.id);
-            } catch(_error) {}
+                try {
+                    await erc721.fetchAndStoreAllTokens(workspace.id);
+                } catch(_error) {
+                    if (_error == 'TIMEOUT') throw new Error(_error);
+                }
+            }
+        } catch(error) {
+            if (error.message == 'TIMEOUT') { 
+                await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, { processed: false });
+                throw error;
+            }
         }
     }
 
@@ -240,6 +252,8 @@ module.exports = async job => {
     try {
         await transactionsLib.processTransactions(transactions.map(t => t.id));
     } catch(error) {
+        if (_error == 'TIMEOUT') throw new Error(_error);
+        await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, { processed: false });
         logger.error(error.message, { location: 'jobs.contractProcessing', error: error, data: data });
     }
 

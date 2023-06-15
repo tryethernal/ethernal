@@ -551,16 +551,18 @@ module.exports = (sequelize, DataTypes) => {
             if (contract._changed.size > 0 && !contract._changed.has('processed') && !contract._changed.has('totalSupply'))
                 contract.processed = false;
         },
-        afterUpdate(contract, options) {
+        async afterUpdate(contract, options) {
             trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
             if (contract.patterns.indexOf('erc20') > -1)
                 trigger(`private-tokens;workspace=${contract.workspaceId}`, 'new', null);
             else if (contract.patterns.indexOf('erc721') > -1)
                 trigger(`private-nft;workspace=${contract.workspaceId}`, 'new', null);
 
-            return enqueue(`contractProcessing`, `contractProcessing-${contract.id}`, { contractId: contract.id, workspaceId: contract.workspaceId });
+            const workspace = await contract.getWorkspace();
+            if (workspace.public)
+                return enqueue(`contractProcessing`, `contractProcessing-${contract.id}`, { contractId: contract.id, workspaceId: contract.workspaceId });
         },
-        afterSave(contract, options) {
+        async afterSave(contract, options) {
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'new', null);
             trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
 
@@ -569,7 +571,9 @@ module.exports = (sequelize, DataTypes) => {
             else if (contract.patterns.indexOf('erc721') > -1)
                 trigger(`private-nft;workspace=${contract.workspaceId}`, 'new', null);
 
-            return enqueue(`contractProcessing`, `contractProcessing-${contract.id}`, { contractId: contract.id, workspaceId: contract.workspaceId });
+            const workspace = await contract.getWorkspace();
+            if (workspace.public)
+                return enqueue(`contractProcessing`, `contractProcessing-${contract.id}`, { contractId: contract.id, workspaceId: contract.workspaceId });
         }
     },
     sequelize,

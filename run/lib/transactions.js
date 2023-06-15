@@ -1,9 +1,10 @@
 const ethers = require('ethers');
 const moment = require('moment');
 const db = require('./firebase');
-const { getFunctionSignatureForTransaction } = require('./utils');
-let { getTokenTransfer } = require('./abi');
-let { getProvider, ContractConnector, Tracer } = require('./rpc');
+let { getProvider, Tracer } = require('./rpc');
+const { withTimeout } = require('./utils');
+
+const NETWORK_TIMEOUT = 10 * 1000;
 
 const _getFunctionSignatureForTransaction = (transaction, abi) => {
     try {
@@ -82,7 +83,7 @@ const processTransactions = async (transactionIds) => {
             if (workspace.tracing == 'other') {
                 try {
                     const tracer = new Tracer(workspace.rpcServer, db);
-                    await tracer.process(transaction);
+                    await withTimeout(tracer.process(transaction), NETWORK_TIMEOUT);
                     await tracer.saveTrace(userId, workspaceName);
                 } catch(_error) {}
             }
@@ -91,7 +92,7 @@ const processTransactions = async (transactionIds) => {
             if (transaction.receipt && transaction.receipt.status == 0) {
                 try {
                     const provider = getProvider(workspace.rpcServer);
-                    const res = await provider.call({ to: transaction.to, data: transaction.data }, transaction.blockNumber);
+                    const res = await withTimeout(provider.call({ to: transaction.to, data: transaction.data }, transaction.blockNumber), NETWORK_TIMEOUT);
                     const reason = ethers.utils.toUtf8String('0x' + res.substr(138));
                     errorObject = { parsed: true, message: reason };
                 } catch(error) {
