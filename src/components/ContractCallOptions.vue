@@ -86,10 +86,10 @@ export default {
             else
                 this.from = this.accounts[0];
 
-            if (this.from) {
+            if (this.from)
                 this.$emit('rpcConnectionStatusChanged', { isReady: true, account: this.from.address });
-                this.emitCallOptionChanged();
-            }
+
+            this.emitCallOptionChanged();
         },
         onRpcConnectionStatusChanged(data) {
             this.$emit('rpcConnectionStatusChanged', data);
