@@ -1,7 +1,7 @@
 const ethers = require('ethers');
 const moment = require('moment');
 const db = require('./firebase');
-const { logger } = require('./logger');
+const logger = require('./logger');
 let { getProvider, Tracer } = require('./rpc');
 
 const _getFunctionSignatureForTransaction = (transaction, abi) => {
