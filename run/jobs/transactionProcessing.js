@@ -1,4 +1,3 @@
-const express = require('express');
 const { processTransactions } = require('../lib/transactions');
 
 module.exports = async job => {
