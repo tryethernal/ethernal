@@ -1,6 +1,6 @@
 const models = require('../models');
 const { bulkEnqueue } = require('../lib/queue');
-const MAX_BATCH_SIZE = 2;
+const MAX_BATCH_SIZE = 2000;
 
 const Workspace = models.Workspace;
 
