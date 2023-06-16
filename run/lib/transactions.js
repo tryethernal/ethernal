@@ -1,6 +1,7 @@
 const ethers = require('ethers');
 const moment = require('moment');
 const db = require('./firebase');
+const { logger } = require('./logger');
 let { getProvider, Tracer } = require('./rpc');
 const { withTimeout } = require('./utils');
 
@@ -47,6 +48,10 @@ const processTransactions = async (transactionIds) => {
         let contract;
         const transactionId = transactionIds[i];
         const transaction = await db.getTransactionForProcessing(transactionId);
+
+        if (!transaction)
+            continue;
+
         const userId = transaction.workspace.user.firebaseUserId;
         const workspaceName = transaction.workspace.name;
 
@@ -85,7 +90,9 @@ const processTransactions = async (transactionIds) => {
                     const tracer = new Tracer(workspace.rpcServer, db);
                     await withTimeout(tracer.process(transaction), NETWORK_TIMEOUT);
                     await tracer.saveTrace(userId, workspaceName);
-                } catch(_error) {}
+                } catch(_error) {
+                    logger.error(_error.message, { location: 'jobs.transactionProcessing.tracing', error: _error, data: transactionIds });
+                }
             }
 
             let errorObject;

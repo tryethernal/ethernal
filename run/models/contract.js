@@ -547,10 +547,6 @@ module.exports = (sequelize, DataTypes) => {
         afterDestroy(contract, options) {
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'destroyed', null);
         },
-        beforeUpdate(contract, options) {
-            if (contract._changed.size > 0 && !contract._changed.has('processed') && !contract._changed.has('totalSupply'))
-                contract.processed = false;
-        },
         async afterUpdate(contract, options) {
             trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
             if (contract.patterns.indexOf('erc20') > -1)

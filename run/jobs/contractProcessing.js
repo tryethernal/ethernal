@@ -210,10 +210,7 @@ module.exports = async job => {
     if (workspace.public && !contract.processed) {
         try {
             const tokenData = await findPatterns(workspace.rpcServer, contract.address, metadata.abi);
-            await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, sanitize({
-                ...tokenData,
-                processed: true,
-            }));
+            await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, sanitize(tokenData));
 
             if (tokenData.patterns.indexOf('erc721') > -1 && tokenData.has721Enumerable && workspace.erc721LoadingEnabled) {
                 const erc721 = new ERC721Connector(workspace.rpcServer, contract.address, {
@@ -248,14 +245,6 @@ module.exports = async job => {
     }
 
     const transactions = await db.getContractTransactions(user.firebaseUserId, workspace.name, contract.address);
-
-    try {
-        await transactionsLib.processTransactions(transactions.map(t => t.id));
-    } catch(error) {
-        if (_error == 'TIMEOUT') throw new Error(_error);
-        await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, { processed: false });
-        logger.error(error.message, { location: 'jobs.contractProcessing', error: error, data: data });
-    }
 
     return trigger(`private-contracts;workspace=${contract.workspaceId};address=${contract.address}`, 'updated', null);
 };

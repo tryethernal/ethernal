@@ -11,7 +11,7 @@ module.exports = async job => {
     if (!data.userId || !data.workspace || data.blockNumber === undefined || data.blockNumber === null)
         return 'Missing parameter';
 
-    const workspace = await db.getWorkspaceByName(data.userId, data.workspace);
+        const workspace = await db.getWorkspaceByName(data.userId, data.workspace);
 
     if (data.source == 'recovery' && workspace.integrityCheck && workspace.integrityCheck.isHealthy)
         await db.updateWorkspaceIntegrityCheck(workspace.id, { status: 'recovering' });

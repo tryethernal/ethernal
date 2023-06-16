@@ -1,17 +1,5 @@
 const ethers = require('ethers');
 
-const getReturnData = (trace, pc, depth) => {
-    for (const log of trace.structLogs) {
-        if (log.pc == pc && log.depth == depth) {
-            const returnLog = trace.structLogs[trace.structLogs.indexOf(log) - 1];
-            const returnStart = parseInt(returnLog.stack[returnLog.stack.length - 1], 16) * 2;
-            const returnSize = parseInt(returnLog.stack[returnLog.stack.length - 2], 16) * 2;
-            return `0x${returnLog.memory.join('').slice(returnStart, returnStart + returnSize)}`;
-        }
-    }
-    return '0x';
-}
-
 export const parseTrace = async (from, trace, provider) => {
     const opCodes = ['CALL', 'CALLCODE', 'DELEGATECALL', 'STATICCALL', 'CREATE', 'CREATE2'];
     const filteredData = trace.structLogs.filter(log => opCodes.indexOf(log.op) > -1 || log.pc == 1507);
@@ -21,42 +9,75 @@ export const parseTrace = async (from, trace, provider) => {
         switch(log.op) {
             case 'CALL':
             case 'CALLCODE': {
-                const inputStart = parseInt(log.stack[log.stack.length - 4], 16) * 2;
+                let input = '', out = '';
+
                 const inputSize = parseInt(log.stack[log.stack.length - 5], 16) * 2;
+                if (inputSize > 0) {
+                    const inputStart = parseInt(log.stack[log.stack.length - 4], 16) * 2;
+                    input = `0x${log.memory.join('').slice(inputStart, inputStart + inputSize)}`;
+                }
 
-                const input = `0x${log.memory.join('').slice(inputStart, inputStart + inputSize)}`;
+                const deeperLogs = trace.structLogs.filter(returnLog => returnLog.pc == log.pc + 1);
+
+                if (deeperLogs.length) {
+                    const outLog = trace.structLogs[trace.structLogs.indexOf(deeperLogs[0]) - 1];
+                    const outSize = parseInt(outLog.stack[outLog.stack.length - 2], 16) * 2;
+
+                    if (outSize > 0 && outLog.memory) {
+                        const outLogMemory = Buffer.from(outLog.memory.join(''));
+                        const outStart = parseInt(outLog.stack[outLog.stack.length - 1], 16) * 2;
+                        out = `0x${outLogMemory.slice(outStart, outStart + outSize)}`;
+                    }
+                }
+
                 const address = `0x${log.stack[log.stack.length - 2].slice(-40)}`.toLowerCase();
+                const value = ethers.BigNumber.from(log.stack[log.stack.length - 3]).toString();
                 const bytecode = await provider.getCode(address);
-                const returnData = getReturnData(trace, log.pc + 1, log.depth);
-
                 parsedOps.push({
+                    value,
                     op: log.op,
                     address: address,
-                    input: input,
-                    contractHashedBytecode: ethers.utils.keccak256(bytecode),
-                    depth: log.depth + 1,
-                    returnData: returnData
-                });
+                    input: input == '0x' ? '' : input,
+                    returnData: out == '0x' ? '' : out,
+                    depth: log.depth,
+                    contractHashedBytecode: bytecode != '0x' ? ethers.utils.keccak256(bytecode) : ''
+                })
                 break;
             }
             case 'DELEGATECALL':
             case 'STATICCALL': {
-                const inputStart = parseInt(log.stack[log.stack.length - 3], 16) * 2;
-                const inputSize = parseInt(log.stack[log.stack.length - 4], 16) * 2;
+                let input = '', out = '';
 
-                const input = `0x${log.memory.join('').slice(inputStart, inputStart + inputSize)}`;
+                const inputSize = parseInt(log.stack[log.stack.length - 4], 16) * 2;
+                if (inputSize > 0) {
+                    const inputStart = parseInt(log.stack[log.stack.length - 3], 16) * 2;
+                    input = `0x${log.memory.join('').slice(inputStart, inputStart + inputSize)}`;
+                }
+
+                const deeperLogs = trace.structLogs.filter(returnLog => returnLog.pc == log.pc + 1);
+
+                if (deeperLogs.length) {
+                    const outLog = trace.structLogs[trace.structLogs.indexOf(deeperLogs[0]) - 1];
+                    const outSize = parseInt(outLog.stack[outLog.stack.length - 2], 16) * 2;
+
+                    if (outSize > 0 && outLog.memory) {
+                        const outLogMemory = Buffer.from(outLog.memory.join(''));
+                        const outStart = parseInt(outLog.stack[outLog.stack.length - 1], 16) * 2;
+                        out = `0x${outLogMemory.slice(outStart, outStart + outSize)}`;
+                    }
+                }
+
                 const address = `0x${log.stack[log.stack.length - 2].slice(-40)}`.toLowerCase();
                 const bytecode = await provider.getCode(address);
-                const returnData = getReturnData(trace, log.pc + 1, log.depth);
-
                 parsedOps.push({
                     op: log.op,
+                    value: null,
                     address: address,
-                    input: input,
-                    contractHashedBytecode: ethers.utils.keccak256(bytecode),
-                    depth: log.depth + 1,
-                    returnData: returnData
-                });
+                    input: input == '0x' ? '' : input,
+                    returnData: out == '0x' ? '' : out,
+                    depth: log.depth,
+                    contractHashedBytecode: ethers.utils.keccak256(bytecode)
+                })
                 break;
             }
             case 'CREATE':
@@ -78,8 +99,8 @@ export const parseTrace = async (from, trace, provider) => {
                 parsedOps.push({
                     op: log.op,
                     address: address,
-                    contractHashedBytecode: contractHashedBytecode,
-                    depth: log.depth + 1
+                    depth: log.depth,
+                    contractHashedBytecode: contractHashedBytecode
                 });
                 break;
             }

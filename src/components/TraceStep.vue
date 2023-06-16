@@ -11,8 +11,9 @@
                         |<br>
                         |-->
                     </span>
-                    <v-chip small class="primary mr-2">{{ this.step.op }}</v-chip>
-                    <v-chip v-if="this.step.contract && this.step.contract.proxyContract" small class="primary mr-2">PROXY</v-chip>
+                    <v-chip small class="primary mr-2">{{ step.op }}</v-chip>
+                    <v-chip v-if="step.contract && step.contract.proxyContract" small class="primary mr-2">PROXY</v-chip>
+                    <template v-if="step.value && step.value != '' && step.value != '0'">[{{ step.value | fromWei('ether', chain.token) }}] </template>
                     <Hash-Link :type="'address'" :hash="step.address" :notCopiable="true" :fullHash="true" :withName="true" /><span v-if="transactionDescription">.{{ transactionDescription.functionFragment.name }}(</span>
                     <template v-if="transactionDescription">
                         <div v-for="(input, index) in transactionDescription.functionFragment.inputs" :key="`in-${index}`">
@@ -32,10 +33,10 @@
                             </template>
                         </template>
                     </template>
-                    <template v-else>
+                    <template v-else-if="step.input || step.returnData">
                         <ul>
-                            <li><b>Input:</b> {{ step.input }}</li>
-                            <li><b>Output:</b> {{ step.returnData }}</li>
+                            <li v-if="step.input"><b>Input:</b> {{ step.input }}</li>
+                            <li v-if="step.returnData"><b>Output:</b> {{ step.returnData }}</li>
                         </ul>
                     </template>
                 </v-card-text>
@@ -45,15 +46,20 @@
 </template>
 <script>
 import { ethers } from 'ethers';
+import { mapGetters } from 'vuex';
 
 import HashLink from './HashLink';
 import FormattedSolVar from './FormattedSolVar';
+import FromWei from '../filters/FromWei';
 
 export default {
     name: 'TraceStep',
     components: {
         HashLink,
         FormattedSolVar
+    },
+    filters: {
+        FromWei
     },
     props: ['step'],
     data: () => ({
@@ -86,6 +92,11 @@ export default {
                 }
             }
         }
+    },
+    computed: {
+        ...mapGetters([
+            'chain'
+        ])
     }
 
 };
