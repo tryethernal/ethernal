@@ -772,7 +772,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.TransactionTraceStep,
-                    attributes: ['address', 'contractHashedBytecode', 'depth', 'input', 'op', 'returnData', 'workspaceId', 'id'],
+                    attributes: ['address', 'contractHashedBytecode', 'depth', 'input', 'op', 'returnData', 'workspaceId', 'id', 'value'],
                     as: 'traceSteps',
                     include: [
                         {
@@ -804,7 +804,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Block,
-                    attributes: ['gasLimit'],
+                    attributes: ['gasLimit', 'timestamp'],
                     as: 'block'
                 },
                 {

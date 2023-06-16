@@ -118,6 +118,8 @@ export default {
                 gasLimit: newCallOptions.gasLimit,
                 gasPrice: newCallOptions.gasPrice
             });
+            if (this.callOptions.from)
+                this.rpcConnectionStatus = true;
         },
         onSenderSourceChanged(newMode) {
             this.senderMode = newMode;

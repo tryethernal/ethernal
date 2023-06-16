@@ -41,7 +41,8 @@ module.exports = (sequelize, DataTypes) => {
     input: DataTypes.STRING,
     op: DataTypes.STRING,
     returnData: DataTypes.STRING,
-    workspaceId: DataTypes.INTEGER
+    workspaceId: DataTypes.INTEGER,
+    value: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'TransactionTraceStep',
