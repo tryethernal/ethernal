@@ -1,9 +1,8 @@
 const ethers = require('ethers');
 const moment = require('moment');
 const db = require('./firebase');
-const { getFunctionSignatureForTransaction } = require('./utils');
-let { getTokenTransfer } = require('./abi');
-let { getProvider, ContractConnector, Tracer } = require('./rpc');
+const { logger } = require('./logger');
+let { getProvider, Tracer } = require('./rpc');
 
 const _getFunctionSignatureForTransaction = (transaction, abi) => {
     try {
@@ -81,17 +80,15 @@ const processTransactions = async (transactionIds) => {
                 }
             }
         } catch(_error) {}
-        console.log(workspace)
+
         if (workspace && workspace.public) {
-            console.log(workspace.tracing)
-            console.log(workspace.tracing == 'other')
             if (workspace.tracing == 'other') {
                 try {
                     const tracer = new Tracer(workspace.rpcServer, db);
                     await tracer.process(transaction);
                     await tracer.saveTrace(userId, workspaceName);
                 } catch(_error) {
-                    console.log(_error)
+                    logger.error(_error.message, { location: 'jobs.transactionProcessing.tracing', error: _error, data: transactionIds });
                 }
             }
 
