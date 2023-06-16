@@ -103,6 +103,7 @@ module.exports = (sequelize, DataTypes) => {
 
     safeCreateTransactionTraceStep(step) {
         return this.createTraceStep({
+            value: step.value,
             address: step.address,
             contractHashedBytecode: step.contractHashedBytecode,
             depth: step.depth,
