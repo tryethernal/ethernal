@@ -1,12 +1,29 @@
 const express = require('express');
 const logger = require('../lib/logger');
 const authMiddleware = require('../middlewares/auth');
+const secretMiddleware = require('../middlewares/secret');
 const { sanitize, stringifyBns } = require('../lib/utils');
 const { encode, decrypt, decode } = require('../lib/crypto');
 const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
 
 const router = express.Router();
+
+router.post('/reprocessTransactions', [secretMiddleware], async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        if (!data.workspaceId)
+            throw new Error('Missing parameters.');
+
+        await enqueue('reprocessWorkspaceTransactions', `reprocessWorkspaceTransactions-${data.workspaceId}`, { workspaceId: data.workspaceId });
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.workspaces.reprocessTransactions', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
 
 router.get('/', authMiddleware, async (req, res) => {
     const data = req.body.data;

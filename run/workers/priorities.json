@@ -10,6 +10,7 @@
     "medium": [
         "contractProcessing",
         "transactionProcessing",
+        "reprocessWorkspaceTransactions",
         "reloadErc721Token",
         "processTokenTransfer",
         "reprocessAllTokenTransfers"
