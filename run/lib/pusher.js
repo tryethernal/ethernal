@@ -15,8 +15,9 @@ const pusher = isPusherPresent ?
 
 module.exports = {
     trigger: (channel, event, data) => {
-        if (isPusherPresent)
-            return pusher.trigger(channel, event, data)
-                .catch(error => { throw error });
+        if (isPusherPresent) {
+            pusher.trigger(channel, event, data)
+                .catch(error => logger.error(error.message, { location: 'lib.pusher', error, channel, event, data }))
+        }
     }
 };
