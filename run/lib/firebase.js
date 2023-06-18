@@ -807,8 +807,7 @@ const storeTrace = async (userId, workspace, txHash, trace) => {
     if (!transaction)
         throw new Error(`Couldn't find transaction`);
 
-    for (let i = 0; i < trace.length; i++)
-        await transaction.safeCreateTransactionTraceStep(trace[i]);
+    return transaction.safeCreateTransactionTrace(trace);
 };
 
 const storeTransactionData = async (userId, workspace, hash, data) => {
