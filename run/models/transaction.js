@@ -101,16 +101,28 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    safeCreateTransactionTraceStep(step) {
-        return this.createTraceStep({
-            value: step.value,
-            address: step.address,
-            contractHashedBytecode: step.contractHashedBytecode,
-            depth: step.depth,
-            input: step.input,
-            op: step.op,
-            returnData: step.returnData,
-            workspaceId: this.workspaceId
+    safeCreateTransactionTrace(steps) {
+        return sequelize.transaction(async transaction => {
+            const promises = [];
+            const existingSteps = await this.getTraceSteps();
+
+            for (let i = 0; i < existingSteps.length; i++)
+                promises.push(existingSteps[i].destroy({ transaction }));
+
+            for (let i = 0; i < steps.length; i++) {
+                const step = steps[i];
+                promises.push(this.createTraceStep({
+                    value: step.value,
+                    address: step.address,
+                    contractHashedBytecode: step.contractHashedBytecode,
+                    depth: step.depth,
+                    input: step.input,
+                    op: step.op,
+                    returnData: step.returnData,
+                    workspaceId: this.workspaceId
+                }, { transaction }));
+            }
+            return Promise.all(promises);
         });
     }
   }

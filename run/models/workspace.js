@@ -645,7 +645,7 @@ module.exports = (sequelize, DataTypes) => {
 
                 for (let i = 0; i < receipt.logs.length; i++) {
                     const log = receipt.logs[i];
-                    try {
+                    try {
                         await storedReceipt.createLog(sanitize({
                             workspaceId: storedTx.workspaceId,
                             address: log.address,
