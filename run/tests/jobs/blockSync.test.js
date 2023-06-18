@@ -119,4 +119,13 @@ describe('blockSync', () => {
             done();
         });
     });
+
+    it('Should return if block already exists', (done) => {
+        jest.spyOn(db, 'getWorkspaceBlock').mockResolvedValueOnce({ id: 1 });
+        blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1, source: 'api' }})
+            .then(res => {
+                expect(res).toEqual('Block already exists in this workspace.');
+                done();
+            });
+    });
 });
