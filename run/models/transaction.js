@@ -101,16 +101,28 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    safeCreateTransactionTraceStep(step) {
-        return this.createTraceStep({
-            value: step.value,
-            address: step.address,
-            contractHashedBytecode: step.contractHashedBytecode,
-            depth: step.depth,
-            input: step.input,
-            op: step.op,
-            returnData: step.returnData,
-            workspaceId: this.workspaceId
+    safeCreateTransactionTrace(steps) {
+        return sequelize.transaction(async transaction => {
+            const promises = [];
+            const existingSteps = await this.getTraceSteps();
+
+            for (let i = 0; i < existingSteps.length; i++)
+                promises.push(existingSteps[i].destroy({ transaction }));
+
+            for (let i = 0; i < steps.length; i++) {
+                const step = steps[i];
+                promises.push(this.createTraceStep({
+                    value: step.value,
+                    address: step.address,
+                    contractHashedBytecode: step.contractHashedBytecode,
+                    depth: step.depth,
+                    input: step.input,
+                    op: step.op,
+                    returnData: step.returnData,
+                    workspaceId: this.workspaceId
+                }, { transaction }));
+            }
+            return Promise.all(promises);
         });
     }
   }
@@ -196,8 +208,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     hooks: {
-        async afterSave(transaction, options) {
-            const afterSaveFn = async () => {
+        async afterCreate(transaction, options) {
+            const afterCreateFn = async () => {
                 if (transaction.isReady)
                     await enqueue('transactionProcessing', `transactionProcessing-${transaction.workspaceId}-${transaction.hash}`, { 
                         transactionId: transaction.id
@@ -209,9 +221,9 @@ module.exports = (sequelize, DataTypes) => {
                 return trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.from}`, 'new', { hash: transaction.hash });
             };
             if (options.transaction)
-                return options.transaction.afterCommit(afterSaveFn);
+                return options.transaction.afterCommit(afterCreateFn);
             else
-                return afterSaveFn();
+                return afterCreateFn();
         }
     },
     sequelize,

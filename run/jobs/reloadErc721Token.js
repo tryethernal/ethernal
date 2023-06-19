@@ -14,6 +14,9 @@ module.exports = async job => {
     const workspace = await db.getWorkspaceById(data.workspaceId);
     const contract = await db.getContractByWorkspaceId(workspace.id, data.address);
 
+    if (!contract)
+        return;
+
     let metadata = {}, URI = null, owner = null, totalSupply = null;
     const erc721Connector = new ERC721Connector(workspace.rpcServer, data.address, { metadata: contract.has721Metadata, enumerable: contract.has721Enumerable });
 

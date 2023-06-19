@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.13.26] - 2023-06-16
+### Changed
+- Stop block syncing process job if the block already exists, to avoid relying on lower level constraints (more annoying to check)
+
+## [3.13.25] - 2023-06-16
+### Fixed
+- Bad code throwing an error where it shouldn't, in case Pusher fails
+
+## [3.13.24] - 2023-06-16
+### Fixed
+- Prevent duplicated transaction trace steps if reprocessed
+
+## [3.13.23] - 2023-06-16
+### Fixed
+- Infinite transaction processing
+
+## [3.13.22] - 2023-06-16
+### Fixed
+- Logger loading
+
+## [3.13.21] - 2023-06-16
+### Changed
+- Batching size for reprocessing transactions
+
+## [3.13.20] - 2023-06-16
+### Added
+- Jobs to force reprocessing all txs for one workspace
+
 ## [3.13.19] - 2023-06-16
 ### Fixed
 - Transaction tracing when no memory available is now handled

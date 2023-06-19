@@ -907,7 +907,7 @@ describe('storeTrace', () => {
     it('Should call the store method for each step', async () => {
         const transaction = await workspace.findTransaction(1);
         await db.storeTrace('123', 'My Workspace', '0x123', [{ op: 'CALL' }, { op: 'CALLDATA' }]);
-        expect(transaction.safeCreateTransactionTraceStep).toHaveBeenCalledTimes(2);
+        expect(transaction.safeCreateTransactionTrace).toHaveBeenCalledWith([{ op: 'CALL' }, { op: 'CALLDATA' }]);
     });
 
     it('Should throw an error if the transaction does not exist', async () => {

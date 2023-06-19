@@ -572,7 +572,7 @@ const getWorkspaceBlock = async (workspaceId, number, withTransactions) => {
         }) :
         await workspace.getBlocks({ where: { number: number }});
 
-    return blocks[0].toJSON();
+    return blocks.length > 0 ? blocks[0].toJSON() : null;
 };
 
 const getWorkspaceBlocks = async (workspaceId, page = 1, itemsPerPage = 10, order = 'DESC') => {
@@ -807,8 +807,7 @@ const storeTrace = async (userId, workspace, txHash, trace) => {
     if (!transaction)
         throw new Error(`Couldn't find transaction`);
 
-    for (let i = 0; i < trace.length; i++)
-        await transaction.safeCreateTransactionTraceStep(trace[i]);
+    return transaction.safeCreateTransactionTrace(trace);
 };
 
 const storeTransactionData = async (userId, workspace, hash, data) => {
