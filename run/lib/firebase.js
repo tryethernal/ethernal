@@ -67,7 +67,7 @@ const getTransactionForProcessing = transactionId => {
             {
                 model: Workspace,
                 as: 'workspace',
-                attributes: ['id', 'name'],
+                attributes: ['id', 'name', 'public'],
                 include: {
                     model: User,
                     as: 'user',
