@@ -208,8 +208,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     hooks: {
-        async afterCreate(transaction, options) {
-            const afterCreateFn = async () => {
+        async afterSave(transaction, options) {
+            const afterSaveFn = async () => {
                 if (transaction.isReady)
                     await enqueue('transactionProcessing', `transactionProcessing-${transaction.workspaceId}-${transaction.hash}`, { 
                         transactionId: transaction.id
@@ -221,9 +221,9 @@ module.exports = (sequelize, DataTypes) => {
                 return trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.from}`, 'new', { hash: transaction.hash });
             };
             if (options.transaction)
-                return options.transaction.afterCommit(afterCreateFn);
+                return options.transaction.afterCommit(afterSaveFn);
             else
-                return afterCreateFn();
+                return afterSaveFn();
         }
     },
     sequelize,

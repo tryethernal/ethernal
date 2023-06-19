@@ -1,3 +1,3 @@
 jest.mock('../../../lib/transactions', () => ({
-    processTransactions: jest.fn()
+    processTransactions: jest.fn().mockResolvedValue()
 }));
