@@ -336,7 +336,7 @@ const getTokenTransfers = async (workspaceId, address, page, itemsPerPage, order
 const getTokenTransferForProcessing = async (tokenTransferId) => {
     if (!tokenTransferId) throw new Error('Missing parameter');
 
-    return TokenTransfer.findOne({
+    const tokenTransfer = await TokenTransfer.findOne({
         where: { id: tokenTransferId },
         include: [
             {
@@ -356,6 +356,8 @@ const getTokenTransferForProcessing = async (tokenTransferId) => {
             }
         ]
     });
+
+    return tokenTransfer ? tokenTransfer.toJSON() : null;
 }
 
 const getContractLogs = async (workspaceId, address, signature, page, itemsPerPage, orderBy, order) => {
