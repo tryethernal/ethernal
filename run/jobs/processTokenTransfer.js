@@ -6,18 +6,19 @@ module.exports = async job => {
     const data = job.data;
 
     if (!data.tokenTransferId)
-        throw new Error('Missing parameter.');
+        return 'Missing parameter.';
 
     const tokenTransfer = await db.getTokenTransferForProcessing(data.tokenTransferId);
 
     if (!tokenTransfer)
-        throw new Error('Cannot find token transfer');
+        return 'Cannot find token transfer';
 
     const workspace = tokenTransfer.workspace;
     const user = tokenTransfer.workspace.user;
     const transaction = tokenTransfer.transaction;
 
-    if (!workspace.public) return false;
+    if (!workspace.public)
+        return 'Not processing private workspaces';
 
     const changes = [];
 
