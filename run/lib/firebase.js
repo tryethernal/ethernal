@@ -50,10 +50,10 @@ const updateWorkspaceIntegrityCheck = async (workspaceId, { blockId, status }) =
     return workspace.safeCreateOrUpdateIntegrityCheck({ blockId, status });
 };
 
-const getTransactionForProcessing = transactionId => {
+const getTransactionForProcessing = async transactionId => {
     if (!transactionId) throw new Error('Missing parameter.');
 
-    return Transaction.findOne({
+    const transaction = await Transaction.findOne({
         where: { id: transactionId },
         include: [
             {
@@ -75,7 +75,9 @@ const getTransactionForProcessing = transactionId => {
                 }
             }
         ]
-    })
+    });
+
+    return transaction ? transaction.toJSON() : null;
 };
 
 const revertPartialBlock = async (blockId) => {
