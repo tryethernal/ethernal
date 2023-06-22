@@ -10,6 +10,9 @@ module.exports = async job => {
 
     const transaction = await db.getTransactionForProcessing(data.transactionId);
 
+    if (!transaction.workspace.public)
+        return 'Not allowed on private workspaces';
+
     let errorObject;
     try {
         const provider = getProvider(transaction.workspace.rpcServer);
@@ -17,7 +20,6 @@ module.exports = async job => {
         const reason = ethers.utils.toUtf8String('0x' + res.substr(138));
         errorObject = { parsed: true, message: reason };
     } catch(error) {
-        console.log(error.message)
         if (error.response) {
             const parsed = JSON.parse(error.response);
             if (parsed.error && parsed.error.message)

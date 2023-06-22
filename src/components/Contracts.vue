@@ -50,8 +50,8 @@
                     </v-tooltip>
                 </template>
             </template>
-            <template v-slot:item.remove="{ item }" v-if="isUserAdmin">
-                <v-btn x-small icon @click="openRemoveContractConfirmationModal(item.address)">
+            <template v-slot:item.actions="{ item }" v-if="isUserAdmin">
+                <v-btn color="error" x-small icon @click="openRemoveContractConfirmationModal(item.address)">
                     <v-icon>mdi-delete</v-icon>
                 </v-btn>
             </template>
@@ -95,6 +95,10 @@ export default {
             {
                 text: '',
                 value: 'tags'
+            },
+            {
+                test: '',
+                value: 'actions'
             }
         ],
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] },
