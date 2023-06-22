@@ -1,10 +1,7 @@
 module.exports = {
     // High priority
     blockSync: require('./blockSync'),
-    transactionSync: require('./transactionSync'),
     batchBlockSync: require('./batchBlockSync'),
-    batchInsertFirebasePasswordHashes: require('./batchInsertFirebasePasswordHashes'),
-    insertFirebaseHashes: require('./insertFirebaseHashes'),
     sendResetPasswordEmail: require('./sendResetPasswordEmail'),
 
     // Medium Priority
