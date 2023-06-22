@@ -9,7 +9,8 @@
     ],
     "medium": [
         "contractProcessing",
-        "transactionProcessing",
+        "processTransactionTrace",
+        "processTransactionError",
         "reprocessWorkspaceTransactions",
         "reloadErc721Token",
         "processTokenTransfer",

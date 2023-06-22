@@ -9,7 +9,8 @@ module.exports = {
 
     // Medium Priority
     contractProcessing: require('./contractProcessing'),
-    transactionProcessing: require('./transactionProcessing'),
+    processTransactionTrace: require('./processTransactionTrace'),
+    processTransactionError: require('./processTransactionError'),
     processTokenTransfer: require('./processTokenTransfer'),
     reloadErc721Token: require('./reloadErc721Token'),
     reprocessAllTokenTransfers: require('./reprocessAllTokenTransfers'),

@@ -19,42 +19,42 @@ module.exports = async job => {
     const user = transaction.workspace.user;
     const workspace = transaction.workspace;
 
-    if (!transaction.to && transaction.receipt) {
-        const canSync = await db.canUserSyncContract(user.firebaseUserId, workspace.name, transaction.receipt.contractAddress);
-        if (canSync) {
-            await db.storeContractData(user.firebaseUserId, workspace.name, transaction.receipt.contractAddress, {
-                address: transaction.receipt.contractAddress,
-                timestamp: moment(transaction.timestamp).unix()
-            });
-        }
-    }
+    // if (!transaction.to && transaction.receipt) {
+    //     const canSync = await db.canUserSyncContract(user.firebaseUserId, workspace.name, transaction.receipt.contractAddress);
+    //     if (canSync) {
+    //         await db.storeContractData(user.firebaseUserId, workspace.name, transaction.receipt.contractAddress, {
+    //             address: transaction.receipt.contractAddress,
+    //             timestamp: moment(transaction.timestamp).unix()
+    //         });
+    //     }
+    // }
 
     if (!workspace.public)
         return 'End of processing for local workspace';
 
-    if (transaction.tokenTransfers && transaction.tokenTransfers.length > 0) {
-        try {
-            const tokenTransfers = transaction.tokenTransfers;
-            for (let i = 0; i < tokenTransfers.length; i++) {
-                const canSync = await db.canUserSyncContract(user.firebaseUserId, workspace.name, tokenTransfers[i].token);
-                if (canSync)
-                    await db.storeContractData(user.firebaseUserId, workspace.name, tokenTransfers[i].token, { address: tokenTransfers[i].token });
-            }
-        } catch(_error) {
-            logger.error(_error.message, { location: 'jobs.transactionProcessing.tokenTransfers', error: _error, transactionId });
-        }
-    }
+    // if (transaction.tokenTransfers && transaction.tokenTransfers.length > 0) {
+    //     try {
+    //         const tokenTransfers = transaction.tokenTransfers;
+    //         for (let i = 0; i < tokenTransfers.length; i++) {
+    //             const canSync = await db.canUserSyncContract(user.firebaseUserId, workspace.name, tokenTransfers[i].token);
+    //             if (canSync)
+    //                 await db.storeContractData(user.firebaseUserId, workspace.name, tokenTransfers[i].token, { address: tokenTransfers[i].token });
+    //         }
+    //     } catch(_error) {
+    //         logger.error(_error.message, { location: 'jobs.transactionProcessing.tokenTransfers', error: _error, transactionId });
+    //     }
+    // }
 
-    if (workspace.tracing == 'other') {
-        try {
-            const tracer = new Tracer(workspace.rpcServer, db);
-            await tracer.process(transaction);
-            await tracer.saveTrace(user.firebaseUserId, workspace.name);
-        } catch(_error) {
-            console.log(_error)
-            logger.error(_error.message, { location: 'jobs.transactionProcessing.tracing', error: _error, transactionId });
-        }
-    }
+    // if (workspace.tracing == 'other') {
+    //     try {
+    //         const tracer = new Tracer(workspace.rpcServer, db);
+    //         await tracer.process(transaction);
+    //         await tracer.saveTrace(user.firebaseUserId, workspace.name);
+    //     } catch(_error) {
+    //         console.log(_error)
+    //         logger.error(_error.message, { location: 'jobs.transactionProcessing.tracing', error: _error, transactionId });
+    //     }
+    // }
 
     if (transaction.receipt && transaction.receipt.status == 0 && !transaction.parsedError && !transaction.rawError) {
         let errorObject;
