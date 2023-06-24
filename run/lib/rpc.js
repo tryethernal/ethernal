@@ -2,6 +2,8 @@ const ethers = require('ethers');
 const { parseTrace, processTrace } = require('./trace');
 const { enqueue } = require('./queue');
 const logger = require('./logger');
+const { withTimeout } = require('../lib/utils');
+
 const ERC721_ABI = require('./abis/erc721.json');
 const ERC721_ENUMERABLE_ABI = require('./abis/erc721Enumerable.json');
 const ERC721_METADATA_ABI = require('./abis/erc721Metadata.json');
@@ -18,7 +20,7 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
             blockTag: blockNumber
         };
 
-        const res = await contract.callReadMethod('balanceOf(address)', { 0: address }, options);
+        const res = await withTimeout(contract.callReadMethod('balanceOf(address)', { 0: address }, options));
         if (ethers.BigNumber.isBigNumber(res[0]))
             currentBalance = res[0];
         else
@@ -38,7 +40,7 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
                 blockTag: Math.max(1, parseInt(blockNumber) - 1)
             };
 
-            const res = await contract.callReadMethod('balanceOf(address)', { 0: address }, options);
+            const res = await withTimeout(contract.callReadMethod('balanceOf(address)', { 0: address }, options));
 
             if (ethers.BigNumber.isBigNumber(res[0]))
                 previousBalance = res[0];
@@ -90,23 +92,23 @@ class ProviderConnector {
     }
 
     fetchLatestBlock() {
-        return this.provider.getBlock();
+        return withTimeout(this.provider.getBlock());
     }
 
     async fetchBlockWithTransactions(blockNumber) {
-        return await this.provider.getBlockWithTransactions(blockNumber);
+        return await withTimeout(this.provider.getBlockWithTransactions(blockNumber));
     }
 
     async fetchTransactionReceipt(transactionHash) {
         try {
-            return await this.provider.getTransactionReceipt(transactionHash);
+            return await withTimeout(this.provider.getTransactionReceipt(transactionHash));
         } catch(_error) {
-            return await this.provider.send('eth_getTransactionReceipt', [transactionHash]);
+            return await withTimeout(this.provider.send('eth_getTransactionReceipt', [transactionHash]));
         }
     }
 
     async fetchNetworkId() {
-        const { chainId } = await this.provider.getNetwork();
+        const { chainId } = await withTimeout(this.provider.getNetwork());
         return chainId;
     }
 }
@@ -121,7 +123,7 @@ class Tracer {
     async process(transaction) {
         try {
             this.transaction = transaction;
-            const rawTrace = await this.provider.send('debug_traceTransaction', [transaction.hash, {}]);
+            const rawTrace = await withTimeout(this.provider.send('debug_traceTransaction', [transaction.hash, {}]));
             this.parsedTrace = await parseTrace(transaction.from, rawTrace, this.provider);
         } catch(error) {
             if (!error.error || error.error.code != '-32601') {
@@ -130,7 +132,7 @@ class Tracer {
         }
     }
 
-    async saveTrace(userId, workspace, db) {
+    async saveTrace(userId, workspace) {
         try {
             if (Array.isArray(this.parsedTrace))
                 await processTrace(userId, workspace, this.transaction.hash, this.parsedTrace, this.db);
@@ -156,7 +158,7 @@ class ContractConnector {
 
     async callReadMethod(method, params, options) {
         try {
-            return await this.contract.functions[method](...Object.values(params), options);
+            return await withTimeout(this.contract.functions[method](...Object.values(params), options));
         } catch(error) {
             return (error.body ? JSON.parse(error.body).error.message : error.reason) || error.message || "Can't connect to the server";
         }
@@ -164,7 +166,7 @@ class ContractConnector {
 
     async getBytecode() {
         try {
-            return await this.provider.getCode(this.contract.address);
+            return await withTimeout(this.provider.getCode(this.contract.address));
         } catch(error) {
             return (error.body ? JSON.parse(error.body).error.message : error.reason) || error.message || "Can't connect to the server";
         }
@@ -172,7 +174,7 @@ class ContractConnector {
 
     has721Interface() {
         try {
-            return this.contract.supportsInterface(this.INTERFACE_IDS['721']);
+            return withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721']));
         } catch(_error) {
             return new Promise(resolve => resolve(false));
         }
@@ -180,7 +182,7 @@ class ContractConnector {
 
     has721Metadata() {
         try {
-            return this.contract.supportsInterface(this.INTERFACE_IDS['721Metadata']);
+            return withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721Metadata']));
          } catch(_error) {
              return new Promise(resolve => resolve(false));
          }
@@ -188,7 +190,7 @@ class ContractConnector {
 
     has721Enumerable() {
         try {
-            return this.contract.supportsInterface(this.INTERFACE_IDS['721Enumerable']);
+            return withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721Enumerable']));
         } catch(_error) {
             return new Promise(resolve => resolve(false));
         }
@@ -196,7 +198,7 @@ class ContractConnector {
 
     symbol() {
         try {
-            return this.contract.symbol();
+            return withTimeout(this.contract.symbol());
         } catch(_error) {
             return new Promise(resolve => resolve(null));
         }
@@ -204,7 +206,7 @@ class ContractConnector {
 
     name() {
         try {
-            return this.contract.name();
+            return withTimeout(this.contract.name());
         } catch(_error) {
             return new Promise(resolve => resolve(null));
         }
@@ -212,7 +214,7 @@ class ContractConnector {
 
     async totalSupply() {
         try {
-            const res = await this.contract.totalSupply();
+            const res = await withTimeout(this.contract.totalSupply());
             return res.toString();
         } catch(_error) {
             return null;
@@ -245,7 +247,7 @@ class ERC721Connector {
 
     async totalSupply() {
         try { 
-            const res = await this.contract.totalSupply();
+            const res = await withTimeout(this.contract.totalSupply());
             return res.toString();
         } catch(_error) {
             return new Promise(resolve => resolve(null));
@@ -254,7 +256,7 @@ class ERC721Connector {
 
     async tokenByIndex(index) {
         try {
-            const res = await this.contract.tokenByIndex(index);
+            const res = await withTimeout(this.contract.tokenByIndex(index));
             return res.toString();
         } catch(_error) {
             return new Promise(resolve => resolve(null));
@@ -263,7 +265,7 @@ class ERC721Connector {
 
     ownerOf(tokenId) {
         try {
-            return this.contract.ownerOf(tokenId);
+            return withTimeout(this.contract.ownerOf(tokenId));
         } catch (_error) {
             return new Promise(resolve => resolve(null));
         }
@@ -271,7 +273,7 @@ class ERC721Connector {
 
     symbol() {
         try {
-            return this.contract.symbol();
+            return withTimeout(this.contract.symbol());
         } catch(_error) {
             return new Promise(resolve => resolve(null));
         }
@@ -279,7 +281,7 @@ class ERC721Connector {
 
     name() {
         try {
-            return this.contract.name();
+            return withTimeout(this.contract.name());
         } catch(_error) {
             return new Promise(resolve => resolve(null));
         }
@@ -287,7 +289,7 @@ class ERC721Connector {
 
     tokenURI(tokenId) {
         try {
-            return this.contract.tokenURI(tokenId);
+            return withTimeout(this.contract.tokenURI(tokenId));
         } catch(_error) {
             return new Promise(resolve => resolve(null));
         }
@@ -297,12 +299,12 @@ class ERC721Connector {
         if (!this.interfaces.enumerable)
             throw new Error('This method is only available on ERC721 implemeting the Enumerable interface');;
 
-        const totalSupply = await this.totalSupply();
+        const totalSupply = await withTimeout(this.totalSupply());
         if (!totalSupply)
             throw new Error(`totalSupply() doesn't seem to be implemented. Can't enumerate tokens`);
 
         for (let i = 0; i < totalSupply; i++) {
-            const tokenId = await this.tokenByIndex(i);
+            const tokenId = await withTimeout(this.tokenByIndex(i));
             await enqueue('reloadErc721Token',
                 `reloadErc721Token-${workspaceId}-${this.address}-${tokenId}`, {
                     workspaceId: workspaceId,
