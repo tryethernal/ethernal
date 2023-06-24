@@ -35,6 +35,7 @@ exports.parseTrace = async (from, trace, provider) => {
 
                 const inputSize = parseInt(log.stack[log.stack.length - 5], 16) * 2;
                 if (inputSize > 0) {
+                    if (!log.memory) continue;
                     const inputStart = parseInt(log.stack[log.stack.length - 4], 16) * 2;
                     input = `0x${log.memory.join('').slice(inputStart, inputStart + inputSize)}`;
                 }
@@ -72,6 +73,7 @@ exports.parseTrace = async (from, trace, provider) => {
 
                 const inputSize = parseInt(log.stack[log.stack.length - 4], 16) * 2;
                 if (inputSize > 0) {
+                    if (!log.memory) continue;
                     const inputStart = parseInt(log.stack[log.stack.length - 3], 16) * 2;
                     input = `0x${log.memory.join('').slice(inputStart, inputStart + inputSize)}`;
                 }
