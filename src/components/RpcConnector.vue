@@ -114,7 +114,7 @@ export default Vue.extend({
             }
         });
 
-        if (!this.isPublicExplorer) {
+        if (!this.currentWorkspace.public) {
             this.processContracts();
             this.processTransactions();
             this.processFailedTransactions();

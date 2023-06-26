@@ -9,14 +9,14 @@ const { enqueue } = require('../lib/queue');
 
 const router = express.Router();
 
-router.post('/reprocessTransactions', [secretMiddleware], async (req, res) => {
+router.post('/reprocessTransactionTraces', [secretMiddleware], async (req, res) => {
     const data = req.body.data;
 
     try {
         if (!data.workspaceId)
             throw new Error('Missing parameters.');
 
-        await enqueue('reprocessWorkspaceTransactions', `reprocessWorkspaceTransactions-${data.workspaceId}`, { workspaceId: data.workspaceId });
+        await enqueue('reprocessWorkspaceTransactionTraces', `reprocessWorkspaceTransactionTraces-${data.workspaceId}`, { workspaceId: data.workspaceId });
 
         res.sendStatus(200);
     } catch(error) {

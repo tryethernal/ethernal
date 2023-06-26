@@ -21,7 +21,7 @@ exports[`RpcConnector.vue Should display the correct info 1`] = `
     </transition-stub>
     <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--inset v-divider--vertical theme--light">
     Workspace: Hardhat (Ethereum)
-    <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--inset v-divider--vertical theme--light"> <span style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;"></span>
+    <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--inset v-divider--vertical theme--light"> <span title="http://localhost:8545" style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">http://localhost:8545</span>
     <div>
       <hr role="separator" aria-orientation="vertical" class="mx-2 v-divider v-divider--inset v-divider--vertical theme--light">
       Latest Block: <a href="#/block/2" class="">2</a>

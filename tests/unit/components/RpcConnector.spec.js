@@ -18,11 +18,14 @@ describe('RpcConnector.vue', () => {
         jest.spyOn(helper.mocks.server, 'getRpcAccounts').mockResolvedValue(['0x123']);
         const getAccountsMock = jest.spyOn(helper.mocks.server, 'getAccounts').mockResolvedValue({ data: { items: [{ address: '0x123' }, { address: '0x456' }]}});
         jest.spyOn(helper.mocks.server, 'getAccountBalance').mockResolvedValue('1000000000000000000000');
-        const syncBalanceSpy = jest.spyOn(helper.mocks.server, 'syncBalance');
 
         const onNewContractMock = jest.spyOn(helper.mocks.pusher, 'onNewContract');
         const processContractMock = jest.spyOn(helper.mocks.server, 'processContracts').mockResolvedValue();
-        const wrapper = helper.mountFn(RpcConnector);
+        const wrapper = helper.mountFn(RpcConnector, {
+            getters: {
+                currentWorkspace: jest.fn().mockReturnValue({ name: 'Hardhat', rpcServer: 'http://localhost:8545' })
+            }
+        });
         await flushPromises();
 
         expect(onNewContractMock).toHaveBeenCalled();
@@ -38,9 +41,10 @@ describe('RpcConnector.vue', () => {
         const getAccountsMock = jest.spyOn(helper.mocks.server, 'getAccounts');
         const onNewContractMock = jest.spyOn(helper.mocks.pusher, 'onNewContract');
         const processContractMock = jest.spyOn(helper.mocks.server, 'processContracts').mockResolvedValue();
-        const wrapper = helper.mountFn(RpcConnector, {
+        helper.mountFn(RpcConnector, {
             getters: {
-                isPublicExplorer: jest.fn().mockReturnValue(true)
+                isPublicExplorer: jest.fn().mockReturnValue(true),
+                currentWorkspace: jest.fn().mockReturnValue({ public: true, rpcServer: 'http://localhost:8585' })
             }
         });
 

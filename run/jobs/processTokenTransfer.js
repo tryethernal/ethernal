@@ -1,5 +1,4 @@
 const db = require('../lib/firebase');
-const logger = require('../lib/logger');
 const { getBalanceChange } = require('../lib/rpc');
 
 module.exports = async job => {

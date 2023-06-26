@@ -1,5 +1,5 @@
 const ethers = require('ethers');
-const { sanitize } = require('./utils');
+const { sanitize, withTimeout } = require('./utils');
 
 exports.processTrace = async (userId, workspace, transactionHash, steps, db) => {
     const trace = [];
@@ -35,6 +35,7 @@ exports.parseTrace = async (from, trace, provider) => {
 
                 const inputSize = parseInt(log.stack[log.stack.length - 5], 16) * 2;
                 if (inputSize > 0) {
+                    if (!log.memory) continue;
                     const inputStart = parseInt(log.stack[log.stack.length - 4], 16) * 2;
                     input = `0x${log.memory.join('').slice(inputStart, inputStart + inputSize)}`;
                 }
@@ -55,7 +56,7 @@ exports.parseTrace = async (from, trace, provider) => {
                 const address = `0x${log.stack[log.stack.length - 2].slice(-40)}`.toLowerCase();
                 const strippedValue = ethers.utils.hexStripZeros(log.stack[log.stack.length - 3].startsWith('0x') ? log.stack[log.stack.length - 3] : `0x${log.stack[log.stack.length - 3]}`);
                 const value = strippedValue != '0x' ? ethers.BigNumber.from(strippedValue).toString() : null;
-                const bytecode = await provider.getCode(address);
+                const bytecode = await withTimeout(provider.getCode(address));
                 parsedOps.push({
                     value,
                     op: log.op,
@@ -72,6 +73,7 @@ exports.parseTrace = async (from, trace, provider) => {
 
                 const inputSize = parseInt(log.stack[log.stack.length - 4], 16) * 2;
                 if (inputSize > 0) {
+                    if (!log.memory) continue;
                     const inputStart = parseInt(log.stack[log.stack.length - 3], 16) * 2;
                     input = `0x${log.memory.join('').slice(inputStart, inputStart + inputSize)}`;
                 }
@@ -90,7 +92,7 @@ exports.parseTrace = async (from, trace, provider) => {
                 }
 
                 const address = `0x${log.stack[log.stack.length - 2].slice(-40)}`.toLowerCase();
-                const bytecode = await provider.getCode(address);
+                const bytecode = await withTimeout(provider.getCode(address));
                 parsedOps.push({
                     op: log.op,
                     value: null,
@@ -115,7 +117,7 @@ exports.parseTrace = async (from, trace, provider) => {
 
                 const address = ethers.utils.getCreate2Address(from, s, hashedCreationBytecode);
 
-                const runtimeBytecode = await provider.getCode(address);
+                const runtimeBytecode = await withTimeout(provider.getCode(address));
                 const contractHashedBytecode = ethers.utils.keccak256(runtimeBytecode);
 
                 parsedOps.push({
