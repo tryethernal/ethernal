@@ -10,7 +10,7 @@ const enqueue = (queueName, jobName, data, priority = 10, repeat) => {
     return queues[queueName].add(jobName || jobName, data, sanitize({ priority, repeat, jobId: jobId }));
 };
 
-const bulkEnqueue = (queueName, jobData) => {
+const bulkEnqueue = (queueName, jobData, priority = 1) => {
     if (!queueName || !jobData || !jobData.length) return;
 
     const promises = [];
@@ -23,7 +23,7 @@ const bulkEnqueue = (queueName, jobData) => {
             return sanitize({
                 name: job.name,
                 data: job.data,
-                opts: sanitize({ jobId: uniqueQueues.indexOf(queueName) > -1 ? job.name : null })
+                opts: sanitize({ priority, jobId: uniqueQueues.indexOf(queueName) > -1 ? job.name : null })
             })
         });
         promises.push(queues[queueName].addBulk(jobs));
