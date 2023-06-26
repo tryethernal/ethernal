@@ -131,6 +131,14 @@ module.exports = (sequelize, DataTypes) => {
             });
 
             if (transaction.workspace.public) {
+                options.transaction.afterCommit(() => {
+                    return enqueue('processTokenTransfer',
+                        `processTokenTransfer-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.id}`, {
+                            tokenTransferId: tokenTransfer.id
+                        }
+                    );
+                });
+
                 const contract = await tokenTransfer.getContract();
                 if (!contract)
                     await transaction.workspace.safeCreateOrUpdateContract({
