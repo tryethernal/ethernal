@@ -29,12 +29,14 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
           <col class="">
           <col class="">
           <col class="">
+          <col class="">
         </colgroup>
         <thead class="v-data-table-header">
           <tr>
             <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Deployed On: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Deployed On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
           </tr>
@@ -49,7 +51,8 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -60,7 +63,8 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -71,7 +75,8 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -82,7 +87,8 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -93,7 +99,8 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -104,7 +111,8 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -115,7 +123,8 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -126,7 +135,8 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -137,7 +147,8 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -148,7 +159,8 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
         </tbody>
       </table>
@@ -156,10 +168,10 @@ exports[`Contracts.vue Should display a warning message for free users with 10 c
     <div class="v-data-footer">
       <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
           <div class="v-input__control">
-            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-96" class="v-input__slot">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-99" class="v-input__slot">
               <div class="v-select__slot">
                 <div class="v-select__selections">
-                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-96" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-99" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                 </div>
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -209,12 +221,14 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
           <col class="">
           <col class="">
           <col class="">
+          <col class="">
         </colgroup>
         <thead class="v-data-table-header">
           <tr>
             <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Deployed On: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Deployed On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
           </tr>
@@ -229,7 +243,8 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -240,7 +255,8 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -251,7 +267,8 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -262,7 +279,8 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -273,7 +291,8 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -284,7 +303,8 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -295,7 +315,8 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -306,7 +327,8 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -317,7 +339,8 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -328,7 +351,8 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
         </tbody>
       </table>
@@ -336,10 +360,10 @@ exports[`Contracts.vue Should not display a warning message for premium users wi
     <div class="v-data-footer">
       <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
           <div class="v-input__control">
-            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-169" class="v-input__slot">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-173" class="v-input__slot">
               <div class="v-select__slot">
                 <div class="v-select__selections">
-                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-169" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-173" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                 </div>
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -385,12 +409,14 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
           <col class="">
           <col class="">
           <col class="">
+          <col class="">
         </colgroup>
         <thead class="v-data-table-header">
           <tr>
             <th role="columnheader" scope="col" aria-label="Address: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Address</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Deployed On: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Deployed On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
           </tr>
@@ -405,7 +431,8 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
                             05/06 7:11:26 PM
                         </span><span class="v-tooltip v-tooltip--top"><!----></span></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
           <tr class="">
             <td class="text-start">
@@ -414,7 +441,8 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
             <td class="text-start">Another Contract</td>
             <td class="text-start"></td>
             <td class="text-start"></td>
-            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small error--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i></span></button></td>
+            <td class="text-start"></td>
           </tr>
         </tbody>
       </table>
@@ -422,10 +450,10 @@ exports[`Contracts.vue Should show the contracts list 1`] = `
     <div class="v-data-footer">
       <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
           <div class="v-input__control">
-            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-23" class="v-input__slot">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-24" class="v-input__slot">
               <div class="v-select__slot">
                 <div class="v-select__selections">
-                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-23" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-24" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                 </div>
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -475,6 +503,7 @@ exports[`Contracts.vue Should show the loading message when empty contracts list
           <col class="">
           <col class="">
           <col class="">
+          <col class="">
         </colgroup>
         <thead class="v-data-table-header">
           <tr>
@@ -483,11 +512,12 @@ exports[`Contracts.vue Should show the loading message when empty contracts list
             <th role="columnheader" scope="col" aria-label="Deployed On: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Deployed On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
           </tr>
         </thead>
         <tbody>
           <tr class="v-data-table__empty-wrapper">
-            <td colspan="5">
+            <td colspan="6">
               No contracts found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
           </tr>
         </tbody>
@@ -496,10 +526,10 @@ exports[`Contracts.vue Should show the loading message when empty contracts list
     <div class="v-data-footer">
       <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
           <div class="v-input__control">
-            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-63" class="v-input__slot">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-65" class="v-input__slot">
               <div class="v-select__slot">
                 <div class="v-select__selections">
-                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-63" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-65" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                 </div>
                 <div class="v-input__append-inner">
                   <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>

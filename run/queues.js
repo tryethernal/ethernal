@@ -17,9 +17,6 @@ priorities['high'].forEach(jobName => {
                 delay: 1000
             }
         },
-        settings: {
-            maxStalledCount: 0
-        },
         connection
     });
 });
@@ -35,9 +32,6 @@ priorities['medium'].forEach(jobName => {
                 delay: 1000
             }
         },
-        settings: {
-            maxStalledCount: 0
-        },
         connection
     });
 });
@@ -52,9 +46,6 @@ priorities['low'].forEach(jobName => {
                 type: 'exponential',
                 delay: 1000
             }
-        },
-        settings: {
-            maxStalledCount: 0
         },
         connection
     });

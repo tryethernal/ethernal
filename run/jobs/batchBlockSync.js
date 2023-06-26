@@ -1,5 +1,5 @@
 const { enqueue, bulkEnqueue } = require('../lib/queue');
-const MAX_CONCURRENT_BATCHES = 2000;
+const MAX_CONCURRENT_BATCHES = 500000;
 
 module.exports = async job => {
     const data = job.data;

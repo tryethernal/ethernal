@@ -18,7 +18,7 @@ const job = { data: { workspaceId: 1 }};
 
 describe('integrityCheck', () => {
     it('Should return a message saying integrity checks are not enabled', async () => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({ integrityCheckStartBlockNumber: null });
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({ integrityCheckStartBlockNumber: null, public: true });
 
         expect(await integrityCheck(job)).toEqual('Integrity checks not enabled');
     });
@@ -26,7 +26,8 @@ describe('integrityCheck', () => {
     it('Should return a message saying blocks have not been synced', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             countBlocks: jest.fn().mockResolvedValueOnce(0),
-            integrityCheckStartBlockNumber: 0
+            integrityCheckStartBlockNumber: 0,
+            public: true
         });
 
         expect(await integrityCheck(job)).toEqual('No block synced yet');
@@ -37,6 +38,7 @@ describe('integrityCheck', () => {
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn().mockResolvedValueOnce([{ id: 1, number: 1 }]).mockResolvedValueOnce([]),
             integrityCheckStartBlockNumber: 5,
+            public: true,
             id: 1,
             name: 'hardhat',
             user: { firebaseUserId: '123', name: 'hardhat' }
@@ -58,6 +60,7 @@ describe('integrityCheck', () => {
             getBlocks: jest.fn().mockResolvedValueOnce([{ id: 1, number: 1 }]).mockResolvedValueOnce([]),
             integrityCheckStartBlockNumber: 0,
             integrityCheck: {},
+            public: true,
             id: 1,
             name: 'hardhat',
             user: { firebaseUserId: '123', name: 'hardhat' }
@@ -78,7 +81,8 @@ describe('integrityCheck', () => {
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn().mockResolvedValue([{ id: 1, number: 5 }]),
             integrityCheckStartBlockNumber: 5,
-            integrityCheck: { block: { number: 2 }},
+            integrityCheck: { block: { number: 2 }},
+            public: true,
             id: 1,
             name: 'hardhat',
             user: { firebaseUserId: '123', name: 'hardhat' },
@@ -98,6 +102,7 @@ describe('integrityCheck', () => {
             integrityCheckStartBlockNumber: 5,
             integrityCheck: {},
             id: 1,
+            public: true,
             name: 'hardhat',
             user: { firebaseUserId: '123', name: 'hardhat' }
         });
@@ -112,6 +117,7 @@ describe('integrityCheck', () => {
             integrityCheckStartBlockNumber: 5,
             integrityCheck: { block: {}},
             id: 1,
+            public: true,
             name: 'hardhat',
             user: { firebaseUserId: '123', name: 'hardhat' },
             getProvider: () => ({ fetchLatestBlock: jest.fn().mockResolvedValueOnce({ timestamp: 123, number: 4 }) }),
@@ -128,6 +134,7 @@ describe('integrityCheck', () => {
             integrityCheckStartBlockNumber: 5,
             integrityCheck: { block: { number: 1 }},
             id: 1,
+            public: true,
             name: 'hardhat',
             user: { firebaseUserId: '123', name: 'hardhat' },
             getProvider: () => ({ fetchLatestBlock: jest.fn().mockResolvedValueOnce({ timestamp: 123, number: 4 }) }),
@@ -155,6 +162,7 @@ describe('integrityCheck', () => {
             integrityCheck: { block: { number: 1 }},
             id: 1,
             name: 'hardhat',
+            public: true,
             user: { firebaseUserId: '123', name: 'hardhat' },
             getProvider: () => ({ fetchLatestBlock: jest.fn().mockResolvedValueOnce({ timestamp: 123, number: 4 }) }),
             findBlockGaps: jest.fn().mockResolvedValueOnce([])
@@ -174,6 +182,7 @@ describe('integrityCheck', () => {
             integrityCheckStartBlockNumber: 5,
             id: 1,
             name: 'hardhat',
+            public: true,
             user: { firebaseUserId: '123', name: 'hardhat' },
             getProvider: () => ({ fetchLatestBlock: jest.fn().mockResolvedValueOnce({ timestamp: 123, number: 4 }) }),
             findBlockGaps: jest.fn().mockResolvedValueOnce([{ blockStart: 1, blockEnd: 5 }, { blockStart: 8, blockEnd: 8 }])

@@ -67,7 +67,7 @@ const getTransactionForProcessing = async transactionId => {
             {
                 model: Workspace,
                 as: 'workspace',
-                attributes: ['id', 'name', 'public'],
+                attributes: ['id', 'name', 'public', 'rpcServer'],
                 include: {
                     model: User,
                     as: 'user',
@@ -738,11 +738,11 @@ const storeTransactionTokenTransfers = async (userId, workspace, transactionHash
     }
 };
 
-const storeContractData = async (userId, workspace, address, data) => {
+const storeContractData = async (userId, workspace, address, data, transaction) => {
     if (!userId || !workspace || !address || !data) throw new Error('Missing parameter.');
 
     const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-    const contract = await user.workspaces[0].safeCreateOrUpdateContract({ address: address, ...data });
+    const contract = await user.workspaces[0].safeCreateOrUpdateContract({ address: address, ...data }, transaction);
     return contract.toJSON();
 };
 
@@ -931,6 +931,8 @@ const canUserSyncContract = async (userId, workspaceName, address) => {
         return true;
 
     const workspace = user.workspaces[0];
+    if (workspace.public)
+        return true;
 
     // If the contract has already been synced we can update its data
     const existingContracts = await workspace.getContracts({ where: { address: address }});
