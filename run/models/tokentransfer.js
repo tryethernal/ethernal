@@ -5,6 +5,7 @@ const {
   QueryTypes
 } = require('sequelize');
 const Op = Sequelize.Op
+const moment = require('moment');
 const { trigger } = require('../lib/pusher');
 const { enqueue } = require('../lib/queue');
 const { sanitize } = require('../lib/utils');
@@ -114,7 +115,7 @@ module.exports = (sequelize, DataTypes) => {
                     {
                         model: sequelize.models.TokenTransfer,
                         attributes: ['src', 'dst', 'token'],
-                        as: 'tokenTransfers'
+                        as: 'tokenTransfers',
                     },
                     {
                         model: sequelize.models.Workspace,
@@ -130,7 +131,6 @@ module.exports = (sequelize, DataTypes) => {
             });
 
             if (transaction.workspace.public) {
-                // We want this to fail if it is not in a transaction
                 options.transaction.afterCommit(() => {
                     return enqueue('processTokenTransfer',
                         `processTokenTransfer-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.id}`, {
@@ -138,6 +138,13 @@ module.exports = (sequelize, DataTypes) => {
                         }
                     );
                 });
+
+                const contract = await tokenTransfer.getContract();
+                if (!contract)
+                    await transaction.workspace.safeCreateOrUpdateContract({
+                        address: tokenTransfer.token,
+                        timestamp: moment(transaction.timestamp).unix()
+                    }, options.transaction);
             }
 
             if (tokenTransfer.tokenId) {

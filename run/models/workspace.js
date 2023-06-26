@@ -402,6 +402,18 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    async canCreateContract() {
+        if (this.public)
+            return true;
+
+        const user = await this.getUser();
+        if (user.isPremium)
+            return true;
+
+        const contractCount = await this.countContracts();
+        return contractCount < 10;
+    }
+
     /*
         Syncing the full block can take some time if there are a lot of transactions,
         logs, token transfers to create etc, so we create a partial block with only
@@ -429,7 +441,7 @@ module.exports = (sequelize, DataTypes) => {
 
             for (let i = 0; i < block.transactions.length; i++) {
                 const transaction = block.transactions[i];
-                const storedTx = await this.createTransaction(sanitize({
+                await this.createTransaction(sanitize({
                     blockHash: transaction.blockHash,
                     blockNumber: transaction.blockNumber,
                     blockId: storedBlock.id,
@@ -534,7 +546,7 @@ module.exports = (sequelize, DataTypes) => {
 
                     for (let i = 0; i < receipt.logs.length; i++) {
                         const log = receipt.logs[i];
-                        try {
+                        try {
                             await storedReceipt.createLog(sanitize({
                                 workspaceId: storedTx.workspaceId,
                                 address: log.address,
@@ -548,6 +560,7 @@ module.exports = (sequelize, DataTypes) => {
                                 raw: log
                             }), { transaction: sequelizeTransaction });
                         } catch(error) {
+                            logger.error(error.message, { location: 'models.workspaces.safeCreateFullBlock', error: error, data });
                             await storedReceipt.createLog(sanitize({
                                 workspaceId: storedTx.workspaceId,
                                 raw: log
@@ -659,7 +672,7 @@ module.exports = (sequelize, DataTypes) => {
                             raw: log
                         }), { transaction: sequelizeTransaction });
                     } catch(error) {
-                        logger.error(error.message, { location: 'models.workspaces', error: error, transaction: transaction });
+                        logger.error(error.message, { location: 'models.workspaces.safeCreateTransaction', error: error, transaction: transaction });
                         await storedReceipt.createLog(sanitize({
                             workspaceId: storedTx.workspaceId,
                             raw: log
@@ -672,7 +685,7 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async safeCreateOrUpdateContract(contract) {
+    async safeCreateOrUpdateContract(contract, transaction) {
         const contracts = await this.getContracts({ where: { address: contract.address.toLowerCase() }});
         const existingContract = contracts[0];
 
@@ -699,9 +712,9 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         if (existingContract)
-            return existingContract.update(newContract)
+            return existingContract.update(newContract, { transaction })
         else
-            return this.createContract(newContract);
+            return this.createContract(newContract, { transaction });
     }
 
     async safeCreateOrUpdateAccount(account) {

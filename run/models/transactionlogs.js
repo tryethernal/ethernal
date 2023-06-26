@@ -73,7 +73,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     hooks: {
         async afterCreate(log, options) {
-            const tokenTransfer = getTokenTransfer(log);
+            const tokenTransfer = getTokenTransfer(log.raw);
             if (tokenTransfer)
                 await log.safeCreateTokenTransfer(tokenTransfer, options.transaction);
 

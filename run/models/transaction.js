@@ -208,22 +208,30 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     hooks: {
-        async afterCreate(transaction, options) {
+        async afterCreate(transactionInstance, options) {
             const afterCreateFn = async () => {
-                if (transaction.isReady)
-                    await enqueue('transactionProcessing', `transactionProcessing-${transaction.workspaceId}-${transaction.hash}`, { 
-                        transactionId: transaction.id
+                const workspace = await transactionInstance.getWorkspace();
+                if (workspace.public && workspace.tracing == 'other')
+                    await enqueue('processTransactionTrace', `processTransactionTrace-${transactionInstance.workspaceId}-${transactionInstance.hash}`, {
+                        transactionId: transactionInstance.id
                     }, 1);
-
+            };
+            if (options.transaction)
+                return options.transaction.afterCommit(afterCreateFn);
+            else
+                return afterCreateFn();
+        },
+        async afterSave(transaction, options) {
+            const afterSaveFn = async () => {
                 await trigger(`private-transactions;workspace=${transaction.workspaceId}`, 'new', { hash: transaction.hash, state: transaction.state });
                 if (transaction.to)
                     await trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.to}`, 'new', { hash: transaction.hash });
                 return trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.from}`, 'new', { hash: transaction.hash });
             };
             if (options.transaction)
-                return options.transaction.afterCommit(afterCreateFn);
+                return options.transaction.afterCommit(afterSaveFn);
             else
-                return afterCreateFn();
+                return afterSaveFn();
         }
     },
     sequelize,

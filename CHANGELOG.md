@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.14.1] - 2023-06-26
+### Changed
+- Improve case when balance change request fails
+
+## [3.14.0] - 2023-06-26
+### Changed
+- Transactions are now processed in the creation job, if it fails, then all is reverted. Only operations that require a request to the node are processed separately (processing errors & traces)
+- Error processing & trace processing now have their own dedicated jobs, for better error isolation and debugging
+
+### Added
+- Job & endpoint to reprocess all traces for a given workspace
+
+## [3.13.31] - 2023-06-17
+### Fixed
+- Tentative fix for stalled jobs
+
+## [3.13.30] - 2023-06-17
+### Changed
+- Optimize returned token transfer object for processing
+
+## [3.13.29] - 2023-06-17
+### Changed
+- Optimize returned transaction object for processing
+
+## [3.13.28] - 2023-06-17
+### Changed
+- Start cleaning transaction processing
+
+## [3.13.27] - 2023-06-17
+### Fixed
+- Hanging transaction processing
+
 ## [3.13.26] - 2023-06-16
 ### Changed
 - Stop block syncing process job if the block already exists, to avoid relying on lower level constraints (more annoying to check)

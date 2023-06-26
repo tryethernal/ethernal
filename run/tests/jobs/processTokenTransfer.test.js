@@ -62,13 +62,10 @@ describe('processTokenTransfer', () => {
             });
     });
 
-    it('Should fail if token transfer cannot be found', (done) => {
+    it('Should fail if token transfer cannot be found', async () => {
         jest.spyOn(db, 'getTokenTransferForProcessing').mockResolvedValue(null);
 
-        processTokenTransfer({ data : { tokenTransferId: 1 }})
-            .catch(error => {
-                expect(error.message).toEqual('Cannot find token transfer');
-                done();
-            });
+        const res = await processTokenTransfer({ data : { tokenTransferId: 1 }});
+        expect(res).toEqual('Cannot find token transfer');
     });
 });
