@@ -20,7 +20,8 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
             blockTag: blockNumber
         };
 
-        const res = await withTimeout(contract.callReadMethod('balanceOf(address)', { 0: address }, options));
+        const res = await contract.callReadMethod('balanceOf(address)', { 0: address }, options);
+
         if (ethers.BigNumber.isBigNumber(res[0]))
             currentBalance = res[0];
         else
@@ -29,7 +30,7 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
             else
                 throw new Error(res);
     } catch(error) {
-        logger.error(error.message, { location: 'lib.rpc', error: error, data: arguments });
+        logger.error(error.message, { location: 'lib.rpc', error: error, data: { address, token, blockNumber }});
         throw error;
     }
 
@@ -40,7 +41,7 @@ const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
                 blockTag: Math.max(1, parseInt(blockNumber) - 1)
             };
 
-            const res = await withTimeout(contract.callReadMethod('balanceOf(address)', { 0: address }, options));
+            const res = await contract.callReadMethod('balanceOf(address)', { 0: address }, options);
 
             if (ethers.BigNumber.isBigNumber(res[0]))
                 previousBalance = res[0];
