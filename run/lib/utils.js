@@ -7,7 +7,7 @@ const getEnv = () => process.env.NODE_ENV;
 const withTimeout = (promise, delay = DEFAULT_PROMISE_TIMEOUT) => {
     const timeout = new Promise((resolve, reject) =>
         setTimeout(
-            () => reject(`Timed out after ${delay} ms.`),
+            () => reject(new Error(`Timed out after ${delay} ms.`)),
             delay
         )
     );

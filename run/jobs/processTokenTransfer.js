@@ -1,5 +1,6 @@
 const db = require('../lib/firebase');
 const { getBalanceChange } = require('../lib/rpc');
+const logger = require('../lib/logger');
 
 module.exports = async job => {
     const data = job.data;
@@ -22,15 +23,29 @@ module.exports = async job => {
     const changes = [];
 
     if (tokenTransfer.src != '0x0000000000000000000000000000000000000000') {
-        const balanceChange = await getBalanceChange(tokenTransfer.src, tokenTransfer.token, transaction.blockNumber, workspace.rpcServer);
-        if (balanceChange && balanceChange.diff != '0')
-            changes.push(balanceChange);
+        try {
+            const balanceChange = await getBalanceChange(tokenTransfer.src, tokenTransfer.token, transaction.blockNumber, workspace.rpcServer);
+            if (balanceChange && balanceChange.diff != '0')
+                changes.push(balanceChange);
+        } catch(error) {
+            if (error.message && error.message.startsWith('missing revert data in call exception')) {
+                logger.error(error.message, { location: 'jobs.processTokenTransfer', error: error, data });
+                return error.message;
+            }
+        }
     }
 
     if (tokenTransfer.dst != '0x0000000000000000000000000000000000000000') {
-        const balanceChange = await getBalanceChange(tokenTransfer.dst, tokenTransfer.token, transaction.blockNumber, workspace.rpcServer);
-        if (balanceChange && balanceChange.diff != '0')
-            changes.push(balanceChange);
+        try {
+            const balanceChange = await getBalanceChange(tokenTransfer.dst, tokenTransfer.token, transaction.blockNumber, workspace.rpcServer);
+            if (balanceChange && balanceChange.diff != '0')
+                changes.push(balanceChange);
+        } catch(error) {
+            if (error.message && error.message.startsWith('missing revert data in call exception')) {
+                logger.error(error.message, { location: 'jobs.processTokenTransfer', error: error, data });
+                return error.message;
+            }
+        }
     }
 
     if (changes.length > 0)
