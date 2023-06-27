@@ -6,8 +6,11 @@ const { withTimeout } = require('../lib/utils');
 const abiChecker = require('../lib/contract');
 
 const ERC721_ABI = require('./abis/erc721.json');
+const ERC20_ABI = require('./abis/erc20.json');
+const ERC1155_ABI = require('./abis/erc1155.json');
 const ERC721_ENUMERABLE_ABI = require('./abis/erc721Enumerable.json');
 const ERC721_METADATA_ABI = require('./abis/erc721Metadata.json');
+const ALL_ABIS = ERC721_ABI.concat(ERC20_ABI, ERC721_ENUMERABLE_ABI, ERC721_METADATA_ABI, ERC1155_ABI);
 
 const getBalanceChange = async (address, token, blockNumber, rpcServer) => {
     let currentBalance = ethers.BigNumber.from('0');
@@ -153,25 +156,26 @@ class ContractConnector {
          '1155': '0xd9b67a26'
     };
 
-    _decimals = null;
-    _name = null;
-    _symbol = null;
-    _totalSupply = null;
-    _isErc20 = null;
-    _isErc721 = null;
-    _isErc1155 = null;
+    _decimals = undefined;
+    _name = undefined;
+    _symbol = undefined;
+    _totalSupply = undefined;
+    _isErc20 = undefined;
+    _isErc721 = undefined;
+    _isErc1155 = undefined;
 
     constructor(server, address, abi) {
-        if (!server || !address || !abi) throw '[ContractConnector] Missing parameter';
+        if (!server || !address) throw '[ContractConnector] Missing parameter';
         this.provider = getProvider(server);
-        this.contract = new ethers.Contract(address, abi, this.provider);
+        this.contract = new ethers.Contract(address, abi || ALL_ABIS, this.provider);
     }
 
     // This should be improved by testing functions like transfer/allowance/approve/transferFrom
     async isErc20() {
         const isErc721 = await this.isErc721();
         if (isErc721) return false;
-        if (this._isErc20 !== null) return this._isErc20;
+
+        if (this._isErc20 !== undefined) return this._isErc20;
 
         const decimals = await this.decimals();
         const symbol = await this.symbol();
@@ -184,13 +188,13 @@ class ContractConnector {
     }
 
     async isErc721() {
-        if (this._isErc721 !== null) return this._isErc721;
+        if (this._isErc721 !== undefined) return this._isErc721;
         this._isErc721 = await this.has721Interface();
         return this._isErc721;
     }
 
     async isErc1155() {
-        if (this._isErc1155 !== null) return this._isErc1155;
+        if (this._isErc1155 !== undefined) return this._isErc1155;
         this._isErc1155 = await this.has1155Interface();
         return this._isErc1155;
     }
@@ -223,33 +227,33 @@ class ContractConnector {
         }
     }
 
-    has1155Interface() {
+    async has1155Interface() {
         try {
-            return withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['1155']));
+            return await withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['1155']));
         } catch(_error) {
             return false;
         }
     }
 
-    has721Interface() {
+    async has721Interface() {
         try {
-            return withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721']));
+            return await withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721']));
         } catch(_error) {
             return false;
         }
     }
 
-    has721Metadata() {
+    async has721Metadata() {
         try {
-            return withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721Metadata']));
+            return await withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721Metadata']));
          } catch(_error) {
-             return false;
+            return false;
          }
     }
 
-    has721Enumerable() {
+    async has721Enumerable() {
         try {
-            return withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721Enumerable']));
+            return await withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721Enumerable']));
         } catch(_error) {
             return false;
         }
@@ -260,7 +264,7 @@ class ContractConnector {
             if (this._decimals) return this._decimals;
             this._decimals = await withTimeout(this.contract.decimals());
             return this._decimals;
-        } catch(_error) {
+        } catch(error) {
             return null;
         }
     }
@@ -288,8 +292,8 @@ class ContractConnector {
     async totalSupply() {
         try {
             this._totalSupply = await withTimeout(this.contract.totalSupply());
-            return this._name.toString();
-        } catch(_error) {
+            return this._totalSupply.toString();
+        } catch(error) {
             return null;
         }
     }

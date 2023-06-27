@@ -10,7 +10,6 @@
         "processTransactionError",
         "reloadErc721Token",
         "processTokenTransfer",
-        "reprocessAllTokenTransfers",
         "reprocessWorkspaceTransactionTraces"
     ],
     "low": [

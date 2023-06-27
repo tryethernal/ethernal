@@ -3,11 +3,10 @@ const ethers = require('ethers');
 const { sanitize, withTimeout } = require('../lib/utils');
 const yasold = require('../lib/yasold');
 const db = require('../lib/firebase');
-const { ContractConnector, ERC721Connector, getProvider } = require('../lib/rpc');
+const { ContractConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
 const { trigger } = require('../lib/pusher');
-
-const NETWORK_TIMEOUT = 10 * 1000;
+const { match } = require('core-js/fn/symbol');
 
 const findPatterns = async (rpcServer, contractAddress, abi) => {
     let tokenData = { patterns: [] };
@@ -44,27 +43,11 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
 
         return tokenData;
     } catch(error) {
+        console.log(error)
         if (error.message && error.message.startsWith('Timed out'))
             throw error;
         return tokenData;
     }
-};
-
-const findLocalMetadata = async (userId, workspaceName, contract) => {
-    if (!contract.hashedBytecode)
-        return {};
-
-    const matchingContract = await db.getContractByHashedBytecode(
-        userId,
-        workspaceName,
-        contract.hashedBytecode,
-        [contract.address]
-    );
-
-    if (matchingContract && (matchingContract.name || matchingContract.abi))
-        return sanitize({ name: matchingContract.name, abi: matchingContract.abi });
-    else
-        return {};
 };
 
 const fetchEtherscanData = async (address, chain) => {
@@ -95,7 +78,7 @@ const fetchEtherscanData = async (address, chain) => {
         return null;
 
     const endpoint = `https://api.${scannerHost}/api?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`;
-    const response = await withTimeout(axios.get(endpoint), NETWORK_TIMEOUT);
+    const response = await withTimeout(axios.get(endpoint));
 
     return response ? response.data : null;
 };
@@ -120,28 +103,21 @@ module.exports = async job => {
     const data = job.data;
 
     if (!data.contractId)
-        throw new Error('Missing parameter.');
+        return 'Missing parameter';
 
     const contract = await db.getContractById(data.contractId);
-
     if (!contract)
-        return;
+        return 'Cannot find contract';
 
     const workspace = await db.getWorkspaceById(contract.workspaceId);
-
     if (!workspace)
-        return;
+        return 'Cannot find workspace';
 
     const user = await db.getUserById(workspace.userId);
-
     if (!user)
-        return;
+        return 'Cannot find user';
 
-    let scannerMetadata = {}, asm, bytecode, hashedBytecode;
-
-    const localMetadata = await findLocalMetadata(user.firebaseUserId, workspace.name, contract);
-    if (!localMetadata.name || !localMetadata.abi)
-        scannerMetadata = await findScannerMetadata(workspace, contract);
+    let asm, bytecode, hashedBytecode;
 
     if (workspace.public) {
         const connector = new ContractConnector(workspace.rpcServer, contract.address, []);
@@ -159,22 +135,45 @@ module.exports = async job => {
         }
     }
 
-    const tokenData = await findPatterns(workspace.rpcServer, contract.address, metadata.abi);
+    const matchingLocalContract = hashedBytecode ? await db.getContractByHashedBytecode(user.firebaseUserId, workspace.name, hashedBytecode) : null;
 
-    let metadata = sanitize({
-        name: contract.name || localMetadata.name || scannerMetadata.name,
-        abi: contract.abi || localMetadata.abi || scannerMetadata.abi,
-        proxy: scannerMetadata.proxy,
-        bytecode: bytecode,
-        hashedBytecode: hashedBytecode,
-        asm: asm,
-        ...tokenData
-    });
+    if (matchingLocalContract) {
+        await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, {
+            isToken: matchingLocalContract.isToken,
+            abi: matchingLocalContract.abi,
+            address: contract.address,
+            name: matchingLocalContract.name,
+            patterns: matchingLocalContract.patterns,
+            proxy: matchingLocalContract.proxy,
+            tokenDecimals: matchingLocalContract.tokenDecimals,
+            tokenName: matchingLocalContract.tokenName,
+            tokenSymbol: matchingLocalContract.tokenSymbol,
+            verificationStatus: matchingLocalContract.verificationStatus,
+            has721Metadata: matchingLocalContract.has721Metadata,
+            has721Enumerable: matchingLocalContract.has721Enumerable,
+            tokenTotalSupply: matchingLocalContract.tokenTotalSupply,
+            ast: matchingLocalContract.ast,
+            hashedBytecode, bytecode, asm
+        });
+    }
+    else {
+        const scannerMetadata = await findScannerMetadata(workspace, contract);
 
-    if (metadata.proxy)
-        await db.storeContractData(user.firebaseUserId, workspace.name, metadata.proxy, { address: metadata.proxy });
+        const abi = contract.abi || localMetadata.abi || scannerMetadata.abi;
+        const tokenData = workspace.public ? await findPatterns(workspace.rpcServer, contract.address, abi) : {};
 
-    await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, metadata);
+        let metadata = sanitize({
+            bytecode, hashedBytecode, asm, abi,
+            name: contract.name || localMetadata.name || scannerMetadata.name,
+            proxy: scannerMetadata.proxy,
+            ...tokenData
+        });
+
+        if (metadata.proxy)
+            await db.storeContractData(user.firebaseUserId, workspace.name, metadata.proxy, { address: metadata.proxy });
+
+        await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, metadata);
+    }
 
     return trigger(`private-contracts;workspace=${contract.workspaceId};address=${contract.address}`, 'updated', null);
 };

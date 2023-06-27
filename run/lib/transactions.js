@@ -84,28 +84,6 @@ const processTransactions = async (transactionIds) => {
                     if (canSync)
                         await db.storeContractData(userId, workspaceName, tokenTransfers[i].token, { address: tokenTransfers[i].token });
                 }
-<<<<<<< HEAD
-            } catch(_error) {
-                logger.error(_error.message, { location: 'jobs.transactionProcessing.tokenTransfers', error: _error, data: transactionIds });
-            }
-        }
-
-        if (workspace.tracing == 'other') {
-            try {
-                const tracer = new Tracer(workspace.rpcServer, db);
-                await withTimeout(tracer.process(transaction), NETWORK_TIMEOUT);
-                await tracer.saveTrace(userId, workspaceName);
-            } catch(_error) {
-                logger.error(_error.message, { location: 'jobs.transactionProcessing.tracing', error: _error, data: transactionIds });
-            }
-        }
-
-        if (transaction.receipt && transaction.receipt.status == 0) {
-            let errorObject;
-            try {
-                const provider = getProvider(workspace.rpcServer);
-                const res = await withTimeout(provider.call({ to: transaction.to, data: transaction.data }, transaction.blockNumber), NETWORK_TIMEOUT);
-=======
             } catch(_error) {}
         }
 
@@ -124,7 +102,6 @@ const processTransactions = async (transactionIds) => {
             try {
                 const provider = getProvider(workspace.rpcServer);
                 const res = await provider.call({ to: transaction.to, data: transaction.data }, transaction.blockNumber);
->>>>>>> develop
                 const reason = ethers.utils.toUtf8String('0x' + res.substr(138));
                 errorObject = { parsed: true, message: reason };
             } catch(error) {

@@ -10,7 +10,6 @@ module.exports = {
     processTransactionError: require('./processTransactionError'),
     processTokenTransfer: require('./processTokenTransfer'),
     reloadErc721Token: require('./reloadErc721Token'),
-    reprocessAllTokenTransfers: require('./reprocessAllTokenTransfers'),
     reprocessWorkspaceTransactionTraces: require('./reprocessWorkspaceTransactionTraces'),
 
     // Low Priority
