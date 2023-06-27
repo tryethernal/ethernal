@@ -5,7 +5,7 @@ module.exports = {
     sendResetPasswordEmail: require('./sendResetPasswordEmail'),
 
     // Medium Priority
-    contractProcessing: require('./contractProcessing'),
+    processContract: require('./processContract'),
     processTransactionTrace: require('./processTransactionTrace'),
     processTransactionError: require('./processTransactionError'),
     processTokenTransfer: require('./processTokenTransfer'),

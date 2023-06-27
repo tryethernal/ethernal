@@ -549,7 +549,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         async afterCreate(contract, options) {
             const afterCreateFn = () => {
-                return enqueue(`contractProcessing`, `contractProcessing-${contract.id}`, { contractId: contract.id });
+                return enqueue(`processContract`, `processContract-${contract.id}`, { contractId: contract.id });
             };
 
             if (options.transaction)

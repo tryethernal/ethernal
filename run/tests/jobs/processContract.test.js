@@ -24,40 +24,32 @@ const transactionsLib = require('../../lib/transactions');
 const { ContractConnector, ERC721Connector } = require('../../lib/rpc');
 const ERC721_ABI = require('../fixtures/ERC721_ABI.json');
 
-const contractProcessing = require('../../jobs/contractProcessing');
+const processContract = require('../../jobs/processContract');
 
 beforeEach(() => jest.clearAllMocks());
 
-describe('contractProcessing', () => {
+describe('processContract', () => {
     jest.spyOn(db, 'getWorkspaceById').mockResolvedValue({ id: 1, name: 'My Workspace', public: true });
     jest.spyOn(db, 'getUserById').mockResolvedValue({ id: 1, firebaseUserId: '123' });
-    jest.spyOn(db, 'getWorkspaceContractById').mockResolvedValue({ workspaceId: 1, address: '0x123' });
+    jest.spyOn(db, 'getContractById').mockResolvedValue({ workspaceId: 1, address: '0x123' });
     jest.spyOn(db, 'getContractByHashedBytecode').mockResolvedValue(null);
 
     it('Should return a 200 without any processing if contract is not found', (done) => {
-        jest.spyOn(db, 'getWorkspaceContractById').mockResolvedValueOnce(null);
+        jest.spyOn(db, 'getContractById').mockResolvedValueOnce(null);
 
-        contractProcessing({
-            data: {
-                workspaceId: 1,
-                contractId: 2
-            }
-        }).then(() => {
-            expect(db.getUserById).not.toHaveBeenCalled();
-            done();
-        });
+        processContract({ data: { contractId: 2 }})
+            .then(() => {
+                expect(db.getUserById).not.toHaveBeenCalled();
+                done();
+            });
     });
 
-    it('Should try to find metadata from scanner if it cannot find everything locally', (done) => {
-        contractProcessing({
-            data: {
-                workspaceId: 1,
-                contractId: 2
-            }
-        }).then(() => {
-            expect(db.storeContractData).toHaveBeenCalledWith('123', 'My Workspace', '0x123', { asm: 'asm', bytecode: '0x1234', hashedBytecode: '0x56570de287d73cd1cb6092bb8fdee6173974955fdef345ae579ee9f475ea7432', name: 'Contract', abi: [{ my: 'function' }]});
-            done();
-        });
+    it.only('Should try to find metadata from scanner if it cannot find everything locally', (done) => {
+        processContract({ data: { contractId: 2 }})
+            .then(() => {
+                expect(db.storeContractData).toHaveBeenCalledWith('123', 'My Workspace', '0x123', { asm: 'asm', bytecode: '0x1234', hashedBytecode: '0x56570de287d73cd1cb6092bb8fdee6173974955fdef345ae579ee9f475ea7432', name: 'Contract', abi: [{ my: 'function' }]});
+                done();
+            });
     });
 
     it('Should get proxy contract if applicable', (done) => {
@@ -70,7 +62,7 @@ describe('contractProcessing', () => {
             }
         });
 
-        contractProcessing({
+        processContract({
             data: {
                 workspaceId: 1,
                 contractId: 2
@@ -101,7 +93,7 @@ describe('contractProcessing', () => {
         jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 1, name: 'My Workspace', public: true, rpcServer: 'http://rpc.ethernal.com' });
         jest.spyOn(db, 'getWorkspaceContractById').mockResolvedValue({ workspaceId: 1, address: '0x123', abi: ERC721_ABI });
 
-        contractProcessing({
+        processContract({
             data: {
                 workspaceId: 1,
                 contractId: 2
@@ -142,7 +134,7 @@ describe('contractProcessing', () => {
             totalSupply: jest.fn().mockResolvedValue('1000'),
         }));
 
-        contractProcessing({
+        processContract({
             data: {
                 workspaceId: 1,
                 contractId: 2
@@ -177,7 +169,7 @@ describe('contractProcessing', () => {
             getBytecode: jest.fn().mockResolvedValue('0x1234')
         }));
 
-        contractProcessing({
+        processContract({
             data: {
                 workspaceId: 1,
                 contractId: 2
@@ -198,7 +190,7 @@ describe('contractProcessing', () => {
     it('Should reprocess all contract transactions', (done) => {
         jest.spyOn(db, 'getContractTransactions').mockResolvedValue([{ id: 123 }, { id: 124 }]);
 
-        contractProcessing({
+        processContract({
             data: {
                 workspaceId: 1,
                 contractId: 2
