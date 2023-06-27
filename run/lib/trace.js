@@ -56,7 +56,12 @@ exports.parseTrace = async (from, trace, provider) => {
                 const address = `0x${log.stack[log.stack.length - 2].slice(-40)}`.toLowerCase();
                 const strippedValue = ethers.utils.hexStripZeros(log.stack[log.stack.length - 3].startsWith('0x') ? log.stack[log.stack.length - 3] : `0x${log.stack[log.stack.length - 3]}`);
                 const value = strippedValue != '0x' ? ethers.BigNumber.from(strippedValue).toString() : null;
-                const bytecode = await withTimeout(provider.getCode(address));
+                let bytecode;
+                try {
+                    bytecode = await withTimeout(provider.getCode(address));
+                } catch(error) {
+                    bytecode = '0x'
+                }
                 parsedOps.push({
                     value,
                     op: log.op,
@@ -92,7 +97,12 @@ exports.parseTrace = async (from, trace, provider) => {
                 }
 
                 const address = `0x${log.stack[log.stack.length - 2].slice(-40)}`.toLowerCase();
-                const bytecode = await withTimeout(provider.getCode(address));
+                let bytecode;
+                try {
+                    bytecode = await withTimeout(provider.getCode(address));
+                } catch(error) {
+                    bytecode = '0x'
+                }
                 parsedOps.push({
                     op: log.op,
                     value: null,
@@ -117,8 +127,13 @@ exports.parseTrace = async (from, trace, provider) => {
 
                 const address = ethers.utils.getCreate2Address(from, s, hashedCreationBytecode);
 
-                const runtimeBytecode = await withTimeout(provider.getCode(address));
-                const contractHashedBytecode = ethers.utils.keccak256(runtimeBytecode);
+                let bytecode;
+                try {
+                    bytecode = await withTimeout(provider.getCode(address));
+                } catch(error) {
+                    bytecode = '0x'
+                }
+                const contractHashedBytecode = ethers.utils.keccak256(bytecode);
 
                 parsedOps.push({
                     op: log.op,
