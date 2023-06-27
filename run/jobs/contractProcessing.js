@@ -43,7 +43,6 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
 
         return tokenData;
     } catch(error) {
-        console.log(error)
         if (error.message && error.message.startsWith('Timed out'))
             throw error;
         return tokenData;
@@ -159,12 +158,12 @@ module.exports = async job => {
     else {
         const scannerMetadata = await findScannerMetadata(workspace, contract);
 
-        const abi = contract.abi || localMetadata.abi || scannerMetadata.abi;
+        const abi = contract.abi || scannerMetadata.abi;
         const tokenData = workspace.public ? await findPatterns(workspace.rpcServer, contract.address, abi) : {};
 
         let metadata = sanitize({
             bytecode, hashedBytecode, asm, abi,
-            name: contract.name || localMetadata.name || scannerMetadata.name,
+            name: contract.name || scannerMetadata.name,
             proxy: scannerMetadata.proxy,
             ...tokenData
         });
