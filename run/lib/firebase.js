@@ -9,8 +9,15 @@ const Transaction = models.Transaction;
 const Workspace = models.Workspace;
 const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
-const StripePlan = models.StripePlan;
-const StripeSubscription = models.StripeSubscription;
+const Contract = models.Contract;
+
+const getContractById = async (contractId) => {
+    if (!contractId) throw new Error('Missing parameter');
+
+    const contract = await Contract.findByPk(contractId);
+
+    return contract ? contract.toJSON() : null;
+};
 
 const storeContractVerificationData = async (workspaceId, address, verificationData) => {
     if (!workspaceId || !address || !verificationData) throw new Error('Missing parameter');
@@ -1123,5 +1130,6 @@ module.exports = {
     updateWorkspaceRpcHealthCheck: updateWorkspaceRpcHealthCheck,
     revertPartialBlock: revertPartialBlock,
     storeContractVerificationData: storeContractVerificationData,
+    getContractById: getContractById,
     Workspace: Workspace
 };

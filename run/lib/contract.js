@@ -44,7 +44,12 @@ const isErc721 = (abi) => {
     return findSelectors(abi, SELECTORS.erc721);
 };
 
+const isErc1155 = (abi) => {
+    return findSelectors(abi, SELECTORS.erc1155);
+};
+
 module.exports = {
-    isErc20: isErc20,
-    isErc721: isErc721
+    isErc20,
+    isErc721,
+    isErc1155
 };

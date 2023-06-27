@@ -544,21 +544,20 @@ module.exports = (sequelize, DataTypes) => {
     asm: DataTypes.TEXT
   }, {
     hooks: {
-        afterDestroy(contract, options) {
+        afterDestroy(contract) {
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'destroyed', null);
         },
-        async afterUpdate(contract, options) {
-            trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
-            if (contract.patterns.indexOf('erc20') > -1)
-                trigger(`private-tokens;workspace=${contract.workspaceId}`, 'new', null);
-            else if (contract.patterns.indexOf('erc721') > -1)
-                trigger(`private-nft;workspace=${contract.workspaceId}`, 'new', null);
+        async afterCreate(contract, options) {
+            const afterCreateFn = () => {
+                return enqueue(`contractProcessing`, `contractProcessing-${contract.id}`, { contractId: contract.id });
+            };
 
-            const workspace = await contract.getWorkspace();
-            if (workspace.public)
-                return enqueue(`contractProcessing`, `contractProcessing-${contract.id}`, { contractId: contract.id, workspaceId: contract.workspaceId });
+            if (options.transaction)
+                options.transaction.afterCommit(afterCreateFn);
+            else
+                afterCreateFn();
         },
-        async afterSave(contract, options) {
+        async afterSave(contract) {
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'new', null);
             trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
 
@@ -566,10 +565,6 @@ module.exports = (sequelize, DataTypes) => {
                 trigger(`private-tokens;workspace=${contract.workspaceId}`, 'new', null);
             else if (contract.patterns.indexOf('erc721') > -1)
                 trigger(`private-nft;workspace=${contract.workspaceId}`, 'new', null);
-
-            const workspace = await contract.getWorkspace();
-            if (workspace.public)
-                return enqueue(`contractProcessing`, `contractProcessing-${contract.id}`, { contractId: contract.id, workspaceId: contract.workspaceId });
         }
     },
     sequelize,

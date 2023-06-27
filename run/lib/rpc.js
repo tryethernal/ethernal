@@ -2,14 +2,9 @@ const ethers = require('ethers');
 const { parseTrace, processTrace } = require('./trace');
 const { enqueue } = require('./queue');
 const logger = require('./logger');
-<<<<<<< HEAD
-const { withTimeout } = require('./utils');
-
-const NETWORK_TIMEOUT = 10 * 1000;
-=======
 const { withTimeout } = require('../lib/utils');
+const abiChecker = require('../lib/contract');
 
->>>>>>> develop
 const ERC721_ABI = require('./abis/erc721.json');
 const ERC721_ENUMERABLE_ABI = require('./abis/erc721Enumerable.json');
 const ERC721_METADATA_ABI = require('./abis/erc721Metadata.json');
@@ -154,13 +149,62 @@ class ContractConnector {
      INTERFACE_IDS = {
          '721': '0x80ac58cd',
          '721Metadata': '0x5b5e139f',
-         '721Enumerable': '0x780e9d63'
-     };
+         '721Enumerable': '0x780e9d63',
+         '1155': '0xd9b67a26'
+    };
+
+    _decimals = null;
+    _name = null;
+    _symbol = null;
+    _totalSupply = null;
+    _isErc20 = null;
+    _isErc721 = null;
+    _isErc1155 = null;
 
     constructor(server, address, abi) {
         if (!server || !address || !abi) throw '[ContractConnector] Missing parameter';
         this.provider = getProvider(server);
         this.contract = new ethers.Contract(address, abi, this.provider);
+    }
+
+    // This should be improved by testing functions like transfer/allowance/approve/transferFrom
+    async isErc20() {
+        const isErc721 = await this.isErc721();
+        if (isErc721) return false;
+        if (this._isErc20 !== null) return this._isErc20;
+
+        const decimals = await this.decimals();
+        const symbol = await this.symbol();
+        const name = await this.name();
+        const totalSupply = await this.totalSupply();
+
+        this._isErc20 = decimals && symbol && name && totalSupply;
+
+        return this._isErc20;
+    }
+
+    async isErc721() {
+        if (this._isErc721 !== null) return this._isErc721;
+        this._isErc721 = await this.has721Interface();
+        return this._isErc721;
+    }
+
+    async isErc1155() {
+        if (this._isErc1155 !== null) return this._isErc1155;
+        this._isErc1155 = await this.has1155Interface();
+        return this._isErc1155;
+    }
+
+    async isProxy() {
+        const isErc20 = await this.isErc20();
+        if (isErc20 && abiChecker.isErc20(this.abi))
+            return true;
+        const isErc721 = await this.isErc721();
+        if (isErc721 && abiChecker.isErc721(this.abi))
+            return true;
+        const isErc1155 = await this.isErc1155();
+        if (isErc1155 && abiChecker.isErc1155(this.abi))
+            return true;
     }
 
     async callReadMethod(method, params, options) {
@@ -179,11 +223,19 @@ class ContractConnector {
         }
     }
 
+    has1155Interface() {
+        try {
+            return withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['1155']));
+        } catch(_error) {
+            return false;
+        }
+    }
+
     has721Interface() {
         try {
             return withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721']));
         } catch(_error) {
-            return new Promise(resolve => resolve(false));
+            return false;
         }
     }
 
@@ -191,7 +243,7 @@ class ContractConnector {
         try {
             return withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721Metadata']));
          } catch(_error) {
-             return new Promise(resolve => resolve(false));
+             return false;
          }
     }
 
@@ -199,30 +251,44 @@ class ContractConnector {
         try {
             return withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721Enumerable']));
         } catch(_error) {
-            return new Promise(resolve => resolve(false));
+            return false;
         }
     }
 
-    symbol() {
+    async decimals() {
         try {
-            return withTimeout(this.contract.symbol());
+            if (this._decimals) return this._decimals;
+            this._decimals = await withTimeout(this.contract.decimals());
+            return this._decimals;
         } catch(_error) {
-            return new Promise(resolve => resolve(null));
+            return null;
         }
     }
 
-    name() {
+    async symbol() {
         try {
-            return withTimeout(this.contract.name());
+            if (this._symbol) return this._symbol;
+            this._symbol = await withTimeout(this.contract.symbol());
+            return this._symbol;
         } catch(_error) {
-            return new Promise(resolve => resolve(null));
+            return null;
+        }
+    }
+
+    async name() {
+        try {
+            if (this._name) return this._name;
+            this._name = await withTimeout(this.contract.name());
+            return this._name;
+        } catch(_error) {
+            return null;
         }
     }
 
     async totalSupply() {
         try {
-            const res = await withTimeout(this.contract.totalSupply());
-            return res.toString();
+            this._totalSupply = await withTimeout(this.contract.totalSupply());
+            return this._name.toString();
         } catch(_error) {
             return null;
         }
