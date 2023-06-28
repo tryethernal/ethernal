@@ -939,7 +939,7 @@ module.exports = (sequelize, DataTypes) => {
             filter['where']['createdAt'] = { [Op.lt]: sequelize.literal(`NOW() - interval '${dayInterval} day'`)};
 
         return sequelize.transaction(
-            {  deferrable: Sequelize.Deferrable.SET_DEFERRED },
+            { deferrable: Sequelize.Deferrable.SET_DEFERRED },
             async (transaction) => {
                 await sequelize.models.IntegrityCheck.destroy(filter, { transaction });
                 await sequelize.models.TokenBalanceChange.destroy(filter, { transaction });
