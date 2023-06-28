@@ -182,4 +182,4 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'token_transfers'
   });
   return TokenTransfer;
-};  
+};
