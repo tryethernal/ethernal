@@ -8,7 +8,6 @@ const { sanitize } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
-const moment = require('moment');
 
 const Op = Sequelize.Op;
 const INTEGRATION_FIELD_MAPPING = {
@@ -939,7 +938,7 @@ module.exports = (sequelize, DataTypes) => {
             filter['where']['createdAt'] = { [Op.lt]: sequelize.literal(`NOW() - interval '${dayInterval} day'`)};
 
         return sequelize.transaction(
-            {  deferrable: Sequelize.Deferrable.SET_DEFERRED },
+            { deferrable: Sequelize.Deferrable.SET_DEFERRED },
             async (transaction) => {
                 await sequelize.models.IntegrityCheck.destroy(filter, { transaction });
                 await sequelize.models.TokenBalanceChange.destroy(filter, { transaction });

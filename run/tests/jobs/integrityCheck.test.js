@@ -3,12 +3,12 @@ jest.mock('moment', () => {
     original.unix = jest.fn(() => ({ diff: jest.fn(() => 200) }));
     return original;
 });
-const { Workspace } = require('../mocks/models');
+const { Workspace } = require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/lib/queue');
 
-const moment = require('moment');
 const db = require('../../lib/firebase');
+const models = require('../../models');
 const { enqueue, bulkEnqueue } = require('../../lib/queue');
 const integrityCheck = require('../../jobs/integrityCheck');
 
@@ -17,13 +17,34 @@ beforeEach(() => jest.clearAllMocks());
 const job = { data: { workspaceId: 1 }};
 
 describe('integrityCheck', () => {
-    it('Should return a message saying integrity checks are not enabled', async () => {
+    it('Should revert expired pending blocks & update latest checked block', async () => {
+        const revertIfPartial = jest.fn();
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            countBlocks: jest.fn().mockResolvedValueOnce(1),
+            getBlocks: jest.fn()
+                .mockResolvedValueOnce([{ id: 5, number: 5, revertIfPartial }])
+                .mockResolvedValueOnce([{ id: 3, number: 3 }])
+                .mockResolvedValueOnce([])
+                .mockResolvedValueOnce([]),
+            integrityCheckStartBlockNumber: 5,
+            public: true,
+            id: 1,
+            name: 'hardhat',
+            user: { firebaseUserId: '123', name: 'hardhat' }
+        });
+
+        await integrityCheck(job);
+        expect(db.updateWorkspaceIntegrityCheck).toHaveBeenCalledWith(1, { blockId: 3 });
+        expect(revertIfPartial).toHaveBeenCalledTimes(1);
+    });
+
+    it('Should return a message saying integrity checks are not enabled', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({ integrityCheckStartBlockNumber: null, public: true });
 
         expect(await integrityCheck(job)).toEqual('Integrity checks not enabled');
     });
 
-    it('Should return a message saying blocks have not been synced', async () => {
+    it('Should return a message saying blocks have not been synced', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             countBlocks: jest.fn().mockResolvedValueOnce(0),
             integrityCheckStartBlockNumber: 0,
@@ -36,7 +57,10 @@ describe('integrityCheck', () => {
     it('Should enqueue the first block and exit if no integrity check & the lower block does not exist', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             countBlocks: jest.fn().mockResolvedValueOnce(1),
-            getBlocks: jest.fn().mockResolvedValueOnce([{ id: 1, number: 1 }]).mockResolvedValueOnce([]),
+            getBlocks: jest.fn()
+                .mockResolvedValueOnce([])
+                .mockResolvedValueOnce([{ id: 1, number: 1 }])
+                .mockResolvedValueOnce([]),
             integrityCheckStartBlockNumber: 5,
             public: true,
             id: 1,
@@ -57,7 +81,10 @@ describe('integrityCheck', () => {
     it('Should enqueue the first block and exit if integrityCheckStartBlockNumber < lowestBlock.number & no lower block', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             countBlocks: jest.fn().mockResolvedValueOnce(1),
-            getBlocks: jest.fn().mockResolvedValueOnce([{ id: 1, number: 1 }]).mockResolvedValueOnce([]),
+            getBlocks: jest.fn()
+                .mockResolvedValueOnce([])
+                .mockResolvedValueOnce([{ id: 1, number: 1 }])
+                .mockResolvedValueOnce([]),
             integrityCheckStartBlockNumber: 0,
             integrityCheck: {},
             public: true,
@@ -79,7 +106,7 @@ describe('integrityCheck', () => {
     it('Should update latest checked if integrityCheckStartBlockNumber > latest checked', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             countBlocks: jest.fn().mockResolvedValueOnce(1),
-            getBlocks: jest.fn().mockResolvedValue([{ id: 1, number: 5 }]),
+            getBlocks: jest.fn().mockResolvedValueOnce([]).mockResolvedValue([{ id: 1, number: 5 }]),
             integrityCheckStartBlockNumber: 5,
             integrityCheck: { block: { number: 2 }},
             public: true,
@@ -98,7 +125,10 @@ describe('integrityCheck', () => {
     it('Should return if no lower block', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             countBlocks: jest.fn().mockResolvedValueOnce(1),
-            getBlocks: jest.fn().mockResolvedValueOnce([{ id: 1, number: 1 }]).mockResolvedValueOnce([]),
+            getBlocks: jest.fn()
+                .mockResolvedValueOnce([])
+                .mockResolvedValueOnce([{ id: 1, number: 1 }])
+                .mockResolvedValueOnce([]),
             integrityCheckStartBlockNumber: 5,
             integrityCheck: {},
             id: 1,
@@ -113,7 +143,10 @@ describe('integrityCheck', () => {
     it('Should return if no upper block', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             countBlocks: jest.fn().mockResolvedValueOnce(1),
-            getBlocks: jest.fn().mockResolvedValueOnce([{ id: 1, number: 1 }]).mockResolvedValueOnce([]),
+            getBlocks: jest.fn()
+                .mockResolvedValueOnce([])
+                .mockResolvedValueOnce([{ id: 1, number: 1 }])
+                .mockResolvedValueOnce([]),
             integrityCheckStartBlockNumber: 5,
             integrityCheck: { block: {}},
             id: 1,
@@ -130,7 +163,7 @@ describe('integrityCheck', () => {
     it('Should start recovery', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             countBlocks: jest.fn().mockResolvedValueOnce(1),
-            getBlocks: jest.fn().mockResolvedValue([{ id: 1, number: 1 }]),
+            getBlocks: jest.fn().mockResolvedValueOnce([]).mockResolvedValue([{ id: 1, number: 1 }]),
             integrityCheckStartBlockNumber: 5,
             integrityCheck: { block: { number: 1 }},
             id: 1,
@@ -156,6 +189,7 @@ describe('integrityCheck', () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn()
+                .mockResolvedValueOnce([])
                 .mockResolvedValue([{ id: 1, number: 1 }])
                 .mockResolvedValue([{ id: 2, number: 5 }]),
             integrityCheckStartBlockNumber: 5,
@@ -177,6 +211,7 @@ describe('integrityCheck', () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn()
+                .mockResolvedValueOnce([])
                 .mockResolvedValue([{ id: 1, number: 1 }])
                 .mockResolvedValue([{ id: 2, number: 5 }]),
             integrityCheckStartBlockNumber: 5,

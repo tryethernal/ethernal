@@ -10,6 +10,7 @@
 
 */
 
+const { Op } = require('sequelize');
 const models = require('../models');
 const db = require('../lib/firebase');
 const { enqueue, bulkEnqueue } = require('../lib/queue');
@@ -19,7 +20,7 @@ const moment = require('moment');
 const Workspace = models.Workspace;
 
 const DELAY_BEFORE_RECOVERY = 2 * 60;
-const FETCH_LATEST_TIMEOUT = 10 * 1000;
+const PARTIAL_BLOCK_TTL = 15 * 60;
 
 module.exports = async job => {
     const data = job.data;
@@ -58,7 +59,46 @@ module.exports = async job => {
     if (blockCount == 0)
         return 'No block synced yet';
 
+    /*
+        We assume that if a block stays in a syncing state for more than 15 minutes,
+        it is stuck and we can delete it and resync it later through integrity check.
+    */
+    const expiredPartialBlocks = await workspace.getBlocks({
+        where: {
+            state: 'syncing',
+            createdAt: {
+                [Op.lte]: moment().subtract(PARTIAL_BLOCK_TTL, 'seconds').toDate()
+            }
+        }
+    });
+
+    if (expiredPartialBlocks.length > 0) {
+        const lowestId = expiredPartialBlocks.map(b => b.id).sort()[0];
+        for (let i = 0; i < expiredPartialBlocks.length; i++)
+            await expiredPartialBlocks[i].revertIfPartial();
+
+        /*
+            If we delete past block, we need to restart integrity checks
+            from there.
+        */
+        const [newBlock] = await workspace.getBlocks({
+            attributes: ['id', 'number'],
+            where: {
+                state: 'ready',
+                id: {
+                    [Op.lt]: lowestId
+                }
+            },
+            order: [['number', 'DESC']],
+            limit: 1
+        });
+        await db.updateWorkspaceIntegrityCheck(workspace.id, { blockId: newBlock.id });
+    }
+
     const [lowestBlock] = await workspace.getBlocks({
+        where: {
+            state: 'ready'
+        },
         order: [['number', 'ASC']],
         limit: 1
     });
@@ -75,7 +115,10 @@ module.exports = async job => {
         || (workspace.integrityCheck.block && workspace.integrityCheckStartBlockNumber > workspace.integrityCheck.block.number)
     ) {
         ([lowerBlock] = await workspace.getBlocks({
-            where: { number: workspace.integrityCheckStartBlockNumber },
+            where: {
+                state: 'ready',
+                number: workspace.integrityCheckStartBlockNumber
+            },
         }));
 
         /*
@@ -98,6 +141,7 @@ module.exports = async job => {
     }
 
     const [upperBlock] = await workspace.getBlocks({
+        where: { state: 'ready' },
         order: [['number', 'DESC']],
         limit: 1
     });
@@ -109,7 +153,7 @@ module.exports = async job => {
         const provider = workspace.getProvider();
         let latestBlock;
         try {
-            latestBlock = await withTimeout(provider.fetchLatestBlock(), FETCH_LATEST_TIMEOUT);
+            latestBlock = await withTimeout(provider.fetchLatestBlock());
         } catch(_error) {
             return "Couldn't reach network";
         }
@@ -128,7 +172,6 @@ module.exports = async job => {
             });
         }
     }
-
     const gaps = await workspace.findBlockGaps(lowerBlock.number, upperBlock.number);
 
     /*
@@ -137,7 +180,7 @@ module.exports = async job => {
     */
     if (!gaps.length) {
         if (lowerBlock.number != upperBlock.number)
-            await db.updateWorkspaceIntegrityCheck(workspace.id, { blockId: upperBlock.id });
+            await db.updateWorkspaceIntegrityCheck(workspace.id, { blockId: upperBlock.id });
     }
     else {
         const batches = [];
@@ -156,6 +199,7 @@ module.exports = async job => {
                 });
             }
         }
+
         await bulkEnqueue('batchBlockSync', batches);
     }
 

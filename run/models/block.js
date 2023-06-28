@@ -1,6 +1,7 @@
 'use strict';
 const {
-  Model
+  Model,
+  Sequelize
 } = require('sequelize');
 const { trigger } = require('../lib/pusher');
 const moment = require('moment');
@@ -21,7 +22,15 @@ module.exports = (sequelize, DataTypes) => {
         if (this.state !== 'syncing')
             return;
 
-        this.destroy();
+        return sequelize.transaction(
+          { deferrable: Sequelize.Deferrable.SET_DEFERRED },
+          async transaction => {
+            const transactions = await this.getTransactions();
+            for (let i = 0; i < transactions.length; i++)
+              await transactions[i].destroy({ transaction });
+            return this.destroy({ transaction });
+          }
+        );
     }
   }
   Block.init({
