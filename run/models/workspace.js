@@ -8,7 +8,6 @@ const { sanitize } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
-const moment = require('moment');
 
 const Op = Sequelize.Op;
 const INTEGRATION_FIELD_MAPPING = {
