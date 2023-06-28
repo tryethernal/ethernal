@@ -1,9 +1,6 @@
 const { ProviderConnector } = require('../lib/rpc');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
-const { withTimeout } = require('../lib/utils');
-
-const NETWORK_TIMEOUT = 10 * 1000;
 
 module.exports = async job => {
     const data = job.data;
@@ -11,7 +8,7 @@ module.exports = async job => {
     if (!data.userId || !data.workspace || data.blockNumber === undefined || data.blockNumber === null)
         return 'Missing parameter';
 
-        const workspace = await db.getWorkspaceByName(data.userId, data.workspace);
+    const workspace = await db.getWorkspaceByName(data.userId, data.workspace);
 
     const existingBlock = await db.getWorkspaceBlock(workspace.id, data.blockNumber);
     if (existingBlock)
@@ -24,7 +21,7 @@ module.exports = async job => {
 
     const providerConnector = new ProviderConnector(workspace.rpcServer);
 
-    const block = await withTimeout(providerConnector.fetchBlockWithTransactions(data.blockNumber), NETWORK_TIMEOUT);
+    const block = await providerConnector.fetchBlockWithTransactions(data.blockNumber);
 
     if (!block)
         throw new Error("Couldn't fetch block from provider");
@@ -39,7 +36,7 @@ module.exports = async job => {
 
         for (let i = 0; i < block.transactions.length; i++) {
             const transaction = block.transactions[i];
-            const receipt = await withTimeout(providerConnector.fetchTransactionReceipt(transaction.hash), NETWORK_TIMEOUT);
+            const receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
 
             if (!receipt)
                 throw new Error('Failed to fetch receipt');
