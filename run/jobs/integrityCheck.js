@@ -20,7 +20,7 @@ const moment = require('moment');
 const Workspace = models.Workspace;
 
 const DELAY_BEFORE_RECOVERY = 2 * 60;
-const PARTIAL_BLOCK_TTL = 1 * 60;
+const PARTIAL_BLOCK_TTL = 15 * 60;
 
 module.exports = async job => {
     const data = job.data;
@@ -51,6 +51,15 @@ module.exports = async job => {
         return 'Integrity checks not enabled';
 
     /*
+        We don't want to start integrity checks if the sync has never been initiated.
+        Mostly to avoid starting in recovery mode. Also, maybe there is a reason the
+        sync hasn't been intiated yet.
+    */
+    const blockCount = await workspace.countBlocks();
+    if (blockCount == 0)
+        return 'No block synced yet';
+
+    /*
         We assume that if a block stays in a syncing state for more than 15 minutes,
         it is stuck and we can delete it and resync it later through integrity check.
     */
@@ -62,15 +71,6 @@ module.exports = async job => {
     });
     for (let i = 0; i < expiredPartialBlocks.length; i++)
         await expiredPartialBlocks[i].revertIfPartial();
-
-    /*
-        We don't want to start integrity checks if the sync has never been initiated.
-        Mostly to avoid starting in recovery mode. Also, maybe there is a reason the
-        sync hasn't been intiated yet.
-    */
-    const blockCount = await workspace.countBlocks();
-    if (blockCount == 0)
-        return 'No block synced yet';
 
     const [lowestBlock] = await workspace.getBlocks({
         order: [['number', 'ASC']],

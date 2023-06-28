@@ -34,23 +34,17 @@ module.exports = async job => {
             transactions: [],
         };
 
-        try {
-            for (let i = 0; i < block.transactions.length; i++) {
-                const transaction = block.transactions[i];
-                const receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
+        for (let i = 0; i < block.transactions.length; i++) {
+            const transaction = block.transactions[i];
+            const receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
 
-                if (!receipt)
-                    throw new Error('Failed to fetch receipt');
+            if (!receipt)
+                throw new Error('Failed to fetch receipt');
 
-                formattedBlock.transactions.push({
-                    ...transaction,
-                    receipt
-                });
-            }
-        } catch(error) {
-            await db.revertPartialBlock(partialBlock.id);
-            logger.error(error.message, { location: 'jobs.blockSync', error: error, data: data });
-            throw error;
+            formattedBlock.transactions.push({
+                ...transaction,
+                receipt
+            });
         }
 
         await db.syncFullBlock(workspace.id, formattedBlock);
@@ -60,6 +54,7 @@ module.exports = async job => {
         if (partialBlock)
             await db.revertPartialBlock(partialBlock.id);
 
+        logger.error(error.message, { location: 'jobs.blockSync', error, data });
         throw error;
     }
 };
