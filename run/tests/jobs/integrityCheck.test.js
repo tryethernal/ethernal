@@ -8,6 +8,7 @@ require('../mocks/lib/firebase');
 require('../mocks/lib/queue');
 
 const db = require('../../lib/firebase');
+const models = require('../../models');
 const { enqueue, bulkEnqueue } = require('../../lib/queue');
 const integrityCheck = require('../../jobs/integrityCheck');
 
@@ -16,12 +17,13 @@ beforeEach(() => jest.clearAllMocks());
 const job = { data: { workspaceId: 1 }};
 
 describe('integrityCheck', () => {
-    it('Should revert expired pending blocks', async () => {
+    it('Should revert expired pending blocks & update latest checked block', async () => {
         const revertIfPartial = jest.fn();
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn()
-                .mockResolvedValueOnce([{ id: 1, number: 1, revertIfPartial }])
+                .mockResolvedValueOnce([{ id: 5, number: 5, revertIfPartial }])
+                .mockResolvedValueOnce([{ id: 3, number: 3 }])
                 .mockResolvedValueOnce([])
                 .mockResolvedValueOnce([]),
             integrityCheckStartBlockNumber: 5,
@@ -30,7 +32,9 @@ describe('integrityCheck', () => {
             name: 'hardhat',
             user: { firebaseUserId: '123', name: 'hardhat' }
         });
+
         await integrityCheck(job);
+        expect(db.updateWorkspaceIntegrityCheck).toHaveBeenCalledWith(1, { blockId: 3 });
         expect(revertIfPartial).toHaveBeenCalledTimes(1);
     });
 
