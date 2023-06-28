@@ -28,12 +28,12 @@ module.exports = async job => {
 
     const partialBlock = await db.syncPartialBlock(workspace.id, block);
 
-    const formattedBlock = {
-        block,
-        transactions: [],
-    };
-
     try {
+        const formattedBlock = {
+            block,
+            transactions: [],
+        };
+
         for (let i = 0; i < block.transactions.length; i++) {
             const transaction = block.transactions[i];
             const receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
@@ -46,13 +46,15 @@ module.exports = async job => {
                 receipt
             });
         }
+
+        await db.syncFullBlock(workspace.id, formattedBlock);
+
+        return true;
     } catch(error) {
-        await db.revertPartialBlock(partialBlock.id);
-        logger.error(error.message, { location: 'jobs.blockSync', error: error, data: data });
+        if (partialBlock)
+            await db.revertPartialBlock(partialBlock.id);
+
+        logger.error(error.message, { location: 'jobs.blockSync', error, data });
         throw error;
     }
-
-    await db.syncFullBlock(workspace.id, formattedBlock);
-
-    return true;
 };
