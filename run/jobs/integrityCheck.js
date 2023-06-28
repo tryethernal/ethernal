@@ -10,6 +10,7 @@
 
 */
 
+const { Op } = require('sequelize');
 const models = require('../models');
 const db = require('../lib/firebase');
 const { enqueue, bulkEnqueue } = require('../lib/queue');
@@ -19,7 +20,7 @@ const moment = require('moment');
 const Workspace = models.Workspace;
 
 const DELAY_BEFORE_RECOVERY = 2 * 60;
-const FETCH_LATEST_TIMEOUT = 10 * 1000;
+const PARTIAL_BLOCK_TTL = 1 * 60;
 
 module.exports = async job => {
     const data = job.data;
@@ -48,6 +49,19 @@ module.exports = async job => {
 
     if (workspace.integrityCheckStartBlockNumber === null || workspace.integrityCheckStartBlockNumber === undefined)
         return 'Integrity checks not enabled';
+
+    /*
+        We assume that if a block stays in a syncing state for more than 15 minutes,
+        it is stuck and we can delete it and resync it later through integrity check.
+    */
+    const expiredPartialBlocks = await workspace.getBlocks({
+        where: { state: 'syncing' },
+        createdAt: {
+            [Op.lte]: moment().subtract(PARTIAL_BLOCK_TTL, 'seconds').toDate()
+        }
+    });
+    for (let i = 0; i < expiredPartialBlocks.length; i++)
+        await expiredPartialBlocks[i].revertIfPartial();
 
     /*
         We don't want to start integrity checks if the sync has never been initiated.
@@ -109,7 +123,7 @@ module.exports = async job => {
         const provider = workspace.getProvider();
         let latestBlock;
         try {
-            latestBlock = await withTimeout(provider.fetchLatestBlock(), FETCH_LATEST_TIMEOUT);
+            latestBlock = await withTimeout(provider.fetchLatestBlock());
         } catch(_error) {
             return "Couldn't reach network";
         }
