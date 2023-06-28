@@ -9,8 +9,7 @@ const Transaction = models.Transaction;
 const Workspace = models.Workspace;
 const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
-const StripePlan = models.StripePlan;
-const StripeSubscription = models.StripeSubscription;
+const Block = models.Block;
 
 const storeContractVerificationData = async (workspaceId, address, verificationData) => {
     if (!workspaceId || !address || !verificationData) throw new Error('Missing parameter');
