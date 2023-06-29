@@ -1,6 +1,6 @@
 const ethers = require('ethers');
 const { parseTrace, processTrace } = require('./trace');
-const { enqueue } = require('./queue');
+const { bulkEnqueue } = require('./queue');
 const logger = require('./logger');
 const { withTimeout } = require('../lib/utils');
 const abiChecker = require('../lib/contract');
@@ -166,8 +166,10 @@ class ContractConnector {
 
     constructor(server, address, abi) {
         if (!server || !address) throw '[ContractConnector] Missing parameter';
+
+        this.abi = abi || ALL_ABIS;
         this.provider = getProvider(server);
-        this.contract = new ethers.Contract(address, abi || ALL_ABIS, this.provider);
+        this.contract = new ethers.Contract(address, this. abi, this.provider);
     }
 
     // This should be improved by testing functions like transfer/allowance/approve/transferFrom
@@ -243,22 +245,6 @@ class ContractConnector {
         }
     }
 
-    async has721Metadata() {
-        try {
-            return await withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721Metadata']));
-         } catch(_error) {
-            return false;
-         }
-    }
-
-    async has721Enumerable() {
-        try {
-            return await withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721Enumerable']));
-        } catch(_error) {
-            return false;
-        }
-    }
-
     async decimals() {
         try {
             if (this._decimals) return this._decimals;
@@ -299,97 +285,78 @@ class ContractConnector {
     }
 }
 
-class ERC721Connector {
+class ERC721Connector extends ContractConnector {
 
-    constructor(server, address, interfaces = {}) {
+    constructor(server, address, abi) {
         if (!server || !address) throw '[ERC721Connector] Missing parameter';
 
-        this.interfaces = {
-            metadata: !!interfaces.metadata,
-            enumerable: !!interfaces.enumerable
-        };
-
-        this.abi = ERC721_ABI;
-        this.address = address;
-
-        if (this.interfaces.metadata)
-            this.abi = this.abi.concat(ERC721_METADATA_ABI);
-
-        if (this.interfaces.enumerable)
-            this.abi = this.abi.concat(ERC721_ENUMERABLE_ABI);
-
-        this.provider = getProvider(server);
-        this.contract = new ethers.Contract(address, this.abi, this.provider);
-    }
-
-    async totalSupply() {
-        try { 
-            const res = await withTimeout(this.contract.totalSupply());
-            return res.toString();
-        } catch(_error) {
-            return new Promise(resolve => resolve(null));
-        }
+        super(server, address, abi || ERC721_ABI);
     }
 
     async tokenByIndex(index) {
         try {
             const res = await withTimeout(this.contract.tokenByIndex(index));
             return res.toString();
-        } catch(_error) {
-            return new Promise(resolve => resolve(null));
+        } catch(error) {
+            return null;
         }
     }
 
     ownerOf(tokenId) {
         try {
-            return withTimeout(this.contract.ownerOf(tokenId));
-        } catch (_error) {
-            return new Promise(resolve => resolve(null));
-        }
-    }
-
-    async symbol() {
-        try {
-            return withTimeout(this.contract.symbol());
-        } catch(_error) {
-            return new Promise(resolve => resolve(null));
-        }
-    }
-
-    name() {
-        try {
-            return withTimeout(this.contract.name());
-        } catch(_error) {
-            return new Promise(resolve => resolve(null));
+            return withTimeout(this.contract.ownerOf(tokenId.toString()));
+        } catch (error) {
+            return null;
         }
     }
 
     tokenURI(tokenId) {
         try {
-            return withTimeout(this.contract.tokenURI(tokenId));
-        } catch(_error) {
-            return new Promise(resolve => resolve(null));
+            throw 'error'
+            return withTimeout(this.contract.tokenURI(tokenId.toString()));
+        } catch(error) {
+            return null;
+        }
+    }
+
+    hasMetadata() {
+        try {
+            return withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721Metadata']));
+         } catch(error) {
+            return false;
+         }
+    }
+
+    isEnumerable() {
+        try {
+            return withTimeout(this.contract.supportsInterface(this.INTERFACE_IDS['721Enumerable']));
+        } catch(error) {
+            return false;
         }
     }
 
     async fetchAndStoreAllTokens(workspaceId) {
-        if (!this.interfaces.enumerable)
-            throw new Error('This method is only available on ERC721 implemeting the Enumerable interface');;
+        const isEnumerable = await this.isEnumerable()
+        if (!isEnumerable)
+            return 'This method is only available on ERC721 implemeting the Enumerable interface';
 
-        const totalSupply = await withTimeout(this.totalSupply());
+        const totalSupply = await this.totalSupply();
         if (!totalSupply)
-            throw new Error(`totalSupply() doesn't seem to be implemented. Can't enumerate tokens`);
+            return `totalSupply() doesn't seem to be implemented. Can't enumerate tokens`;
 
+        const jobs = [];
         for (let i = 0; i < totalSupply; i++) {
-            const tokenId = await withTimeout(this.tokenByIndex(i));
-            await enqueue('reloadErc721Token',
-                `reloadErc721Token-${workspaceId}-${this.address}-${tokenId}`, {
+            const tokenId = await this.tokenByIndex(i);
+            jobs.push({
+                name: `reloadErc721Token-${workspaceId}-${this.address}-${tokenId}`,
+                data: {
                     workspaceId: workspaceId,
                     address: this.address,
                     tokenId: tokenId
                 }
-            );
+            });
         }
+        await bulkEnqueue('reloadErc721Token', jobs);
     }
 }
 
