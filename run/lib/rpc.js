@@ -168,6 +168,7 @@ class ContractConnector {
         if (!server || !address) throw '[ContractConnector] Missing parameter';
 
         this.abi = abi || ALL_ABIS;
+        this.address = address;
         this.provider = getProvider(server);
         this.contract = new ethers.Contract(address, this. abi, this.provider);
     }
@@ -290,7 +291,7 @@ class ERC721Connector extends ContractConnector {
     constructor(server, address, abi) {
         if (!server || !address) throw '[ERC721Connector] Missing parameter';
 
-        super(server, address, abi || ERC721_ABI);
+        super(server, address, abi || ERC721_ABI.concat(ERC721_METADATA_ABI, ERC721_ENUMERABLE_ABI));
     }
 
     async tokenByIndex(index) {
@@ -312,7 +313,6 @@ class ERC721Connector extends ContractConnector {
 
     tokenURI(tokenId) {
         try {
-            throw 'error'
             return withTimeout(this.contract.tokenURI(tokenId.toString()));
         } catch(error) {
             return null;
@@ -338,11 +338,11 @@ class ERC721Connector extends ContractConnector {
     async fetchAndStoreAllTokens(workspaceId) {
         const isEnumerable = await this.isEnumerable()
         if (!isEnumerable)
-            return 'This method is only available on ERC721 implemeting the Enumerable interface';
+            throw new Error('This method is only available on ERC721 implemeting the Enumerable interface');
 
         const totalSupply = await this.totalSupply();
         if (!totalSupply)
-            return `totalSupply() doesn't seem to be implemented. Can't enumerate tokens`;
+            throw new Error(`totalSupply() doesn't seem to be implemented. Can't enumerate tokens`);
 
         const jobs = [];
         for (let i = 0; i < totalSupply; i++) {
