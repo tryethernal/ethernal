@@ -701,7 +701,7 @@ module.exports = (sequelize, DataTypes) => {
             tokenDecimals: contract.tokenDecimals,
             tokenName: contract.tokenName,
             tokenSymbol: contract.tokenSymbol,
-            tokenTotalSupply: contract.totalSupply,
+            tokenTotalSupply: contract.tokenTotalSupply,
             watchedPaths: contract.watchedPaths,
             has721Metadata: contract.has721Metadata,
             has721Enumerable: contract.has721Enumerable,

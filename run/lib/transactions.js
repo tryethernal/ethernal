@@ -3,6 +3,9 @@ const moment = require('moment');
 const db = require('./firebase');
 const logger = require('./logger');
 let { getProvider, Tracer } = require('./rpc');
+const { withTimeout } = require('./utils');
+
+const NETWORK_TIMEOUT = 10 * 1000;
 
 const _getFunctionSignatureForTransaction = (transaction, abi) => {
     try {
