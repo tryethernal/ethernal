@@ -20,9 +20,7 @@ require('../mocks/lib/yasold');
 const axios = require('axios');
 const ethers = require('ethers');
 const db = require('../../lib/firebase');
-const transactionsLib = require('../../lib/transactions');
-const { ContractConnector, ERC721Connector } = require('../../lib/rpc');
-const ERC721_ABI = require('../fixtures/ERC721_ABI.json');
+const { ContractConnector } = require('../../lib/rpc');
 
 const processContract = require('../../jobs/processContract');
 
