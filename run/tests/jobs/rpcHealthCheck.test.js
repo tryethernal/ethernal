@@ -1,9 +1,8 @@
-const { Workspace } = require('../mocks/models');
+const { Workspace } = require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/lib/utils');
 require('../mocks/lib/queue');
 
-const { withTimeout } = require('../../lib/utils');
 const db = require('../../lib/firebase');
 const rpcHealthCheck = require('../../jobs/rpcHealthCheck');
 
@@ -13,7 +12,6 @@ const job = { data: { workspaceId: 1 }};
 
 describe('rpcHealthCheck', () => {
     it('Should update healtcheck status if it is reachable', async () => {
-        withTimeout.mockResolvedValueOnce(42);
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             id: 1,
             getProvider: jest.fn().mockReturnValue({ fetchNetworkId: jest.fn().mockResolvedValue(true) })
@@ -25,10 +23,9 @@ describe('rpcHealthCheck', () => {
     });
 
     it('Should update healtcheck status if no response', async () => {
-        withTimeout.mockResolvedValueOnce(null);
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             id: 1,
-            getProvider: jest.fn().mockReturnValue({ fetchNetworkId: jest.fn().mockResolvedValue(true) })
+            getProvider: jest.fn().mockReturnValue({ fetchNetworkId: jest.fn().mockResolvedValue(null) })
         });
 
         await rpcHealthCheck(job);
@@ -37,10 +34,9 @@ describe('rpcHealthCheck', () => {
     });
 
     it('Should update healtcheck status if request times out', async () => {
-        withTimeout.mockRejectedValueOnce(new Error('Cant reach server'));
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             id: 1,
-            getProvider: jest.fn().mockReturnValue({ fetchNetworkId: jest.fn().mockResolvedValue(true) })
+            getProvider: jest.fn().mockReturnValue({ fetchNetworkId: jest.fn().mockRejectedValueOnce(new Error('Cant reach server')) })
         });
 
         await rpcHealthCheck(job);

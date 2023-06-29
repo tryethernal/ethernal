@@ -56,7 +56,7 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res) => {
             timestamp: data.block.timestamp,
         });
 
-        const storedTx = await db.storeTransaction(data.uid, data.workspace, txSynced);
+        await db.storeTransaction(data.uid, data.workspace, txSynced);
 
        res.sendStatus(200);
     } catch(error) {
