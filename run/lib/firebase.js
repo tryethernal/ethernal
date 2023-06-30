@@ -10,6 +10,7 @@ const Workspace = models.Workspace;
 const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const Contract = models.Contract;
+const Block = models.Block;
 
 const getContractById = async (contractId) => {
     if (!contractId) throw new Error('Missing parameter');
