@@ -2,7 +2,7 @@ const ethers = require('ethers');
 const { parseTrace, processTrace } = require('./trace');
 const { bulkEnqueue } = require('./queue');
 const logger = require('./logger');
-const { withTimeout } = require('../lib/utils');
+const { withTimeout, sanitize } = require('../lib/utils');
 const abiChecker = require('../lib/contract');
 
 const ERC721_ABI = require('./abis/erc721.json');
@@ -101,14 +101,20 @@ class ProviderConnector {
     }
 
     async fetchBlockWithTransactions(blockNumber) {
-        return await withTimeout(this.provider.getBlockWithTransactions(blockNumber));
+        try {
+            return await withTimeout(this.provider.getBlockWithTransactions(blockNumber));
+        } catch(error) {
+            const rawBlock = await withTimeout(this.provider.send('eth_getBlockByNumber', [blockNumber.toString(), true]))
+            return sanitize(rawBlock);
+        }
     }
 
     async fetchTransactionReceipt(transactionHash) {
         try {
             return await withTimeout(this.provider.getTransactionReceipt(transactionHash));
-        } catch(_error) {
-            return await withTimeout(this.provider.send('eth_getTransactionReceipt', [transactionHash]));
+        } catch(error) {
+            const rawTransaction = await withTimeout(this.provider.send('eth_getTransactionReceipt', [transactionHash]));
+            return sanitize(rawTransaction);
         }
     }
 
