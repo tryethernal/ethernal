@@ -3,51 +3,49 @@ require('../mocks/lib/ethers');
 require('../mocks/lib/queue');
 const ethers = require('ethers');
 const { processTrace, parseTrace } = require('../../lib/trace');
-const { enqueue } = require('../../lib/queue');
+const { bulkEnqueue } = require('../../lib/queue');
 const { ContractConnector, Tracer, ERC721Connector } = require('../../lib/rpc');
-const ERC721_ABI = require('../../lib/abis/erc721.json');
-const ERC721_ENUMERABLE_ABI = require('../../lib/abis/erc721Enumerable.json');
-const ERC721_METADATA_ABI = require('../../lib/abis/erc721Metadata.json');
 
 afterEach(() => jest.clearAllMocks());
 
 describe('ERC721Connector', () => {
     const host = 'http://localhost:8545', address = '0x123';
 
-    it('Should create an instance with a provider, a contract and base erc721 abi', () => {
-        const connector = new ERC721Connector(host, address);
-        expect(connector.provider).toEqual(expect.objectContaining({ send: expect.anything() }));
-        expect(connector.contract).toEqual(expect.objectContaining({
-            name: expect.anything(),
-            functions: expect.any(Object)
-        }));
-        expect(connector.abi).toEqual(ERC721_ABI);
-    });
-
-    it('Should create an instance with erc721 metadata abi', () => {
-        const connector = new ERC721Connector(host, address, { metadata: true });
-        expect(connector.abi).toEqual([...ERC721_ABI, ...ERC721_METADATA_ABI]);
-    });
-
-    it('Should create an instance with erc721 enumerable abi', () => {
-        const connector = new ERC721Connector(host, address, { enumerable: true });
-        expect(connector.abi).toEqual([...ERC721_ABI, ...ERC721_ENUMERABLE_ABI]);
-    });
-
     it('Should not all allow token fetching if instance is not enumerable', async () => {
+        jest.spyOn(ethers, 'Contract').mockReturnValueOnce({
+            supportsInterface: jest.fn().mockResolvedValue(false)
+        });
         const connector = new ERC721Connector(host, address);
         expect(async () => {
             await connector.fetchAndStoreAllTokens(1);
         }).rejects.toThrow(new Error('This method is only available on ERC721 implemeting the Enumerable interface'));
     });
 
+    it('Should not all allow token fetching if instance does not implement totalSupply', async () => {
+        jest.spyOn(ethers, 'Contract').mockReturnValueOnce({
+            supportsInterface: jest.fn().mockResolvedValue(true),
+            totalSupply: jest.fn().mockResolvedValue(null)
+        });
+        const connector = new ERC721Connector(host, address);
+        expect(async () => {
+            await connector.fetchAndStoreAllTokens(1);
+        }).rejects.toThrow(new Error(`totalSupply() doesn't seem to be implemented. Can't enumerate tokens`));
+    });
+
     it('Should queue fetching for each token if instance is enumerable', async () => {
-        const connector = new ERC721Connector(host, address, { enumerable: true });
-        jest.spyOn(connector, 'totalSupply').mockResolvedValueOnce(2);
+        jest.spyOn(ethers, 'Contract').mockReturnValueOnce({
+            supportsInterface: jest.fn().mockResolvedValue(true),
+            totalSupply: jest.fn().mockResolvedValue('2'),
+            tokenByIndex: jest.fn().mockResolvedValueOnce('1').mockResolvedValueOnce('2')
+        });
+        const connector = new ERC721Connector(host, address);
         
         await connector.fetchAndStoreAllTokens(1);
 
-        expect(enqueue).toHaveBeenCalledTimes(2);
+        expect(bulkEnqueue).toHaveBeenCalledWith('reloadErc721Token', [
+            { name: `reloadErc721Token-1-0x123-1`, data: { workspaceId: 1, address: '0x123', tokenId: '1' }},
+            { name: `reloadErc721Token-1-0x123-2`, data: { workspaceId: 1, address: '0x123', tokenId: '2' }},
+        ]);
     });
 });
 
@@ -79,7 +77,7 @@ describe('Tracer', () => {
     it('Should set a parsed trace on the instance', async () => {
         const tracer = new Tracer('http://localhost:8545', {});
         await tracer.process({ hash: '0x123' });
-        expect(tracer.parsedTrace).toEqual([{ op: 'CALL' }, { op: 'CALLSTATIC' }]);
+        expect(tracer.parsedTrace).toEqual([{ op: 'CALL' }, { op: 'CALLSTATIC' }]);
     });
 
     it('Should throw an error if debug_traceTransaction is not available', () => {

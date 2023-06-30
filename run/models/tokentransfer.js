@@ -145,10 +145,8 @@ module.exports = (sequelize, DataTypes) => {
                         address: tokenTransfer.token,
                         timestamp: moment(transaction.timestamp).unix()
                     }, options.transaction);
-            }
 
-            if (tokenTransfer.tokenId) {
-                if (transaction.workspace.public) {
+                if (tokenTransfer.tokenId)
                     await enqueue('reloadErc721Token',
                         `reloadErc721Token-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.tokenId}`, {
                             workspaceId: tokenTransfer.workspaceId,
@@ -156,22 +154,7 @@ module.exports = (sequelize, DataTypes) => {
                             tokenId: tokenTransfer.tokenId
                         }
                     );
-                }
-                else {
-                    const contract = await tokenTransfer.getContract()
-                    await contract.update({ processed: false });
-                    trigger(`private-contracts;workspace=${tokenTransfer.workspaceId}`, 'new', null);
-                }
             }
-
-            if (tokenTransfer.tokenId && transaction.workspace.public)
-                await enqueue('reloadErc721Token',
-                    `reloadErc721Token-${tokenTransfer.workspaceId}-${tokenTransfer.token}-${tokenTransfer.tokenId}`, {
-                        workspaceId: tokenTransfer.workspaceId,
-                        address: tokenTransfer.token,
-                        tokenId: tokenTransfer.tokenId
-                    }
-                );
 
             if (!transaction.workspace.public)
                 trigger(`private-processableTransactions;workspace=${transaction.workspace.id}`, 'new', transaction.toJSON());
