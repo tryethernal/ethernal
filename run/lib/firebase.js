@@ -385,14 +385,20 @@ const getContractLogs = async (workspaceId, address, signature, page, itemsPerPa
     };
 };
 
-const storeContractDataWithWorkspaceId = async (workspaceId, address, data) => {
-    if (!workspaceId || !address || !data) throw new Error('Missing parameter.');
+const storeContractDataWithWorkspaceId = async (workspaceId, address, data = {}) => {
+    if (!workspaceId || !address) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
-    return workspace.safeCreateOrUpdateContract({
+
+    if (!workspace)
+        throw new Error('Cannot find workspace');
+
+    const contract = await workspace.safeCreateOrUpdateContract({
         address: address,
         ...data
     });
+
+    return contract ? contract.toJSON() : null;
 };
 
 const getContractByWorkspaceId = async (workspaceId, address) => {
