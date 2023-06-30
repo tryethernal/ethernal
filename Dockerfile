@@ -7,9 +7,8 @@ ENV VUE_APP_PUSHER_KEY=VUE_APP_PUSHER_KEY_PLACEHOLDER
 COPY public/ ./public/
 COPY src/ ./src/
 COPY babel.config.js .firebaserc package.json yarn.lock vue.config.js _redirects ./
-RUN npm install bun -g
-RUN bun install
-RUN npm build
+RUN yarn install --network-timeout 100000
+RUN yarn build
 
 FROM node:16 AS back
 ENV ENCRYPTION_KEY=
@@ -48,12 +47,12 @@ COPY run/package*.json ./
 RUN npm install bun -g
 
 FROM back AS dev_back
+RUN npm install
 RUN npm install nodemon -g
-RUN bun install
 
 FROM back AS prod_back
 COPY ethernal-95a14-19f78a7e26cc.json ./ethernal-95a14-19f78a7e26cc.json
-RUN bun install --production --frozen-lockfile
+RUN npm ci --only=production
 
 FROM back AS prod_all
 RUN mkdir dist
@@ -62,5 +61,5 @@ RUN chmod +x ./web_entrypoint.sh
 COPY --from=front /client/dist ./dist
 COPY run/.sequelizerc ./
 COPY run/migrations ./migrations
-RUN bun install --production --frozen-lockfile
-RUN npm install sequelize-cli -g
+RUN npm ci --only=production
+RUN npm install -g sequelize-cli
