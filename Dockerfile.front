@@ -7,6 +7,7 @@ WORKDIR /app
 COPY public/ ./public/
 COPY src/ ./src/
 COPY babel.config.js .firebaserc package.json yarn.lock vue.config.js _redirects ./
-RUN yarn install --network-timeout 100000
+RUN npm install bun -g
+RUN bun install
 EXPOSE 8080
-CMD ["yarn", "serve"]
+CMD ["bun", "serve"]
