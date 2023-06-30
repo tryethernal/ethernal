@@ -544,23 +544,20 @@ module.exports = (sequelize, DataTypes) => {
     asm: DataTypes.TEXT
   }, {
     hooks: {
-        afterDestroy(contract, options) {
+        afterDestroy(contract) {
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'destroyed', null);
         },
-        beforeUpdate(contract, options) {
-            if (contract._changed.size > 0 && !contract._changed.has('processed') && !contract._changed.has('totalSupply'))
-                contract.processed = false;
-        },
-        afterUpdate(contract, options) {
-            trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
-            if (contract.patterns.indexOf('erc20') > -1)
-                trigger(`private-tokens;workspace=${contract.workspaceId}`, 'new', null);
-            else if (contract.patterns.indexOf('erc721') > -1)
-                trigger(`private-nft;workspace=${contract.workspaceId}`, 'new', null);
+        async afterCreate(contract, options) {
+            const afterCreateFn = () => {
+                return enqueue(`processContract`, `processContract-${contract.id}`, { contractId: contract.id });
+            };
 
-            return enqueue(`contractProcessing`, `contractProcessing-${contract.id}`, { contractId: contract.id, workspaceId: contract.workspaceId });
+            if (options.transaction)
+                options.transaction.afterCommit(afterCreateFn);
+            else
+                afterCreateFn();
         },
-        afterSave(contract, options) {
+        async afterSave(contract) {
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'new', null);
             trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
 
@@ -568,8 +565,6 @@ module.exports = (sequelize, DataTypes) => {
                 trigger(`private-tokens;workspace=${contract.workspaceId}`, 'new', null);
             else if (contract.patterns.indexOf('erc721') > -1)
                 trigger(`private-nft;workspace=${contract.workspaceId}`, 'new', null);
-
-            return enqueue(`contractProcessing`, `contractProcessing-${contract.id}`, { contractId: contract.id, workspaceId: contract.workspaceId });
         }
     },
     sequelize,

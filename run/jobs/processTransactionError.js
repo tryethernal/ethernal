@@ -10,6 +10,9 @@ module.exports = async job => {
 
     const transaction = await db.getTransactionForProcessing(data.transactionId);
 
+    if (!transaction)
+        return 'Cannot find transaction';
+
     if (!transaction.workspace.public)
         return 'Not allowed on private workspaces';
 

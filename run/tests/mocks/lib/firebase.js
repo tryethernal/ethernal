@@ -89,6 +89,7 @@ jest.mock('../../../lib/firebase', () => {
         getTransactionForProcessing: jest.fn(),
         updateWorkspaceRpcHealthCheck: jest.fn(),
         storeContractVerificationData: jest.fn(),
+        getContractById: jest.fn(),
         Workspace: Workspace
     }
 });
