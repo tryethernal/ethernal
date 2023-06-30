@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
                 ]
             });
 
-            if (receipt.status == 0)
+            if (receipt.status == 0 && fullTransaction.workspace.public)
               await enqueue('processTransactionError', `processTransactionError-${fullTransaction.workspaceId}-${fullTransaction.hash}`, { 
                 transactionId: fullTransaction.id
               }, 1);

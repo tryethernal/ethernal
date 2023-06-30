@@ -5,12 +5,11 @@
         "sendResetPasswordEmail"
     ],
     "medium": [
-        "contractProcessing",
+        "processContract",
         "processTransactionTrace",
         "processTransactionError",
         "reloadErc721Token",
         "processTokenTransfer",
-        "reprocessAllTokenTransfers",
         "reprocessWorkspaceTransactionTraces"
     ],
     "low": [

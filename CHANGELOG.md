@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.15.1] - 2023-06-29
+### Removed
+- Backend processing for transaction errors on private workspaces
+
+### Fixed
+- Error when trying to process a failed transaction that got removed already
+
 ## [3.15.0] - 2023-06-29
 ### Changed
 - More efficient contract processing, especially for public explorer instances
