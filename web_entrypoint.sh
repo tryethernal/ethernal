@@ -6,4 +6,4 @@ do
     sed -i "s|VUE_APP_MAIN_DOMAIN_PLACEHOLDER|$VUE_APP_MAIN_DOMAIN|g" $file
     sed -i "s|VUE_APP_PUSHER_KEY_PLACEHOLDER|$VUE_APP_PUSHER_KEY|g" $file
 done
-node index.js
+bun start

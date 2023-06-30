@@ -1,26 +1,9 @@
 version: "3.9"
 
-volumes:
-  firebase_emulator_data:
-
 services:
-  firebase_auth_emulator:
-    build:
-      context: .
-      dockerfile: Dockerfile.firebase-emulator
-    volumes:
-      - ./firebase.json:/src/firebase.json
-      - firebase_emulator_data:/src/.firebase-emulator
-    ports:
-      - "9099:9099"
-      - "4000:4000"
-    command: firebase emulators:start --project ethernal-95a14 --import=/src/.firebase-emulator/data --export-on-exit
-
   web: &backend
     volumes:
       - ./run/:/app
-    depends_on:
-      - firebase_auth_emulator
     build:
       context: .
       dockerfile: Dockerfile
@@ -51,7 +34,6 @@ services:
       - "*.ethernal.explorer:0.0.0.0"
     depends_on:
       - web
-      - firebase_auth_emulator
     ports:
       - "8080:8080"
     volumes:
