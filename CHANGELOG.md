@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.15.2] - 2023-06-29
+### Changed
+- [Public Explorer] Optimized processing for erc721 tokens
+
+### Fixed
+- [Public Explorer] Bug preventing token from being processed if the contract wasn't in the db before
+
 ## [3.15.1] - 2023-06-29
 ### Removed
 - Backend processing for transaction errors on private workspaces
