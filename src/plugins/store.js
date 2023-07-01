@@ -156,6 +156,7 @@ export default new Vuex.Store({
         }
     },
     getters: {
+        rpcServer: state => state.publicExplorer.rpcServer || state.currentWorkspace.rpcServer,
         publicExplorerMode: state => state.publicExplorer.slug || state.publicExplorer.domain,
         accounts: state => state.accounts,
         firebaseIdToken: state => state.user.firebaseIdToken || '',

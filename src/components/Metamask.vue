@@ -63,7 +63,7 @@ export default {
                                 {
                                     chainId: this.formattedExpectedChainId,
                                     chainName: this.publicExplorer.name,
-                                    rpcUrls: [this.currentWorkspace.rpcServer],
+                                    rpcUrls: [this.rpcServer],
                                     blockExplorerUrls: [this.publicExplorer.domain]
                                 }
                             ]
@@ -82,6 +82,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'rpcServer',
             'publicExplorer',
             'currentWorkspace',
             'theme'

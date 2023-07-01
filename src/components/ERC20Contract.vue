@@ -170,7 +170,7 @@ export default {
                     'balanceOf(address)',
                     { from: null },
                     { 0: data.account },
-                    this.currentWorkspace.rpcServer,
+                    this.rpcServer,
                     window.ethereum
                 )
                 .then(([balance]) => this.connectedAccountBalance = balance)
@@ -196,7 +196,7 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'currentWorkspace'
+            'rpcServer'
         ]),
         tab: {
             set(tab) {

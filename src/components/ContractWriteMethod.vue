@@ -144,7 +144,7 @@ export default {
                     processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
                 }
 
-                this.server.callContractWriteMethod(this.contract, this.signature, options, processedParams, this.currentWorkspace.rpcServer)
+                this.server.callContractWriteMethod(this.contract, this.signature, options, processedParams, this.rpcServer)
                     .then((pendingTx) => {
                         this.result.txHash = pendingTx.hash;
 
@@ -228,6 +228,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'rpcServer',
             'currentWorkspace',
             'chain',
             'isPublicExplorer',
