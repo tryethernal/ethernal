@@ -72,6 +72,7 @@ class MockHelper {
     initMockStore(initialState, overrideGetters) {
         this.localVue.use(Vuex);
         this.getters = {
+            rpcServer: jest.fn().mockReturnValue('http://localhost:8545'),
             accounts: jest.fn().mockReturnValue(['0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA']),
             theme: jest.fn(),
             blockCount: jest.fn().mockReturnValue(2),
