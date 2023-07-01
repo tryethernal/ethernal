@@ -102,12 +102,12 @@ export default {
             if (this.metamaskData.isReady)
                 return this.transferWithMetamask();
 
-            this.server.impersonateAccount(this.currentWorkspace.rpcServer, this.token.owner)
+            this.server.impersonateAccount(this.rpcServer, this.token.owner)
                 .then(hasBeenUnlocked => {
                     if (!hasBeenUnlocked)
                         throw new Error("Transfer failed. Couldn't unlock owner account.");
 
-                    this.server.transferErc721Token(this.currentWorkspace.rpcServer, this.address, this.token.owner, this.recipient, this.token.tokenId)
+                    this.server.transferErc721Token(this.rpcServer, this.address, this.token.owner, this.recipient, this.token.tokenId)
                         .then(transaction => {
                             this.transaction = { ...transaction, receipt: {} };
                             transaction.wait().then(receipt => {
@@ -167,6 +167,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'rpcServer',
             'currentWorkspace',
             'isPublicExplorer'
         ])

@@ -63,7 +63,7 @@ export default {
                     from: this.options.from.address
                 };
 
-                this.server.callContractReadMethod(this.contract, this.signature, options, processedParams, this.currentWorkspace.rpcServer, provider)
+                this.server.callContractReadMethod(this.contract, this.signature, options, processedParams, this.rpcServer, provider)
                     .then(res => {
                         this.results = Array.isArray(res) ? this.processResult(res) : this.processResult([res]);
                     })
@@ -103,6 +103,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'rpcServer',
             'currentWorkspace',
             'isPublicExplorer',
             'theme'

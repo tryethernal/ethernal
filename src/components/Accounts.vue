@@ -98,7 +98,7 @@ export default {
     methods: {
         syncAccounts() {
             this.loading = true;
-            this.server.getRpcAccounts(this.currentWorkspace.rpcServer)
+            this.server.getRpcAccounts(this.rpcServer)
                 .then(accounts => {
                     const promises = [];
                     for (let i = 0; i < accounts.length; i++)
@@ -148,7 +148,7 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'currentWorkspace',
+            'rpcServer',
             'chain',
             'isPublicExplorer',
             'isUserAdmin'

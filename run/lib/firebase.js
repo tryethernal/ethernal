@@ -941,6 +941,10 @@ const canUserSyncContract = async (userId, workspaceName, address) => {
     if (!userId) throw new Error('Missing parameter.');
 
     const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
+
+    if (!user)
+        throw new Error(`Couldn't find workspace "${workspaceName}".`);
+
     if (user.isPremium)
         return true;
 
