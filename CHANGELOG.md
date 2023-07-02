@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.15.7] - 2023-07-02
+### Added
+- [Public Explorer] Added "fromBlock" parameter to the token transfers API, that only returns transfers made after the specified block number. Thanks @lgalant for the PR
+
 ## [3.15.6] - 2023-07-01
 ### Added
 - [Public Explorer] Different user facing rpc
