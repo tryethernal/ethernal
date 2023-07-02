@@ -367,7 +367,7 @@ describe('getTokenStats', () => {
 describe('getTokenTransfers', () => {
     it('Should return transfers if contract exists', (done) => {
         jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce({
-            getTokenTransfers: jest.fn().mockResolvedValueOnce([{ toJSON: () => ({ address: '0x123' }) }]),
+            getTokenTransfers: jest.fn().mockResolvedValueOnce({ count: 1 , rows: [{ toJSON: () => ({ address: '0x123' }) }]}),
             countTokenTransfers: jest.fn().mockResolvedValueOnce(1)
         });
 
