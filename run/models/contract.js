@@ -302,7 +302,7 @@ module.exports = (sequelize, DataTypes) => {
         return result[0].sum || 0;
     }
 
-    getTokenTransfers(page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC') {
+    getTokenTransfers(page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC', minBlockNumber = 0) {
         let sanitizedOrderBy;
         switch(orderBy) {
             case 'timestamp':
@@ -328,7 +328,8 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.Transaction,
                     as: 'transaction',
-                    attributes: ['hash', 'blockNumber', 'timestamp']
+                    attributes: ['hash', 'blockNumber', 'timestamp'],
+                    where: { blockNumber: {[Op.gte]: minBlockNumber }}
                 },
                 {
                     model: sequelize.models.Contract,
