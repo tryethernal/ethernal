@@ -1,6 +1,6 @@
 {
   "name": "ethernal",
-  "version": "3.13.17",
+  "version": "3.15.8",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -10,7 +10,6 @@
     "lint": "vue-cli-service lint",
     "dev": "firebase emulators:start --import=./firebase-emulator --export-on-exit & vue-cli-service serve"
   },
-  "main": "background.js",
   "dependencies": {
     "@codemirror/commands": "^6.2.4",
     "@codemirror/lang-javascript": "^6.1.8",

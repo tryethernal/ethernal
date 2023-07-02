@@ -114,13 +114,13 @@ export default Vue.extend({
             }
         });
 
-        if (!this.isPublicExplorer) {
+        if (!this.currentWorkspace.public) {
             this.processContracts();
             this.processTransactions();
             this.processFailedTransactions();
             this.pusher.onNewContract(this.processContracts, this);
             this.pusher.onNewProcessableTransactions((transaction) => this.server.processTransaction(this.currentWorkspace, transaction), this);
-            this.pusher.onNewFailedTransactions((transaction) => this.server.processFailedTransactions([transaction], this.currentWorkspace.rpcServer), this);
+            this.pusher.onNewFailedTransactions((transaction) => this.server.processFailedTransactions([transaction], this.rpcServer), this);
             if (this.currentWorkspace.browserSyncEnabled)
                 this.$store.dispatch('startBrowserSync');
         }
@@ -143,7 +143,7 @@ export default Vue.extend({
         },
         processContracts() {
             this.processingContracts = true;
-            this.server.processContracts(this.currentWorkspace.rpcServer)
+            this.server.processContracts(this.rpcServer)
                 .catch(console.log)
                 .finally(() => this.processingContracts = false );
         },
@@ -209,6 +209,7 @@ export default Vue.extend({
     },
     computed: {
         ...mapGetters([
+            'rpcServer',
             'currentWorkspace',
             'chain',
             'user',
@@ -218,11 +219,11 @@ export default Vue.extend({
         ]),
         formattedCurrentRpcServer() {
             try {
-                const url = new URL(this.currentWorkspace.rpcServer);
+                const url = new URL(this.rpcServer);
                 return url.origin;
             } catch(error) {
                 console.log(error)
-                return this.currentWorkspace && this.currentWorkspace.rpcServer || '';
+                return this.rpcServer || '';
             }
         },
         orderedItems() {

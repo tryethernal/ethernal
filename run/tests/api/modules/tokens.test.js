@@ -107,21 +107,33 @@ describe('transferVolume', () => {
 });
 
 describe('holders', () => {
-    it('Should return holders', () => {
+    it('Should return holders', async () => {
+        const req = {
+            params: { address: '0x123' },
+            query: {
+                workspace: 'hardhat',
+            }
+        };
+        jest.spyOn(db, 'getTokenHolders').mockResolvedValue({ total: 1, items: [{ id: 1 }]});
 
-    });
-
-    it('should return an error if missing param', () => {
-
+        await holders(req, res)
+        expect(status).toHaveBeenCalledWith(200);
+        expect(json).toHaveBeenCalledWith({ total: 1, items: [{ id: 1 }]});
     });
 });
 
 describe('transfers', () => {
-    it('Should return transfers', () => {
+    it('Should return transfers & count',  async () => {
+        const req = {
+            params: { address: '0x123' },
+            query: {
+                workspace: 'hardhat',
+            }
+        };
+        jest.spyOn(db, 'getTokenTransfers').mockResolvedValue({ total: 1, items: [{ id: 1 }]});
 
-    });
-
-    it('should return an error if missing param', () => {
-
+        await transfers(req, res)
+        expect(status).toHaveBeenCalledWith(200);
+        expect(json).toHaveBeenCalledWith({ total: 1, items: [{ id: 1 }]});
     });
 });

@@ -6,7 +6,16 @@ jest.mock('../../../src/lib/rpc', () => {
         ContractConnector: jest.fn(function() {
             return {
                 callReadMethod: jest.fn().mockResolvedValue([ethers.BigNumber.from('1')]),
-                has721Interface: jest.fn().mockResolvedValue(false)
+                has721Interface: jest.fn().mockResolvedValue(false),
+                isErc20: jest.fn(),
+                isErc721: jest.fn(),
+                isErc1155: jest.fn(),
+                isProxy: jest.fn(),
+                decimals: jest.fn(),
+                symbol: jest.fn(),
+                name: jest.fn(),
+                totalSupply: jest.fn(),
+                getBytecode: jest.fn()
             }
         }),
         Tracer: actual.Tracer,

@@ -1,9 +1,11 @@
 const ethers = require('ethers');
 const moment = require('moment');
 const db = require('./firebase');
-const { getFunctionSignatureForTransaction } = require('./utils');
-let { getTokenTransfer } = require('./abi');
-let { getProvider, ContractConnector, Tracer } = require('./rpc');
+const logger = require('./logger');
+let { getProvider, Tracer } = require('./rpc');
+const { withTimeout } = require('./utils');
+
+const NETWORK_TIMEOUT = 10 * 1000;
 
 const _getFunctionSignatureForTransaction = (transaction, abi) => {
     try {
@@ -46,6 +48,10 @@ const processTransactions = async (transactionIds) => {
         let contract;
         const transactionId = transactionIds[i];
         const transaction = await db.getTransactionForProcessing(transactionId);
+
+        if (!transaction)
+            continue;
+
         const userId = transaction.workspace.user.firebaseUserId;
         const workspaceName = transaction.workspace.name;
 
@@ -67,48 +73,51 @@ const processTransactions = async (transactionIds) => {
 
         const workspace = await db.getWorkspaceByName(userId, workspaceName);
 
-        try {
-            if (workspace && workspace.public && transaction.tokenTransfers) {
+        if (!workspace.public)
+            continue;
+
+        if (transaction.tokenTransfers) {
+            try {
                 const tokenTransfers = transaction.tokenTransfers;
                 for (let i = 0; i < tokenTransfers.length; i++) {
                     const canSync = await db.canUserSyncContract(userId, workspaceName, tokenTransfers[i].token);
                     if (canSync)
                         await db.storeContractData(userId, workspaceName, tokenTransfers[i].token, { address: tokenTransfers[i].token });
                 }
-            }
-        } catch(_error) {}
+            } catch(_error) {}
+        }
 
-        if (workspace && workspace.public) {
-            if (workspace.tracing == 'other') {
-                try {
-                    const tracer = new Tracer(workspace.rpcServer, db);
-                    await tracer.process(transaction);
-                    await tracer.saveTrace(userId, workspaceName);
-                } catch(_error) {}
+        if (workspace.tracing == 'other') {
+            try {
+                const tracer = new Tracer(workspace.rpcServer, db);
+                await tracer.process(transaction);
+                await tracer.saveTrace(userId, workspaceName);
+            } catch(_error) {
+                logger.error(_error.message, { location: 'jobs.transactionProcessing.tracing', error: _error, data: transactionIds });
             }
+        }
 
+        if (transaction.receipt && transaction.receipt.status == 0 && !transaction.parsedError && !transaction.rawError) {
             let errorObject;
-            if (transaction.receipt && transaction.receipt.status == 0) {
-                try {
-                    const provider = getProvider(workspace.rpcServer);
-                    const res = await provider.call({ to: transaction.to, data: transaction.data }, transaction.blockNumber);
-                    const reason = ethers.utils.toUtf8String('0x' + res.substr(138));
-                    errorObject = { parsed: true, message: reason };
-                } catch(error) {
-                    if (error.response) {
-                        const parsed = JSON.parse(error.response);
-                        if (parsed.error && parsed.error.message)
-                            errorObject = { parsed: true, message: parsed.error.message };
-                        else
-                            errorObject = { parsed: false, message: parsed };
-                    }
+            try {
+                const provider = getProvider(workspace.rpcServer);
+                const res = await provider.call({ to: transaction.to, data: transaction.data }, transaction.blockNumber);
+                const reason = ethers.utils.toUtf8String('0x' + res.substr(138));
+                errorObject = { parsed: true, message: reason };
+            } catch(error) {
+                if (error.response) {
+                    const parsed = JSON.parse(error.response);
+                    if (parsed.error && parsed.error.message)
+                        errorObject = { parsed: true, message: parsed.error.message };
                     else
-                        errorObject = { parsed: false, message: JSON.stringify(error) };
+                        errorObject = { parsed: false, message: parsed };
                 }
-
-                if (errorObject)
-                    await db.storeFailedTransactionError(userId, workspaceName, transaction.hash, errorObject);
+                else
+                    errorObject = { parsed: false, message: JSON.stringify(error) };
             }
+
+            if (errorObject)
+                await db.storeFailedTransactionError(userId, workspaceName, transaction.hash, errorObject);
         }
     }
 };

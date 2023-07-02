@@ -101,15 +101,28 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    safeCreateTransactionTraceStep(step) {
-        return this.createTraceStep({
-            address: step.address,
-            contractHashedBytecode: step.contractHashedBytecode,
-            depth: step.depth,
-            input: step.input,
-            op: step.op,
-            returnData: step.returnData,
-            workspaceId: this.workspaceId
+    safeCreateTransactionTrace(steps) {
+        return sequelize.transaction(async transaction => {
+            const promises = [];
+            const existingSteps = await this.getTraceSteps();
+
+            for (let i = 0; i < existingSteps.length; i++)
+                promises.push(existingSteps[i].destroy({ transaction }));
+
+            for (let i = 0; i < steps.length; i++) {
+                const step = steps[i];
+                promises.push(this.createTraceStep({
+                    value: step.value,
+                    address: step.address,
+                    contractHashedBytecode: step.contractHashedBytecode,
+                    depth: step.depth,
+                    input: step.input,
+                    op: step.op,
+                    returnData: step.returnData,
+                    workspaceId: this.workspaceId
+                }, { transaction }));
+            }
+            return Promise.all(promises);
         });
     }
   }
@@ -195,13 +208,21 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     hooks: {
+        async afterCreate(transactionInstance, options) {
+            const afterCreateFn = async () => {
+                const workspace = await transactionInstance.getWorkspace();
+                if (workspace.public && workspace.tracing == 'other')
+                    await enqueue('processTransactionTrace', `processTransactionTrace-${transactionInstance.workspaceId}-${transactionInstance.hash}`, {
+                        transactionId: transactionInstance.id
+                    }, 1);
+            };
+            if (options.transaction)
+                return options.transaction.afterCommit(afterCreateFn);
+            else
+                return afterCreateFn();
+        },
         async afterSave(transaction, options) {
             const afterSaveFn = async () => {
-                if (transaction.isReady)
-                    await enqueue('transactionProcessing', `transactionProcessing-${transaction.workspaceId}-${transaction.hash}`, { 
-                        transactionId: transaction.id
-                    }, 1);
-
                 await trigger(`private-transactions;workspace=${transaction.workspaceId}`, 'new', { hash: transaction.hash, state: transaction.state });
                 if (transaction.to)
                     await trigger(`private-transactions;workspace=${transaction.workspaceId};address=${transaction.to}`, 'new', { hash: transaction.hash });

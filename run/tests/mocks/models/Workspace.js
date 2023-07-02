@@ -6,7 +6,7 @@ const account = {
 const transaction1 = {
     hash: '0x123',
     safeCreateTokenTransfer: jest.fn(),
-    safeCreateTransactionTraceStep: jest.fn(),
+    safeCreateTransactionTrace: jest.fn(),
     safeUpdateStorage: jest.fn(),
     updateFailedTransactionError: jest.fn(),
     toJSON: jest.fn().mockReturnValue({ hash: '0x123' })
@@ -15,7 +15,7 @@ const transaction1 = {
 const transaction2 = {
     hash: '0x456',
     safeCreateTokenTransfer: jest.fn(),
-    safeCreateTransactionTraceStep: jest.fn(),
+    safeCreateTransactionTrace: jest.fn(),
     safeUpdateStorage: jest.fn(),
     updateFailedTransactionError: jest.fn(),
     toJSON: jest.fn().mockReturnValue({ hash: '0x456' })

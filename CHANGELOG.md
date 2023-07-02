@@ -4,6 +4,136 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.15.8] - 2023-07-02
+### Fixed
+- Previous release had a test that was not passing
+
+## [3.15.7] - 2023-07-02
+### Added
+- [Public Explorer] Added "fromBlock" parameter to the token transfers API, that only returns transfers made after the specified block number. Thanks @lgalant for the PR
+
+## [3.15.6] - 2023-07-01
+### Added
+- [Public Explorer] Different user facing rpc
+
+## [3.15.5] - 2023-07-01
+### Fixed
+- Bug preventing partial block revertion
+
+## [3.15.4] - 2023-06-29
+### Removed
+- Bun. Makes too many things break (bunner...). Not enough of a priority.
+
+## [3.15.3] - 2023-06-29
+### Fixed
+- Block syncing could fail if the miner field is not an address because ethers.js doesn't handle this case even so this appears to be standard. This can happen for example when using Polygon POA chains.
+
+## [3.15.2] - 2023-06-29
+### Changed
+- [Public Explorer] Optimized processing for erc721 tokens
+
+### Fixed
+- [Public Explorer] Bug preventing token from being processed if the contract wasn't in the db before
+
+## [3.15.1] - 2023-06-29
+### Removed
+- Backend processing for transaction errors on private workspaces
+
+### Fixed
+- Error when trying to process a failed transaction that got removed already
+
+## [3.15.0] - 2023-06-29
+### Changed
+- More efficient contract processing, especially for public explorer instances
+
+## [3.14.5] - 2023-06-28
+### Changed
+- [Public Explorer] Better handling of syncing/expired block in integrity checks
+
+## [3.14.4] - 2023-06-28
+### Added
+- [Public Explorer] Fix reverting pending block when including transaction
+
+## [3.14.3] - 2023-06-28
+### Added
+- [Public Explorer] Integrity check is now handling expired pending blocks
+
+### Changed
+- [Public Explorer] Block sync should revert pending blocks better
+
+## [3.14.2] - 2023-06-27
+### Fixed
+- If code retrieval during tracing fails, the whole tracing fails. Fixes this.
+
+## [3.14.1] - 2023-06-26
+### Changed
+- Improve case when balance change request fails
+
+## [3.14.0] - 2023-06-26
+### Changed
+- Transactions are now processed in the creation job, if it fails, then all is reverted. Only operations that require a request to the node are processed separately (processing errors & traces)
+- Error processing & trace processing now have their own dedicated jobs, for better error isolation and debugging
+
+### Added
+- Job & endpoint to reprocess all traces for a given workspace
+
+## [3.13.31] - 2023-06-17
+### Fixed
+- Tentative fix for stalled jobs
+
+## [3.13.30] - 2023-06-17
+### Changed
+- Optimize returned token transfer object for processing
+
+## [3.13.29] - 2023-06-17
+### Changed
+- Optimize returned transaction object for processing
+
+## [3.13.28] - 2023-06-17
+### Changed
+- Start cleaning transaction processing
+
+## [3.13.27] - 2023-06-17
+### Fixed
+- Hanging transaction processing
+
+## [3.13.26] - 2023-06-16
+### Changed
+- Stop block syncing process job if the block already exists, to avoid relying on lower level constraints (more annoying to check)
+
+## [3.13.25] - 2023-06-16
+### Fixed
+- Bad code throwing an error where it shouldn't, in case Pusher fails
+
+## [3.13.24] - 2023-06-16
+### Fixed
+- Prevent duplicated transaction trace steps if reprocessed
+
+## [3.13.23] - 2023-06-16
+### Fixed
+- Infinite transaction processing
+
+## [3.13.22] - 2023-06-16
+### Fixed
+- Logger loading
+
+## [3.13.21] - 2023-06-16
+### Changed
+- Batching size for reprocessing transactions
+
+## [3.13.20] - 2023-06-16
+### Added
+- Jobs to force reprocessing all txs for one workspace
+
+## [3.13.19] - 2023-06-16
+### Fixed
+- Transaction tracing when no memory available is now handled
+- Bug preventing from interacting with contracts using loaded accounts
+
+## [3.13.18] - 2023-06-10
+### Fixed
+- Bulk enqueuing jobId
+
 ## [3.13.17] - 2023-06-08
 ### Changed
 - Queues settings

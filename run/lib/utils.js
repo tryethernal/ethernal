@@ -7,7 +7,7 @@ const getEnv = () => process.env.NODE_ENV;
 const withTimeout = (promise, delay = DEFAULT_PROMISE_TIMEOUT) => {
     const timeout = new Promise((resolve, reject) =>
         setTimeout(
-            () => reject(`Timed out after ${delay} ms.`),
+            () => reject(new Error(`Timed out after ${delay} ms.`)),
             delay
         )
     );
@@ -35,7 +35,7 @@ const _isJson = function(obj) {
 };
 
 const _sanitize = (obj) => {
-    const numberize = ['baseFeePerGas', 'blockNumber', 'cumulativeGasUsed', 'effectiveGasPrice', 'gasUsed', 'logIndex', 'chainId', 'gasLimit', 'gasPrice', 'v', 'value', 'type', 'transactionIndex', 'status']
+    const numberize = ['number', 'difficulty', 'totalDifficulty', 'size', 'timestamp', 'nonce', 'baseFeePerGas', 'blockNumber', 'cumulativeGasUsed', 'effectiveGasPrice', 'gasUsed', 'logIndex', 'chainId', 'gasLimit', 'gasPrice', 'v', 'value', 'type', 'transactionIndex', 'status']
     return Object.fromEntries(
         Object.entries(obj)
             .filter(([_, v]) => v != null)

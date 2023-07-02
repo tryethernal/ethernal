@@ -44,6 +44,7 @@ COPY run/queues.js .
 COPY run/scheduler.js .
 COPY run/workers ./workers/
 COPY run/package*.json ./
+RUN npm install bun -g
 
 FROM back AS dev_back
 RUN npm install

@@ -1,7 +1,6 @@
 const Sequelize = require('sequelize');
 const models = require('../models');
 const { firebaseHash }  = require('./crypto');
-const explorer = require('../models/explorer');
 
 const Op = Sequelize.Op;
 const User = models.User;
@@ -10,8 +9,16 @@ const Transaction = models.Transaction;
 const Workspace = models.Workspace;
 const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
-const StripePlan = models.StripePlan;
-const StripeSubscription = models.StripeSubscription;
+const Contract = models.Contract;
+const Block = models.Block;
+
+const getContractById = async (contractId) => {
+    if (!contractId) throw new Error('Missing parameter');
+
+    const contract = await Contract.findByPk(contractId);
+
+    return contract ? contract.toJSON() : null;
+};
 
 const deleteExplorerSubscription = async (userId, explorerId, stripeId) => {
     if (!userId || !explorerId) throw new Error('Missing parameter');
@@ -190,10 +197,10 @@ const updateWorkspaceIntegrityCheck = async (workspaceId, { blockId, status }) =
     return workspace.safeCreateOrUpdateIntegrityCheck({ blockId, status });
 };
 
-const getTransactionForProcessing = transactionId => {
+const getTransactionForProcessing = async transactionId => {
     if (!transactionId) throw new Error('Missing parameter.');
 
-    return Transaction.findOne({
+    const transaction = await Transaction.findOne({
         where: { id: transactionId },
         include: [
             {
@@ -207,7 +214,7 @@ const getTransactionForProcessing = transactionId => {
             {
                 model: Workspace,
                 as: 'workspace',
-                attributes: ['id', 'name'],
+                attributes: ['id', 'name', 'public', 'rpcServer'],
                 include: {
                     model: User,
                     as: 'user',
@@ -215,7 +222,9 @@ const getTransactionForProcessing = transactionId => {
                 }
             }
         ]
-    })
+    });
+
+    return transaction ? transaction.toJSON() : null;
 };
 
 const revertPartialBlock = async (blockId) => {
@@ -453,7 +462,7 @@ const getTokenStats = async (workspaceId, address) => {
     };
 };
 
-const getTokenTransfers = async (workspaceId, address, page, itemsPerPage, orderBy, order) => {
+const getTokenTransfers = async (workspaceId, address, page, itemsPerPage, orderBy, order, fromBlock) => {
     if (!workspaceId || !address) throw new Error('Missing parameter');
 
     const workspace = await Workspace.findByPk(workspaceId);
@@ -462,19 +471,18 @@ const getTokenTransfers = async (workspaceId, address, page, itemsPerPage, order
     if (!contract)
         throw new Error(`Can't find contract at this address.`);
 
-    const transfers = await contract.getTokenTransfers(page, itemsPerPage, orderBy, order);
-    const transferCount = await contract.countTokenTransfers();
+    const { count, rows } = await contract.getTokenTransfers(page, itemsPerPage, orderBy, order, fromBlock);
 
     return {
-        items: transfers.map(t => t.toJSON()),
-        total: transferCount,
+        items: rows.map(t => t.toJSON()),
+        total: count,
     };
 };
 
 const getTokenTransferForProcessing = async (tokenTransferId) => {
     if (!tokenTransferId) throw new Error('Missing parameter');
 
-    return TokenTransfer.findOne({
+    const tokenTransfer = await TokenTransfer.findOne({
         where: { id: tokenTransferId },
         include: [
             {
@@ -494,6 +502,8 @@ const getTokenTransferForProcessing = async (tokenTransferId) => {
             }
         ]
     });
+
+    return tokenTransfer ? tokenTransfer.toJSON() : null;
 }
 
 const getContractLogs = async (workspaceId, address, signature, page, itemsPerPage, orderBy, order) => {
@@ -514,14 +524,20 @@ const getContractLogs = async (workspaceId, address, signature, page, itemsPerPa
     };
 };
 
-const storeContractDataWithWorkspaceId = async (workspaceId, address, data) => {
-    if (!workspaceId || !address || !data) throw new Error('Missing parameter.');
+const storeContractDataWithWorkspaceId = async (workspaceId, address, data = {}) => {
+    if (!workspaceId || !address) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
-    return workspace.safeCreateOrUpdateContract({
+
+    if (!workspace)
+        throw new Error('Cannot find workspace');
+
+    const contract = await workspace.safeCreateOrUpdateContract({
         address: address,
         ...data
     });
+
+    return contract ? contract.toJSON() : null;
 };
 
 const getContractByWorkspaceId = async (workspaceId, address) => {
@@ -712,7 +728,7 @@ const getWorkspaceBlock = async (workspaceId, number, withTransactions) => {
         }) :
         await workspace.getBlocks({ where: { number: number }});
 
-    return blocks[0].toJSON();
+    return blocks.length > 0 ? blocks[0].toJSON() : null;
 };
 
 const getWorkspaceBlocks = async (workspaceId, page = 1, itemsPerPage = 10, order = 'DESC') => {
@@ -874,11 +890,11 @@ const storeTransactionTokenTransfers = async (userId, workspace, transactionHash
     }
 };
 
-const storeContractData = async (userId, workspace, address, data) => {
+const storeContractData = async (userId, workspace, address, data, transaction) => {
     if (!userId || !workspace || !address || !data) throw new Error('Missing parameter.');
 
     const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-    const contract = await user.workspaces[0].safeCreateOrUpdateContract({ address: address, ...data });
+    const contract = await user.workspaces[0].safeCreateOrUpdateContract({ address: address, ...data }, transaction);
     return contract.toJSON();
 };
 
@@ -947,8 +963,7 @@ const storeTrace = async (userId, workspace, txHash, trace) => {
     if (!transaction)
         throw new Error(`Couldn't find transaction`);
 
-    for (let i = 0; i < trace.length; i++)
-        await transaction.safeCreateTransactionTraceStep(trace[i]);
+    return transaction.safeCreateTransactionTrace(trace);
 };
 
 const storeTransactionData = async (userId, workspace, hash, data) => {
@@ -1064,10 +1079,16 @@ const canUserSyncContract = async (userId, workspaceName, address) => {
     if (!userId) throw new Error('Missing parameter.');
 
     const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
+
+    if (!user)
+        throw new Error(`Couldn't find workspace "${workspaceName}".`);
+
     if (user.isPremium)
         return true;
 
     const workspace = user.workspaces[0];
+    if (workspace.public)
+        return true;
 
     // If the contract has already been synced we can update its data
     const existingContracts = await workspace.getContracts({ where: { address: address }});
@@ -1269,5 +1290,6 @@ module.exports = {
     updateExplorerSubscription: updateExplorerSubscription,
     cancelExplorerSubscription: cancelExplorerSubscription,
     deleteExplorerSubscription: deleteExplorerSubscription,
+    getContractById: getContractById,
     Workspace: Workspace
 };

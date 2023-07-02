@@ -367,7 +367,7 @@ describe('getTokenStats', () => {
 describe('getTokenTransfers', () => {
     it('Should return transfers if contract exists', (done) => {
         jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce({
-            getTokenTransfers: jest.fn().mockResolvedValueOnce([{ toJSON: () => ({ address: '0x123' }) }]),
+            getTokenTransfers: jest.fn().mockResolvedValueOnce({ count: 1 , rows: [{ toJSON: () => ({ address: '0x123' }) }]}),
             countTokenTransfers: jest.fn().mockResolvedValueOnce(1)
         });
 
@@ -907,7 +907,7 @@ describe('storeTrace', () => {
     it('Should call the store method for each step', async () => {
         const transaction = await workspace.findTransaction(1);
         await db.storeTrace('123', 'My Workspace', '0x123', [{ op: 'CALL' }, { op: 'CALLDATA' }]);
-        expect(transaction.safeCreateTransactionTraceStep).toHaveBeenCalledTimes(2);
+        expect(transaction.safeCreateTransactionTrace).toHaveBeenCalledWith([{ op: 'CALL' }, { op: 'CALLDATA' }]);
     });
 
     it('Should throw an error if the transaction does not exist', async () => {

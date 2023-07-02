@@ -8,7 +8,6 @@ const { sanitize } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
-const moment = require('moment');
 
 const Op = Sequelize.Op;
 const INTEGRATION_FIELD_MAPPING = {
@@ -402,6 +401,18 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    async canCreateContract() {
+        if (this.public)
+            return true;
+
+        const user = await this.getUser();
+        if (user.isPremium)
+            return true;
+
+        const contractCount = await this.countContracts();
+        return contractCount < 10;
+    }
+
     /*
         Syncing the full block can take some time if there are a lot of transactions,
         logs, token transfers to create etc, so we create a partial block with only
@@ -429,18 +440,18 @@ module.exports = (sequelize, DataTypes) => {
 
             for (let i = 0; i < block.transactions.length; i++) {
                 const transaction = block.transactions[i];
-                const storedTx = await this.createTransaction(sanitize({
+                await this.createTransaction(sanitize({
                     blockHash: transaction.blockHash,
                     blockNumber: transaction.blockNumber,
                     blockId: storedBlock.id,
                     chainId: transaction.chainId,
-                    confirmations: transaction.confirmations,
+                    confirmations: transaction.confirmations || 0,
                     creates: transaction.creates,
-                    data: transaction.data,
+                    data: transaction.data || transaction.input,
                     parsedError: transaction.parsedError,
                     rawError: transaction.rawError,
                     from: transaction.from,
-                    gasLimit: transaction.gasLimit,
+                    gasLimit: transaction.gasLimit || block.gasLimit,
                     gasPrice: transaction.gasPrice,
                     hash: transaction.hash,
                     methodLabel: transaction.methodLabel,
@@ -534,7 +545,7 @@ module.exports = (sequelize, DataTypes) => {
 
                     for (let i = 0; i < receipt.logs.length; i++) {
                         const log = receipt.logs[i];
-                        try {
+                        try {
                             await storedReceipt.createLog(sanitize({
                                 workspaceId: storedTx.workspaceId,
                                 address: log.address,
@@ -548,6 +559,7 @@ module.exports = (sequelize, DataTypes) => {
                                 raw: log
                             }), { transaction: sequelizeTransaction });
                         } catch(error) {
+                            logger.error(error.message, { location: 'models.workspaces.safeCreateFullBlock', error: error, data });
                             await storedReceipt.createLog(sanitize({
                                 workspaceId: storedTx.workspaceId,
                                 raw: log
@@ -645,7 +657,7 @@ module.exports = (sequelize, DataTypes) => {
 
                 for (let i = 0; i < receipt.logs.length; i++) {
                     const log = receipt.logs[i];
-                    try {
+                    try {
                         await storedReceipt.createLog(sanitize({
                             workspaceId: storedTx.workspaceId,
                             address: log.address,
@@ -659,7 +671,7 @@ module.exports = (sequelize, DataTypes) => {
                             raw: log
                         }), { transaction: sequelizeTransaction });
                     } catch(error) {
-                        logger.error(error.message, { location: 'models.workspaces', error: error, transaction: transaction });
+                        logger.error(error.message, { location: 'models.workspaces.safeCreateTransaction', error: error, transaction: transaction });
                         await storedReceipt.createLog(sanitize({
                             workspaceId: storedTx.workspaceId,
                             raw: log
@@ -672,7 +684,7 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async safeCreateOrUpdateContract(contract) {
+    async safeCreateOrUpdateContract(contract, transaction) {
         const contracts = await this.getContracts({ where: { address: contract.address.toLowerCase() }});
         const existingContract = contracts[0];
 
@@ -689,7 +701,7 @@ module.exports = (sequelize, DataTypes) => {
             tokenDecimals: contract.tokenDecimals,
             tokenName: contract.tokenName,
             tokenSymbol: contract.tokenSymbol,
-            tokenTotalSupply: contract.totalSupply,
+            tokenTotalSupply: contract.tokenTotalSupply,
             watchedPaths: contract.watchedPaths,
             has721Metadata: contract.has721Metadata,
             has721Enumerable: contract.has721Enumerable,
@@ -699,9 +711,9 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         if (existingContract)
-            return existingContract.update(newContract)
+            return existingContract.update(newContract, { transaction })
         else
-            return this.createContract(newContract);
+            return this.createContract(newContract, { transaction });
     }
 
     async safeCreateOrUpdateAccount(account) {
@@ -772,7 +784,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.TransactionTraceStep,
-                    attributes: ['address', 'contractHashedBytecode', 'depth', 'input', 'op', 'returnData', 'workspaceId', 'id'],
+                    attributes: ['address', 'contractHashedBytecode', 'depth', 'input', 'op', 'returnData', 'workspaceId', 'id', 'value'],
                     as: 'traceSteps',
                     include: [
                         {
@@ -804,7 +816,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Block,
-                    attributes: ['gasLimit'],
+                    attributes: ['gasLimit', 'timestamp'],
                     as: 'block'
                 },
                 {
@@ -926,7 +938,7 @@ module.exports = (sequelize, DataTypes) => {
             filter['where']['createdAt'] = { [Op.lt]: sequelize.literal(`NOW() - interval '${dayInterval} day'`)};
 
         return sequelize.transaction(
-            {  deferrable: Sequelize.Deferrable.SET_DEFERRED },
+            { deferrable: Sequelize.Deferrable.SET_DEFERRED },
             async (transaction) => {
                 await sequelize.models.IntegrityCheck.destroy(filter, { transaction });
                 await sequelize.models.TokenBalanceChange.destroy(filter, { transaction });

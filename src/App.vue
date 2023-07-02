@@ -280,7 +280,7 @@ export default {
                     {
                         chainId: this.formattedExpectedChainId,
                         chainName: this.publicExplorer.name,
-                        rpcUrls: [this.currentWorkspace.rpcServer],
+                        rpcUrls: [this.publicExplorer.rpcServer],
                         blockExplorerUrls: [`https://${this.publicExplorer.domain}`],
                         nativeCurrency: {
                             name: this.publicExplorer.token,
@@ -426,7 +426,7 @@ export default {
             'publicExplorerMode'
         ]),
         hasNetworkInfo() {
-            return this.publicExplorer && this.publicExplorer.name && this.publicExplorer.domain && this.publicExplorer.token;
+            return !!(this.publicExplorer && this.publicExplorer.name && this.publicExplorer.domain && this.publicExplorer.token && this.publicExplorer.rpcServer);
         },
         formattedExpectedChainId() {
             return `0x${parseInt(this.currentWorkspace.networkId).toString(16)}`;

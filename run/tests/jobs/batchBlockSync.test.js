@@ -7,7 +7,7 @@ const batchBlockSync = require('../../jobs/batchBlockSync');
 beforeEach(() => jest.clearAllMocks());
 
 describe('batchBlockSync', () => {
-    it('Should not split & re-enqueue if less than 2000 blocks', (done) => {
+    it('Should not split & re-enqueue if less than 500000 blocks', (done) => {
             batchBlockSync({
                 data: {
                     userId: '123',
@@ -22,21 +22,21 @@ describe('batchBlockSync', () => {
             });
     });
 
-    it('Should split & re-enqueue if more than 2000 blocks', (done) => {
+    it('Should split & re-enqueue if more than 500000 blocks', (done) => {
         batchBlockSync({
             data: {
                 userId: '123',
                 workspace: 'My Workspace',
                 from: 1,
-                to: 9840
+                to: 1000000
             }
         }).then(() => {
             expect(bulkEnqueue).toHaveBeenCalledWith('blockSync', expect.anything());
             expect(enqueue).toHaveBeenNthCalledWith(1, 'batchBlockSync', expect.anything(), {
                 userId: expect.anything(),
                 workspace: expect.anything(),
-                from: 2001,
-                to: 9840,
+                from: 500001,
+                to: 1000000,
                 source: 'batchSync'
             });
             done();

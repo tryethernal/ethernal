@@ -1,18 +1,16 @@
 {
     "high": [
         "blockSync",
-        "transactionSync",
         "batchBlockSync",
-        "batchInsertFirebasePasswordHashes",
-        "insertFirebaseHashes",
         "sendResetPasswordEmail"
     ],
     "medium": [
-        "contractProcessing",
-        "transactionProcessing",
+        "processContract",
+        "processTransactionTrace",
+        "processTransactionError",
         "reloadErc721Token",
         "processTokenTransfer",
-        "reprocessAllTokenTransfers"
+        "reprocessWorkspaceTransactionTraces"
     ],
     "low": [
         "submitExplorerLead",

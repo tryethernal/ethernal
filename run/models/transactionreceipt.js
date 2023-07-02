@@ -3,6 +3,9 @@ const {
   Model
 } = require('sequelize');
 const { trigger } = require('../lib/pusher');
+const { enqueue } = require('../lib/queue');
+const moment = require('moment');
+
 module.exports = (sequelize, DataTypes) => {
   class TransactionReceipt extends Model {
     /**
@@ -44,14 +47,19 @@ module.exports = (sequelize, DataTypes) => {
     raw: DataTypes.JSON
   }, {
     hooks: {
-        async afterSave(receipt, options) {
+        async afterCreate(receipt, options) {
             const fullTransaction = await receipt.getTransaction({
-                attributes: ['hash', 'workspaceId', 'rawError', 'parsedError', 'to', 'data', 'blockNumber', 'from', 'gasLimit', 'gasPrice', 'type', 'value'],
+                attributes: ['hash', 'id', 'workspaceId', 'rawError', 'parsedError', 'to', 'data', 'blockNumber', 'from', 'gasLimit', 'gasPrice', 'type', 'value'],
                 include: [
                     {
                         model: sequelize.models.Workspace,
                         as: 'workspace',
-                        attributes: ['id', 'public']
+                        attributes: ['id', 'name', 'public', 'userId'],
+                        include: {
+                          model: sequelize.models.User,
+                          as: 'user',
+                          attributes: ['firebaseUserId', 'id']
+                        }
                     },
                     {
                         model: sequelize.models.TransactionReceipt,
@@ -60,6 +68,22 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 ]
             });
+
+            if (receipt.status == 0 && fullTransaction.workspace.public)
+              await enqueue('processTransactionError', `processTransactionError-${fullTransaction.workspaceId}-${fullTransaction.hash}`, { 
+                transactionId: fullTransaction.id
+              }, 1);
+
+            if (!fullTransaction.to && receipt.contractAddress) {
+              const workspace = fullTransaction.workspace;
+              const canCreateContract = await workspace.canCreateContract();
+              if (canCreateContract)
+                await workspace.safeCreateOrUpdateContract({
+                  address: receipt.contractAddress,
+                  timestamp: moment(fullTransaction.timestamp).unix()
+                }, options.transaction);
+            }
+
             if (!fullTransaction.workspace.public && !fullTransaction.rawError && !fullTransaction.parsedError && fullTransaction.receipt && !fullTransaction.receipt.status)
                 trigger(`private-failedTransactions;workspace=${fullTransaction.workspaceId}`, 'new', fullTransaction.toJSON());
         }

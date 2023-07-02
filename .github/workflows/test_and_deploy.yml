@@ -39,6 +39,7 @@ jobs:
           AUTH_SECRET: 123
           STRIPE_WEBHOOK_SECRET: 123
           STRIPE_SECRET_KEY: 123
+          ETHERSCAN_API_TOKEN: 123
 
   test_front:
     runs-on: ubuntu-latest

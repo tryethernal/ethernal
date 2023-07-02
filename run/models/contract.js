@@ -294,7 +294,7 @@ module.exports = (sequelize, DataTypes) => {
                 workspaceId: this.workspaceId,
                 token: this.address
             },
-            attributes: [
+            attributes: [
                 sequelize.literal('SUM(diff::numeric)'),
             ],
             raw: true,
@@ -302,7 +302,7 @@ module.exports = (sequelize, DataTypes) => {
         return result[0].sum || 0;
     }
 
-    getTokenTransfers(page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC') {
+    getTokenTransfers(page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC', fromBlock = 0) {
         let sanitizedOrderBy;
         switch(orderBy) {
             case 'timestamp':
@@ -318,17 +318,19 @@ module.exports = (sequelize, DataTypes) => {
                 break;
         }
 
-        return sequelize.models.TokenTransfer.findAll({
+        return sequelize.models.TokenTransfer.findAndCountAll({
             where: {
                 workspaceId: this.workspaceId,
-                token: this.address
+                token: this.address,
+                '$transaction.blockNumber$': { [Op.gte]: fromBlock }
             },
             attributes: ['id', 'src', 'dst', 'token', [sequelize.cast(sequelize.col('"TokenTransfer".amount'), 'numeric'), 'amount'], 'tokenId'],
             include: [
                 {
                     model: sequelize.models.Transaction,
                     as: 'transaction',
-                    attributes: ['hash', 'blockNumber', 'timestamp']
+                    attributes: ['hash', 'blockNumber', 'timestamp'],
+                    where: { blockNumber: {[Op.gte]: minBlockNumber }}
                 },
                 {
                     model: sequelize.models.Contract,
@@ -544,23 +546,20 @@ module.exports = (sequelize, DataTypes) => {
     asm: DataTypes.TEXT
   }, {
     hooks: {
-        afterDestroy(contract, options) {
+        afterDestroy(contract) {
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'destroyed', null);
         },
-        beforeUpdate(contract, options) {
-            if (contract._changed.size > 0 && !contract._changed.has('processed') && !contract._changed.has('totalSupply'))
-                contract.processed = false;
-        },
-        afterUpdate(contract, options) {
-            trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
-            if (contract.patterns.indexOf('erc20') > -1)
-                trigger(`private-tokens;workspace=${contract.workspaceId}`, 'new', null);
-            else if (contract.patterns.indexOf('erc721') > -1)
-                trigger(`private-nft;workspace=${contract.workspaceId}`, 'new', null);
+        async afterCreate(contract, options) {
+            const afterCreateFn = () => {
+                return enqueue(`processContract`, `processContract-${contract.id}`, { contractId: contract.id });
+            };
 
-            return enqueue(`contractProcessing`, `contractProcessing-${contract.id}`, { contractId: contract.id, workspaceId: contract.workspaceId });
+            if (options.transaction)
+                options.transaction.afterCommit(afterCreateFn);
+            else
+                afterCreateFn();
         },
-        afterSave(contract, options) {
+        async afterSave(contract) {
             trigger(`private-contracts;workspace=${contract.workspaceId}`, 'new', null);
             trigger(`private-transactions;workspace=${contract.workspaceId};address=${contract.address}`, 'new', null);
 
@@ -568,8 +567,6 @@ module.exports = (sequelize, DataTypes) => {
                 trigger(`private-tokens;workspace=${contract.workspaceId}`, 'new', null);
             else if (contract.patterns.indexOf('erc721') > -1)
                 trigger(`private-nft;workspace=${contract.workspaceId}`, 'new', null);
-
-            return enqueue(`contractProcessing`, `contractProcessing-${contract.id}`, { contractId: contract.id, workspaceId: contract.workspaceId });
         }
     },
     sequelize,
