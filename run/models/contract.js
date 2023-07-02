@@ -294,7 +294,7 @@ module.exports = (sequelize, DataTypes) => {
                 workspaceId: this.workspaceId,
                 token: this.address
             },
-            attributes: [
+            attributes: [
                 sequelize.literal('SUM(diff::numeric)'),
             ],
             raw: true,
@@ -302,7 +302,7 @@ module.exports = (sequelize, DataTypes) => {
         return result[0].sum || 0;
     }
 
-    getTokenTransfers(page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC', minBlockNumber = 0) {
+    getTokenTransfers(page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC', fromBlock = 0) {
         let sanitizedOrderBy;
         switch(orderBy) {
             case 'timestamp':
@@ -318,10 +318,11 @@ module.exports = (sequelize, DataTypes) => {
                 break;
         }
 
-        return sequelize.models.TokenTransfer.findAll({
+        return sequelize.models.TokenTransfer.findAndCountAll({
             where: {
                 workspaceId: this.workspaceId,
-                token: this.address
+                token: this.address,
+                '$transaction.blockNumber$': { [Op.gte]: fromBlock }
             },
             attributes: ['id', 'src', 'dst', 'token', [sequelize.cast(sequelize.col('"TokenTransfer".amount'), 'numeric'), 'amount'], 'tokenId'],
             include: [
