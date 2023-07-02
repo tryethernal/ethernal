@@ -67,7 +67,7 @@ const transfers = async (req, res) => {
         if (!data.workspace || !req.params.address)
             throw new Error('Missing parameter');
 
-        const result = await db.getTokenTransfers(data.workspace.id, req.params.address, data.page, data.itemsPerPage, data.orderBy, data.order);
+        const result = await db.getTokenTransfers(data.workspace.id, req.params.address, data.page, data.itemsPerPage, data.orderBy, data.order, data.fromBlock);
 
         res.status(200).json(result);
     } catch(error) {
