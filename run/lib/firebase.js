@@ -323,7 +323,7 @@ const getTokenStats = async (workspaceId, address) => {
     };
 };
 
-const getTokenTransfers = async (workspaceId, address, page, itemsPerPage, orderBy, order) => {
+const getTokenTransfers = async (workspaceId, address, page, itemsPerPage, orderBy, order, fromBlock) => {
     if (!workspaceId || !address) throw new Error('Missing parameter');
 
     const workspace = await Workspace.findByPk(workspaceId);
@@ -332,12 +332,11 @@ const getTokenTransfers = async (workspaceId, address, page, itemsPerPage, order
     if (!contract)
         throw new Error(`Can't find contract at this address.`);
 
-    const transfers = await contract.getTokenTransfers(page, itemsPerPage, orderBy, order);
-    const transferCount = await contract.countTokenTransfers();
+    const { count, rows } = await contract.getTokenTransfers(page, itemsPerPage, orderBy, order, fromBlock);
 
     return {
-        items: transfers.map(t => t.toJSON()),
-        total: transferCount,
+        items: rows.map(t => t.toJSON()),
+        total: count,
     };
 };
 
