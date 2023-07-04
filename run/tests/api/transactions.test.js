@@ -8,14 +8,13 @@ require('../mocks/middlewares/auth');
 require('../mocks/middlewares/browserSync');
 const db = require('../../lib/firebase');
 const { processTransactions } = require('../../lib/transactions');
-const { transactionFn } = require('../../lib/codeRunner');
-const { enqueue } = require('../../lib/queue');
+const codeRunner = require('../../lib/codeRunner');
 
 const supertest = require('supertest');
 const app = require('../../app');
 const request = supertest(app);
 
-const BASE_URL = '/api/transactions'
+const BASE_URL = '/api/transactions';
 
 beforeEach(() => jest.clearAllMocks());
 
@@ -84,7 +83,7 @@ describe(`GET ${BASE_URL}/:hash`, () => {
         request.get(`${BASE_URL}/1234`)
             .expect(200)
             .then(({ body }) => {
-                expect(body).toEqual({ hash: '1234', extraFields: {} });
+                expect(body).toEqual({ hash: '1234', extraFields: [] });
                 done();
             });
     });
@@ -94,16 +93,15 @@ describe(`GET ${BASE_URL}/:hash`, () => {
             hash: '1234'
         });
         jest.spyOn(db, 'getCustomTransactionFunction').mockReturnValue(function() { return 'ok' });
-        transactionFn.mockReturnValue({ field: 'ok' });
+        jest.spyOn(codeRunner, 'transactionFn').mockResolvedValueOnce({ overrides: { hash: '6789' }, extraFields: [{ field: 'ok' }]});
         request.get(`${BASE_URL}/1234`)
             .expect(200)
             .then(({ body }) => {
-                expect(body).toEqual({ hash: '1234', extraFields: { field: 'ok' }});
+                expect(body).toEqual({ hash: '6789', extraFields: [{ field: 'ok' }]});
                 done();
             });
     });
 });
-
 
 describe(`POST ${BASE_URL}/:hash/storage`, () => {
     it('Should return 200 status', (done) => {
