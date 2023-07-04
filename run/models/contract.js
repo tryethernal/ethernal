@@ -330,7 +330,6 @@ module.exports = (sequelize, DataTypes) => {
                     model: sequelize.models.Transaction,
                     as: 'transaction',
                     attributes: ['hash', 'blockNumber', 'timestamp'],
-                    where: { blockNumber: {[Op.gte]: minBlockNumber }}
                 },
                 {
                     model: sequelize.models.Contract,
