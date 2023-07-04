@@ -2,6 +2,9 @@
     <div v-if="isLink">
         <a target="_blank" :href="value">{{ label || value }}</a>
     </div>
+    <div v-else-if="isText">
+        {{ value }}
+    </div>
     <div v-else-if="isBigNumber">
         <template v-if="decimals">
             {{ value | fromWei(decimals, symbol) }}
@@ -28,6 +31,7 @@ export default {
         FromWei
     },
     computed: {
+        isText() { return this.type == 'text' },
         isLink() { return this.type == 'link' },
         isBigNumber() { return this.type == 'bigNumber' },
         isHash() { return this.type == 'hash' },
