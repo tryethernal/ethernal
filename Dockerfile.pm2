@@ -1,0 +1,16 @@
+FROM node:16 AS base
+WORKDIR /app
+ENV ETHERNAL_API_ROOT=
+ENV NODE_ENV=production
+ENV SECRET=
+COPY pm2-server/package.json pm2-server/yarn.lock pm2-server/index.js ./app/
+RUN yarn global add pm2 ethernal
+RUN pm2 install pm2-logrotate
+
+FROM base AS dev
+RUN yarn
+CMD ["pm2-dev", "index.js"]
+
+FROM base AS prod
+RUN yarn --prod
+CMD ["pm2-runtime", "index.js"]

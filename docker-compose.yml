@@ -4,6 +4,8 @@ services:
   web: &backend
     volumes:
       - ./run/:/app
+    depends_on:
+      - pm2
     build:
       context: .
       dockerfile: Dockerfile
@@ -48,3 +50,14 @@ services:
       context: .
       dockerfile: Dockerfile.front
     env_file: .env.development
+
+  pm2:
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./pm2-server:/app
+    build:
+      context: .
+      dockerfile: Dockerfile.pm2
+      target: dev
+    env_file: pm2-server/.env

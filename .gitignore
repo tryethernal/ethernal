@@ -31,6 +31,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+pm2-server/.env
+
 # Editor directories and files
 .idea
 .vscode

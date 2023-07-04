@@ -6,8 +6,27 @@ const { sanitize, stringifyBns } = require('../lib/utils');
 const { encode, decrypt, decode } = require('../lib/crypto');
 const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
+const axios = require('axios');
 
 const router = express.Router();
+
+router.get('/processes', async (req, res) => {
+    try {
+        const { data } = await axios.get(`${process.env.PM2_HOST}/processes?secret=uBwTWdFTFYNSADr`);
+        res.status(200).json(data);
+    } catch(error) {
+        console.log(error)
+    }
+});
+
+router.get('/logs', async (req, res) => {
+    try {
+        const { data } = await axios.get(`${process.env.PM2_HOST}/processes/explorer/logs?secret=uBwTWdFTFYNSADr`);
+        res.status(200).json(data);
+    } catch(error) {
+        console.log(error)
+    }
+});
 
 router.post('/reprocessTransactionTraces', [secretMiddleware], async (req, res) => {
     const data = req.body.data;

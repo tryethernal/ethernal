@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const { enqueue } = require('../lib/queue');
 
 module.exports = (sequelize, DataTypes) => {
   class StripeSubscription extends Model {
@@ -26,6 +27,26 @@ module.exports = (sequelize, DataTypes) => {
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
   }, {
+    hooks: {
+      afterSave(stripeSubscription, options) {
+        const afterSaveFn = () => {
+          return enqueue('processStripeSubscription', `processStripeSubscription-${stripeSubscription.id}`, {
+            stripeSubscriptionId: stripeSubscription.id,
+            explorerId: stripeSubscription.explorerId
+          });
+        }
+        return options.transaction ? options.transaction.afterCommit(afterSaveFn) : afterSaveFn();
+      },
+      afterDestroy(stripeSubscription, options) {
+        const afterDestroyFn = () => {
+          return enqueue('processStripeSubscription', `processStripeSubscription-${stripeSubscription.id}`, {
+            stripeSubscriptionId: stripeSubscription.id,
+            explorerId: stripeSubscription.explorerId
+          });
+        }
+        return options.transaction ? options.transaction.afterCommit(afterDestroyFn) : afterDestroyFn();
+      }
+    },
     sequelize,
     modelName: 'StripeSubscription',
     tableName: 'stripe_subscriptions'

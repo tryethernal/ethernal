@@ -2,7 +2,8 @@
     "high": [
         "blockSync",
         "batchBlockSync",
-        "sendResetPasswordEmail"
+        "sendResetPasswordEmail",
+        "processStripeSubscription"
     ],
     "medium": [
         "processContract",

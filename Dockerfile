@@ -44,14 +44,12 @@ COPY run/queues.js .
 COPY run/scheduler.js .
 COPY run/workers ./workers/
 COPY run/package*.json ./
-RUN npm install bun -g
 
 FROM back AS dev_back
 RUN npm install
 RUN npm install nodemon -g
 
 FROM back AS prod_back
-COPY ethernal-95a14-19f78a7e26cc.json ./ethernal-95a14-19f78a7e26cc.json
 RUN npm ci --only=production
 
 FROM back AS prod_all

@@ -11,6 +11,8 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const Contract = models.Contract;
 const Block = models.Block;
+const StripeSubscription = models.StripeSubscription;
+const StripePlan = models.StripePlan;
 
 const getContractById = async (contractId) => {
     if (!contractId) throw new Error('Missing parameter');
