@@ -33,7 +33,7 @@ exports[`ERC20Contract.vue Should display contract info 1`] = `
           <stat-number-stub title="Transfers" value="2"></stat-number-stub>
         </div>
         <div class="col-sm-6 col-lg-6 col-12">
-          <stat-number-stub infotooltip="Number of minted tokens" title="Circulating Supply" decimals="2" value="1000000000"></stat-number-stub>
+          <stat-number-stub infotooltip="Number of tokens currently in circulation" title="Circulating Supply" decimals="2" value="1000000000"></stat-number-stub>
         </div>
         <div class="col-sm-6 col-lg-6 col-12">
           <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
@@ -177,7 +177,7 @@ exports[`ERC20Contract.vue Should display placeholders 1`] = `
           <stat-number-stub title="Transfers" value="0"></stat-number-stub>
         </div>
         <div class="col-sm-6 col-lg-6 col-12">
-          <stat-number-stub infotooltip="Number of minted tokens" title="Circulating Supply" value="0"></stat-number-stub>
+          <stat-number-stub infotooltip="Number of tokens currently in circulation" title="Circulating Supply" value="0"></stat-number-stub>
         </div>
         <div class="col-sm-6 col-lg-6 col-12">
           <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
