@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unreleased
 - Reduce workers concurrency
 
+## [3.16.1] - 2023-07-05
+### Fixed
+- Token holders & circulating supply calculations
+
+### Changed
+- Reduce workers concurrency for lighter db load
+
 ## [3.16.0] - 2023-07-04
 ### Changed
 - Updated code runner API to be able to override native transaction fields + added quorum library
