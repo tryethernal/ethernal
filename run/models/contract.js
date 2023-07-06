@@ -239,20 +239,17 @@ module.exports = (sequelize, DataTypes) => {
 
         return sequelize.query(`
             WITH balances AS (
-                SELECT address, SUM(diff::numeric) AS amount
+                SELECT DISTINCT ON (address) address, "blockNumber", "currentBalance"::numeric cb
                 FROM token_balance_changes
-                WHERE token_balance_changes."workspaceId" = :workspaceId AND token_balance_changes.token = :token
-                GROUP BY address
+                LEFT JOIN transactions t ON t.id = token_balance_changes."transactionId"
+                WHERE token_balance_changes."workspaceId" = :workspaceId AND token = :token
+                ORDER BY "address", "blockNumber" DESC
             ),
             supply AS (
-                SELECT SUM(diff::numeric) AS value
-                FROM token_balance_changes
-                WHERE token_balance_changes."workspaceId" = :workspaceId AND token_balance_changes.token = :token
+                SELECT sum("cb"::numeric) AS value FROM balances
             )
-            SELECT balances.address, balances.amount::numeric AS amount, balances.amount::float / supply.value::float AS share
-            FROM token_balance_changes, balances, supply
-            WHERE token_balance_changes."workspaceId" = :workspaceId AND token_balance_changes.token = :token
-            GROUP BY balances.address, balances.amount, supply.value
+            SELECT balances.address, balances.cb AS amount, balances.cb::float / supply.value::float AS share
+            FROM balances, supply
             ORDER BY ${sanitizedOrderBy} ${sanitizedOrder} LIMIT :itemsPerPage OFFSET :offset;
         `, {
             replacements: {
@@ -289,17 +286,24 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async getTokenCirculatingSupply() {
-        const result = await sequelize.models.TokenBalanceChange.findAll({
-            where: {
+        const res = await sequelize.query(`
+            WITH balances AS (
+                SELECT DISTINCT ON (address) address, "blockNumber", "currentBalance"::numeric cb
+                FROM token_balance_changes
+                LEFT JOIN transactions t ON t.id = token_balance_changes."transactionId"
+                WHERE token_balance_changes."workspaceId" = :workspaceId AND token = :token
+                ORDER BY "address", "blockNumber" DESC
+            )
+            SELECT sum("cb"::numeric) AS value FROM balances
+        `, {
+            replacements: {
                 workspaceId: this.workspaceId,
-                token: this.address
+                token: this.address,
             },
-            attributes: [
-                sequelize.literal('SUM(diff::numeric)'),
-            ],
-            raw: true,
+            type: QueryTypes.SELECT
         });
-        return result[0].sum || 0;
+
+        return res[0] && res[0].value;
     }
 
     getTokenTransfers(page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC', fromBlock = 0) {
@@ -330,7 +334,6 @@ module.exports = (sequelize, DataTypes) => {
                     model: sequelize.models.Transaction,
                     as: 'transaction',
                     attributes: ['hash', 'blockNumber', 'timestamp'],
-                    where: { blockNumber: {[Op.gte]: minBlockNumber }}
                 },
                 {
                     model: sequelize.models.Contract,
