@@ -19,6 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     stripePriceId: DataTypes.STRING,
     capabilities: DataTypes.JSON,
+    price: DataTypes.INTEGER,
+    public: DataTypes.BOOLEAN,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
   }, {

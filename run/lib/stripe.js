@@ -1,6 +1,4 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const moment = require('moment');
-const { sanitize } = require('./utils');
 const Analytics = require('./analytics');
 const db = require('./firebase');
 const models = require('../models');
@@ -22,7 +20,10 @@ const deleteExplorerSubscription = async (stripeSubscription) => {
 }
 
 const updateExplorerSubscription = async (stripeSubscription) => {
-    const explorerId = stripeSubscription.metadata.explorerId;
+    if (stripeSubscription.status != 'active')
+        return;
+
+    const explorerId = parseInt(stripeSubscription.metadata.explorerId);
 
     const user = await db.getUserbyStripeCustomerId(stripeSubscription.customer);
     const explorer = await db.getExplorerById(user.id, explorerId);
@@ -37,10 +38,15 @@ const updateExplorerSubscription = async (stripeSubscription) => {
     const priceId = stripeSubscription.items.data[0].price.id;
     const stripePlan = await models.StripePlan.findOne({ where: { stripePriceId: priceId }});
 
-    if (explorer.stripeSubscription)
-        await db.updateExplorerSubscription(user.id, explorerId, stripePlan.id);
-    else
+    if (explorer.stripeSubscription) {
+        if (explorer.stripeSubscription.isPendingCancelation && stripeSubscription.cancel_at_period_end == false)
+            await db.revertExplorerSubscriptionCancelation(user.id, explorerId);
+        else
+            await db.updateExplorerSubscription(user.id, explorerId, stripePlan.id);
+    } else {
         await db.createExplorerSubscription(user.id, explorerId, stripePlan.id, stripeSubscription.id, new Date(stripeSubscription.current_period_end * 1000));
+    }
+        
 }
 
 const updatePlan = async (stripeSubscription) => {

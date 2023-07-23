@@ -7,6 +7,38 @@ const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const router = express.Router();
 
+router.post('/startCryptoSubscription', [authMiddleware, stripeMiddleware], async (req, res) => {
+    const data = req.body.data;
+    try {
+        if (!data.stripePlanSlug || !data.explorerId)
+            throw new Error('Missing parameter');
+
+        if (!data.user.cryptoPaymentEnabled)
+            throw new Error(`Crypto payment is not available for your account. Please reach out to contact@tryethernal.com if you'd like to enable it.`);
+
+        const stripePlan = await db.getStripePlan(data.stripePlanSlug);
+        if (!stripePlan || !stripePlan.public)
+            throw new Error(`Can't find plan.`);
+
+        await stripe.subscriptions.create({
+            customer: data.user.stripeCustomerId,
+            collection_method: 'send_invoice',
+            days_until_due: 7,
+            items: [
+                { price: stripePlan.stripePriceId }
+            ],
+            metadata: {
+                explorerId: data.explorerId
+            }
+        });
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.stripe.startCryptoSubscription', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
 router.post('/cancelExplorerSubscription', [authMiddleware, stripeMiddleware], async (req, res) => {
     const data = req.body.data;
     try {
@@ -37,6 +69,8 @@ router.post('/updateExplorerSubscription', [authMiddleware, stripeMiddleware], a
             throw new Error(`Can't find explorer.`);
 
         const stripePlan = await db.getStripePlan(data.newStripePlanSlug);
+        if (!stripePlan || !stripePlan.public)
+            throw new Error(`Can't find plan.`);
 
         const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
         await stripe.subscriptions.update(subscription.id, {
@@ -76,7 +110,6 @@ router.post('/createCheckoutSession', [authMiddleware, stripeMiddleware], async 
             mode: 'subscription',
             client_reference_id: user.id,
             customer: user.stripeCustomerId,
-            payment_method_types: ['card'],
             subscription_data: { metadata: data.metadata },
             line_items: [
                 {
@@ -87,7 +120,7 @@ router.post('/createCheckoutSession', [authMiddleware, stripeMiddleware], async 
             success_url: `${process.env.APP_URL}${data.successPath}`,
             cancel_url: `${process.env.APP_URL}${data.cancelPath}`
         }));
-        
+
         res.status(200).json({ url: session.url });
     } catch(error) {
         logger.error(error.message, { location: 'post.api.stripe.createCheckoutSession', error: error, data: data });

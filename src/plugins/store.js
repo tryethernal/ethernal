@@ -107,7 +107,8 @@ export default new Vuex.Store({
                     loggedIn: true,
                     id: user.id,
                     plan: user.plan,
-                    apiToken: user.apiToken
+                    apiToken: user.apiToken,
+                    cryptoPaymentEnabled: user.cryptoPaymentEnabled
                 }));
 
                 if (process.env.VUE_APP_ENABLE_ANALYTICS)
@@ -142,6 +143,7 @@ export default new Vuex.Store({
         }
     },
     getters: {
+        isBillingEnabled: () => !!process.env.VUE_APP_ENABLE_BILLING,
         publicExplorerMode: state => !!state.publicExplorer,
         rpcServer: state => state.publicExplorer ? state.publicExplorer.rpcServer : state.currentWorkspace.rpcServer,
         accounts: state => state.accounts,

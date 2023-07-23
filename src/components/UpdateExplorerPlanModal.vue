@@ -1,88 +1,22 @@
 <template>
     <v-dialog v-model="dialog" max-width="1200">
         <v-card>
-            <v-card-title>Select A Plan</v-card-title>
+            <v-card-title>
+                Select A Plan
+                <v-spacer></v-spacer>
+                <v-btn icon @click="close()" ><v-icon>mdi-close</v-icon></v-btn>
+            </v-card-title>
             <v-card-text>
+                <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
                 <v-row>
                     <v-col cols="3" v-for="(plan, idx) in plans" :key="idx">
-                        <v-card outlined :class="{ 'current-plan-card': plan.slug == currentPlanSlug }">
-                            <v-card-title>
-                                {{ plan.name }}
-                                <v-spacer></v-spacer>
-                                <v-chip class="ml-2" color="primary" small v-if="plan.slug == currentPlanSlug">Current</v-chip>
-                            </v-card-title>
-                            <v-card-subtitle class="pb-0">$1,000 / month</v-card-subtitle>
-                            <v-card-text>
-                                <v-list dense disabled>
-                                    <v-list-item>
-                                        <v-list-item-content class="py-0">
-                                            <v-list-item-title style="font-weight: normal;">
-                                                {{ plan.capabilities.txLimit.toLocaleString() }} txs / month
-                                            </v-list-item-title>
-                                        </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item>
-                                        <v-list-item-content>
-                                            <v-list-item-title style="font-weight: normal;">
-                                                Data Retention: {{ plan.capabilities.dataRetention > 0 ? `${plan.capabilities.dataRetention} days` : 'Unlimited' }}
-                                            </v-list-item-title>
-                                        </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item>
-                                        <v-list-item-icon>
-                                            <v-icon :color="pickIconColor(plan.capabilities.customDomain)">{{ pickIcon(plan.capabilities.customDomain) }}</v-icon>
-                                        </v-list-item-icon>
-                                        <v-list-item-content>
-                                            <v-list-item-title style="font-weight: normal;">Custom Domain</v-list-item-title>
-                                        </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item>
-                                        <v-list-item-icon>
-                                            <v-icon :color="pickIconColor(plan.capabilities.nativeToken)">{{ pickIcon(plan.capabilities.nativeToken) }}</v-icon>
-                                        </v-list-item-icon>
-                                        <v-list-item-content>
-                                            <v-list-item-title style="font-weight: normal;">
-                                                Native Token
-                                            </v-list-item-title>
-                                        </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item>
-                                        <v-list-item-icon>
-                                            <v-icon :color="pickIconColor(plan.capabilities.totalSupply)">{{ pickIcon(plan.capabilities.totalSupply) }}</v-icon>
-                                        </v-list-item-icon>
-                                        <v-list-item-content>
-                                            <v-list-item-title style="font-weight: normal;">
-                                                Total Supply
-                                            </v-list-item-title>
-                                        </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item>
-                                        <v-list-item-icon>
-                                            <v-icon :color="pickIconColor(plan.capabilities.statusPage)">{{ pickIcon(plan.capabilities.statusPage) }}</v-icon>
-                                        </v-list-item-icon>
-                                        <v-list-item-content>
-                                            <v-list-item-title style="font-weight: normal;">
-                                                Status Page
-                                            </v-list-item-title>
-                                        </v-list-item-content>
-                                    </v-list-item>
-                                    <v-list-item>
-                                        <v-list-item-icon>
-                                            <v-icon :color="pickIconColor(plan.capabilities.branding)">{{ pickIcon(plan.capabilities.branding) }}</v-icon>
-                                        </v-list-item-icon>
-                                        <v-list-item-content>
-                                            <v-list-item-title style="font-weight: normal;">
-                                                Branding
-                                            </v-list-item-title>
-                                        </v-list-item-content>
-                                    </v-list-item>
-                                </v-list>
-                            </v-card-text>
-                            <v-card-actions class="justify-center">
-                                <v-btn v-if="plan.slug == currentPlanSlug" @click="cancelPlan()" class="error">Cancel Plan</v-btn>
-                                <v-btn v-else @click="choosePlan(plan.slug)" class="primary">Choose Plan</v-btn>
-                            </v-card-actions>
-                        </v-card>
+                        <Explorer-Plan-Card
+                            :plan="plan"
+                            :current="plan.slug == currentPlanSlug"
+                            :loading="updatingSlug && plan.slug == updatingSlug"
+                            :disabled="updatingSlug && plan.slug != updatingSlug"
+                            :pendingCancelation="pendingCancelation && plan.slug == currentPlanSlug"
+                            @updatePlan="onUpdatePlan"></Explorer-Plan-Card>
                     </v-col>
                 </v-row>
             </v-card-text>
@@ -90,27 +24,88 @@
     </v-dialog>
 </template>
 <script>
+import { mapGetters } from 'vuex';
+import ExplorerPlanCard from './ExplorerPlanCard.vue';
+
 export default {
     name: 'UpdateExplorerPlanModal',
+    components: {
+        ExplorerPlanCard
+    },
     data: () => ({
         dialog: false,
         resolve: null,
         reject: null,
         plans: null,
-        loading: false,
+        updatingSlug: null,
         explorerId: null,
-        currentPlanSlug: null
+        currentPlanSlug: null,
+        errorMessage: null,
+        pendingCancelation: null,
+        planUpdated: false
     }),
     methods: {
-        choosePlan(slug) {
-            if (this.currentPlanSlug)
-                this.server.updateExplorerSubscription(this.explorerId, slug);
+        onUpdatePlan(slug) {
+            this.updatingSlug = slug || this.currentPlanSlug;
+            this.errorMessage = null;
+            if (slug && !this.currentPlanSlug)
+                this.createPlan(slug);
+            else if (slug && this.currentPlanSlug)
+                this.updatePlan(slug);
+            else if (!slug && this.currentPlanSlug)
+                this.cancelPlan();
+        },
+        createPlan(slug) {
+            if (this.user.cryptoPaymentEnabled) {
+                this.server.startCryptoSubscription(slug, this.explorerId)
+                    .then(() => {
+                        this.currentPlanSlug = slug;
+                        this.planUpdated = true;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.errorMessage = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
+                    })
+                    .finally(() => this.updatingSlug = null);
+            }
             else {
                 const successPath = `/explorers/${this.explorerId}?status=success`;
-                const cancelPath = `/explorers/${this.explorerId}?status=cancel`;
+                const cancelPath = `/explorers/${this.explorerId}`;
                 this.server.createStripeCheckoutSession(slug, successPath, cancelPath, { explorerId: this.explorerId })
-                    .then(({ data }) => document.location.href = data.url);
+                    .then(({ data }) => document.location.href = data.url)
+                    .catch(error => {
+                        console.log(error);
+                        this.errorMessage = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
+                        this.updatingSlug = null;
+                    });
+                }
+        },
+        updatePlan(slug) {
+            if (this.isLessExpensiveThanCurrent(slug)) {
+                const confirmationMessage = `This plan is cheaper than the current one. Your account will be credited with the prorated remainder for this month. These credits will automatically be applied to future invoices.
+                Are you sure you want to change plan?`;
+                if (!confirm(confirmationMessage))
+                    return this.updatingSlug = null;
             }
+            else {
+                const confirmationMessage = `You will now be charged for the difference between your current plan and this one.
+                Are you sure you want to change plan?`;
+                if (!confirm(confirmationMessage))
+                    return this.updatingSlug = null;
+            }
+
+            this.server.updateExplorerSubscription(this.explorerId, slug)
+                .then(() => {
+                    if (this.pendingCancelation && slug)
+                        this.pendingCancelation = false;
+                    this.currentPlanSlug = slug;
+                    this.planUpdated = true;
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.errorMessage = error.response && error.response.data || 'Error while updating the plan. Please retry.';
+                })
+                .finally(() => this.updatingSlug = null);
         },
         cancelPlan() {
             const confirmationMessage = `
@@ -122,13 +117,24 @@ export default {
                 If you want to resume the explorer, you'll just need to resubscribe to a plan.
                 Are you sure you want to cancel?
             `;
-            if (confirm(confirmationMessage))
-                this.server.cancelExplorerSubscription(this.explorerId);
+            if (!confirm(confirmationMessage)) return this.updatingSlug = null;
+
+            this.server.cancelExplorerSubscription(this.explorerId)
+                .then(() => {
+                    this.pendingCancelation = true;
+                    this.planUpdated = true;
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.errorMessage = error.response && error.response.data || 'Error while canceling the plan. Please retry.';
+                })
+                .finally(() => this.updatingSlug = null);
         },
         open(options) {
             this.dialog = true;
             this.explorerId = options.explorerId;
             this.currentPlanSlug = options.currentPlanSlug;
+            this.pendingCancelation = options.pendingCancelation;
             this.server.getExplorerPlans()
                 .then(({ data }) => this.plans = data);
             return new Promise((resolve, reject) => {
@@ -137,7 +143,7 @@ export default {
             });
         },
         close() {
-            this.resolve(false);
+            this.resolve(this.planUpdated);
             this.reset();
         },
         reset: function() {
@@ -145,6 +151,7 @@ export default {
             this.resolve = null;
             this.reject = null;
             this.plans = null;
+            this.planUpdated = false;
         },
         pickIcon(flag) {
             return flag ? 'mdi-check' : 'mdi-close';
@@ -152,11 +159,23 @@ export default {
         pickIconColor(flag) {
             return flag ? 'success' : 'error';
         },
+        isLessExpensiveThanCurrent(slug) {
+            let currentPlan, newPlan;
+            for (let i = 0; i < this.plans.length; i++) {
+                if (this.plans[i].slug == slug)
+                    newPlan = this.plans[i];
+                if (this.plans[i].slug == this.currentPlanSlug)
+                    currentPlan = this.plans[i];
+            }
+            if (newPlan.price < currentPlan.price)
+                return true;
+            return false;
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'user'
+        ])
     }
 }
 </script>
-<style lang="scss">
-.current-plan-card {
-    border: 1px solid var(--v-primary-base) !important;
-}
-</style>

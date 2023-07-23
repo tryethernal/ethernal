@@ -115,7 +115,7 @@ app.post('/processes', secretMiddleware, (req, res) => {
                 env: {
                     ETHERNAL_API_TOKEN: data.apiToken,
                     NODE_ENV: process.env.NODE_ENV || 'development',
-                    ETHERNAL_API_ROOT: process.env.ETHERNAL_API_ROOT || 'http://host.docker.internal:8888'
+                    ETHERNAL_API_ROOT: process.env.ETHERNAL_HOST
                 }
             };
 

@@ -1,10 +1,23 @@
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const express = require('express');
 const router = express.Router();
+const { isStripeEnabled } = require('../lib/flags');
 const logger = require('../lib/logger');
 const db = require('../lib/firebase');
-const secretMiddleware = require('../middlewares/secret');
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
+
+router.delete('/:id', authMiddleware, async (req, res) => {
+    const data = req.body.data;
+    try {
+        await db.deleteExplorer(data.user.id, req.params.id);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'delete.api.explorers.id', error, data });
+        res.status(400).send(error.message);
+    }
+});
 
 router.get('/plans', [authMiddleware, stripeMiddleware], async (req, res) => {
     try {
@@ -13,6 +26,26 @@ router.get('/plans', [authMiddleware, stripeMiddleware], async (req, res) => {
         res.status(200).json(plans);
     } catch(error) {
         logger.error(error.message, { location: 'get.api.explorers.plans', error: error });
+        res.status(400).send(error.message);
+    }
+});
+
+router.post('/:id/domains', authMiddleware, async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        if (!data.domain)
+            throw new Error('Missing parameter');
+
+        const explorer = await db.getExplorerById(data.user.id, req.params.id);
+        if (!explorer)
+            throw new Error('Could not find explorer.');
+
+        await db.createExplorerDomain(explorer.id, data.domain);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.explorers.id.domains', error: error, data: data, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -29,7 +62,7 @@ router.post('/:id/branding', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.settings', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.explorers.id.branding', error: error, data: data, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -62,31 +95,57 @@ router.post('/:id/settings', authMiddleware, async (req, res) => {
     }
 });
 
-router.post('/', [authMiddleware, secretMiddleware], async (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
     try {
-        if (!data.domain || !data.slug || !data.workspaceId || !data.chainId || !data.rpcServer || !data.theme)
+        if (!data.workspaceId)
             throw new Error('Missing parameters.');
 
-        const user = await db.getUser(data.uid);
-        const workspace = user.workspaces.find(w => w.id == data.workspaceId)
+        const user = await db.getUser(data.uid, ['stripeCustomerId']);
 
-        if (!workspace)
-            throw new Error('Could not find workspace.');
+        const explorer = await db.createExplorerFromWorkspace(user.id, data.workspaceId);
 
-        const explorer = await db.createExplorer(
-            user.id,
-            workspace.id,
-            data.chainId,
-            data.name,
-            data.rpcServer,
-            data.slug,
-            data.theme,
-            data.totalSupply,
-            data.domain,
-            data.token
-        );
+        if (!explorer)
+            throw new Error('Could not create explorer.');
+        
+        if (!isStripeEnabled()) {
+            const stripePlan = await db.getStripePlan('self-hosted');
+            if (!stripePlan)
+                throw new Error(`Can't setup explorer. Make sure you've run npx sequelize-cli db:seed:all`);
+
+            await db.createExplorerSubscription(user.id, explorer.id, stripePlan.id, 'selfhosted', new Date());
+        }
+        else if (req.query.startSubscription) {
+            if (!data.plan)
+                throw new Error('Missing plan parameter.');
+
+            const stripePlan = await db.getStripePlan(data.plan);
+            if (!stripePlan || !stripePlan.public)
+                throw new Error(`Can't find plan`);
+
+            let stripeParams = {
+                customer: user.stripeCustomerId,
+                items: [
+                    { price: stripePlan.stripePriceId }
+                ],
+                metadata: {
+                    explorerId: explorer.id
+                }
+            };
+
+            if (!user.cryptoPaymentEnabled) {
+                const stripeCustomer = await stripe.customers.retrieve(user.stripeCustomerId);
+                if (!stripeCustomer.default_source)
+                    throw new Error(`There doesn't seem to be a payment method associated to your account. If you never subscribed to an explorer plan, please start your first one using the dashboard. You can also reach out to support on Discord or at contact@tryethernal.com`);
+            }
+            else {
+                stripeParams['collection_method'] = 'send_invoice';
+                stripeParams['days_until_due'] = 7;
+            }
+
+            await stripe.subscriptions.create(stripeParams);
+        }
 
         res.status(200).send(explorer);
     } catch(error) {
@@ -111,12 +170,24 @@ router.get('/search', async (req, res) => {
             explorer = await db.getPublicExplorerParamsBySlug(slug);
         }
         else
-            explorer = await db.getPublicExplorerParamsByDomain(data.domain);
+            explorer = await db.getPublicExplorerParamsByDomain(data.domain); // This method will return null if the current explorer plan doesn't have the "customDomain" capability
 
-        if (explorer)
-            res.status(200).json({ explorer });
-        else
-            throw new Error('Could not find explorer.');
+        if (!explorer)
+            throw new Error(`Couldn't find explorer`);
+
+        if (!explorer.stripeSubscription)
+            throw new Error('This explorer is not active.');
+
+        const capabilities = explorer.stripeSubscription.stripePlan.capabilities;
+
+        if (!capabilities.nativeToken)
+            explorer.token = 'ether';
+        if (!capabilities.totalSupply)
+            explorer.totalSupply = null;
+        if (!capabilities.branding)
+            explorer.themes = { 'default': {}};
+
+        res.status(200).json({ explorer });
     } catch(error) {
         logger.error(error.message, { location: 'get.api.explorers.search', error: error, data: data, queryParams: req.params });
         res.status(400).send(error.message);
@@ -143,14 +214,14 @@ router.get('/:id', authMiddleware, async (req, res) => {
 });
 
 router.get('/', authMiddleware, async (req, res) => {
-    const data = req.body.data;
+    const data = { ...req.body.data, ...req.query };
 
     try {
-        const explorers = await db.getUserExplorers(data.uid)
+        const explorers = await db.getUserExplorers(data.user.id, data.page, data.itemsPerPage, data.order, data.orderBy)
 
         res.status(200).json(explorers)
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.explorers', error: error, data: data });
         res.status(400).send(error.message);
     }
 });

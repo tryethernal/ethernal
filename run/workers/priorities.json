@@ -3,7 +3,8 @@
         "blockSync",
         "batchBlockSync",
         "sendResetPasswordEmail",
-        "processStripeSubscription"
+        "processStripeSubscription",
+        "updateApproximatedRecord"
     ],
     "medium": [
         "processContract",

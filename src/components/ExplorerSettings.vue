@@ -1,0 +1,125 @@
+<template>
+    <v-card outlined>
+        <v-card-text>
+            <v-alert v-if="successMessage" dense text type="success">{{ successMessage }}</v-alert>
+            <v-alert v-if="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
+            <v-form @submit.prevent="updateExplorerSettings()" v-model="valid">
+                <v-row>
+                    <v-col>
+                        <v-select
+                            outlined
+                            dense
+                            label="Associated Workspace"
+                            v-model="currentWorkspace"
+                            item-text="name"
+                            :items="workspaces"
+                            return-object>
+                            <template v-slot:item="{ item }">
+                                {{ item.name }}<small class="ml-2">({{ shortRpcUrl(item.rpcServer) }} | {{  item.networkId }})</small>
+                            </template>
+                            <template v-slot:selection="{ item }">
+                                {{ item.name }}<small class="ml-2">({{ shortRpcUrl(item.rpcServer) }} | {{  item.networkId }})</small>
+                            </template>
+                        </v-select>
+                        <v-text-field
+                            dense
+                            outlined
+                            v-model="explorer.name"
+                            label="Name"></v-text-field>
+                        <v-text-field
+                            class="mb-2"
+                            dense
+                            outlined
+                            v-model="explorer.slug"
+                            :suffix="`.${mainDomain}`"
+                            hint="Your explorer will always be reachable at this address"
+                            persistent-hint
+                            label="Ethernal Domain"></v-text-field>
+                        <v-text-field
+                            class="mb-2"
+                            dense
+                            outlined
+                            :disabled="!capabilities.nativeToken"
+                            :hint="capabilities.nativeToken ? '' : 'Upgrade your plan to customize your native token symbol.'"
+                            v-model="explorer.token"
+                            persistent-hint
+                            label="Native Token"></v-text-field>
+                        <v-text-field
+                            dense
+                            outlined
+                            type="number"
+                            :disabled="!capabilities.totalSupply"
+                            :hint="capabilities.totalSupply ? `In ether: ${formatTotalSupply()}` : 'Upgrade your plan to display a total supply'"
+                            persistent-hint
+                            hide-details="auto"
+                            v-model="explorer.totalSupply"
+                            label="Total Supply (in wei)"></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn :loading="loading" color="primary" :disabled="!valid" type="submit">Update</v-btn>
+                </v-card-actions>
+            </v-form>
+        </v-card-text>
+    </v-card>
+</template>
+
+<script>
+import { formatNumber, shortRpcUrl } from '../lib/utils';
+
+export default {
+    name: 'Explorer',
+    props: ['explorer', 'workspaces'],
+    data: () => ({
+        successMessage: null,
+        errorMessage: null,
+        mainDomain: process.env.VUE_APP_MAIN_DOMAIN,
+        currentWorkspace: null,
+        valid: false,
+        loading: false,
+        capabilities: {},
+    }),
+    mounted() {
+        if (this.explorer.stripeSubscription)
+            this.capabilities = this.explorer.stripeSubscription.stripePlan.capabilities;
+    },
+    methods: {
+        shortRpcUrl,
+        formatTotalSupply() {
+            if (!this.explorer.totalSupply) return 'N/A';
+            return formatNumber(this.explorer.totalSupply)
+        },
+        updateExplorerSettings() {
+            this.loading = true;
+            this.successMessage = null;
+            this.errorMessage = null;
+            const settings = {
+                workspace: this.currentWorkspace.name,
+                name: this.explorer.name,
+                slug: this.explorer.slug,
+                token: this.explorer.token,
+                totalSupply: this.explorer.totalSupply,
+            };
+
+            this.server.updateExplorerSettings(this.explorer.id, settings)
+                .then(() => {
+                    this.successMessage = 'Settings updated.';
+                    this.$emit('updated');
+                })
+                .catch(error => {
+                    this.errorMessage = error.response && error.response.data || 'Error while updating settings. Please retry.';
+                })
+                .finally(() => this.loading = false);
+        }
+    },
+    watch: {
+        workspaces: {
+            immediate: true,
+            handler() {
+                this.currentWorkspace = this.workspaces.find(w => w.id == this.explorer.workspaceId);
+            }
+        }
+    }
+}
+</script>

@@ -3,30 +3,11 @@ const logger = require('../lib/logger');
 const authMiddleware = require('../middlewares/auth');
 const secretMiddleware = require('../middlewares/secret');
 const { sanitize, stringifyBns } = require('../lib/utils');
-const { encode, decrypt, decode } = require('../lib/crypto');
+const { encode, decrypt } = require('../lib/crypto');
 const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
-const axios = require('axios');
-
+const { ProviderConnector } = require('../lib/rpc');
 const router = express.Router();
-
-router.get('/processes', async (req, res) => {
-    try {
-        const { data } = await axios.get(`${process.env.PM2_HOST}/processes?secret=uBwTWdFTFYNSADr`);
-        res.status(200).json(data);
-    } catch(error) {
-        console.log(error)
-    }
-});
-
-router.get('/logs', async (req, res) => {
-    try {
-        const { data } = await axios.get(`${process.env.PM2_HOST}/processes/explorer/logs?secret=uBwTWdFTFYNSADr`);
-        res.status(200).json(data);
-    } catch(error) {
-        console.log(error)
-    }
-});
 
 router.post('/reprocessTransactionTraces', [secretMiddleware], async (req, res) => {
     const data = req.body.data;
@@ -149,6 +130,13 @@ router.post('/', authMiddleware, async (req, res) => {
 
         if (!user)
             throw new Error('Could not find user.');
+        
+        if (data.workspaceData.public) {
+            const provider = new ProviderConnector(data.workspaceData.rpcServer);
+            const networkId = await provider.fetchNetworkId();
+            if (!networkId)
+                throw new Error(`Can't reach RPC server, make sure it's accessible.`);
+        }
 
         const filteredWorkspaceData = stringifyBns(sanitize({
             name: data.name,
@@ -162,6 +150,9 @@ router.post('/', authMiddleware, async (req, res) => {
         }));
 
         const workspace = await db.createWorkspace(data.uid, filteredWorkspaceData);
+
+        if (!workspace)
+            throw new Error(`Couldn't create workspace`);
 
         if (!user.currentWorkspace)
             await db.setCurrentWorkspace(user.firebaseUserId, filteredWorkspaceData.name);

@@ -354,6 +354,39 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            getExplorerDomainStatus(domainId) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/domains/${domainId}`;
+                return axios.get(resource);
+            },
+
+            addExplorerDomain(explorerId, domain) {
+                const data = { domain };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/domains`;
+                return axios.post(resource, { data });
+            },
+
+            removeExplorerDomain(domainId) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/domains/${domainId}`;
+                return axios.delete(resource);
+            },
+
+            deleteExplorer(explorerId) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}`;
+                return axios.delete(resource);
+            },
+
+            startCryptoSubscription(stripePlanSlug, explorerId) {
+                const data = { stripePlanSlug, explorerId };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/startCryptoSubscription`;
+                return axios.post(resource, { data }, { cache: { ttl: 0 }});
+            },
+
+            createExplorer(workspaceId) {
+                const data = { workspaceId };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers`;
+                return axios.post(resource, { data }, { cache: { ttl: 0 }});
+            },
+
             cancelExplorerSubscription(explorerId) {
                 const data = { explorerId };
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/cancelExplorerSubscription`;
@@ -401,9 +434,9 @@ export const serverPlugin = {
                 return axios.get(resource, { cache: { ttl: 100 }});
             },
 
-            getExplorers() {
+            getExplorers(params) {
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers`;
-                return axios.get(resource);
+                return axios.get(resource, { params });
             },
 
             getExplorer(slug) {

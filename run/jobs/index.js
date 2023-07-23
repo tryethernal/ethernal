@@ -4,6 +4,7 @@ module.exports = {
     batchBlockSync: require('./batchBlockSync'),
     sendResetPasswordEmail: require('./sendResetPasswordEmail'),
     processStripeSubscription: require('./processStripeSubscription'),
+    updateApproximatedRecord: require('./updateApproximatedRecord'),
 
     // Medium Priority
     processContract: require('./processContract'),

@@ -13,6 +13,91 @@ const Contract = models.Contract;
 const Block = models.Block;
 const StripeSubscription = models.StripeSubscription;
 const StripePlan = models.StripePlan;
+const ExplorerDomain = models.ExplorerDomain;
+
+const getExplorerDomainById = async (userId, explorerDomainId) => {
+    if (!userId || !explorerDomainId) throw new Error('Missing parameter');
+
+    const domain = await ExplorerDomain.findOne({
+        where: {
+            id: explorerDomainId,
+            '$explorer.userId$': userId
+        },
+        include: [
+            {
+                model: Explorer,
+                as: 'explorer',
+                attributes: ['userId']
+            }
+        ]
+    });
+
+    return domain ? domain.toJSON() : null;
+};
+
+const deleteExplorerDomain = async (userId, explorerDomainId) => {
+    if (!userId || !explorerDomainId) throw new Error('Missing parameter');
+
+    const domain = await ExplorerDomain.findOne({
+        where: {
+            id: explorerDomainId,
+            '$explorer.userId$': userId
+        },
+        include: [
+            {
+                model: Explorer,
+                as: 'explorer'
+            }
+        ]
+    });
+
+    if (!domain)
+        throw new Error('Could not find domain');
+    
+    return domain.destroy();
+};
+
+const createExplorerDomain = async (explorerId, domain) => {
+    if (!explorerId || !domain) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findByPk(explorerId);
+    return explorer.safeCreateDomain(domain);
+};
+
+const deleteExplorer = async (userId, explorerId) => {
+    if (!userId || !explorerId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            '$admin.id$': userId
+        },
+        include: ['admin']
+    });
+
+    if (!explorer)
+        throw new Error(`Can't find explorer`);
+    
+    return explorer.safeDelete();
+};
+
+const createExplorerFromWorkspace = async (userId, workspaceId) => {
+    if (!workspaceId) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findOne({
+        where: {
+            userId: userId,
+            id: workspaceId,
+        }
+    });
+
+    if (!workspace)
+        throw new Error('Could not find workspace');
+    
+    const explorer = await workspace.safeCreateExplorer();
+
+    return explorer ? explorer.toJSON() : null;
+};
 
 const getContractById = async (contractId) => {
     if (!contractId) throw new Error('Missing parameter');
@@ -48,6 +133,19 @@ const cancelExplorerSubscription = async (userId, explorerId) => {
     return explorer.safeCancelSubscription();
 };
 
+const revertExplorerSubscriptionCancelation = async (userId, explorerId) => {
+    if (!userId || !explorerId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            userId: userId
+        }
+    });
+
+    return explorer.safeRevertSubscriptionCancelation();
+};
+
 const updateExplorerSubscription = async (userId, explorerId, stripePlanId) => {
     if (!userId || !explorerId || !stripePlanId) throw new Error('Missing parameter');
 
@@ -76,7 +174,8 @@ const createExplorerSubscription = async (userId, explorerId, stripePlanId, stri
 
 const getExplorerPlans = () => {
     return StripePlan.findAll({
-        attributes: ['capabilities', 'id', 'name', 'slug', 'stripePriceId']
+        where: { public: true },
+        attributes: ['capabilities', 'id', 'name', 'slug', 'stripePriceId', 'price']
     });
 };
 
@@ -134,12 +233,16 @@ const updateExplorerWorkspace = async (explorerId, workspaceId) => {
     return explorer.update({ workspaceId: workspace.id, rpcServer: workspace.rpcServer, chainId: workspace.networkId });
 };
 
-const getExplorerById = (userId, id) => {
+const getExplorerById = async (userId, id) => {
     if (!id) throw new Error('Missing parameter');
 
-    return Explorer.findByPk(id, {
+    const explorer = await Explorer.findByPk(id, {
         where: { userId: userId },
         include: [
+            {
+                model: ExplorerDomain,
+                as: 'domains'
+            },
             {
                 model: StripeSubscription,
                 as: 'stripeSubscription',
@@ -155,26 +258,48 @@ const getExplorerById = (userId, id) => {
             }
         ]
     });
+
+    return explorer ? explorer.toJSON() : null;
 }
 
-const getUserExplorers = (firebaseUserId) => {
-    if (!firebaseUserId) throw new Error('Missing parameter');
+const getUserExplorers = async (userId, page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'id') => {
+    if (!userId) throw new Error('Missing parameter');
 
-    return Explorer.findAll({
+    let sanitizedOrderBy = ['id', 'name'].indexOf(orderBy) > -1 ? orderBy : 'id';
+    if (sanitizedOrderBy == 'name')
+        sanitizedOrderBy = Sequelize.fn('lower', Sequelize.col('"Explorer".name'));
+
+    const { count, rows: explorers } = await Explorer.findAndCountAll({
         where: {
-            '$admin.firebaseUserId$': firebaseUserId
+            '$admin.id$': userId
         },
+        attributes: ['id', 'name', 'domain', 'rpcServer'],
+        offset: (page - 1) * itemsPerPage,
+        limit: itemsPerPage,
+        order: [[sanitizedOrderBy, order]],
         include: [
             {
-                model: Workspace,
-                as: 'workspace'
+                model: User,
+                as: 'admin',
+                attributes: ['id'],
             },
             {
-                model: User,
-                as: 'admin'
+                model: Workspace,
+                as: 'workspace',
+                attributes: ['name'],
+            },
+            {
+                model: StripeSubscription,
+                as: 'stripeSubscription',
+                attributes: ['status', 'isActive', 'isPendingCancelation']
             }
         ]
-    })
+    });
+
+    return {
+        items: explorers.map(e => e.toJSON()),
+        total: count
+    };
 }
 
 const updateWorkspaceRpcHealthCheck = async (workspaceId, isReachable) => {
@@ -1293,5 +1418,11 @@ module.exports = {
     cancelExplorerSubscription: cancelExplorerSubscription,
     deleteExplorerSubscription: deleteExplorerSubscription,
     getContractById: getContractById,
+    revertExplorerSubscriptionCancelation: revertExplorerSubscriptionCancelation,
+    createExplorerFromWorkspace: createExplorerFromWorkspace,
+    deleteExplorer: deleteExplorer,
+    createExplorerDomain: createExplorerDomain,
+    deleteExplorerDomain: deleteExplorerDomain,
+    getExplorerDomainById: getExplorerDomainById,
     Workspace: Workspace
 };

@@ -17,6 +17,7 @@ const erc721Collections = require('./erc721Collections');
 const erc721Tokens = require('./erc721Tokens');
 const status = require('./status');
 const external = require('./external');
+const domains = require('./domains');
 
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
@@ -34,6 +35,7 @@ router.use('/erc721Collections', erc721Collections);
 router.use('/erc721Tokens', erc721Tokens);
 router.use('/status', status);
 router.use('/external', external);
+router.use('/domains', domains);
 
 if (isStripeEnabled()) {
     const stripe = require('./stripe');

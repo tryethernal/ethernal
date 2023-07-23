@@ -102,34 +102,27 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-divider v-if="isUserAdmin" class="my-4"></v-divider>
+                <template v-if="isUserAdmin">
+                    <v-divider v-if="isUserAdmin" class="my-4"></v-divider>
 
-                <v-list-item link :to="'/settings?tab=workspace'" v-if="isUserAdmin">
-                    <v-list-item-icon>
-                        <v-icon>mdi-cog</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title>Settings</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+                    <v-list-item link :to="'/explorers'">
+                        <v-list-item-icon>
+                            <v-icon>mdi-earth</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>Public Explorers</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
 
-                <v-list-item link :to="'/explorers'" v-if="isUserAdmin">
-                    <v-list-item-icon>
-                        <v-icon>mdi-earth</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title>Public Explorers</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-
-                <v-list-item class="primary--text" link v-if="isRemote" @click="openPublicExplorerExplainerModal()">
-                    <v-list-item-icon>
-                        <v-icon color="primary">mdi-earth</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title>Public Explorer</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+                    <v-list-item link :to="'/settings?tab=workspace'">
+                        <v-list-item-icon>
+                            <v-icon>mdi-cog</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title>Settings</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </template>
             </v-list>
 
             <template v-slot:append>
@@ -190,7 +183,6 @@
         </v-navigation-drawer>
 
         <Onboarding-Modal ref="onboardingModal" />
-        <Public-Explorer-Explainer-Modal ref="publicExplorerExplainerModal" v-if="isRemote" />
         <Browser-Sync-Explainer-Modal ref="browserSyncExplainerModal" v-if="currentWorkspace.browserSyncEnabled" />
 
         <v-app-bar :style="styles" app dense fixed flat v-if="canDisplaySides">
@@ -214,7 +206,6 @@ import { pusherPlugin } from './plugins/pusher';
 import { mapGetters } from 'vuex';
 import RpcConnector from './components/RpcConnector';
 import OnboardingModal from './components/OnboardingModal';
-import PublicExplorerExplainerModal from './components/PublicExplorerExplainerModal';
 import BrowserSyncExplainerModal from './components/BrowserSyncExplainerModal';
 
 export default {
@@ -222,7 +213,6 @@ export default {
     components: {
         RpcConnector,
         OnboardingModal,
-        PublicExplorerExplainerModal,
         BrowserSyncExplainerModal,
         Icon
     },
@@ -290,9 +280,6 @@ export default {
                     }
                 ]
             }).catch(console.log);
-        },
-        openPublicExplorerExplainerModal() {
-            this.$refs.publicExplorerExplainerModal.open();
         },
         openBrowserSyncExplainerModal() {
             this.$refs.browserSyncExplainerModal.open();

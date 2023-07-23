@@ -2,10 +2,9 @@
 const {
   Model, Sequelize
 } = require('sequelize');
-const { sanitize } = require('../lib/utils');
+const { sanitize, slugify } = require('../lib/utils');
 const { trigger } = require('../lib/pusher');
 const { encode, decrypt } = require('../lib/crypto');
-const { Workspace } = require('./index');
 
 const Op = Sequelize.Op;
 
@@ -28,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
             where: {
                 firebaseUserId: firebaseUserId
             },
-            attributes: ['email', 'firebaseUserId', 'id', 'isPremium', 'plan', ...extraFields],
+            attributes: ['email', 'firebaseUserId', 'id', 'isPremium', 'plan', 'cryptoPaymentEnabled', ...extraFields],
             include: ['workspaces', 'currentWorkspace']
         });
     }
@@ -118,18 +117,29 @@ module.exports = (sequelize, DataTypes) => {
         if (existingWorkspace.length > 0)
             throw new Error('A workspace with this name already exists');
 
-        return this.createWorkspace(sanitize({
-            name: data.name,
-            public: data.public,
-            chain: data.chain,
-            networkId: data.networkId,
-            rpcServer: data.rpcServer,
-            defaultAccount: data.settings && data.settings.defaultAccount,
-            gasLimit: data.settings && data.settings.gasLimit,
-            gasPrice: data.settings && data.settings.gasPrice,
-            tracing: data.tracing,
-            dataRetentionLimit: data.dataRetentionLimit
-        }));
+        return sequelize.transaction(async transaction => {
+            const workspace = await this.createWorkspace(sanitize({
+                name: data.name,
+                public: data.public,
+                chain: data.chain,
+                networkId: data.networkId,
+                rpcServer: data.rpcServer,
+                defaultAccount: data.settings && data.settings.defaultAccount,
+                gasLimit: data.settings && data.settings.gasLimit,
+                gasPrice: data.settings && data.settings.gasPrice,
+                tracing: data.tracing,
+                dataRetentionLimit: data.dataRetentionLimit
+            }), { transaction });
+
+            return sequelize.models.Workspace.findOne({
+                where: { id: workspace.id },
+                include: {
+                    model: sequelize.models.Explorer,
+                    as: 'explorer',
+                    attributes: ['id']
+                }
+            });
+        });
     }
   }
   User.init({
@@ -151,6 +161,7 @@ module.exports = (sequelize, DataTypes) => {
     currentWorkspaceId: DataTypes.INTEGER,
     plan: DataTypes.STRING,
     stripeCustomerId: DataTypes.STRING,
+    cryptoPaymentEnabled: DataTypes.BOOLEAN,
     explorerSubscriptionId: DataTypes.STRING,
     passwordHash: DataTypes.STRING,
     passwordSalt: DataTypes.STRING,
