@@ -24,12 +24,12 @@ jobs:
         with:
           timezone: Europe/Paris
 
-      - name: Install deps
+      - name: Install api deps
         run: |
           cd run
           npm install
 
-      - name: Run tests
+      - name: Run api tests
         run: |
           cd run
           npm run test tests/
@@ -40,6 +40,16 @@ jobs:
           STRIPE_WEBHOOK_SECRET: 123
           STRIPE_SECRET_KEY: 123
           ETHERSCAN_API_TOKEN: 123
+
+      - name: Install pm2 server deps
+        run: |
+          cd pm2-server
+          npm install
+
+      - name: Run pm2 server tests
+        run: |
+          cd pm2-server
+          npm run test
 
   test_front:
     runs-on: ubuntu-latest

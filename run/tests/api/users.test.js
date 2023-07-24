@@ -11,7 +11,6 @@ const db = require('../../lib/firebase');
 const { decode } = require('../../lib/crypto');
 const flags = require('../../lib/flags');
 const { enqueue } = require('../../lib/queue');
-const { getAuth } = require('firebase-admin/auth');
 
 const supertest = require('supertest');
 const app = require('../../app');
