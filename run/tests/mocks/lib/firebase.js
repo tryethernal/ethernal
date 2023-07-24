@@ -90,6 +90,17 @@ jest.mock('../../../lib/firebase', () => {
         getContractById: jest.fn(),
         deleteExplorerDomain: jest.fn(),
         getExplorerDomainById: jest.fn(),
+        deleteExplorer: jest.fn(),
+        getExplorerPlans: jest.fn(),
+        getExplorerById: jest.fn(),
+        updateExplorerBranding: jest.fn(),
+        updateExplorerWorkspace: jest.fn(),
+        createExplorerDomain: jest.fn(),
+        updateExplorerSettings: jest.fn(),
+        createExplorerFromWorkspace: jest.fn(),
+        getStripePlan: jest.fn(),
+        createExplorerSubscription: jest.fn(),
+        getUserExplorers: jest.fn(),
         Workspace: Workspace
     }
 });

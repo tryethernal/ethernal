@@ -1,10 +1,11 @@
 jest.mock('stripe', () => {
     const StripeSubscription = require('../../fixtures/StripeSubscription');
-    return () => {
+    const customers = jest.fn();
+    customers.create = jest.fn().mockResolvedValue({ id: '1234' });
+    customers.retrieve = jest.fn();
+    return jest.fn(() => {
         return {
-            customers: {
-                create: jest.fn().mockResolvedValue({ id: '1234' })
-            },
+            customers,
             webhooks: {
                 constructEvent: jest.fn().mockReturnValue({ type: 'invoice.payment_succeeded', data: { object: {}}})
             },
@@ -29,5 +30,5 @@ jest.mock('stripe', () => {
                 }
             }
         }
-    }
+    });
 });

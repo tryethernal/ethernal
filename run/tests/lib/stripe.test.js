@@ -1,7 +1,6 @@
 require('../mocks/lib/stripe');
 require('../mocks/lib/firebase');
 const db = require('../../lib/firebase');
-const stripe = require('stripe');
 const { handleStripePaymentSucceeded } = require('../../lib/stripe');
 const StripePaymentSucceededWebhookBody = require('../fixtures/StripePaymentSucceededWebhookBody');
 

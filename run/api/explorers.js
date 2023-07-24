@@ -9,6 +9,7 @@ const stripeMiddleware = require('../middlewares/stripe');
 
 router.delete('/:id', authMiddleware, async (req, res) => {
     const data = req.body.data;
+
     try {
         await db.deleteExplorer(data.user.id, req.params.id);
 
@@ -72,7 +73,7 @@ router.post('/:id/settings', authMiddleware, async (req, res) => {
 
     try {
         const explorer = await db.getExplorerById(data.user.id, req.params.id);
-        if (!explorer)
+        if (!explorer || !explorer.workspace)
             throw new Error('Could not find explorer.');
 
         if (data.workspace && data.workspace != explorer.workspace.name) {
@@ -84,9 +85,6 @@ router.post('/:id/settings', authMiddleware, async (req, res) => {
         }
 
         await db.updateExplorerSettings(explorer.id, data);
-
-        if (data.statusPageEnabled !== undefined && data.statusPageEnabled !== null)
-            await db.updateWorkspaceSettings(data.uid, data.workspace, { statusPageEnabled: data.statusPageEnabled });
 
         res.sendStatus(200);
     } catch(error) {
@@ -122,7 +120,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
             const stripePlan = await db.getStripePlan(data.plan);
             if (!stripePlan || !stripePlan.public)
-                throw new Error(`Can't find plan`);
+                throw new Error(`Can't find plan.`);
 
             let stripeParams = {
                 customer: user.stripeCustomerId,
@@ -137,7 +135,7 @@ router.post('/', authMiddleware, async (req, res) => {
             if (!user.cryptoPaymentEnabled) {
                 const stripeCustomer = await stripe.customers.retrieve(user.stripeCustomerId);
                 if (!stripeCustomer.default_source)
-                    throw new Error(`There doesn't seem to be a payment method associated to your account. If you never subscribed to an explorer plan, please start your first one using the dashboard. You can also reach out to support on Discord or at contact@tryethernal.com`);
+                    throw new Error(`There doesn't seem to be a payment method associated to your account. If you never subscribed to an explorer plan, please start your first one using the dashboard. You can also reach out to support on Discord or at contact@tryethernal.com.`);
             }
             else {
                 stripeParams['collection_method'] = 'send_invoice';
@@ -173,7 +171,7 @@ router.get('/search', async (req, res) => {
             explorer = await db.getPublicExplorerParamsByDomain(data.domain); // This method will return null if the current explorer plan doesn't have the "customDomain" capability
 
         if (!explorer)
-            throw new Error(`Couldn't find explorer`);
+            throw new Error(`Couldn't find explorer.`);
 
         if (!explorer.stripeSubscription)
             throw new Error('This explorer is not active.');
@@ -183,7 +181,7 @@ router.get('/search', async (req, res) => {
         if (!capabilities.nativeToken)
             explorer.token = 'ether';
         if (!capabilities.totalSupply)
-            explorer.totalSupply = null;
+            delete explorer.totalSupply;
         if (!capabilities.branding)
             explorer.themes = { 'default': {}};
 

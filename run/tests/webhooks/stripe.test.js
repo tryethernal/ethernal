@@ -3,7 +3,6 @@ require('../mocks/lib/stripe');
 require('../mocks/lib/stripeLib');
 require('../mocks/lib/firebase');
 
-const db = require('../../lib/firebase');
 const stripeLib = require('../../lib/stripe');
 
 const supertest = require('supertest');
