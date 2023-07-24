@@ -1,14 +1,11 @@
 const express = require('express');
-const models = require('../models');
 const router = express.Router();
 const logger = require('../lib/logger');
 const db = require('../lib/firebase');
 const { sanitize } = require('../lib/utils');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
-const secretMiddleware = require('../middlewares/secret');
 const processContractVerification = require('../lib/processContractVerification');
-const { enqueue } = require('../lib/queue');
 const { holderHistory, cumulativeSupply, transferVolume, holders, transfers } = require('./modules/tokens');
 
 router.get('/:address/holderHistory', workspaceAuthMiddleware, holderHistory);
