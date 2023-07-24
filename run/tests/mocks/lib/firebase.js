@@ -88,6 +88,8 @@ jest.mock('../../../lib/firebase', () => {
         updateWorkspaceRpcHealthCheck: jest.fn(),
         storeContractVerificationData: jest.fn(),
         getContractById: jest.fn(),
+        deleteExplorerDomain: jest.fn(),
+        getExplorerDomainById: jest.fn(),
         Workspace: Workspace
     }
 });
