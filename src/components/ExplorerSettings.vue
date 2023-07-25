@@ -49,7 +49,7 @@
                             outlined
                             type="number"
                             :disabled="!capabilities.totalSupply"
-                            :hint="capabilities.totalSupply ? `In ether: ${formatTotalSupply()}` : 'Upgrade your plan to display a total supply'"
+                            :hint="capabilities.totalSupply ? `In ether: ${formatTotalSupply()}` : 'Upgrade your plan to display a total supply.'"
                             persistent-hint
                             hide-details="auto"
                             v-model="explorer.totalSupply"

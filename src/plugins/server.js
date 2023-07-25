@@ -939,17 +939,18 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            createStripeCheckoutSession(plan, successPath, cancelPath, metadata = {}) {
+            createStripeExplorerCheckoutSession(explorerId, stripePlanSlug) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    plan,
-                    successPath,
-                    cancelPath,
-                    metadata
+                    explorerId, stripePlanSlug
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/createCheckoutSession`;
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/createExplorerCheckoutSession`;
                 return axios.post(resource, { data });
+            },
+
+            createStripeUserCheckoutSession() {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/createUserCheckoutSession`;
+                return axios.post(resource);
             },
 
             createStripePortalSession() {

@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.post('/startCryptoSubscription', [authMiddleware, stripeMiddleware], async (req, res) => {
     const data = req.body.data;
+
     try {
         if (!data.stripePlanSlug || !data.explorerId)
             throw new Error('Missing parameter');
@@ -41,7 +42,11 @@ router.post('/startCryptoSubscription', [authMiddleware, stripeMiddleware], asyn
 
 router.post('/cancelExplorerSubscription', [authMiddleware, stripeMiddleware], async (req, res) => {
     const data = req.body.data;
+
     try {
+        if (!data.explorerId)
+            throw new Error('Missing parameters.');
+
         const explorer = await db.getExplorerById(data.user.id, data.explorerId);
 
         if (!explorer || !explorer.stripeSubscription)
@@ -62,10 +67,14 @@ router.post('/cancelExplorerSubscription', [authMiddleware, stripeMiddleware], a
 
 router.post('/updateExplorerSubscription', [authMiddleware, stripeMiddleware], async (req, res) => {
     const data = req.body.data;
+
     try {
+        if (!data.explorerId || !data.newStripePlanSlug)
+            throw new Error('Missing parameters.');
+
         const explorer = await db.getExplorerById(data.user.id, data.explorerId);
 
-        if (!explorer)
+        if (!explorer || !explorer.stripeSubscription)
             throw new Error(`Can't find explorer.`);
 
         const stripePlan = await db.getStripePlan(data.newStripePlanSlug);
@@ -91,47 +100,85 @@ router.post('/updateExplorerSubscription', [authMiddleware, stripeMiddleware], a
     }
 });
 
-router.post('/createCheckoutSession', [authMiddleware, stripeMiddleware], async (req, res) => {
-    const data = { ...req.query, ...req.body.data };
+router.post('/createUserCheckoutSession', [authMiddleware, stripeMiddleware], async (req, res) => {
+    const data = req.body.data;
+
     try {
         const user = await db.getUser(data.uid, ['stripeCustomerId']);
-        const selectedPlan = await db.getStripePlan(data.plan);
 
-        if (!selectedPlan)
-            throw new Error('Invalid plan.');
-
-        if (data.metadata && data.metadata.explorerId) {
-            const explorer = await db.getExplorerById(user.id, data.metadata.explorerId)
-            if (!explorer)
-                throw new Error('Invalid metadata');
-        }
+        if (!user)
+            throw new Error(`Couldn't find user. Check your auth token`);
 
         const session = await stripe.checkout.sessions.create(sanitize({
             mode: 'subscription',
             client_reference_id: user.id,
             customer: user.stripeCustomerId,
-            subscription_data: { metadata: data.metadata },
+            line_items: [
+                {
+                    price: process.env.STRIPE_PREMIUM_PRICE_ID,
+                    quantity: 1
+                }
+            ],
+            success_url: `${process.env.APP_URL}/settings?tab=billing&status=upgraded`,
+            cancel_url: `${process.env.APP_URL}/settings?tab=billing`
+        }));
+
+        res.status(200).json({ url: session.url });
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.stripe.createUserCheckoutSession', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
+router.post('/createExplorerCheckoutSession', [authMiddleware, stripeMiddleware], async (req, res) => {
+    const data = { ...req.query, ...req.body.data };
+
+    try {
+        if (!data.explorerId || !data.stripePlanSlug)
+            throw new Error('Missing parameter.');
+
+        const user = await db.getUser(data.uid, ['stripeCustomerId']);
+        if (!user)
+            throw new Error(`Couldn't find user. Check your auth token`);
+
+        const selectedPlan = await db.getStripePlan(data.stripePlanSlug);
+        if (!selectedPlan || !selectedPlan.public)
+            throw new Error(`Coouldn't find plan.`);
+
+        const explorer = await db.getExplorerById(user.id, data.explorerId)
+        if (!explorer)
+            throw new Error(`Couldn't find explorer.`);
+
+        const session = await stripe.checkout.sessions.create(sanitize({
+            mode: 'subscription',
+            client_reference_id: user.id,
+            customer: user.stripeCustomerId,
+            subscription_data: { metadata: { explorerId: data.explorerId }},
             line_items: [
                 {
                     price: selectedPlan.stripePriceId,
                     quantity: 1
                 }
             ],
-            success_url: `${process.env.APP_URL}${data.successPath}`,
-            cancel_url: `${process.env.APP_URL}${data.cancelPath}`
+            success_url: `${process.env.APP_URL}/explorers/${explorer.id}?status=success`,
+            cancel_url: `${process.env.APP_URL}/explorers/${explorer.id}`,
         }));
 
         res.status(200).json({ url: session.url });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.stripe.createCheckoutSession', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.stripe.createExplorerCheckoutSession', error: error, data: data });
         res.status(400).send(error.message);
     }
 });
 
 router.post('/createPortalSession', [authMiddleware, stripeMiddleware], async (req, res) => {
     const data = { ...req.query, ...req.body.data };
+
     try {
         const user = await db.getUser(data.uid, ['stripeCustomerId']);
+        if (!user)
+            throw new Error(`Couldn't find user.`);
+
         const session = await stripe.billingPortal.sessions.create({
             customer: user.stripeCustomerId,
             return_url: `${process.env.APP_URL}/settings?tab=billing`

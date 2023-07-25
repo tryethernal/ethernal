@@ -1,23 +1,14 @@
 jest.mock('stripe', () => {
     const StripeSubscription = require('../../fixtures/StripeSubscription');
-    const customers = jest.fn();
-    customers.create = jest.fn().mockResolvedValue({ id: '1234' });
-    customers.retrieve = jest.fn();
+
     return jest.fn(() => {
         return {
-            customers,
+            customers: {
+                create: jest.fn().mockResolvedValue({ id: '1234' }),
+                retrieve: jest.fn()
+            },
             webhooks: {
                 constructEvent: jest.fn().mockReturnValue({ type: 'invoice.payment_succeeded', data: { object: {}}})
-            },
-            checkout: {
-                sessions: {
-                    create: jest.fn().mockResolvedValue({ url: 'https://stripe.com' })
-                }
-            },
-            billingPortal: {
-                sessions: {
-                    create: jest.fn().mockResolvedValue({ url: 'https://stripe.com' })
-                }
             },
             paymentIntents: {
                 retrieve: () => {

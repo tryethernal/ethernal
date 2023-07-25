@@ -20,7 +20,6 @@ require('../mocks/middlewares/auth');
 const db = require('../../lib/firebase');
 const flags = require('../../lib/flags');
 
-
 const supertest = require('supertest');
 const app = require('../../app');
 const request = supertest(app);

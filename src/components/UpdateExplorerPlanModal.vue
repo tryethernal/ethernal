@@ -69,9 +69,7 @@ export default {
                     .finally(() => this.updatingSlug = null);
             }
             else {
-                const successPath = `/explorers/${this.explorerId}?status=success`;
-                const cancelPath = `/explorers/${this.explorerId}`;
-                this.server.createStripeCheckoutSession(slug, successPath, cancelPath, { explorerId: this.explorerId })
+                this.server.createStripeExplorerCheckoutSession(this.explorerId, slug)
                     .then(({ data }) => document.location.href = data.url)
                     .catch(error => {
                         console.log(error);

@@ -128,9 +128,7 @@ export default {
                 });
         },
         useStripePayment() {
-            const successPath = `/explorers/${this.explorer.id}?status=success`;
-            const cancelPath = `/explorers/${this.explorer.id}`;
-            this.server.createStripeCheckoutSession(this.selectedPlanSlug, successPath, cancelPath, { explorerId: this.explorer.id })
+            this.server.createStripeExplorerCheckoutSession(this.explorer.id, this.selectedPlanSlug)
                 .then(({ data }) => document.location.href = data.url)
                 .catch(error => {
                     console.log(error);
