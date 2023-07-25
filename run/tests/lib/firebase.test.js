@@ -5,10 +5,321 @@ jest.mock('sequelize', () => ({
     }
 }));
 
-const { Workspace, User, workspace, user, Explorer, explorer } = require('../mocks/models');
+const { Workspace, User, workspace, Explorer, ExplorerDomain, StripePlan } = require('../mocks/models');
 const db = require('../../lib/firebase');
 
 beforeEach(() => jest.clearAllMocks());
+
+describe('getExplorerDomainById', () => {
+    it('Should return domain if found', (done) => {
+        jest.spyOn(ExplorerDomain, 'findOne').mockResolvedValue({ toJSON: jest.fn().mockReturnValue({ id: 1})});
+        db.getExplorerDomainById(1, 1)
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            })
+    });
+
+    it('Should return null if not found', (done) => {
+        jest.spyOn(ExplorerDomain, 'findOne').mockResolvedValue(null);
+        db.getExplorerDomainById(1, 1)
+            .then(res => {
+                expect(res).toEqual(null);
+                done();
+            })
+    });
+});
+
+describe('deleteExplorerDomain', () => {
+    it('Should return if domain has ben deleted', (done) => {
+        jest.spyOn(ExplorerDomain, 'findOne').mockResolvedValueOnce({ destroy: jest.fn().mockResolvedValueOnce({ id: 1})});
+        db.deleteExplorerDomain(1, 1)
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            })
+    });
+
+    it('Should throw an error if not found', async () => {
+        jest.spyOn(ExplorerDomain, 'findOne').mockResolvedValueOnce(null);
+        await expect(db.deleteExplorerDomain(1, 1))
+            .rejects.toThrow('Could not find domain');
+    });
+});
+
+describe('createExplorerDomain', () => {
+    it('Should return created domain', (done) => {
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ safeCreateDomain: jest.fn().mockResolvedValueOnce({ id: 1})});
+        db.createExplorerDomain(1, 'domain')
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            })
+    });
+
+    it('Should throw an error if not found', async () => {
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce(null);
+        await expect(db.createExplorerDomain(1, 1))
+            .rejects.toThrow('Cannot find explorer');
+    });
+});
+
+describe('deleteExplorer', () => {
+    it('Should return if explorer has been deleted', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeDelete: jest.fn().mockResolvedValueOnce({ id: 1})});
+        db.deleteExplorer(1, 1)
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            })
+    });
+
+    it('Should throw an error if not found', async () => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
+        await expect(db.deleteExplorer(1, 1))
+            .rejects.toThrow(`Can't find explorer`);
+    });
+});
+
+describe('createExplorerFromWorkspace', () => {
+    it('Should return created explorer', (done) => {
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({ safeCreateExplorer: jest.fn().mockResolvedValueOnce({ toJSON: jest.fn().mockReturnValue({ id: 1 })})});
+        db.createExplorerFromWorkspace(1, 1)
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            })
+    });
+
+    it('Should return null if could not create explorer', (done) => {
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({ safeCreateExplorer: jest.fn().mockReturnValue(null)});
+        db.createExplorerFromWorkspace(1, 1)
+            .then(res => {
+                expect(res).toEqual(null);
+                done();
+            })
+    });
+
+    it('Should throw an error if workspace is not found', async () => {
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce(null);
+        await expect(db.createExplorerFromWorkspace(1, 1))
+            .rejects.toThrow(`Could not find workspace`);
+    });
+});
+
+describe('deleteExplorerSubscription', () => {
+    it('Should return if explorer has been deleted', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeDeleteSubscription: jest.fn().mockResolvedValueOnce({ id: 1})});
+        db.deleteExplorerSubscription(1, 1)
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            })
+    });
+
+    it('Should throw an error if explorer is not found', async () => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
+        await expect(db.deleteExplorerSubscription(1, 1))
+            .rejects.toThrow(`Can't find explorer`);
+    });
+});
+
+describe('cancelExplorerSubscription', () => {
+    it('Should return if explorer has been canceled', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeCancelSubscription: jest.fn().mockResolvedValueOnce({ id: 1})});
+        db.cancelExplorerSubscription(1, 1)
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            })
+    });
+
+    it('Should throw an error if explorer is not found', async () => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
+        await expect(db.cancelExplorerSubscription(1, 1))
+            .rejects.toThrow(`Can't find explorer`);
+    });
+});
+
+describe('revertExplorerSubscriptionCancelation', () => {
+    it('Should return if cancelation has been reverted', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeRevertSubscriptionCancelation: jest.fn().mockResolvedValueOnce({ id: 1})});
+        db.revertExplorerSubscriptionCancelation(1, 1)
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            })
+    });
+
+    it('Should throw an error if explorer is not found', async () => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
+        await expect(db.revertExplorerSubscriptionCancelation(1, 1))
+            .rejects.toThrow(`Can't find explorer`);
+    });
+});
+
+describe('updateExplorerSubscription', () => {
+    it('Should return if susbcription has been updated', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription: jest.fn().mockResolvedValueOnce({ id: 1})});
+        db.updateExplorerSubscription(1, 1, 1)
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            })
+    });
+
+    it('Should throw an error if explorer is not found', async () => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
+        await expect(db.updateExplorerSubscription(1, 1, 1))
+            .rejects.toThrow(`Can't find explorer`);
+    });
+});
+
+describe('createExplorerSubscription', () => {
+    it('Should return if susbcription has been created', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeCreateSubscription: jest.fn().mockResolvedValueOnce({ id: 1})});
+        db.createExplorerSubscription(1, 1, 1, 1, new Date())
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            })
+    });
+
+    it('Should throw an error if explorer is not found', async () => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
+        await expect(db.createExplorerSubscription(1, 1, 1, 1, new Date()))
+            .rejects.toThrow(`Can't find explorer`);
+    });
+});
+
+describe('getExplorerPlans', () => {
+    it('Should return plans', (done) => {
+        jest.spyOn(StripePlan, 'findAll').mockResolvedValueOnce([{ id: 1 }, { id: 2 }]);
+        db.getExplorerPlans()
+            .then(res => {
+                expect(res).toEqual([{ id: 1 }, { id: 2 }]);
+                done();
+            })
+    });
+});
+
+describe('getStripePlan', () => {
+    it('Should return plan', (done) => {
+        jest.spyOn(StripePlan, 'findOne').mockResolvedValueOnce({ toJSON: jest.fn().mockReturnValue({ id: 1 })});
+        db.getStripePlan()
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            })
+    });
+
+    it('Should return null if plan does not exist', (done) => {
+        jest.spyOn(StripePlan, 'findOne').mockResolvedValueOnce(null);
+        db.getStripePlan()
+            .then(res => {
+                expect(res).toEqual(null);
+                done();
+            })
+    });
+});
+
+describe('updateExplorerBranding', () => {
+    it('Should return updated explorer', (done) => {
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ safeUpdateBranding: jest.fn().mockResolvedValueOnce({ id: 1})});
+        db.updateExplorerBranding(1, {})
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            })
+    });
+
+    it('Should throw an error if explorer is not found', async () => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
+        await expect(db.updateExplorerBranding(1, {}))
+            .rejects.toThrow('Cannot find explorer');
+    });
+});
+
+describe('updateExplorerSettings', () => {
+    it('Should return updated explorer', (done) => {
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ safeUpdateSettings: jest.fn().mockResolvedValueOnce({ id: 1})});
+        db.updateExplorerSettings(1, {})
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            })
+    });
+
+    it('Should throw an error if explorer is not found', async () => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
+        await expect(db.updateExplorerSettings(1, {}))
+            .rejects.toThrow('Cannot find explorer');
+    });
+});
+
+describe('updateExplorerWorkspace', () => {
+    it('Should return updated explorer', (done) => {
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ userId: 1,  update: jest.fn().mockResolvedValueOnce({ id: 1})});
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ id: 1, userId: 1 });
+
+        db.updateExplorerWorkspace(1, 1)
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            })
+    });
+
+    it('Should throw an error if explorer is not found', async () => {
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce(null);
+        await expect(db.updateExplorerWorkspace(1, {}))
+            .rejects.toThrow('Cannot find explorer');
+    });
+
+    it('Should throw an error if workspace is not found', async () => {
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ update: jest.fn().mockResolvedValueOnce({ id: 1})});
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        await expect(db.updateExplorerWorkspace(1, {}))
+            .rejects.toThrow('Cannot find workspace');
+    });
+
+    it('Should throw an error if workspace user and explorer user do not match', async () => {
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ userId: 1, update: jest.fn().mockResolvedValueOnce({ id: 1})});
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ userId: 2 });
+        await expect(db.updateExplorerWorkspace(1, {}))
+            .rejects.toThrow('Invalid workspace');
+    });
+});
+
+describe('getExplorerById', () => {
+    it('Should return explorer', (done) => {
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ toJSON: jest.fn().mockResolvedValueOnce({ id: 1})});
+        db.getExplorerById(1, {})
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            })
+    });
+
+    it('Should return null if explorer is not found', (done) => {
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce(null);
+        db.getExplorerById(1, {})
+            .then(res => {
+                expect(res).toEqual(null)
+                done();
+            });
+    });
+});
+
+describe('getUserExplorers', () => {
+    it('Should return explorer list & count', (done) => {
+        jest.spyOn(Explorer, 'findAndCountAll').mockResolvedValueOnce({ count: 1, rows: [{ toJSON: jest.fn().mockReturnValue({ id: 1})}]});
+        db.getUserExplorers(1)
+            .then(res => {
+                expect(res).toEqual({ items: [{ id: 1 }], total: 1 });
+                done();
+            })
+    });
+});
 
 describe('updateWorkspaceRpcHealthCheck', () => {
     it('Should update the healtcheck', (done) => {

@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const models = require('../models');
 const { firebaseHash }  = require('./crypto');
+const { log } = require('logrocket');
 
 const Op = Sequelize.Op;
 const User = models.User;
@@ -61,6 +62,10 @@ const createExplorerDomain = async (explorerId, domain) => {
     if (!explorerId || !domain) throw new Error('Missing parameter');
 
     const explorer = await Explorer.findByPk(explorerId);
+
+    if (!explorer)
+        throw new Error('Cannot find explorer');
+
     return explorer.safeCreateDomain(domain);
 };
 
@@ -82,7 +87,7 @@ const deleteExplorer = async (userId, explorerId) => {
 };
 
 const createExplorerFromWorkspace = async (userId, workspaceId) => {
-    if (!workspaceId) throw new Error('Missing parameter');
+    if (!userId || !workspaceId) throw new Error('Missing parameter');
 
     const workspace = await Workspace.findOne({
         where: {
@@ -117,6 +122,9 @@ const deleteExplorerSubscription = async (userId, explorerId, stripeId) => {
         }
     });
 
+    if (!explorer)
+        throw new Error(`Can't find explorer`);
+
     return explorer.safeDeleteSubscription(stripeId);
 };
 
@@ -129,6 +137,9 @@ const cancelExplorerSubscription = async (userId, explorerId) => {
             userId: userId
         }
     });
+
+    if (!explorer)
+        throw new Error(`Can't find explorer`);
 
     return explorer.safeCancelSubscription();
 };
@@ -143,6 +154,9 @@ const revertExplorerSubscriptionCancelation = async (userId, explorerId) => {
         }
     });
 
+    if (!explorer)
+        throw new Error(`Can't find explorer`);
+
     return explorer.safeRevertSubscriptionCancelation();
 };
 
@@ -155,6 +169,9 @@ const updateExplorerSubscription = async (userId, explorerId, stripePlanId) => {
             userId: userId
         }
     });
+
+    if (!explorer)
+        throw new Error(`Can't find explorer`);
 
     return explorer.safeUpdateSubscription(stripePlanId);
 };
@@ -169,8 +186,11 @@ const createExplorerSubscription = async (userId, explorerId, stripePlanId, stri
         }
     });
 
+    if (!explorer)
+        throw new Error(`Can't find explorer`);
+
     return explorer.safeCreateSubscription(stripePlanId, stripeId, cycleEndsAt);
-}
+};
 
 const getExplorerPlans = () => {
     return StripePlan.findAll({
@@ -206,6 +226,10 @@ const updateExplorerBranding = async (explorerId, branding) => {
     if (!explorerId || !branding) throw new Error('Missing parameter');
 
     const explorer = await Explorer.findByPk(explorerId);
+
+    if (!explorer)
+        throw new Error('Cannot find explorer');
+
     return explorer.safeUpdateBranding(branding);
 };
 
@@ -213,6 +237,9 @@ const updateExplorerSettings = async (explorerId, settings) => {
     if (!explorerId || !settings) throw new Error('Missing parameter');
 
     const explorer = await Explorer.findByPk(explorerId);
+    if (!explorer)
+        throw new Error('Cannot find explorer');
+
     return explorer.safeUpdateSettings(settings);
 };
 
