@@ -1,10 +1,11 @@
+require('../mocks/lib/rpc');
 require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/lib/crypto');
 require('../mocks/middlewares/auth');
 require('../mocks/lib/queue');
 const db = require('../../lib/firebase');
-const { enqueue } = require('../../lib/queue');
+const { ProviderConnector } = require('../../lib/rpc');
 
 const supertest = require('supertest');
 const app = require('../../app');
@@ -72,6 +73,21 @@ describe(`POST ${BASE_URL}/settings`, () => {
 describe(`POST ${BASE_URL}`, () => {
     beforeEach(() => jest.clearAllMocks());
 
+    it('Should fail if workspace is public & rpc not reachable', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ defaultDataRetentionLimit: 7 });
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchNetworkId: jest.fn().mockResolvedValue(null)
+        }));
+
+        request.post(`${BASE_URL}`)
+            .send({ data: { name: 'My Workspace', workspaceData: { public: true, rpcServer: 'http://localhost:8545' }}})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Can't reach RPC server, make sure it's accessible.`);
+                done();
+            });
+    });
+
     it('Should return 200 status code', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ defaultDataRetentionLimit: 7 });
         jest.spyOn(db, 'createWorkspace').mockResolvedValueOnce({ name: 'My Workspace' });
@@ -90,64 +106,3 @@ describe(`POST ${BASE_URL}`, () => {
     });
 });
 
-describe(`POST ${BASE_URL}/enableAlchemy`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
-    it('Should return 200 status code', (done) => {
-        db.getUser.mockResolvedValue({ apiKey: 'abcd' });
-        request.post(`${BASE_URL}/enableAlchemy`)
-            .send({ data: { workspace: 'My Workspace' }})
-            .expect(200)
-            .then(({ body }) => {
-                expect(db.addIntegration).toHaveBeenCalledWith('123', 'My Workspace', 'alchemy');
-                expect(body).toEqual({ token: '1234' });
-                done();
-            });
-    });
-});
-
-describe(`POST ${BASE_URL}/enableApi`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
-    it('Should return 200 status code', (done) => {
-        db.getUser.mockResolvedValue({ apiKey: 'abcd' });
-        request.post(`${BASE_URL}/enableApi`)
-            .send({ data: { workspace: 'My Workspace' }})
-            .expect(200)
-            .then(({ body }) => {
-                expect(db.addIntegration).toHaveBeenCalledWith('123', 'My Workspace', 'api');
-                expect(body).toEqual({ token: '1234' });
-                done();
-            });
-    });
-});
-
-describe(`POST ${BASE_URL}/disableAlchemy`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
-    it('Should return 200 status code', (done) => {
-        db.getUser.mockResolvedValue({ apiKey: 'abcd' });
-        request.post(`${BASE_URL}/disableAlchemy`)
-            .send({ data: { workspace: 'My Workspace' }})
-            .expect(200)
-            .then(({ body }) => {
-                expect(db.removeIntegration).toHaveBeenCalledWith('123', 'My Workspace', 'alchemy');
-                done();
-            });
-    });
-});
-
-describe(`POST ${BASE_URL}/disableApi`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
-    it('Should return 200 status code', (done) => {
-        db.getUser.mockResolvedValue({ apiKey: 'abcd' });
-        request.post(`${BASE_URL}/disableApi`)
-            .send({ data: { workspace: 'My Workspace' }})
-            .expect(200)
-            .then(({ body }) => {
-                expect(db.removeIntegration).toHaveBeenCalledWith('123', 'My Workspace', 'api');
-                done();
-            });
-    });
-});

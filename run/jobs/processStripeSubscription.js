@@ -5,7 +5,7 @@ module.exports = async job => {
     const data = job.data;
 
     if (!data.stripeSubscriptionId || !data.explorerId)
-        return 'Missing parameter';
+        return 'Missing parameter.';
 
     const explorer = await models.Explorer.findOne({
         where: { id: data.explorerId },
@@ -22,7 +22,7 @@ module.exports = async job => {
     });
 
     if (!explorer)
-        return 'Cannot find explorer';
+        return 'Cannot find explorer.';
 
     const workspace = explorer.workspace;
     const user = explorer.admin;
@@ -33,7 +33,7 @@ module.exports = async job => {
     // This means the subscription is cancelled, we stop the syncing process
     if (!stripeSubscription) {
         await pm2.delete(explorer.slug);
-        return 'Process deleted';
+        return 'Process deleted.';
     }
 
     // We check if we have a current processe running
@@ -42,8 +42,8 @@ module.exports = async job => {
     // If the process doesn't exist or is not running, we create it
     if (!existingProcess) {
         await pm2.start(explorer.slug, workspace.name, user.apiToken);
-        return 'Process created';
+        return 'Process created.';
     }
 
-    return 'No process change';
+    return 'No process change.';
 };
