@@ -6,33 +6,39 @@ const analytics = new Analytics(process.env.MIXPANEL_API_TOKEN);
 
 const deleteExplorerSubscription = async (stripeSubscription) => {
     if (stripeSubscription.status != 'canceled')
-        return;
+        return 'Subscription is not canceled';
 
     const explorerId = stripeSubscription.metadata.explorerId;
 
     const user = await db.getUserbyStripeCustomerId(stripeSubscription.customer);
+    if (!user)
+        return 'Cannot find user';
+
     const explorer = await db.getExplorerById(user.id, explorerId);
 
     if (!explorer || !explorer.stripeSubscription || explorer.stripeSubscription.stripeId != stripeSubscription.id)
-        return;
+        return 'Cannot find explorer';
 
     await db.deleteExplorerSubscription(user.id, explorerId, stripeSubscription.id);
 }
 
 const updateExplorerSubscription = async (stripeSubscription) => {
     if (stripeSubscription.status != 'active')
-        return;
+        return 'Inactive subscription';
 
     const explorerId = parseInt(stripeSubscription.metadata.explorerId);
 
     const user = await db.getUserbyStripeCustomerId(stripeSubscription.customer);
-    const explorer = await db.getExplorerById(user.id, explorerId);
+    if (!user)
+        return 'Cannot find user';
 
+    const explorer = await db.getExplorerById(user.id, explorerId);
     if (!explorer)
-        return;
+        return 'Cannot find explorer';
 
     if (stripeSubscription.cancel_at_period_end == true) {
-        return await db.cancelExplorerSubscription(user.id, explorerId);
+        await db.cancelExplorerSubscription(user.id, explorerId);
+        return 'Subscription canceled';
     }
 
     const priceId = stripeSubscription.items.data[0].price.id;
@@ -43,10 +49,8 @@ const updateExplorerSubscription = async (stripeSubscription) => {
             await db.revertExplorerSubscriptionCancelation(user.id, explorerId);
         else
             await db.updateExplorerSubscription(user.id, explorerId, stripePlan.id);
-    } else {
+    } else
         await db.createExplorerSubscription(user.id, explorerId, stripePlan.id, stripeSubscription.id, new Date(stripeSubscription.current_period_end * 1000));
-    }
-        
 }
 
 const updatePlan = async (stripeSubscription) => {
@@ -85,14 +89,14 @@ const updatePlan = async (stripeSubscription) => {
 module.exports = {
     handleStripeSubscriptionUpdate: async (data) => {
         if (data.metadata.explorerId)
-            await updateExplorerSubscription(data);
+            return await updateExplorerSubscription(data);
         else
             await updatePlan(data);
     },
 
     handleStripeSubscriptionDeletion: async (data) => {
         if (data.metadata.explorerId)
-            await deleteExplorerSubscription(data);
+            return await deleteExplorerSubscription(data);
         else
             await updatePlan(data);
     },

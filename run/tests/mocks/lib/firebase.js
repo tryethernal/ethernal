@@ -103,6 +103,8 @@ jest.mock('../../../lib/firebase', () => {
         getUserExplorers: jest.fn(),
         cancelExplorerSubscription: jest.fn(),
         updateExplorerSubscription: jest.fn(),
+        revertExplorerSubscriptionCancelation: jest.fn(),
+        deleteExplorerSubscription: jest.fn(),
         Workspace: Workspace
     }
 });
