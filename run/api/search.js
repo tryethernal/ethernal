@@ -13,7 +13,7 @@ router.get('/icons', authMiddleware, async (req, res) => {
         if (!data.icon)
             throw new Error('Missing parameters');
 
-        const rawIcons = (await axios.get(`https://raw.githubusercontent.com/Templarian/MaterialDesign-SVG/master/meta.json`)).data;
+        const { data: rawIcons } = await axios.get(`https://raw.githubusercontent.com/Templarian/MaterialDesign-SVG/master/meta.json`);
         const icons = rawIcons.filter(ri => {
             const labels = [ri.name, ...ri.aliases, ...ri.tags, ...ri.styles];
             for (let i = 0; i < labels.length; i++)
@@ -32,13 +32,15 @@ router.get('/fonts', authMiddleware, async (req, res) => {
     const data = req.query;
     try {
         if (!isGoogleApiEnabled())
-            return res.sendStatus(404);
+            throw new Error('Enable Google Font API to use this endpoint.')
 
         if (!data.font)
             throw new Error('Missing parameters');
 
-        const rawFonts = (await axios.get(`https://www.googleapis.com/webfonts/v1/webfonts?key=${process.env.GOOGLE_API_KEY}`)).data;
-        const fonts = rawFonts.items.filter(rf => rf.family.toLowerCase().includes(data.font)).map(rf => rf.family);
+        const { data: rawFonts } = await axios.get(`https://www.googleapis.com/webfonts/v1/webfonts?key=${process.env.GOOGLE_API_KEY}`);
+        const fonts = rawFonts.items
+            .filter(rf => rf.family.toLowerCase().includes(data.font))
+            .map(rf => rf.family);
 
         res.status(200).json(fonts)
     } catch(error) {
