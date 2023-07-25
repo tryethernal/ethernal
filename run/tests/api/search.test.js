@@ -1,7 +1,5 @@
 jest.mock('axios', () => ({
-    get: jest.fn().mockResolvedValue({
-        
-    })
+    get: jest.fn()
 }));
 require('../mocks/lib/queue');
 require('../mocks/lib/firebase');

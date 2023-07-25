@@ -4,5 +4,6 @@ module.exports = {
     isMarketingEnabled: () => process.env.ENABLE_MARKETING,
     isSendgridEnabled: () => process.env.SENDGRID_API_KEY && process.env.SENDGRID_SENDER,
     isFirebaseAuthEnabled: () => !!process.env.ENABLE_FIREBASE_AUTH,
-    isGoogleApiEnabled: () => !!process.env.GOOGLE_API_KEY
+    isGoogleApiEnabled: () => !!process.env.GOOGLE_API_KEY,
+    isApproximateEnabled: () => process.env.APPROXIMATED_API_KEY && process.env.APPROXIMATED_TARGET_IP
 };

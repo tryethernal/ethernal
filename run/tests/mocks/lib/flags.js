@@ -4,5 +4,6 @@ jest.mock('../../../lib/flags', () => ({
     isPusherEnabled: jest.fn(() => true),
     isSendgridEnabled: jest.fn(() => true),
     isFirebaseAuthEnabled: jest.fn(() => true),
-    isGoogleApiEnabled: jest.fn(() => true)
+    isGoogleApiEnabled: jest.fn(() => true),
+    isApproximatedEnabled: jest.fn(() => true)
 }));

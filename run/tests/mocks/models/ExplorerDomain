@@ -1,0 +1,5 @@
+const ExplorerDomain = {
+    findByPk: jest.fn(),
+};
+
+module.exports = { ExplorerDomain };
