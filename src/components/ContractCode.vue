@@ -60,11 +60,6 @@ export default {
         ...mapGetters([
             'isPublicExplorer'
         ]),
-        zeroXifiedConstructorArguments() {
-            return this.contract.verification.constructorArguments.startsWith('0x') ?
-                this.contract.verification.constructorArguments :
-                `0x${this.contract.verification.constructorArguments}`;
-        },
         isVerifiedContract() {
             return this.contract.verification;
         },
