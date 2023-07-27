@@ -51,6 +51,7 @@ jest.mock('@/plugins/server', () => ({
                 resetPassword: jest.fn(),
                 getExplorerStatus: jest.fn(),
                 getCompilerVersions: jest.fn(),
+                getExplorer: jest.fn(),
                 getExplorerPlans: jest.fn(),
                 createExplorer: jest.fn(),
                 startCryptoSubscription: jest.fn(),
