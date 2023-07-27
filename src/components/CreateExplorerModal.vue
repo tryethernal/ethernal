@@ -22,7 +22,7 @@
                         </template>
                         <v-card-actions v-else>
                             <v-spacer></v-spacer>
-                            <v-btn :loading="loading" color="primary" @click="selectWorkspace()">Continue</v-btn>
+                            <v-btn id="selectWorkspace" :loading="loading" color="primary" @click="selectWorkspace()">Continue</v-btn>
                         </v-card-actions>
                     </v-col>
                 </v-row>
@@ -76,6 +76,7 @@ export default {
     methods: {
         open() {
             this.dialog = true;
+
             if (this.isBillingEnabled)
                 this.server.getExplorerPlans()
                     .then(({ data }) => this.plans = data.sort((a, b) => a.price - b.price))
@@ -96,6 +97,7 @@ export default {
             this.server.createExplorer(this.workspace.id)
                 .then(({ data }) => {
                     this.explorer = data;
+
                     if (this.isBillingEnabled)
                         this.stepperIndex = 2;
                     else
@@ -129,7 +131,7 @@ export default {
         },
         useStripePayment() {
             this.server.createStripeExplorerCheckoutSession(this.explorer.id, this.selectedPlanSlug)
-                .then(({ data }) => document.location.href = data.url)
+                .then(({ data }) => window.location.assign(data.url))
                 .catch(error => {
                     console.log(error);
                     this.errorMessage = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
