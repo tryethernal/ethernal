@@ -1,0 +1,447 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExplorerBranding.vue Should display branding options 1`] = `
+<div class="v-card v-sheet v-sheet--outlined theme--light">
+  <form novalidate="novalidate" class="v-form">
+    <div class="v-card__text">
+      <!---->
+      <!---->
+      <!---->
+      <div class="row">
+        <div class="col col-6">
+          <div>
+            <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__prepend-outer"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-square theme--light" style="color: rgb(50, 168, 82); caret-color: #32a852;"></button></div>
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-21" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Primary Color</label><input id="input-21" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <v-color-picker-stub canvasheight="150" dotsize="25" hideinputs="true" mode="rgba" swatchesmaxheight="150" value="#32a852" width="300" style="display: none;"></v-color-picker-stub>
+          </div>
+          <div>
+            <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__prepend-outer"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-square theme--light" style="color: rgb(66, 66, 66); caret-color: #424242;"></button></div>
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-26" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Secondary Color</label><input id="input-26" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <v-color-picker-stub canvasheight="150" dotsize="25" hideinputs="true" mode="rgba" swatchesmaxheight="150" value="#424242" width="300" style="display: none;"></v-color-picker-stub>
+          </div>
+          <div>
+            <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__prepend-outer"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-square theme--light" style="color: rgb(130, 177, 255); caret-color: #82B1FF;"></button></div>
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-31" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Accent Color</label><input id="input-31" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <v-color-picker-stub canvasheight="150" dotsize="25" hideinputs="true" mode="rgba" swatchesmaxheight="150" value="#82B1FF" width="300" style="display: none;"></v-color-picker-stub>
+          </div>
+          <div>
+            <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__prepend-outer"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-square theme--light" style="color: rgb(255, 82, 82); caret-color: #FF5252;"></button></div>
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-36" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Error Color</label><input id="input-36" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <v-color-picker-stub canvasheight="150" dotsize="25" hideinputs="true" mode="rgba" swatchesmaxheight="150" value="#FF5252" width="300" style="display: none;"></v-color-picker-stub>
+          </div>
+          <div>
+            <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__prepend-outer"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-square theme--light" style="color: rgb(33, 150, 243); caret-color: #2196F3;"></button></div>
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-41" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Info Color</label><input id="input-41" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <v-color-picker-stub canvasheight="150" dotsize="25" hideinputs="true" mode="rgba" swatchesmaxheight="150" value="#2196F3" width="300" style="display: none;"></v-color-picker-stub>
+          </div>
+          <div>
+            <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__prepend-outer"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-square theme--light" style="color: rgb(76, 175, 80); caret-color: #4CAF50;"></button></div>
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-46" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Success Color</label><input id="input-46" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <v-color-picker-stub canvasheight="150" dotsize="25" hideinputs="true" mode="rgba" swatchesmaxheight="150" value="#4CAF50" width="300" style="display: none;"></v-color-picker-stub>
+          </div>
+          <div>
+            <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__prepend-outer"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-square theme--light" style="color: rgb(251, 140, 0); caret-color: #FB8C00;"></button></div>
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-51" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Warning Color</label><input id="input-51" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <v-color-picker-stub canvasheight="150" dotsize="25" hideinputs="true" mode="rgba" swatchesmaxheight="150" value="#FB8C00" width="300" style="display: none;"></v-color-picker-stub>
+          </div>
+        </div>
+        <div class="col col-6">
+          <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><label for="input-6" class="v-label theme--light" style="left: 0px; position: absolute;">Logo URL</label><input id="input-6" type="text"></div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><label for="input-9" class="v-label theme--light" style="left: 0px; position: absolute;">Favicon URL</label><input id="input-9" type="text"></div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select v-autocomplete">
+            <div class="v-input__control">
+              <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-12" class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-select__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">Font</label><input id="input-12" type="text" autocomplete="off"><input type="hidden"></div>
+                <div class="v-menu">
+                  <!---->
+                </div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper">
+                    <div class="v-messages__message">Font needs to be available on Google Fonts (default is Roboto)</div>
+                  </transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><label for="input-16" class="v-label theme--light" style="left: 0px; position: absolute;">Banner Text</label><input id="input-16" type="text"></div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <h4 class="mb-2">Links</h4>
+          <new-explorer-link-stub uid="1" index="0" icon="twitter" url="twitter.com" name="twitter"></new-explorer-link-stub> <a>Add</a>
+        </div>
+      </div>
+      <div class="v-card__actions">
+        <div class="spacer"></div> <button type="submit" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Update</span></button>
+      </div>
+    </div>
+  </form>
+</div>
+`;
+
+exports[`ExplorerBranding.vue Should display upgrade message 1`] = `
+<div class="v-card v-card--disabled v-sheet v-sheet--outlined theme--light">
+  <form novalidate="novalidate" class="v-form">
+    <div class="v-card__text">
+      <div role="alert" class="v-alert v-sheet theme--dark v-alert--text warning--text">
+        <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-exclamation theme--dark warning--text"></i>
+          <div class="v-alert__content">Upgrade your plan to activate branding customization.</div>
+        </div>
+      </div>
+      <!---->
+      <!---->
+      <div class="row">
+        <div class="col col-6">
+          <div>
+            <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__prepend-outer"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-square theme--light" style="color: rgb(50, 168, 82); caret-color: #32a852;"></button></div>
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-23" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Primary Color</label><input id="input-23" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <v-color-picker-stub canvasheight="150" dotsize="25" hideinputs="true" mode="rgba" swatchesmaxheight="150" value="#32a852" width="300" style="display: none;"></v-color-picker-stub>
+          </div>
+          <div>
+            <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__prepend-outer"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-square theme--light" style="color: rgb(66, 66, 66); caret-color: #424242;"></button></div>
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-28" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Secondary Color</label><input id="input-28" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <v-color-picker-stub canvasheight="150" dotsize="25" hideinputs="true" mode="rgba" swatchesmaxheight="150" value="#424242" width="300" style="display: none;"></v-color-picker-stub>
+          </div>
+          <div>
+            <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__prepend-outer"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-square theme--light" style="color: rgb(130, 177, 255); caret-color: #82B1FF;"></button></div>
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-33" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Accent Color</label><input id="input-33" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <v-color-picker-stub canvasheight="150" dotsize="25" hideinputs="true" mode="rgba" swatchesmaxheight="150" value="#82B1FF" width="300" style="display: none;"></v-color-picker-stub>
+          </div>
+          <div>
+            <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__prepend-outer"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-square theme--light" style="color: rgb(255, 82, 82); caret-color: #FF5252;"></button></div>
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-38" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Error Color</label><input id="input-38" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <v-color-picker-stub canvasheight="150" dotsize="25" hideinputs="true" mode="rgba" swatchesmaxheight="150" value="#FF5252" width="300" style="display: none;"></v-color-picker-stub>
+          </div>
+          <div>
+            <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__prepend-outer"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-square theme--light" style="color: rgb(33, 150, 243); caret-color: #2196F3;"></button></div>
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-43" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Info Color</label><input id="input-43" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <v-color-picker-stub canvasheight="150" dotsize="25" hideinputs="true" mode="rgba" swatchesmaxheight="150" value="#2196F3" width="300" style="display: none;"></v-color-picker-stub>
+          </div>
+          <div>
+            <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__prepend-outer"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-square theme--light" style="color: rgb(76, 175, 80); caret-color: #4CAF50;"></button></div>
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-48" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Success Color</label><input id="input-48" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <v-color-picker-stub canvasheight="150" dotsize="25" hideinputs="true" mode="rgba" swatchesmaxheight="150" value="#4CAF50" width="300" style="display: none;"></v-color-picker-stub>
+          </div>
+          <div>
+            <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+              <div class="v-input__prepend-outer"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-square theme--light" style="color: rgb(251, 140, 0); caret-color: #FB8C00;"></button></div>
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-53" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Warning Color</label><input id="input-53" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <v-color-picker-stub canvasheight="150" dotsize="25" hideinputs="true" mode="rgba" swatchesmaxheight="150" value="#FB8C00" width="300" style="display: none;"></v-color-picker-stub>
+          </div>
+        </div>
+        <div class="col col-6">
+          <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><label for="input-8" class="v-label theme--light" style="left: 0px; position: absolute;">Logo URL</label><input id="input-8" type="text"></div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><label for="input-11" class="v-label theme--light" style="left: 0px; position: absolute;">Favicon URL</label><input id="input-11" type="text"></div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select v-autocomplete">
+            <div class="v-input__control">
+              <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-14" class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-select__slot"><label for="input-14" class="v-label theme--light" style="left: 0px; position: absolute;">Font</label><input id="input-14" type="text" autocomplete="off"><input type="hidden"></div>
+                <div class="v-menu">
+                  <!---->
+                </div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper">
+                    <div class="v-messages__message">Font needs to be available on Google Fonts (default is Roboto)</div>
+                  </transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><label for="input-18" class="v-label theme--light" style="left: 0px; position: absolute;">Banner Text</label><input id="input-18" type="text"></div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <h4 class="mb-2">Links</h4>
+          <new-explorer-link-stub uid="1" index="0" icon="twitter" url="twitter.com" name="twitter"></new-explorer-link-stub> <a>Add</a>
+        </div>
+      </div>
+      <div class="v-card__actions">
+        <div class="spacer"></div> <button type="submit" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Update</span></button>
+      </div>
+    </div>
+  </form>
+</div>
+`;

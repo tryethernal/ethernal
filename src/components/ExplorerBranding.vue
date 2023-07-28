@@ -95,7 +95,6 @@ export default {
         selectedColorPicker: null,
         valid: false,
         loading: false,
-        capabilities: {},
         themes: {
             links: []
         }
@@ -106,9 +105,8 @@ export default {
 
         if (this.themes.font)
             this.fonts.push(this.themes.font);
-
-        if (this.explorer.stripeSubscription)
-            this.capabilities = this.explorer.stripeSubscription.stripePlan.capabilities;
+        if (this.explorer.themes.links)
+            this.themes.links = this.explorer.themes.links;
     },
     methods: {
         onUpdatedExplorerLink(data) {

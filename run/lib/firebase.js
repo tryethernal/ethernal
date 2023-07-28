@@ -1,7 +1,6 @@
 const Sequelize = require('sequelize');
 const models = require('../models');
 const { firebaseHash }  = require('./crypto');
-const { log } = require('logrocket');
 
 const Op = Sequelize.Op;
 const User = models.User;
