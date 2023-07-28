@@ -29,8 +29,7 @@ export default {
     },
     data: () => ({
         loading: false,
-        domains: [],
-        dnsStatus: {}
+        domains: []
     }),
     mounted() {
         this.domains = this.explorer.domains;
