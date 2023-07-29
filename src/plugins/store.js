@@ -148,7 +148,7 @@ export default new Vuex.Store({
         rpcServer: state => state.publicExplorer ? state.publicExplorer.rpcServer : state.currentWorkspace.rpcServer,
         accounts: state => state.accounts,
         firebaseIdToken: state => state.user.firebaseIdToken || '',
-        theme: state => state.publicExplorer.theme,
+        theme: state => state.publicExplorer && state.publicExplorer.theme,
         isUserLoggedIn: state => !!state.user.apiToken,
         isUserAdmin: state => state.currentWorkspace && state.user.id == state.currentWorkspace.userId,
         isPublicExplorer: state => state.publicExplorer && (!!state.publicExplorer.slug || !!state.publicExplorer.domain || (state.currentWorkspace.public && state.user.uid == state.currentWorkspace.firebaseUserId)),

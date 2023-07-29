@@ -49,7 +49,7 @@
     "stripe": "^8.176.0",
     "v-stripe-elements": "^1.2.0",
     "vue": "^2.6.11",
-    "vue-json-pretty": "^1.8.2",
+    "vue-json-pretty": "^2.2.4",
     "vue-moment": "^4.1.0",
     "vue-router": "^3.4.9",
     "vue-trend-chart": "^0.15.3",
