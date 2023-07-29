@@ -59,6 +59,7 @@ jest.mock('@/plugins/server', () => ({
                 createStripeExplorerCheckoutSession: jest.fn(),
                 getExplorerDomainStatus: jest.fn(),
                 updateExplorerSettings: jest.fn(),
+                getExplorers: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))

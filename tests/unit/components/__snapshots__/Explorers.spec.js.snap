@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Explorers.vue Should display settings with all options 1`] = `
+<div class="container container--fluid">
+  <create-explorer-modal-stub></create-explorer-modal-stub>
+  <!---->
+  <div class="v-data-table v-data-table--has-top v-data-table--has-bottom theme--light">
+    <header class="py-0 v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px;">
+      <div class="v-toolbar__content" style="height: 48px;">
+        <div class="spacer"></div> <button type="button" class="mr-2 v-btn v-btn--has-bg theme--light v-size--small primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-plus theme--light" style="font-size: 16px;"></i>Create Explorer
+                </span></button>
+      </div>
+    </header>
+    <div class="v-data-table__wrapper">
+      <table>
+        <colgroup>
+          <col class="">
+          <col class="">
+          <col class="">
+          <col class="">
+        </colgroup>
+        <thead class="v-data-table-header">
+          <tr>
+            <th role="columnheader" scope="col" aria-label="Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            <th role="columnheader" scope="col" aria-label="Workspace" class="text-start"><span>Workspace</span></th>
+            <th role="columnheader" scope="col" aria-label="Domain" class="text-start"><span>Domain</span></th>
+            <th role="columnheader" scope="col" aria-label="RPC" class="text-start"><span>RPC</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="">
+            <td class="text-start"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-alert-circle theme--light error--text text--lignthen" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--top"><!----></span> <a href="#/explorers/3" class="">Explorer 3</a></td>
+            <td class="text-start">
+              Workspace 3
+            </td>
+            <td class="text-start"><a href="https://https://explorer3.com" target="_blank">https://https://explorer3.com</a></td>
+            <td class="text-start">
+              rpc 3
+            </td>
+          </tr>
+          <tr class="">
+            <td class="text-start"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-alert theme--light warning--text text--lignthen" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--top"><!----></span> <a href="#/explorers/2" class="">Explorer 2</a></td>
+            <td class="text-start">
+              Workspace 2
+            </td>
+            <td class="text-start"><a href="https://https://explorer2.com" target="_blank">https://https://explorer2.com</a></td>
+            <td class="text-start">
+              rpc 2
+            </td>
+          </tr>
+          <tr class="">
+            <td class="text-start"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-check-circle theme--light success--text text--lignthen" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--top"><!----></span> <a href="#/explorers/1" class="">Explorer 1</a></td>
+            <td class="text-start">
+              Workspace 1
+            </td>
+            <td class="text-start"><a href="https://https://explorer1.com" target="_blank">https://https://explorer1.com</a></td>
+            <td class="text-start">
+              rpc 1
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="v-data-footer">
+      <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
+          <div class="v-input__control">
+            <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-15" class="v-input__slot">
+              <div class="v-select__slot">
+                <div class="v-select__selections">
+                  <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-15" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                </div>
+                <div class="v-input__append-inner">
+                  <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                </div><input type="hidden" value="10">
+              </div>
+              <div class="v-menu">
+                <!---->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="v-data-footer__pagination">1-3 of 3</div>
+      <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
+      <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
+    </div>
+  </div>
+</div>
+`;
