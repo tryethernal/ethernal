@@ -44,8 +44,7 @@ export default {
         reject: null,
         errorMessage: null,
         explorer: null,
-        domain: null,
-        onlyDnsInfo: false
+        domain: null
     }),
     methods: {
         save() {
