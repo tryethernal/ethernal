@@ -70,7 +70,7 @@ export default {
             }
             else {
                 this.server.createStripeExplorerCheckoutSession(this.explorerId, slug)
-                    .then(({ data }) => document.location.href = data.url)
+                    .then(({ data }) => window.location.assign(data.url))
                     .catch(error => {
                         console.log(error);
                         this.errorMessage = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
@@ -150,12 +150,6 @@ export default {
             this.reject = null;
             this.plans = null;
             this.planUpdated = false;
-        },
-        pickIcon(flag) {
-            return flag ? 'mdi-check' : 'mdi-close';
-        },
-        pickIconColor(flag) {
-            return flag ? 'success' : 'error';
         },
         isLessExpensiveThanCurrent(slug) {
             let currentPlan, newPlan;
