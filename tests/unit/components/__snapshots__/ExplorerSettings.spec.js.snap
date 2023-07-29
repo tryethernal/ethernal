@@ -1,0 +1,219 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExplorerSettings.vue Should display settings with all options 1`] = `
+<div class="v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__text">
+    <!---->
+    <!---->
+    <form novalidate="novalidate" class="v-form">
+      <div class="row">
+        <div class="col">
+          <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+            <div class="v-input__control">
+              <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-6" class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-select__slot"><label for="input-6" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Associated Workspace</label>
+                  <div class="v-select__selections">
+                    Workspace 1<small class="ml-2">(rpc | 1)</small><input id="input-6" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                  <div class="v-input__append-inner">
+                    <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                  </div><input type="hidden" value="[object Object]">
+                </div>
+                <div class="v-menu">
+                  <!---->
+                </div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><label for="input-11" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name</label><input id="input-11" type="text"></div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-input mb-2 v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><label for="input-14" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Ethernal Domain</label><input id="input-14" type="text">
+                  <div class="v-text-field__suffix">.undefined</div>
+                </div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper">
+                    <div class="v-messages__message">Your explorer will always be reachable at this address</div>
+                  </transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-input mb-2 v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><label for="input-17" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Native Token</label><input id="input-17" type="text"></div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><label for="input-20" class="v-label theme--light" style="left: 0px; position: absolute;">Total Supply (in wei)</label><input id="input-20" type="number"></div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper">
+                    <div class="v-messages__message">In ether: N/A</div>
+                  </transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="v-card__actions">
+        <div class="spacer"></div> <button type="submit" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Update</span></button>
+      </div>
+    </form>
+  </div>
+</div>
+`;
+
+exports[`ExplorerSettings.vue Should display settings with deactivated options 1`] = `
+<div class="v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__text">
+    <!---->
+    <!---->
+    <form novalidate="novalidate" class="v-form">
+      <div class="row">
+        <div class="col">
+          <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
+            <div class="v-input__control">
+              <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-30" class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-select__slot"><label for="input-30" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Associated Workspace</label>
+                  <div class="v-select__selections">
+                    Workspace 1<small class="ml-2">(rpc | 1)</small><input id="input-30" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                  <div class="v-input__append-inner">
+                    <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                  </div><input type="hidden" value="[object Object]">
+                </div>
+                <div class="v-menu">
+                  <!---->
+                </div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><label for="input-35" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name</label><input id="input-35" type="text"></div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-input mb-2 v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><label for="input-38" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Ethernal Domain</label><input id="input-38" type="text">
+                  <div class="v-text-field__suffix">.undefined</div>
+                </div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper">
+                    <div class="v-messages__message">Your explorer will always be reachable at this address</div>
+                  </transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-input mb-2 v-input--is-label-active v-input--is-dirty v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><label for="input-41" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Native Token</label><input disabled="disabled" id="input-41" type="text"></div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper">
+                    <div class="v-messages__message">Upgrade your plan to customize your native token symbol.</div>
+                  </transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-input v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><label for="input-44" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Total Supply (in wei)</label><input disabled="disabled" id="input-44" type="number"></div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper">
+                    <div class="v-messages__message">Upgrade your plan to display a total supply.</div>
+                  </transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="v-card__actions">
+        <div class="spacer"></div> <button type="submit" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Update</span></button>
+      </div>
+    </form>
+  </div>
+</div>
+`;
