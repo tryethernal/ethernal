@@ -27,7 +27,7 @@ describe('ExplorerDomain.vue', () => {
     });
 
     it('Should display N/A message', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorerDomainStatus').mockResolvedValue({ data: null });
+        jest.spyOn(helper.mocks.server, 'getExplorerDomainStatus').mockResolvedValue({ data: {}});
         const wrapper = helper.mountFn(ExplorerDomain, {
             stubs: ['Explorer-Domain-DNS-Info-Modal'],
             propsData: {
