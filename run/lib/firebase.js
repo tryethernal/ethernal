@@ -298,7 +298,7 @@ const getUserExplorers = async (userId, page = 1, itemsPerPage = 10, order = 'DE
     const { count, rows: explorers } = await Explorer.findAndCountAll({
         subQuery: false,
         where: { userId },
-        attributes: ['id', 'name', 'domain', 'rpcServer'],
+        attributes: ['id', 'name', 'domain', 'rpcServer', 'slug'],
         offset: (page - 1) * itemsPerPage,
         limit: itemsPerPage,
         order: [[sanitizedOrderBy, order]],

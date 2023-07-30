@@ -58,6 +58,14 @@ module.exports = (sequelize, DataTypes) => {
                     },
                     include: [
                         {
+                            model: sequelize.models.Explorer,
+                            as: 'explorer',
+                            include: {
+                                model: sequelize.models.StripeSubscription,
+                                as: 'stripeSubscription'
+                            }
+                        },
+                        {
                             model: sequelize.models.IntegrityCheck,
                             as: 'integrityCheck',
                             include: 'block'

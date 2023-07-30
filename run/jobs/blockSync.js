@@ -10,6 +10,12 @@ module.exports = async job => {
 
     const workspace = await db.getWorkspaceByName(data.userId, data.workspace);
 
+    if (!workspace)
+        return 'Invalid workspace.';
+
+    if (!workspace.explorer)
+        return 'No active explorer for this workspace';
+
     const existingBlock = await db.getWorkspaceBlock(workspace.id, data.blockNumber);
     if (existingBlock)
         return 'Block already exists in this workspace.';
