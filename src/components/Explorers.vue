@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import CreateExplorerModal from './CreateExplorerModal.vue';
 import { shortRpcUrl } from '../lib/utils';
 
@@ -67,7 +68,6 @@ export default {
         CreateExplorerModal
     },
     data: () => ({
-        mainDomain: process.env.VUE_APP_MAIN_DOMAIN,
         explorers: [],
         explorerCount: 0,
         headers: [],
@@ -127,6 +127,9 @@ export default {
         }
     },
     computed: {
+        ...mapGetters([
+            'mainDomain'
+        ]),
         deletedExplorer() {
             return this.$route.query.deletedExplorer ? this.$route.query.deletedExplorer : null;
         }

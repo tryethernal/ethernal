@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { formatNumber, shortRpcUrl } from '../lib/utils';
 
 export default {
@@ -74,7 +75,6 @@ export default {
     data: () => ({
         successMessage: null,
         errorMessage: null,
-        mainDomain: process.env.VUE_APP_MAIN_DOMAIN,
         currentWorkspace: null,
         valid: false,
         loading: false,
@@ -112,6 +112,11 @@ export default {
                 })
                 .finally(() => this.loading = false);
         }
+    },
+    computed: {
+        ...mapGetters([
+            'mainDomain'
+        ]),
     },
     watch: {
         workspaces: {
