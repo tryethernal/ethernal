@@ -79,6 +79,7 @@ jobs:
         env:
           VUE_APP_API_ROOT: http://localhost:8081
           VUE_APP_ENABLE_BILLING: true
+          VUE_APP_MAIN_DOMAIN: tryethernal.com
           TZ: CET
 
   create_release:

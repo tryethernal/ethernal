@@ -23,7 +23,7 @@ exports[`Explorers.vue Should display settings with all options 1`] = `
           <tr>
             <th role="columnheader" scope="col" aria-label="Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
             <th role="columnheader" scope="col" aria-label="Workspace" class="text-start"><span>Workspace</span></th>
-            <th role="columnheader" scope="col" aria-label="Domain" class="text-start"><span>Domain</span></th>
+            <th role="columnheader" scope="col" aria-label="Domains" class="text-start"><span>Domains</span></th>
             <th role="columnheader" scope="col" aria-label="RPC" class="text-start"><span>RPC</span></th>
           </tr>
         </thead>
@@ -33,7 +33,7 @@ exports[`Explorers.vue Should display settings with all options 1`] = `
             <td class="text-start">
               Workspace 3
             </td>
-            <td class="text-start"><a href="https://https://explorer3.com" target="_blank">https://https://explorer3.com</a></td>
+            <td class="text-start"><a href="https://https://a.explorer1.com" target="_blank">https://https://a.explorer1.com</a> <span class="v-tooltip v-tooltip--top"><!----></span><span class="ml-2 v-chip v-chip--no-color theme--light v-size--x-small" aria-haspopup="true" aria-expanded="false"><span class="v-chip__content">+ 1</span></span></td>
             <td class="text-start">
               rpc 3
             </td>
@@ -43,7 +43,7 @@ exports[`Explorers.vue Should display settings with all options 1`] = `
             <td class="text-start">
               Workspace 2
             </td>
-            <td class="text-start"><a href="https://https://explorer2.com" target="_blank">https://https://explorer2.com</a></td>
+            <td class="text-start"><a href="https://test.tryethernal.com" target="_blank">https://test.tryethernal.com</a></td>
             <td class="text-start">
               rpc 2
             </td>
@@ -53,7 +53,9 @@ exports[`Explorers.vue Should display settings with all options 1`] = `
             <td class="text-start">
               Workspace 1
             </td>
-            <td class="text-start"><a href="https://https://explorer1.com" target="_blank">https://https://explorer1.com</a></td>
+            <td class="text-start"><a href="https://https://explorer1.com" target="_blank">https://https://explorer1.com</a>
+              <!---->
+            </td>
             <td class="text-start">
               rpc 1
             </td>
