@@ -48,7 +48,7 @@ export default {
         resolve: null,
         reject: null,
         domain: null,
-        dnsStatus: null
+        dnsStatus: {}
     }),
     methods: {
         open(options) {

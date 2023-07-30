@@ -7,7 +7,7 @@
             <v-list-item-subtitle>
                 <a :href="`https://${domain.domain}`" target="_blank">{{  domain.domain }}</a>&nbsp;|&nbsp;
                 <span v-if="loading && !deleting">Fetching DNS status...</span>
-                <template v-else-if="dnsStatus && dnsStatus.status_message">
+                <template v-else-if="dnsStatus.status_message">
                     <v-icon small :color="dnsStatus.status == 'ACTIVE_SSL' ? 'success' : 'error'">{{ dnsStatus.status == 'ACTIVE_SSL' ? 'mdi-check' : 'mdi-close' }}</v-icon>
                     <a style="text-decoration: underline;" @click.stop="showDnsInfo()">
                         {{ dnsStatus.status_message }}
@@ -31,7 +31,7 @@ export default {
     data: () => ({
         loading: true,
         deleting: false,
-        dnsStatus: null
+        dnsStatus: {}
     }),
     mounted() {
         this.loadDnsStatus();
