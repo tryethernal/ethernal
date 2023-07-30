@@ -130,7 +130,8 @@ export default {
         }
     },
     destroyed() {
-        this.pusherUnsubscribe();
+        if (this.pusherUnsubscribe)
+            this.pusherUnsubscribe();
     },
     methods: {
         openStripePortal() {
