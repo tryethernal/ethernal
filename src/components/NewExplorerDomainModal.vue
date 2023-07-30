@@ -62,6 +62,7 @@ export default {
             this.valid = false;
             this.errorMessage = null;
             this.loading = false;
+            this.domain = null;
             this.explorer = options.explorer;
             return new Promise((resolve, reject) => {
                 this.resolve = resolve;

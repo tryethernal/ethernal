@@ -32,7 +32,20 @@
                 <router-link :to="`/explorers/${item.id}`">{{ item.name }}</router-link>
             </template>
             <template v-slot:item.domain="{ item }">
-                <a :href="`https://${ item.domain }`" target="_blank">https://{{ item.domain }}</a>
+                <template v-if="item.domains.length > 0">
+                    <a :href="`https://${ item.domains[0].domain }`" target="_blank">https://{{ item.domains[0].domain }}</a>
+                    <v-tooltip top v-if="item.domains.length > 1">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-chip v-bind="attrs" v-on="on" class="ml-2" x-small >+ {{ item.domains.length - 1 }}</v-chip>
+                        </template>
+                        <ul>
+                            <li v-for="(domain, idx) in item.domains.slice(1)" :key="idx">{{ domain.domain }}</li>
+                        </ul>
+                    </v-tooltip>
+                </template>
+                <template v-else>
+                    <a :href="`https://${ item.slug }.${ mainDomain }`" target="_blank">https://{{ item.slug }}.{{ mainDomain }}</a>
+                </template>
             </template>
             <template v-slot:item.rpcServer="{ item }">
                 {{ shortRpcUrl(item.rpcServer) }}
@@ -54,6 +67,7 @@ export default {
         CreateExplorerModal
     },
     data: () => ({
+        mainDomain: process.env.VUE_APP_MAIN_DOMAIN,
         explorers: [],
         explorerCount: 0,
         headers: [],
@@ -64,7 +78,7 @@ export default {
         this.headers.push(
             { text: 'Name', value: 'name' },
             { text: 'Workspace', value: 'workspace', sortable: false },
-            { text: 'Domain', value: 'domain', sortable: false },
+            { text: 'Domains', value: 'domain', sortable: false },
             { text: 'RPC', value: 'rpcServer', sortable: false }
         );
     },

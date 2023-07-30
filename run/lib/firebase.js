@@ -294,20 +294,19 @@ const getUserExplorers = async (userId, page = 1, itemsPerPage = 10, order = 'DE
     let sanitizedOrderBy = ['id', 'name'].indexOf(orderBy) > -1 ? orderBy : 'id';
     if (sanitizedOrderBy == 'name')
         sanitizedOrderBy = Sequelize.fn('lower', Sequelize.col('"Explorer".name'));
-
+    
     const { count, rows: explorers } = await Explorer.findAndCountAll({
-        where: {
-            '$admin.id$': userId
-        },
+        subQuery: false,
+        where: { userId },
         attributes: ['id', 'name', 'domain', 'rpcServer'],
         offset: (page - 1) * itemsPerPage,
         limit: itemsPerPage,
         order: [[sanitizedOrderBy, order]],
         include: [
             {
-                model: User,
-                as: 'admin',
-                attributes: ['id'],
+                model: ExplorerDomain,
+                as: 'domains',
+                attributes: ['domain'],
             },
             {
                 model: Workspace,
