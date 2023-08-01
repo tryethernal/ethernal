@@ -8,7 +8,7 @@ class PM2 {
     constructor(host, secret) {
         if (!host || !secret) throw new Error('Missing parameter');
 
-        this.host = host;
+        this.host = host.startsWith('http') ? host : `http://${host}`;
         this.secret = secret;
     }
 

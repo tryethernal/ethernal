@@ -11,7 +11,7 @@ const secretMiddleware = (req, res, next) => {
     if (req.query.secret == process.env.SECRET)
         next();
     else
-        return res.sendStatus(401);
+        return res.status(401).send('Invalid secret');
 };
 
 const handleError = (res, error) => {
