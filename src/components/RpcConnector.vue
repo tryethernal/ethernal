@@ -114,7 +114,7 @@ export default Vue.extend({
             }
         });
 
-        if (!this.publicExplorerMode) {
+        if (!this.currentWorkspace.public) {
             this.processContracts();
             this.processTransactions();
             this.processFailedTransactions();
@@ -214,7 +214,6 @@ export default Vue.extend({
             'chain',
             'user',
             'isPublicExplorer',
-            'publicExplorerMode',
             'currentBlock',
             'isUserAdmin'
         ]),

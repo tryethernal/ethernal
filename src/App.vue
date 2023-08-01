@@ -372,6 +372,7 @@ export default {
 
             this.initWorkspace({
                 firebaseUserId: data.admin.firebaseUserId,
+                public: data.workspace.public,
                 name: data.workspace.name,
                 networkId: data.chainId,
                 rpcServer: data.rpcServer,
