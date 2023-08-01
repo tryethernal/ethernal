@@ -77,11 +77,11 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res) => {
         if (serverSync) {
             const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
             /*
-                All current explorers need to be migrated before using this.
+                All current explorers need to be migrated before using this. 
             */
             // const hasActiveExplorer = workspace.explorer && workspace.explorer.stripeSubscription;
             if (!workspace.public)
-                throw new Error(`You need to have an active explorer to use server side sync. Go to https://app.${process.env.APP_DOMAIN}/epxlorers for more info`);
+                throw new Error(`You need to have an active explorer to use server side sync. Go to https://app.${process.env.APP_DOMAIN}/explorers for more info`);
 
             if (block.number === undefined || block.number === null)
                 throw Error('Missing block number.');

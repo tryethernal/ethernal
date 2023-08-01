@@ -5,5 +5,6 @@ module.exports = {
     isSendgridEnabled: () => process.env.SENDGRID_API_KEY && process.env.SENDGRID_SENDER,
     isFirebaseAuthEnabled: () => !!process.env.ENABLE_FIREBASE_AUTH,
     isGoogleApiEnabled: () => !!process.env.GOOGLE_API_KEY,
-    isApproximatedEnabled: () => process.env.APPROXIMATED_API_KEY && process.env.APPROXIMATED_TARGET_IP
+    isApproximatedEnabled: () => process.env.APPROXIMATED_API_KEY && process.env.APPROXIMATED_TARGET_IP,
+    isSubscriptionCheckEnabled: () => !process.env.DISABLE_SUBSCRIPTION_CHECK
 };

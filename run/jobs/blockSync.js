@@ -1,6 +1,7 @@
 const { ProviderConnector } = require('../lib/rpc');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
+const { isSubscriptionCheckEnabled } = require('../lib/flags');
 
 module.exports = async job => {
     const data = job.data;

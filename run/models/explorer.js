@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 const { sanitize } = require('../lib/utils');
-const { isStripeEnabled } = require('../lib/flags');
+const { isStripeEnabled, isSubscriptionCheckEnabled } = require('../lib/flags');
 module.exports = (sequelize, DataTypes) => {
   class Explorer extends Model {
     /**
@@ -62,13 +62,17 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static findByDomain(domain) {
-        return Explorer.findOne({
+        const where = isSubscriptionCheckEnabled() ? null : { domain };
+
+        return Explorer.findOne(sanitize({
+            where,
             include: [
                 {
                     model: sequelize.models.ExplorerDomain,
                     as: 'domains',
                     where: { domain },
-                    attributes: ['domain']
+                    attributes: ['domain'],
+                    required: isSubscriptionCheckEnabled()
                 },
                 {
                     model: sequelize.models.StripeSubscription,
@@ -78,7 +82,8 @@ module.exports = (sequelize, DataTypes) => {
                         as: 'stripePlan',
                         where: {
                             'capabilities.customDomain': true
-                        }
+                        },
+                        required: isSubscriptionCheckEnabled()
                     }
                 },
                 {
@@ -92,7 +97,7 @@ module.exports = (sequelize, DataTypes) => {
                     as: 'workspace'
                 }
             ]
-        });
+        }));
     }
 
     async safeCreateDomain(domain) {

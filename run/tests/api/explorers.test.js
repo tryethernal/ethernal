@@ -263,7 +263,7 @@ describe(`GET ${BASE_URL}/search`, () => {
     it('Should return the correct explorer if this is a base subdomain', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({
             stripeSubscription: { stripePlan: { capabilities: { nativeToken: true }}},
-            slug: 'ethernal', name: 'Ethernal Explorer'
+            slug: 'ethernal', name: 'Ethernal Explorer', themes: { default: {}}
         });
         request.get(`${BASE_URL}/search?domain=ethernal.${process.env.APP_DOMAIN}`)
             .expect(200)
@@ -281,7 +281,7 @@ describe(`GET ${BASE_URL}/search`, () => {
     it('Should return the corresponding explorer when passed a domain', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsByDomain').mockResolvedValueOnce({
             stripeSubscription: { stripePlan: { capabilities: { nativeToken: true, totalSupply: '1' }}},
-            slug: 'ethernal', name: 'Ethernal Explorer'
+            slug: 'ethernal', name: 'Ethernal Explorer', themes: { default: {}}
         });
         request.get(`${BASE_URL}/search?domain=explorer.domain.com`)
             .expect(200)
