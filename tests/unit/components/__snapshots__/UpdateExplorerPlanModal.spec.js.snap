@@ -17,7 +17,7 @@ exports[`UpdateExplorerPlanModal.vue Should cancel a subscription 1`] = `
                 <explorer-plan-card-stub current="true" plan="[object Object]" pendingcancelation="true"></explorer-plan-card-stub>
               </div>
               <div class="col col-3">
-                <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
+                <explorer-plan-card-stub plan="[object Object]" disabled="true"></explorer-plan-card-stub>
               </div>
             </div>
           </div>
