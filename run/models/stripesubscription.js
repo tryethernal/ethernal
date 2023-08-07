@@ -66,3 +66,6 @@ module.exports = (sequelize, DataTypes) => {
   });
   return StripeSubscription;
 };
+
+
+

@@ -1,0 +1,1 @@
+{"version":"0.0.1","name":"pm2-server","dependencies":{"body-parser":{"version":"1.20.2"},"express":{"version":"4.18.2"},"jest":{"version":"29.6.1"},"pm2":{"version":"5.3.0"},"supertest":{"version":"6.3.3"}}}

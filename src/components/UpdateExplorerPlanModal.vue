@@ -14,7 +14,7 @@
                             :plan="plan"
                             :current="plan.slug == currentPlanSlug"
                             :loading="updatingSlug && plan.slug == updatingSlug"
-                            :disabled="updatingSlug && plan.slug != updatingSlug"
+                            :disabled="updatingSlug && plan.slug != updatingSlug || pendingCancelation && plan.slug != currentPlanSlug"
                             :pendingCancelation="pendingCancelation && plan.slug == currentPlanSlug"
                             @updatePlan="onUpdatePlan"></Explorer-Plan-Card>
                     </v-col>

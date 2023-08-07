@@ -1,15 +1,16 @@
 {
   "name": "pm2-server",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
   "scripts": {
+    "start": "pm2-runtime start ecosystem.config.js --env production",
+    "start:dev": "pm2-dev start ecosystem.config.js",
     "test": "jest",
     "test:handles": "jest  --detectOpenHandles"
   },
   "author": "Antoine de Chevigné",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.4.0",
     "body-parser": "^1.20.2",
     "express": "^4.18.2",
     "jest": "^29.6.1",

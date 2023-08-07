@@ -376,27 +376,26 @@ export const serverPlugin = {
             },
 
             startCryptoSubscription(stripePlanSlug, explorerId) {
-                const data = { stripePlanSlug, explorerId };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/startCryptoSubscription`;
-                return axios.post(resource, { data }, { cache: { ttl: 0 }});
+                const data = { stripePlanSlug };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/cryptoSubscription`;
+                return axios.post(resource, { data });
             },
 
             createExplorer(workspaceId) {
                 const data = { workspaceId };
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers`;
-                return axios.post(resource, { data }, { cache: { ttl: 0 }});
+                return axios.post(resource, { data });
             },
 
             cancelExplorerSubscription(explorerId) {
-                const data = { explorerId };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/cancelExplorerSubscription`;
-                return axios.post(resource, { data }, { cache: { ttl: 0 }});
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/subscription`;
+                return axios.delete(resource);
             },
 
             updateExplorerSubscription(explorerId, newStripePlanSlug) {
-                const data = { explorerId, newStripePlanSlug };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/updateExplorerSubscription`;
-                return axios.post(resource, { data }, { cache: { ttl: 0 }});
+                const data = { newStripePlanSlug };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/subscription`;
+                return axios.put(resource, { data });
             },
 
             getExplorerPlans() {

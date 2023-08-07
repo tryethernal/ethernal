@@ -7,6 +7,103 @@ const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 
+router.put('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        if (!data.newStripePlanSlug)
+            throw new Error('Missing parameters.');
+
+        const explorer = await db.getExplorerById(data.user.id, req.params.id);
+
+        if (!explorer || !explorer.stripeSubscription)
+            throw new Error(`Can't find explorer.`);
+        
+        if (explorer.stripeSubscription.stripePlan.slug != data.newStripePlanSlug && explorer.stripeSubscription.isPendingCancelation)
+            throw new Error(`Revert plan cancelation before choosing a new plan.`);
+
+        const stripePlan = await db.getStripePlan(data.newStripePlanSlug);
+        if (!stripePlan || !stripePlan.public)
+            throw new Error(`Can't find plan.`);
+
+        const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
+        await stripe.subscriptions.update(subscription.id, {
+            cancel_at_period_end: false,
+            proration_behavior: 'always_invoice',
+            items: [{
+                id: subscription.items.data[0].id,
+                price: stripePlan.stripePriceId
+            }]
+        });
+
+        if (explorer.stripeSubscription.isPendingCancelation)
+            await db.revertExplorerSubscriptionCancelation(data.user.id, explorer.id);
+        else
+            await db.updateExplorerSubscription(data.user.id, explorer.id, stripePlan.id);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.explorers.id.updateSubscription', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
+router.delete('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        const explorer = await db.getExplorerById(data.user.id, req.params.id);
+
+        if (!explorer || !explorer.stripeSubscription)
+            throw new Error(`Can't find explorer.`);
+
+        const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
+        console.log(subscription)
+        await stripe.subscriptions.update(subscription.id, {
+            cancel_at_period_end: true,
+        });
+        await db.cancelExplorerSubscription(data.user.id, explorer.id);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.explorers.id.cancelSubscription', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
+router.post('/:id/cryptoSubscription', [authMiddleware, stripeMiddleware], async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        if (!data.stripePlanSlug)
+            throw new Error('Missing parameter');
+
+        if (!data.user.cryptoPaymentEnabled)
+            throw new Error(`Crypto payment is not available for your account. Please reach out to contact@tryethernal.com if you'd like to enable it.`);
+
+        const stripePlan = await db.getStripePlan(data.stripePlanSlug);
+        if (!stripePlan || !stripePlan.public)
+            throw new Error(`Can't find plan.`);
+
+        await stripe.subscriptions.create({
+            customer: data.user.stripeCustomerId,
+            collection_method: 'send_invoice',
+            days_until_due: 7,
+            items: [
+                { price: stripePlan.stripePriceId }
+            ],
+            metadata: {
+                explorerId: req.params.id
+            }
+        });
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.explorers.id.startCryptoSubscription', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
 router.delete('/:id', authMiddleware, async (req, res) => {
     const data = req.body.data;
 

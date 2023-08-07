@@ -241,8 +241,7 @@ module.exports = (sequelize, DataTypes) => {
     slug: DataTypes.STRING,
     themes: DataTypes.JSON,
     token: DataTypes.STRING,
-    totalSupply: DataTypes.STRING,
-    deactivatedAt: DataTypes.DATE
+    totalSupply: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Explorer',
