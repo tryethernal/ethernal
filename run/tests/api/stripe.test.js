@@ -1,6 +1,3 @@
-const mockSubscriptionRetrieve = jest.fn();
-const mockSubscriptionCreate = jest.fn();
-const mockSubscriptionUpdate = jest.fn();
 const mockSessionCreate = jest.fn().mockResolvedValue({ url: 'https://stripe.com' })
 jest.mock('stripe', () => {
     return jest.fn().mockImplementation(() => {
@@ -9,11 +6,6 @@ jest.mock('stripe', () => {
                 sessions: {
                     create: jest.fn().mockResolvedValue({ url: 'https://stripe.com' })
                 }
-            },
-            subscriptions: {
-                retrieve: mockSubscriptionRetrieve,
-                create: mockSubscriptionCreate,
-                update: mockSubscriptionUpdate
             },
             checkout: {
                 sessions: {
@@ -31,7 +23,6 @@ const db = require('../../lib/firebase');
 
 const supertest = require('supertest');
 const app = require('../../app');
-const stripeplan = require('../../models/stripeplan');
 const request = supertest(app);
 
 const BASE_URL = '/api/stripe';
