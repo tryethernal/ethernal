@@ -105,11 +105,7 @@ const _delete = (slug) => {
                         reject(new Error(error));
                 }
 
-                pm2.describe(slug, (error, process) => {
-                    if (error) reject(new Error(error));
-
-                    resolve(process[0]);
-                });
+                resolve();
             });
         });
     });
@@ -135,7 +131,7 @@ const start = (slug, workspace, apiToken) => {
                 }
             };
 
-            pm2.start(options, (error, _) => {
+            pm2.start(options, (error) => {
                 if (error) reject(new Error(error));
 
                 pm2.describe(slug, (error, process) => {
