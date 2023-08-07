@@ -81,6 +81,10 @@ router.post('/:id/cryptoSubscription', [authMiddleware, stripeMiddleware], async
         if (!data.user.cryptoPaymentEnabled)
             throw new Error(`Crypto payment is not available for your account. Please reach out to contact@tryethernal.com if you'd like to enable it.`);
 
+        const explorer = await db.getExplorerById(data.user.id, req.params.id);
+        if (!explorer)
+            throw new Error(`Can't find explorer.`);
+
         const stripePlan = await db.getStripePlan(data.stripePlanSlug);
         if (!stripePlan || !stripePlan.public)
             throw new Error(`Can't find plan.`);
@@ -93,7 +97,7 @@ router.post('/:id/cryptoSubscription', [authMiddleware, stripeMiddleware], async
                 { price: stripePlan.stripePriceId }
             ],
             metadata: {
-                explorerId: req.params.id
+                explorerId: explorer.id
             }
         });
 

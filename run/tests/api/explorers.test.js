@@ -1,5 +1,7 @@
 const mockCustomersRetrieve = jest.fn();
 const mockSubscriptionCreate = jest.fn();
+const mockSubscriptionRetrieve = jest.fn();
+const mockSubscriptionUpdate = jest.fn();
 jest.mock('stripe', () => {
     return jest.fn().mockImplementation(() => {
         return {
@@ -7,7 +9,9 @@ jest.mock('stripe', () => {
                 retrieve: mockCustomersRetrieve
             },
             subscriptions: {
-                create: mockSubscriptionCreate
+                create: mockSubscriptionCreate,
+                retrieve: mockSubscriptionRetrieve,
+                update: mockSubscriptionUpdate
             }
         }
     });
@@ -19,6 +23,7 @@ require('../mocks/lib/flags');
 require('../mocks/middlewares/auth');
 const db = require('../../lib/firebase');
 const flags = require('../../lib/flags');
+const authMiddleware = require('../../middlewares/auth');
 
 const supertest = require('supertest');
 const app = require('../../app');
@@ -27,6 +32,181 @@ const request = supertest(app);
 const BASE_URL = '/api/explorers';
 
 beforeEach(() => jest.clearAllMocks());
+
+describe(`PUT ${BASE_URL}/:id/subscription`, () => {
+    it('Should return an error if invalid explorer', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce(null);
+        request.put(`${BASE_URL}/1/subscription`)
+            .send({ data: { newStripePlanSlug: 'slug' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Can't find explorer.`);
+                done();
+            });
+    });
+
+    it('Should return an error if plan is not public', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ explorerId: 1, stripeSubscription: { stripePlan: { slug: 'slug' }, stripeId: 'subscriptionId' }});
+        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: false })
+
+        request.put(`${BASE_URL}/1/subscription`)
+            .send({ data: { newStripePlanSlug: 'slug' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Can't find plan.`);
+                done();
+            });
+    });
+
+    it('Should return an error if trying to update a canceled plan', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ explorerId: 1, stripeSubscription: { isPendingCancelation: true, stripePlan: { slug: 'slug' }, stripeId: 'subscriptionId' }});
+        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: false })
+
+        request.put(`${BASE_URL}/1/subscription`)
+            .send({ data: { newStripePlanSlug: 'slug-2' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Revert plan cancelation before choosing a new plan.`);
+                done();
+            });
+    });
+
+    it('Should update the subscription and return a 200', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripePlan: { slug: 'slug' }, stripeId: 'subscriptionId' }});
+        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId' });
+        mockSubscriptionRetrieve.mockResolvedValueOnce({ id: 'subscriptionId', items: { data: [{ id: 'itemId' }]}});
+
+        request.put(`${BASE_URL}/1/subscription`)
+            .send({ data: { explorerId: 1, newStripePlanSlug: 'slug' }})
+            .expect(200)
+            .then(() => {
+                expect(mockSubscriptionRetrieve).toHaveBeenCalledWith('subscriptionId');
+                expect(mockSubscriptionUpdate).toBeCalledWith('subscriptionId', {
+                    cancel_at_period_end: false,
+                    proration_behavior: 'always_invoice',
+                    items: [{
+                        id: 'itemId',
+                        price: 'priceId'
+                    }]
+                });
+                expect(db.updateExplorerSubscription).toHaveBeenCalled();
+                done();
+            });
+    });
+
+    it('Should revert subscription cancelation and return a 200', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { isPendingCancelation: true, stripePlan: { slug: 'slug' }, stripeId: 'subscriptionId' }});
+        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId' });
+        mockSubscriptionRetrieve.mockResolvedValueOnce({ id: 'subscriptionId', items: { data: [{ id: 'itemId' }]}});
+
+        request.put(`${BASE_URL}/1/subscription`)
+            .send({ data: { explorerId: 1, newStripePlanSlug: 'slug' }})
+            .expect(200)
+            .then(() => {
+                expect(mockSubscriptionRetrieve).toHaveBeenCalledWith('subscriptionId');
+                expect(mockSubscriptionUpdate).toBeCalledWith('subscriptionId', {
+                    cancel_at_period_end: false,
+                    proration_behavior: 'always_invoice',
+                    items: [{
+                        id: 'itemId',
+                        price: 'priceId'
+                    }]
+                });
+                expect(db.revertExplorerSubscriptionCancelation).toHaveBeenCalled();
+                done();
+            });
+    });
+});
+
+describe(`DELETE ${BASE_URL}/:id/subscription`, () => {
+    it('Should return an error', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        request.delete(`${BASE_URL}/1/subscription`)
+            .send({ data: { explorerId: 1 }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Can't find explorer.`);
+                done();
+            });
+    });
+
+    it('Should cancel the subscription and return a 200', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripeId: 'subscriptionId' }});
+        mockSubscriptionRetrieve.mockResolvedValueOnce({ id: 'subscriptionId' });
+
+        request.delete(`${BASE_URL}/1/subscription`)
+            .send({ data: { explorerId: 1 }})
+            .expect(200)
+            .then(() => {
+                expect(mockSubscriptionRetrieve).toHaveBeenCalledWith('subscriptionId');
+                expect(mockSubscriptionUpdate).toBeCalledWith('subscriptionId', { cancel_at_period_end: true });
+                expect(db.cancelExplorerSubscription).toHaveBeenCalled();
+                done();
+            });
+    });
+});
+
+describe(`POST ${BASE_URL}/1/cryptoSubscription`, () => {
+    it('Should return an error if crypto payment is not enabled', (done) => {
+        request.post(`${BASE_URL}/1/cryptoSubscription`)
+            .send({ data: { stripePlanSlug: 'slug' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Crypto payment is not available for your account. Please reach out to contact@tryethernal.com if you'd like to enable it.`);
+                done();
+            });
+    });
+
+    it('Should return an error if plan is not public', (done) => {
+        authMiddleware.mockImplementation((req, res, next) => {
+            req.body.data = { 
+                ...(req.body.data || {}),
+                uid: '123',
+                user: { id: 1, cryptoPaymentEnabled: true }
+            };
+            next();
+        });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: false })
+
+        request.post(`${BASE_URL}/1/cryptoSubscription`)
+            .send({ data: { stripePlanSlug: 'slug' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Can't find plan.`);
+                done();
+            });
+    });
+
+    it('Should create the subscription and return a 200', (done) => {
+        authMiddleware.mockImplementation((req, res, next) => {
+            req.body.data = { 
+                ...(req.body.data || {}),
+                uid: '123',
+                user: { id: 1, cryptoPaymentEnabled: true, stripeCustomerId: 'customerId' }
+            };
+            next();
+        });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId' });
+
+        request.post(`${BASE_URL}/1/cryptoSubscription`)
+            .send({ data: { stripePlanSlug: 'slug' }})
+            .expect(200)
+            .then(() => {
+                expect(mockSubscriptionCreate).toBeCalledWith({
+                    customer: 'customerId',
+                    collection_method: 'send_invoice',
+                    days_until_due: 7,
+                    items: [
+                        { price: 'priceId' }
+                    ],
+                    metadata: { explorerId: 1 }
+                });
+                done();
+            });
+    });
+});
 
 describe(`DELETE ${BASE_URL}/:id`, () => {
     it('Should return 200', (done) => {
