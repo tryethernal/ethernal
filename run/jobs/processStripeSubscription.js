@@ -36,7 +36,7 @@ module.exports = async job => {
         return 'Process deleted.';
     }
 
-    // We check if we have a current processe running
+    // We check if we have a current process running
     const { data: existingProcess } = await pm2.find(explorer.slug);
 
     // If the process doesn't exist or is not running, we create it

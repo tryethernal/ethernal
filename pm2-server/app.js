@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const pm2 = require('./lib/pm2');
+const pm2 = require('./lib/pm2.js');
 
 const bodyParser = require('body-parser')
 app.use(bodyParser.json());

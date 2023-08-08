@@ -1,5 +1,5 @@
 const axios = require('axios');
-const app = require('./app');
+const app = require('./app.js');
 
 const port = process.env.PORT || 9090;
 app.listen(port, () => {
