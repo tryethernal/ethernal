@@ -1,26 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const logger = require('../lib/logger');
-const { bulkEnqueue } = require('../lib/queue');
-const { StripeSubscription } = require('../models');
+const { enqueue } = require('../lib/queue');
 const secretMiddleware = require('../middlewares/secret');
 
 router.post('/processAll', secretMiddleware, async (req, res) => {
     try {
-        const subscriptions = await StripeSubscription.findAll({
-            where: { status: 'active' }
-        });
-
-        const jobs = subscriptions.map(s => ({
-            name: `processStripeSubscription-${s.id}`,
-            data: {
-                stripeSubscriptionId: s.id,
-                explorerId: s.explorerId
-            }
-        }));
-
-        await bulkEnqueue('processStripeSubscription', jobs);
-
+        await enqueue('subscriptionCheck', 'subscriptionCheck', {});
         res.sendStatus(200);
     } catch(error) {
         logger.error(error.message, { location: 'post.api.subscriptions.processAll', error });

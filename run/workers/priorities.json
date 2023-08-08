@@ -22,6 +22,7 @@
         "integrityCheckStarter",
         "integrityCheck",
         "rpcHealthCheck",
-        "rpcHealthCheckStarter"
+        "rpcHealthCheckStarter",
+        "subscriptionCheck"
     ]
 }
