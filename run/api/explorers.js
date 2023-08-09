@@ -26,15 +26,17 @@ router.put('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, 
         if (!stripePlan || !stripePlan.public)
             throw new Error(`Can't find plan.`);
 
-        const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
-        await stripe.subscriptions.update(subscription.id, {
-            cancel_at_period_end: false,
-            proration_behavior: 'always_invoice',
-            items: [{
-                id: subscription.items.data[0].id,
-                price: stripePlan.stripePriceId
-            }]
-        });
+        if (explorer.stripeSubscription.stripeId) {
+            const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
+            await stripe.subscriptions.update(subscription.id, {
+                cancel_at_period_end: false,
+                proration_behavior: 'always_invoice',
+                items: [{
+                    id: subscription.items.data[0].id,
+                    price: stripePlan.stripePriceId
+                }]
+            });
+        }
 
         if (explorer.stripeSubscription.isPendingCancelation)
             await db.revertExplorerSubscriptionCancelation(data.user.id, explorer.id);
@@ -57,11 +59,13 @@ router.delete('/:id/subscription', [authMiddleware, stripeMiddleware], async (re
         if (!explorer || !explorer.stripeSubscription)
             throw new Error(`Can't find explorer.`);
 
-        const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
-        console.log(subscription)
-        await stripe.subscriptions.update(subscription.id, {
-            cancel_at_period_end: true,
-        });
+        if (explorer.stripeSubscription.stripeId) {
+            const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
+            await stripe.subscriptions.update(subscription.id, {
+                cancel_at_period_end: true,
+            });
+        }
+
         await db.cancelExplorerSubscription(data.user.id, explorer.id);
 
         res.sendStatus(200);

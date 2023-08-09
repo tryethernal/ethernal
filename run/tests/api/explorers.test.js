@@ -34,6 +34,21 @@ const BASE_URL = '/api/explorers';
 beforeEach(() => jest.clearAllMocks());
 
 describe(`PUT ${BASE_URL}/:id/subscription`, () => {
+    it('Should update the plan without calling stripe if no stripeId', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripePlan: { slug: 'slug' }}});
+        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId' });
+
+        request.put(`${BASE_URL}/1/subscription`)
+            .send({ data: { explorerId: 1, newStripePlanSlug: 'slug' }})
+            .expect(200)
+            .then(() => {
+                expect(mockSubscriptionRetrieve).not.toHaveBeenCalled();
+                expect(mockSubscriptionUpdate).not.toHaveBeenCalled();
+                expect(db.updateExplorerSubscription).toHaveBeenCalled();
+                done();
+            });
+    });
+
     it('Should return an error if invalid explorer', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce(null);
         request.put(`${BASE_URL}/1/subscription`)
@@ -119,6 +134,21 @@ describe(`PUT ${BASE_URL}/:id/subscription`, () => {
 });
 
 describe(`DELETE ${BASE_URL}/:id/subscription`, () => {
+    it('Should  cancel the subscription without calling stripe if no stripeId', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripePlan: { slug: 'slug' }}});
+        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId' });
+
+        request.delete(`${BASE_URL}/1/subscription`)
+            .send({ data: { explorerId: 1, newStripePlanSlug: 'slug' }})
+            .expect(200)
+            .then(() => {
+                expect(mockSubscriptionRetrieve).not.toHaveBeenCalled();
+                expect(mockSubscriptionUpdate).not.toHaveBeenCalled();
+                expect(db.cancelExplorerSubscription).toHaveBeenCalled();
+                done();
+            });
+    });
+
     it('Should return an error', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
         request.delete(`${BASE_URL}/1/subscription`)

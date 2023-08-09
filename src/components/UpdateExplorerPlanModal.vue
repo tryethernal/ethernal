@@ -8,7 +8,7 @@
             </v-card-title>
             <v-card-text>
                 <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
-                <v-row>
+                <v-row justify="center">
                     <v-col cols="3" v-for="(plan, idx) in plans" :key="idx">
                         <Explorer-Plan-Card
                             :plan="plan"

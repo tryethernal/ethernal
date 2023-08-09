@@ -26,6 +26,15 @@ module.exports = {
             type: Sequelize.STRING,
             allowNull: false
           },
+          price: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+          },
+          public: {
+            type: Sequelize.BOOLEAN,
+            allowNull: false,
+            defaultValue: true
+          },
           createdAt: {
             allowNull: false,
             type: Sequelize.DATE
@@ -77,8 +86,15 @@ module.exports = {
             onDelete: 'CASCADE'
           },
           stripeId: {
-            type: Sequelize.STRING,
+            type: Sequelize.STRING
+          },
+          status: {
+            type: Sequelize.DataTypes.ENUM('active', 'pending_cancelation'),
             allowNull: false,
+            defaultValue: 'active'
+          },
+          cycleEndsAt: {
+            type: Sequelize.DATE
           },
           createdAt: {
             allowNull: false,
@@ -88,18 +104,6 @@ module.exports = {
             allowNull: false,
             type: Sequelize.DATE
           }
-        }, { transaction });
-
-        await queryInterface.addColumn('explorers', 'stripeSubscriptionId', {
-          type: Sequelize.INTEGER,
-          allowNull: true,
-          references: {
-            key: 'id',
-            model: {
-                tableName: 'stripe_subscriptions'
-            }
-          },
-          onDelete: 'CASCADE'
         }, { transaction });
 
         await queryInterface.sequelize.query(`
@@ -120,9 +124,9 @@ module.exports = {
   async down(queryInterface, Sequelize) {
       const transaction = await queryInterface.sequelize.transaction();
       try {
-          await queryInterface.removeColumn('explorers', 'stripeSubscriptionId', { transaction });
           await queryInterface.dropTable('stripe_subscriptions', { transaction });
           await queryInterface.dropTable('stripe_plans', { transaction });
+          await queryInterface.sequelize.query('DROP TYPE enum_stripe_subscriptions_status;', { transaction });
 
           await transaction.commit();
       } catch(error) {
