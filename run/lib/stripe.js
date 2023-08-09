@@ -8,7 +8,9 @@ const deleteExplorerSubscription = async (stripeSubscription) => {
     if (stripeSubscription.status != 'canceled')
         return 'Subscription is not canceled';
 
-    const explorerId = stripeSubscription.metadata.explorerId;
+    const explorerId = parseInt(stripeSubscription.metadata.explorerId);
+    if (!explorerId)
+        return 'Invalid explorer id';
 
     const user = await db.getUserbyStripeCustomerId(stripeSubscription.customer);
     if (!user)
@@ -27,6 +29,8 @@ const updateExplorerSubscription = async (stripeSubscription) => {
         return 'Inactive subscription';
 
     const explorerId = parseInt(stripeSubscription.metadata.explorerId);
+    if (!explorerId)
+        return 'Invalid explorer id';
 
     const user = await db.getUserbyStripeCustomerId(stripeSubscription.customer);
     if (!user)

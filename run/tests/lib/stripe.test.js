@@ -5,7 +5,7 @@ const db = require('../../lib/firebase');
 const { handleStripePaymentSucceeded, handleStripeSubscriptionUpdate, handleStripeSubscriptionDeletion } = require('../../lib/stripe');
 const StripePaymentSucceededWebhookBody = require('../fixtures/StripePaymentSucceededWebhookBody');
 
-beforeEach(() => jest.clearAllMocks())
+beforeEach(() => jest.clearAllMocks());
 
 describe('handleStripeSubscriptionDeletion', () => {
     it('Should return if subscription is not canceled', (done) => {
@@ -125,6 +125,7 @@ describe('handleStripeSubscriptionUpdate', () => {
             metadata: { explorerId: 1 },
             status: 'active',
             cancel_at_period_end: false,
+            current_period_end: 0,
             items: {
                 data: [{ price: { id: '1234' }}]
             }
@@ -132,7 +133,7 @@ describe('handleStripeSubscriptionUpdate', () => {
 
         handleStripeSubscriptionUpdate(data)
             .then(res => {
-                expect(db.updateExplorerSubscription).toHaveBeenCalledWith(1, 1, 1);
+                expect(db.updateExplorerSubscription).toHaveBeenCalledWith(1, 1, 1, new Date(0));
                 done();
             });
     });
