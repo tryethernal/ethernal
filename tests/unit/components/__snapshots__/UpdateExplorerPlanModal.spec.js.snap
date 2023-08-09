@@ -12,7 +12,7 @@ exports[`UpdateExplorerPlanModal.vue Should cancel a subscription 1`] = `
           </div>
           <div class="v-card__text">
             <!---->
-            <div class="row">
+            <div class="row justify-center">
               <div class="col col-3">
                 <explorer-plan-card-stub current="true" plan="[object Object]" pendingcancelation="true"></explorer-plan-card-stub>
               </div>
@@ -40,7 +40,7 @@ exports[`UpdateExplorerPlanModal.vue Should start a crypto subscription 1`] = `
           </div>
           <div class="v-card__text">
             <!---->
-            <div class="row">
+            <div class="row justify-center">
               <div class="col col-3">
                 <explorer-plan-card-stub plan="[object Object]" current="true"></explorer-plan-card-stub>
               </div>
@@ -68,7 +68,7 @@ exports[`UpdateExplorerPlanModal.vue Should start a stripe subscription 1`] = `
           </div>
           <div class="v-card__text">
             <!---->
-            <div class="row">
+            <div class="row justify-center">
               <div class="col col-3">
                 <explorer-plan-card-stub plan="[object Object]" loading="true"></explorer-plan-card-stub>
               </div>
@@ -96,7 +96,7 @@ exports[`UpdateExplorerPlanModal.vue Should update a subscription 1`] = `
           </div>
           <div class="v-card__text">
             <!---->
-            <div class="row">
+            <div class="row justify-center">
               <div class="col col-3">
                 <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
               </div>
