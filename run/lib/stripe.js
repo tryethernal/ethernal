@@ -47,8 +47,11 @@ const updateExplorerSubscription = async (stripeSubscription) => {
     if (explorer.stripeSubscription) {
         if (explorer.stripeSubscription.isPendingCancelation && stripeSubscription.cancel_at_period_end == false)
             await db.revertExplorerSubscriptionCancelation(user.id, explorerId);
-        else
-            await db.updateExplorerSubscription(user.id, explorerId, stripePlan.id);
+        else {
+            // This is where we should check if the subscription is still active on Stripe, and cancel the subscription if not
+            if (stripeSubscription.status == 'active')
+                await db.updateExplorerSubscription(user.id, explorerId, stripePlan.id, new Date(stripeSubscription.current_period_end * 1000));
+        }
     } else
         await db.createExplorerSubscription(user.id, explorerId, stripePlan.id, stripeSubscription.id, new Date(stripeSubscription.current_period_end * 1000));
 }

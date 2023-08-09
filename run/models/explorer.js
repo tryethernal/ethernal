@@ -156,11 +156,11 @@ module.exports = (sequelize, DataTypes) => {
             throw new Error('Error deleting the explorer. Please retry');
     }
 
-    async safeUpdateSubscription(stripePlanId) {
-        if (!stripePlanId) throw new Error('Missing parameter');
+    async safeUpdateSubscription(stripePlanId, cycleEndsAt) {
+        if (!stripePlanId && !cycleEndsAt) throw new Error('Missing parameter');
 
         const stripeSubscription = await this.getStripeSubscription();
-        return stripeSubscription.update({ stripePlanId: stripePlanId });
+        return stripeSubscription.update(sanitize({ stripePlanId, cycleEndsAt }));
     }
 
     async safeCancelSubscription() {

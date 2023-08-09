@@ -159,7 +159,7 @@ const revertExplorerSubscriptionCancelation = async (userId, explorerId) => {
     return explorer.safeRevertSubscriptionCancelation();
 };
 
-const updateExplorerSubscription = async (userId, explorerId, stripePlanId) => {
+const updateExplorerSubscription = async (userId, explorerId, stripePlanId, cycleEndsAt) => {
     if (!userId || !explorerId || !stripePlanId) throw new Error('Missing parameter');
 
     const explorer = await Explorer.findOne({
@@ -172,7 +172,7 @@ const updateExplorerSubscription = async (userId, explorerId, stripePlanId) => {
     if (!explorer)
         throw new Error(`Can't find explorer`);
 
-    return explorer.safeUpdateSubscription(stripePlanId);
+    return explorer.safeUpdateSubscription(stripePlanId, cycleEndsAt);
 };
 
 const createExplorerSubscription = async (userId, explorerId, stripePlanId, stripeId, cycleEndsAt) => {

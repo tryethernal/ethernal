@@ -136,7 +136,6 @@ describe(`PUT ${BASE_URL}/:id/subscription`, () => {
 describe(`DELETE ${BASE_URL}/:id/subscription`, () => {
     it('Should  cancel the subscription without calling stripe if no stripeId', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripePlan: { slug: 'slug' }}});
-        jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId' });
 
         request.delete(`${BASE_URL}/1/subscription`)
             .send({ data: { explorerId: 1, newStripePlanSlug: 'slug' }})
