@@ -4,8 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### Unreleased
-- Reduce workers concurrency
+## [3.17.0] - 2023-08-10
+### Added
+- Anyone can now spin up a public explorer
+  - UI that lists all your explorers
+  - Possibility to create an explorer from an existing workspace or a new one
+  - 3 different plans are available, depending on the level of customization you need
+  - From the UI, you can customize:
+    - Native token
+    - Domain names (you can add as many as you want)
+    - Colors / Font / Logo / Favicon / Banner / Custom links
+  - Once you start an explorer, blocks will start syncing automatically
+  - For current explorers, you don't need to take any actions, but you are now able to manage your subscription and explorer settings directly.
+  - For self-hosting: docker-compose.prod.yml is not ready yet. However, the code already works in this mode (that mostly means that you don't need to integrate Stripe). So if you want to run it already, you should just need to add the pm2-server service to it from docker-compose.yml
+  - This is just a first version, there will be more regular & incremental improvements from here.
 
 ## [3.16.1] - 2023-07-05
 ### Fixed
