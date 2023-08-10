@@ -50,7 +50,6 @@ kill_timeout = "5s"
 
 [[services]]
   protocol = "tcp"
-  internal_port = 8080
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 1
@@ -63,7 +62,6 @@ kill_timeout = "5s"
 
 [[services]]
   protocol = "tcp"
-  internal_port = 8080
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 1
@@ -76,7 +74,6 @@ kill_timeout = "5s"
 
 [[services]]
   protocol = "tcp"
-  internal_port = 8080
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 1
