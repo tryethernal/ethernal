@@ -40,16 +40,15 @@ describe('RpcConnector.vue', () => {
 
         const getAccountsMock = jest.spyOn(helper.mocks.server, 'getAccounts');
         const onNewContractMock = jest.spyOn(helper.mocks.pusher, 'onNewContract');
-        const processContractMock = jest.spyOn(helper.mocks.server, 'processContracts').mockResolvedValue();
+        const processContractsMock = jest.spyOn(helper.mocks.server, 'processContracts').mockResolvedValue();
         helper.mountFn(RpcConnector, {
             getters: {
-                isPublicExplorer: jest.fn().mockReturnValue(true),
                 currentWorkspace: jest.fn().mockReturnValue({ public: true, rpcServer: 'http://localhost:8585' })
             }
         });
 
         expect(getAccountsMock).toHaveBeenCalled();
         expect(onNewContractMock).not.toHaveBeenCalled();
-        expect(processContractMock).not.toHaveBeenCalled();
+        expect(processContractsMock).not.toHaveBeenCalled();
     });
 });

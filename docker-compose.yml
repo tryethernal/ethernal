@@ -4,6 +4,8 @@ services:
   web: &backend
     volumes:
       - ./run/:/app
+    depends_on:
+      - pm2
     build:
       context: .
       dockerfile: Dockerfile
@@ -38,7 +40,24 @@ services:
       - "8080:8080"
     volumes:
       - ./src:/app/src
+      - type: bind
+        source: package.json
+        target: /app/package.json
+      - type: bind
+        source: yarn.lock
+        target: /app/yarn.lock
     build:
       context: .
       dockerfile: Dockerfile.front
     env_file: .env.development
+
+  pm2:
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./pm2-server:/app
+    build:
+      context: .
+      dockerfile: Dockerfile.pm2
+      target: dev
+    env_file: pm2-server/.env

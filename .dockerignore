@@ -9,6 +9,7 @@ dist
 **/.firebase
 **/ganache-db
 **/coverage
+seeders/private
 
 **/functions/report*
 

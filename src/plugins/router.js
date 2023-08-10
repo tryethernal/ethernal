@@ -16,6 +16,8 @@ import ERC721Collection from '../components/ERC721Collection.vue';
 import ERC20Contract from '../components/ERC20Contract.vue';
 import Contract from '../components/Contract.vue';
 import ExplorerStatus from '../components/ExplorerStatus.vue';
+import Explorers from '../components/Explorers.vue';
+import Explorer from '../components/Explorer.vue';
 
 const auth = () => {
     return { currentUser: router.app.$store.getters.user };
@@ -54,6 +56,8 @@ const routes = [
     { path: '/nfts', component: ERC721Collections, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/nft/:address', component: ERC721Collection, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/settings', component: Settings, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/explorers', component: Explorers, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/explorers/:id', component: Explorer, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/status', component: ExplorerStatus, beforeEnter: redirectIfLoggedOut },
     { path: '*', redirect: '/overview' }
 ];

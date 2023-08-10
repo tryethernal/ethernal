@@ -51,6 +51,18 @@ jest.mock('@/plugins/server', () => ({
                 resetPassword: jest.fn(),
                 getExplorerStatus: jest.fn(),
                 getCompilerVersions: jest.fn(),
+                getExplorer: jest.fn(),
+                getExplorerPlans: jest.fn(),
+                createExplorer: jest.fn(),
+                startCryptoSubscription: jest.fn(),
+                createStripeExplorerCheckoutSession: jest.fn(),
+                createStripeExplorerCheckoutSession: jest.fn(),
+                getExplorerDomainStatus: jest.fn(),
+                updateExplorerSettings: jest.fn(),
+                getExplorers: jest.fn(),
+                searchIcon: jest.fn(),
+                updateExplorerSubscription: jest.fn(),
+                cancelExplorerSubscription: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))

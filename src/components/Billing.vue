@@ -48,7 +48,7 @@
                     </v-list>
                     <v-card-actions class="justify-center d-flex flex-column">
                         <v-btn :loading="subscriptionButtonLoading" color="primary" v-if="isPremium" @click="openStripePortal()">Manage Subscription</v-btn>
-                        <v-btn :loading="subscriptionButtonLoading" color="primary" v-else @click="subscribeToPlan('premium')">Subscribe</v-btn>
+                        <v-btn :loading="subscriptionButtonLoading" color="primary" v-else @click="subscribeToPlan()">Subscribe</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
@@ -118,8 +118,8 @@ export default {
         },
         pusherUnsubscribe: null
     }),
-    mounted: function() {
-        if (this.justUpgraded) {
+    mounted() {
+        if (this.justUpgraded && this.user.plan != 'premium') {
             this.subscriptionButtonLoading = true;
             this.pusherUnsubscribe = this.pusher.onUserUpdated((user) => {
                 if (user.plan == 'premium') {
@@ -130,10 +130,11 @@ export default {
         }
     },
     destroyed() {
-        this.pusherUnsubscribe();
+        if (this.pusherUnsubscribe)
+            this.pusherUnsubscribe();
     },
     methods: {
-        openStripePortal: function() {
+        openStripePortal() {
             this.subscriptionButtonLoading = true;
             this.server.createStripePortalSession()
                 .then(({ data }) => {
@@ -141,9 +142,9 @@ export default {
                 })
                 .catch(() => this.subscriptionButtonLoading = false );
         },
-        subscribeToPlan: function(plan) {
+        subscribeToPlan() {
             this.subscriptionButtonLoading = true;
-            this.server.createStripeCheckoutSession(plan)
+            this.server.createStripeUserCheckoutSession()
                 .then(({ data }) => {
                     document.location.href = data.url;
                 })
@@ -158,10 +159,10 @@ export default {
         ...mapGetters([
             'user'
         ]),
-        isPremium: function() {
+        isPremium() {
             return this.user.plan == 'premium';
         },
-        justUpgraded: function() {
+        justUpgraded() {
             return this.$route.query.status == 'upgraded';
         }
     }

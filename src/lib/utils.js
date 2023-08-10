@@ -1,6 +1,15 @@
 const Web3 = require('web3');
 const ethers = require('ethers');
 
+export const shortRpcUrl = (rpc) => {
+    try {
+        const url = new URL(rpc);
+        return url.origin;
+    } catch(error) {
+        return rpc;
+    }
+}
+
 export const sanitize = function(obj) {
     return Object.fromEntries(
         Object.entries(obj)

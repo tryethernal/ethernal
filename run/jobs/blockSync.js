@@ -1,6 +1,7 @@
 const { ProviderConnector } = require('../lib/rpc');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
+const { isSubscriptionCheckEnabled } = require('../lib/flags');
 
 module.exports = async job => {
     const data = job.data;
@@ -9,6 +10,12 @@ module.exports = async job => {
         return 'Missing parameter';
 
     const workspace = await db.getWorkspaceByName(data.userId, data.workspace);
+
+    if (!workspace)
+        return 'Invalid workspace.';
+
+    if (!workspace.explorer)
+        return 'No active explorer for this workspace';
 
     const existingBlock = await db.getWorkspaceBlock(workspace.id, data.blockNumber);
     if (existingBlock)

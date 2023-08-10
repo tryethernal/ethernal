@@ -3,6 +3,8 @@ module.exports = {
     blockSync: require('./blockSync'),
     batchBlockSync: require('./batchBlockSync'),
     sendResetPasswordEmail: require('./sendResetPasswordEmail'),
+    processStripeSubscription: require('./processStripeSubscription'),
+    updateApproximatedRecord: require('./updateApproximatedRecord'),
 
     // Medium Priority
     processContract: require('./processContract'),
@@ -20,5 +22,6 @@ module.exports = {
     integrityCheckStarter: require('./integrityCheckStarter'),
     integrityCheck: require('./integrityCheck'),
     rpcHealthCheck: require('./rpcHealthCheck'),
-    rpcHealthCheckStarter: require('./rpcHealthCheckStarter')
+    rpcHealthCheckStarter: require('./rpcHealthCheckStarter'),
+    subscriptionCheck: require('./subscriptionCheck')
 };

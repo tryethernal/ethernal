@@ -5,6 +5,9 @@ const explorer = {
 };
 
 const Explorer = {
+    findAndCountAll: jest.fn(),
+    findOne: jest.fn(),
+    findByPk: jest.fn(),
     findBySlug: jest.fn().mockResolvedValue(explorer),
     findByDomain: jest.fn().mockResolvedValue(explorer),
     safeCreateExplorer: jest.fn().mockResolvedValue(explorer)
@@ -13,4 +16,4 @@ const Explorer = {
 module.exports = {
     Explorer: Explorer,
     explorer: explorer
-}
+};

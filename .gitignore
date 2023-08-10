@@ -13,6 +13,7 @@ coverage/
 run/.env
 ethernal-95a14-19f78a7e26cc.json
 run/logfile
+run/seeders/private/
 
 functions/report*
 start_explorer.js
@@ -30,6 +31,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+pm2-server/.env
 
 # Editor directories and files
 .idea

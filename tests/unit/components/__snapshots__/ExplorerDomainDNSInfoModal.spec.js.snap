@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExplorerDomainDNSInfoModal.vue Should display DNS info 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+        <div class="v-card v-sheet v-sheet--outlined theme--light">
+          <div class="v-card__title">DNS Setup Info <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button></div>
+          <div class="v-card__text">
+            <div role="list" class="v-list v-sheet theme--light">
+              <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+                Last updated 1 minute ago:
+              </div>
+              <div tabindex="-1" role="listitem" class="v-list-item theme--light"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-check theme--light mr-1 success--text"></i><span class="v-tooltip v-tooltip--top"><!----></span> Resolving requests
+              </div>
+              <div tabindex="-1" role="listitem" class="v-list-item theme--light"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-close theme--light mr-1 error--text"></i><span class="v-tooltip v-tooltip--top"><!----></span> SSL active
+              </div>
+            </div>
+            <div class="mb-1">Log in to the account you have with your DNS provider, and add the following record:</div>
+            <div class="mb-1 pa-2 black white--text font-weight-medium" style="border-radius: 5px;">ethernal.com A 75.2.60.5</div>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;

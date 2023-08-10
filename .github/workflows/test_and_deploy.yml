@@ -24,12 +24,12 @@ jobs:
         with:
           timezone: Europe/Paris
 
-      - name: Install deps
+      - name: Install api deps
         run: |
           cd run
           npm install
 
-      - name: Run tests
+      - name: Run api tests
         run: |
           cd run
           npm run test tests/
@@ -40,6 +40,18 @@ jobs:
           STRIPE_WEBHOOK_SECRET: 123
           STRIPE_SECRET_KEY: 123
           ETHERSCAN_API_TOKEN: 123
+          APP_URL: http://ethernal.com
+          APP_DOMAIN: ethernal.com
+
+      - name: Install pm2 server deps
+        run: |
+          cd pm2-server
+          npm install
+
+      - name: Run pm2 server tests
+        run: |
+          cd pm2-server
+          npm run test
 
   test_front:
     runs-on: ubuntu-latest
@@ -102,7 +114,7 @@ jobs:
           tag: ${{ steps.get_changelog.outputs.version }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  publish_docker_image:
+  publish_docker_images:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [create_release]
     runs-on: ubuntu-latest
@@ -118,7 +130,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push backend
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -126,6 +138,14 @@ jobs:
           push: true
           target: prod_all
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ethernal:latest,${{ secrets.DOCKERHUB_USERNAME }}/ethernal:v${{ needs.create_release.outputs.current_version }}
+
+      - name: Build and push PM2 server
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile.pm2
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ethernal-pm2:latest,${{ secrets.DOCKERHUB_USERNAME }}/ethernal-pm2:v${{ needs.create_release.outputs.current_version }}
 
   deploy_front:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -189,11 +209,17 @@ jobs:
 
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - name: Build & push docker image
+      - name: Build & push backend image
         run: |
           flyctl auth docker
-          docker build --target prod_back -t registry.fly.io/ethernal:${{ github.sha }} .
+          docker build --target prod_back -t registry.fly.io/ethernal:${{ github.sha }} -f Dockerfile .
           docker push registry.fly.io/ethernal:${{ github.sha }}
+
+      - name: Build & push PM2 server image
+        run: |
+          flyctl auth docker
+          docker build --target prod -t registry.fly.io/ethernal-pm2:${{ github.sha }} -f Dockerfile.pm2 .
+          docker push registry.fly.io/ethernal-pm2:${{ github.sha }}
 
   release_front:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -222,8 +248,11 @@ jobs:
 
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - name: Release deploy
-        run: flyctl deploy -i registry.fly.io/ethernal:${{ github.sha }}
+      - name: Release backend
+        run: flyctl deploy -i registry.fly.io/ethernal:${{ github.sha }} -a ethernal
+
+      - name: Release PM2 server
+        run: flyctl machine update registry.fly.io/ethernal-pm2:${{ github.sha }} -a ethernal-pm2
 
       - name: Create New Relic deployment marker
         uses: newrelic/deployment-marker-action@v1

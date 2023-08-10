@@ -23,6 +23,7 @@ router.post('/', stripeMiddleware, async (req, res) => {
                 break;
 
             case 'customer.subscription.updated':
+            case 'customer.subscription.created':
                 await stripeLib.handleStripeSubscriptionUpdate(event.data.object);
                 break;
 

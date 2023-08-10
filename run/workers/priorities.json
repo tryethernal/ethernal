@@ -2,7 +2,9 @@
     "high": [
         "blockSync",
         "batchBlockSync",
-        "sendResetPasswordEmail"
+        "sendResetPasswordEmail",
+        "processStripeSubscription",
+        "updateApproximatedRecord"
     ],
     "medium": [
         "processContract",
@@ -20,6 +22,7 @@
         "integrityCheckStarter",
         "integrityCheck",
         "rpcHealthCheck",
-        "rpcHealthCheckStarter"
+        "rpcHealthCheckStarter",
+        "subscriptionCheck"
     ]
 }
