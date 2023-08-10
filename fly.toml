@@ -49,7 +49,6 @@ kill_timeout = "5s"
     restart_limit = 0
 
 [[services]]
-  protocol = "tcp"
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 1
@@ -61,7 +60,6 @@ kill_timeout = "5s"
     soft_limit = 200
 
 [[services]]
-  protocol = "tcp"
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 1
@@ -73,7 +71,6 @@ kill_timeout = "5s"
     soft_limit = 200
 
 [[services]]
-  protocol = "tcp"
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 1
