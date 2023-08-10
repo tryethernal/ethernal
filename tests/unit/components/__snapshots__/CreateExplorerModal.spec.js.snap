@@ -1,0 +1,149 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CreateExplorerModal.vue Should let the user choose an existing workspace or create a new one 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 1200px;">
+        <div class="v-stepper v-stepper--vertical v-sheet theme--light">
+          <h3 class="ml-6 mt-4">Public Explorer Creation</h3>
+          <div tabindex="-1" class="v-stepper__step v-stepper__step--active"><span class="v-stepper__step__step primary">1</span>
+            <div class="v-stepper__label">Setup The Workspace</div>
+          </div>
+          <transition-stub name="tab-transition">
+            <div class="v-stepper__content">
+              <div class="v-stepper__wrapper" style="height: auto;">
+                <!---->
+                <div class="row">
+                  <div class="col col-12">
+                    <div class="v-input mt-2 theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+                      <div class="v-input__control">
+                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-12" class="v-input__slot">
+                          <fieldset aria-hidden="true">
+                            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                          </fieldset>
+                          <div class="v-select__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">Select Existing Workspace</label>
+                            <div class="v-select__selections"><input primary="" id="input-12" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                            <div class="v-input__append-inner">
+                              <div></div>
+                            </div>
+                            <div class="v-input__append-inner">
+                              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                            </div><input type="hidden">
+                          </div>
+                          <div class="v-menu">
+                            <!---->
+                          </div>
+                        </div>
+                        <div class="v-text-field__details">
+                          <div class="v-messages theme--light">
+                            <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <h5>Create New Workspace</h5>
+                    <create-workspace-stub ispublic="true"></create-workspace-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </transition-stub>
+          <div tabindex="-1" class="v-stepper__step v-stepper__step--inactive"><span class="v-stepper__step__step">2</span>
+            <div class="v-stepper__label">Choose A Plan</div>
+          </div>
+          <transition-stub name="tab-transition">
+            <div class="v-stepper__content">
+              <div class="v-stepper__wrapper" style="height: 0px;">
+                <div class="v-card v-sheet theme--light">
+                  <div class="v-card__text">
+                    <!----> Payment in crypto also available. Reach out to contact@tryethernal.com to set it up. <div class="row"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </transition-stub>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`CreateExplorerModal.vue Should let the user select a plan 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 1200px;">
+        <div class="v-stepper v-stepper--is-booted v-stepper--vertical v-sheet theme--light">
+          <h3 class="ml-6 mt-4">Public Explorer Creation</h3>
+          <div tabindex="-1" class="v-stepper__step v-stepper__step--complete"><span class="v-stepper__step__step primary"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light"></i></span>
+            <div class="v-stepper__label">Setup The Workspace</div>
+          </div>
+          <transition-stub name="tab-transition">
+            <div class="v-stepper__content">
+              <div class="v-stepper__wrapper" style="height: 0px;">
+                <!---->
+                <div class="row">
+                  <div class="col col-12">
+                    <div class="v-input mt-2 theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
+                      <div class="v-input__control">
+                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-53" class="v-input__slot">
+                          <fieldset aria-hidden="true">
+                            <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                          </fieldset>
+                          <div class="v-select__slot"><label for="input-53" class="v-label theme--light" style="left: 0px; position: absolute;">Select Existing Workspace</label>
+                            <div class="v-select__selections"><input primary="" id="input-53" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                            <div class="v-input__append-inner">
+                              <div></div>
+                            </div>
+                            <div class="v-input__append-inner">
+                              <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                            </div><input type="hidden" value="[object Object]">
+                          </div>
+                          <div class="v-menu">
+                            <!---->
+                          </div>
+                        </div>
+                        <div class="v-text-field__details">
+                          <div class="v-messages theme--light">
+                            <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="v-card__actions">
+                      <div class="spacer"></div> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" id="selectWorkspace"><span class="v-btn__content">Continue</span></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </transition-stub>
+          <div tabindex="-1" class="v-stepper__step v-stepper__step--active"><span class="v-stepper__step__step primary">2</span>
+            <div class="v-stepper__label">Choose A Plan</div>
+          </div>
+          <transition-stub name="tab-transition">
+            <div class="v-stepper__content">
+              <div class="v-stepper__wrapper" style="height: 0px;">
+                <div class="v-card v-sheet theme--light">
+                  <div class="v-card__text">
+                    <!----> Payment in crypto also available. Reach out to contact@tryethernal.com to set it up. <div class="row">
+                      <div class="col col-3">
+                        <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
+                      </div>
+                      <div class="col col-3">
+                        <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </transition-stub>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;

@@ -1,0 +1,115 @@
+<template>
+    <v-container fluid>
+        <template v-if="justCreated">
+            <v-card outlined>
+                <v-card-text>
+                    <v-progress-circular
+                        class="mr-2"
+                        indeterminate
+                        size="16"
+                        width="2"
+                        color="primary"></v-progress-circular>
+                    Your subscripion is being activated. The explorer will be ready soon.
+                </v-card-text>
+            </v-card>
+        </template>
+        <template v-else-if="explorer && workspaces.length > 0">
+            <v-alert text type="error" v-if="!explorer.stripeSubscription">This explorer is not active. To activate it, start a subscription.</v-alert>
+            <h2>{{ explorer.name }}</h2>
+            <v-row>
+                <v-col cols="6">
+                    <h4>Settings</h4>
+                    <Explorer-Settings :key="JSON.stringify(capabilities)" :explorer="explorer" :workspaces="workspaces" @updated="loadExplorer(id)"/>
+                </v-col>
+                <v-col cols="6">
+                    <template v-if="isBillingEnabled">
+                        <h4>Billing</h4>
+                        <Explorer-Billing :explorer="explorer" @updated="loadExplorer(id)" />
+                    </template>
+                    <h4 :class="{ 'mt-2': isBillingEnabled }">Domain Aliases</h4>
+                    <Explorer-Domains-List :key="JSON.stringify(capabilities)" :explorer="explorer" :disabled="isBillingEnabled && (!explorer.stripeSubscription || !explorer.stripeSubscription.stripePlan.capabilities.customDomain)" @updated="loadExplorer(id)" />
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col>
+                    <h4>Branding</h4>
+                    <Explorer-Branding :key="JSON.stringify(capabilities)" :explorer="explorer" :disabled="isBillingEnabled && (!explorer.stripeSubscription || !explorer.stripeSubscription.stripePlan.capabilities.branding)" @updated="loadExplorer(id)" />
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="6">
+                    <h4 class="error--text">Danger Zone</h4>
+                    <Explorer-Danger-Zone :key="JSON.stringify(capabilities)" :explorer="explorer" />
+                </v-col>
+            </v-row>
+        </template>
+        <template v-else>
+            <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
+        </template>
+    </v-container>
+</template>
+
+<script>
+import { mapGetters } from 'vuex';
+import ExplorerSettings from './ExplorerSettings';
+import ExplorerBilling from './ExplorerBilling';
+import ExplorerDomainsList from './ExplorerDomainsList';
+import ExplorerBranding from './ExplorerBranding';
+import ExplorerDangerZone from './ExplorerDangerZone';
+
+export default {
+    name: 'Explorer',
+    props: ['id'],
+    components: {
+        ExplorerSettings,
+        ExplorerBilling,
+        ExplorerDomainsList,
+        ExplorerBranding,
+        ExplorerDangerZone
+    },
+    data: () => ({
+        workspaces: [],
+        explorer: null,
+        capabilities: {},
+        refreshInterval: null
+    }),
+    methods: {
+        loadExplorer(id) {
+            this.server.getWorkspaces()
+                .then(({ data }) => this.workspaces = data)
+                .catch(console.log);
+
+            this.server.getExplorer(id)
+                .then(({ data }) => {
+                    this.explorer = data;
+                    if (this.explorer.stripeSubscription) {
+                        if (this.refreshInterval)
+                            clearInterval(this.refreshInterval);
+                        this.capabilities = this.explorer.stripeSubscription.stripePlan.capabilities;
+                    }
+                })
+                .catch(console.log);
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'isBillingEnabled'
+        ]),
+        justCreated() {
+            if (!this.explorer)
+                return false;
+            return !this.explorer.stripeSubscription && this.$route.query.status == 'success';
+        }
+    },
+    watch: {
+        id: {
+            immediate: true,
+            handler(id) {
+                this.loadExplorer(id);
+                if (this.$route.query.status == 'success')
+                    this.refreshInterval = setInterval(this.loadExplorer, 3000, id);
+            }
+        }
+    }
+}
+</script>

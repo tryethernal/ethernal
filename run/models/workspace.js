@@ -4,7 +4,7 @@ const {
   Sequelize,
   QueryTypes
 } = require('sequelize');
-const { sanitize } = require('../lib/utils');
+const { sanitize, slugify } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
@@ -566,6 +566,17 @@ module.exports = (sequelize, DataTypes) => {
                             }), { transaction: sequelizeTransaction });
                         }
                     }
+
+                    const explorers = await sequelize.models.Explorer.findAll({
+                        where: { workspaceId: this.id }
+                    });
+
+                    for (let j = 0; j < explorers.length; j++) {
+                        const explorer = explorers[j];
+                        const stripeSubscription = await explorer.getStripeSubscription();
+                        if (stripeSubscription)
+                            await stripeSubscription.increment('transactionQuota', { transaction: sequelizeTransaction });
+                    }
                 }
 
                 return storedBlock;
@@ -1026,6 +1037,25 @@ module.exports = (sequelize, DataTypes) => {
             },
         })
     }
+
+    async safeCreateExplorer(transaction) {
+        if (!this.public) return;
+
+        const existingExplorer = await sequelize.models.Explorer.findOne({ where: { slug: slugify(this.name) }});
+        const slug = existingExplorer ?
+            `${slugify(this.name)}-${Math.floor(Math.random() * 100)}` :
+            slugify(this.name);
+
+        return this.createExplorer({
+            userId: this.userId,
+            chainId: this.networkId,
+            name: this.name,
+            rpcServer: this.rpcServer,
+            slug: slug,
+            themes: { "default": {}},
+            domain: `${slug}.${process.env.APP_DOMAIN}`
+        }, { transaction });
+    }
   }
 
   Workspace.init({
@@ -1055,6 +1085,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     hooks: {
+        afterCreate(workspace, options) {
+            return workspace.safeCreateExplorer(options.transaction);
+        },
         afterSave(workspace, options) {
             return enqueue('processWorkspace', `processWorkspace-${workspace.id}-${workspace.name}`, {
                 workspaceId: workspace.id,

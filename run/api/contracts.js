@@ -1,14 +1,11 @@
 const express = require('express');
-const models = require('../models');
 const router = express.Router();
 const logger = require('../lib/logger');
 const db = require('../lib/firebase');
 const { sanitize } = require('../lib/utils');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
-const secretMiddleware = require('../middlewares/secret');
 const processContractVerification = require('../lib/processContractVerification');
-const { enqueue } = require('../lib/queue');
 const { holderHistory, cumulativeSupply, transferVolume, holders, transfers } = require('./modules/tokens');
 
 router.get('/:address/holderHistory', workspaceAuthMiddleware, holderHistory);
@@ -16,45 +13,6 @@ router.get('/:address/cumulativeSupply', workspaceAuthMiddleware, cumulativeSupp
 router.get('/:address/transferVolume', workspaceAuthMiddleware, transferVolume);
 router.get('/:address/holders', workspaceAuthMiddleware, holders);
 router.get('/:address/transfers', workspaceAuthMiddleware, transfers);
-
-router.get('/reprocessReceipts', secretMiddleware, async (req, res) => {
-    const data = req.query;
-    try {
-        const transactions = await models.Transaction.findAll({
-            where: {
-                to: null,
-                workspaceId: data.workspaceId
-            }
-        })
-
-        for (let i = 0; i < transactions.length; i++) {
-            const transaction = transactions[i];
-            await enqueue('transactionProcessing', `transactionProcessing-${transaction.workspaceId}-${transaction.hash}`, { 
-                transactionId: transaction.id
-            }, 1);
-        }
-        
-        res.sendStatus(200)
-    } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.reprocessReceipts', error: error, data: { ...data, ...req.params }});
-        res.status(400).send(error.message);
-    }
-});
-
-router.get('/reprocessTokenTransfers', async (req, res) => {
-    const data = req.query;
-    try {
-        if (data.secret != process.env.SECRET)
-            throw new Error(`Auth error`);
-
-        await enqueue('reprocessAllTokenTransfers', `reprocessAllTokenTransfers-${Date.now()}`, { workspaceId: data.workspaceId, batchSize: data.batchSize });
-
-        res.sendStatus(200);
-    } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.logs', error: error, data: { ...data, ...req.params }});
-        res.status(400).send(error.message);
-    }
-});
 
 router.get('/:address/stats', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;

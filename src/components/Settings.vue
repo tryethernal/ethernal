@@ -152,6 +152,7 @@
         </v-tabs-items>
     </v-container>
 </template>
+
 <script>
 import { mapGetters } from 'vuex';
 import CreateWorkspaceModal from './CreateWorkspaceModal';
@@ -212,7 +213,6 @@ export default {
                 value: 'actions'
             }
         ],
-        isBillingEnabled: process.env.VUE_APP_ENABLE_BILLING,
         availableChains: [],
         settings: {},
         workspaces: [],
@@ -330,6 +330,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'isBillingEnabled',
             'currentWorkspace',
             'user',
             'chain',

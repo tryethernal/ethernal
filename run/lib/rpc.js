@@ -209,15 +209,19 @@ class ContractConnector {
     }
 
     async isProxy() {
-        const isErc20 = await this.isErc20();
-        if (isErc20 && abiChecker.isErc20(this.abi))
-            return true;
-        const isErc721 = await this.isErc721();
-        if (isErc721 && abiChecker.isErc721(this.abi))
-            return true;
-        const isErc1155 = await this.isErc1155();
-        if (isErc1155 && abiChecker.isErc1155(this.abi))
-            return true;
+        try {
+            const isErc20 = await this.isErc20();
+            if (isErc20 && !abiChecker.isErc20(this.abi))
+                return true;
+            const isErc721 = await this.isErc721();
+            if (isErc721 && !abiChecker.isErc721(this.abi))
+                return true;
+            const isErc1155 = await this.isErc1155();
+            if (isErc1155 && !abiChecker.isErc1155(this.abi))
+                return true;
+        } catch(error) {
+            return false;
+        }
     }
 
     async callReadMethod(method, params, options) {
@@ -232,7 +236,7 @@ class ContractConnector {
         try {
             return await withTimeout(this.provider.getCode(this.contract.address));
         } catch(error) {
-            return (error.body ? JSON.parse(error.body).error.message : error.reason) || error.message || "Can't connect to the server";
+            return null;
         }
     }
 

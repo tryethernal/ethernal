@@ -76,8 +76,12 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res) => {
 
         if (serverSync) {
             const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
+            /*
+                All current explorers need to be migrated before using this. 
+            */
+            // const hasActiveExplorer = workspace.explorer && workspace.explorer.stripeSubscription;
             if (!workspace.public)
-                throw new Error(`You are not allowed to use server side sync. If you'd like to, please reach out at contact@tryethernal.com`);
+                throw new Error(`You need to have an active explorer to use server side sync. Go to https://app.${process.env.APP_DOMAIN}/explorers for more info`);
 
             if (block.number === undefined || block.number === null)
                 throw Error('Missing block number.');
@@ -91,7 +95,7 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res) => {
         }
         else {
             const syncedBlock = stringifyBns(sanitize(block));
-            const storedBlock = await db.storeBlock(data.uid, data.workspace, syncedBlock);
+            await db.storeBlock(data.uid, data.workspace, syncedBlock);
         }
 
         res.sendStatus(200);

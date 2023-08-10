@@ -1,10 +1,8 @@
 require('../mocks/ethers');
 jest.mock('axios');
 
-const ethers = require('ethers');
 const axios = require('axios');
 const { ERC721Connector } = require('@/lib/rpc');
-import DSProxyContract from '../fixtures/DSProxyContract';
 import ERC721 from '@/abis/erc721.json';
 import ERC721_METADATA from '@/abis/erc721Metadata.json';
 import ERC721_ENUMERABLE from '@/abis/erc721Enumerable.json';

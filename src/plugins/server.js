@@ -354,8 +354,92 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            getExplorerDomainStatus(domainId) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/domains/${domainId}`;
+                return axios.get(resource);
+            },
+
+            addExplorerDomain(explorerId, domain) {
+                const data = { domain };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/domains`;
+                return axios.post(resource, { data });
+            },
+
+            removeExplorerDomain(domainId) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/domains/${domainId}`;
+                return axios.delete(resource);
+            },
+
+            deleteExplorer(explorerId) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}`;
+                return axios.delete(resource);
+            },
+
+            startCryptoSubscription(stripePlanSlug, explorerId) {
+                const data = { stripePlanSlug };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/cryptoSubscription`;
+                return axios.post(resource, { data });
+            },
+
+            createExplorer(workspaceId) {
+                const data = { workspaceId };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers`;
+                return axios.post(resource, { data });
+            },
+
+            cancelExplorerSubscription(explorerId) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/subscription`;
+                return axios.delete(resource);
+            },
+
+            updateExplorerSubscription(explorerId, newStripePlanSlug) {
+                const data = { newStripePlanSlug };
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/subscription`;
+                return axios.put(resource, { data });
+            },
+
+            getExplorerPlans() {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/plans`;
+                return axios.get(resource);
+            },
+
             getCompilerVersions() {
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/external/compilers`;
+                return axios.get(resource);
+            },
+
+            updateExplorerBranding(explorerId, data) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/branding`;
+                return axios.post(resource, { data }, { cache: { ttl: 0 }});
+            },
+
+            getExplorerMode(domain) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/search?domain=${domain}`;
+                return axios.get(resource, { cache: { ttl: 100 }});
+            },
+
+            updateExplorerSettings(explorerId, data) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/settings`;
+                return axios.post(resource, { data }, { cache: { ttl: 0 }});
+            },
+
+            searchIcon(query) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/search/icons?icon=${query}`;
+                return axios.get(resource, { cache: { ttl: 100 }});
+            },
+
+            searchFont(query) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/search/fonts?font=${query}`;
+                return axios.get(resource, { cache: { ttl: 100 }});
+            },
+
+            getExplorers(params) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers`;
+                return axios.get(resource, { params });
+            },
+
+            getExplorer(slug) {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${slug}`;
                 return axios.get(resource);
             },
 
@@ -794,7 +878,7 @@ export const serverPlugin = {
                 const params = {
                     domain: domain
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers`;
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/search`;
                 return axios.get(resource, { params });
             },
 
@@ -802,7 +886,7 @@ export const serverPlugin = {
                 const params = {
                     slug: slug
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers`;
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/search`;
                 return axios.get(resource, { params });
             },
 
@@ -854,14 +938,18 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            createStripeCheckoutSession(plan) {
+            createStripeExplorerCheckoutSession(explorerId, stripePlanSlug) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    plan: plan
+                    explorerId, stripePlanSlug
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/createCheckoutSession`;
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/createExplorerCheckoutSession`;
                 return axios.post(resource, { data });
+            },
+
+            createStripeUserCheckoutSession() {
+                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/createUserCheckoutSession`;
+                return axios.post(resource);
             },
 
             createStripePortalSession() {

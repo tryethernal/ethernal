@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExplorerDomainsList.vue Should be disabled 1`] = `
+<div class="v-card v-card--disabled v-sheet v-sheet--outlined theme--light">
+  <new-explorer-domain-modal-stub></new-explorer-domain-modal-stub>
+  <div class="v-card__text">
+    <div role="alert" class="v-alert v-sheet theme--dark v-alert--text warning--text">
+      <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-exclamation theme--dark warning--text"></i>
+        <div class="v-alert__content">Upgrade your plan to activate domain aliases.</div>
+      </div>
+    </div>
+    <div role="list" class="v-list py-0 mb-4 v-sheet theme--light">
+      <explorer-domain-stub domain="[object Object]"></explorer-domain-stub>
+      <explorer-domain-stub domain="[object Object]"></explorer-domain-stub>
+    </div>
+    <div><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Add Domain Alias</span></button></div>
+  </div>
+</div>
+`;
+
+exports[`ExplorerDomainsList.vue Should display domains list 1`] = `
+<div class="v-card v-sheet v-sheet--outlined theme--light">
+  <new-explorer-domain-modal-stub></new-explorer-domain-modal-stub>
+  <div class="v-card__text">
+    <!---->
+    <div role="list" class="v-list py-0 mb-4 v-sheet theme--light">
+      <explorer-domain-stub domain="[object Object]"></explorer-domain-stub>
+      <explorer-domain-stub domain="[object Object]"></explorer-domain-stub>
+    </div>
+    <div><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Add Domain Alias</span></button></div>
+  </div>
+</div>
+`;

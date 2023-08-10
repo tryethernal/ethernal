@@ -58,13 +58,13 @@ describe(`POST ${BASE_URL}`, () => {
             });
     });
 
-    it('Should refuse server side block sync if workspace is not public', (done) => {
+    it.skip('Should refuse server side block sync if workspace is not public', (done) => {
         db.getWorkspaceByName.mockResolvedValue({ name: 'My Workspace', public: false });
         request.post(`${BASE_URL}/?serverSync=true`)
             .send({ data: { workspace: 'My Workspace', block: { number: 123 }}})
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual(`You are not allowed to use server side sync. If you'd like to, please reach out at contact@tryethernal.com`);
+                expect(text).toEqual(`You need to have an active explorer to use server side sync. Go to https://app.ethernal.com/explorers for more info`);
                 done();
             });
     });

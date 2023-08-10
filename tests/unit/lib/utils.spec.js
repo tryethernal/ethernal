@@ -1,6 +1,15 @@
-import { sanitize, getProvider, processMethodCallParam, formatSolidityObject, formatResponse } from '@/lib/utils.js';
+import { sanitize, getProvider, processMethodCallParam, shortRpcUrl } from '@/lib/utils.js';
 const Web3 = require('web3');
-const ethers = require('ethers');
+
+describe('shortRpcUrl', () => {
+    it('Should return origin if valid', () => {
+        expect(shortRpcUrl('https://explorer.protocol.com/key')).toEqual('https://explorer.protocol.com');
+    });
+
+    it('Should return rpc if not valid', () => {
+        expect(shortRpcUrl('invalidurl')).toEqual('invalidurl');
+    })
+});
 
 describe('sanitize', () => {
     it('Should clear null keys', () => {

@@ -61,7 +61,8 @@ class MockHelper {
         this.mocks = {
             db: this.localVue.prototype.db,
             server: this.localVue.prototype.server,
-            pusher: this.localVue.prototype.pusher
+            pusher: this.localVue.prototype.pusher,
+            router: this.router
         };
     }
 
@@ -72,6 +73,8 @@ class MockHelper {
     initMockStore(initialState, overrideGetters) {
         this.localVue.use(Vuex);
         this.getters = {
+            mainDomain: jest.fn().mockReturnValue('tryethernal.com'),
+            isBillingEnabled: jest.fn().mockReturnValue(true),
             rpcServer: jest.fn().mockReturnValue('http://localhost:8545'),
             accounts: jest.fn().mockReturnValue(['0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA']),
             theme: jest.fn(),

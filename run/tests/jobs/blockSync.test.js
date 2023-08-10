@@ -6,14 +6,17 @@ require('../mocks/lib/logger');
 
 const db = require('../../lib/firebase');
 const { ProviderConnector } = require('../../lib/rpc');
-const { enqueue } = require('../../lib/queue');
 
 const blockSync = require('../../jobs/blockSync');
 
 beforeEach(() => jest.clearAllMocks());
 
 describe('blockSync', () => {
-    jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ id: 1, rpcServer: 'http://localhost:8545' });
+    jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({
+        id: 1,
+        rpcServer: 'http://localhost:8545',
+        explorer: {}
+    });
 
     it('Should sync partial block', (done) => {
         blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
@@ -81,7 +84,8 @@ describe('blockSync', () => {
         jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
-            integrityCheck: { isHealthy: true }
+            integrityCheck: { isHealthy: true },
+            explorer: {}
         });
         blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1, source: 'recovery' }})
             .then(res => {
@@ -94,7 +98,8 @@ describe('blockSync', () => {
         jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({
             id: 1,
             rpcServer: 'http://localhost:8545',
-            integrityCheck: { isRecovering: true }
+            integrityCheck: { isRecovering: true },
+            explorer: {}
         });
         blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1, source: 'api' }})
             .then(res => {

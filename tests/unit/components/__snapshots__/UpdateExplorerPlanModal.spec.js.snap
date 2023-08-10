@@ -1,0 +1,113 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UpdateExplorerPlanModal.vue Should cancel a subscription 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 1200px;">
+        <div class="v-card v-sheet theme--light">
+          <div class="v-card__title">
+            Select A Plan
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button>
+          </div>
+          <div class="v-card__text">
+            <!---->
+            <div class="row justify-center">
+              <div class="col col-3">
+                <explorer-plan-card-stub current="true" plan="[object Object]" pendingcancelation="true"></explorer-plan-card-stub>
+              </div>
+              <div class="col col-3">
+                <explorer-plan-card-stub plan="[object Object]" disabled="true"></explorer-plan-card-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`UpdateExplorerPlanModal.vue Should start a crypto subscription 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 1200px;">
+        <div class="v-card v-sheet theme--light">
+          <div class="v-card__title">
+            Select A Plan
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button>
+          </div>
+          <div class="v-card__text">
+            <!---->
+            <div class="row justify-center">
+              <div class="col col-3">
+                <explorer-plan-card-stub plan="[object Object]" current="true"></explorer-plan-card-stub>
+              </div>
+              <div class="col col-3">
+                <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`UpdateExplorerPlanModal.vue Should start a stripe subscription 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 1200px;">
+        <div class="v-card v-sheet theme--light">
+          <div class="v-card__title">
+            Select A Plan
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button>
+          </div>
+          <div class="v-card__text">
+            <!---->
+            <div class="row justify-center">
+              <div class="col col-3">
+                <explorer-plan-card-stub plan="[object Object]" loading="true"></explorer-plan-card-stub>
+              </div>
+              <div class="col col-3">
+                <explorer-plan-card-stub plan="[object Object]" disabled="true"></explorer-plan-card-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`UpdateExplorerPlanModal.vue Should update a subscription 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 1200px;">
+        <div class="v-card v-sheet theme--light">
+          <div class="v-card__title">
+            Select A Plan
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button>
+          </div>
+          <div class="v-card__text">
+            <!---->
+            <div class="row justify-center">
+              <div class="col col-3">
+                <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
+              </div>
+              <div class="col col-3">
+                <explorer-plan-card-stub plan="[object Object]" current="true"></explorer-plan-card-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;

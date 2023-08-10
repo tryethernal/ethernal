@@ -1,31 +1,33 @@
 <template>
     <v-card elevation="0">
-        <v-card-text v-if="(!user.plan || user.plan == 'free') && user.onboarded">
+        <v-card-text v-if="(!user.plan || user.plan == 'free') && user.onboarded && !isPublic">
             <v-alert dense text type="error">Free plan users are limited to one workspace. <a href="#" @click.stop="goToBilling()">Upgrade</a> to our Premium plan to create more.</v-alert>
         </v-card-text>
         <v-card-text v-else>
             <v-alert v-show="errorMessage" dense text type="error" v-html="errorMessage"></v-alert>
-            <div class="mb-2">
-                <v-alert type="warning" class="my-2" v-if="isUsingSafari">
-                    Safari is preventing websites from making CORS requests to localhost. This will prevent you from connecting to a local blockchain. If you want to do so, you'll need to use another browser.
-                    If you want to connect to a remote chain, or are not using Safari, you can ignore this message.
-                </v-alert>
-                <a id="detectServers" href="#" @click.prevent="detectNetwork()">Detect Networks</a>&nbsp;
-                <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                        <v-icon small v-on="on">mdi-help-circle-outline</v-icon>
-                    </template>
-                    This will send a RPC request asking for a network ID to 127.0.0.1 on http and ws protocols on commonly used ports (7545, 8545 and 9545).<br>The address will be displayed below if the request is successful.
-                </v-tooltip>
-                <ul v-show="detectedNetworks.length">
-                    <li v-for="(address, idx) in detectedNetworks" :key="idx">
-                        {{ address }}&nbsp;<a href="#" :id="`serverDetected-${idx}`" @click.prevent="rpcServer = address">Use</a>
-                    </li>
-                </ul>
-                <div v-show="noNetworks">
-                    No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave & Safari 👀!).
+            <template v-if="!isPublic">
+                <div class="mb-2">
+                    <v-alert type="warning" class="my-2" v-if="isUsingSafari">
+                        Safari is preventing websites from making CORS requests to localhost. This will prevent you from connecting to a local blockchain. If you want to do so, you'll need to use another browser.
+                        If you want to connect to a remote chain, or are not using Safari, you can ignore this message.
+                    </v-alert>
+                    <a id="detectServers" href="#" @click.prevent="detectNetwork()">Detect Networks</a>&nbsp;
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                            <v-icon small v-on="on">mdi-help-circle-outline</v-icon>
+                        </template>
+                        This will send a RPC request asking for a network ID to 127.0.0.1 on http and ws protocols on commonly used ports (7545, 8545 and 9545).<br>The address will be displayed below if the request is successful.
+                    </v-tooltip>
+                    <ul v-show="detectedNetworks.length">
+                        <li v-for="(address, idx) in detectedNetworks" :key="idx">
+                            {{ address }}&nbsp;<a href="#" :id="`serverDetected-${idx}`" @click.prevent="rpcServer = address">Use</a>
+                        </li>
+                    </ul>
+                    <div v-show="noNetworks">
+                        No networks detected. If you were expecting something, make sure they are running on 7545, 8545 or 9545 and that your browser is not blocking requests to localhost (looking at you Brave & Safari 👀!).
+                    </div>
                 </div>
-            </div>
+            </template>
             <v-form @submit.prevent="createWorkspace(name, rpcServer)" v-model="valid">
                 <v-text-field
                     :rules="[v => !!v || 'Name is required']"
@@ -36,7 +38,7 @@
                         v => !!v || 'RPC server is required'
                     ]"
                     outlined v-model="rpcServer" id="workspaceServer" label="RPC Server*" placeholder="ws://localhost:8545" hide-details="auto" class="mb-2" required></v-text-field>
-                <v-select outlined required label="Chain" v-model="chain" :items="availableChains" hide-details="auto"></v-select>
+                <v-select v-if="!isPublic" outlined required label="Chain" v-model="chain" :items="availableChains" hide-details="auto"></v-select>
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -51,6 +53,7 @@ const ipaddr = require('ipaddr.js');
 import { mapGetters } from 'vuex';
 export default {
     name: 'CreateWorkspace',
+    props: ['isPublic'],
     data: () => ({
         availableChains: [],
         chain: 'ethereum',
@@ -110,7 +113,7 @@ export default {
                     `;
             }
 
-            this.server.createWorkspace(name, { ...this.workspace, chain: this.chain })
+            this.server.createWorkspace(name, { ...this.workspace, chain: this.chain, public: this.isPublic })
                 .then(({ data }) => this.$emit('workspaceCreated', data))
                 .catch(error => {
                     if (error.response && error.response.data)

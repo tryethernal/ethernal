@@ -9,15 +9,7 @@ export default new Vuex.Store({
     state: {
         user: {},
         currentBlock: {},
-        publicExplorer: {
-            name: null,
-            slug: null,
-            token: null,
-            chainId: null,
-            domain: null,
-            theme: 'light',
-            totalSupply: null
-        },
+        publicExplorer: null,
         currentWorkspace: {
             storageEnabled: true,
             userId: '',
@@ -115,7 +107,8 @@ export default new Vuex.Store({
                     loggedIn: true,
                     id: user.id,
                     plan: user.plan,
-                    apiToken: user.apiToken
+                    apiToken: user.apiToken,
+                    cryptoPaymentEnabled: user.cryptoPaymentEnabled
                 }));
 
                 if (process.env.VUE_APP_ENABLE_ANALYTICS)
@@ -142,28 +135,24 @@ export default new Vuex.Store({
         updateOnboardedStatus({ commit }, status) {
             commit('SET_ONBOARDED_STATUS', status);
         },
-        updatePublicExplorerSlug({ commit }, slug) {
-            commit('SET_PUBLIC_EXPLORER_SLUG', slug);
-        },
         setPublicExplorerData({ commit }, data) {
             commit('SET_PUBLIC_EXPLORER_DATA', data);
-        },
-        updatePublicExplorerDomain({ commit }, domain) {
-            commit('SET_PUBLIC_EXPLORER_DOMAIN', domain);
         },
         updateFirebaseIdToken({ commit }, token) {
             commit('SET_FIREBASE_ID_TOKEN', token);
         }
     },
     getters: {
-        rpcServer: state => state.publicExplorer.rpcServer || state.currentWorkspace.rpcServer,
-        publicExplorerMode: state => state.publicExplorer.slug || state.publicExplorer.domain,
+        mainDomain: () => process.env.VUE_APP_MAIN_DOMAIN,
+        isBillingEnabled: () => !!process.env.VUE_APP_ENABLE_BILLING,
+        publicExplorerMode: state => !!state.publicExplorer,
+        rpcServer: state => state.publicExplorer ? state.publicExplorer.rpcServer : state.currentWorkspace.rpcServer,
         accounts: state => state.accounts,
         firebaseIdToken: state => state.user.firebaseIdToken || '',
-        theme: state => state.publicExplorer.theme,
+        theme: state => state.publicExplorer && state.publicExplorer.theme,
         isUserLoggedIn: state => !!state.user.apiToken,
         isUserAdmin: state => state.currentWorkspace && state.user.id == state.currentWorkspace.userId,
-        isPublicExplorer: state => !!state.publicExplorer.slug || !!state.publicExplorer.domain || (state.currentWorkspace.public && state.user.uid == state.currentWorkspace.firebaseUserId),
+        isPublicExplorer: state => state.publicExplorer && (!!state.publicExplorer.slug || !!state.publicExplorer.domain || (state.currentWorkspace.public && state.user.uid == state.currentWorkspace.firebaseUserId)),
         publicExplorer: state => state.publicExplorer,
         user: state => {
             return { ...state.user, plan: state.user.plan || 'free' };

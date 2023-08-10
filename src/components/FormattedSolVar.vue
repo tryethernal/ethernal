@@ -19,10 +19,11 @@
                 </span>
                 <span v-else-if="input.type == 'string'">
                     <span v-if="isValueJSON" style="white-space: normal;">
-                        <vue-json-pretty
-                            :data="JSONValue"
-                            :custom-value-formatter="JSONPrettyCustomFormatter"
-                        ></vue-json-pretty>
+                        <vue-json-pretty :data="JSONValue">
+                            <template #nodeValue="{ node }">
+                                <Formatted-Sol-Var :input="{type: 'string'}" :value="node.content" :depth="0" />
+                            </template>
+                        </vue-json-pretty>
                     </span>
                     <span v-else v-html="formatString(value)"></span>
                 </span>
@@ -58,7 +59,7 @@ export default {
     data: () => ({
         formatted: true
     }),
-    mounted: function() {
+    mounted() {
         if (this.input.type == 'uint256')
             this.formatted = false;
     },

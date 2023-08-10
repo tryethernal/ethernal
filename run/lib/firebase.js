@@ -11,6 +11,97 @@ const TransactionReceipt = models.TransactionReceipt;
 const Explorer = models.Explorer;
 const Contract = models.Contract;
 const Block = models.Block;
+const StripeSubscription = models.StripeSubscription;
+const StripePlan = models.StripePlan;
+const ExplorerDomain = models.ExplorerDomain;
+
+const getExplorerDomainById = async (userId, explorerDomainId) => {
+    if (!userId || !explorerDomainId) throw new Error('Missing parameter');
+
+    const domain = await ExplorerDomain.findOne({
+        where: {
+            id: explorerDomainId,
+            '$explorer.userId$': userId
+        },
+        include: [
+            {
+                model: Explorer,
+                as: 'explorer',
+                attributes: ['userId']
+            }
+        ]
+    });
+
+    return domain ? domain.toJSON() : null;
+};
+
+const deleteExplorerDomain = async (userId, explorerDomainId) => {
+    if (!userId || !explorerDomainId) throw new Error('Missing parameter');
+
+    const domain = await ExplorerDomain.findOne({
+        where: {
+            id: explorerDomainId,
+            '$explorer.userId$': userId
+        },
+        include: [
+            {
+                model: Explorer,
+                as: 'explorer'
+            }
+        ]
+    });
+
+    if (!domain)
+        throw new Error('Could not find domain');
+    
+    return domain.destroy();
+};
+
+const createExplorerDomain = async (explorerId, domain) => {
+    if (!explorerId || !domain) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findByPk(explorerId);
+
+    if (!explorer)
+        throw new Error('Cannot find explorer');
+
+    return explorer.safeCreateDomain(domain);
+};
+
+const deleteExplorer = async (userId, explorerId) => {
+    if (!userId || !explorerId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            '$admin.id$': userId
+        },
+        include: ['admin']
+    });
+
+    if (!explorer)
+        throw new Error(`Can't find explorer`);
+    
+    return explorer.safeDelete();
+};
+
+const createExplorerFromWorkspace = async (userId, workspaceId) => {
+    if (!userId || !workspaceId) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findOne({
+        where: {
+            userId: userId,
+            id: workspaceId,
+        }
+    });
+
+    if (!workspace)
+        throw new Error('Could not find workspace');
+    
+    const explorer = await workspace.safeCreateExplorer();
+
+    return explorer ? explorer.toJSON() : null;
+};
 
 const getContractById = async (contractId) => {
     if (!contractId) throw new Error('Missing parameter');
@@ -18,6 +109,93 @@ const getContractById = async (contractId) => {
     const contract = await Contract.findByPk(contractId);
 
     return contract ? contract.toJSON() : null;
+};
+
+const deleteExplorerSubscription = async (userId, explorerId, stripeId) => {
+    if (!userId || !explorerId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            userId: userId
+        }
+    });
+
+    if (!explorer)
+        throw new Error(`Can't find explorer`);
+
+    return explorer.safeDeleteSubscription(stripeId);
+};
+
+const cancelExplorerSubscription = async (userId, explorerId) => {
+    if (!userId || !explorerId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            userId: userId
+        }
+    });
+
+    if (!explorer)
+        throw new Error(`Can't find explorer`);
+
+    return explorer.safeCancelSubscription();
+};
+
+const revertExplorerSubscriptionCancelation = async (userId, explorerId) => {
+    if (!userId || !explorerId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            userId: userId
+        }
+    });
+
+    if (!explorer)
+        throw new Error(`Can't find explorer`);
+
+    return explorer.safeRevertSubscriptionCancelation();
+};
+
+const updateExplorerSubscription = async (userId, explorerId, stripePlanId, cycleEndsAt) => {
+    if (!userId || !explorerId || !stripePlanId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            userId: userId
+        }
+    });
+
+    if (!explorer)
+        throw new Error(`Can't find explorer`);
+
+    return explorer.safeUpdateSubscription(stripePlanId, cycleEndsAt);
+};
+
+const createExplorerSubscription = async (userId, explorerId, stripePlanId, stripeId, cycleEndsAt) => {
+    if (!userId || !explorerId || !stripePlanId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            userId: userId
+        }
+    });
+
+    if (!explorer)
+        throw new Error(`Can't find explorer`);
+
+    return explorer.safeCreateSubscription(stripePlanId, stripeId, cycleEndsAt);
+};
+
+const getExplorerPlans = () => {
+    return StripePlan.findAll({
+        where: { public: true },
+        attributes: ['capabilities', 'id', 'name', 'slug', 'stripePriceId', 'price']
+    });
 };
 
 const storeContractVerificationData = async (workspaceId, address, verificationData) => {
@@ -35,6 +213,119 @@ const storeContractVerificationData = async (workspaceId, address, verificationD
 
     return contract.safeCreateVerification(verificationData);
 };
+
+const getStripePlan = async (slug) => {
+    const plan = await StripePlan.findOne({
+        where: { slug }
+    });
+    return plan ? plan.toJSON() : null;
+}
+
+const updateExplorerBranding = async (explorerId, branding) => {
+    if (!explorerId || !branding) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findByPk(explorerId);
+
+    if (!explorer)
+        throw new Error('Cannot find explorer');
+
+    return explorer.safeUpdateBranding(branding);
+};
+
+const updateExplorerSettings = async (explorerId, settings) => {
+    if (!explorerId || !settings) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findByPk(explorerId);
+    if (!explorer)
+        throw new Error('Cannot find explorer');
+
+    return explorer.safeUpdateSettings(settings);
+};
+
+const updateExplorerWorkspace = async (explorerId, workspaceId) => {
+    if (!explorerId || !workspaceId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findByPk(explorerId);
+    if (!explorer)
+        throw new Error('Cannot find explorer');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Cannot find workspace')
+
+    if (explorer.userId != workspace.userId)
+        throw new Error('Invalid workspace');
+
+    return explorer.update({ workspaceId: workspace.id, rpcServer: workspace.rpcServer, chainId: workspace.networkId });
+};
+
+const getExplorerById = async (userId, id) => {
+    if (!id) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findByPk(id, {
+        where: { userId: userId },
+        include: [
+            {
+                model: ExplorerDomain,
+                as: 'domains'
+            },
+            {
+                model: StripeSubscription,
+                as: 'stripeSubscription',
+                include: { model: StripePlan, as: 'stripePlan' }
+            },
+            {
+                model: User,
+                as: 'admin'
+            },
+            {
+                model: Workspace,
+                as: 'workspace'
+            }
+        ]
+    });
+
+    return explorer ? explorer.toJSON() : null;
+}
+
+const getUserExplorers = async (userId, page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'id') => {
+    if (!userId) throw new Error('Missing parameter');
+
+    let sanitizedOrderBy = ['id', 'name'].indexOf(orderBy) > -1 ? orderBy : 'id';
+    if (sanitizedOrderBy == 'name')
+        sanitizedOrderBy = Sequelize.fn('lower', Sequelize.col('"Explorer".name'));
+    
+    const { count, rows: explorers } = await Explorer.findAndCountAll({
+        subQuery: false,
+        where: { userId },
+        attributes: ['id', 'name', 'domain', 'rpcServer', 'slug'],
+        offset: (page - 1) * itemsPerPage,
+        limit: itemsPerPage,
+        order: [[sanitizedOrderBy, order]],
+        include: [
+            {
+                model: ExplorerDomain,
+                as: 'domains',
+                attributes: ['domain'],
+            },
+            {
+                model: Workspace,
+                as: 'workspace',
+                attributes: ['name'],
+            },
+            {
+                model: StripeSubscription,
+                as: 'stripeSubscription',
+                attributes: ['status', 'isActive', 'isPendingCancelation']
+            }
+        ]
+    });
+
+    return {
+        items: explorers.map(e => e.toJSON()),
+        total: count
+    };
+}
 
 const updateWorkspaceRpcHealthCheck = async (workspaceId, isReachable) => {
     if (!workspaceId || isReachable === null || isReachable === undefined) throw new Error('Missing parameter');
@@ -1139,7 +1430,24 @@ module.exports = {
     updateWorkspaceIntegrityCheck: updateWorkspaceIntegrityCheck,
     updateWorkspaceRpcHealthCheck: updateWorkspaceRpcHealthCheck,
     revertPartialBlock: revertPartialBlock,
+    getUserExplorers: getUserExplorers,
+    getExplorerById: getExplorerById,
+    updateExplorerSettings: updateExplorerSettings,
+    updateExplorerWorkspace: updateExplorerWorkspace,
+    updateExplorerBranding: updateExplorerBranding,
+    getStripePlan: getStripePlan,
     storeContractVerificationData: storeContractVerificationData,
+    getExplorerPlans: getExplorerPlans,
+    createExplorerSubscription: createExplorerSubscription,
+    updateExplorerSubscription: updateExplorerSubscription,
+    cancelExplorerSubscription: cancelExplorerSubscription,
+    deleteExplorerSubscription: deleteExplorerSubscription,
     getContractById: getContractById,
+    revertExplorerSubscriptionCancelation: revertExplorerSubscriptionCancelation,
+    createExplorerFromWorkspace: createExplorerFromWorkspace,
+    deleteExplorer: deleteExplorer,
+    createExplorerDomain: createExplorerDomain,
+    deleteExplorerDomain: deleteExplorerDomain,
+    getExplorerDomainById: getExplorerDomainById,
     Workspace: Workspace
 };

@@ -3,10 +3,10 @@ const logger = require('../lib/logger');
 const authMiddleware = require('../middlewares/auth');
 const secretMiddleware = require('../middlewares/secret');
 const { sanitize, stringifyBns } = require('../lib/utils');
-const { encode, decrypt, decode } = require('../lib/crypto');
+const { encode, decrypt } = require('../lib/crypto');
 const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
-
+const { ProviderConnector } = require('../lib/rpc');
 const router = express.Router();
 
 router.post('/reprocessTransactionTraces', [secretMiddleware], async (req, res) => {
@@ -38,87 +38,6 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 });
 
-router.post('/disableApi', authMiddleware, async (req, res) => {
-    const data = req.body.data;
-
-    try {
-        if (!data.uid || !data.workspace)
-            throw new Error('Missing parameters.');
-
-        await db.removeIntegration(data.uid, data.workspace, 'api');
-
-        res.sendStatus(200);
-    } catch(error) {
-        logger.error(error.message, { location: 'post.api.workspaces.disableApi', error: error, data: data });
-        res.status(400).send(error.message);
-    }
-});
-
-router.post('/disableAlchemy', authMiddleware, async (req, res) => {
-    const data = req.body.data;
-
-    try {
-        if (!data.uid || !data.workspace)
-            throw new Error('Missing parameters');
-
-        await db.removeIntegration(data.uid, data.workspace, 'alchemy');
-
-        res.sendStatus(200);
-    } catch(error) {
-        logger.error(error.message, { location: 'post.api.workspaces.disableAlchemy', error: error, data: data });
-        res.status(400).send(error.message);
-    }
-});
-
-router.post('/enableApi', authMiddleware, async (req, res) => {
-    const data = req.body.data;
-
-    try {
-        if (!data.uid || !data.workspace)
-            throw new Error('Missing parameters');
-
-        await db.addIntegration(data.uid, data.workspace, 'api');
-
-        const user = await db.getUser(data.uid);
-        const apiKey = decrypt(user.apiKey);
-
-        const token = encode({
-            uid: data.uid,
-            workspace: data.workspace,
-            apiKey: apiKey
-        });
-
-        res.status(200).json({ token: token });
-    } catch(error) {
-        logger.error(error.message, { location: 'post.api.workspaces.enableApi', error: error, data: data });
-        res.status(400).send(error.message);
-    }
-});
-
-router.post('/enableAlchemy', authMiddleware, async (req, res) => {
-    const data = req.body.data;
-    try {
-        if (!data.uid || !data.workspace)
-            throw new Error('Missing parameters');
-
-        await db.addIntegration(data.uid, data.workspace, 'alchemy');
-
-        const user = await db.getUser(data.uid);
-        const apiKey = decrypt(user.apiKey);
-
-        const token = encode({
-            uid: data.uid,
-            workspace: data.workspace,
-            apiKey: apiKey
-        });
-
-        res.status(200).json({ token: token });
-    } catch(error) {
-        logger.error(error.message, { location: 'post.api.workspaces.enableAlchemy', error: error, data: data });
-        res.status(400).send(error.message);
-    }
-});
-
 router.post('/', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
@@ -127,9 +46,20 @@ router.post('/', authMiddleware, async (req, res) => {
             throw new Error('Missing parameters.');
 
         const user = await db.getUser(data.uid, ['defaultDataRetentionLimit']);
-
         if (!user)
             throw new Error('Could not find user.');
+        
+        if (data.workspaceData.public) {
+            const provider = new ProviderConnector(data.workspaceData.rpcServer);
+            let networkId;
+            try {
+                networkId = await provider.fetchNetworkId();
+            } catch(error) {
+                networkId = null;
+            }
+            if (!networkId)
+                throw new Error(`Can't reach RPC server, make sure it's accessible.`);
+        }
 
         const filteredWorkspaceData = stringifyBns(sanitize({
             name: data.name,
@@ -143,6 +73,9 @@ router.post('/', authMiddleware, async (req, res) => {
         }));
 
         const workspace = await db.createWorkspace(data.uid, filteredWorkspaceData);
+
+        if (!workspace)
+            throw new Error(`Couldn't create workspace`);
 
         if (!user.currentWorkspace)
             await db.setCurrentWorkspace(user.firebaseUserId, filteredWorkspaceData.name);
