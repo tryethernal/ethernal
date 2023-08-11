@@ -1277,7 +1277,7 @@ const getFailedProcessableTransactions = async (uid, workspace) => {
     const user = await User.findByAuthIdWithWorkspace(uid, workspace);
     const transactions = await user.workspaces[0].getFailedProcessableTransactions();
     return transactions.map(t => t.toJSON());
-}
+};
 
 const getPublicExplorerParamsBySlug = async (slug) => {
    if (!slug) throw new Error('Missing parameter.');

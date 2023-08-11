@@ -20,6 +20,7 @@ jest.mock('stripe', () => {
 require('../mocks/lib/queue');
 require('../mocks/lib/firebase');
 require('../mocks/lib/flags');
+require('../mocks/lib/env');
 require('../mocks/middlewares/auth');
 const db = require('../../lib/firebase');
 const flags = require('../../lib/flags');
@@ -261,6 +262,16 @@ describe(`GET ${BASE_URL}/plans`, () => {
 });
 
 describe(`POST ${BASE_URL}/:id/domains`, () => {
+    it('Should return an error if trying to add an app domain domain', (done) => {
+        request.post(`${BASE_URL}/123/domains`)
+            .send({ data: { domain: 'test.ethernal.com' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`You can only have one ethernal.com domain. If you'd like a different one, update the "Ethernal Domain" field, in the "Settings" panel.`);
+                done();
+            });
+    });
+
     it('Should return an error if the explorer does not exist', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce(null);
 
@@ -464,7 +475,7 @@ describe(`POST ${BASE_URL}`, () => {
 
 describe(`GET ${BASE_URL}/search`, () => {
     it('Should return a 200 if this is admin domain', (done) => {
-        request.get(`${BASE_URL}/search?domain=app.${process.env.APP_DOMAIN}`)
+        request.get(`${BASE_URL}/search?domain=app.ethernal.com`)
             .expect(200)
             .then(() => done());
     });
@@ -474,7 +485,7 @@ describe(`GET ${BASE_URL}/search`, () => {
             stripeSubscription: { stripePlan: { capabilities: { nativeToken: true }}},
             slug: 'ethernal', name: 'Ethernal Explorer', themes: { default: {}}
         });
-        request.get(`${BASE_URL}/search?domain=ethernal.${process.env.APP_DOMAIN}`)
+        request.get(`${BASE_URL}/search?domain=ethernal.ethernal.com`)
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual({

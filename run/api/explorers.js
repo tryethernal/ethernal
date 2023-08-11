@@ -2,6 +2,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const express = require('express');
 const router = express.Router();
 const { isStripeEnabled, isSubscriptionCheckEnabled } = require('../lib/flags');
+const { getAppDomain } = require('../lib/env');
 const logger = require('../lib/logger');
 const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
@@ -143,6 +144,9 @@ router.post('/:id/domains', authMiddleware, async (req, res) => {
         if (!data.domain)
             throw new Error('Missing parameter');
 
+        if (data.domain.endsWith(getAppDomain()))
+            throw new Error(`You can only have one ${getAppDomain()} domain. If you'd like a different one, update the "Ethernal Domain" field, in the "Settings" panel.`)
+
         const explorer = await db.getExplorerById(data.user.id, req.params.id);
         if (!explorer)
             throw new Error('Could not find explorer.');
@@ -266,11 +270,11 @@ router.get('/search', async (req, res) => {
 
         let explorer;
 
-        if (data.domain == `app.${process.env.APP_DOMAIN}`)
+        if (data.domain == `app.${getAppDomain()}`)
             return res.sendStatus(200);
 
-        if (data.domain.endsWith(process.env.APP_DOMAIN)) {
-            const slug = data.domain.split(`.${process.env.APP_DOMAIN}`)[0];
+        if (data.domain.endsWith(getAppDomain())) {
+            const slug = data.domain.split(`.${getAppDomain()}`)[0];
             explorer = await db.getPublicExplorerParamsBySlug(slug);
         }
 

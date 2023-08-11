@@ -5,7 +5,7 @@
         <v-btn style="width: inherit; height: inherit;" class="mr-2" @click.stop="loadDnsStatus()" icon><v-icon small :color="loading ? 'grey' : 'primary'">mdi-refresh</v-icon></v-btn>
         <v-list-item-content clas="my-0">
             <v-list-item-subtitle>
-                <a :href="`https://${domain.domain}`" target="_blank">{{  domain.domain }}</a>&nbsp;|&nbsp;
+                <a :href="`//${domain.domain}`" target="_blank">{{  domain.domain }}</a>&nbsp;|&nbsp;
                 <span v-if="loading && !deleting">Fetching DNS status...</span>
                 <template v-else-if="dnsStatus.status_message">
                     <v-icon small :color="dnsStatus.status == 'ACTIVE_SSL' ? 'success' : 'error'">{{ dnsStatus.status == 'ACTIVE_SSL' ? 'mdi-check' : 'mdi-close' }}</v-icon>
