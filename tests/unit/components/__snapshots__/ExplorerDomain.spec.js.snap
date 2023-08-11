@@ -4,7 +4,7 @@ exports[`ExplorerDomain.vue Should display DNS status 1`] = `
 <div tabindex="-1" class="pl-0 v-list-item theme--light">
   <explorer-domain-dns-info-modal-stub></explorer-domain-dns-info-modal-stub> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default" style="width: inherit; height: inherit;"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light error--text" style="font-size: 16px;"></i></span></button> <button type="button" class="mr-2 v-btn v-btn--icon v-btn--round theme--light v-size--default" style="width: inherit; height: inherit;"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-refresh theme--light primary--text" style="font-size: 16px;"></i></span></button>
   <div clas="my-0" class="v-list-item__content">
-    <div class="v-list-item__subtitle"><a href="https://ethernal.com" target="_blank">ethernal.com</a>&nbsp;|&nbsp;
+    <div class="v-list-item__subtitle"><a href="//ethernal.com" target="_blank">ethernal.com</a>&nbsp;|&nbsp;
       <i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text" style="font-size: 16px;"></i> <a style="text-decoration: underline;">
         ok
       </a>
@@ -17,7 +17,7 @@ exports[`ExplorerDomain.vue Should display N/A message 1`] = `
 <div tabindex="-1" class="pl-0 v-list-item theme--light">
   <explorer-domain-dns-info-modal-stub></explorer-domain-dns-info-modal-stub> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default" style="width: inherit; height: inherit;"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light error--text" style="font-size: 16px;"></i></span></button> <button type="button" class="mr-2 v-btn v-btn--icon v-btn--round theme--light v-size--default" style="width: inherit; height: inherit;"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-refresh theme--light primary--text" style="font-size: 16px;"></i></span></button>
   <div clas="my-0" class="v-list-item__content">
-    <div class="v-list-item__subtitle"><a href="https://ethernal.com" target="_blank">ethernal.com</a>&nbsp;|&nbsp;
+    <div class="v-list-item__subtitle"><a href="//ethernal.com" target="_blank">ethernal.com</a>&nbsp;|&nbsp;
       <span>DNS status not available yet.</span>
     </div>
   </div>

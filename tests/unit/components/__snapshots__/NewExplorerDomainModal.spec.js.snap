@@ -27,7 +27,7 @@ exports[`NewExplorerDomainModal.vue Should display dns setup info 1`] = `
                 </div>
               </div>
               <div class="mb-1">Log in to the account you have with your DNS provider, and add the following record:</div>
-              <div class="mb-1 pa-2 black white--text font-weight-medium" style="border-radius: 5px;">explorer.protocol.com A 75.2.60.5</div>
+              <div class="mb-1 pa-2 black white--text font-weight-medium" style="border-radius: 5px;">explorer.protocol.com A 37.16.1.34</div>
               <div class="v-card__actions">
                 <div class="spacer"></div> <button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary" tyoe="submit"><span class="v-btn__content">Save</span></button>
               </div>

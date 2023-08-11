@@ -48,6 +48,9 @@ const updateExplorerSubscription = async (stripeSubscription) => {
     const priceId = stripeSubscription.items.data[0].price.id;
     const stripePlan = await models.StripePlan.findOne({ where: { stripePriceId: priceId }});
 
+    if (!stripePlan)
+        return 'Cannot find plan';
+
     if (explorer.stripeSubscription) {
         if (explorer.stripeSubscription.isPendingCancelation && stripeSubscription.cancel_at_period_end == false)
             await db.revertExplorerSubscriptionCancelation(user.id, explorerId);

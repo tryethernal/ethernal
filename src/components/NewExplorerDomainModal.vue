@@ -20,7 +20,7 @@
                         label="Domain Alias"></v-text-field>
                     <template v-if="domainOrigin">
                         <div class="mb-1">Log in to the account you have with your DNS provider, and add the following record:</div>
-                        <div style="border-radius: 5px;" class="mb-1 pa-2 black white--text font-weight-medium">{{ domainOrigin }} A 75.2.60.5</div>
+                        <div style="border-radius: 5px;" class="mb-1 pa-2 black white--text font-weight-medium">{{ domainOrigin }} A 37.16.1.34</div>
                     </template>
                     <v-card-actions>
                         <v-spacer></v-spacer>
