@@ -249,10 +249,10 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Release backend
-        run: flyctl deploy -i registry.fly.io/ethernal:${{ github.sha }} -a ethernal
+        run: flyctl deploy -c fly.toml -i registry.fly.io/ethernal:${{ github.sha }}
 
       - name: Release PM2 server
-        run: flyctl machine update registry.fly.io/ethernal-pm2:${{ github.sha }} -a ethernal-pm2
+        run: flyctl deploy -c fly.pm2.toml registry.fly.io/ethernal-pm2:${{ github.sha }}
 
       - name: Create New Relic deployment marker
         uses: newrelic/deployment-marker-action@v1
