@@ -121,7 +121,7 @@ const start = (slug, workspace, apiToken) => {
             const options = {
                 name: slug,
                 script: 'ethernal',
-                args: `listen -s -w ${workspace}`,
+                args: `listen -s -w "${workspace}"`,
                 interpreter: 'none',
                 log_type: 'json',
                 env: {
