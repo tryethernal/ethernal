@@ -252,7 +252,7 @@ jobs:
         run: flyctl deploy -c fly.toml -i registry.fly.io/ethernal:${{ github.sha }}
 
       - name: Release PM2 server
-        run: flyctl deploy -c fly.pm2.toml registry.fly.io/ethernal-pm2:${{ github.sha }}
+        run: flyctl deploy -c fly.pm2.toml -i registry.fly.io/ethernal-pm2:${{ github.sha }}
 
       - name: Create New Relic deployment marker
         uses: newrelic/deployment-marker-action@v1
