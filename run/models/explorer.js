@@ -61,19 +61,11 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    static findByDomain(domain) {
-        const where = isSubscriptionCheckEnabled() ? null : { domain };
-
-        return Explorer.findOne(sanitize({
-            where,
+    static async findByDomain(domain) {
+        let explorer;
+        explorer = await Explorer.findOne({
+            where: { domain: domain },
             include: [
-                {
-                    model: sequelize.models.ExplorerDomain,
-                    as: 'domains',
-                    where: { domain },
-                    attributes: ['domain'],
-                    required: isSubscriptionCheckEnabled()
-                },
                 {
                     model: sequelize.models.StripeSubscription,
                     as: 'stripeSubscription',
@@ -97,7 +89,45 @@ module.exports = (sequelize, DataTypes) => {
                     as: 'workspace'
                 }
             ]
-        }));
+        });
+
+        if (!explorer)
+            explorer = await Explorer.findOne({
+                include: [
+                    {
+                        model: sequelize.models.ExplorerDomain,
+                        as: 'domains',
+                        where: { domain },
+                        attributes: ['domain'],
+                        required: true
+                    },
+                    {
+                        model: sequelize.models.StripeSubscription,
+                        as: 'stripeSubscription',
+                        include: {
+                            model: sequelize.models.StripePlan,
+                            as: 'stripePlan',
+                            where: {
+                                'capabilities.customDomain': true
+                            },
+                            required: isSubscriptionCheckEnabled()
+                        }
+                    },
+                    {
+                        model: sequelize.models.User,
+                        attributes: ['firebaseUserId'],
+                        as: 'admin'
+                    },
+                    {
+                        model: sequelize.models.Workspace,
+                        attributes: ['name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
+                        as: 'workspace'
+                    }
+                ]
+            });
+        console.log('ok')
+        console.log(explorer);
+        return explorer;
     }
 
     async safeCreateDomain(domain) {
@@ -112,7 +142,7 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         if (existingDomain)
-            throw new Error('This domain is already being used.');
+            throw new Error('This domain is already in use.');
 
         return this.createDomain({ domain });
     }

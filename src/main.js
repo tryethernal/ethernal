@@ -29,4 +29,4 @@ axios.get(`${process.env.VUE_APP_API_ROOT}/api/explorers/search?domain=${window.
             render: h => h(App)
         }).$mount('#app');
     })
-    .catch(() => document.location.href = `https://app.${process.env.VUE_APP_MAIN_DOMAIN}`);
+    .catch(() => document.location.href = `//app.${process.env.VUE_APP_MAIN_DOMAIN}`);
