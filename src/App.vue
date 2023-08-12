@@ -105,14 +105,14 @@
                 <template v-if="isUserAdmin">
                     <v-divider v-if="isUserAdmin" class="my-4"></v-divider>
 
-                    <!-- <v-list-item link :to="'/explorers'">
+                    <v-list-item link :to="'/explorers'">
                         <v-list-item-icon>
                             <v-icon>mdi-earth</v-icon>
                         </v-list-item-icon>
                         <v-list-item-content>
                             <v-list-item-title>Public Explorers</v-list-item-title>
                         </v-list-item-content>
-                    </v-list-item> -->
+                    </v-list-item>
 
                     <v-list-item link :to="'/settings?tab=workspace'">
                         <v-list-item-icon>
