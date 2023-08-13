@@ -115,6 +115,10 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    disableTrials() {
+        return this.update({ canTrial: false });
+    }
+
     async safeCreateWorkspace(data) {
         const existingWorkspace = await this.getWorkspaces({
             where: {
@@ -173,6 +177,7 @@ module.exports = (sequelize, DataTypes) => {
     explorerSubscriptionId: DataTypes.STRING,
     passwordHash: DataTypes.STRING,
     passwordSalt: DataTypes.STRING,
+    canTrial: DataTypes.BOOLEAN,
     isPremium: {
         type: DataTypes.VIRTUAL,
         get() {

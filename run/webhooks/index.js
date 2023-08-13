@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const { isStripeEnabled } = require('../lib/flags');
 
-if (process.env.STRIPE_WEBHOOK_SECRET && process.env.STRIPE_SECRET_KEY) {
+if (isStripeEnabled()) {
     const stripe = require('./stripe');
     router.use('/stripe', stripe);
 }

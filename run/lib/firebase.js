@@ -15,6 +15,17 @@ const StripeSubscription = models.StripeSubscription;
 const StripePlan = models.StripePlan;
 const ExplorerDomain = models.ExplorerDomain;
 
+const disableUserTrial = async (userId) => {
+    if (!userId) throw new Error('Missing parameter');
+
+    const user = await User.findByPk(userId);
+
+    if (!user)
+        throw new Error('Cannot find user');
+
+    return user.disableTrials();
+};
+
 const getExplorerDomainById = async (userId, explorerDomainId) => {
     if (!userId || !explorerDomainId) throw new Error('Missing parameter');
 
@@ -159,7 +170,7 @@ const revertExplorerSubscriptionCancelation = async (userId, explorerId) => {
     return explorer.safeRevertSubscriptionCancelation();
 };
 
-const updateExplorerSubscription = async (userId, explorerId, stripePlanId, cycleEndsAt) => {
+const updateExplorerSubscription = async (userId, explorerId, stripePlanId, stripeSubscription) => {
     if (!userId || !explorerId || !stripePlanId) throw new Error('Missing parameter');
 
     const explorer = await Explorer.findOne({
@@ -172,10 +183,25 @@ const updateExplorerSubscription = async (userId, explorerId, stripePlanId, cycl
     if (!explorer)
         throw new Error(`Can't find explorer`);
 
-    return explorer.safeUpdateSubscription(stripePlanId, cycleEndsAt);
+    let cycleEndsAt = new Date(0);
+    let status = 'active';
+
+    if (stripeSubscription) {
+        const customer = stripeSubscription.customer;
+        cycleEndsAt = new Date(stripeSubscription.current_period_end * 1000);
+
+        if (stripeSubscription.status == 'trialing' && !customer.default_source && !customer.invoice_settings.default_payment_method)
+            status = stripeSubscription.default_payment_method ? 'trial_with_card' : 'trial';
+        else if (stripeSubscription.status == 'trialing' && customer.default_source || customer.invoice_settings.default_payment_method)
+            status = 'trial_with_card';
+        else
+            status = stripeSubscription.status;
+    }
+
+    return explorer.safeUpdateSubscription(stripePlanId, cycleEndsAt, status);
 };
 
-const createExplorerSubscription = async (userId, explorerId, stripePlanId, stripeId, cycleEndsAt) => {
+const createExplorerSubscription = async (userId, explorerId, stripePlanId, stripeSubscription) => {
     if (!userId || !explorerId || !stripePlanId) throw new Error('Missing parameter');
 
     const explorer = await Explorer.findOne({
@@ -188,7 +214,24 @@ const createExplorerSubscription = async (userId, explorerId, stripePlanId, stri
     if (!explorer)
         throw new Error(`Can't find explorer`);
 
-    return explorer.safeCreateSubscription(stripePlanId, stripeId, cycleEndsAt);
+    let cycleEndsAt = new Date(0);
+    let status = 'active';
+    let stripeId;
+
+    if (stripeSubscription) {
+        const customer = stripeSubscription.customer;
+        cycleEndsAt = new Date(stripeSubscription.current_period_end * 1000);
+        stripeId = stripeSubscription.id;
+
+        if (stripeSubscription.status == 'trialing' && !customer.default_source && !customer.invoice_settings.default_payment_method)
+            status = stripeSubscription.default_payment_method ? 'trial_with_card' : 'trial';
+        else if (stripeSubscription.status == 'trialing' && customer.default_source || customer.invoice_settings.default_payment_method)
+            status = 'trial_with_card';
+        else
+            status = stripeSubscription.status;
+    }
+
+    return explorer.safeCreateSubscription(stripePlanId, stripeId, cycleEndsAt, status);
 };
 
 const getExplorerPlans = () => {
@@ -316,7 +359,7 @@ const getUserExplorers = async (userId, page = 1, itemsPerPage = 10, order = 'DE
             {
                 model: StripeSubscription,
                 as: 'stripeSubscription',
-                attributes: ['status', 'isActive', 'isPendingCancelation']
+                attributes: ['status', 'isActive', 'isPendingCancelation', 'isTrialing', 'isTrialingWithCard']
             }
         ]
     });
@@ -1449,5 +1492,6 @@ module.exports = {
     createExplorerDomain: createExplorerDomain,
     deleteExplorerDomain: deleteExplorerDomain,
     getExplorerDomainById: getExplorerDomainById,
+    disableUserTrial: disableUserTrial,
     Workspace: Workspace
 };

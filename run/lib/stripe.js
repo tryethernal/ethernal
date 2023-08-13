@@ -25,7 +25,7 @@ const deleteExplorerSubscription = async (stripeSubscription) => {
 }
 
 const updateExplorerSubscription = async (stripeSubscription) => {
-    if (stripeSubscription.status != 'active')
+    if (['active', 'trialing'].indexOf(stripeSubscription.status) == -1)
         return 'Inactive subscription';
 
     const explorerId = parseInt(stripeSubscription.metadata.explorerId);
@@ -50,17 +50,19 @@ const updateExplorerSubscription = async (stripeSubscription) => {
 
     if (!stripePlan)
         return 'Cannot find plan';
+    
+    const stripeCustomer = await stripe.customers.retrieve(stripeSubscription.customer);
 
     if (explorer.stripeSubscription) {
         if (explorer.stripeSubscription.isPendingCancelation && stripeSubscription.cancel_at_period_end == false)
             await db.revertExplorerSubscriptionCancelation(user.id, explorerId);
-        else {
-            // This is where we should check if the subscription is still active on Stripe, and cancel the subscription if not
-            if (stripeSubscription.status == 'active')
-                await db.updateExplorerSubscription(user.id, explorerId, stripePlan.id, new Date(stripeSubscription.current_period_end * 1000));
-        }
-    } else
-        await db.createExplorerSubscription(user.id, explorerId, stripePlan.id, stripeSubscription.id, new Date(stripeSubscription.current_period_end * 1000));
+        else
+            await db.updateExplorerSubscription(user.id, explorerId, stripePlan.id, { ...stripeSubscription, customer: stripeCustomer });
+    } else {
+        await db.createExplorerSubscription(user.id, explorerId, stripePlan.id, { ...stripeSubscription, customer: stripeCustomer });
+        if (stripeSubscription.status == 'trialing')
+            await db.disableUserTrial(user.id);
+    }
 }
 
 const updatePlan = async (stripeSubscription) => {

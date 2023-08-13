@@ -183,7 +183,7 @@ module.exports = (sequelize, DataTypes) => {
         get() {
             if (this.tokenBalanceChanges) {
                 return this.tokenBalanceChanges.reduce((r, a) => {
-                    r[a.token] = r[a.token] || [];
+                    r[a.token] = r[a.token] || [];
                     r[a.token].push(a);
                     return r;
                 }, Object.create(null));

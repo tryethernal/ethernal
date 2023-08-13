@@ -42,6 +42,7 @@ export default {
         currentPlanSlug: null,
         errorMessage: null,
         pendingCancelation: null,
+        isTrialing: null,
         planUpdated: false
     }),
     methods: {
@@ -79,15 +80,24 @@ export default {
                 }
         },
         updatePlan(slug) {
-            if (this.isLessExpensiveThanCurrent(slug)) {
+            if (this.isTrialing) {
+                const confirmationMessage = `If you update your plan, you will be charged the amount of the new one at the end of the trial period.
+
+Are you sure you want to change plan?`;
+                if (!confirm(confirmationMessage))
+                    return this.updatingSlug = null;
+            }
+            else if (this.isLessExpensiveThanCurrent(slug)) {
                 const confirmationMessage = `This plan is cheaper than the current one. Your account will be credited with the prorated remainder for this month. These credits will automatically be applied to future invoices.
-                Are you sure you want to change plan?`;
+
+Are you sure you want to change plan?`;
                 if (!confirm(confirmationMessage))
                     return this.updatingSlug = null;
             }
             else {
                 const confirmationMessage = `You will now be charged for the difference between your current plan and this one.
-                Are you sure you want to change plan?`;
+
+Are you sure you want to change plan?`;
                 if (!confirm(confirmationMessage))
                     return this.updatingSlug = null;
             }
@@ -106,15 +116,20 @@ export default {
                 .finally(() => this.updatingSlug = null);
         },
         cancelPlan() {
-            const confirmationMessage = `
-                If you cancel now, your explorer will be available until the end of the current billing period (06-08-2023).
+            const confirmationMessage = this.isTrialing ?
+                `This will cancel your trial & you won't be charged. Your explorer will be active until the end of the trial period.
+
+Are you sure you want to cancel?` :
+
+                `If you cancel now, your explorer will be available until the end of the current billing period (06-08-2023).
                 After that:
                 - Blocks will stop syncing automatically
                 - The explorer won't be accessible publicly anymore
                 - You will still have access to your data privately in your workspace.
                 If you want to resume the explorer, you'll just need to resubscribe to a plan.
-                Are you sure you want to cancel?
-            `;
+
+Are you sure you want to cancel?`;
+
             if (!confirm(confirmationMessage)) return this.updatingSlug = null;
 
             this.server.cancelExplorerSubscription(this.explorerId)
@@ -133,6 +148,7 @@ export default {
             this.explorerId = options.explorerId;
             this.currentPlanSlug = options.currentPlanSlug;
             this.pendingCancelation = options.pendingCancelation;
+            this.isTrialing = options.isTrialing;
             this.server.getExplorerPlans()
                 .then(({ data }) => this.plans = data);
             return new Promise((resolve, reject) => {

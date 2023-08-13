@@ -952,11 +952,8 @@ export const serverPlugin = {
                 return axios.post(resource);
             },
 
-            createStripePortalSession() {
-                const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId
-                };
-
+            createStripePortalSession(returnUrl) {
+                const data = { returnUrl };
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/createPortalSession`;
                 return axios.post(resource, { data });
             },
