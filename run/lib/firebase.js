@@ -108,7 +108,7 @@ const createExplorerFromWorkspace = async (userId, workspaceId) => {
 
     if (!workspace)
         throw new Error('Could not find workspace');
-    
+
     const explorer = await workspace.safeCreateExplorer();
 
     return explorer ? explorer.toJSON() : null;

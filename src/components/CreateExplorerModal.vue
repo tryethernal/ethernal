@@ -130,8 +130,8 @@ export default {
                 });
         },
         useStripePayment() {
-            const successUrl = `http://${this.mainDomain}/explorers/${this.explorer.id}?status=success`;
-            const cancelUrl = `http://${this.mainDomain}/explorers/${this.explorer.id}`;
+            const successUrl = `http://app.${this.mainDomain}/explorers/${this.explorer.id}?status=success`;
+            const cancelUrl = `http://app.${this.mainDomain}/explorers/${this.explorer.id}`;
             this.server.createStripeExplorerCheckoutSession(this.explorer.id, this.selectedPlanSlug, successUrl, cancelUrl)
                 .then(({ data }) => window.location.assign(data.url))
                 .catch(error => {

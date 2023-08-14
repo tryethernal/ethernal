@@ -70,8 +70,8 @@ export default {
                     .finally(() => this.updatingSlug = null);
             }
             else {
-                const successUrl = `http://${this.mainDomain}/explorers/${this.explorerId}?status=success`;
-                const cancelUrl = `http://${this.mainDomain}/explorers/${this.explorerId}`;
+                const successUrl = `http://app.${this.mainDomain}/explorers/${this.explorerId}?status=success`;
+                const cancelUrl = `http://app.${this.mainDomain}/explorers/${this.explorerId}`;
                 this.server.createStripeExplorerCheckoutSession(this.explorerId, slug, successUrl, cancelUrl)
                     .then(({ data }) => window.location.assign(data.url))
                     .catch(error => {

@@ -1,5 +1,41 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Explorer.vue Should display inactive subscription message 1`] = `
+<div class="container container--fluid">
+  <!---->
+  <div role="alert" class="v-alert v-sheet theme--dark v-alert--text error--text">
+    <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
+      <div class="v-alert__content">This explorer is not active. To activate it, start a subscription.</div>
+    </div>
+  </div>
+  <h2></h2>
+  <div class="row">
+    <div class="col col-6">
+      <h4>Settings</h4>
+      <explorer-settings-stub workspaces="[object Object]" explorer="[object Object]"></explorer-settings-stub>
+    </div>
+    <div class="col col-6">
+      <h4>Billing</h4>
+      <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
+      <h4 class="mt-2">Domain Aliases</h4>
+      <explorer-domains-list-stub disabled="true" explorer="[object Object]"></explorer-domains-list-stub>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h4>Branding</h4>
+      <explorer-branding-stub disabled="true" explorer="[object Object]"></explorer-branding-stub>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-6">
+      <h4 class="error--text">Danger Zone</h4>
+      <explorer-danger-zone-stub explorer="[object Object]"></explorer-danger-zone-stub>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Explorer.vue Should display loading 1`] = `
 <div class="container container--fluid">
   <div class="v-card v-sheet v-sheet--outlined theme--light">
@@ -17,6 +53,45 @@ exports[`Explorer.vue Should display loading 1`] = `
 
 exports[`Explorer.vue Should display the explorer page 1`] = `
 <div class="container container--fluid">
+  <!---->
+  <!---->
+  <h2></h2>
+  <div class="row">
+    <div class="col col-6">
+      <h4>Settings</h4>
+      <explorer-settings-stub workspaces="[object Object]" explorer="[object Object]"></explorer-settings-stub>
+    </div>
+    <div class="col col-6">
+      <h4>Billing</h4>
+      <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
+      <h4 class="mt-2">Domain Aliases</h4>
+      <explorer-domains-list-stub disabled="true" explorer="[object Object]"></explorer-domains-list-stub>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h4>Branding</h4>
+      <explorer-branding-stub disabled="true" explorer="[object Object]"></explorer-branding-stub>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-6">
+      <h4 class="error--text">Danger Zone</h4>
+      <explorer-danger-zone-stub explorer="[object Object]"></explorer-danger-zone-stub>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Explorer.vue Should display trial message 1`] = `
+<div class="container container--fluid">
+  <div role="alert" class="v-alert v-sheet theme--dark v-alert--text warning--text">
+    <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-exclamation theme--dark warning--text"></i>
+      <div class="v-alert__content">
+        This explorer is on a free trial plan. To keep it running once it's over, add a payment method.
+      </div>
+    </div>
+  </div>
   <!---->
   <h2></h2>
   <div class="row">
