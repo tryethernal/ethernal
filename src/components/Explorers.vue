@@ -33,7 +33,7 @@
             </template>
             <template v-slot:item.domain="{ item }">
                 <template v-if="item.domains.length > 0">
-                    <a :href="`//${ item.domains[0].domain }`" target="_blank">https://{{ item.domains[0].domain }}</a>
+                    <a :href="`http://${ item.domains[0].domain }`" target="_blank">{{ item.domains[0].domain }}</a>
                     <v-tooltip top v-if="item.domains.length > 1">
                         <template v-slot:activator="{ on, attrs }">
                             <v-chip v-bind="attrs" v-on="on" class="ml-2" x-small >+ {{ item.domains.length - 1 }}</v-chip>
@@ -44,7 +44,7 @@
                     </v-tooltip>
                 </template>
                 <template v-else>
-                    <a :href="`//${ item.slug }.${ mainDomain }`" target="_blank">https://{{ item.slug }}.{{ mainDomain }}</a>
+                    <a :href="`http://${ item.slug }.${ mainDomain }`" target="_blank">{{ item.slug }}.{{ mainDomain }}</a>
                 </template>
             </template>
             <template v-slot:item.rpcServer="{ item }">

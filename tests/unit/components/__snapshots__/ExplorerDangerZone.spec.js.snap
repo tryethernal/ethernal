@@ -23,9 +23,7 @@ exports[`ExplorerDangerZone.vue Should have an active button if active subscript
   <div class="elevation-0 v-card v-sheet theme--light">
     <!---->
     <div class="v-card__text font-weight-medium error--text">
-      <div class="row">
-        You can't delete an explorer that has an active subscription. Please cancel it first.
-      </div>
+      <!---->
       <div class="row mt-2 pb-1">
         <div class="spacer"></div> <button type="button" class="mt-2 v-btn v-btn--has-bg theme--light v-size--default error"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light"></i>Delete Explorer</span></button>
       </div>

@@ -145,6 +145,7 @@ export default new Vuex.Store({
     getters: {
         mainDomain: () => process.env.VUE_APP_MAIN_DOMAIN,
         isBillingEnabled: () => !!process.env.VUE_APP_ENABLE_BILLING,
+        apiRoot: () => process.env.VUE_APP_API_ROOT,
         publicExplorerMode: state => !!state.publicExplorer,
         rpcServer: state => state.publicExplorer ? state.publicExplorer.rpcServer : state.currentWorkspace.rpcServer,
         accounts: state => state.accounts,
