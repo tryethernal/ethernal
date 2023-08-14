@@ -85,6 +85,7 @@ export default new Vuex.Store({
             const rpcListenerWorker = new Worker('../workers/blockSyncer.worker.js', { type: 'module' });
             rpcListenerWorker.onmessage = () => commit('UPDATE_BROWSER_SYNC_STATUS', false);
             rpcListenerWorker.postMessage({
+                apiRoot: getters.apiRoot,
                 rpcServer: getters.currentWorkspace.rpcServer,
                 apiToken: getters.user.apiToken,
                 workspace: getters.currentWorkspace.name

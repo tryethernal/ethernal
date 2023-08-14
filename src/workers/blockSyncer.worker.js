@@ -1,5 +1,5 @@
 /* eslint-disable */
-// For some reason the linter always things there are no new lines at the end of this file
+// For some reason the linter always thinks there are no new lines at the end of this file
 self.window = self;
 const { getProvider } = require('@/lib/rpc');
 const Api = require('@/workers/api');
@@ -7,9 +7,9 @@ const Api = require('@/workers/api');
 const onError = console.log;
 
 addEventListener('message', event => {
-    const { rpcServer, apiToken, workspace } = event.data;
+    const { rpcServer, apiToken, workspace, apiRoot } = event.data;
 
-    if (!rpcServer || !apiToken || !workspace)
+    if (!rpcServer || !apiToken || !workspace || !apiRoot)
         console.log(`[workers.blockSyncer] Missing parameters`);
 
     const provider = getProvider(rpcServer);
@@ -17,7 +17,7 @@ addEventListener('message', event => {
     if (!provider)
         return console.log(`[workers.blockSyncer] Couldn't setup rpc provider`);
 
-    const api = new Api(apiToken, process.env.VUE_APP_API_ROOT, workspace);
+    const api = new Api(apiToken, apiRoot, workspace);
 
     provider.on('block', async (blockNumber, error) => {
        if (error && error.reason) {

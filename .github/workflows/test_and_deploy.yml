@@ -77,8 +77,6 @@ jobs:
       - name: Run tests
         run: npm run test:unit
         env:
-          VUE_APP_API_ROOT: http://localhost:8081
-          VUE_APP_ENABLE_BILLING: true
           TZ: CET
 
   create_release:
