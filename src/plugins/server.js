@@ -355,91 +355,91 @@ export const serverPlugin = {
 
         Vue.prototype.server = {
             getExplorerDomainStatus(domainId) {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/domains/${domainId}`;
+                const resource = `${store.getters.apiRoot}/api/domains/${domainId}`;
                 return axios.get(resource);
             },
 
             addExplorerDomain(explorerId, domain) {
                 const data = { domain };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/domains`;
+                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/domains`;
                 return axios.post(resource, { data });
             },
 
             removeExplorerDomain(domainId) {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/domains/${domainId}`;
+                const resource = `${store.getters.apiRoot}/api/domains/${domainId}`;
                 return axios.delete(resource);
             },
 
             deleteExplorer(explorerId) {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}`;
+                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}`;
                 return axios.delete(resource);
             },
 
             startCryptoSubscription(stripePlanSlug, explorerId) {
                 const data = { stripePlanSlug };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/cryptoSubscription`;
+                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/cryptoSubscription`;
                 return axios.post(resource, { data });
             },
 
             createExplorer(workspaceId) {
                 const data = { workspaceId };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers`;
+                const resource = `${store.getters.apiRoot}/api/explorers`;
                 return axios.post(resource, { data });
             },
 
             cancelExplorerSubscription(explorerId) {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/subscription`;
+                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/subscription`;
                 return axios.delete(resource);
             },
 
             updateExplorerSubscription(explorerId, newStripePlanSlug) {
                 const data = { newStripePlanSlug };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/subscription`;
+                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/subscription`;
                 return axios.put(resource, { data });
             },
 
             getExplorerPlans() {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/plans`;
+                const resource = `${store.getters.apiRoot}/api/explorers/plans`;
                 return axios.get(resource);
             },
 
             getCompilerVersions() {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/external/compilers`;
+                const resource = `${store.getters.apiRoot}/api/external/compilers`;
                 return axios.get(resource);
             },
 
             updateExplorerBranding(explorerId, data) {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/branding`;
+                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/branding`;
                 return axios.post(resource, { data }, { cache: { ttl: 0 }});
             },
 
             getExplorerMode(domain) {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/search?domain=${domain}`;
+                const resource = `${store.getters.apiRoot}/api/explorers/search?domain=${domain}`;
                 return axios.get(resource, { cache: { ttl: 100 }});
             },
 
             updateExplorerSettings(explorerId, data) {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${explorerId}/settings`;
+                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/settings`;
                 return axios.post(resource, { data }, { cache: { ttl: 0 }});
             },
 
             searchIcon(query) {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/search/icons?icon=${query}`;
+                const resource = `${store.getters.apiRoot}/api/search/icons?icon=${query}`;
                 return axios.get(resource, { cache: { ttl: 100 }});
             },
 
             searchFont(query) {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/search/fonts?font=${query}`;
+                const resource = `${store.getters.apiRoot}/api/search/fonts?font=${query}`;
                 return axios.get(resource, { cache: { ttl: 100 }});
             },
 
             getExplorers(params) {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers`;
+                const resource = `${store.getters.apiRoot}/api/explorers`;
                 return axios.get(resource, { params });
             },
 
             getExplorer(slug) {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/${slug}`;
+                const resource = `${store.getters.apiRoot}/api/explorers/${slug}`;
                 return axios.get(resource);
             },
 
@@ -448,27 +448,27 @@ export const serverPlugin = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/status`;
+                const resource = `${store.getters.apiRoot}/api/status`;
                 return axios.get(resource, { params });
             },
 
             resetPassword(token, password) {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/resetPassword`;
+                const resource = `${store.getters.apiRoot}/api/users/resetPassword`;
                 return axios.post(resource, { token, password });
             },
 
             sendResetPasswordEmail(email) {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/sendResetPasswordEmail`;
+                const resource = `${store.getters.apiRoot}/api/users/sendResetPasswordEmail`;
                 return axios.post(resource, { email });
             },
 
             signUp(email, password) {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/signup`;
+                const resource = `${store.getters.apiRoot}/api/users/signup`;
                 return axios.post(resource, { email, password });
             },
 
             signIn(email, password) {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/signin`;
+                const resource = `${store.getters.apiRoot}/api/users/signin`;
                 return axios.post(resource, { email, password });
             },
 
@@ -478,7 +478,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     ...options
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/addresses/${address}/tokenTransfers`;
+                const resource = `${store.getters.apiRoot}/api/addresses/${address}/tokenTransfers`;
                 return axios.get(resource, { params });
             },
 
@@ -487,7 +487,7 @@ export const serverPlugin = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/addresses/${address}/stats`;
+                const resource = `${store.getters.apiRoot}/api/addresses/${address}/stats`;
                 return axios.get(resource, { params });
             },
 
@@ -497,7 +497,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     ...options
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${transactionHash}/tokenBalanceChanges`;
+                const resource = `${store.getters.apiRoot}/api/transactions/${transactionHash}/tokenBalanceChanges`;
                 return axios.get(resource, { params });
             },
 
@@ -507,7 +507,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     ...options
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${transactionHash}/tokenTransfers`;
+                const resource = `${store.getters.apiRoot}/api/transactions/${transactionHash}/tokenTransfers`;
                 return axios.get(resource, { params });
             },
 
@@ -517,7 +517,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     ...options
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/logs`;
+                const resource = `${store.getters.apiRoot}/api/contracts/${address}/logs`;
                 return axios.get(resource, { params });
             },
 
@@ -527,7 +527,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     watchedPaths: paths
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/watchedPaths`;
+                const resource = `${store.getters.apiRoot}/api/contracts/${address}/watchedPaths`;
                 return axios.post(resource, { data });
             },
 
@@ -536,7 +536,7 @@ export const serverPlugin = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/processable`;
+                const resource = `${store.getters.apiRoot}/api/contracts/processable`;
                 return axios.get(resource, { params });
             },
 
@@ -545,7 +545,7 @@ export const serverPlugin = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/stats`;
+                const resource = `${store.getters.apiRoot}/api/contracts/${address}/stats`;
                 return axios.get(resource, { params });
             },
 
@@ -555,7 +555,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     ...options
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/transfers`;
+                const resource = `${store.getters.apiRoot}/api/contracts/${address}/transfers`;
                 return axios.get(resource, { params });
             },
 
@@ -565,7 +565,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     ...options
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/holders`;
+                const resource = `${store.getters.apiRoot}/api/contracts/${address}/holders`;
                 return axios.get(resource, { params });
             },
 
@@ -576,7 +576,7 @@ export const serverPlugin = {
                         firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                         workspace: store.getters.currentWorkspace.name,
                     };
-                    const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}`;
+                    const resource = `${store.getters.apiRoot}/api/erc721Tokens/${contractAddress}`;
 
                     const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
                     const promises = [];
@@ -599,7 +599,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     properties: properties
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${contractAddress}/tokenProperties`;
+                const resource = `${store.getters.apiRoot}/api/contracts/${contractAddress}/tokenProperties`;
                 return axios.post(resource, { data });
             },
 
@@ -608,7 +608,7 @@ export const serverPlugin = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}/${tokenId}/transfers`;
+                const resource = `${store.getters.apiRoot}/api/erc721Tokens/${contractAddress}/${tokenId}/transfers`;
                 return axios.get(resource, { params });
             },
 
@@ -617,7 +617,7 @@ export const serverPlugin = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}/${tokenId}/reload`;
+                const resource = `${store.getters.apiRoot}/api/erc721Tokens/${contractAddress}/${tokenId}/reload`;
                 return axios.post(resource, { data });
             },
 
@@ -635,7 +635,7 @@ export const serverPlugin = {
                         firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                         workspace: store.getters.currentWorkspace.name,
                     };
-                    const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Tokens/${contractAddress}/${tokenId}`;
+                    const resource = `${store.getters.apiRoot}/api/erc721Tokens/${contractAddress}/${tokenId}`;
                     return axios.get(resource, { params });
                 }
             },
@@ -664,7 +664,7 @@ export const serverPlugin = {
                     });
                 }
                 else {
-                    const resource = `${process.env.VUE_APP_API_ROOT}/api/erc721Collections/${contractAddress}/tokens`;
+                    const resource = `${store.getters.apiRoot}/api/erc721Collections/${contractAddress}/tokens`;
                     return axios.get(resource, { params });
                 }
             },
@@ -675,7 +675,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     email: email,
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/marketing/submitExplorerLead`;
+                const resource = `${store.getters.apiRoot}/api/marketing/submitExplorerLead`;
                 return axios.post(resource, { data });
             },
 
@@ -684,12 +684,12 @@ export const serverPlugin = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/marketing`;
+                const resource = `${store.getters.apiRoot}/api/marketing`;
                 return axios.get(resource, { params });
             },
 
             verifyContract(address, data) {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/verify`;
+                const resource = `${store.getters.apiRoot}/api/contracts/${address}/verify`;
                 return axios.post(resource, data);
             },
 
@@ -700,7 +700,7 @@ export const serverPlugin = {
                     from: from,
                     to: to
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/stats/wallets`;
+                const resource = `${store.getters.apiRoot}/api/stats/wallets`;
                 return axios.get(resource, { params });
             },
 
@@ -711,7 +711,7 @@ export const serverPlugin = {
                     from: from,
                     to: to
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/transferVolume`;
+                const resource = `${store.getters.apiRoot}/api/contracts/${address}/transferVolume`;
                 return axios.get(resource, { params });
             },
 
@@ -722,7 +722,7 @@ export const serverPlugin = {
                     from: from,
                     to: to
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/holderHistory`;
+                const resource = `${store.getters.apiRoot}/api/contracts/${address}/holderHistory`;
                 return axios.get(resource, { params });
             },
 
@@ -733,7 +733,7 @@ export const serverPlugin = {
                     from: from,
                     to: to
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/cumulativeSupply`;
+                const resource = `${store.getters.apiRoot}/api/contracts/${address}/cumulativeSupply`;
                 return axios.get(resource, { params });
             },
 
@@ -744,7 +744,7 @@ export const serverPlugin = {
                     from: from,
                     to: to
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/stats/transactions`;
+                const resource = `${store.getters.apiRoot}/api/stats/transactions`;
                 return axios.get(resource, { params });
             },
 
@@ -753,7 +753,7 @@ export const serverPlugin = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/stats/global`;
+                const resource = `${store.getters.apiRoot}/api/stats/global`;
                 return axios.get(resource, { params });
             },
 
@@ -763,7 +763,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     patterns: patterns
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/addresses/${address}/balances`;
+                const resource = `${store.getters.apiRoot}/api/addresses/${address}/balances`;
                 return axios.get(resource, { params });
             },
 
@@ -775,7 +775,7 @@ export const serverPlugin = {
                     query: query
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/search`;
+                const resource = `${store.getters.apiRoot}/api/search`;
                 return axios.get(resource, { params });
             },
 
@@ -785,7 +785,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     ...options
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/blocks`;
+                const resource = `${store.getters.apiRoot}/api/blocks`;
                 return axios.get(resource, { params, cache: { ttl: CACHE_TTL }});
             },
 
@@ -795,7 +795,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     withTransactions: withTransactions
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/blocks/${number}`;
+                const resource = `${store.getters.apiRoot}/api/blocks/${number}`;
                 return axios.get(resource, { params });
             },
 
@@ -805,7 +805,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     ...options
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions`;
+                const resource = `${store.getters.apiRoot}/api/transactions`;
                 return axios.get(resource, { params, cache: { ttl: store.getters.currentWorkspace.public ? CACHE_TTL : 0 }});
             },
 
@@ -814,7 +814,7 @@ export const serverPlugin = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${hash}`;
+                const resource = `${store.getters.apiRoot}/api/transactions/${hash}`;
                 return axios.get(resource, { params });
             },
 
@@ -824,7 +824,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     ...options
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts`;
+                const resource = `${store.getters.apiRoot}/api/contracts`;
                 return axios.get(resource, { params });
             },
 
@@ -833,7 +833,7 @@ export const serverPlugin = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address.toLowerCase()}`;
+                const resource = `${store.getters.apiRoot}/api/contracts/${address.toLowerCase()}`;
                 return axios.get(resource, { params, cache: { ttl: 5000 } });
             },
 
@@ -843,7 +843,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     ...options
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/addresses/${address}/transactions`;
+                const resource = `${store.getters.apiRoot}/api/addresses/${address}/transactions`;
                 return axios.get(resource, { params });
             },
 
@@ -853,7 +853,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name,
                     ...options
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/accounts`;
+                const resource = `${store.getters.apiRoot}/api/accounts`;
                 return axios.get(resource, { params });
             },
 
@@ -861,7 +861,7 @@ export const serverPlugin = {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/me`;
+                const resource = `${store.getters.apiRoot}/api/users/me`;
                 return axios.get(resource, { params });
             },
 
@@ -870,7 +870,7 @@ export const serverPlugin = {
                     workspace: workspace,
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/users/me/setCurrentWorkspace`;
+                const resource = `${store.getters.apiRoot}/api/users/me/setCurrentWorkspace`;
                 return axios.post(resource, { data });
             },
 
@@ -878,7 +878,7 @@ export const serverPlugin = {
                 const params = {
                     domain: domain
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/search`;
+                const resource = `${store.getters.apiRoot}/api/explorers/search`;
                 return axios.get(resource, { params });
             },
 
@@ -886,7 +886,7 @@ export const serverPlugin = {
                 const params = {
                     slug: slug
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/explorers/search`;
+                const resource = `${store.getters.apiRoot}/api/explorers/search`;
                 return axios.get(resource, { params });
             },
 
@@ -895,7 +895,7 @@ export const serverPlugin = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/processable`;
+                const resource = `${store.getters.apiRoot}/api/transactions/processable`;
                 return axios.get(resource, { params });
             },
 
@@ -904,7 +904,7 @@ export const serverPlugin = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/failedProcessable`;
+                const resource = `${store.getters.apiRoot}/api/transactions/failedProcessable`;
                 return axios.get(resource, { params });
             },
 
@@ -914,7 +914,7 @@ export const serverPlugin = {
                     workspaceData: workspaceData,
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId
                 };
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/workspaces`;
+                const resource = `${store.getters.apiRoot}/api/workspaces`;
                 return axios.post(resource, { data });
             },
 
@@ -923,7 +923,7 @@ export const serverPlugin = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/workspaces`;
+                const resource = `${store.getters.apiRoot}/api/workspaces`;
                 return axios.get(resource, { params });
             },
 
@@ -934,30 +934,27 @@ export const serverPlugin = {
                     balance: balance
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/accounts/${address}/syncBalance`;
+                const resource = `${store.getters.apiRoot}/api/accounts/${address}/syncBalance`;
                 return axios.post(resource, { data });
             },
 
-            createStripeExplorerCheckoutSession(explorerId, stripePlanSlug) {
+            createStripeExplorerCheckoutSession(explorerId, stripePlanSlug, successUrl, cancelUrl) {
                 const data = {
-                    explorerId, stripePlanSlug
+                    explorerId, stripePlanSlug, successUrl, cancelUrl
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/createExplorerCheckoutSession`;
+                const resource = `${store.getters.apiRoot}/api/stripe/createExplorerCheckoutSession`;
                 return axios.post(resource, { data });
             },
 
             createStripeUserCheckoutSession() {
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/createUserCheckoutSession`;
+                const resource = `${store.getters.apiRoot}/api/stripe/createUserCheckoutSession`;
                 return axios.post(resource);
             },
 
-            createStripePortalSession() {
-                const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId
-                };
-
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/createPortalSession`;
+            createStripePortalSession(returnUrl) {
+                const data = { returnUrl };
+                const resource = `${store.getters.apiRoot}/api/stripe/createPortalSession`;
                 return axios.post(resource, { data });
             },
 
@@ -968,7 +965,7 @@ export const serverPlugin = {
                     settings: settings
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/workspaces/settings`;
+                const resource = `${store.getters.apiRoot}/api/workspaces/settings`;
                 return axios.post(resource, { data });
             },
 
@@ -978,7 +975,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${contractAddress}`;
+                const resource = `${store.getters.apiRoot}/api/contracts/${contractAddress}`;
                 return axios.post(resource, { data });
             },
 
@@ -988,7 +985,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/marketing/productRoadToken`;
+                const resource = `${store.getters.apiRoot}/api/marketing/productRoadToken`;
                 return axios.get(resource, { params });
             },
 
@@ -999,7 +996,7 @@ export const serverPlugin = {
                     data: transactionData
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${hash}/storage`;
+                const resource = `${store.getters.apiRoot}/api/transactions/${hash}/storage`;
                 return axios.post(resource, { data });
             },
 
@@ -1010,7 +1007,7 @@ export const serverPlugin = {
                     transaction: transactionHash
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${transactionHash}/process`;
+                const resource = `${store.getters.apiRoot}/api/transactions/${transactionHash}/process`;
                 return axios.post(resource, { data });
             },
 
@@ -1020,7 +1017,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}/remove`;
+                const resource = `${store.getters.apiRoot}/api/contracts/${address}/remove`;
                 return axios.post(resource, { data });
             },
 
@@ -1030,7 +1027,7 @@ export const serverPlugin = {
                     workspace: store.getters.currentWorkspace.name
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/workspaces/reset`;
+                const resource = `${store.getters.apiRoot}/api/workspaces/reset`;
                 return axios.post(resource, { data });
             },
 
@@ -1044,7 +1041,7 @@ export const serverPlugin = {
                     watchedPaths: watchedPaths
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/contracts/${address}`;
+                const resource = `${store.getters.apiRoot}/api/contracts/${address}`;
                 return axios.post(resource, { data });
             },
 
@@ -1055,7 +1052,7 @@ export const serverPlugin = {
                     privateKey: privateKey
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/accounts/${account}/privateKey`;
+                const resource = `${store.getters.apiRoot}/api/accounts/${account}/privateKey`;
                 return axios.post(resource, { data });
             },
 
@@ -1066,7 +1063,7 @@ export const serverPlugin = {
                     error: error
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${transactionHash}/error`;
+                const resource = `${store.getters.apiRoot}/api/transactions/${transactionHash}/error`;
                 return axios.post(resource, { data });
             },
 
@@ -1078,7 +1075,7 @@ export const serverPlugin = {
                     changes: changes
                 };
 
-                const resource = `${process.env.VUE_APP_API_ROOT}/api/transactions/${transactionHash}/tokenBalanceChanges`;
+                const resource = `${store.getters.apiRoot}/api/transactions/${transactionHash}/tokenBalanceChanges`;
                 return axios.post(resource, { data });
             },
 

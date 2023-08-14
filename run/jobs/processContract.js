@@ -4,6 +4,7 @@ const { sanitize, withTimeout } = require('../lib/utils');
 const yasold = require('../lib/yasold');
 const db = require('../lib/firebase');
 const { ContractConnector } = require('../lib/rpc');
+const { getScannerKey } = require('../lib/env');
 const logger = require('../lib/logger');
 const { trigger } = require('../lib/pusher');
 
@@ -50,23 +51,23 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
 
 const fetchEtherscanData = async (address, chain) => {
     let scannerHost = 'etherscan.io';
-    let apiKey = process.env.ETHERSCAN_API_TOKEN;
+    let apiKey = getScannerKey('ETHERSCAN');
     switch (chain) {
         case 'arbitrum':
             scannerHost = 'arbiscan.io';
-            apiKey = process.env.ARBISCAN_API_TOKEN;
+            apiKey = getScannerKey('ARBISCAN');
             break;
         case 'bsc':
             scannerHost = 'bscscan.com';
-            apiKey = process.env.BSSCAN_API_TOKEN;
+            apiKey = getScannerKey('BSSCAN');
             break;
         case 'matic':
             scannerHost = 'polygonscan.com';
-            apiKey = process.env.POLYGONSCAN_API_TOKEN;
+            apiKey = getScannerKey('POLYGONSCAN');
             break;
         case 'avax':
             scannerHost = 'snowtrace.io';
-            apiKey = process.env.SNOWTRACE_API_TOKEN;
+            apiKey = getScannerKey('SNOWTRACE');
             break;
         default:
         break;

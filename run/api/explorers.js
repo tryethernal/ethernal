@@ -2,7 +2,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const express = require('express');
 const router = express.Router();
 const { isStripeEnabled, isSubscriptionCheckEnabled } = require('../lib/flags');
-const { getAppDomain } = require('../lib/env');
+const { getAppDomain, getDefaultPlanSlug } = require('../lib/env');
 const logger = require('../lib/logger');
 const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
@@ -27,8 +27,9 @@ router.put('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, 
         if (!stripePlan || !stripePlan.public)
             throw new Error(`Can't find plan.`);
 
+        let subscription;
         if (explorer.stripeSubscription.stripeId) {
-            const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
+            subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId, { expand: ['customer']});
             await stripe.subscriptions.update(subscription.id, {
                 cancel_at_period_end: false,
                 proration_behavior: 'always_invoice',
@@ -42,7 +43,7 @@ router.put('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, 
         if (explorer.stripeSubscription.isPendingCancelation)
             await db.revertExplorerSubscriptionCancelation(data.user.id, explorer.id);
         else
-            await db.updateExplorerSubscription(data.user.id, explorer.id, stripePlan.id);
+            await db.updateExplorerSubscription(data.user.id, explorer.id, stripePlan.id, subscription);
 
         res.sendStatus(200);
     } catch(error) {
@@ -217,11 +218,11 @@ router.post('/', authMiddleware, async (req, res) => {
             throw new Error('Could not create explorer.');
         
         if (!isStripeEnabled()) {
-            const stripePlan = await db.getStripePlan('self-hosted');
+            const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
             if (!stripePlan)
                 throw new Error(`Can't setup explorer. Make sure you've run npx sequelize-cli db:seed:all`);
 
-            await db.createExplorerSubscription(user.id, explorer.id, stripePlan.id, 'selfhosted', new Date());
+            await db.createExplorerSubscription(user.id, explorer.id, stripePlan.id);
         }
         else if (req.query.startSubscription) {
             if (!data.plan)

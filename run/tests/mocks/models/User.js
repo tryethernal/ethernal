@@ -12,7 +12,8 @@ const user = {
     getWorkspaceByName: jest.fn().mockResolvedValue({ id: 1, name: 'My Workspace' }),
     getWorkspaces: jest.fn().mockResolvedValue([workspace]),
     update: jest.fn(),
-    toJSON: jest.fn().mockResolvedValue({ id: 1, workspaces: [workspace] })
+    toJSON: jest.fn().mockResolvedValue({ id: 1, workspaces: [workspace] }),
+    findByPk: jest.fn()
 };
 
 const User = {

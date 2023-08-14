@@ -3,14 +3,16 @@
         <v-card class="elevation-0">
             <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
             <v-card-text class="font-weight-medium error--text">
-                <v-row v-if="activeSubscription">
-                    You can't delete an explorer that has an active subscription. Please cancel it first.
-                </v-row>
-                <v-row v-else>
-                    Deleting the explorer is not revertible.
-                    Your workspace & its data will still be here and accessible with your private explorer.
-                    If you'd like to clear workspace data, go in the "Settings" tab, and use the "Reset Workspace" button.
-                </v-row>
+                <template v-if="isBillingEnabled">
+                    <v-row v-if="activeSubscription">
+                        You can't delete an explorer that has an active subscription. Please cancel it first.
+                    </v-row>
+                    <v-row v-else>
+                        Deleting the explorer is not revertible.
+                        Your workspace & its data will still be here and accessible with your private explorer.
+                        If you'd like to clear workspace data, go in the "Settings" tab, and use the "Reset Workspace" button.
+                    </v-row>
+                </template>
                 <v-row class="mt-2 pb-1">
                     <v-spacer></v-spacer>
                     <v-btn :disabled="activeSubscription && isBillingEnabled" :loading="loading" depressed color="error" class="mt-2" @click="deleteExplorer()"><v-icon>mdi-delete</v-icon>Delete Explorer</v-btn>

@@ -75,6 +75,7 @@ class MockHelper {
         this.getters = {
             mainDomain: jest.fn().mockReturnValue('tryethernal.com'),
             isBillingEnabled: jest.fn().mockReturnValue(true),
+            apiRoot: jest.fn().mockReturnValue('http://localhost:8081'),
             rpcServer: jest.fn().mockReturnValue('http://localhost:8545'),
             accounts: jest.fn().mockReturnValue(['0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA']),
             theme: jest.fn(),

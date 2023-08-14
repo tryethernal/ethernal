@@ -1,4 +1,4 @@
-const mockSessionCreate = jest.fn().mockResolvedValue({ url: 'https://stripe.com' })
+const mockSessionCreate = jest.fn().mockResolvedValue({ url: 'https://stripe.com' });
 jest.mock('stripe', () => {
     return jest.fn().mockImplementation(() => {
         return {
@@ -18,6 +18,7 @@ jest.mock('stripe', () => {
 require('../mocks/lib/queue');
 require('../mocks/middlewares/auth');
 require('../mocks/lib/firebase');
+require('../mocks/lib/flags');
 
 const db = require('../../lib/firebase');
 
@@ -70,17 +71,25 @@ describe(`GET ${BASE_URL}/createExplorerCheckoutSession`, () => {
             });
     });
 
-    it('Should return a 200 with a session url', (done) => {
-        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, stripeCustomerId: '1234' });
+    it('Should return a 200 with a session url for non trial subscription', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, stripeCustomerId: '1234', canTrial: false });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1, public: true, stripePriceId: 'priceId' });
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
 
         request.post(`${BASE_URL}/createExplorerCheckoutSession`)
-            .send({ data: { explorerId: 1, stripePlanSlug: 'slug' }})
+            .send({
+                data: {
+                    explorerId: 1,
+                    stripePlanSlug: 'slug',
+                    successUrl: 'http://ethernal.com/explorers/1?status=success',
+                    cancelUrl: 'http://ethernal.com/explorers/1'
+                }
+            })
             .expect(200) 
             .then(({ body }) => {
                 expect(mockSessionCreate).toHaveBeenCalledWith({
                     mode: 'subscription',
+                    payment_method_collection: 'always',
                     client_reference_id: 1,
                     customer: '1234',
                     subscription_data: { metadata: { explorerId: 1 }},
@@ -97,6 +106,48 @@ describe(`GET ${BASE_URL}/createExplorerCheckoutSession`, () => {
                 done();
             });
    });
+
+   it('Should return a 200 with a session url for a trial subscription', (done) => {
+    jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, stripeCustomerId: '1234', canTrial: true });
+    jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1, public: true, stripePriceId: 'priceId' });
+    jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+
+    request.post(`${BASE_URL}/createExplorerCheckoutSession`)
+        .send({
+            data: {
+                explorerId: 1,
+                stripePlanSlug: 'slug',
+                successUrl: 'http://ethernal.com/explorers/1?status=success',
+                cancelUrl: 'http://ethernal.com/explorers/1'
+            }
+        })
+        .expect(200)
+        .then(({ body }) => {
+            expect(mockSessionCreate).toHaveBeenCalledWith({
+                mode: 'subscription',
+                payment_method_collection: 'if_required',
+                client_reference_id: 1,
+                customer: '1234',
+                subscription_data: {
+                    trial_period_days: 7,
+                    trial_settings: {
+                        end_behavior: { missing_payment_method: 'cancel' }
+                    },
+                    metadata: { explorerId: 1 }
+                },
+                line_items: [
+                    {
+                        price: 'priceId',
+                        quantity: 1
+                    }
+                ],
+                success_url: 'http://ethernal.com/explorers/1?status=success',
+                cancel_url: 'http://ethernal.com/explorers/1'
+            });
+            expect(body).toEqual({ url : 'https://stripe.com' });
+            done();
+        });
+});
 });
 
 describe(`GET ${BASE_URL}/createPortalSession`, () => {

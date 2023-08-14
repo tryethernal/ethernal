@@ -130,7 +130,9 @@ export default {
                 });
         },
         useStripePayment() {
-            this.server.createStripeExplorerCheckoutSession(this.explorer.id, this.selectedPlanSlug)
+            const successUrl = `http://app.${this.mainDomain}/explorers/${this.explorer.id}?status=success`;
+            const cancelUrl = `http://app.${this.mainDomain}/explorers/${this.explorer.id}`;
+            this.server.createStripeExplorerCheckoutSession(this.explorer.id, this.selectedPlanSlug, successUrl, cancelUrl)
                 .then(({ data }) => window.location.assign(data.url))
                 .catch(error => {
                     console.log(error);
@@ -151,7 +153,8 @@ export default {
     computed: {
         ...mapGetters([
             'user',
-            'isBillingEnabled'
+            'isBillingEnabled',
+            'mainDomain'
         ])
     }
 }
