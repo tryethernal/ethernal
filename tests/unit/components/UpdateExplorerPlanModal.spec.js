@@ -63,7 +63,8 @@ describe('UpdateExplorerPlanModal.vue', () => {
         wrapper.vm.onUpdatePlan('plan1')
         await flushPromises();
 
-        expect(helper.mocks.server.createStripeExplorerCheckoutSession).toHaveBeenCalledWith(1, 'plan1');
+        expect(helper.mocks.server.createStripeExplorerCheckoutSession)
+            .toHaveBeenCalledWith(1, 'plan1', 'http://tryethernal.com/explorers/1?status=success', 'http://tryethernal.com/explorers/1');
         expect(locationSpy).toHaveBeenCalledWith('stripe.com');
         expect(wrapper.html()).toMatchSnapshot();
         window.location = oldLocation;
