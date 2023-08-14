@@ -24,7 +24,6 @@ const db = require('../../lib/firebase');
 
 const supertest = require('supertest');
 const app = require('../../app');
-const { typescriptLanguage } = require('@codemirror/lang-javascript');
 const request = supertest(app);
 
 const BASE_URL = '/api/stripe';
