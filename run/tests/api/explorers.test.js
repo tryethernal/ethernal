@@ -36,7 +36,7 @@ beforeEach(() => jest.clearAllMocks());
 
 describe(`PUT ${BASE_URL}/:id/subscription`, () => {
     it('Should update the plan without calling stripe if no stripeId', (done) => {
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripePlan: { slug: 'slug' }}});
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripePlan: { id: 1, slug: 'slug' }}});
         jest.spyOn(db, 'getStripePlan').mockResolvedValue({ public: true, stripePriceId: 'priceId' });
 
         request.put(`${BASE_URL}/1/subscription`)
@@ -96,7 +96,7 @@ describe(`PUT ${BASE_URL}/:id/subscription`, () => {
             .send({ data: { explorerId: 1, newStripePlanSlug: 'slug' }})
             .expect(200)
             .then(() => {
-                expect(mockSubscriptionRetrieve).toHaveBeenCalledWith('subscriptionId');
+                expect(mockSubscriptionRetrieve).toHaveBeenCalledWith('subscriptionId', { expand: ['customer']});
                 expect(mockSubscriptionUpdate).toBeCalledWith('subscriptionId', {
                     cancel_at_period_end: false,
                     proration_behavior: 'always_invoice',
@@ -119,7 +119,7 @@ describe(`PUT ${BASE_URL}/:id/subscription`, () => {
             .send({ data: { explorerId: 1, newStripePlanSlug: 'slug' }})
             .expect(200)
             .then(() => {
-                expect(mockSubscriptionRetrieve).toHaveBeenCalledWith('subscriptionId');
+                expect(mockSubscriptionRetrieve).toHaveBeenCalledWith('subscriptionId', { expand: ['customer']});
                 expect(mockSubscriptionUpdate).toBeCalledWith('subscriptionId', {
                     cancel_at_period_end: false,
                     proration_behavior: 'always_invoice',
@@ -394,7 +394,7 @@ describe(`POST ${BASE_URL}`, () => {
             .send({ data: { domain: 'test', slug: 'test', workspaceId: 1, chainId: 1, rpcServer: 'test', theme: 'test' }})
             .expect(200)
             .then(({ body }) => {
-                expect(db.getStripePlan).toHaveBeenCalledWith('self-hosted');
+                expect(db.getStripePlan).toHaveBeenCalledWith('selfhosted');
                 expect(db.createExplorerSubscription).toHaveBeenCalled();
                 expect(body).toEqual({ id: 1 });
                 done();

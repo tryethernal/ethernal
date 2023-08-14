@@ -115,7 +115,7 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    disableTrials() {
+    disableTrialMode() {
         return this.update({ canTrial: false });
     }
 

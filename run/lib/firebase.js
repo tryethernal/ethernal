@@ -23,7 +23,7 @@ const disableUserTrial = async (userId) => {
     if (!user)
         throw new Error('Cannot find user');
 
-    return user.disableTrials();
+    return user.disableTrialMode();
 };
 
 const getExplorerDomainById = async (userId, explorerDomainId) => {
@@ -1340,6 +1340,7 @@ const getContractDeploymentTxByAddress = async (userId, workspaceId, address) =>
     if (!userId || !workspaceId || !address) throw new Error('Missing parameter.');
 
     const user = await User.findByPk(userId);
+    console.log(user)
     const workspaces = await user.getWorkspaces({ where: { id: workspaceId }});
     const transactions = await workspaces[0].getTransactions({ where: { creates: address }});
     return transactions && transactions.length ? transactions[0].toJSON() : null;

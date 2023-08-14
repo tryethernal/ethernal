@@ -80,8 +80,8 @@ router.post('/createExplorerCheckoutSession', [authMiddleware, stripeMiddleware]
                     quantity: 1
                 }
             ],
-            success_url: `${process.env.APP_URL}/explorers/${explorer.id}?status=success`,
-            cancel_url: `${process.env.APP_URL}/explorers/${explorer.id}`,
+            success_url: data.successUrl,
+            cancel_url: data.cancelUrl,
         }));
 
         res.status(200).json({ url: session.url });

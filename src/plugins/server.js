@@ -938,9 +938,9 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            createStripeExplorerCheckoutSession(explorerId, stripePlanSlug) {
+            createStripeExplorerCheckoutSession(explorerId, stripePlanSlug, returnUrl, cancelUrl) {
                 const data = {
-                    explorerId, stripePlanSlug
+                    explorerId, stripePlanSlug, returnUrl, cancelUrl
                 };
 
                 const resource = `${process.env.VUE_APP_API_ROOT}/api/stripe/createExplorerCheckoutSession`;

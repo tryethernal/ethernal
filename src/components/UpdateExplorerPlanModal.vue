@@ -70,7 +70,9 @@ export default {
                     .finally(() => this.updatingSlug = null);
             }
             else {
-                this.server.createStripeExplorerCheckoutSession(this.explorerId, slug)
+                const successUrl = `http://${this.mainDomain}/explorers/${this.explorerId}?status=success`;
+                const cancelUrl = `http://${this.mainDomain}/explorers/${this.explorerId}`;
+                this.server.createStripeExplorerCheckoutSession(this.explorerId, slug, successUrl, cancelUrl)
                     .then(({ data }) => window.location.assign(data.url))
                     .catch(error => {
                         console.log(error);
@@ -182,7 +184,8 @@ Are you sure you want to cancel?`;
     },
     computed: {
         ...mapGetters([
-            'user'
+            'user',
+            'mainDomain'
         ])
     }
 }
