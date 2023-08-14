@@ -1038,23 +1038,26 @@ module.exports = (sequelize, DataTypes) => {
         })
     }
 
-    async safeCreateExplorer(transaction) {
-        if (!this.public) return;
+    async safeCreateExplorer() {
+        return sequelize.transaction(async (transaction) => {
+            if (!this.public)
+                await this.update({ public: true, browserSyncEnabled: false }, { transaction });
 
-        const existingExplorer = await sequelize.models.Explorer.findOne({ where: { slug: slugify(this.name) }});
-        const slug = existingExplorer ?
-            `${slugify(this.name)}-${Math.floor(Math.random() * 100)}` :
-            slugify(this.name);
+            const existingExplorer = await sequelize.models.Explorer.findOne({ where: { slug: slugify(this.name) }});
+            const slug = existingExplorer ?
+                `${slugify(this.name)}-${Math.floor(Math.random() * 100)}` :
+                slugify(this.name);
 
-        return this.createExplorer({
-            userId: this.userId,
-            chainId: this.networkId,
-            name: this.name,
-            rpcServer: this.rpcServer,
-            slug: slug,
-            themes: { "default": {}},
-            domain: `${slug}.${process.env.APP_DOMAIN}`
-        }, { transaction });
+            return this.createExplorer({
+                userId: this.userId,
+                chainId: this.networkId,
+                name: this.name,
+                rpcServer: this.rpcServer,
+                slug: slug,
+                themes: { "default": {}},
+                domain: `${slug}.${process.env.APP_DOMAIN}`
+            });
+        });
     }
   }
 
@@ -1085,9 +1088,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     hooks: {
-        afterCreate(workspace, options) {
-            return workspace.safeCreateExplorer(options.transaction);
-        },
         afterSave(workspace, options) {
             return enqueue('processWorkspace', `processWorkspace-${workspace.id}-${workspace.name}`, {
                 workspaceId: workspace.id,

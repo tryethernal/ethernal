@@ -33,7 +33,7 @@
             </template>
             <template v-slot:item.domain="{ item }">
                 <template v-if="item.domains.length > 0">
-                    <a :href="`https://${ item.domains[0].domain }`" target="_blank">https://{{ item.domains[0].domain }}</a>
+                    <a :href="`http://${ item.domains[0].domain }`" target="_blank">{{ item.domains[0].domain }}</a>
                     <v-tooltip top v-if="item.domains.length > 1">
                         <template v-slot:activator="{ on, attrs }">
                             <v-chip v-bind="attrs" v-on="on" class="ml-2" x-small >+ {{ item.domains.length - 1 }}</v-chip>
@@ -44,7 +44,7 @@
                     </v-tooltip>
                 </template>
                 <template v-else>
-                    <a :href="`https://${ item.slug }.${ mainDomain }`" target="_blank">https://{{ item.slug }}.{{ mainDomain }}</a>
+                    <a :href="`http://${ item.slug }.${ mainDomain }`" target="_blank">{{ item.slug }}.{{ mainDomain }}</a>
                 </template>
             </template>
             <template v-slot:item.rpcServer="{ item }">
@@ -109,20 +109,22 @@ export default {
         },
         statusClass(subscription) {
             if (!subscription) return 'error';
-            else if (subscription.isActive) return 'success';
-            else if (subscription.isPendingCancelation) return 'warning';
+            else if (subscription.isActive || subscription.isTrialingWithCard) return 'success';
+            else if (subscription.isPendingCancelation || subscription.isTrialing) return 'warning';
             return '';
         },
         statusIcon(subscription) {
             if (!subscription) return 'mdi-alert-circle';
-            else if (subscription.isActive) return 'mdi-check-circle';
-            else if (subscription.isPendingCancelation) return 'mdi-alert';
+            else if (subscription.isActive || subscription.isTrialingWithCard) return 'mdi-check-circle';
+            else if (subscription.isPendingCancelation || subscription.isTrialing) return 'mdi-alert';
             return '';
         },
         statusText(subscription) {
             if (!subscription) return 'Inactive';
             else if (subscription.isActive) return 'Active';
             else if (subscription.isPendingCancelation) return 'Pending Cancelation';
+            else if (subscription.isTrialing) return 'Ongoing Trial - Set up a payment method to keep your explorer running';
+            else if (subscription.isTrialingWithCard) return 'Ongoing Trial';
             return '';
         }
     },

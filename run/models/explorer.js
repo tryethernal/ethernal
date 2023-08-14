@@ -125,8 +125,7 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 ]
             });
-        console.log('ok')
-        console.log(explorer);
+
         return explorer;
     }
 
@@ -147,14 +146,13 @@ module.exports = (sequelize, DataTypes) => {
         return this.createDomain({ domain });
     }
 
-    safeCreateSubscription(stripePlanId, stripeId, cycleEndsAt) {
-        if (!stripePlanId || !stripeId) throw new Error('Missing parameter');
+    safeCreateSubscription(stripePlanId, stripeId, cycleEndsAt, status) {
+        if (!stripePlanId || !cycleEndsAt || !status) throw new Error('Missing parameter');
 
-        return this.createStripeSubscription({
-            stripePlanId: stripePlanId,
-            stripeId: stripeId,
-            cycleEndsAt: cycleEndsAt
-        });
+        if (['active', 'trial', 'trial_with_card'].indexOf(status) == -1)
+            throw new Error('Invalid subscription status');
+
+        return this.createStripeSubscription({ stripePlanId, stripeId, cycleEndsAt, status });
     }
 
     async canUseCapability(capability) {
@@ -186,11 +184,14 @@ module.exports = (sequelize, DataTypes) => {
             throw new Error('Error deleting the explorer. Please retry');
     }
 
-    async safeUpdateSubscription(stripePlanId, cycleEndsAt) {
-        if (!stripePlanId && !cycleEndsAt) throw new Error('Missing parameter');
+    async safeUpdateSubscription(stripePlanId, cycleEndsAt, status) {
+        if (!stripePlanId && !cycleEndsAt && !status) throw new Error('Missing parameter');
+
+        if (sequelize.models.StripeSubscription.rawAttributes.status.values.indexOf(status) == -1)
+            throw new Error('Invalid subscription status');
 
         const stripeSubscription = await this.getStripeSubscription();
-        return stripeSubscription.update(sanitize({ stripePlanId, cycleEndsAt }));
+        return stripeSubscription.update(sanitize({ stripePlanId, cycleEndsAt, status }));
     }
 
     async safeCancelSubscription() {

@@ -126,7 +126,8 @@ describe('CreateExplorerModal.vue', () => {
         await wrapper.vm.onPlanSelected('slug');
         await flushPromises();
 
-        expect(helper.mocks.server.createStripeExplorerCheckoutSession).toHaveBeenCalledWith(1, 'slug');
+        expect(helper.mocks.server.createStripeExplorerCheckoutSession)
+            .toHaveBeenCalledWith(1, 'slug', 'http://app.tryethernal.com/explorers/1?status=success', 'http://app.tryethernal.com/explorers/1');
         expect(assignSpy).toHaveBeenCalledWith('stripe.com');
         window.location = oldLocation;
     });

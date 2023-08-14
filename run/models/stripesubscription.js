@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     userId: DataTypes.INTEGER,
     stripePlanId: DataTypes.INTEGER,
     stripeId: DataTypes.STRING,
-    status: DataTypes.ENUM('active', 'pending_cancelation'),
+    status: DataTypes.ENUM('active', 'pending_cancelation', 'trial', 'trial_with_card'),
     transactionQuota: DataTypes.INTEGER,
     isActive: {
         type: DataTypes.VIRTUAL,
@@ -34,6 +34,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.VIRTUAL,
       get() {
           return this.getDataValue('status') == 'pending_cancelation';
+      }
+    },
+    isTrialing: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.getDataValue('status') == 'trial';
+      }
+    },
+    isTrialingWithCard: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.getDataValue('status') == 'trial_with_card';
       }
     },
     cycleEndsAt: DataTypes.DATE,

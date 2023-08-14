@@ -136,7 +136,7 @@ export default {
     methods: {
         openStripePortal() {
             this.subscriptionButtonLoading = true;
-            this.server.createStripePortalSession()
+            this.server.createStripePortalSession(`http://app.${this.mainDomain}/settings?tab=billing`)
                 .then(({ data }) => {
                     document.location.href = data.url
                 })
@@ -157,7 +157,8 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'user'
+            'user',
+            'mainDomain'
         ]),
         isPremium() {
             return this.user.plan == 'premium';

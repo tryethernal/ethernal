@@ -33,7 +33,7 @@ exports[`Explorers.vue Should display settings with all options 1`] = `
             <td class="text-start">
               Workspace 3
             </td>
-            <td class="text-start"><a href="https://https://a.explorer1.com" target="_blank">https://https://a.explorer1.com</a> <span class="v-tooltip v-tooltip--top"><!----></span><span class="ml-2 v-chip v-chip--no-color theme--light v-size--x-small" aria-haspopup="true" aria-expanded="false"><span class="v-chip__content">+ 1</span></span></td>
+            <td class="text-start"><a href="http://a.explorer1.com" target="_blank">a.explorer1.com</a> <span class="v-tooltip v-tooltip--top"><!----></span><span class="ml-2 v-chip v-chip--no-color theme--light v-size--x-small" aria-haspopup="true" aria-expanded="false"><span class="v-chip__content">+ 1</span></span></td>
             <td class="text-start">
               rpc 3
             </td>
@@ -43,7 +43,7 @@ exports[`Explorers.vue Should display settings with all options 1`] = `
             <td class="text-start">
               Workspace 2
             </td>
-            <td class="text-start"><a href="https://test.tryethernal.com" target="_blank">https://test.tryethernal.com</a></td>
+            <td class="text-start"><a href="http://test.tryethernal.com" target="_blank">test.tryethernal.com</a></td>
             <td class="text-start">
               rpc 2
             </td>
@@ -53,7 +53,7 @@ exports[`Explorers.vue Should display settings with all options 1`] = `
             <td class="text-start">
               Workspace 1
             </td>
-            <td class="text-start"><a href="https://https://explorer1.com" target="_blank">https://https://explorer1.com</a>
+            <td class="text-start"><a href="http://explorer1.com" target="_blank">explorer1.com</a>
               <!---->
             </td>
             <td class="text-start">

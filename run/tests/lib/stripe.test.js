@@ -1,4 +1,22 @@
-require('../mocks/lib/stripe');
+const mockCustomerRetrieve = jest.fn();
+const mockSubscriptionUpdate = jest.fn();
+const mockSubscriptionRetrieve = jest.fn();
+jest.mock('stripe', () => {
+    return jest.fn().mockImplementation(() => {
+        return {
+            customers: {
+                retrieve: mockCustomerRetrieve
+            },
+            paymentIntents: {
+                retrieve: jest.fn().mockResolvedValue({ payment_method: true })
+            },
+            subscriptions: {
+                update: mockSubscriptionUpdate,
+                retrieve: mockSubscriptionRetrieve
+            }
+        }
+    });
+});
 require('../mocks/lib/firebase');
 const { StripePlan } = require('../mocks/models');
 const db = require('../../lib/firebase');
@@ -120,6 +138,7 @@ describe('handleStripeSubscriptionUpdate', () => {
         jest.spyOn(db, 'getUserbyStripeCustomerId').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { isPendingCancelation: false }});
         jest.spyOn(StripePlan, 'findOne').mockResolvedValueOnce({ id: 1 });
+        mockCustomerRetrieve.mockResolvedValueOnce({ id: 1 });
 
         const data = {
             metadata: { explorerId: 1 },
@@ -132,8 +151,8 @@ describe('handleStripeSubscriptionUpdate', () => {
         };
 
         handleStripeSubscriptionUpdate(data)
-            .then(res => {
-                expect(db.updateExplorerSubscription).toHaveBeenCalledWith(1, 1, 1, new Date(0));
+            .then(() => {
+                expect(db.updateExplorerSubscription).toHaveBeenCalledWith(1, 1, 1, { ...data, customer: { id: 1 }});
                 done();
             });
     });
@@ -142,6 +161,7 @@ describe('handleStripeSubscriptionUpdate', () => {
         jest.spyOn(db, 'getUserbyStripeCustomerId').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(StripePlan, 'findOne').mockResolvedValueOnce({ id: 1 });
+        mockCustomerRetrieve.mockResolvedValueOnce({ id: 1 });
 
         const data = {
             current_period_end: 1,
@@ -156,7 +176,31 @@ describe('handleStripeSubscriptionUpdate', () => {
 
         handleStripeSubscriptionUpdate(data)
             .then(res => {
-                expect(db.createExplorerSubscription).toHaveBeenCalledWith(1, 1, 1, 1, new Date(1000));
+                expect(db.createExplorerSubscription).toHaveBeenCalledWith(1, 1, 1, { ...data, customer: { id: 1 }});
+                done();
+            });
+    });
+
+    it('Should disable trials for user', (done) => {
+        jest.spyOn(db, 'getUserbyStripeCustomerId').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(StripePlan, 'findOne').mockResolvedValueOnce({ id: 1 });
+        mockCustomerRetrieve.mockResolvedValueOnce({ id: 1 });
+
+        const data = {
+            current_period_end: 1,
+            id: 1,
+            metadata: { explorerId: 1 },
+            status: 'trialing',
+            cancel_at_period_end: false,
+            items: {
+                data: [{ price: { id: '1234' }}]
+            }
+        };
+
+        handleStripeSubscriptionUpdate(data)
+            .then(() => {
+                expect(db.disableUserTrial).toHaveBeenCalledWith(1);
                 done();
             });
     });
@@ -164,11 +208,16 @@ describe('handleStripeSubscriptionUpdate', () => {
 
 describe('handleStripePaymentSucceeded', () => {
     it('Should return true when event has payment intent', async () => {
+        mockSubscriptionUpdate.mockResolvedValueOnce({});
         jest.spyOn(db, 'getUserbyStripeCustomerId').mockResolvedValueOnce({
             id: 1,
             firebaseUserId: 'abcd'
         });
-        const data = StripePaymentSucceededWebhookBody.data.object;
+        const data = {
+            billing_reason: 'subscription_create',
+            subscription: '1',
+            payment_intent: '1'
+        };
 
         const result = await handleStripePaymentSucceeded(data);
 
@@ -176,6 +225,7 @@ describe('handleStripePaymentSucceeded', () => {
     });
 
     it('Should return true when event has no payment intent', async () => {
+        mockSubscriptionRetrieve.mockResolvedValue(true);
         jest.spyOn(db, 'getUserbyStripeCustomerId').mockResolvedValueOnce({
             id: 1,
             firebaseUserId: 'abcd'

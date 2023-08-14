@@ -10,6 +10,24 @@ const db = require('../../lib/firebase');
 
 beforeEach(() => jest.clearAllMocks());
 
+describe('disableUserTrial', () => {
+    it('Should call the disableTrials function', (done) => {
+        const disableTrialMode = jest.fn();
+        jest.spyOn(User, 'findByPk').mockResolvedValue({ disableTrialMode });
+        db.disableUserTrial(1)
+            .then(() => {
+                expect(disableTrialMode).toHaveBeenCalled();
+                done();
+            })
+    });
+
+    it('Should throw an error if cannot find user', async () => {
+        jest.spyOn(User, 'findByPk').mockResolvedValueOnce(null);
+        await expect(db.disableUserTrial(1))
+            .rejects.toThrow('Cannot find user');
+    });
+});
+
 describe('getExplorerDomainById', () => {
     it('Should return domain if found', (done) => {
         jest.spyOn(ExplorerDomain, 'findOne').mockResolvedValue({ toJSON: jest.fn().mockReturnValue({ id: 1})});
@@ -159,11 +177,73 @@ describe('revertExplorerSubscriptionCancelation', () => {
 });
 
 describe('updateExplorerSubscription', () => {
-    it('Should return if susbcription has been updated', (done) => {
-        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription: jest.fn().mockResolvedValueOnce({ id: 1})});
+    it('Should update subscription', (done) => {
+        const safeUpdateSubscription = jest.fn();
+        const stripeSubscription = {
+            status: 'active',
+            current_period_end: 1,
+            customer: { invoice_settings: {} }
+        }
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription });
+        db.updateExplorerSubscription(1, 1, 1, stripeSubscription)
+            .then(() => {
+                expect(safeUpdateSubscription).toHaveBeenCalledWith(1, new Date(1000), 'active');
+                done();
+            })
+    });
+
+    it('Should update to a trial without a card', (done) => {
+        const safeUpdateSubscription = jest.fn();
+        const stripeSubscription = {
+            status: 'trialing',
+            current_period_end: 1,
+            customer: { invoice_settings: {} }
+        }
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription });
+        db.updateExplorerSubscription(1, 1, 1, stripeSubscription)
+            .then(() => {
+                expect(safeUpdateSubscription).toHaveBeenCalledWith(1, new Date(1000), 'trial');
+                done();
+            })
+    });
+
+    it('Should update to a trial with a card if customer has a default source', (done) => {
+        const safeUpdateSubscription = jest.fn();
+        const stripeSubscription = {
+            status: 'trialing',
+            current_period_end: 1,
+            customer: { default_source: 'yes' }
+        }
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription });
+        db.updateExplorerSubscription(1, 1, 1, stripeSubscription)
+            .then(() => {
+                expect(safeUpdateSubscription).toHaveBeenCalledWith(1, new Date(1000), 'trial_with_card');
+                done();
+            })
+    });
+
+    it('Should update to a trial with a card if customer has a default payment method', (done) => {
+        const safeUpdateSubscription = jest.fn();
+        const stripeSubscription = {
+            id: '1',
+            status: 'trialing',
+            current_period_end: 1,
+            customer: { invoice_settings: { default_payment_method: 'yes' }}
+        }
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription });
+        db.updateExplorerSubscription(1, 1, 1, stripeSubscription)
+            .then(() => {
+                expect(safeUpdateSubscription).toHaveBeenCalledWith(1, new Date(1000), 'trial_with_card');
+                done();
+            })
+    });
+
+    it('Should update a subscription without a subscription object', (done) => {
+        const safeUpdateSubscription = jest.fn();
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription });
         db.updateExplorerSubscription(1, 1, 1)
-            .then(res => {
-                expect(res).toEqual({ id: 1 });
+            .then(() => {
+                expect(safeUpdateSubscription).toHaveBeenCalledWith(1, new Date(0), 'active');
                 done();
             })
     });
@@ -176,11 +256,76 @@ describe('updateExplorerSubscription', () => {
 });
 
 describe('createExplorerSubscription', () => {
-    it('Should return if susbcription has been created', (done) => {
-        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeCreateSubscription: jest.fn().mockResolvedValueOnce({ id: 1})});
-        db.createExplorerSubscription(1, 1, 1, 1, new Date())
-            .then(res => {
-                expect(res).toEqual({ id: 1 });
+    it('Should create an active subscription', (done) => {
+        const safeCreateSubscription = jest.fn();
+        const stripeSubscription = {
+            id: '1',
+            status: 'active',
+            current_period_end: 1,
+            customer: { invoice_settings: {} }
+        }
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeCreateSubscription });
+        db.createExplorerSubscription(1, 1, 1, stripeSubscription)
+            .then(() => {
+                expect(safeCreateSubscription).toHaveBeenCalledWith(1, '1', new Date(1000), 'active');
+                done();
+            })
+    });
+
+    it('Should create a trial without a card', (done) => {
+        const safeCreateSubscription = jest.fn();
+        const stripeSubscription = {
+            id: '1',
+            status: 'trialing',
+            current_period_end: 1,
+            customer: { invoice_settings: {} }
+        }
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeCreateSubscription });
+        db.createExplorerSubscription(1, 1, 1, stripeSubscription)
+            .then(() => {
+                expect(safeCreateSubscription).toHaveBeenCalledWith(1, '1', new Date(1000), 'trial');
+                done();
+            })
+    });
+
+    it('Should create a trial with a card if customer has a default source', (done) => {
+        const safeCreateSubscription = jest.fn();
+        const stripeSubscription = {
+            id: '1',
+            status: 'trialing',
+            current_period_end: 1,
+            customer: { default_source: 'yes' }
+        }
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeCreateSubscription });
+        db.createExplorerSubscription(1, 1, 1, stripeSubscription)
+            .then(() => {
+                expect(safeCreateSubscription).toHaveBeenCalledWith(1, '1', new Date(1000), 'trial_with_card');
+                done();
+            })
+    });
+
+    it('Should create a trial with a card if customer has a default payment method', (done) => {
+        const safeCreateSubscription = jest.fn();
+        const stripeSubscription = {
+            id: '1',
+            status: 'trialing',
+            current_period_end: 1,
+            customer: { invoice_settings: { default_payment_method: 'yes' }}
+        }
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeCreateSubscription });
+        db.createExplorerSubscription(1, 1, 1, stripeSubscription)
+            .then(() => {
+                expect(safeCreateSubscription).toHaveBeenCalledWith(1, '1', new Date(1000), 'trial_with_card');
+                done();
+            })
+    });
+
+    it('Should create a subscription without a subscription object', (done) => {
+        const safeCreateSubscription = jest.fn();
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeCreateSubscription });
+        db.createExplorerSubscription(1, 1, 1)
+            .then(() => {
+                expect(safeCreateSubscription).toHaveBeenCalledWith(1, undefined, new Date(0), 'active');
                 done();
             })
     });
@@ -1015,9 +1160,10 @@ describe('getWorkspaceContract', () => {
 
 describe('getUserById', () => {
     it('Should return an user if it exists', (done) => {
+        jest.spyOn(User, 'findByPk').mockResolvedValueOnce({ toJSON: jest.fn().mockReturnValue({ id: 1, workspaces: [{ id: 1 }]}) });
         db.getUserById(1)
             .then(user => {
-                expect(user).toEqual({ id: 1, workspaces: [expect.anything()]});
+                expect(user).toEqual({ id: 1, workspaces: [{ id: 1 }]});
                 done();
             });
     });
@@ -1390,6 +1536,7 @@ describe('canUserSyncContract', () => {
 
 describe('getContractDeploymentTxByAddress', () => {
     it('Should return the transaction if it exists', (done) => {
+        jest.spyOn(User, 'findByPk').mockResolvedValueOnce({ getWorkspaces: jest.fn().mockResolvedValueOnce([workspace]) });
         db.getContractDeploymentTxByAddress('123', 'My Workspace', '0x123')
             .then(transaction => {
                 expect(transaction).toEqual({ hash: '0x123' });
@@ -1398,6 +1545,7 @@ describe('getContractDeploymentTxByAddress', () => {
     });
 
     it('Should return null if the transaction does not exist', (done) => {
+        jest.spyOn(User, 'findByPk').mockResolvedValueOnce({ getWorkspaces: jest.fn().mockResolvedValueOnce([workspace]) });
         jest.spyOn(workspace, 'getTransactions').mockResolvedValueOnce([]);
         db.getContractDeploymentTxByAddress('123', 'My Workspace', '0x123')
             .then(transaction => {
@@ -1409,6 +1557,7 @@ describe('getContractDeploymentTxByAddress', () => {
 
 describe('updateContractVerificationStatus', () => {
     it('Should should return null if status is not valid', (done) => {
+        jest.spyOn(User, 'findByPk').mockResolvedValueOnce({ getWorkspaces: jest.fn().mockResolvedValueOnce([workspace]) });
         db.updateContractVerificationStatus('123', 'My Workspace', '0x123', 'invalid')
             .then(result => {
                 expect(result).toBe(null);
@@ -1417,6 +1566,7 @@ describe('updateContractVerificationStatus', () => {
     });
 
     it('Should return the updated contract if the status is valid', (done) => {
+        jest.spyOn(User, 'findByPk').mockResolvedValueOnce({ getWorkspaces: jest.fn().mockResolvedValueOnce([workspace]) });
         db.updateContractVerificationStatus('123', 'My Workspace', '0x123', 'success')
             .then(contract => {
                 expect(contract).toEqual({ id: 10, address: '0x123' });
@@ -1472,6 +1622,7 @@ describe('getContract', () => {
     });
 
     it('Should return null if the contract does not exist', (done) => {
+        jest.spyOn(User, 'findByPk').mockResolvedValueOnce({ getWorkspaces: jest.fn().mockResolvedValueOnce([workspace]) });
         jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce(null);
         db.getContract('123', 'hardhat', '0x123')
             .then((contract) => {

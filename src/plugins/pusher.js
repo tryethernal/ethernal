@@ -15,7 +15,7 @@ export const pusherPlugin = {
                     headersProvider: () => apiToken ? { 'Authorization': `Bearer ${apiToken}` } : {}
                 },
                 channelAuthorization: {
-                    endpoint: `${process.env.VUE_APP_API_ROOT}/api/pusher/authorization`,
+                    endpoint: `${store.getters.apiRoot}/api/pusher/authorization`,
                     headersProvider: () => apiToken ? { 'Authorization': `Bearer ${apiToken}` } : {},
                     params: sanitize({
                         firebaseUserId: store.getters.currentWorkspace.firebaseUserId,

@@ -14,6 +14,9 @@
             </v-card>
         </template>
         <template v-else-if="explorer && workspaces.length > 0">
+            <v-alert text type="warning" v-if="explorer.stripeSubscription && explorer.stripeSubscription.isTrialing">
+                This explorer is on a free trial plan. To keep it running once it's over, add a payment method.
+            </v-alert>
             <v-alert text type="error" v-if="!explorer.stripeSubscription">This explorer is not active. To activate it, start a subscription.</v-alert>
             <h2>{{ explorer.name }}</h2>
             <v-row>

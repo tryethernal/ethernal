@@ -18,7 +18,7 @@ Vue.use(require('vue-moment'));
 
 Vue.use(serverPlugin, { store: store });
 
-axios.get(`${process.env.VUE_APP_API_ROOT}/api/explorers/search?domain=${window.location.host}`)
+axios.get(`${store.getters.apiRoot}/api/explorers/search?domain=${window.location.host}`)
     .then(({ data }) => {
         if (data.explorer)
             store.dispatch('setPublicExplorerData', data.explorer);

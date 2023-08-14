@@ -3,7 +3,12 @@
         <Update-Explorer-Plan-Modal ref="updateExplorerPlanModal" />
         <v-card-text v-if="explorer.stripeSubscription">
             <div>Plan: <b>{{ explorer.stripeSubscription.stripePlan.name }}</b></div>
-            <div>Status: <b :class="{'success--text': activeSubscription, 'warning--text': pendingCancelation }">{{ formattedExplorerStatus }}</b></div>
+            <div>
+                Status: <b :class="{'success--text': activeSubscription, 'warning--text': pendingCancelation }">{{ formattedExplorerStatus }}</b>
+                <template v-if="trial">
+                    | Add a payment method to keep the explorer up after your trial period.
+                </template>
+            </div>
             <div>
                 Monthly Transaction Quota:
                 <template v-if="explorer.stripeSubscription.cycleEndsAt">
@@ -12,6 +17,7 @@
                 <template v-else><b>Unlimited</b></template>
             </div>
             <v-btn class="mt-2" color="primary" @click="openUpdateExplorerPlanModal()">Update Plan</v-btn>
+            <v-btn class="mt-2 ml-2" v-if="trial" :loading="stripePortalLoading" color="primary" @click="openStripePortal()">Add Payment Method</v-btn>
         </v-card-text>
         <v-card-text v-else>
             <v-btn color="primary" @click="openUpdateExplorerPlanModal()">Start Subscription</v-btn>
@@ -20,6 +26,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 const moment = require('moment');
 import UpdateExplorerPlanModal from './UpdateExplorerPlanModal';
 
@@ -29,13 +36,25 @@ export default {
     components: {
         UpdateExplorerPlanModal
     },
+    data: () => ({
+        stripePortalLoading: false
+    }),
     methods: {
         moment,
+        openStripePortal() {
+            this.stripePortalLoading = true;
+            this.server.createStripePortalSession(`http://app.${this.mainDomain}/explorers/${this.explorer.id}`)
+                .then(({ data }) => {
+                    document.location.href = data.url
+                })
+                .catch(() => this.stripePortalLoading = false );
+        },
         openUpdateExplorerPlanModal() {
             this.$refs.updateExplorerPlanModal.open({
                 explorerId: this.explorer.id,
                 currentPlanSlug: this.explorer.stripeSubscription && this.explorer.stripeSubscription.stripePlan.slug,
-                pendingCancelation: this.pendingCancelation
+                pendingCancelation: this.pendingCancelation,
+                isTrialing: false
             }).then(refresh => {
                 if (refresh)
                     this.$emit('updated');
@@ -43,6 +62,11 @@ export default {
         },
     },
     computed: {
+        ...mapGetters([
+            'mainDomain'
+        ]),
+        trial() { return this.explorer.stripeSubscription && this.explorer.stripeSubscription.status == 'trial' },
+        trialWithCard() { return this.explorer.stripeSubscription && this.explorer.stripeSubscription.status == 'trial_with_card' },
         activeSubscription() { return this.explorer.stripeSubscription && this.explorer.stripeSubscription.status == 'active' },
         pendingCancelation() { return this.explorer.stripeSubscription && this.explorer.stripeSubscription.status == 'pending_cancelation' },
         formattedExplorerStatus() {
@@ -50,6 +74,8 @@ export default {
                 return 'Active';
             else if (this.pendingCancelation)
                 return 'Pending Cancelation';
+            else if (this.trial || this.trialWithCard)
+                return 'Trial'
             else
                 return 'N/A';
         }

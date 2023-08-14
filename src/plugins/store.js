@@ -85,6 +85,7 @@ export default new Vuex.Store({
             const rpcListenerWorker = new Worker('../workers/blockSyncer.worker.js', { type: 'module' });
             rpcListenerWorker.onmessage = () => commit('UPDATE_BROWSER_SYNC_STATUS', false);
             rpcListenerWorker.postMessage({
+                apiRoot: getters.apiRoot,
                 rpcServer: getters.currentWorkspace.rpcServer,
                 apiToken: getters.user.apiToken,
                 workspace: getters.currentWorkspace.name
@@ -145,6 +146,7 @@ export default new Vuex.Store({
     getters: {
         mainDomain: () => process.env.VUE_APP_MAIN_DOMAIN,
         isBillingEnabled: () => !!process.env.VUE_APP_ENABLE_BILLING,
+        apiRoot: () => process.env.VUE_APP_API_ROOT,
         publicExplorerMode: state => !!state.publicExplorer,
         rpcServer: state => state.publicExplorer ? state.publicExplorer.rpcServer : state.currentWorkspace.rpcServer,
         accounts: state => state.accounts,

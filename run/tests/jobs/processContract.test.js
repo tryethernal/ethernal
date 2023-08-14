@@ -14,6 +14,7 @@ require('../mocks/lib/utils');
 require('../mocks/lib/firebase');
 require('../mocks/lib/transactions');
 require('../mocks/lib/rpc');
+require('../mocks/lib/env');
 require('../mocks/lib/queue');
 require('../mocks/lib/yasold');
 
