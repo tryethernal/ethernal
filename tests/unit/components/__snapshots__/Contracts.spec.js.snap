@@ -518,7 +518,8 @@ exports[`Contracts.vue Should show the loading message when empty contracts list
         <tbody>
           <tr class="v-data-table__empty-wrapper">
             <td colspan="6">
-              No contracts found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a></td>
+              No contracts found
+            </td>
           </tr>
         </tbody>
       </table>

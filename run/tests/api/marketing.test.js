@@ -41,17 +41,3 @@ describe(`GET ${BASE_URL}`, () => {
             });
     });
 });
-
-describe(`POST ${BASE_URL}/submitExplorerLead`, () => {
-    it('Should enqueue task', (done) => {
-        request.post(`${BASE_URL}/submitExplorerLead`)
-            .send({ data: { workspace: 'ethernal', email: 'antoine@tryethernal.com' }})
-            .expect(200)
-            .then(() => {
-                expect(enqueue).toHaveBeenCalledWith('submitExplorerLead', expect.anything(),
-                    { workspace: 'ethernal', email: 'antoine@tryethernal.com' }
-                );
-                done();
-            });
-    });
-});

@@ -75,14 +75,17 @@
         <v-card-actions class="justify-center">
             <v-btn :loading="loading" :disabled="disabled" v-if="current && !pendingCancelation" @click="changePlan(null)" class="error">Cancel Plan</v-btn>
             <v-btn :loading="loading" :disabled="disabled" v-else-if="current && pendingCancelation" @click="changePlan(plan.slug)" class="primary">Revert Cancelation</v-btn>
-            <v-btn v-else :loading="loading" :disabled="disabled" @click="changePlan(plan.slug)" class="primary">Choose Plan</v-btn>
+            <v-btn v-else :loading="loading" :disabled="disabled" @click="changePlan(plan.slug)" class="primary">
+                <template v-if="trial">Start 7 day Trial</template>
+                <template v-else>Choose Plan</template>
+            </v-btn>
         </v-card-actions>
     </v-card>
 </template>
 <script>
 export default {
     name: 'ExplorerPlanCard',
-    props: ['plan', 'current', 'loading', 'disabled', 'pendingCancelation'],
+    props: ['plan', 'current', 'loading', 'disabled', 'pendingCancelation', 'trial'],
     methods: {
         changePlan(slug) {
             this.$emit('updatePlan', slug)

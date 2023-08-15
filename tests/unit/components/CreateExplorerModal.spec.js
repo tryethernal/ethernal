@@ -59,7 +59,7 @@ describe('CreateExplorerModal.vue', () => {
             stubs: ['Explorer-Plan-Card', 'Create-Workspace'],
             getters: {
                 isBillingEnabled: jest.fn().mockReturnValue(true),
-                user: jest.fn().mockReturnValue({ cryptoPaymentEnabled: false })
+                user: jest.fn().mockReturnValue({ cryptoPaymentEnabled: false, canTrial: true })
             }
         });
 

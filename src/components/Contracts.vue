@@ -28,7 +28,7 @@
                 </v-toolbar>
             </template>
             <template v-slot:no-data>
-                No contracts found - <a href="https://doc.tryethernal.com/getting-started/cli" target="_blank">Did you set up the CLI?</a>
+                No contracts found
             </template>
             <template v-slot:item.tags="{ item }">
                 <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" x-small class="success mr-2">

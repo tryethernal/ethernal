@@ -47,7 +47,7 @@ describe('UpdateExplorerPlanModal.vue', () => {
         const wrapper = helper.mountFn(UpdateExplorerPlanModal, {
             stubs: ['Explorer-Plan-Card'],
             getters: {
-                user: jest.fn().mockReturnValue({ cryptoPaymentEnabled: false })
+                user: jest.fn().mockReturnValue({ cryptoPaymentEnabled: false, canTrial: true })
             },
             data() {
                 return {
@@ -78,7 +78,7 @@ describe('UpdateExplorerPlanModal.vue', () => {
         const wrapper = helper.mountFn(UpdateExplorerPlanModal, {
             stubs: ['Explorer-Plan-Card'],
             getters: {
-                user: jest.fn().mockReturnValue({ cryptoPaymentEnabled: false })
+                user: jest.fn().mockReturnValue({ cryptoPaymentEnabled: true })
             },
             data() {
                 return {
