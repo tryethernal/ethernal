@@ -57,7 +57,12 @@ exports[`CreateExplorerModal.vue Should let the user choose an existing workspac
               <div class="v-stepper__wrapper" style="height: 0px;">
                 <div class="v-card v-sheet theme--light">
                   <div class="v-card__text">
-                    <!----> Payment in crypto also available. Reach out to contact@tryethernal.com to set it up. <div class="row"></div>
+                    <!---->
+                    <ul class="mb-4" style="list-style: none;">
+                      <li>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
+                      <!---->
+                    </ul>
+                    <div class="row justify-center"></div>
                   </div>
                 </div>
               </div>
@@ -128,12 +133,17 @@ exports[`CreateExplorerModal.vue Should let the user select a plan 1`] = `
               <div class="v-stepper__wrapper" style="height: 0px;">
                 <div class="v-card v-sheet theme--light">
                   <div class="v-card__text">
-                    <!----> Payment in crypto also available. Reach out to contact@tryethernal.com to set it up. <div class="row">
+                    <!---->
+                    <ul class="mb-4" style="list-style: none;">
+                      <li>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
+                      <li>Each plan includes a 7 day free trial - No credit card needed.</li>
+                    </ul>
+                    <div class="row justify-center">
                       <div class="col col-3">
-                        <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
+                        <explorer-plan-card-stub trial="true" plan="[object Object]"></explorer-plan-card-stub>
                       </div>
                       <div class="col col-3">
-                        <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
+                        <explorer-plan-card-stub trial="true" plan="[object Object]"></explorer-plan-card-stub>
                       </div>
                     </div>
                   </div>

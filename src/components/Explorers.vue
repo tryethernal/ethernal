@@ -66,7 +66,7 @@
                         <a :href="`http://${ item.domains[0].domain }`" target="_blank">{{ item.domains[0].domain }}</a>
                         <v-tooltip top v-if="item.domains.length > 1">
                             <template v-slot:activator="{ on, attrs }">
-                                <v-chip v-bind="attrs" v-on="on" class="ml-2" x-small >+ {{ item.domains.length - 1 }}</v-chip>
+                                <v-chip v-bind="attrs" v-on="on" class="ml-2" x-small>+ {{ item.domains.length - 1 }}</v-chip>
                             </template>
                             <ul>
                                 <li v-for="(domain, idx) in item.domains.slice(1)" :key="idx">{{ domain.domain }}</li>

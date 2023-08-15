@@ -25,6 +25,19 @@ const plan = {
 };
 
 describe('ExplorerPlanCard.vue', () => {
+    it('Should display card with trial button', async () => {
+        const wrapper = helper.mountFn(ExplorerPlanCard, {
+            stubs: ['Explorer-Plan-Card'],
+            propsData: {
+                plan,
+                trial: true
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should display regular plan card', async () => {
         const wrapper = helper.mountFn(ExplorerPlanCard, {
             stubs: ['Explorer-Plan-Card'],
