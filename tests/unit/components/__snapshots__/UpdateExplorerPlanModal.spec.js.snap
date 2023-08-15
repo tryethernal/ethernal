@@ -12,6 +12,10 @@ exports[`UpdateExplorerPlanModal.vue Should cancel a subscription 1`] = `
           </div>
           <div class="v-card__text">
             <!---->
+            <ul class="mb-4" style="list-style: none;">
+              <li>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
+              <!---->
+            </ul>
             <div class="row justify-center">
               <div class="col col-3">
                 <explorer-plan-card-stub current="true" plan="[object Object]" pendingcancelation="true"></explorer-plan-card-stub>
@@ -39,6 +43,7 @@ exports[`UpdateExplorerPlanModal.vue Should start a crypto subscription 1`] = `
             <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button>
           </div>
           <div class="v-card__text">
+            <!---->
             <!---->
             <div class="row justify-center">
               <div class="col col-3">
@@ -68,12 +73,16 @@ exports[`UpdateExplorerPlanModal.vue Should start a stripe subscription 1`] = `
           </div>
           <div class="v-card__text">
             <!---->
+            <ul class="mb-4" style="list-style: none;">
+              <li>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
+              <li>Each plan includes a 7 day free trial - No credit card needed.</li>
+            </ul>
             <div class="row justify-center">
               <div class="col col-3">
-                <explorer-plan-card-stub plan="[object Object]" loading="true"></explorer-plan-card-stub>
+                <explorer-plan-card-stub trial="true" plan="[object Object]" loading="true"></explorer-plan-card-stub>
               </div>
               <div class="col col-3">
-                <explorer-plan-card-stub plan="[object Object]" disabled="true"></explorer-plan-card-stub>
+                <explorer-plan-card-stub trial="true" plan="[object Object]" disabled="true"></explorer-plan-card-stub>
               </div>
             </div>
           </div>
@@ -95,6 +104,7 @@ exports[`UpdateExplorerPlanModal.vue Should update a subscription 1`] = `
             <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button>
           </div>
           <div class="v-card__text">
+            <!---->
             <!---->
             <div class="row justify-center">
               <div class="col col-3">

@@ -15,7 +15,7 @@
                 <v-row justify="center">
                     <v-col cols="3" v-for="(plan, idx) in plans" :key="idx">
                         <Explorer-Plan-Card
-                            :trial="true"
+                            :trial="user.canTrial"
                             :plan="plan"
                             :current="plan.slug == currentPlanSlug"
                             :loading="updatingSlug && plan.slug == updatingSlug"
