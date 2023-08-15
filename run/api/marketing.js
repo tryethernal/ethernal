@@ -47,22 +47,4 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 });
 
-router.post('/submitExplorerLead', authMiddleware, async (req, res) => {
-    const data = { ...req.query, ...req.body.data };
-    try {
-        if (!data.workspace || !data.email)
-            throw new Error('Missing parameters.');
-
-        await enqueue('submitExplorerLead', `submitExplorerLead-${data.workspace}`, {
-            workspace: data.workspace,
-            email: data.email
-        });
-
-        res.sendStatus(200);
-    } catch(error) {
-        logger.error(error.message, { location: 'post.api.marketing.submitExplorerLead', error: error, data: data });
-        res.status(400).send(error.message);
-    }
-});
-
 module.exports = router;

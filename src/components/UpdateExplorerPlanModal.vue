@@ -8,9 +8,14 @@
             </v-card-title>
             <v-card-text>
                 <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
+                <ul style="list-style: none;" v-if="!user.cryptoPaymentEnabled || user.canTrial" class="mb-4">
+                    <li v-if="!user.cryptoPaymentEnabled">To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
+                    <li v-if="user.canTrial">Each plan includes a 7 day free trial - No credit card needed.</li>
+                </ul>
                 <v-row justify="center">
                     <v-col cols="3" v-for="(plan, idx) in plans" :key="idx">
                         <Explorer-Plan-Card
+                            :trial="true"
                             :plan="plan"
                             :current="plan.slug == currentPlanSlug"
                             :loading="updatingSlug && plan.slug == updatingSlug"

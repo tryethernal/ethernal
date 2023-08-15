@@ -33,10 +33,14 @@
                 <v-card>
                     <v-card-text>
                         <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
-                        <template v-if="!user.cryptoPaymentEnabled">Payment in crypto also available. Reach out to contact@tryethernal.com to set it up.</template>
-                        <v-row>
+                        <ul style="list-style: none;" v-if="!user.cryptoPaymentEnabled || user.canTrial" class="mb-4">
+                            <li v-if="!user.cryptoPaymentEnabled">To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
+                            <li v-if="user.canTrial">Each plan includes a 7 day free trial - No credit card needed.</li>
+                        </ul>
+                        <v-row justify="center">
                             <v-col cols="3" v-for="(plan, idx) in plans" :key="idx">
                                 <Explorer-Plan-Card
+                                    :trial="user.canTrial"
                                     :plan="plan"
                                     :loading="selectedPlanSlug && selectedPlanSlug == plan.slug"
                                     :disabled="selectedPlanSlug && selectedPlanSlug != plan.slug"
@@ -97,6 +101,7 @@ export default {
             this.server.createExplorer(this.workspace.id)
                 .then(({ data }) => {
                     this.explorer = data;
+                    this.$emit('explorerCreated');
 
                     if (this.isBillingEnabled)
                         this.stepperIndex = 2;
