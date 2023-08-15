@@ -13,12 +13,12 @@ module.exports = {
 
         await queryInterface.sequelize.query(`
           ALTER TYPE "enum_stripe_subscriptions_status"
-          ADD VALUE 'trial';
+          ADD VALUE IF NOT EXISTS 'trial';
         `, { transaction });
 
         await queryInterface.sequelize.query(`
           ALTER TYPE "enum_stripe_subscriptions_status"
-          ADD VALUE 'trial_with_card';
+          ADD VALUE IF NOT EXISTS 'trial_with_card';
         `, { transaction });
 
         await transaction.commit();
