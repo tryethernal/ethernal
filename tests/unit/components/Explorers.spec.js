@@ -10,6 +10,16 @@ beforeEach(() => {
 });
 
 describe('Explorers.vue', () => {
+    it('Should display public explorer explainer when no explorers', async () => {
+        jest.spyOn(helper.mocks.server, 'getExplorers').mockResolvedValueOnce({ data: { items: [] }});
+        const wrapper = helper.mountFn(Explorers, {
+            stubs: ['Create-Explorer-Modal']
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should display settings with all options', async () => {
         jest.spyOn(helper.mocks.server, 'getExplorers').mockResolvedValueOnce({
             data: {

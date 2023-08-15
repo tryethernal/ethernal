@@ -110,7 +110,7 @@
                             <v-icon>mdi-earth</v-icon>
                         </v-list-item-icon>
                         <v-list-item-content>
-                            <v-list-item-title>Public Explorers</v-list-item-title>
+                            <v-list-item-title>Public Explorers<sup class="error--text ml-1">NEW</sup></v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
 

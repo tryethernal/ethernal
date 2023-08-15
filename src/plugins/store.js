@@ -109,6 +109,7 @@ export default new Vuex.Store({
                     id: user.id,
                     plan: user.plan,
                     apiToken: user.apiToken,
+                    canTrial: user.canTrial,
                     cryptoPaymentEnabled: user.cryptoPaymentEnabled
                 }));
 
