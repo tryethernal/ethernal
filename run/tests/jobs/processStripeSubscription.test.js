@@ -9,7 +9,7 @@ jest.mock('../../lib/pm2', () => {
         delete: mockPm2Delete
     }))
 });
-const { Explorer, StripeSubscription } = require('../mocks/models');
+const { Explorer } = require('../mocks/models');
 require('../mocks/lib/queue');
 
 const processStripeSubscription = require('../../jobs/processStripeSubscription');
@@ -17,34 +17,41 @@ const processStripeSubscription = require('../../jobs/processStripeSubscription'
 beforeEach(() => jest.clearAllMocks());
 
 describe('processStripeSubscription', () => {
-    it('Should says explorer does not exist', (done) => {
-        jest.spyOn(Explorer, 'findByPk').mockReturnValueOnce(null);
+    it('Should send the delete command & return with message if no explorer', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockReturnValueOnce(null);
 
-        processStripeSubscription({ data: { stripeSubscriptionId: 1, explorerId: 1 }})
+        processStripeSubscription({ data: { explorerSlug: 'slug' }})
             .then(res => {
-                expect(res).toEqual('Cannot find explorer.');
+                expect(mockPm2Delete).toBeCalledWith('slug')
+                expect(res).toEqual('Process deleted (no explorer).');
                 done();
-            })
+            });
     });
 
-    it('Should delete the process', (done) => {
-        jest.spyOn(StripeSubscription, 'findByPk').mockReturnValueOnce(null);
-        jest.spyOn(Explorer, 'findByPk').mockReturnValueOnce({ slug: 'slug', workspaceId: 1 });
+    it('Should send the delete command & return with message if no subscription', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockReturnValueOnce({
+            slug: 'slug',
+            getStripeSubscription: jest.fn().mockResolvedValue(null)
+        });
 
-        processStripeSubscription({ data: { stripeSubscriptionId: 1, explorerId: 1 }})
+        processStripeSubscription({ data: { explorerSlug: 'slug' }})
             .then(res => {
                 expect(mockPm2Delete).toHaveBeenCalledWith('slug');
-                expect(res).toEqual('Process deleted.');
+                expect(res).toEqual('Process deleted (no subscription).');
                 done();
-            })
+            });
     });
 
     it('Should start the process', (done) => {
-        jest.spyOn(StripeSubscription, 'findByPk').mockReturnValueOnce({ id: 'subscriptionId' });
-        jest.spyOn(Explorer, 'findByPk').mockReturnValueOnce({ slug: 'slug', workspaceId: 1 });
+        jest.spyOn(Explorer, 'findOne').mockReturnValueOnce({
+            slug: 'slug',
+            workspaceId: 1,
+            getStripeSubscription: jest.fn().mockResolvedValue({ id: 'sub' })
+        });
+
         mockPm2Find.mockResolvedValue({ data: null });
 
-        processStripeSubscription({ data: { stripeSubscriptionId: 1, explorerId: 1 }})
+        processStripeSubscription({ data: { explorerSlug: 'slug' }})
             .then(res => {
                 expect(mockPm2Start).toHaveBeenCalledWith('slug', 1);
                 expect(res).toEqual('Process created.');
@@ -53,11 +60,14 @@ describe('processStripeSubscription', () => {
     });
 
     it('Should not do anything', (done) => {
-        jest.spyOn(StripeSubscription, 'findByPk').mockReturnValueOnce({ id: 'subscriptionId' });
-        jest.spyOn(Explorer, 'findByPk').mockReturnValueOnce({ slug: 'slug', workspaceId: 1 });
+        jest.spyOn(Explorer, 'findOne').mockReturnValueOnce({
+            slug: 'slug',
+            getStripeSubscription: jest.fn().mockResolvedValue({ id: 'sub' })
+        });
+
         mockPm2Find.mockResolvedValue({ data: { id: 1 }});
 
-        processStripeSubscription({ data: { stripeSubscriptionId: 1, explorerId: 1 }})
+        processStripeSubscription({ data: { explorerSlug: 'slug' }})
             .then(res => {
                 expect(mockPm2Start).not.toHaveBeenCalled();
                 expect(mockPm2Delete).not.toHaveBeenCalled();
