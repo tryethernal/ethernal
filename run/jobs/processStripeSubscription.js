@@ -41,7 +41,7 @@ module.exports = async job => {
 
     // If the process doesn't exist or is not running, we create it
     if (!existingProcess) {
-        await pm2.start(explorer.slug, workspace.name, user.apiToken);
+        await pm2.start(explorer.slug, workspace.id);
         return 'Process created.';
     }
 

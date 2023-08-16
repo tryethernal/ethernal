@@ -895,7 +895,20 @@ const searchForText = async (workspaceId, text) => {
 };
 
 const getWorkspaceById = async (workspaceId) => {
-    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId, {
+        include: {
+            model: User,
+            as: 'user',
+            attributes: ['firebaseUserId']
+        }
+    });
+
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
     return workspace.toJSON();
 };
 

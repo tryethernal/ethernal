@@ -38,6 +38,17 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 });
 
+router.get('/:id', secretMiddleware, async (req, res) => {
+    try {
+        const workspace = await db.getWorkspaceById(req.params.id);
+
+        res.status(200).json(workspace);
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.workspaces.id', error: error, data: req.params });
+        res.status(400).send(error.message);
+    }
+});
+
 router.post('/', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
