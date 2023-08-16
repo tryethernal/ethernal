@@ -88,7 +88,7 @@ describe('delete', () => {
 describe('start', () => {
     it('Should resolve with started process', (done) => {
         jest.spyOn(pm2, 'describe').mockImplementation((_, cb) => cb(null, [{ process: 1 }]));
-        pm2Lib.start('slug', 'workspace', 'token')
+        pm2Lib.start('slug', 1)
             .then(process => {
                 expect(process).toEqual({ process: 1 });
                 done();

@@ -5,10 +5,11 @@ ENV NODE_ENV=production
 ENV SECRET=
 COPY pm2-server/package.json pm2-server/yarn.lock pm2-server/app.js pm2-server/index.js pm2-server/ecosystem.config.js ./
 COPY pm2-server/lib/ ./lib
-RUN yarn global add ethernal pm2
+RUN yarn global add ethernal-light pm2
 RUN pm2 install pm2-logrotate
 
 FROM base AS dev
+ENV PM2_HOME=/root/.pm2-dev
 RUN yarn
 CMD ["yarn", "run", "start:dev"]
 

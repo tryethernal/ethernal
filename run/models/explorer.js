@@ -4,6 +4,8 @@ const {
 } = require('sequelize');
 const { sanitize } = require('../lib/utils');
 const { isStripeEnabled, isSubscriptionCheckEnabled } = require('../lib/flags');
+const { enqueue } = require('../lib/queue');
+
 module.exports = (sequelize, DataTypes) => {
   class Explorer extends Model {
     /**
@@ -176,6 +178,8 @@ module.exports = (sequelize, DataTypes) => {
                 const domains = await this.getDomains();
                 for (let i = 0; i < domains.length; i++)
                     await domains[i].destroy({ transaction });
+                if (stripeSubscription)
+                    await stripeSubscription.destroy({ transaction });
                 return this.destroy({ transaction });
             });
         else if (stripeSubscription.isActive)
@@ -274,6 +278,16 @@ module.exports = (sequelize, DataTypes) => {
     token: DataTypes.STRING,
     totalSupply: DataTypes.STRING
   }, {
+    hooks: {
+        afterDestroy(explorer, options) {
+            const afterDestroyFn = () => {
+                return enqueue('processStripeSubscription', `processStripeSubscription-${explorer.slug}`, {
+                    explorerSlug: explorer.slug
+                  });
+            };
+            return options.transaction ? options.transaction.afterCommit(afterDestroyFn) : afterDestroyFn();
+        }
+    },
     sequelize,
     modelName: 'Explorer',
     tableName: 'explorers'

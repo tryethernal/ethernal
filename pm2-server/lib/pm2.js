@@ -111,24 +111,19 @@ const _delete = (slug) => {
     });
 };
 
-const start = (slug, workspace, apiToken) => {
+const start = (slug, workspaceId) => {
     return new Promise((resolve, reject) => {
-        if (!slug || !workspace || !apiToken) reject(new Error('Missing parameter'));
+        if (!slug || !workspaceId) reject(new Error('Missing parameter'));
 
         pm2.connect(error => {
             if (error) reject(new Error(error));
 
             const options = {
                 name: slug,
-                script: 'ethernal',
-                args: `listen -s -w "${workspace}"`,
+                script: 'ethernal-light',
+                args: String(workspaceId),
                 interpreter: 'none',
-                log_type: 'json',
-                env: {
-                    ETHERNAL_API_TOKEN: apiToken,
-                    NODE_ENV: process.env.NODE_ENV || 'development',
-                    ETHERNAL_API_ROOT: process.env.ETHERNAL_HOST
-                }
+                log_type: 'json'
             };
 
             pm2.start(options, (error) => {
