@@ -7,25 +7,10 @@ module.exports = async job => {
     if (!data.stripeSubscriptionId || !data.explorerId)
         return 'Missing parameter.';
 
-    const explorer = await models.Explorer.findOne({
-        where: { id: data.explorerId },
-        include: [
-            {
-                model: models.Workspace,
-                as: 'workspace',
-            },
-            {
-                model: models.User,
-                as: 'admin'
-            }
-        ]
-    });
-
+    const explorer = await models.Explorer.findByPk(data.explorerId);
     if (!explorer)
         return 'Cannot find explorer.';
 
-    const workspace = explorer.workspace;
-    const user = explorer.admin;
     const stripeSubscription = await models.StripeSubscription.findByPk(data.stripeSubscriptionId);
 
     const pm2 = new PM2(process.env.PM2_HOST, process.env.PM2_SECRET);
@@ -41,7 +26,7 @@ module.exports = async job => {
 
     // If the process doesn't exist or is not running, we create it
     if (!existingProcess) {
-        await pm2.start(explorer.slug, workspace.id);
+        await pm2.start(explorer.slug, explorer.workspaceId);
         return 'Process created.';
     }
 

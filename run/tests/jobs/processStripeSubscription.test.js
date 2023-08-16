@@ -18,7 +18,7 @@ beforeEach(() => jest.clearAllMocks());
 
 describe('processStripeSubscription', () => {
     it('Should says explorer does not exist', (done) => {
-        jest.spyOn(Explorer, 'findOne').mockReturnValueOnce(null);
+        jest.spyOn(Explorer, 'findByPk').mockReturnValueOnce(null);
 
         processStripeSubscription({ data: { stripeSubscriptionId: 1, explorerId: 1 }})
             .then(res => {
@@ -29,7 +29,7 @@ describe('processStripeSubscription', () => {
 
     it('Should delete the process', (done) => {
         jest.spyOn(StripeSubscription, 'findByPk').mockReturnValueOnce(null);
-        jest.spyOn(Explorer, 'findOne').mockReturnValueOnce({ slug: 'slug' });
+        jest.spyOn(Explorer, 'findByPk').mockReturnValueOnce({ slug: 'slug', workspaceId: 1 });
 
         processStripeSubscription({ data: { stripeSubscriptionId: 1, explorerId: 1 }})
             .then(res => {
@@ -41,12 +41,12 @@ describe('processStripeSubscription', () => {
 
     it('Should start the process', (done) => {
         jest.spyOn(StripeSubscription, 'findByPk').mockReturnValueOnce({ id: 'subscriptionId' });
-        jest.spyOn(Explorer, 'findOne').mockReturnValueOnce({ slug: 'slug', workspace: { name: 'workspace' }, admin: { apiToken: 'token' }});
+        jest.spyOn(Explorer, 'findByPk').mockReturnValueOnce({ slug: 'slug', workspaceId: 1 });
         mockPm2Find.mockResolvedValue({ data: null });
 
         processStripeSubscription({ data: { stripeSubscriptionId: 1, explorerId: 1 }})
             .then(res => {
-                expect(mockPm2Start).toHaveBeenCalledWith('slug', 'workspace', 'token');
+                expect(mockPm2Start).toHaveBeenCalledWith('slug', 1);
                 expect(res).toEqual('Process created.');
                 done();
             })
@@ -54,7 +54,7 @@ describe('processStripeSubscription', () => {
 
     it('Should not do anything', (done) => {
         jest.spyOn(StripeSubscription, 'findByPk').mockReturnValueOnce({ id: 'subscriptionId' });
-        jest.spyOn(Explorer, 'findOne').mockReturnValueOnce({ slug: 'slug', workspace: { name: 'workspace' }, admin: { apiToken: 'token' }});
+        jest.spyOn(Explorer, 'findByPk').mockReturnValueOnce({ slug: 'slug', workspaceId: 1 });
         mockPm2Find.mockResolvedValue({ data: { id: 1 }});
 
         processStripeSubscription({ data: { stripeSubscriptionId: 1, explorerId: 1 }})

@@ -84,7 +84,7 @@ describe('POST /processes', () => {
         jest.spyOn(pm2, 'start').mockResolvedValue({ process: 1 });
         jest.spyOn(pm2, 'show').mockResolvedValue(null);
         request.post('/processes')
-            .send({ apiToken: 'abcd', slug: 'my-explorer', workspace: 'My Explorer' })
+            .send({ slug: 'my-explorer', workspaceId: 1 })
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual({ process: 1 });
@@ -95,7 +95,7 @@ describe('POST /processes', () => {
     it('Should return an error', (done) => {
         jest.spyOn(pm2, 'start').mockRejectedValue(new Error('error'));
         request.post('/processes')
-            .send({ apiToken: 'abcd', slug: 'my-explorer', workspace: 'My Explorer' })
+            .send({ slug: 'my-explorer', workspaceId: 1 })
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual('error');
