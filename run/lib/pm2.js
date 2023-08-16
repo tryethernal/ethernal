@@ -12,11 +12,11 @@ class PM2 {
         this.secret = secret;
     }
 
-    start(slug, workspace, apiToken) {
-        if (!slug || !workspace || !apiToken) throw new Error('Missing parameter');
+    start(slug, workspaceId) {
+        if (!slug || !workspaceId) throw new Error('Missing parameter');
 
         const resource = `${this.host}/processes?secret=${this.secret}`;
-        return withTimeout(axios.post(resource, { slug, workspace, apiToken }));
+        return withTimeout(axios.post(resource, { slug, workspaceId }));
     }
 
     find(slug) {

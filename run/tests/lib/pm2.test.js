@@ -18,9 +18,9 @@ describe('start', () => {
 
     it('Should start a process', (done) => {
         const pm2 = new PM2(host, secret);
-        pm2.start('slug', 'workspace', 'apiToken')
+        pm2.start('slug', 1)
             .then(() => {
-                expect(axios.post).toHaveBeenCalledWith('http://pm2/processes?secret=secret', { slug: 'slug', workspace: 'workspace', apiToken: 'apiToken' });
+                expect(axios.post).toHaveBeenCalledWith('http://pm2/processes?secret=secret', { slug: 'slug', workspaceId: 1 });
                 done();
             });
     });

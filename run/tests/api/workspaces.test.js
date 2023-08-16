@@ -13,6 +13,21 @@ const request = supertest(app);
 
 const BASE_URL = '/api/workspaces';
 
+describe(`GET ${BASE_URL}/:id`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('Should return workspace', (done) => {
+        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce([{ name: 'local' }]);
+
+        request.get(`${BASE_URL}/1`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual([{ name: 'local' }]);
+                done();
+            });
+    });
+});
+
 describe(`GET ${BASE_URL}`, () => {
     beforeEach(() => jest.clearAllMocks());
 
@@ -26,7 +41,7 @@ describe(`GET ${BASE_URL}`, () => {
                 done();
             });
     });
-})
+});
 
 describe(`POST ${BASE_URL}/reset`, () => {
     beforeEach(() => jest.clearAllMocks());

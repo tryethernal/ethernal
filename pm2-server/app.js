@@ -66,7 +66,7 @@ app.post('/processes', secretMiddleware, async (req, res) => {
     const data = req.body;
 
     try {
-        if (!data.slug || !data.workspace || !data.apiToken)
+        if (!data.slug || !data.workspaceId)
             throw new Error('Missing parameter');
 
         const existingProcess = await pm2.show(data.slug);
@@ -74,7 +74,7 @@ app.post('/processes', secretMiddleware, async (req, res) => {
         if (existingProcess)
             return res.sendStatus(200);
 
-        const pm2Process = await pm2.start(data.slug, data.workspace, data.apiToken);
+        const pm2Process = await pm2.start(data.slug, data.workspaceId);
 
         return res.status(200).send(pm2Process);
     } catch(error) {
