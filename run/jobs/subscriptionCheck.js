@@ -13,7 +13,7 @@ module.exports = async () => {
     });
 
     const jobs = subscriptions.map(s => ({
-        name: `processStripeSubscription-${s.id}`,
+        name: `processStripeSubscription-${s.explorer.slug}`,
         data: {
             explorerSlug: s.explorer.slug
         }
