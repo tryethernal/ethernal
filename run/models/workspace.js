@@ -232,6 +232,7 @@ module.exports = (sequelize, DataTypes) => {
             SELECT timestamp, count
             FROM transaction_volume_14d 
             WHERE "workspaceId" = :workspaceId
+            ORDER BY timestamp ASC
         `, {
             replacements: { workspaceId: this.id }
         });
@@ -255,6 +256,7 @@ module.exports = (sequelize, DataTypes) => {
             SELECT timestamp, count
             FROM wallet_volume_14d
             WHERE "workspaceId" = :workspaceId
+            ORDER BY timestamp
         `, {
             replacements: { workspaceId: this.id }
         });
