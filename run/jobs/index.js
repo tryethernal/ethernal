@@ -23,5 +23,6 @@ module.exports = {
     integrityCheck: require('./integrityCheck'),
     rpcHealthCheck: require('./rpcHealthCheck'),
     rpcHealthCheckStarter: require('./rpcHealthCheckStarter'),
-    subscriptionCheck: require('./subscriptionCheck')
+    subscriptionCheck: require('./subscriptionCheck'),
+    refreshMaterializedViews: require('./refreshMaterializedViews')
 };

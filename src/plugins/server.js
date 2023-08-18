@@ -693,12 +693,10 @@ export const serverPlugin = {
                 return axios.post(resource, data);
             },
 
-            getWalletVolume(from, to) {
+            getWalletVolume() {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
-                    from: from,
-                    to: to
                 };
                 const resource = `${store.getters.apiRoot}/api/stats/wallets`;
                 return axios.get(resource, { params });
@@ -737,12 +735,10 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            getTransactionVolume(from, to) {
+            getTransactionVolume() {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
-                    from: from,
-                    to: to
+                    workspace: store.getters.currentWorkspace.name
                 };
                 const resource = `${store.getters.apiRoot}/api/stats/transactions`;
                 return axios.get(resource, { params });

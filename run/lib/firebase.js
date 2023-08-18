@@ -797,19 +797,25 @@ const setWorkspaceRemoteFlag = async (workspaceId, flag) => {
     return workspace.update({ isRemote: flag });
 };
 
-const getWalletVolume = async (workspaceId, from, to) => {
+const getWalletVolume = async (workspaceId) => {
     if (!workspaceId) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
-    const wallets = await workspace.getWalletVolume(from, to);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    const wallets = await workspace.getWalletVolume();
     return wallets;
 };
 
-const getTransactionVolume = async (workspaceId, from, to) => {
+const getTransactionVolume = async (workspaceId) => {
     if (!workspaceId) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
-    const transactions = await workspace.getTransactionVolume(from, to);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    const transactions = await workspace.getTransactionVolume();
     return transactions;
 };
 
@@ -817,6 +823,9 @@ const getActiveWalletCount = async (workspaceId) => {
     if (!workspaceId) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
     const wallets = await workspace.findActiveWallets();
     return wallets.length;
 };
@@ -825,14 +834,20 @@ const getTotalTxCount = async (workspaceId) => {
     if (!workspaceId) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
-    return await workspace.countTransactions();
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.countTransactions();
 };
 
 const getTxCount = async (workspaceId, since = 0) => {
     if (!workspaceId) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
-    return await workspace.countTransactionsSince(since);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.countTransactionsSince(since);
 };
 
 const getAddressLatestTokenBalances = async (workspaceId, address, tokenPatterns) => {
