@@ -14,6 +14,14 @@ const SUBSCRIPTION_CHECK_INTERVAL = 5 * 60 * 1000;
     );
 
     await enqueue(
+        'refreshMaterializedViews',
+        'refreshMaterializedViews',
+        {},
+        10,
+        { pattern: '0 0 * * *' }
+    );
+
+    await enqueue(
         'integrityCheckStarter',
         'integrityCheckStarter',
         {},

@@ -7,12 +7,12 @@ const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 router.get('/wallets', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
     try {
-        if (!data.workspace || !data.from || !data.to)
+        if (!data.workspace)
             throw new Error('Missing parameters.');
         if (!data.workspace.public)
             throw new Error('This endpoint is not available on private workspaces.');
 
-        const wallets = await db.getWalletVolume(data.workspace.id, data.from, data.to);
+            const wallets = await db.getWalletVolume(data.workspace.id);
 
         res.status(200).json(wallets);
     } catch(error) {
@@ -24,12 +24,12 @@ router.get('/wallets', workspaceAuthMiddleware, async (req, res) => {
 router.get('/transactions', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
     try {
-        if (!data.workspace || !data.from || !data.to)
+        if (!data.workspace)
             throw new Error('Missing parameters.');
         if (!data.workspace.public)
             throw new Error('This endpoint is not available on private workspaces.');
 
-        const transactions = await db.getTransactionVolume(data.workspace.id, data.from, data.to);
+        const transactions = await db.getTransactionVolume(data.workspace.id);
 
         res.status(200).json(transactions);
     } catch(error) {

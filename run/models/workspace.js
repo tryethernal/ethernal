@@ -227,50 +227,37 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async getTransactionVolume(from, to) {
-        if (!from || !to) return [];
-        const [transactions, metadata] = await sequelize.query(`
-            SELECT
-                timestamp::date,
-                count(1)
-            FROM transactions
-            WHERE timestamp::date >= date '${from}' AND timestamp::date < date '${to}'
-            and "workspaceId" = ${this.id}
-            GROUP BY timestamp::date
-        `);
+    async getTransactionVolume() {
+        const [transactions,] = await sequelize.query(`
+            SELECT timestamp, count
+            FROM transaction_volume_14d 
+            WHERE "workspaceId" = :workspaceId
+        `, {
+            replacements: { workspaceId: this.id }
+        });
 
         return transactions;
     }
 
     async findActiveWallets() {
-        const [wallets, metadata] = await sequelize.query(`
-            SELECT DISTINCT
-                "from" AS address 
-            FROM
-                transactions
-            WHERE
-                "workspaceId" = ${this.id}
-        `);
+        const [wallets,] = await sequelize.query(`
+            SELECT DISTINCT "from" AS address 
+            FROM transactions
+            WHERE "workspaceId" = :workspaceId
+        `, {
+            replacements: { workspaceId: this.id }
+        });
         return wallets;
     }
 
-    async getWalletVolume(from, to) {
-        const [wallets, metadata] = await sequelize.query(`
-                SELECT
-                    timestamp,
-                    COUNT(addresses)
-                    FROM (
-                        SELECT DISTINCT
-                            "from" AS address,
-                            timestamp::date
-                        FROM transactions
-                        WHERE "workspaceId" = ${this.id}
-                        AND timestamp::date >= date '${from}' AND timestamp::date < date '${to}'
-                    ) AS addresses
-                WHERE addresses.address <> ''
-                GROUP BY timestamp
-
-        `);
+    async getWalletVolume() {
+        const [wallets,] = await sequelize.query(`
+            SELECT timestamp, count
+            FROM wallet_volume_14d
+            WHERE "workspaceId" = :workspaceId
+        `, {
+            replacements: { workspaceId: this.id }
+        });
         return wallets;
     }
 
