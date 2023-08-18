@@ -14,7 +14,7 @@ describe(`GET /wallets`, () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('Should return an error if workspace is not public', (done) => {
-        request.get(`${BASE_URL}/wallets?from=2022-04-05&to=2022-06-05`)
+        request.get(`${BASE_URL}/wallets`)
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual('This endpoint is not available on private workspaces.');
@@ -30,7 +30,7 @@ describe(`GET /wallets`, () => {
         });
         jest.spyOn(db, 'getWalletVolume').mockResolvedValueOnce([{ timestamp: '2022-04-05', count: 1 }]);
 
-        request.get(`${BASE_URL}/wallets?from=2022-04-05&to=2022-06-05`)
+        request.get(`${BASE_URL}/wallets`)
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual([{ timestamp: '2022-04-05', count: 1 }]);
@@ -43,7 +43,7 @@ describe(`GET /transactions`, () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('Should return an error if workspace is not public', (done) => {
-        request.get(`${BASE_URL}/transactions?from=2022-04-05&to=2022-06-05`)
+        request.get(`${BASE_URL}/transactions`)
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual('This endpoint is not available on private workspaces.');
@@ -59,7 +59,7 @@ describe(`GET /transactions`, () => {
         });
         jest.spyOn(db, 'getTransactionVolume').mockResolvedValueOnce([{ timestamp: '2022-04-05', count: 1 }]);
 
-        request.get(`${BASE_URL}/transactions?from=2022-04-05&to=2022-06-05`)
+        request.get(`${BASE_URL}/transactions`)
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual([{ timestamp: '2022-04-05', count: 1 }]);
