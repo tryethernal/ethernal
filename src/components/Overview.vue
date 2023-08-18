@@ -145,10 +145,8 @@ export default {
         },
         getTransactionVolume() {
             this.transactionVolumeLoading = true;
-            const date14daysAgo = moment().subtract(14, 'days').format('YYYY-MM-DD');
-            const dateNow = moment().format('YYYY-MM-DD');
 
-            this.server.getTransactionVolume(date14daysAgo, dateNow)
+            this.server.getTransactionVolume()
                 .then(({ data }) => {
                     this.charts['transactionVolume14Days'] = {
                         xLabels: data.map(t => moment(t.timestamp).format('DD/MM')),
@@ -160,10 +158,8 @@ export default {
         },
         getWalletVolume() {
             this.walletVolumeLoading = true;
-            const date14daysAgo = moment().subtract(14, 'days').format('YYYY-MM-DD');
-            const dateNow = moment().format('YYYY-MM-DD');
 
-            this.server.getWalletVolume(date14daysAgo, dateNow)
+            this.server.getWalletVolume()
                 .then(({ data }) => {
                     this.charts['walletVolume14Days'] = {
                         xLabels: data.map(t => moment(t.timestamp).format('DD/MM')),

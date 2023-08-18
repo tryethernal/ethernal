@@ -23,6 +23,7 @@
         "integrityCheck",
         "rpcHealthCheck",
         "rpcHealthCheckStarter",
-        "subscriptionCheck"
+        "subscriptionCheck",
+        "refreshMaterializedViews"
     ]
 }
