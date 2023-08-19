@@ -89,7 +89,7 @@ export default {
             'chain'
         ]),
         canImport: function() {
-            return this.user.plan == 'premium' || this.options.contractsCount < 10;
+            return this.currentWorkspace.public || this.user.plan == 'premium' || this.options.contractsCount < 10;
         },
     }
 }
