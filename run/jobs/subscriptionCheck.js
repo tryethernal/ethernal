@@ -1,5 +1,6 @@
 const { StripeSubscription, Explorer } = require('../models');
 const { bulkEnqueue } = require('../lib/queue');
+const { Op } = require('sequelize');
 
 module.exports = async () => {
     const subscriptions = await StripeSubscription.findAll({
