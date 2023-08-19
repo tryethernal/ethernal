@@ -131,7 +131,6 @@ module.exports = (sequelize, DataTypes) => {
     blockNumber: DataTypes.INTEGER,
     blockId: DataTypes.INTEGER,
     chainId: DataTypes.INTEGER,
-    confirmations: DataTypes.INTEGER,
     creates: DataTypes.STRING,
     data: DataTypes.STRING,
     parsedError: DataTypes.STRING,
