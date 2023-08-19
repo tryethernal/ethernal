@@ -610,7 +610,6 @@ module.exports = (sequelize, DataTypes) => {
                 blockNumber: transaction.blockNumber,
                 blockId: blockId,
                 chainId: transaction.chainId,
-                confirmations: transaction.confirmations,
                 creates: transaction.creates,
                 data: transaction.data,
                 parsedError: transaction.parsedError,
