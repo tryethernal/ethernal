@@ -3,7 +3,11 @@ const { bulkEnqueue } = require('../lib/queue');
 
 module.exports = async () => {
     const subscriptions = await StripeSubscription.findAll({
-        where: { status: 'active' },
+        where: {
+            status: {
+                [Op.or]: ['active', 'trial', 'trial_with_card']
+            }
+        },
         include: {
             model: Explorer,
             as: 'explorer',
