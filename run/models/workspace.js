@@ -451,7 +451,7 @@ module.exports = (sequelize, DataTypes) => {
                     s: transaction.s,
                     timestamp: block.timestamp,
                     to: transaction.to,
-                    transactionIndex: transaction.transactionIndex,
+                    transactionIndex: transaction.transactionIndex || transaction.index,
                     type_: transaction.type,
                     v: transaction.v,
                     value: transaction.value,
@@ -526,8 +526,8 @@ module.exports = (sequelize, DataTypes) => {
                         logsBloom: receipt.logsBloom,
                         status: receipt.status,
                         to: receipt.to,
-                        transactionHash: receipt.transactionHash,
-                        transactionIndex: receipt.transactionIndex,
+                        transactionHash: receipt.transactionHash || receipt.hash || storedTx.hash,
+                        transactionIndex: receipt.transactionIndex || receipt.index,
                         type_: receipt.type,
                         raw: receipt
                     }), { transaction: sequelizeTransaction });
@@ -626,7 +626,7 @@ module.exports = (sequelize, DataTypes) => {
                 s: transaction.s,
                 timestamp: transaction.timestamp,
                 to: transaction.to,
-                transactionIndex: transaction.transactionIndex,
+                transactionIndex: transaction.transactionIndex || transaction.index,
                 type_: transaction.type,
                 v: transaction.v,
                 value: transaction.value,
@@ -648,8 +648,8 @@ module.exports = (sequelize, DataTypes) => {
                     logsBloom: receipt.logsBloom,
                     status: receipt.status,
                     to: receipt.to,
-                    transactionHash: receipt.transactionHash,
-                    transactionIndex: receipt.transactionIndex,
+                    transactionHash: receipt.transactionHash || receipt.hash || storedTx.hash,
+                    transactionIndex: receipt.transactionIndex || receipt.index,
                     type_: receipt.type,
                     raw: receipt
                 }), { transaction: sequelizeTransaction });
