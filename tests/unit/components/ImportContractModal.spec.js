@@ -65,4 +65,20 @@ describe('ImportContractModal.vue', () => {
         await new Promise(process.nextTick);
         expect(wrapper.html()).toMatchSnapshot();
     });
+
+    it('Should not warn the user if he is on a public explorer', async () => {
+        const wrapper = helper.mountFn(ImportContractModal, {
+            getters: {
+                user: jest.fn().mockReturnValue({ plan: 'free' }),
+                currentWorkspace: jest.fn().mockReturnValue({ public: true })
+            }
+        });
+        await wrapper.setData({ dialog: true, options: { contractsCount: 10 } });
+
+        await wrapper.find('#contractAddress').setValue('0x123');
+        await wrapper.find('#importContract').trigger('click');
+
+        await new Promise(process.nextTick);
+        expect(wrapper.html()).toMatchSnapshot();
+    });
 });

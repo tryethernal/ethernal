@@ -9,15 +9,15 @@ beforeEach(() => jest.clearAllMocks());
 describe('subscriptionCheck', () => {
     it('Should enqueue subscriptions processing', async () => {
         jest.spyOn(StripeSubscription, 'findAll').mockResolvedValueOnce([
-            { id: 1, explorerId: 1 },
-            { id: 2, explorerId: 2 }
+            { explorer: { slug: 'slug-1' }},
+            { explorer: { slug: 'slug-2' }}
         ]);
 
         await subscriptionCheck({});
 
         expect(bulkEnqueue).toHaveBeenCalledWith('processStripeSubscription', [
-            { name: 'processStripeSubscription-1', data: { stripeSubscriptionId: 1, explorerId: 1 }},
-            { name: 'processStripeSubscription-2', data: { stripeSubscriptionId: 2, explorerId: 2 }}
+            { name: 'processStripeSubscription-slug-1', data: { explorerSlug: 'slug-1' }},
+            { name: 'processStripeSubscription-slug-2', data: { explorerSlug: 'slug-2' }}
         ]);
     });
 });

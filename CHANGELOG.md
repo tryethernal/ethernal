@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.17.18] - 2023-08-19
+### Fixed
+- [Public Explorer] Fix susbcription checking for trials
+
+## [3.17.17] - 2023-08-19
+### Fixed
+- [Public Explorer] Do not show contract limit warning
+
+## [3.17.16] - 2023-08-18
+### Fixed
+- [Public Explorer] Fix ordering for overview stats
+
+## [3.17.15] - 2023-08-18
+### Changed
+- [Public Explorer] Overview stats are now in materialized views (refreshed daily), which should significantly improve loading time 🚀
+
+## [3.17.14] - 2023-08-17
+### Fixed
+- Tests
+
+## [3.17.13] - 2023-08-17
+### Fixed
+- PM2 process starter
+
 ## [3.17.12] - 2023-08-17
 ### Changed
 - [Public Explorer] Improved how pm2 process creation/deletions are done

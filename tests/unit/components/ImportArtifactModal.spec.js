@@ -64,7 +64,7 @@ describe('ImportArtifactModal.vue', () => {
 
         await wrapper.find('#updateContract').trigger('click');
         await new Promise(process.nextTick);
-        
+
         expect(syncContractDataMock).toHaveBeenCalled();
         expect(wrapper.vm.abi).toBe(JSON.stringify(DSProxyFactoryContract.abi));
         expect(wrapper.vm.name).toBe(DSProxyFactoryContract.name);
@@ -84,5 +84,5 @@ describe('ImportArtifactModal.vue', () => {
 
         expect(syncContractDataMock).toHaveBeenCalled();
         expect(wrapper.html()).toMatchSnapshot();
-    });    
+    });
 });

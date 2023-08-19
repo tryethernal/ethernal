@@ -120,6 +120,46 @@ exports[`ImportContractModal.vue Should not warn the user if he is on a premium 
 </div>
 `;
 
+exports[`ImportContractModal.vue Should not warn the user if he is on a public explorer 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+        <div class="v-card v-sheet theme--light">
+          <div class="v-card__title headline">Import a third-party contract</div>
+          <div class="v-card__text">
+            <!---->
+            <div role="alert" class="v-alert v-sheet theme--dark success">Contract has been imported at address <a class="white--text" href="/address/0x123">0x123</a>. If available, metadata will be automatically imported from Etherscan in a few seconds...</div>
+            <!---->
+            <div>
+              Enter an address of a contract deployed on Ethereum mainnet.<br>
+              If the contract has been verified on Etherscan, its name and ABI will be pulled automatically.<br>
+              If not, the contract will be imported but you'll have to manually add the name and ABI.
+              To be able to use this, your workspace needs to be connected to a mainnet fork.<br>
+              If it is not, the contract will still be imported but calls will fail.<br></div>
+            <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <div class="v-text-field__slot"><label for="contractAddress" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Address*</label><input required="required" id="contractAddress" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-card__actions">
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text"><span class="v-btn__content">Close</span></button> <button type="button" class="v-btn v-btn--text theme--light v-size--default primary--text" id="importContract"><span class="v-btn__content">Import</span></button>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
 exports[`ImportContractModal.vue Should warn the user if he is on a free plan and has already 10 contracts 1`] = `
 <div class="v-dialog__container">
   <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
