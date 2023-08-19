@@ -18,6 +18,8 @@ describe('ExplorerDomainDNSInfoModal.vue', () => {
                     resolve: jest.fn().mockResolvedValue(),
                     domain: 'ethernal.com',
                     dnsStatus: {
+                        apx_hit: true,
+                        dns_pointed_at: '75.2.60.5',
                         last_monitored_humanized: '1 minute ago',
                         is_resolving: true,
                         has_ssl: false

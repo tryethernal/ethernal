@@ -14,6 +14,24 @@
                     <v-list-item>
                         <v-tooltip top>
                             <template v-slot:activator="{ on, attrs }">
+                                <v-icon v-bind="attrs" v-on="on" :class="{ 'mr-1': true, 'success--text': dnsStatus.apx_hit, 'error--text': !dnsStatus.apx_hit }">{{ dnsStatus.apx_hit ? 'mdi-check' : 'mdi-close' }}</v-icon> APX Hits
+                            </template>
+                            <span v-if="dnsStatus.apx_hit">Requests to this address are reaching our servers.</span>
+                            <span v-else>Requests are not reaching our servers. Usually this means that this address does not have a DNS record pointing at our servers.</span>
+                        </v-tooltip>
+                    </v-list-item>
+                    <v-list-item>
+                        <v-tooltip top>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-icon v-bind="attrs" v-on="on" :class="{ 'mr-1': true, 'success--text': dnsStatus.hasDnsRecord, 'error--text': !dnsStatus.hasDnsRecord }">{{ dnsStatus.hasDnsRecord ? 'mdi-check' : 'mdi-close' }}</v-icon> DNS
+                            </template>
+                            <span v-if="dnsStatus.hasDnsRecord">We found a DNS record that's pointed at our servers.</span>
+                            <span v-else>We currently can't find a DNS record pointed at our servers, though it could still be propagating. This can be fixed by adding/replacing an A or CNAME record pointing at our servers.</span>
+                        </v-tooltip>
+                    </v-list-item>
+                    <v-list-item>
+                        <v-tooltip top>
+                            <template v-slot:activator="{ on, attrs }">
                                 <v-icon v-bind="attrs" v-on="on" :class="{ 'mr-1': true, 'success--text': dnsStatus.is_resolving, 'error--text': !dnsStatus.is_resolving }">{{ dnsStatus.is_resolving ? 'mdi-check' : 'mdi-close' }}</v-icon> Resolving requests
                             </template>
                             <span v-if="dnsStatus.is_resolving">Requests to this domain are returning a response.</span>
@@ -34,7 +52,8 @@
                     </v-list-item>
                 </v-list>
                 <div class="mb-1">Log in to the account you have with your DNS provider, and add the following record:</div>
-                <div style="border-radius: 5px;" class="mb-1 pa-2 black white--text font-weight-medium">{{ domainOrigin }} A 75.2.60.5</div>
+                <div style="border-radius: 5px;" class="pa-2 black white--text font-weight-medium">{{ domainOrigin }} A 75.2.60.5</div>
+                <div class="text-caption" v-if="dnsStatus.dns_pointed_at">Current DNS: {{ dnsStatus.dns_pointed_at }}</div>
             </v-card-text>
         </v-card>
     </v-dialog>
@@ -75,6 +94,9 @@ export default {
             } catch(error) {
                 return null
             }
+        },
+        hasDnsRecord() {
+            return this.dnsStatus.dns_pointed_at == '75.2.60.5';
         }
     }
 }
