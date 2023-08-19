@@ -8,9 +8,10 @@
                 <a :href="`//${domain.domain}`" target="_blank">{{  domain.domain }}</a>&nbsp;|&nbsp;
                 <span v-if="loading && !deleting">Fetching DNS status...</span>
                 <template v-else-if="dnsStatus.status_message">
-                    <v-icon small :color="dnsStatus.status == 'ACTIVE_SSL' ? 'success' : 'error'">{{ dnsStatus.status == 'ACTIVE_SSL' ? 'mdi-check' : 'mdi-close' }}</v-icon>
+                    <v-icon small :color="status ? 'success' : 'error'">{{ status ? 'mdi-check' : 'mdi-close' }}</v-icon>
                     <a style="text-decoration: underline;" @click.stop="showDnsInfo()">
-                        {{ dnsStatus.status_message }}
+                        <template v-if="status">{{ dnsStatus.status_message }}</template>
+                        <template v-else>Incomplete DNS setup</template>
                     </a>
                 </template>
                 <span v-else>DNS status not available yet.</span>
@@ -63,6 +64,14 @@ export default {
         }
     },
     computed: {
+        status() {
+            if (!this.dnsStatus)
+                return false;
+            return this.dnsStatus.apx_hit && this.hasDnsRecord && this.dnsStatus.is_resolving && this.dnsStatus.has_ssl;
+        },
+        hasDnsRecord() {
+            return this.dnsStatus.dns_pointed_at == '75.2.60.5';
+        }
     }
 }
 </script>
