@@ -81,4 +81,24 @@ describe('Contracts.vue', () => {
 
         expect(wrapper.html()).toMatchSnapshot();
     });
+
+    it('Should not display a warning message for public explorers', async () => {
+        const contracts = []; 
+        for (let i = 0; i < 10; i++)
+            contracts.push({ address: `0x${i}`, name: `0x${i}`, timestamp: '2022-05-06T17:11:26.000Z' });
+
+        jest.spyOn(helper.mocks.server, 'getContracts')
+            .mockResolvedValue({ data: { items: contracts, total: 10 }});
+
+        const wrapper = helper.mountFn(Contracts, {
+            stubs: ['Hash-Link'],
+            getters: {
+                user: jest.fn().mockReturnValue({ plan: 'free' }),
+                currentWorkspace: jest.fn().mockReturnValue({ public: true })
+            }
+        });
+        await new Promise(process.nextTick);
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
 });

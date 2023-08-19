@@ -38,10 +38,10 @@ router.get('/:id', authMiddleware, async (req, res) => {
                     headers: { 'api-key': process.env.APPROXIMATED_API_KEY }
                 })
             );
-            ({ apx_hit, is_resolving, last_monitored_humanized, status, status_message, has_ssl } = data);
+            ({ dns_pointed_at, apx_hit, is_resolving, last_monitored_humanized, status, status_message, has_ssl } = data);
         } catch(error) {}
 
-        res.status(200).json({ apx_hit, is_resolving, last_monitored_humanized, status, status_message, has_ssl });
+        res.status(200).json({ dns_pointed_at, apx_hit, is_resolving, last_monitored_humanized, status, status_message, has_ssl });
     } catch(error) {
         logger.error(error.message, { location: 'get.api.domains.id', error: error, data: data, queryParams: req.params });
         res.status(400).send(error.message);
