@@ -33,35 +33,12 @@ module.exports = async job => {
     if (!block)
         throw new Error("Couldn't fetch block from provider");
 
-    const partialBlock = await db.syncPartialBlock(workspace.id, block);
+    await db.syncPartialBlock(workspace.id, block);
 
-    try {
-        const formattedBlock = {
-            block,
-            transactions: [],
-        };
-
-        for (let i = 0; i < block.transactions.length; i++) {
-            const transaction = block.transactions[i];
-            const receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
-
-            if (!receipt)
-                throw new Error('Failed to fetch receipt');
-
-            formattedBlock.transactions.push({
-                ...transaction,
-                receipt
-            });
-        }
-
-        await db.syncFullBlock(workspace.id, formattedBlock);
-
-        return true;
-    } catch(error) {
-        if (partialBlock)
-            await db.revertPartialBlock(partialBlock.id);
-
-        logger.error(error.message, { location: 'jobs.blockSync', error, data });
-        throw error;
+    for (let i = 0; i < block.transactions.length; i++) {
+        const transaction = block.transactions[i];
+        const receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
     }
+
+    return 'Block synced';
 };
