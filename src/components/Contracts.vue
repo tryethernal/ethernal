@@ -158,7 +158,7 @@ export default {
             'isUserAdmin'
         ]),
         canImport: function() {
-            return this.contracts.length < 10 || this.user.plan != 'free';
+            return this.currentWorkspace.public || this.contracts.length < 10 || this.user.plan != 'free';
         },
         removedContract: function() {
             return this.$route.query.removedContract ? this.$route.query.removedContract : null;
