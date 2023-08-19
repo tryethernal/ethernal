@@ -12,13 +12,18 @@ exports[`ExplorerDomainDNSInfoModal.vue Should display DNS info 1`] = `
               <div tabindex="-1" role="listitem" class="v-list-item theme--light">
                 Last updated 1 minute ago:
               </div>
+              <div tabindex="-1" role="listitem" class="v-list-item theme--light"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-check theme--light mr-1 success--text"></i><span class="v-tooltip v-tooltip--top"><!----></span> APX Hits
+              </div>
+              <div tabindex="-1" role="listitem" class="v-list-item theme--light"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-close theme--light mr-1 error--text"></i><span class="v-tooltip v-tooltip--top"><!----></span> DNS
+              </div>
               <div tabindex="-1" role="listitem" class="v-list-item theme--light"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-check theme--light mr-1 success--text"></i><span class="v-tooltip v-tooltip--top"><!----></span> Resolving requests
               </div>
               <div tabindex="-1" role="listitem" class="v-list-item theme--light"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mdi mdi-close theme--light mr-1 error--text"></i><span class="v-tooltip v-tooltip--top"><!----></span> SSL active
               </div>
             </div>
             <div class="mb-1">Log in to the account you have with your DNS provider, and add the following record:</div>
-            <div class="mb-1 pa-2 black white--text font-weight-medium" style="border-radius: 5px;">ethernal.com A 75.2.60.5</div>
+            <div class="pa-2 black white--text font-weight-medium" style="border-radius: 5px;">ethernal.com A 75.2.60.5</div>
+            <div class="text-caption">Current DNS: 75.2.60.5</div>
           </div>
         </div>
       </div>
