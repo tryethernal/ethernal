@@ -1,7 +1,7 @@
 const { ProviderConnector } = require('../lib/rpc');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
-const { isSubscriptionCheckEnabled } = require('../lib/flags');
+const { bulkEnqueue } = require('../lib/queue');
 
 module.exports = async job => {
     const data = job.data;
@@ -28,17 +28,30 @@ module.exports = async job => {
 
     const providerConnector = new ProviderConnector(workspace.rpcServer);
 
-    const block = await providerConnector.fetchBlockWithTransactions(data.blockNumber);
+    try {
+        const block = await providerConnector.fetchBlockWithTransactions(data.blockNumber);
+        if (!block)
+            throw new Error("Couldn't fetch block from provider");
 
-    if (!block)
-        throw new Error("Couldn't fetch block from provider");
+        const syncedBlock = await db.syncPartialBlock(workspace.id, block);
 
-    await db.syncPartialBlock(workspace.id, block);
+        if (!syncedBlock)
+            throw new Error("Couldn't store block");
 
-    for (let i = 0; i < block.transactions.length; i++) {
-        const transaction = block.transactions[i];
-        const receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
+        const jobs = [];
+        for (let i = 0; i < syncedBlock.transactions.length; i++) {
+            const transaction = syncedBlock.transactions[i];
+            jobs.push({
+                name: `receiptSync-${transaction.hash}`,
+                data: { transactionId: transaction.id }
+            });
+        }
+
+        await bulkEnqueue('receiptSync', jobs);
+
+        return 'Block synced';
+    } catch(error) {
+        logger.error(error.message, { location: 'jobs.blockSync', error, data });
+        return error.message;
     }
-
-    return 'Block synced';
 };

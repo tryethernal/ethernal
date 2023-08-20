@@ -2,10 +2,10 @@
     <v-data-table
         :loading="loading"
         :items="transactions"
-        :sort-by="sortBy"
+        :sort-by="currentOptions.sortBy[0]"
         :must-sort="true"
         :sort-desc="true"
-        :server-items-length="count"
+        :server-items-length="transactionCount"
         :headers="headers"
         :hide-default-footer="dense"
         :hide-default-header="dense"
@@ -14,7 +14,7 @@
             itemsPerPageOptions: [10, 25, 100]
         }"
         item-key="hash"
-        @update:options="onPagination">
+        @update:options="getTransactions">
         <template v-slot:no-data>
             No transactions found
         </template>
@@ -66,7 +66,7 @@
             </template>
         </template>
         <template v-slot:item.blockNumber="{ item }">
-            <router-link :to="'/block/' + item.blockNumber">{{ item.blockNumber }}</router-link>
+            <router-link :to="'/block/' + item.blockNumber" :contract="item.contract">{{ item.blockNumber }}</router-link>
         </template>
         <template v-slot:item.to="{ item }">
             <v-chip x-small class="mr-2" v-if="item.to && item.to === currentAddress">self</v-chip>
@@ -89,7 +89,7 @@ import HashLink from './HashLink.vue';
 
 export default {
     name: 'TransactionsList',
-    props: ['transactions', 'currentAddress', 'loading', 'sortBy', 'count', 'dense'],
+    props: ['currentAddress', 'dense', 'blockNumber', 'address'],
     components: {
         HashLink
     },
@@ -97,10 +97,24 @@ export default {
         FromWei
     },
     data: () => ({
-        headers: []
+        headers: [],
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] },
+        transactions: [],
+        transactionCount: 0,
+        loading: false
     }),
     mounted() {
-        if (!this.dense)
+        this.pusherUnsubscribe = this.pusher.onNewTransaction(() => {
+            this.getTransactions(this.currentOptions)
+        }, this, this.address);
+
+        if (this.dense)
+            this.headers = [
+                { text: 'Txn Hash', value: 'hash', align: 'start' },
+                { text: 'Mined On', value: 'timestamp' },
+                { text: 'From', value: 'from' }
+            ];
+        else
             this.headers = [
                 { text: 'Txn Hash', value: 'hash', align: 'start' },
                 { text: 'Method', value: 'method', sortable: false },
@@ -111,12 +125,9 @@ export default {
                 { text: 'Value', value: 'value' },
                 { text: 'Fee', value: 'fee', sortable: false }
             ];
-        else
-            this.headers = [
-                { text: 'Txn Hash', value: 'hash', align: 'start' },
-                { text: 'Mined On', value: 'timestamp' },
-                { text: 'From', value: 'from' }
-            ];
+    },
+    destroyed() {
+        this.pusherUnsubscribe();
     },
     methods: {
         moment: moment,
@@ -140,8 +151,31 @@ export default {
 
             return 'failed';
         },
-        onPagination(pagination) {
-            this.$emit('pagination', pagination);
+        getTransactions(newOptions) {
+            this.loading = true;
+
+            if (newOptions)
+                this.currentOptions = newOptions;
+
+            const options = {
+                page: this.currentOptions.page,
+                itemsPerPage: this.currentOptions.itemsPerPage,
+                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc',
+                orderBy: this.currentOptions.sortBy[0]
+            };
+
+            const query = this.blockNumber ?
+                this.server.getBlockTransactions(this.blockNumber, options) :
+                    this.address ?
+                        this.server.getAddressTransactions(this.address, options) :
+                        this.server.getTransactions(options);
+
+            query.then(({ data }) => {
+                this.transactions = data.items;
+                this.transactionCount = data.total;
+            })
+            .catch(console.log)
+            .finally(() => this.loading = false);
         },
         getMethodName(transaction) {
             if (!transaction.methodDetails) return this.getSighash(transaction);

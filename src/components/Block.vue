@@ -2,8 +2,8 @@
     <v-container fluid>
         <v-row>
             <v-col cols="6">
-                <v-alert dense text type="warning" class="my-2" v-if="block.state == 'syncing'">
-                    Block has been picked up, and is currently still being processed.
+                <v-alert dense text type="warning" class="my-2" v-show="syncing">
+                    Some transactions in this block are still being processed ({{ block.syncedTransactionCount }} / {{ block.transactionsCount }}).
                 </v-alert>
                 <h2>Block {{ block.number }}</h2>
             </v-col>
@@ -27,7 +27,7 @@
         </v-row>
         <h4>Transactions</h4>
         <v-card outlined>
-            <Transactions-List :count="block.transactions && block.transactions.length" :transactions="block.transactions" :loading="loading" />
+            <Transactions-List :blockNumber="number" />
         </v-card>
     </v-container>
 </template>
@@ -62,10 +62,15 @@ export default {
         moment: moment,
         loadBlock(number) {
             this.loading = true;
-            this.server.getBlock(number, true)
+            this.server.getBlock(number)
                 .then(({ data }) => this.block = data)
                 .catch(console.log)
                 .finally(() => this.loading = false);
+        }
+    },
+    computed: {
+        syncing() {
+            return this.block.syncedTransactionCount < this.block.transactionsCount;
         }
     },
     watch: {

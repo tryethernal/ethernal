@@ -5,7 +5,7 @@ const {
 } = require('sequelize');
 
 const Op = Sequelize.Op
-const { sanitize } = require('../lib/utils');
+const { sanitize, stringifyBns } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
 const { trigger } = require('../lib/pusher');
 let { getTransactionMethodDetails } = require('../lib/abi');
@@ -38,6 +38,32 @@ module.exports = (sequelize, DataTypes) => {
       Transaction.hasMany(models.TokenTransfer, { foreignKey: 'transactionId', as: 'tokenTransfers' });
       Transaction.hasMany(models.TokenBalanceChange, { foreignKey: 'transactionId', as: 'tokenBalanceChanges' });
       Transaction.hasMany(models.TransactionTraceStep, { foreignKey: 'transactionId', as: 'traceSteps' });
+    }
+
+    async safeCreateReceipt(receipt) {
+        if (!receipt) throw new Error('Missing parameter');
+
+        return sequelize.transaction(async transaction => {
+            await this.update({ state: 'ready' }, { transaction });
+            return this.createReceipt(stringifyBns(sanitize({
+                workspaceId: this.workspaceId,
+                blockHash: receipt.blockHash,
+                blockNumber: receipt.blockNumber,
+                byzantium: receipt.byzantium,
+                confirmations: receipt.confirmations,
+                contractAddress: receipt.contractAddress,
+                cumulativeGasUsed: receipt.cumulativeGasUsed,
+                from: receipt.from,
+                gasUsed: receipt.gasUsed,
+                logsBloom: receipt.logsBloom,
+                status: receipt.status,
+                to: receipt.to,
+                transactionHash: receipt.transactionHash === undefined ? receipt.hash : receipt.transactionHash,
+                transactionIndex: receipt.transactionIndex === undefined ? receipt.index : receipt.transactionIndex,
+                type: receipt.type,
+                raw: receipt
+            })), { transaction });
+        });
     }
 
     getFilteredTokenTransfers(page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'id') {

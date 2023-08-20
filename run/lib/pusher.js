@@ -1,7 +1,7 @@
 const Pusher = require('pusher');
 const logger = require('./logger');
 
-const isPusherPresent = process.env.PUSHER_APP_ID && process.env.PUSHER_KEY && process.env.PUSHER_SECRET;
+const isPusherPresent = false;
 
 const pusher = isPusherPresent ?
     new Pusher({

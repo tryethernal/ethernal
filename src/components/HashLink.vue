@@ -28,6 +28,7 @@ export default {
     data: () => ({
         copied: false,
         token: null,
+        contract: null,
         contractName: null,
         verified: false
     }),
@@ -42,20 +43,15 @@ export default {
                     if (hash == '0x0000000000000000000000000000000000000000')
                         return this.contractName = 'Black Hole';
 
-                    this.server.getContract(hash)
-                        .then(({ data }) => {
-                            const contract = data;
-                            if (!contract) return;
-
-                            if (contract.tokenName || contract.tokenSymbol)
-                                this.token = sanitize({
-                                    name: contract.tokenName,
-                                    symbol: contract.tokenSymbol
-                                });
-                            this.verified = contract.verificationStatus == 'success';
-                            this.contractName = contract.name;
-
-                        })
+                    if (this.contract) {
+                        if (this.contract.tokenName || this.contract.tokenSymbol)
+                            this.token = sanitize({
+                                name: this.contract.tokenName,
+                                symbol: this.contract.tokenSymbol
+                            });
+                        this.verified = this.contract.verificationStatus == 'success';
+                        this.contractName = this.contract.name;
+                    }
             }
         }
     },

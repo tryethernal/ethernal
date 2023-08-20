@@ -2,7 +2,7 @@
 const {
   Model,
   Sequelize,
-  QueryTypes
+  QueryTypes,
 } = require('sequelize');
 const { sanitize, slugify } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
@@ -402,15 +402,9 @@ module.exports = (sequelize, DataTypes) => {
         return contractCount < 10;
     }
 
-    /*
-        Syncing the full block can take some time if there are a lot of transactions,
-        logs, token transfers to create etc, so we create a partial block with only
-        the data returned by eth_getBlockByNumber (with transactions).
-        This allows us to show the user that we are indexing the block, and display progress as well
-    */
     async safeCreatePartialBlock(block) {
-        return sequelize.transaction(async sequelizeTransaction => {
-            const storedBlock = await this.createBlock(sanitize({
+        return await sequelize.transaction(async sequelizeTransaction => {
+            const createdBlock = await this.createBlock(sanitize({
                 baseFeePerGas: block.baseFeePerGas,
                 difficulty: block.difficulty,
                 extraData: block.extraData,
@@ -423,16 +417,16 @@ module.exports = (sequelize, DataTypes) => {
                 parentHash: block.parentHash,
                 timestamp: block.timestamp,
                 transactionsCount: block.transactions ? block.transactions.length : 0,
-                state: 'syncing',
+                state: 'ready',
                 raw: block
             }), { transaction: sequelizeTransaction });
 
-            for (let i = 0; i < block.transactions.length; i++) {
-                const transaction = block.transactions[i];
-                await this.createTransaction(sanitize({
+            const transactions = block.transactions.map(transaction => {
+                return sanitize({
+                    blockId: createdBlock.id,
+                    workspaceId: this.id,
                     blockHash: transaction.blockHash,
                     blockNumber: transaction.blockNumber,
-                    blockId: storedBlock.id,
                     chainId: transaction.chainId,
                     creates: transaction.creates,
                     data: transaction.data || transaction.input,
@@ -456,10 +450,16 @@ module.exports = (sequelize, DataTypes) => {
                     value: transaction.value,
                     state: 'syncing',
                     raw: transaction
-                }), { transaction: sequelizeTransaction });
-            }
+                });
+            });
 
-            return storedBlock;
+            await sequelize.models.Transaction.bulkCreate(transactions, { transaction: sequelizeTransaction });
+
+            const blockWithTransactions = await sequelize.models.Block.findByPk(createdBlock.id, {
+                include: 'transactions'
+            });
+
+            return blockWithTransactions;
         });
     }
 
@@ -527,7 +527,7 @@ module.exports = (sequelize, DataTypes) => {
                         to: receipt.to,
                         transactionHash: receipt.transactionHash || receipt.hash || storedTx.hash,
                         transactionIndex: receipt.transactionIndex || receipt.index,
-                        type_: receipt.type,
+                        type: receipt.type,
                         raw: receipt
                     }), { transaction: sequelizeTransaction });
 

@@ -37,7 +37,8 @@ module.exports = (sequelize, DataTypes) => {
     to: {
         type: DataTypes.STRING,
         set(value) {
-            this.setDataValue('to', value.toLowerCase());
+            if (this.getDataValue('from'))
+              this.setDataValue('to', value.toLowerCase());
         }
     },
     transactionHash: DataTypes.STRING,
@@ -69,23 +70,30 @@ module.exports = (sequelize, DataTypes) => {
                 ]
             });
 
-            if (receipt.status == 0 && fullTransaction.workspace.public)
-              await enqueue('processTransactionError', `processTransactionError-${fullTransaction.workspaceId}-${fullTransaction.hash}`, { 
-                transactionId: fullTransaction.id
-              }, 1);
+            // Here is the stuff that we only want to do once everything has been created (typically notifications & jobs queuing)
+            const afterCommitFn = async () => {
+                if (receipt.status == 0 && fullTransaction.workspace.public)
+                    await enqueue('processTransactionError', `processTransactionError-${fullTransaction.workspaceId}-${fullTransaction.hash}`, { transactionId: fullTransaction.id }, 1);
 
-            if (!fullTransaction.to && receipt.contractAddress) {
-              const workspace = fullTransaction.workspace;
-              const canCreateContract = await workspace.canCreateContract();
-              if (canCreateContract)
-                await workspace.safeCreateOrUpdateContract({
-                  address: receipt.contractAddress,
-                  timestamp: moment(fullTransaction.timestamp).unix()
-                }, options.transaction);
+                if (!fullTransaction.workspace.public && !fullTransaction.rawError && !fullTransaction.parsedError && fullTransaction.receipt && !fullTransaction.receipt.status)
+                    trigger(`private-failedTransactions;workspace=${fullTransaction.workspaceId}`, 'new', fullTransaction.toJSON());
             }
 
-            if (!fullTransaction.workspace.public && !fullTransaction.rawError && !fullTransaction.parsedError && fullTransaction.receipt && !fullTransaction.receipt.status)
-                trigger(`private-failedTransactions;workspace=${fullTransaction.workspaceId}`, 'new', fullTransaction.toJSON());
+            // We finish creating stuff here to make sure we can put it in the transaction if applicable
+            if (!fullTransaction.to && receipt.contractAddress) {
+                const workspace = fullTransaction.workspace;
+                const canCreateContract = await workspace.canCreateContract();
+                if (canCreateContract)
+                    await workspace.safeCreateOrUpdateContract({
+                        address: receipt.contractAddress,
+                        timestamp: moment(fullTransaction.timestamp).unix()
+                    }, options.transaction);
+            }
+
+            if (options.transaction) {
+                return options.transaction.afterCommit(afterCommitFn);
+            } else
+                return afterCommitFn();
         }
     },
     sequelize,

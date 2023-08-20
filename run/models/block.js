@@ -44,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     nonce: DataTypes.STRING,
     number: DataTypes.INTEGER,
     parentHash: DataTypes.STRING,
+    syncedTransactions: DataTypes.ARRAY(DataTypes.BOOLEAN),
     timestamp: {
         type: DataTypes.DATE,
         set(value) {
