@@ -24,11 +24,10 @@ const { sanitize } = require('../lib/utils');
 
 export default {
     name: 'HashLink',
-    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName', 'xsHash', 'tokenId', 'unlink'],
+    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName', 'xsHash', 'tokenId', 'unlink', 'contract'],
     data: () => ({
         copied: false,
         token: null,
-        contract: null,
         contractName: null,
         verified: false
     }),
