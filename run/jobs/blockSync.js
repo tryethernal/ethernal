@@ -52,6 +52,6 @@ module.exports = async job => {
         return 'Block synced';
     } catch(error) {
         logger.error(error.message, { location: 'jobs.blockSync', error, data });
-        return error.message;
+        throw error;
     }
 };

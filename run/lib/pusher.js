@@ -1,6 +1,6 @@
 const Pusher = require('pusher');
 const logger = require('./logger');
-const { isPusherEnabled } = require('./flags');
+const { isPusherEnabled, isProductionEnvironment } = require('./flags');
 
 
 const pusher = isPusherEnabled() ?
@@ -17,7 +17,10 @@ module.exports = {
     trigger: (channel, event, data) => {
         if (isPusherEnabled()) {
             pusher.trigger(channel, event, data)
-                .catch(error => logger.error(error.message, { location: 'lib.pusher', error, channel, event, data }))
+                .catch(error => {
+                    if (isProductionEnvironment())
+                        logger.error(error.message, { location: 'lib.pusher', error, channel, event, data });
+                });
         }
     }
 };

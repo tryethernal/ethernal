@@ -403,7 +403,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeCreatePartialBlock(block) {
-        return await sequelize.transaction(async sequelizeTransaction => {
+        return sequelize.transaction(async sequelizeTransaction => {
             const createdBlock = await this.createBlock(sanitize({
                 baseFeePerGas: block.baseFeePerGas,
                 difficulty: block.difficulty,

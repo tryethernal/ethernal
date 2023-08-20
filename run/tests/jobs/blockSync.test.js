@@ -6,6 +6,7 @@ require('../mocks/lib/logger');
 
 const db = require('../../lib/firebase');
 const { ProviderConnector } = require('../../lib/rpc');
+const { bulkEnqueue } = require('../../lib/queue');
 
 const blockSync = require('../../jobs/blockSync');
 
@@ -19,9 +20,10 @@ describe('blockSync', () => {
     });
 
     it('Should sync partial block', (done) => {
+        jest.spyOn(db, 'syncPartialBlock').mockResolvedValue({ transactions: [] })
         blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
-                expect(res).toEqual(true);
+                expect(res).toEqual('Block synced');
                 expect(db.syncPartialBlock).toHaveBeenCalledWith(1, {
                     number: 1,
                     transactions: [
@@ -34,48 +36,26 @@ describe('blockSync', () => {
             });
     });
 
-    it('Should sync full block', (done) => {
-        blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
-            .then(res => {
-                expect(res).toEqual(true);
-                expect(db.syncFullBlock).toHaveBeenCalledWith(1, {
-                    block: {
-                        number: 1,
-                        transactions: [
-                            { hash: '0x123' },
-                            { hash: '0x456' },
-                            { hash: '0x789' }
-                        ]
-                    },
-                    transactions: [
-                        { hash: '0x123', receipt: { status: 1 }},
-                        { hash: '0x456', receipt: { status: 1 }},
-                        { hash: '0x789', receipt: { status: 1 }},
-                    ]
-                });
-                done();
-            });
-    });
-
-    it('Should throw an error if receipt is not available', (done) => {
-        jest.spyOn(db, 'syncPartialBlock').mockResolvedValueOnce({ id: 1 });
+    it('Should enqueue receipt sync jobs', (done) => {
+        jest.spyOn(db, 'syncPartialBlock').mockResolvedValue({ transactions: [{ id: 1, hash: '0x123' }] })
         ProviderConnector.mockImplementationOnce(() => ({
             fetchBlockWithTransactions: jest.fn()
                 .mockResolvedValue({
                     number: 1,
                     transactions: [
-                        { hash: '0x123' },
-                        { hash: '0x456' },
-                        { hash: '0x789' }
+                        { hash: '0x123' }
                     ]
-            }),
-            fetchTransactionReceipt: jest.fn().mockResolvedValue(null)
+            })
         }));
-
         blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
-            .catch(error => {
-                expect(error.message).toEqual('Failed to fetch receipt');
-                expect(db.revertPartialBlock).toHaveBeenCalledWith(1);
+            .then(res => {
+                expect(res).toEqual('Block synced');
+                expect(bulkEnqueue).toHaveBeenCalledWith('receiptSync', [
+                    {
+                        name: 'receiptSync-0x123',
+                        data: { transactionId: 1 }
+                    }
+                ]);
                 done();
             });
     });

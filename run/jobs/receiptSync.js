@@ -37,6 +37,7 @@ module.exports = async job => {
 
     try {
         const receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
+
         if (!receipt)
             throw new Error('Failed to fetch receipt');
     

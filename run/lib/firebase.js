@@ -945,7 +945,7 @@ const getWorkspaceContractById = async (workspaceId, contractId) => {
     return contract ? contract.toJSON() : null;
 };
 
-const getWorkspaceBlock = async (workspaceId, number, withTransactions) => {
+const getWorkspaceBlock = async (workspaceId, number) => {
     const workspace = await Workspace.findByPk(workspaceId);
 
     const [block] = await workspace.getBlocks({
