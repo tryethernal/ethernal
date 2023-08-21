@@ -15,6 +15,7 @@ module.exports = async job => {
                 model: Workspace,
                 as: 'workspace',
                 attributes: ['rpcServer'],
+                required: true,
                 include: {
                     model: Explorer,
                     as: 'explorer',
