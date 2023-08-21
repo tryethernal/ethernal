@@ -52,7 +52,7 @@
                     </v-list-item>
                 </v-list>
                 <div class="mb-1">Log in to the account you have with your DNS provider, and add the following record:</div>
-                <div style="border-radius: 5px;" class="pa-2 black white--text font-weight-medium">{{ domainOrigin }} A 75.2.60.5</div>
+                <div style="border-radius: 5px;" class="pa-2 black white--text font-weight-medium">{{ domainOrigin }} A 37.16.1.34</div>
                 <div class="text-caption" v-if="dnsStatus.dns_pointed_at">Current DNS: {{ dnsStatus.dns_pointed_at }}</div>
             </v-card-text>
         </v-card>
@@ -96,7 +96,7 @@ export default {
             }
         },
         hasDnsRecord() {
-            return this.dnsStatus.dns_pointed_at == '75.2.60.5';
+            return this.dnsStatus.dns_pointed_at == '37.16.1.34';
         }
     }
 }
