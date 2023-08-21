@@ -27,7 +27,7 @@
         </v-row>
         <h4>Transactions</h4>
         <v-card outlined>
-            <Transactions-List :blockNumber="number" />
+            <Transactions-List @listUpdated="loadBlock(number)" :blockNumber="number" />
         </v-card>
     </v-container>
 </template>
@@ -46,7 +46,6 @@ export default {
         block: {
             gasLimit: 0
         },
-        loading: true,
         pusherChannelHandler: null
     }),
     mounted() {
@@ -61,11 +60,9 @@ export default {
     methods: {
         moment: moment,
         loadBlock(number) {
-            this.loading = true;
             this.server.getBlock(number)
                 .then(({ data }) => this.block = data)
-                .catch(console.log)
-                .finally(() => this.loading = false);
+                .catch(console.log);
         }
     },
     computed: {

@@ -104,8 +104,9 @@ export default {
         loading: false
     }),
     mounted() {
-        this.pusherUnsubscribe = this.pusher.onNewTransaction(() => {
-            this.getTransactions(this.currentOptions)
+        this.pusherUnsubscribe = this.pusher.onNewTransaction(transaction => {
+            if (transaction.blockNumber == this.blockNumber || transaction.from == this.address || transaction.to == this.address)
+                this.getTransactions(this.currentOptions)
         }, this, this.address);
 
         if (this.dense)
@@ -173,6 +174,7 @@ export default {
             query.then(({ data }) => {
                 this.transactions = data.items;
                 this.transactionCount = data.total;
+                this.$emit('listUpdated');
             })
             .catch(console.log)
             .finally(() => this.loading = false);
