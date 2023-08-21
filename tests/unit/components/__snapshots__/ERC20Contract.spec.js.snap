@@ -105,10 +105,10 @@ exports[`ERC20Contract.vue Should display contract info 1`] = `
               <div class="v-data-footer">
                 <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-47" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-45" class="v-input__slot">
                         <div class="v-select__slot">
                           <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-47" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-45" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                           </div>
                           <div class="v-input__append-inner">
                             <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
@@ -249,10 +249,10 @@ exports[`ERC20Contract.vue Should display placeholders 1`] = `
               <div class="v-data-footer">
                 <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-101" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-99" class="v-input__slot">
                         <div class="v-select__slot">
                           <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-101" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-99" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                           </div>
                           <div class="v-input__append-inner">
                             <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
