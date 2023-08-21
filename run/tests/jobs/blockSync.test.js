@@ -52,7 +52,7 @@ describe('blockSync', () => {
                 expect(res).toEqual('Block synced');
                 expect(bulkEnqueue).toHaveBeenCalledWith('receiptSync', [
                     {
-                        name: 'receiptSync-0x123',
+                        name: 'receiptSync-1-0x123',
                         data: { transactionId: 1 }
                     }
                 ]);
@@ -68,7 +68,7 @@ describe('blockSync', () => {
             explorer: {}
         });
         blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1, source: 'recovery' }})
-            .then(res => {
+            .then(() => {
                 expect(db.updateWorkspaceIntegrityCheck).toHaveBeenCalledWith(1, { status: 'recovering' });
                 done();
             });
@@ -82,7 +82,7 @@ describe('blockSync', () => {
             explorer: {}
         });
         blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1, source: 'api' }})
-            .then(res => {
+            .then(() => {
                 expect(db.updateWorkspaceIntegrityCheck).toHaveBeenCalledWith(1, { status: 'healthy' });
                 done();
             });
