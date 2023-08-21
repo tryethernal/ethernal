@@ -77,6 +77,8 @@ module.exports = (sequelize, DataTypes) => {
 
                 if (!fullTransaction.workspace.public && !fullTransaction.rawError && !fullTransaction.parsedError && fullTransaction.receipt && !fullTransaction.receipt.status)
                     trigger(`private-failedTransactions;workspace=${fullTransaction.workspaceId}`, 'new', fullTransaction.toJSON());
+
+                return fullTransaction.triggerEvents();
             }
 
             // We finish creating stuff here to make sure we can put it in the transaction if applicable

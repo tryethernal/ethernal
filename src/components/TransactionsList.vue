@@ -105,8 +105,16 @@ export default {
     }),
     mounted() {
         this.pusherUnsubscribe = this.pusher.onNewTransaction(transaction => {
-            if (transaction.blockNumber == this.blockNumber || transaction.from == this.address || transaction.to == this.address)
-                this.getTransactions(this.currentOptions)
+            if (this.blockNumber) {
+                if (transaction.blockNumber == this.blockNumber)
+                    this.getTransactions(this.currentOptions);
+            }
+            else if (this.address) {
+                if (transaction.from == this.address || transaction.to == this.address)
+                    this.getTransactions(this.currentOptions);
+            }
+            else
+                this.getTransactions(this.currentOptions);
         }, this, this.address);
 
         if (this.dense)
@@ -171,7 +179,7 @@ export default {
                         this.server.getAddressTransactions(this.address, options) :
                         this.server.getTransactions(options);
 
-            query.then(({ data }) => {
+                        query.then(({ data }) => {
                 this.transactions = data.items;
                 this.transactionCount = data.total;
                 this.$emit('listUpdated');
