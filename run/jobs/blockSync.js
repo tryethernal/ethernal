@@ -42,7 +42,7 @@ module.exports = async job => {
         for (let i = 0; i < syncedBlock.transactions.length; i++) {
             const transaction = syncedBlock.transactions[i];
             jobs.push({
-                name: `receiptSync-${transaction.hash}`,
+                name: `receiptSync-${transaction.workspacId}-${transaction.hash}`,
                 data: { transactionId: transaction.id }
             });
         }
