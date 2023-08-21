@@ -1,5 +1,5 @@
 const { ProviderConnector } = require('../lib/rpc');
-const { Workspace, Explorer, StripeSubscription, Transaction } = require('../models');
+const { Workspace, Explorer, StripeSubscription, Transaction, TransactionReceipt } = require('../models');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 
@@ -10,25 +10,34 @@ module.exports = async job => {
         return 'Missing parameter'
 
     const transaction = await Transaction.findByPk(data.transactionId, {
-        include: {
-            model: Workspace,
-            as: 'workspace',
-            attributes: ['rpcServer'],
-            include: {
-                model: Explorer,
-                as: 'explorer',
-                required: true,
+        include: [
+            {
+                model: Workspace,
+                as: 'workspace',
+                attributes: ['rpcServer'],
                 include: {
-                    model: StripeSubscription,
-                    as: 'stripeSubscription',
-                    required: true
+                    model: Explorer,
+                    as: 'explorer',
+                    required: true,
+                    include: {
+                        model: StripeSubscription,
+                        as: 'stripeSubscription',
+                        required: true
+                    }
                 }
+            },
+            {
+                model: TransactionReceipt,
+                as: 'receipt'
             }
-        }
+        ]
     });
 
     if (!transaction)
         return 'Missing transaction';
+
+    if (transaction.receipt)
+        return 'Receipt has already been synced';
 
     if (!transaction.workspace.explorer || !transaction.workspace.explorer.stripeSubscription)
         return 'Inactive explorer';
