@@ -105,8 +105,16 @@ export default {
     }),
     mounted() {
         this.pusherUnsubscribe = this.pusher.onNewTransaction(transaction => {
-            if (transaction.blockNumber == this.blockNumber || transaction.from == this.address || transaction.to == this.address)
-                this.getTransactions(this.currentOptions)
+            if (this.blockNumber) {
+                if (transaction.blockNumber == this.blockNumber)
+                    this.getTransactions(this.currentOptions);
+            }
+            else if (this.address) {
+                if (transaction.from == this.address || transaction.to == this.address)
+                    this.getTransactions(this.currentOptions);
+            }
+            else
+                this.getTransactions(this.currentOptions);
         }, this, this.address);
 
         if (this.dense)
