@@ -70,7 +70,7 @@ export default {
             return this.dnsStatus.apx_hit && this.hasDnsRecord && this.dnsStatus.is_resolving && this.dnsStatus.has_ssl;
         },
         hasDnsRecord() {
-            return this.dnsStatus.dns_pointed_at == '75.2.60.5';
+            return this.dnsStatus.dns_pointed_at == '37.16.1.34';
         }
     }
 }

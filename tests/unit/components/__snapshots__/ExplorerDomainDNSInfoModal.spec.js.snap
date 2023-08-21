@@ -22,8 +22,8 @@ exports[`ExplorerDomainDNSInfoModal.vue Should display DNS info 1`] = `
               </div>
             </div>
             <div class="mb-1">Log in to the account you have with your DNS provider, and add the following record:</div>
-            <div class="pa-2 black white--text font-weight-medium" style="border-radius: 5px;">ethernal.com A 75.2.60.5</div>
-            <div class="text-caption">Current DNS: 75.2.60.5</div>
+            <div class="pa-2 black white--text font-weight-medium" style="border-radius: 5px;">ethernal.com A 37.16.1.34</div>
+            <div class="text-caption">Current DNS: 37.16.1.34</div>
           </div>
         </div>
       </div>
