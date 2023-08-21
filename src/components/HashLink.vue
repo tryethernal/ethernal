@@ -24,7 +24,7 @@ const { sanitize } = require('../lib/utils');
 
 export default {
     name: 'HashLink',
-    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName', 'xsHash', 'tokenId', 'unlink'],
+    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName', 'xsHash', 'tokenId', 'unlink', 'contract'],
     data: () => ({
         copied: false,
         token: null,
@@ -42,20 +42,15 @@ export default {
                     if (hash == '0x0000000000000000000000000000000000000000')
                         return this.contractName = 'Black Hole';
 
-                    this.server.getContract(hash)
-                        .then(({ data }) => {
-                            const contract = data;
-                            if (!contract) return;
-
-                            if (contract.tokenName || contract.tokenSymbol)
-                                this.token = sanitize({
-                                    name: contract.tokenName,
-                                    symbol: contract.tokenSymbol
-                                });
-                            this.verified = contract.verificationStatus == 'success';
-                            this.contractName = contract.name;
-
-                        })
+                    if (this.contract) {
+                        if (this.contract.tokenName || this.contract.tokenSymbol)
+                            this.token = sanitize({
+                                name: this.contract.tokenName,
+                                symbol: this.contract.tokenSymbol
+                            });
+                        this.verified = this.contract.verificationStatus == 'success';
+                        this.contractName = this.contract.name;
+                    }
             }
         }
     },

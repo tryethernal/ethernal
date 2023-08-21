@@ -1,9 +1,9 @@
 const Pusher = require('pusher');
 const logger = require('./logger');
+const { isPusherEnabled, isProductionEnvironment } = require('./flags');
 
-const isPusherPresent = process.env.PUSHER_APP_ID && process.env.PUSHER_KEY && process.env.PUSHER_SECRET;
 
-const pusher = isPusherPresent ?
+const pusher = isPusherEnabled() ?
     new Pusher({
         appId: process.env.PUSHER_APP_ID,
         key: process.env.PUSHER_KEY,
@@ -15,9 +15,12 @@ const pusher = isPusherPresent ?
 
 module.exports = {
     trigger: (channel, event, data) => {
-        if (isPusherPresent) {
+        if (isPusherEnabled()) {
             pusher.trigger(channel, event, data)
-                .catch(error => logger.error(error.message, { location: 'lib.pusher', error, channel, event, data }))
+                .catch(error => {
+                    if (isProductionEnvironment())
+                        logger.error(error.message, { location: 'lib.pusher', error, channel, event, data });
+                });
         }
     }
 };

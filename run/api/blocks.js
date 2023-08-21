@@ -9,6 +9,22 @@ const { enqueue } = require('../lib/queue');
 
 const router = express.Router();
 
+router.get('/:number/transactions', workspaceAuthMiddleware, async (req, res) => {
+    const data = req.query;
+
+    try {
+        if (!req.params.number)
+            throw new Error('Missing parameter.');
+
+        const { transactions: items, count: total } = await db.getBlockTransactions(data.workspace.id, req.params.number, data.page, data.itemsPerPage, data.order, data.orderBy);
+
+        res.status(200).json({ items, total });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.blocks.number', error: error, data: data, queryParams: req.params });
+        res.status(400).send(error.message);
+    }
+});
+
 router.post('/syncRange', authMiddleware, async (req, res) => {
     const data = req.body.data;
 

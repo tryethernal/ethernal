@@ -5,6 +5,7 @@ module.exports = {
     sendResetPasswordEmail: require('./sendResetPasswordEmail'),
     processStripeSubscription: require('./processStripeSubscription'),
     updateApproximatedRecord: require('./updateApproximatedRecord'),
+    receiptSync: require('./receiptSync'),
 
     // Medium Priority
     processContract: require('./processContract'),

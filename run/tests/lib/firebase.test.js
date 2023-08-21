@@ -1,14 +1,27 @@
 jest.mock('sequelize', () => ({
+    literal: jest.fn(),
     json: jest.fn(),
     Op: {
         or: 'or'
     }
 }));
 
-const { Workspace, User, workspace, Explorer, ExplorerDomain, StripePlan } = require('../mocks/models');
+const { Workspace, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction } = require('../mocks/models');
 const db = require('../../lib/firebase');
 
 beforeEach(() => jest.clearAllMocks());
+
+describe('storeTransactionReceipt', () => {
+    const safeCreateReceipt = jest.fn();
+    jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({ safeCreateReceipt });
+    it('Should call the receipt creation function', (done) => {
+        db.storeTransactionReceipt(1, { transactionHash: '0x123' })
+            .then(() => {
+                expect(safeCreateReceipt).toHaveBeenCalledWith({ transactionHash: '0x123' });
+                done();
+            });
+    });
+});
 
 describe('disableUserTrial', () => {
     it('Should call the disableTrials function', (done) => {
@@ -1056,20 +1069,13 @@ describe('getWorkspaceContractById', () => {
 });
 
 describe('getWorkspaceBlock', () => {
-    it('Should return the block without transactions', (done) => {
+    it('Should return the block', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ getBlocks: () => ([{ toJSON: () => ({ number: 1 })}])});
         db.getWorkspaceBlock(1, 2, false)
-            .then(blocks => {
-                expect(blocks).toEqual({ number: 1 });
+            .then(block => {
+                expect(block).toEqual({ number: 1 });
                 done();
             });
-    });
-
-    it('Should return the block with transactions', async () => {
-        const workspace = await Workspace.findByPk(1);
-        jest.spyOn(workspace, 'getBlocks').mockResolvedValueOnce([{ toJSON: () => ({ number: 1, transactions: [{ hash: '0x123' }]})}]);
-
-        const block = await db.getWorkspaceBlock(1, 2, true);
-        expect(block).toEqual({ number: 1, transactions: [{ hash: '0x123' }]});
     });
 });
 

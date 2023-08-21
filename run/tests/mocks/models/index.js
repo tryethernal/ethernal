@@ -5,6 +5,7 @@ jest.mock('../../../models/index.js', () => ({
     User: require('./User').User,
     Workspace: require('./Workspace').Workspace,
     Explorer: require('./Explorer').Explorer,
+    Transaction: require('./Transaction').Transaction
 }));
 
 const { User, user } = require('./User');
@@ -13,8 +14,10 @@ const { Explorer, explorer } = require('./Explorer');
 const { StripeSubscription } = require('./StripeSubscription');
 const { ExplorerDomain } = require('./ExplorerDomain');
 const { StripePlan } = require('./StripePlan');
+const { Transaction } = require('./Transaction');
 
 module.exports = {
+    Transaction,
     User,
     Workspace,
     Explorer,

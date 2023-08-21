@@ -15,6 +15,16 @@ const StripeSubscription = models.StripeSubscription;
 const StripePlan = models.StripePlan;
 const ExplorerDomain = models.ExplorerDomain;
 
+const storeTransactionReceipt = async (transactionId, receipt) => {
+    if (!transactionId || !receipt) throw new Error('Missing parameter');
+
+    const transaction = await Transaction.findByPk(transactionId);
+    if (!transaction)
+        throw new Error('Cannot find transaction');
+
+    return transaction.safeCreateReceipt(receipt);
+};
+
 const disableUserTrial = async (userId) => {
     if (!userId) throw new Error('Missing parameter');
 
@@ -444,6 +454,7 @@ const syncPartialBlock = async (workspaceId, block) => {
         return null;
 
     const newBlock = await workspace.safeCreatePartialBlock(block);
+
     return newBlock.toJSON();
 };
 
@@ -459,6 +470,7 @@ const syncFullBlock = async (workspaceId, data) => {
 
     if (existingBlock) {
         const newBlock = await workspace.safeCreateFullBlock(data);
+
         return newBlock ? newBlock.toJSON() : null;
     }
     else
@@ -933,25 +945,25 @@ const getWorkspaceContractById = async (workspaceId, contractId) => {
     return contract ? contract.toJSON() : null;
 };
 
-const getWorkspaceBlock = async (workspaceId, number, withTransactions) => {
+const getWorkspaceBlock = async (workspaceId, number) => {
     const workspace = await Workspace.findByPk(workspaceId);
 
-    const blocks = withTransactions ?
-        await workspace.getBlocks({
-            where: { number: number },
-            include: {
-                model: Transaction,
-                as: 'transactions',
-                include: {
-                    model: TransactionReceipt,
-                    attributes: ['gasUsed', 'status', 'contractAddress', [Sequelize.json('raw.root'), 'root'], 'cumulativeGasUsed'],
-                    as: 'receipt'
-                }
-            }
-        }) :
-        await workspace.getBlocks({ where: { number: number }});
+    const [block] = await workspace.getBlocks({
+        where: { number: number },
+        attributes: [
+            'id', 'number', 'timestamp', 'gasUsed', 'transactionsCount', 'gasLimit', 'hash',
+            [
+                Sequelize.literal(`(
+                    SELECT COUNT(*)::INTEGER
+                    FROM transactions
+                    WHERE transactions."blockId" = "Block".id
+                    AND transactions.state = 'ready'
+                )`), 'syncedTransactionCount'
+            ]
+        ]
+    });
 
-    return blocks.length > 0 ? blocks[0].toJSON() : null;
+    return block ? block.toJSON() : null;
 };
 
 const getWorkspaceBlocks = async (workspaceId, page = 1, itemsPerPage = 10, order = 'DESC') => {
@@ -971,6 +983,45 @@ const getWorkspaceTransaction = async (workspaceId, hash) => {
 
     return transaction.toJSON();
 };
+
+const getBlockTransactions = async (workspaceId, blockNumber, page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'blockNumber') => {
+    if (!workspaceId || !blockNumber)
+        throw new Error('Missing parameters');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Cannot find workspace');
+
+    let sanitizedOrderBy = ['hash', 'timestamp', 'value', 'from', 'to'].indexOf(orderBy) > -1 ? [orderBy] : 'blockNumber';
+    if (sanitizedOrderBy == 'blockNumber') {
+        sanitizedOrderBy = ['block', 'number'];
+    }
+
+    const { count, rows: transactions } = await Transaction.findAndCountAll({
+        where: { blockNumber, workspaceId },
+        include: [
+            {
+                model: Block,
+                as: 'block',
+                attributes: ['number'],
+            },
+            {
+                model: TransactionReceipt,
+                as: 'receipt'
+            },
+            {
+                model: Contract,
+                as: 'contract',
+                attributes: ['tokenName', 'tokenSymbol', 'tokenDecimals', 'name'],
+            }
+        ],
+        offset: (page - 1) * itemsPerPage,
+        limit: itemsPerPage,
+        order: [[...sanitizedOrderBy, order]]
+    });
+
+    return { transactions, count };
+}
 
 const getWorkspaceTransactions = async (workspaceId, page, itemsPerPage, order, orderBy) => {
     const workspace = await Workspace.findByPk(workspaceId);
@@ -1000,7 +1051,7 @@ const getWorkspaceContracts = async (userId, workspaceName, page, itemsPerPage, 
     const contracts = await workspace.getFilteredContracts(page, itemsPerPage, orderBy, order, pattern);
     const allowedPatterns = ['erc20', 'erc721'].indexOf(pattern) > -1 ? pattern : null;
     const contractCount = await workspace.countContracts({
-        where: allowedPatterns ? { patterns: { [Op.contains]: [allowedPatterns] }} : {}
+        where: allowedPatterns ? { patterns: { [Op.contains]: [allowedPatterns] }} : {}
     });
 
     return {
@@ -1062,6 +1113,8 @@ const createWorkspace = async (userId, data) => {
 
 const getWorkspaceByName = async (userId, workspaceName) => {
     const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
+    if (!user)
+        return null;
     return user.workspaces && user.workspaces.length ? user.workspaces[0].toJSON() : null;
 };
 
@@ -1368,7 +1421,7 @@ const getContractDeploymentTxByAddress = async (userId, workspaceId, address) =>
     if (!userId || !workspaceId || !address) throw new Error('Missing parameter.');
 
     const user = await User.findByPk(userId);
-    console.log(user)
+
     const workspaces = await user.getWorkspaces({ where: { id: workspaceId }});
     const transactions = await workspaces[0].getTransactions({ where: { creates: address }});
     return transactions && transactions.length ? transactions[0].toJSON() : null;
@@ -1522,5 +1575,7 @@ module.exports = {
     deleteExplorerDomain: deleteExplorerDomain,
     getExplorerDomainById: getExplorerDomainById,
     disableUserTrial: disableUserTrial,
+    storeTransactionReceipt: storeTransactionReceipt,
+    getBlockTransactions: getBlockTransactions,
     Workspace: Workspace
 };
