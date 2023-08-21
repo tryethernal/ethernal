@@ -67,7 +67,7 @@ export default {
     },
     computed: {
         syncing() {
-            return this.block.syncedTransactionCount < this.block.transactionsCount;
+            return this.block && this.block.syncedTransactionCount < this.block.transactionsCount;
         }
     },
     watch: {
