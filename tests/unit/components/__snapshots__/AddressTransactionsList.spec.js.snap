@@ -2,6 +2,6 @@
 
 exports[`AddressTransactionsList.vue Should display the list 1`] = `
 <div class="container container--fluid">
-  <transactions-list-stub count="0" sortby="blockNumber" loading="true" currentaddress="0x123" transactions=""></transactions-list-stub>
+  <transactions-list-stub address="0x123" currentaddress="0x123"></transactions-list-stub>
 </div>
 `;

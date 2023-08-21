@@ -54,11 +54,7 @@
                 <v-card outlined>
                     <v-card-subtitle>Latest Transactions</v-card-subtitle>
                         <v-card-text>
-                            <Transactions-List
-                                :dense="true"
-                                :transactions="transactions"
-                                :loading="transactionListLoading"
-                                @update:options="getTransactions" />
+                            <Transactions-List :dense="true"></Transactions-List>
                         </v-card-text>
                 </v-card>
             </v-col>
@@ -99,7 +95,6 @@ export default {
         transactionVolumeLoading: false,
         walletVolumeLoading: false,
         transactionVolume: [],
-        transactions: [],
         txCount24h: 0,
         txCountTotal: 0,
         activeWalletCount: 0,
@@ -110,18 +105,10 @@ export default {
         pusherHandler: null
     }),
     mounted() {
-        this.getTransactions();
         this.getGlobalStats();
         this.getTransactionVolume();
         this.getWalletVolume();
-        this.pusherHandler = this.pusher.onNewBlock(data => {
-            if (data.withTransactions > 0)
-                this.getTransactions()
-        }, this);
         this.chart = this.$refs.chart;
-    },
-    destroyed() {
-        this.pusherHandler.unbind(null, null, this);
     },
     methods: {
         moment: moment,
@@ -135,13 +122,6 @@ export default {
                 })
                 .catch(console.log)
                 .finally(() => this.globalStatsLoading = false);
-        },
-        getTransactions() {
-            this.transactionListLoading = true;
-            this.server.getTransactions({ page: 1, itemsPerPage: 10, order: 'desc' })
-                .then(({ data }) => this.transactions = data.items)
-                .catch(console.log)
-                .finally(() => this.transactionListLoading = false);
         },
         getTransactionVolume() {
             this.transactionVolumeLoading = true;

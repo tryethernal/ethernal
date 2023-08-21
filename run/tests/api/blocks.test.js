@@ -13,6 +13,23 @@ const request = supertest(app);
 
 const BASE_URL = '/api/blocks'
 
+describe(`GET ${BASE_URL}/:number/transactions`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('Should return rows & transactions', (done) => {
+        db.getBlockTransactions.mockResolvedValue({ count: 1, transactions: [{ id: 1 }] });
+        request.get(`${BASE_URL}/1234/transactions`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({
+                    items: [{ id: 1 }],
+                    total: 1
+                });
+                done();
+            });
+    });
+});
+
 describe(`POST ${BASE_URL}/syncRange`, () => {
     beforeEach(() => jest.clearAllMocks());
 

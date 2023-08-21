@@ -795,6 +795,16 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
+            getBlockTransactions(blockNumber, options) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${store.getters.apiRoot}/api/blocks/${blockNumber}/transactions`;
+                return axios.get(resource, { params, cache: { ttl: store.getters.currentWorkspace.public ? CACHE_TTL : 0 }});
+            },
+
             getTransactions(options) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,

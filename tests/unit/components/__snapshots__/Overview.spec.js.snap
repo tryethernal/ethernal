@@ -48,7 +48,7 @@ exports[`Overview.vue Should load the overview page 1`] = `
       <div class="v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__subtitle">Latest Transactions</div>
         <div class="v-card__text">
-          <transactions-list-stub dense="true" transactions=""></transactions-list-stub>
+          <transactions-list-stub dense="true"></transactions-list-stub>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 const { ProviderConnector } = require('../lib/rpc');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
-const { isSubscriptionCheckEnabled } = require('../lib/flags');
+const { bulkEnqueue } = require('../lib/queue');
 
 module.exports = async job => {
     const data = job.data;
@@ -28,39 +28,29 @@ module.exports = async job => {
 
     const providerConnector = new ProviderConnector(workspace.rpcServer);
 
-    const block = await providerConnector.fetchBlockWithTransactions(data.blockNumber);
-
-    if (!block)
-        throw new Error("Couldn't fetch block from provider");
-
-    const partialBlock = await db.syncPartialBlock(workspace.id, block);
-
     try {
-        const formattedBlock = {
-            block,
-            transactions: [],
-        };
+        const block = await providerConnector.fetchBlockWithTransactions(data.blockNumber);
+        if (!block)
+            throw new Error("Couldn't fetch block from provider");
 
-        for (let i = 0; i < block.transactions.length; i++) {
-            const transaction = block.transactions[i];
-            const receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
+        const syncedBlock = await db.syncPartialBlock(workspace.id, block);
 
-            if (!receipt)
-                throw new Error('Failed to fetch receipt');
+        if (!syncedBlock)
+            throw new Error("Couldn't store block");
 
-            formattedBlock.transactions.push({
-                ...transaction,
-                receipt
+        const jobs = [];
+        for (let i = 0; i < syncedBlock.transactions.length; i++) {
+            const transaction = syncedBlock.transactions[i];
+            jobs.push({
+                name: `receiptSync-${transaction.hash}`,
+                data: { transactionId: transaction.id }
             });
         }
 
-        await db.syncFullBlock(workspace.id, formattedBlock);
+        await bulkEnqueue('receiptSync', jobs);
 
-        return true;
+        return 'Block synced';
     } catch(error) {
-        if (partialBlock)
-            await db.revertPartialBlock(partialBlock.id);
-
         logger.error(error.message, { location: 'jobs.blockSync', error, data });
         throw error;
     }

@@ -11,15 +11,14 @@ describe('HashLink.vue', () => {
     });
 
     it('Should not create links', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
-             .mockResolvedValue({ data: { name: 'My Contract', tokenName: 'Ethernal' }});
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
                 type: 'address',
                 hash: '0xed5af388653567af2f388e6224dc7c4b3241c544',
                 unlink: true,
                 notCopiable: true,
-                withName: true
+                withName: true,
+                contract: { name: 'My Contract', tokenName: 'Ethernal' }
             }
         });
         await flushPromises();
@@ -32,7 +31,8 @@ describe('HashLink.vue', () => {
             propsData: {
                 type: 'address',
                 hash: '0xed5af388653567af2f388e6224dc7c4b3241c544',
-                xsHash: true            }
+                xsHash: true
+            }
         });
         await flushPromises();
 
@@ -41,16 +41,14 @@ describe('HashLink.vue', () => {
 
 
     it('Should display link to token if tokenId is passed', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
-             .mockResolvedValue({ data: { name: 'My Contract', tokenName: 'Ethernal', tokenSymbol: 'ETL' }});
-
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
                 type: 'address',
                 hash: '0x123',
                 tokenId: '1',
                 withName: true,
-                withTokenName: true
+                withTokenName: true,
+                contract: { name: 'My Contract', tokenName: 'Ethernal', tokenSymbol: 'ETL' }
             }
         });
         await flushPromises();
@@ -59,15 +57,13 @@ describe('HashLink.vue', () => {
     });
 
     it('Should display the token name if symbol but flag withTokenName', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
-             .mockResolvedValue({ data: { name: 'My Contract', tokenName: 'Ethernal', tokenSymbol: 'ETL' }});
-
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
                 type: 'address',
                 hash: '0x123',
                 withName: true,
-                withTokenName: true
+                withTokenName: true,
+                contract: { name: 'My Contract', tokenName: 'Ethernal', tokenSymbol: 'ETL' }
             }
         });
         await flushPromises();
@@ -76,14 +72,12 @@ describe('HashLink.vue', () => {
     });
 
     it('Should display the token name if available & no token symbol', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
-             .mockResolvedValue({ data: { name: 'My Contract', tokenName: 'Ethernal' }});
-
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
                 type: 'address',
                 hash: '0x123',
-                withName: true
+                withName: true,
+                contract: { name: 'My Contract', tokenName: 'Ethernal' }
             }
         });
         await flushPromises();
@@ -92,14 +86,12 @@ describe('HashLink.vue', () => {
     });
 
     it('Should display the token symbol if available', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
-             .mockResolvedValue({ data: { name: 'My Contract', tokenSymbol: 'ETL' }});
-
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
                 type: 'address',
                 hash: '0x123',
-                withName: true
+                withName: true,
+                contract: { name: 'My Contract', tokenSymbol: 'ETL' }
             }
         });
         await flushPromises();
@@ -108,14 +100,12 @@ describe('HashLink.vue', () => {
     })
 
     it('Should display the contract name when no token', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
-             .mockResolvedValue({ data: { name: 'My Contract' }});
-
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
                 type: 'address',
                 hash: '0x123',
-                withName: true
+                withName: true,
+                contract: { name: 'My Contract' }
             }
         });
         await flushPromises();
@@ -136,9 +126,6 @@ describe('HashLink.vue', () => {
     });
 
     it('Should not be copiable if the notCopiable flag is passed', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
-             .mockResolvedValue({});
-
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
                 type: 'address',
@@ -152,9 +139,6 @@ describe('HashLink.vue', () => {
     });
 
     it('Should display a shortened link to the address', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
-             .mockResolvedValue({});
-
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
                 type: 'address',
@@ -168,9 +152,6 @@ describe('HashLink.vue', () => {
     });
 
     it('Should display a full link to the address', async () => {
-        jest.spyOn(helper.mocks.server, 'getContract')
-             .mockResolvedValue({});
-
         const wrapper = helper.mountFn(HashLink, {
             propsData: {
                 type: 'address',
