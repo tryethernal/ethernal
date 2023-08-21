@@ -179,7 +179,7 @@ export default {
                         this.server.getAddressTransactions(this.address, options) :
                         this.server.getTransactions(options);
 
-                        query.then(({ data }) => {
+            query.then(({ data }) => {
                 this.transactions = data.items;
                 this.transactionCount = data.total;
                 this.$emit('listUpdated');
