@@ -453,7 +453,7 @@ module.exports = (sequelize, DataTypes) => {
                 });
             });
 
-            await sequelize.models.Transaction.bulkCreate(transactions, { transaction: sequelizeTransaction });
+            await sequelize.models.Transaction.bulkCreate(transactions, { individualHooks: true, transaction: sequelizeTransaction });
 
             const blockWithTransactions = await sequelize.models.Block.findByPk(createdBlock.id, {
                 include: 'transactions'
