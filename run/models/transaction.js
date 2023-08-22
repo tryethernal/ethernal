@@ -8,6 +8,7 @@ const Op = Sequelize.Op
 const { sanitize, stringifyBns } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
 const { trigger } = require('../lib/pusher');
+const logger = require('../lib/logger');
 let { getTransactionMethodDetails } = require('../lib/abi');
 const moment = require('moment');
 
@@ -45,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
 
         return sequelize.transaction(async transaction => {
             await this.update({ state: 'ready' }, { transaction });
-            return this.createReceipt(stringifyBns(sanitize({
+            const storedReceipt = await this.createReceipt(stringifyBns(sanitize({
                 workspaceId: this.workspaceId,
                 blockHash: receipt.blockHash,
                 blockNumber: receipt.blockNumber,
@@ -63,6 +64,32 @@ module.exports = (sequelize, DataTypes) => {
                 type: receipt.type,
                 raw: receipt
             })), { transaction });
+
+            for (let i = 0; i < receipt.logs.length; i++) {
+                const log = receipt.logs[i];
+                try {
+                    await storedReceipt.createLog(sanitize({
+                        workspaceId: this.workspaceId,
+                        address: log.address,
+                        blockHash: log.blockHash,
+                        blockNumber: log.blockNumber,
+                        data: log.data,
+                        logIndex: log.logIndex,
+                        topics: log.topics,
+                        transactionHash: log.transactionHash,
+                        transactionIndex: log.transactionIndex,
+                        raw: log
+                    }), { transaction });
+                } catch(error) {
+                    logger.error(error.message, { location: 'models.transaction.safeCreateReceipt', error: error, transaction: transaction });
+                    await storedReceipt.createLog(sanitize({
+                        workspaceId: this.workspaceId,
+                        raw: log
+                    }), { transaction });
+                }
+
+                return storedReceipt;
+            }
         });
     }
 
