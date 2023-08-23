@@ -6,7 +6,7 @@ exports[`StatNumber.vue Should show a link 1`] = `
     <div class="">Stat</div>
     <!---->
   </div>
-  <div align="center" class="v-card__text text-h3"><a href="#/blocks/1" class="" style="text-decoration: none;">1</a></div>
+  <div align="center" class="v-card__text text-h3"><a href="/blocks/1" class="" style="text-decoration: none;">1</a></div>
 </div>
 `;
 
