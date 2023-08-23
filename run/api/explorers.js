@@ -213,6 +213,8 @@ router.post('/', authMiddleware, async (req, res) => {
             throw new Error('Missing parameters.');
 
         const workspace = await db.getWorkspaceById(data.workspaceId);
+        if (!workspace)
+            throw new Error('Invalid workspace');
 
         const provider = new ProviderConnector(workspace.rpcServer);
         try {

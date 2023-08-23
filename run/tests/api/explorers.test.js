@@ -34,7 +34,13 @@ const request = supertest(app);
 
 const BASE_URL = '/api/explorers';
 
-beforeEach(() => jest.resetAllMocks());
+beforeEach(() => {
+    jest.clearAllMocks();
+    ProviderConnector.mockImplementation(() => ({
+        fetchNetworkId: jest.fn().mockResolvedValue(1)
+    }));
+    jest.spyOn(db, 'getWorkspaceById').mockResolvedValue({ id: 1 });
+});
 
 describe(`PUT ${BASE_URL}/:id/subscription`, () => {
     it('Should update the plan without calling stripe if no stripeId', (done) => {
