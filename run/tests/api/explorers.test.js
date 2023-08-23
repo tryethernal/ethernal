@@ -32,7 +32,7 @@ const request = supertest(app);
 
 const BASE_URL = '/api/explorers';
 
-beforeEach(() => jest.resetAllMocks());
+beforeEach(() => jest.clearAllMocks());
 
 describe(`PUT ${BASE_URL}/:id/subscription`, () => {
     it('Should update the plan without calling stripe if no stripeId', (done) => {

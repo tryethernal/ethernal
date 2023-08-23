@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`parseTrace Should return the processed trace 1`] = `
-Array [
-  Object {
+[
+  {
     "address": "0xe54f3adc9ff833a025a89945c733233ce190f60e",
     "contractHashedBytecode": "0xdbe576b4818846aa77e82f4ed5fa78f92766b141f282d36703886d196df39322",
     "depth": 0,
