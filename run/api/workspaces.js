@@ -59,10 +59,10 @@ router.post('/', authMiddleware, async (req, res) => {
         const user = await db.getUser(data.uid, ['defaultDataRetentionLimit']);
         if (!user)
             throw new Error('Could not find user.');
-        
+
+        let networkId;
         if (data.workspaceData.public) {
             const provider = new ProviderConnector(data.workspaceData.rpcServer);
-            let networkId;
             try {
                 networkId = await provider.fetchNetworkId();
             } catch(error) {
@@ -71,11 +71,14 @@ router.post('/', authMiddleware, async (req, res) => {
             if (!networkId)
                 throw new Error(`Can't reach RPC server, make sure it's accessible.`);
         }
+        else {
+            networkId = data.workspaceData.networkId
+        }
 
         const filteredWorkspaceData = stringifyBns(sanitize({
             name: data.name,
             chain: data.workspaceData.chain,
-            networkId: data.workspaceData.networkId,
+            networkId: networkId,
             rpcServer: data.workspaceData.rpcServer,
             settings: data.workspaceData.settings,
             public: data.workspaceData.public,
