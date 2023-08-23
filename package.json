@@ -1,6 +1,6 @@
 {
   "name": "ethernal",
-  "version": "3.18.10",
+  "version": "3.18.11",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
