@@ -91,14 +91,14 @@ describe(`POST ${BASE_URL}`, () => {
     it('Should fail if workspace is public & rpc not reachable', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ defaultDataRetentionLimit: 7 });
         ProviderConnector.mockImplementationOnce(() => ({
-            fetchNetworkId: jest.fn().mockResolvedValue(null)
+            fetchNetworkId: jest.fn().mockRejectedValue()
         }));
 
         request.post(`${BASE_URL}`)
             .send({ data: { name: 'My Workspace', workspaceData: { public: true, rpcServer: 'http://localhost:8545' }}})
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual(`Can't reach RPC server, make sure it's accessible.`);
+                expect(text).toEqual(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
                 done();
             });
     });
