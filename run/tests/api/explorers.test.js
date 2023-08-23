@@ -18,11 +18,13 @@ jest.mock('stripe', () => {
 });
 
 require('../mocks/lib/queue');
+require('../mocks/lib/rpc');
 require('../mocks/lib/firebase');
 require('../mocks/lib/flags');
 require('../mocks/lib/env');
 require('../mocks/middlewares/auth');
 const db = require('../../lib/firebase');
+const { ProviderConnector } = require('../../lib/rpc');
 const flags = require('../../lib/flags');
 const authMiddleware = require('../../middlewares/auth');
 
@@ -32,7 +34,13 @@ const request = supertest(app);
 
 const BASE_URL = '/api/explorers';
 
-beforeEach(() => jest.clearAllMocks());
+beforeEach(() => {
+    jest.clearAllMocks();
+    ProviderConnector.mockImplementation(() => ({
+        fetchNetworkId: jest.fn().mockResolvedValue(1)
+    }));
+    jest.spyOn(db, 'getWorkspaceById').mockResolvedValue({ id: 1 });
+});
 
 describe(`PUT ${BASE_URL}/:id/subscription`, () => {
     it('Should update the plan without calling stripe if no stripeId', (done) => {
@@ -384,6 +392,18 @@ describe(`POST ${BASE_URL}`, () => {
             });
     });
 
+    it('Should return an error if workspace id is invalid', (done) => {
+        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce(null);
+
+        request.post(BASE_URL)
+            .send({ data: { domain: 'test', slug: 'test', workspaceId: 1, chainId: 1, rpcServer: 'test', theme: 'test' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Invalid workspace.');
+                done();
+            });
+    });
+
     it('Should create a demo subscription if stripe user has demo flag', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, canUseDemoPlan: true, workspaces: [{ id: 1 }] });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1 });
@@ -428,6 +448,21 @@ describe(`POST ${BASE_URL}`, () => {
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual(`Can't find plan.`);
+                done();
+            });
+    });
+
+    it('Should throw an error if the rpc is not reachable', (done) => {
+        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: 1, rpcServer: 'rpc' });
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchNetworkId: jest.fn().mockRejectedValue()
+        }));
+
+        request.post(BASE_URL)
+            .send({ data: { plan: 'slug', domain: 'test', slug: 'test', workspaceId: 1, chainId: 1, rpcServer: 'test', theme: 'test' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
                 done();
             });
     });
