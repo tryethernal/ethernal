@@ -2,8 +2,7 @@ const express = require('express');
 const logger = require('../lib/logger');
 const authMiddleware = require('../middlewares/auth');
 const secretMiddleware = require('../middlewares/secret');
-const { sanitize, stringifyBns } = require('../lib/utils');
-const { encode, decrypt } = require('../lib/crypto');
+const { sanitize, stringifyBns, withTimeout } = require('../lib/utils');
 const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
 const { ProviderConnector } = require('../lib/rpc');
@@ -64,7 +63,7 @@ router.post('/', authMiddleware, async (req, res) => {
         if (data.workspaceData.public) {
             const provider = new ProviderConnector(data.workspaceData.rpcServer);
             try {
-                networkId = await provider.fetchNetworkId();
+                networkId = await withTimeout(provider.fetchNetworkId());
             } catch(error) {
                 networkId = null;
             }
