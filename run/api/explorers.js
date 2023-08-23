@@ -210,14 +210,14 @@ router.post('/', authMiddleware, async (req, res) => {
         if (!data.workspaceId)
             throw new Error('Missing parameters.');
 
-        const user = await db.getUser(data.uid, ['stripeCustomerId']);
+        const user = await db.getUser(data.uid, ['stripeCustomerId', 'canUseDemoPlan']);
 
         const explorer = await db.createExplorerFromWorkspace(user.id, data.workspaceId);
 
         if (!explorer)
             throw new Error('Could not create explorer.');
         
-        if (!isStripeEnabled()) {
+        if (!isStripeEnabled() || user.canUseDemoPlan) {
             const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
             if (!stripePlan)
                 throw new Error(`Can't setup explorer. Make sure you've run npx sequelize-cli db:seed:all`);
