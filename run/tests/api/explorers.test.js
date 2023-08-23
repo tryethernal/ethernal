@@ -32,7 +32,7 @@ const request = supertest(app);
 
 const BASE_URL = '/api/explorers';
 
-beforeEach(() => jest.clearAllMocks());
+beforeEach(() => jest.resetAllMocks());
 
 describe(`PUT ${BASE_URL}/:id/subscription`, () => {
     it('Should update the plan without calling stripe if no stripeId', (done) => {
@@ -380,6 +380,23 @@ describe(`POST ${BASE_URL}`, () => {
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual('Could not create explorer.');
+                done();
+            });
+    });
+
+    it('Should create a demo subscription if stripe user has demo flag', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, canUseDemoPlan: true, workspaces: [{ id: 1 }] });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1 });
+        jest.spyOn(db, 'createExplorerFromWorkspace').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(flags, 'isStripeEnabled').mockReturnValueOnce(true);
+
+        request.post(BASE_URL)
+            .send({ data: { domain: 'test', slug: 'test', workspaceId: 1, chainId: 1, rpcServer: 'test', theme: 'test' }})
+            .expect(200)
+            .then(({ body }) => {
+                expect(db.getStripePlan).toHaveBeenCalledWith('selfhosted');
+                expect(db.createExplorerSubscription).toHaveBeenCalled();
+                expect(body).toEqual({ id: 1 });
                 done();
             });
     });
