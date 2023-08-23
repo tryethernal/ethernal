@@ -392,6 +392,18 @@ describe(`POST ${BASE_URL}`, () => {
             });
     });
 
+    it('Should return an error if workspace id is invalid', (done) => {
+        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce(null);
+
+        request.post(BASE_URL)
+            .send({ data: { domain: 'test', slug: 'test', workspaceId: 1, chainId: 1, rpcServer: 'test', theme: 'test' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Invalid workspace.');
+                done();
+            });
+    });
+
     it('Should create a demo subscription if stripe user has demo flag', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, canUseDemoPlan: true, workspaces: [{ id: 1 }] });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1 });
