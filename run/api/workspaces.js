@@ -69,7 +69,7 @@ router.post('/', authMiddleware, async (req, res) => {
                 networkId = null;
             }
             if (!networkId)
-                throw new Error(`Can't reach RPC server, make sure it's accessible.`);
+                throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
         }
         else {
             networkId = data.workspaceData.networkId

@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 const { isStripeEnabled, isSubscriptionCheckEnabled } = require('../lib/flags');
 const { getAppDomain, getDefaultPlanSlug } = require('../lib/env');
+const { ProviderConnector } = require('../lib/rpc');
+const { withTimeout } = require('../lib/utils');
 const logger = require('../lib/logger');
 const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
@@ -209,6 +211,15 @@ router.post('/', authMiddleware, async (req, res) => {
     try {
         if (!data.workspaceId)
             throw new Error('Missing parameters.');
+
+        const workspace = await db.getWorkspaceById(data.workspaceId);
+
+        const provider = new ProviderConnector(workspace.rpcServer);
+        try {
+            await withTimeout(provider.fetchNetworkId());
+        } catch(error) {
+            throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
+        }
 
         const user = await db.getUser(data.uid, ['stripeCustomerId', 'canUseDemoPlan']);
 
