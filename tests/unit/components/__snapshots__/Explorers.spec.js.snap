@@ -59,7 +59,7 @@ exports[`Explorers.vue Should display settings with all options 1`] = `
         </thead>
         <tbody>
           <tr class="">
-            <td class="text-start"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-alert-circle theme--light error--text text--lignthen" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--top"><!----></span> <a href="#/explorers/3" class="">Explorer 3</a></td>
+            <td class="text-start"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-alert-circle theme--light error--text text--lignthen" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--top"><!----></span> <a href="/explorers/3" class="">Explorer 3</a></td>
             <td class="text-start">
               Workspace 3
             </td>
@@ -69,7 +69,7 @@ exports[`Explorers.vue Should display settings with all options 1`] = `
             </td>
           </tr>
           <tr class="">
-            <td class="text-start"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-alert theme--light warning--text text--lignthen" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--top"><!----></span> <a href="#/explorers/2" class="">Explorer 2</a></td>
+            <td class="text-start"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-alert theme--light warning--text text--lignthen" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--top"><!----></span> <a href="/explorers/2" class="">Explorer 2</a></td>
             <td class="text-start">
               Workspace 2
             </td>
@@ -79,7 +79,7 @@ exports[`Explorers.vue Should display settings with all options 1`] = `
             </td>
           </tr>
           <tr class="">
-            <td class="text-start"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-check-circle theme--light success--text text--lignthen" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--top"><!----></span> <a href="#/explorers/1" class="">Explorer 1</a></td>
+            <td class="text-start"><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-check-circle theme--light success--text text--lignthen" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--top"><!----></span> <a href="/explorers/1" class="">Explorer 1</a></td>
             <td class="text-start">
               Workspace 1
             </td>

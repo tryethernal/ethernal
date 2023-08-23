@@ -27,6 +27,32 @@ describe('CreateExplorerModal.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
+    it('Should skip billing if user is demo account', async () => {
+        jest.spyOn(helper.mocks.server, 'getWorkspaces').mockResolvedValueOnce([{ name: 'my workspace', rpcServer: 'a', networkId: 1 }]);
+        jest.spyOn(helper.mocks.server, 'getExplorerPlans').mockResolvedValueOnce({ data: [] });
+        jest.spyOn(helper.mocks.server, 'createExplorer').mockResolvedValueOnce({ data: { id: 1 }});
+        const routerSpy = jest.spyOn(helper.mocks.router, 'push');
+
+        const wrapper = helper.mountFn(CreateExplorerModal, {
+            stubs: ['Explorer-Plan-Card', 'Create-Workspace'],
+            getters: {
+                isBillingEnabled: jest.fn().mockReturnValue(true),
+                user: jest.fn().mockReturnValue({
+                    canUseDemoPlan: true
+                })
+            }
+        });
+
+        wrapper.vm.open();
+        await wrapper.setData({ workspace: { id: 1 }});
+
+        await wrapper.find('#selectWorkspace').trigger('click');
+        await flushPromises();
+
+        expect(helper.mocks.server.createExplorer).toHaveBeenCalled();
+        expect(routerSpy).toBeCalledWith({ path: '/explorers/1?status=success'});
+    });
+
     it('Should skip billing if it is not enabled', async () => {
         jest.spyOn(helper.mocks.server, 'getWorkspaces').mockResolvedValueOnce([{ name: 'my workspace', rpcServer: 'a', networkId: 1 }]);
         jest.spyOn(helper.mocks.server, 'getExplorerPlans').mockResolvedValueOnce({ data: [] });

@@ -110,7 +110,8 @@ export default new Vuex.Store({
                     plan: user.plan,
                     apiToken: user.apiToken,
                     canTrial: user.canTrial,
-                    cryptoPaymentEnabled: user.cryptoPaymentEnabled
+                    cryptoPaymentEnabled: user.cryptoPaymentEnabled,
+                    canUseDemoPlan: user.canUseDemoPlan
                 }));
 
                 if (process.env.VUE_APP_ENABLE_ANALYTICS)

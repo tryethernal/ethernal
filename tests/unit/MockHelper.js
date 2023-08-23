@@ -52,7 +52,7 @@ class MockHelper {
 
     initPlugins() {
         this.vuetify = new Vuetify();
-        this.router = new VueRouter();
+        this.router = new VueRouter({ mode: 'abstract' });
         this.localVue.use(VueRouter);
         this.localVue.use(dbPlugin);
         this.localVue.use(serverPlugin);
@@ -75,6 +75,7 @@ class MockHelper {
         this.getters = {
             mainDomain: jest.fn().mockReturnValue('tryethernal.com'),
             isBillingEnabled: jest.fn().mockReturnValue(true),
+            canUseDemoPlan: jest.fn().mockReturnValue(false),
             apiRoot: jest.fn().mockReturnValue('http://localhost:8081'),
             rpcServer: jest.fn().mockReturnValue('http://localhost:8545'),
             accounts: jest.fn().mockReturnValue(['0xAD2935E147b61175D5dc3A9e7bDa93B0975A43BA']),

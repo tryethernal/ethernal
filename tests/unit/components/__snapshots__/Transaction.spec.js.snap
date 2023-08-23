@@ -72,7 +72,7 @@ exports[`Transaction.vue Should display indexing warning 1`] = `
     <div class="col-sm-12 col-md-6 col-lg-8 col">
       <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-3 col">
-          <div class="text-overline">Block</div> <a href="#/block/13012562" class="">13012562</a>
+          <div class="text-overline">Block</div> <a href="/block/13012562" class="">13012562</a>
         </div>
         <div class="col-sm-12 col-md-6 col-lg-3 col">
           <div class="text-overline">Mined At</div>
@@ -157,7 +157,7 @@ exports[`Transaction.vue Should display parsed error messages 1`] = `
     <div class="col-sm-12 col-md-6 col-lg-8 col">
       <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-3 col">
-          <div class="text-overline">Block</div> <a href="#/block/13012562" class="">13012562</a>
+          <div class="text-overline">Block</div> <a href="/block/13012562" class="">13012562</a>
         </div>
         <div class="col-sm-12 col-md-6 col-lg-3 col">
           <div class="text-overline">Mined At</div>
@@ -244,7 +244,7 @@ exports[`Transaction.vue Should display raw error messages 1`] = `
     <div class="col-sm-12 col-md-6 col-lg-8 col">
       <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-3 col">
-          <div class="text-overline">Block</div> <a href="#/block/13012562" class="">13012562</a>
+          <div class="text-overline">Block</div> <a href="/block/13012562" class="">13012562</a>
         </div>
         <div class="col-sm-12 col-md-6 col-lg-3 col">
           <div class="text-overline">Mined At</div>
@@ -310,7 +310,7 @@ exports[`Transaction.vue Should not display the menu if public explorer 1`] = `
     <div class="col-sm-12 col-md-6 col-lg-8 col">
       <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-3 col">
-          <div class="text-overline">Block</div> <a href="#/block/13012562" class="">13012562</a>
+          <div class="text-overline">Block</div> <a href="/block/13012562" class="">13012562</a>
         </div>
         <div class="col-sm-12 col-md-6 col-lg-3 col">
           <div class="text-overline">Mined At</div>

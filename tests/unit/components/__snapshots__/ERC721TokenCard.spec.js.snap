@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ERC721TokenCard.vue Should display an erc721 token card 1`] = `
-<div class="v-card v-sheet theme--light"><a href="#/token/0xabc/0" class="">
+<div class="v-card v-sheet theme--light"><a href="/token/0xabc/0" class="">
     <div rounded="lg" elevation="2"><img src="http://image"></div>
   </a>
-  <div class="v-card__text"><a href="#/token/0xabc/0" class=""><b>Token #1</b></a> <br>
+  <div class="v-card__text"><a href="/token/0xabc/0" class=""><b>Token #1</b></a> <br>
     Owned by <hash-link-stub xshash="true" hash="0x123" type="address"></hash-link-stub>
   </div>
 </div>

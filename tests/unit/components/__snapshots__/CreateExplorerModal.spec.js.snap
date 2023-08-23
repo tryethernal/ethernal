@@ -93,12 +93,12 @@ exports[`CreateExplorerModal.vue Should let the user select a plan 1`] = `
                   <div class="col col-12">
                     <div class="v-input mt-2 theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
                       <div class="v-input__control">
-                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-53" class="v-input__slot">
+                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-76" class="v-input__slot">
                           <fieldset aria-hidden="true">
                             <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                           </fieldset>
-                          <div class="v-select__slot"><label for="input-53" class="v-label theme--light" style="left: 0px; position: absolute;">Select Existing Workspace</label>
-                            <div class="v-select__selections"><input primary="" id="input-53" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                          <div class="v-select__slot"><label for="input-76" class="v-label theme--light" style="left: 0px; position: absolute;">Select Existing Workspace</label>
+                            <div class="v-select__selections"><input primary="" id="input-76" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
                             <div class="v-input__append-inner">
                               <div></div>
                             </div>

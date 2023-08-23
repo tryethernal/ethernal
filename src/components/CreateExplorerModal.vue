@@ -81,7 +81,7 @@ export default {
         open() {
             this.dialog = true;
 
-            if (this.isBillingEnabled)
+            if (this.isBillingEnabled && !this.user.canUseDemoPlan)
                 this.server.getExplorerPlans()
                     .then(({ data }) => this.plans = data.sort((a, b) => a.price - b.price))
                     .catch(console.log);
@@ -103,7 +103,7 @@ export default {
                     this.explorer = data;
                     this.$emit('explorerCreated');
 
-                    if (this.isBillingEnabled)
+                    if (this.isBillingEnabled && !this.user.canUseDemoPlan)
                         this.stepperIndex = 2;
                     else
                         this.$router.push({ path: `/explorers/${this.explorer.id}?status=success`});

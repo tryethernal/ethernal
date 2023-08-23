@@ -167,6 +167,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     },
     defaultDataRetentionLimit: DataTypes.INTEGER,
+    canUseDemoPlan: DataTypes.BOOLEAN,
     apiKey: DataTypes.STRING,
     firebaseUserId: DataTypes.STRING,
     email: DataTypes.STRING,
