@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Public Explorer] Discover network id
 
 ### Fixed
+## [3.18.10] - 2023-08-23
+- [Public Explorer] Check if rpc is publicly accessible before creating explorer
+
+### Fixed
 ## [3.18.9] - 2023-08-23
 - [Public Explorer] Demo account flag
 
