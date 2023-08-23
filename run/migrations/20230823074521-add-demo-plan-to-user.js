@@ -5,7 +5,7 @@ module.exports = {
     await queryInterface.addColumn('users', 'canUseDemoPlan', {
       type: Sequelize.DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: true
+      defaultValue: false
     });
   },
 
