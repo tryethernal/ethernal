@@ -1,13 +1,12 @@
 const models = require('../models');
 
-module.exports = () => {
-    const sequelize = models.sequelize;
+const ALLOWED_MVS = ['transaction_volume_14d', 'wallet_volume_14d'];
 
-    const promises = [];
-    promises.push(
-        sequelize.query('REFRESH MATERIALIZED VIEW transaction_volume_14d'),
-        sequelize.query('REFRESH MATERIALIZED VIEW wallet_volume_14d')
-    );
+module.exports = job => {
+    const view  = job.data.view;
 
-    return Promise.allSettled(promises);
+    if (ALLOWED_MVS.indexOf(view) == -1)
+        return 'Invalid view';
+    
+    return models.sequelize.query(`REFRESH MATERIALIZED VIEW "${view}";`);
 };
