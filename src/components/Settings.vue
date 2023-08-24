@@ -263,9 +263,6 @@ export default {
         callFunction: function(name) {
             this[name]();
         },
-        switchWorkspace: function(name) {
-            this.server.setCurrentWorkspace(name).then(() => document.location.reload());
-        },
         resetWorkspace: function() {
             if (confirm(`Are you sure you want to reset the workspace ${this.currentWorkspace.name}? This action is definitive.`)) {
                 this.resetWorkspaceLoading = true;
