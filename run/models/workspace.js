@@ -18,9 +18,9 @@ module.exports = (sequelize, DataTypes) => {
   class Workspace extends Model {
     static associate(models) {
       Workspace.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
-      Workspace.hasOne(models.Explorer, { foreignKey: 'workspaceId', as: 'explorer' });
       Workspace.hasOne(models.IntegrityCheck, { foreignKey: 'workspaceId', as: 'integrityCheck' });
       Workspace.hasOne(models.RpcHealthCheck, { foreignKey: 'workspaceId', as: 'rpcHealthCheck' });
+      Workspace.hasOne(models.Explorer, { foreignKey: 'workspaceId', as: 'explorer' });
       Workspace.hasMany(models.CustomField, { foreignKey: 'workspaceId', as: 'custom_fields' });
       Workspace.hasMany(models.Block, { foreignKey: 'workspaceId', as: 'blocks' });
       Workspace.hasMany(models.Transaction, { foreignKey: 'workspaceId', as: 'transactions' });
@@ -52,6 +52,14 @@ module.exports = (sequelize, DataTypes) => {
 
     getProvider() {
         return new ProviderConnector(this.rpcServer);
+    }
+
+    async safeDelete() {
+        const explorer = await this.getExplorer();
+        if (explorer)
+            throw new Error(`This workspace has an explorer associated to it. Please delete it or change its associated workspace first.`);
+
+        return this.destroy();
     }
 
     async getContractByAddress(address) {

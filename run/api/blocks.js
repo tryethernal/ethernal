@@ -1,5 +1,6 @@
 const express = require('express');
 const { stringifyBns, sanitize } = require('../lib/utils');
+const { getAppDomain } = require('../lib/env');
 const db = require('../lib/firebase');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
@@ -97,7 +98,7 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res) => {
             */
             // const hasActiveExplorer = workspace.explorer && workspace.explorer.stripeSubscription;
             if (!workspace.public)
-                throw new Error(`You need to have an active explorer to use server side sync. Go to https://app.${process.env.APP_DOMAIN}/explorers for more info`);
+                throw new Error(`You need to have an active explorer to use server side sync. Go to https://app.${getAppDomain()}/explorers for more info`);
 
             if (block.number === undefined || block.number === null)
                 throw Error('Missing block number.');
@@ -110,6 +111,10 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res) => {
             }, 1);
         }
         else {
+            const canUserSyncBlock = await db.canUserSyncBlock(data.user.id);
+            if (!canUserSyncBlock)
+                throw new Error(`You are on a free plan with more than one workspace. Please upgrade your plan, or delete your extra workspaces here: https://app.${getAppDomain()}/settings.`);
+
             const syncedBlock = stringifyBns(sanitize(block));
             await db.storeBlock(data.uid, data.workspace, syncedBlock);
         }

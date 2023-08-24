@@ -59,7 +59,7 @@
             </template>
             <template v-if="isUserAdmin">
                 <v-divider vertical inset class="mx-2"></v-divider>
-                <span :title="currentWorkspace.rpcServer" style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">{{ formattedCurrentRpcServer }}</span>
+                <span style="max-width: 50ch; text-overflow: ellipsis; overflow: hidden;">{{ shortRpcUrl(rpcServer) }}</span>
             </template>
             <div v-show="currentBlock.number">
                 <v-divider vertical inset class="mx-2"></v-divider>
@@ -80,7 +80,7 @@
 <script>
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
-import { formatContractPattern } from '@/lib/utils';
+import { formatContractPattern, shortRpcUrl } from '@/lib/utils';
 
 export default Vue.extend({
     name: 'RpcConnector',
@@ -130,7 +130,7 @@ export default Vue.extend({
         }, this);
     },
     methods: {
-        formatContractPattern,
+        formatContractPattern, shortRpcUrl,
         toggleMenu() {
             this.$emit('toggleMenu');
         },
@@ -217,15 +217,6 @@ export default Vue.extend({
             'currentBlock',
             'isUserAdmin'
         ]),
-        formattedCurrentRpcServer() {
-            try {
-                const url = new URL(this.rpcServer);
-                return url.origin;
-            } catch(error) {
-                console.log(error)
-                return this.rpcServer || '';
-            }
-        },
         orderedItems() {
             const items = {
                 'address': [],

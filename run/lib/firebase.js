@@ -15,6 +15,29 @@ const StripeSubscription = models.StripeSubscription;
 const StripePlan = models.StripePlan;
 const ExplorerDomain = models.ExplorerDomain;
 
+const canUserSyncBlock = async (userId) => {
+    if (!userId) throw new Error('Missing parameter');
+
+    const user = await User.findByPk(userId, {
+        include: 'workspaces'
+    });
+
+    if (!user.isPremium && user.workspaces.length > 1)
+        return false;
+
+    return true;
+};
+
+const deleteWorkspace = async (userId, workspaceId) => {
+    if (!userId || !workspaceId) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace || workspace.userId != userId)
+        throw new Error('Cannot find workspace');
+
+    return workspace.safeDelete();
+};
+
 const storeTransactionReceipt = async (transactionId, receipt) => {
     if (!transactionId || !receipt) throw new Error('Missing parameter');
 
@@ -1577,5 +1600,7 @@ module.exports = {
     disableUserTrial: disableUserTrial,
     storeTransactionReceipt: storeTransactionReceipt,
     getBlockTransactions: getBlockTransactions,
+    deleteWorkspace: deleteWorkspace,
+    canUserSyncBlock: canUserSyncBlock,
     Workspace: Workspace
 };

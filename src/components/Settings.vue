@@ -9,7 +9,7 @@
         <v-tabs-items :value="tab">
             <v-tab-item value="workspace">
                 <v-row>
-                    <v-col lg="5">
+                    <v-col lg="6">
                         <v-alert v-show="updateSuccess" dense text type="success">Settings updated</v-alert>
                         <v-alert v-show="updateError || errorMessage" dense text type="error">{{ errorMessage  || 'Error while updating settings' }}</v-alert>
                         <h4>General</h4>
@@ -76,27 +76,8 @@
                             </v-card-text>
                         </v-card>
 
-                        <Create-Workspace-Modal ref="createWorkspaceModal" />
                         <h4>Workspaces</h4>
-                        <v-card outlined class="mb-4">
-                            <v-card-text>
-                                <v-data-table
-                                    :loading="loadingWorkspaces"
-                                    :no-data-text="'No workspaces'"
-                                    :items="workspaces"
-                                    :headers="workspacesDataTableHeaders">
-                                    <template v-slot:top>
-                                        <v-toolbar flat dense class="py-0">
-                                            <v-spacer></v-spacer>
-                                            <v-btn depressed color="primary" class="mr-2" @click="openCreateWorkspaceModal()"><v-icon>mdi-plus</v-icon>New Workspace</v-btn>
-                                        </v-toolbar>
-                                    </template>
-                                    <template v-slot:item.actions="{ item }">
-                                        <v-icon :id="`switchTo-${item.id}`" @click="switchWorkspace(item.name)">mdi-swap-horizontal</v-icon>
-                                    </template>
-                                </v-data-table>
-                            </v-card-text>
-                        </v-card>
+                        <Workspace-List />
 
                         <h4>Advanced Options</h4>
                         <v-card outlined class="mb-4">
@@ -155,14 +136,15 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import CreateWorkspaceModal from './CreateWorkspaceModal';
+
+import WorkspaceList from './WorkspaceList';
 import Billing from './Billing';
 import Account from './Account';
 
 export default {
     name: 'Settings',
     components: {
-        CreateWorkspaceModal,
+        WorkspaceList,
         Billing,
         Account
     },
@@ -199,20 +181,6 @@ export default {
                 ]
             }
         ],
-        workspacesDataTableHeaders: [
-            {
-                text: 'Name',
-                value: 'name'
-            },
-            {
-                text: 'RPC Server',
-                value: 'rpcServer'
-            },
-            {
-                text: '',
-                value: 'actions'
-            }
-        ],
         availableChains: [],
         settings: {},
         workspaces: [],
@@ -221,7 +189,6 @@ export default {
         updateSuccess: false,
         updateError: false,
         optionsLoader: false,
-        loadingWorkspaces: true,
         resetWorkspaceLoading: false,
         advancedOptionsLoading: false,
         errorMessage: null
@@ -233,11 +200,6 @@ export default {
         }))
         if (!this.tab)
             this.tab = 'workspace';
-
-        this.server.getWorkspaces()
-            .then(({ data }) => this.workspaces = data)
-            .catch(console.log)
-            .finally(() => this.loadingWorkspaces = false);
 
         this.server.getAccounts({ page: -1 })
             .then(({ data: { items } }) => this.accounts = items)
@@ -296,15 +258,6 @@ export default {
                 .catch((error) => {
                     this.errorMessage = error.reason;
                     this.loading = false;
-                });
-        },
-        openCreateWorkspaceModal: function() {
-            this.$refs.createWorkspaceModal
-                .open()
-                .then((workspaceCreated) => {
-                    if (workspaceCreated) {
-                        document.location.reload();
-                    }
                 });
         },
         callFunction: function(name) {
