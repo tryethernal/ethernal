@@ -4,6 +4,9 @@ services:
   web: &backend
     volumes:
       - ./run/:/app
+      - type: bind
+        source: ./run/.env
+        target: /app/run/.env
     depends_on:
       - pm2
     build:
