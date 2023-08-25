@@ -32,7 +32,7 @@ exports[`WorkspaceList.vue Should display workspaces list 1`] = `
               <td class="text-start">
                 <div style="max-width: 60ch; text-overflow: ellipsis; overflow: hidden;">http://localhost:8545</div>
               </td>
-              <td class="text-center"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><button type="button" id="switchTo-1" class="v-icon notranslate v-icon--link mdi mdi-swap-horizontal theme--light" style="font-size: 16px;"></button></span></button> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-delete theme--light error--text" style="font-size: 16px;"></button></span></button></td>
+              <td class="text-center"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-swap-horizontal theme--light" style="font-size: 16px;"></button></span></button> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-delete theme--light error--text" style="font-size: 16px;"></button></span></button></td>
             </tr>
             <tr class="">
               <td class="text-start">
@@ -42,7 +42,7 @@ exports[`WorkspaceList.vue Should display workspaces list 1`] = `
               <td class="text-start">
                 <div style="max-width: 60ch; text-overflow: ellipsis; overflow: hidden;">http://localhost:8545</div>
               </td>
-              <td class="text-center"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><button type="button" id="switchTo-2" class="v-icon notranslate v-icon--link mdi mdi-swap-horizontal theme--light" style="font-size: 16px;"></button></span></button> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-delete theme--light error--text" style="font-size: 16px;"></button></span></button></td>
+              <td class="text-center"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-swap-horizontal theme--light" style="font-size: 16px;"></button></span></button> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-delete theme--light error--text" style="font-size: 16px;"></button></span></button></td>
             </tr>
           </tbody>
         </table>
