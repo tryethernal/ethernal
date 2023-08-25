@@ -4,24 +4,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### Fixed
+## [3.18.14] - 2023-08-25
+### Added
+- Possibility to delete a workspace
+### Changed
+- Block sync won't work anymore for users on a free plan with multiple workspaces. They will either have to upgrade or delete their workspace.
+
 ## [3.18.13] - 2023-08-24
+### Fixed
 - [Public Explorer] More performante mv refresh
 
-### Fixed
 ## [3.18.12] - 2023-08-23
+### Fixed
 - [Public Explorer] Discover network id
 
-### Fixed
 ## [3.18.10] - 2023-08-23
+### Fixed
 - [Public Explorer] Check if rpc is publicly accessible before creating explorer
 
-### Fixed
 ## [3.18.9] - 2023-08-23
+### Fixed
 - [Public Explorer] Demo account flag
 
-### Fixed
 ## [3.18.8] - 2023-08-22
+### Fixed
 - [Public Explorer] Hooks and logs
 
 ## [3.18.7] - 2023-08-19
