@@ -21,7 +21,7 @@
                     <div style="max-width: 60ch; text-overflow: ellipsis; overflow: hidden;">{{ shortRpcUrl(item.rpcServer) }}</div>
                 </template>
                 <template v-slot:item.actions="{ item }">
-                    <v-btn :disabled="disabled || item.id == currentWorkspace.id" icon><v-icon small :id="`switchTo-${item.id}`" @click="switchWorkspace(item.name)">mdi-swap-horizontal</v-icon></v-btn>
+                    <v-btn :disabled="disabled || item.id == currentWorkspace.id" icon><v-icon small @click="switchWorkspace(item.name)">mdi-swap-horizontal</v-icon></v-btn>
                     <v-btn :disabled="disabled" icon><v-icon color="error" small @click="deleteWorkspace(item)">mdi-delete</v-icon></v-btn>
                 </template>
             </v-data-table>

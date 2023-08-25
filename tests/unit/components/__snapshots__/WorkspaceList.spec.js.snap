@@ -1,0 +1,76 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WorkspaceList.vue Should display workspaces list 1`] = `
+<div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+  <create-workspace-modal-stub></create-workspace-modal-stub>
+  <div class="v-card__text">
+    <!---->
+    <div class="v-data-table v-data-table--has-top v-data-table--has-bottom theme--light">
+      <header class="py-0 v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px;">
+        <div class="v-toolbar__content" style="height: 48px;">
+          <div class="spacer"></div> <button type="button" class="mr-2 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-plus theme--light"></i>New Workspace</span></button>
+        </div>
+      </header>
+      <div class="v-data-table__wrapper">
+        <table>
+          <colgroup>
+            <col class="">
+            <col class="">
+            <col class="">
+          </colgroup>
+          <thead class="v-data-table-header">
+            <tr>
+              <th role="columnheader" scope="col" aria-label="Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable" style="width: 30%; min-width: 30%;"><span>Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="RPC Server: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>RPC Server</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-center sortable" style="width: 20%; min-width: 20%;"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="">
+              <td class="text-start">
+                workspace 1 <span class="ml-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">current</span></span></td>
+              <td class="text-start">
+                <div style="max-width: 60ch; text-overflow: ellipsis; overflow: hidden;">http://localhost:8545</div>
+              </td>
+              <td class="text-center"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><button type="button" id="switchTo-1" class="v-icon notranslate v-icon--link mdi mdi-swap-horizontal theme--light" style="font-size: 16px;"></button></span></button> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-delete theme--light error--text" style="font-size: 16px;"></button></span></button></td>
+            </tr>
+            <tr class="">
+              <td class="text-start">
+                workspace 2
+                <!---->
+              </td>
+              <td class="text-start">
+                <div style="max-width: 60ch; text-overflow: ellipsis; overflow: hidden;">http://localhost:8545</div>
+              </td>
+              <td class="text-center"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><button type="button" id="switchTo-2" class="v-icon notranslate v-icon--link mdi mdi-swap-horizontal theme--light" style="font-size: 16px;"></button></span></button> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><button type="button" class="v-icon notranslate v-icon--link mdi mdi-delete theme--light error--text" style="font-size: 16px;"></button></span></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="v-data-footer">
+        <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
+            <div class="v-input__control">
+              <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-17" class="v-input__slot">
+                <div class="v-select__slot">
+                  <div class="v-select__selections">
+                    <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-17" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  </div>
+                  <div class="v-input__append-inner">
+                    <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                  </div><input type="hidden" value="10">
+                </div>
+                <div class="v-menu">
+                  <!---->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="v-data-footer__pagination">1-2 of 2</div>
+        <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
+        <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
