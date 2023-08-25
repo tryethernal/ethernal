@@ -139,8 +139,6 @@ router.post('/signup', async (req, res) => {
             passwordHash
         });
 
-        await enqueue('processUser', `processUser-${uid}`, { uid: uid });
-
         res.status(200).json({ user });
     } catch(error) {
         logger.error(error.message, { location: 'get.api.users', error: error, data: data });

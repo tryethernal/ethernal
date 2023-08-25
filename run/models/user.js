@@ -2,7 +2,8 @@
 const {
   Model, Sequelize
 } = require('sequelize');
-const { sanitize, slugify } = require('../lib/utils');
+const { sanitize } = require('../lib/utils');
+const { enqueue } = require('../lib/queue');
 const { trigger } = require('../lib/pusher');
 const { encode, decrypt } = require('../lib/crypto');
 
@@ -194,6 +195,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     hooks: {
+        afterCreate(user, options) {
+            return enqueue('processUser', `processUser-${user.id}`, { id: user.id });
+        },
         afterUpdate(user, options) {
             trigger(`private-cache-users;id=${user.id}`, 'updated', user);
         }

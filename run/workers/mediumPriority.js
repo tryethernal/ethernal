@@ -17,5 +17,8 @@ priorities['medium'].forEach(jobName => {
             data: job.data 
         });
     });
-    logger.info(`Started worker "${jobName}" - Priority: medium`);
+    if (process.env.NODE_ENV == 'production')
+        logger.info(`Started worker "${jobName}" - Priority: medium`);
+    else
+        console.log(`Started worker "${jobName}" - Priority: medium`);
 });
