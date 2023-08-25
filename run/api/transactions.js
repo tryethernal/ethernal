@@ -6,7 +6,7 @@ const authMiddleware = require('../middlewares/auth');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const browserSyncMiddleware = require('../middlewares/browserSync');
 const { processTransactions } = require('../lib/transactions');
-const { enqueue } = require('../lib/queue');
+const { getAppDomain } = require('../lib/env');
 const { transactionFn } = require('../lib/codeRunner');
 
 const router = express.Router();
@@ -46,6 +46,10 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res) => {
 
         const transaction = data.transaction;
         const receipt = data.transactionReceipt;
+
+        const canUserSyncBlock = await db.canUserSyncBlock(data.user.id);
+        if (!canUserSyncBlock)
+            throw new Error(`You are on a free plan with more than one workspace. Please upgrade your plan, or delete your extra workspaces here: https://app.${getAppDomain()}/settings.`);
 
         const sTransactionReceipt = receipt ? stringifyBns(sanitize(receipt)) : null;
         const sTransaction = stringifyBns(sanitize(transaction));

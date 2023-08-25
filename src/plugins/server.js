@@ -354,6 +354,11 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            deleteWorkspace(id) {
+                const resource = `${store.getters.apiRoot}/api/workspaces/${id}`;
+                return axios.delete(resource);
+            },
+
             getExplorerDomainStatus(domainId) {
                 const resource = `${store.getters.apiRoot}/api/domains/${domainId}`;
                 return axios.get(resource);

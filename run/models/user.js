@@ -28,7 +28,14 @@ module.exports = (sequelize, DataTypes) => {
                 firebaseUserId: firebaseUserId
             },
             attributes: ['email', 'firebaseUserId', 'id', 'isPremium', 'plan', 'cryptoPaymentEnabled', ...extraFields],
-            include: ['workspaces', 'currentWorkspace']
+            include: [
+                {
+                    model: sequelize.models.Workspace,
+                    as: 'workspaces',
+                    include: 'explorer'
+                },
+                'currentWorkspace'
+            ]
         });
     }
 
