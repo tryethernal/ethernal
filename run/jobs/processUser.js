@@ -1,16 +1,23 @@
 const GhostAdminAPI = require('@tryghost/admin-api');
 const Analytics = require('../lib/analytics');
 const db = require('../lib/firebase');
+const { getGhostApiKey, getGhostEndpoint, getMixpanelApiToken } = require('../lib/env');
 
 module.exports = async job => {
     const data = job.data;
     try {
-        if (!data.uid)
+        if (!data.id)
             throw new Error('Missing parameter');
 
-        const user = await db.getUser(data.uid);
+        const user = await db.getUserById(data.id);
 
-        if (process.env.GHOST_API_KEY && process.env.GHOST_ENDPOINT) {
+        if (!user)
+            throw new Error('Cannot find user');
+
+        const ghostApiKey = getGhostApiKey();
+        const ghostEndpoint = getGhostEndpoint();
+
+        if (ghostApiKey && ghostEndpoint) {
             const api = new GhostAdminAPI({
                 url: process.env.GHOST_ENDPOINT,
                 key: process.env.GHOST_API_KEY,
@@ -19,15 +26,17 @@ module.exports = async job => {
             await api.members.add({ email: user.email });
         }
 
-        const analytics = new Analytics(process.env.MIXPANEL_API_TOKEN);
+        if (getMixpanelApiToken()) {
+            const analytics = new Analytics(getMixpanelApiToken());
 
-        await analytics.setUser(data.firebaseUserId, {
-            $email: user.email,
-            $created: (new Date()).toISOString(),
-        });
+            analytics.setUser(data.firebaseUserId, {
+                $email: user.email,
+                $created: (new Date()).toISOString(),
+            });
 
-        await analytics.setSubscription(data.firebaseUserId, null, 'free', null, false);
-        return await analytics.track(data.firebaseUserId, 'Sign Up');
+            analytics.setSubscription(data.firebaseUserId, null, 'free', null, false);
+            return analytics.track(data.firebaseUserId, 'Sign Up');
+        }
     } catch(error) {
         if (error.context && error.context.startsWith('Member already exists'))
             return;

@@ -17,5 +17,8 @@ priorities['low'].forEach(jobName => {
             data: job.data
         });
     });
-    logger.info(`Started worker "${jobName}" - Priority: low`);
+    if (process.env.NODE_ENV == 'production')
+        logger.info(`Started worker "${jobName}" - Priority: low`);
+    else
+        console.log(`Started worker "${jobName}" - Priority: low`);
 });
