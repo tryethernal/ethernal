@@ -6,7 +6,7 @@ const authMiddleware = require('../middlewares/auth');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const browserSyncMiddleware = require('../middlewares/browserSync');
 const { processTransactions } = require('../lib/transactions');
-const { enqueue } = require('../lib/queue');
+const { getAppDomain } = require('../lib/env');
 const { transactionFn } = require('../lib/codeRunner');
 
 const router = express.Router();
