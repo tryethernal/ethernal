@@ -6,7 +6,7 @@ export const shortRpcUrl = (rpc) => {
         const url = new URL(rpc);
         return url.origin;
     } catch(error) {
-        return rpc;
+        return rpc || '';
     }
 }
 

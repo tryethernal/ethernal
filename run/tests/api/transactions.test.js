@@ -1,5 +1,6 @@
 require('../mocks/models');
 require('../mocks/lib/firebase');
+require('../mocks/lib/env');
 require('../mocks/lib/transactions');
 require('../mocks/lib/queue');
 require('../mocks/lib/codeRunner');
@@ -16,7 +17,10 @@ const request = supertest(app);
 
 const BASE_URL = '/api/transactions';
 
-beforeEach(() => jest.clearAllMocks());
+beforeEach(() => {
+    jest.clearAllMocks();
+    jest.spyOn(db, 'canUserSyncBlock').mockResolvedValue(true);
+});
 
 describe(`GET ${BASE_URL}/:hash/tokenTransfers`, () => {
     it('Should return token transfers list', (done) => {
@@ -175,7 +179,7 @@ describe(`POST ${BASE_URL}/:hash/error`, () => {
 });
 
 describe(`POST ${BASE_URL}`, () => {
-    it('Should return 200 status and not store contract data if it is not a deployment', (done) => {
+    it('Should return 200 status', (done) => {
         request.post(BASE_URL)
             .send({
                 data: { 
@@ -204,8 +208,9 @@ describe(`POST ${BASE_URL}`, () => {
             });
     });
 
-    it('Should return 200 status and store contract data if it is not deployment', (done) => {
+    it('Should return an error if user is not allowed to sync', (done) => {
         jest.spyOn(db, 'canUserSyncContract').mockResolvedValue(true);
+        jest.spyOn(db, 'canUserSyncBlock').mockResolvedValue(false);
         request.post(BASE_URL)
             .send({
                 data: { 
@@ -219,17 +224,9 @@ describe(`POST ${BASE_URL}`, () => {
                     }
                 }
             })
-            .expect(200)
-            .then(() => {
-                expect(db.storeTransaction).toHaveBeenCalledWith(
-                    '123',
-                    'My Workspace',
-                    {
-                        hash: '1234',
-                        receipt: { contractAddress: '0x1234' },
-                        timestamp: 123456
-                    }
-                );
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('You are on a free plan with more than one workspace. Please upgrade your plan, or delete your extra workspaces here: https://app.ethernal.com/settings.');
                 done();
             });
     });

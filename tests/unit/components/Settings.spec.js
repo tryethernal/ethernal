@@ -5,7 +5,6 @@ import Settings from '@/components/Settings.vue';
 
 describe('Settings.vue', () => {
     let helper;
-    const { reload } = window.location;
 
     beforeEach(async () => {
         window.Stripe = jest.fn();
@@ -28,6 +27,7 @@ describe('Settings.vue', () => {
         jest.spyOn(helper.mocks.server, 'getWorkspaces')
             .mockResolvedValueOnce({ data: [{ id: 'Hardhat', name: 'Hardhat', rpcServer: 'http://localhost:1234' }]})
         const wrapper = helper.mountFn(Settings, {
+            stubs: ['Workspace-List', 'Billing', 'Account'],
             getters: {
                 isBillingEnabled: jest.fn().mockReturnValue(false)
             }
@@ -39,7 +39,9 @@ describe('Settings.vue', () => {
     it('Should load the settings page', async () => {
         jest.spyOn(helper.mocks.server, 'getWorkspaces')
             .mockResolvedValueOnce({ data: [{ id: 'Hardhat', name: 'Hardhat', rpcServer: 'http://localhost:1234' }]})
-        const wrapper = helper.mountFn(Settings);
+        const wrapper = helper.mountFn(Settings, {
+            stubs: ['Workspace-List', 'Billing', 'Account']
+        });
         await new Promise(process.nextTick);
         expect(wrapper.html()).toMatchSnapshot();
     });
@@ -47,7 +49,9 @@ describe('Settings.vue', () => {
     it('Should let the user update general options', async () => {
         const updateWorkspaceSettingsMock = jest.spyOn(helper.mocks.server, 'updateWorkspaceSettings');
 
-        const wrapper = helper.mountFn(Settings);
+        const wrapper = helper.mountFn(Settings, {
+            stubs: ['Workspace-List', 'Billing', 'Account']
+        });
         await flushPromises();
 
         await wrapper.find('#rpcServer').setValue('http://localhost:1234');
@@ -70,8 +74,10 @@ describe('Settings.vue', () => {
 
     it('Should let the user update call options', async () => {
         const updateWorkspaceSettingsMock = jest.spyOn(helper.mocks.server, 'updateWorkspaceSettings');
-        
-        const wrapper = helper.mountFn(Settings);
+
+        const wrapper = helper.mountFn(Settings, {
+            stubs: ['Workspace-List', 'Billing', 'Account']
+        });
         await flushPromises();
 
         await wrapper.find('#defaultAccount').setValue('0x123');
@@ -93,26 +99,13 @@ describe('Settings.vue', () => {
         });
     });
 
-    it('Should let the user switch workspaces', async () => {
-        jest.spyOn(helper.mocks.server, 'getWorkspaces')
-            .mockResolvedValueOnce({ data: [{ id: 'Ganache', name: 'Ganache', rpcServer: 'http://localhost:1234' }]});
-
-        const setCurrentWorkspaceMock = jest.spyOn(helper.mocks.server, 'setCurrentWorkspace');
-        
-        const wrapper = helper.mountFn(Settings);
-        await flushPromises();
-
-        await wrapper.find('#switchTo-Ganache').trigger('click');
-        await flushPromises();
-
-        expect(setCurrentWorkspaceMock).toHaveBeenCalledWith('Ganache');
-    });
-
     it('Should let the user reset the workspace', async () => {
         const resetWorkspaceMock = jest.spyOn(helper.mocks.server, 'resetWorkspace');
-        const wrapper = helper.mountFn(Settings);
+        const wrapper = helper.mountFn(Settings, {
+            stubs: ['Workspace-List', 'Billing', 'Account']
+        });
         await flushPromises();
-        
+
         const confirmMock = jest.spyOn(window, 'confirm');
         confirmMock.mockReturnValue(true);
 
