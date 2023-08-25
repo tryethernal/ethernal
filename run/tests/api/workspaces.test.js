@@ -13,6 +13,18 @@ const request = supertest(app);
 
 const BASE_URL = '/api/workspaces';
 
+describe(`DELETE ${BASE_URL}/:id`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('Should delete workspace', (done) => {
+        jest.spyOn(db, 'deleteWorkspace').mockResolvedValueOnce();
+
+        request.delete(`${BASE_URL}/1`)
+            .expect(200)
+            .then(() => done());
+    });
+});
+
 describe(`GET ${BASE_URL}/:id`, () => {
     beforeEach(() => jest.clearAllMocks());
 
