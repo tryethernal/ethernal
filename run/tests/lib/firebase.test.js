@@ -13,7 +13,7 @@ beforeEach(() => jest.clearAllMocks());
 
 describe('canUserSyncBlock', () => {
     it('Should return true if user is premium', (done) => {
-        jest.spyOn(User, 'findByPk').mockResolvedValue({ isPremium: true });
+        jest.spyOn(User, 'findByPk').mockResolvedValueOnce({ isPremium: true });
         db.canUserSyncBlock(1)
             .then(res => {
                 expect(res).toEqual(true);
@@ -22,7 +22,7 @@ describe('canUserSyncBlock', () => {
     });
 
     it('Should return true if user has only one workspace', (done) => {
-        jest.spyOn(User, 'findByPk').mockResolvedValue({ isPremium: false, workspaces: [{ id: 1 }]});
+        jest.spyOn(User, 'findByPk').mockResolvedValueOnce({ isPremium: false, workspaces: [{ id: 1 }]});
         db.canUserSyncBlock(1)
             .then(res => {
                 expect(res).toEqual(true);
@@ -31,7 +31,7 @@ describe('canUserSyncBlock', () => {
     });
 
     it('Should return false if user is not premium and has multiple workspaces', (done) => {
-        jest.spyOn(User, 'findByPk').mockResolvedValue({ isPremium: false, workspaces: [{ id: 1 }, { id: 2 }]});
+        jest.spyOn(User, 'findByPk').mockResolvedValueOnce({ isPremium: false, workspaces: [{ id: 1 }, { id: 2 }]});
         db.canUserSyncBlock(1)
             .then(res => {
                 expect(res).toEqual(false);
@@ -43,7 +43,7 @@ describe('canUserSyncBlock', () => {
 describe('deleteWorkspace', () => {
     it('Should delete the workspace', (done) => {
         const workspace = { userId: 1, safeDelete: jest.fn() };
-        jest.spyOn(Workspace, 'findByPk').mockResolvedValue(workspace);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(workspace);
         db.deleteWorkspace(1, 1)
             .then(() => {
                 expect(workspace.safeDelete).toHaveReturnedWith();
@@ -53,7 +53,7 @@ describe('deleteWorkspace', () => {
 
     it('Should retun an error if workspace/user mismatch', (done) => {
         const workspace = { userId: 1 };
-        jest.spyOn(Workspace, 'findByPk').mockResolvedValue(workspace);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(workspace);
         db.deleteWorkspace(2, 1)
             .catch(error => {
                 expect(error.message).toEqual('Cannot find workspace');
