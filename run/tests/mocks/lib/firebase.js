@@ -108,6 +108,7 @@ jest.mock('../../../lib/firebase', () => {
         disableUserTrial: jest.fn(),
         getBlockTransactions: jest.fn(),
         storeTransactionReceipt: jest.fn(),
+        canUserSyncBlock: jest.fn(),
         Workspace: Workspace
     }
 });

@@ -1,6 +1,7 @@
 require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/lib/queue');
+require('../mocks/lib/env');
 require('../mocks/middlewares/workspaceAuth');
 require('../mocks/middlewares/auth');
 require('../mocks/middlewares/browserSync');
@@ -13,11 +14,14 @@ const request = supertest(app);
 
 const BASE_URL = '/api/blocks'
 
-describe(`GET ${BASE_URL}/:number/transactions`, () => {
-    beforeEach(() => jest.clearAllMocks());
+beforeEach(() => {
+    jest.clearAllMocks();
+    jest.spyOn(db, 'canUserSyncBlock').mockResolvedValue(true);
+});
 
+describe(`GET ${BASE_URL}/:number/transactions`, () => {
     it('Should return rows & transactions', (done) => {
-        db.getBlockTransactions.mockResolvedValue({ count: 1, transactions: [{ id: 1 }] });
+        jest.spyOn(db, 'getBlockTransactions').mockResolvedValue({ count: 1, transactions: [{ id: 1 }] });
         request.get(`${BASE_URL}/1234/transactions`)
             .expect(200)
             .then(({ body }) => {
@@ -31,10 +35,8 @@ describe(`GET ${BASE_URL}/:number/transactions`, () => {
 });
 
 describe(`POST ${BASE_URL}/syncRange`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should fail if it is server side and not public', (done) => {
-        db.getWorkspaceByName.mockResolvedValue({ name: 'My Workspace', public: false });
+        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace', public: false });
         request.post(`${BASE_URL}/syncRange`)
             .send({ data: { workspace: 'My Workspace', from: 1, to: 10 }})
             .expect(400)
@@ -45,7 +47,7 @@ describe(`POST ${BASE_URL}/syncRange`, () => {
     });
 
     it('Should enqueue a batchBlockSync task', (done) => {
-        db.getWorkspaceByName.mockResolvedValue({ name: 'My Workspace', public: true });
+        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace', public: true });
         request.post(`${BASE_URL}/syncRange`)
             .send({ data: { workspace: 'My Workspace', from: 1, to: 10 }})
             .expect(200)
@@ -62,10 +64,20 @@ describe(`POST ${BASE_URL}/syncRange`, () => {
 });
 
 describe(`POST ${BASE_URL}`, () => {
-    beforeEach(() => jest.clearAllMocks());
+    it('Should throw an error if user is not allowed ot sync', (done) => {
+        jest.spyOn(db, 'canUserSyncBlock').mockResolvedValueOnce(false);
+
+        request.post(BASE_URL)
+            .send({ data: { workspace: 'My Workspace', block: {}}})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('You are on a free plan with more than one workspace. Please upgrade your plan, or delete your extra workspaces here: https://app.ethernal.com/settings.');
+                done();
+            });
+    });
 
     it('Should throw an error if block number is missing with server sync', (done) => {
-        db.getWorkspaceByName.mockResolvedValue({ name: 'My Workspace', public: true });
+        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace', public: true });
         request.post(`${BASE_URL}/?serverSync=true`)
             .send({ data: { workspace: 'My Workspace', block: {}}})
             .expect(400)
@@ -76,7 +88,7 @@ describe(`POST ${BASE_URL}`, () => {
     });
 
     it.skip('Should refuse server side block sync if workspace is not public', (done) => {
-        db.getWorkspaceByName.mockResolvedValue({ name: 'My Workspace', public: false });
+        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace', public: false });
         request.post(`${BASE_URL}/?serverSync=true`)
             .send({ data: { workspace: 'My Workspace', block: { number: 123 }}})
             .expect(400)
@@ -86,9 +98,8 @@ describe(`POST ${BASE_URL}`, () => {
             });
     });
 
-
     it('Should enqueue server side block sync', (done) => {
-        db.getWorkspaceByName.mockResolvedValue({ name: 'My Workspace', public: true });
+        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace', public: true });
         request.post(`${BASE_URL}/?serverSync=true`)
             .send({ data: { workspace: 'My Workspace', block: { number: 123 }}})
             .expect(200)
@@ -115,10 +126,8 @@ describe(`POST ${BASE_URL}`, () => {
 });
 
 describe(`GET ${BASE_URL}/:number`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should return 200 status code', (done) => {
-        db.getWorkspaceBlock.mockResolvedValue({ number: 1234 });
+        jest.spyOn(db, 'getWorkspaceBlock').mockResolvedValue({ number: 1234 });
         request.get(`${BASE_URL}/1234`)
             .expect(200)
             .then(({ body }) => {
@@ -132,10 +141,8 @@ describe(`GET ${BASE_URL}/:number`, () => {
 });
 
 describe(`GET ${BASE_URL}`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it('Should return 200 status code', (done) => {
-        db.getWorkspaceBlocks.mockResolvedValue([{ number: 1234 }]);
+        jest.spyOn(db, 'getWorkspaceBlocks').mockResolvedValue([{ number: 1234 }]);
         request.get(BASE_URL)
             .expect(200)
             .then(({ body }) => {
