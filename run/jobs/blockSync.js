@@ -34,20 +34,8 @@ module.exports = async job => {
             throw new Error("Couldn't fetch block from provider");
 
         const syncedBlock = await db.syncPartialBlock(workspace.id, block);
-
         if (!syncedBlock)
             throw new Error("Couldn't store block");
-
-        const jobs = [];
-        for (let i = 0; i < syncedBlock.transactions.length; i++) {
-            const transaction = syncedBlock.transactions[i];
-            jobs.push({
-                name: `receiptSync-${workspace.id}-${transaction.hash}`,
-                data: { transactionId: transaction.id }
-            });
-        }
-
-        await bulkEnqueue('receiptSync', jobs);
 
         return 'Block synced';
     } catch(error) {
