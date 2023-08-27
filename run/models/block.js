@@ -4,6 +4,7 @@ const {
   Sequelize
 } = require('sequelize');
 const { trigger } = require('../lib/pusher');
+const { bulkEnqueue } = require('../lib/queue');
 const moment = require('moment');
 
 module.exports = (sequelize, DataTypes) => {
@@ -56,6 +57,27 @@ module.exports = (sequelize, DataTypes) => {
     state: DataTypes.ENUM('syncing', 'ready')
   }, {
     hooks: {
+        async afterCreate(block, options) {
+          const workspace = await block.getWorkspace();
+          if (workspace.public) {
+            const afterCreateFn = async () => {
+              const transactions = block.transactions;
+              const jobs = [];
+                for (let i = 0; i < transactions.length; i++) {
+                  const transaction = transactions[i];
+                  jobs.push({
+                    name: `receiptSync-${workspace.id}-${transaction.hash}`,
+                    data: { transactionId: transaction.id }
+                  });
+                }
+                await bulkEnqueue('receiptSync', jobs);
+            }
+            if (options.transaction)
+              return options.transaction.afterCommit(afterCreateFn);
+            else
+              return afterCreateFn();
+          }
+        },
         async afterSave(block, options) {
             const afterSaveFn = async () => {
                 // We only refresh the frontend in real time if that's a recent block to avoid spamming requests

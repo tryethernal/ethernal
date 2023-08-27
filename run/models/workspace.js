@@ -412,26 +412,8 @@ module.exports = (sequelize, DataTypes) => {
 
     async safeCreatePartialBlock(block) {
         return sequelize.transaction(async sequelizeTransaction => {
-            const createdBlock = await this.createBlock(sanitize({
-                baseFeePerGas: block.baseFeePerGas,
-                difficulty: block.difficulty,
-                extraData: block.extraData,
-                gasLimit: block.gasLimit,
-                gasUsed: block.gasUsed,
-                hash: block.hash,
-                miner: block.miner,
-                nonce: block.nonce,
-                number: block.number,
-                parentHash: block.parentHash,
-                timestamp: block.timestamp,
-                transactionsCount: block.transactions ? block.transactions.length : 0,
-                state: 'ready',
-                raw: block
-            }), { transaction: sequelizeTransaction });
-
             const transactions = block.transactions.map(transaction => {
                 return sanitize({
-                    blockId: createdBlock.id,
                     workspaceId: this.id,
                     blockHash: transaction.blockHash,
                     blockNumber: transaction.blockNumber,
@@ -461,13 +443,26 @@ module.exports = (sequelize, DataTypes) => {
                 });
             });
 
-            await sequelize.models.Transaction.bulkCreate(transactions, { individualHooks: true, transaction: sequelizeTransaction });
-
-            const blockWithTransactions = await sequelize.models.Block.findByPk(createdBlock.id, {
-                include: 'transactions'
+            return this.createBlock(sanitize({
+                baseFeePerGas: block.baseFeePerGas,
+                difficulty: block.difficulty,
+                extraData: block.extraData,
+                gasLimit: block.gasLimit,
+                gasUsed: block.gasUsed,
+                hash: block.hash,
+                miner: block.miner,
+                nonce: block.nonce,
+                number: block.number,
+                parentHash: block.parentHash,
+                timestamp: block.timestamp,
+                transactionsCount: block.transactions ? block.transactions.length : 0,
+                state: 'ready',
+                raw: block,
+                transactions
+            }), {
+                include: [ sequelize.models.Block.associations.transactions ],
+                transaction: sequelizeTransaction
             });
-
-            return blockWithTransactions;
         });
     }
 

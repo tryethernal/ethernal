@@ -36,30 +36,6 @@ describe('blockSync', () => {
             });
     });
 
-    it('Should enqueue receipt sync jobs', (done) => {
-        jest.spyOn(db, 'syncPartialBlock').mockResolvedValue({ transactions: [{ id: 1, hash: '0x123' }] })
-        ProviderConnector.mockImplementationOnce(() => ({
-            fetchBlockWithTransactions: jest.fn()
-                .mockResolvedValue({
-                    number: 1,
-                    transactions: [
-                        { hash: '0x123' }
-                    ]
-            })
-        }));
-        blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
-            .then(res => {
-                expect(res).toEqual('Block synced');
-                expect(bulkEnqueue).toHaveBeenCalledWith('receiptSync', [
-                    {
-                        name: 'receiptSync-1-0x123',
-                        data: { transactionId: 1 }
-                    }
-                ]);
-                done();
-            });
-    });
-
     it('Should set recovery status for integrity check', (done) => {
         jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({
             id: 1,
