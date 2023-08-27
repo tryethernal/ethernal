@@ -12,10 +12,14 @@ jest.mock('@tryghost/admin-api', () => {
     }
 });
 
+
+
+
 const db = require('../../lib/firebase');
 const env = require('../../lib/env')
 
 const processUser = require('../../jobs/processUser');
+const { bulkEnqueue } = require('../../lib/queue');
 
 beforeEach(() => jest.clearAllMocks());
 
