@@ -87,9 +87,8 @@ module.exports = (sequelize, DataTypes) => {
                         raw: log
                     }), { transaction });
                 }
-
-                return storedReceipt;
             }
+            return storedReceipt;
         });
     }
 
