@@ -15,15 +15,12 @@ module.exports = async job => {
                 model: Workspace,
                 as: 'workspace',
                 attributes: ['rpcServer'],
-                required: true,
                 include: {
                     model: Explorer,
                     as: 'explorer',
-                    required: true,
                     include: {
                         model: StripeSubscription,
                         as: 'stripeSubscription',
-                        required: true
                     }
                 }
             },
@@ -35,13 +32,19 @@ module.exports = async job => {
     });
 
     if (!transaction)
-        return 'Missing transaction';
+        throw new Error('Missing transaction');
 
     if (transaction.receipt)
-        return 'Receipt has already been synced';
+        throw new Error('Receipt has already been synced');
 
-    if (!transaction.workspace.explorer || !transaction.workspace.explorer.stripeSubscription)
-        return 'Inactive explorer';
+    if (!transaction.workspace)
+        throw new Error('Missing workspace');
+
+    if (!transaction.workspace.explorer)
+        throw new Error('Inactive explorer');
+
+    if (!transaction.workspace.explorer.stripeSubscription)
+        throw new Error('No active subscription');
 
     const providerConnector = new ProviderConnector(transaction.workspace.rpcServer);
 
