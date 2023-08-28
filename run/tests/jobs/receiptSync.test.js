@@ -40,8 +40,8 @@ describe('receiptSync', () => {
         }));
 
         receiptSync({ data : { transactionId: 1 }})
-            .catch(res => {
-                expect(res.message).toEqual('Missing transaction');
+            .then(res => {
+                expect(res).toEqual('Missing transaction');
                 done();
             });
     });
@@ -58,8 +58,8 @@ describe('receiptSync', () => {
         }));
 
         receiptSync({ data : { transactionId: 1 }})
-            .catch(res => {
-                expect(res.message).toEqual('No active subscription');
+            .then(res => {
+                expect(res).toEqual('No active subscription');
                 done();
             });
     });

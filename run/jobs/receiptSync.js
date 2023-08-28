@@ -32,19 +32,19 @@ module.exports = async job => {
     });
 
     if (!transaction)
-        throw new Error('Missing transaction');
+        return 'Missing transaction';
 
     if (transaction.receipt)
-        throw new Error('Receipt has already been synced');
+        return 'Receipt has already been synced';
 
     if (!transaction.workspace)
-        throw new Error('Missing workspace');
+        return 'Missing workspace';
 
     if (!transaction.workspace.explorer)
-        throw new Error('Inactive explorer');
+        return 'Inactive explorer';
 
     if (!transaction.workspace.explorer.stripeSubscription)
-        throw new Error('No active subscription');
+        return 'No active subscription';
 
     const providerConnector = new ProviderConnector(transaction.workspace.rpcServer);
 
