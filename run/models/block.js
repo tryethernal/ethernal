@@ -63,14 +63,25 @@ module.exports = (sequelize, DataTypes) => {
             const afterCreateFn = async () => {
               const transactions = block.transactions;
               const jobs = [];
+              for (let i = 0; i < transactions.length; i++) {
+                const transaction = transactions[i];
+                jobs.push({
+                  name: `receiptSync-${workspace.id}-${transaction.hash}`,
+                  data: { transactionId: transaction.id }
+                });
+              }
+              await bulkEnqueue('receiptSync', jobs);
+              if (workspace.tracing == 'other') {
+                const jobs = [];
                 for (let i = 0; i < transactions.length; i++) {
                   const transaction = transactions[i];
                   jobs.push({
-                    name: `receiptSync-${workspace.id}-${transaction.hash}`,
+                    name: `processTransactionTrace-${workspace.id}-${transaction.hash}`,
                     data: { transactionId: transaction.id }
                   });
                 }
-                await bulkEnqueue('receiptSync', jobs);
+                await bulkEnqueue('processTransactionTrace', jobs);
+              }
             }
             if (options.transaction)
               return options.transaction.afterCommit(afterCreateFn);

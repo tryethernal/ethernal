@@ -275,12 +275,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     hooks: {
         async afterCreate(transaction, options) {
-            const afterCommitFn = async () => {
-                const workspace = await transaction.getWorkspace();
-                if (workspace.public && workspace.tracing == 'other')
-                    await enqueue('processTransactionTrace', `processTransactionTrace-${transaction.workspaceId}-${transactionInstance.hash}`, {
-                        transactionId: transaction.id
-                    }, 1);
+            const afterCommitFn = () => {
                 return transaction.triggerEvents();
             };
 
