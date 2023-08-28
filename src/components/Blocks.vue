@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <Block-List />
+        <Block-List :disableCount="true" />
     </v-container>
 </template>
 

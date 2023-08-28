@@ -8,6 +8,7 @@
         :sort-desc="true"
         :server-items-length="blockCount"
         :hide-default-footer="dense"
+        :disable-pagination="true"
         :hide-default-header="dense"
         :item-class="rowClasses"
         :footer-props="{
@@ -17,7 +18,7 @@
         @update:options="getBlocks">
         <template v-slot:no-data>
             No blocks found
-        </template>
+        </template>Jul 26 2022, 4:49 PM
         <template v-slot:item.number="{ item }">
             <template>
                 <v-tooltip top>
@@ -48,7 +49,7 @@
 const moment = require('moment');
 export default {
     name: 'BlockList',
-    props: ['dense'],
+    props: ['dense', 'disableCount'],
     data: () => ({
         blocks: [],
         blockCount: 0,
@@ -88,10 +89,12 @@ export default {
                 itemsPerPage: this.currentOptions.itemsPerPage,
                 order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
             };
-            this.server.getBlocks(options)
+            this.server.getBlocks(options, !this.dense && !this.disableCount)
                 .then(({ data }) => {
                     this.blocks = data.items;
-                    this.blockCount = data.total;
+                    this.blockCount = data.items.length == this.currentOptions.itemsPerPage ?
+                        (this.currentOptions.page * data.items.length) + 1 :
+                        this.currentOptions.page * data.items.length;
                 })
                 .catch(console.log)
                 .finally(() => this.loading = false);

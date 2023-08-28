@@ -780,11 +780,11 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            getBlocks(options) {
+            getBlocks(options, withCount) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
-                    ...options
+                    ...options, withCount
                 };
                 const resource = `${store.getters.apiRoot}/api/blocks`;
                 return axios.get(resource, { params, cache: { ttl: CACHE_TTL }});
