@@ -13,7 +13,7 @@ beforeEach(() => jest.clearAllMocks());
 
 describe('reloadErc721Token', () => {
     it('Should update the token with new metadata & owner', (done) => {
-        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: '123', name: 'My Workspace', rpcServer: 'remote' });
+        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: '123', name: 'My Workspace', rpcServer: 'remote', erc721LoadingEnabled: true });
         jest.spyOn(db, 'getContractByWorkspaceId').mockResolvedValueOnce({ id: '123', has721Metadata: true, has721Enumerable: true });
         ERC721Connector.mockImplementationOnce(() => ({
             tokenByIndex: jest.fn().mockResolvedValue('0'),
@@ -35,7 +35,7 @@ describe('reloadErc721Token', () => {
     });
 
     it('Should create the contract if it does not exist', (done) => {
-        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: '123', name: 'My Workspace', rpcServer: 'remote' });
+        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ id: '123', name: 'My Workspace', rpcServer: 'remote', erc721LoadingEnabled: true });
         jest.spyOn(db, 'storeContractDataWithWorkspaceId').mockResolvedValueOnce({ id: 2 });
         ERC721Connector.mockImplementationOnce(() => ({
             tokenByIndex: jest.fn().mockResolvedValue('0'),

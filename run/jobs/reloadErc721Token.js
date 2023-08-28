@@ -10,6 +10,9 @@ module.exports = async job => {
         throw new Error('Missing parameter.');
 
     const workspace = await db.getWorkspaceById(data.workspaceId);
+    if (!workspace.erc721LoadingEnabled)
+        return 'ERC721 caching is disabled';
+
     let contract = await db.getContractByWorkspaceId(workspace.id, data.address);
 
     if (!contract)
