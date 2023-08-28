@@ -115,8 +115,8 @@ export default {
                 .finally(() => this.loading = false);
         },
         onWorkspaceCreated(workspace) {
-            this.stepperIndex = 2;
-            this.explorer = workspace.explorer;
+            this.workspace = workspace;
+            this.selectWorkspace();
         },
         onPlanSelected(slug) {
             this.selectedPlanSlug = slug;
