@@ -17,6 +17,9 @@ module.exports = async job => {
     if (!workspace.explorer)
         return 'No active explorer for this workspace';
 
+    if (!workspace.explorer.stripeSubscription)
+        return 'No active subscription';
+
     const existingBlock = await db.getWorkspaceBlock(workspace.id, data.blockNumber);
     if (existingBlock)
         return 'Block already exists in this workspace.';
