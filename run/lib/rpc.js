@@ -104,7 +104,7 @@ class ProviderConnector {
         try {
             return await withTimeout(this.provider.getBlockWithTransactions(blockNumber));
         } catch(error) {
-            const rawBlock = await withTimeout(this.provider.send('eth_getBlockByNumber', [blockNumber.toString(), true]))
+            const rawBlock = await withTimeout(this.provider.send('eth_getBlockByNumber', [`0x${blockNumber.toString(16)}`, true]))
             return sanitize(rawBlock);
         }
     }
