@@ -59,7 +59,10 @@ module.exports = (sequelize, DataTypes) => {
         if (explorer)
             throw new Error(`This workspace has an explorer associated to it. Please delete it or change its associated workspace first.`);
 
-        return this.destroy();
+        return sequelize.transaction(async (transaction) => {
+            await this.reset(null, transaction);
+            return this.destroy({ transaction });
+        });
     }
 
     async getContractByAddress(address) {
@@ -933,23 +936,27 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
-    async reset(dayInterval) {
+    async reset(dayInterval, transaction) {
         const filter = { where: { workspaceId: this.id }};
         if (dayInterval)
             filter['where']['createdAt'] = { [Op.lt]: sequelize.literal(`NOW() - interval '${dayInterval} day'`)};
 
-        return sequelize.transaction(
-            { deferrable: Sequelize.Deferrable.SET_DEFERRED },
-            async (transaction) => {
-                await sequelize.models.IntegrityCheck.destroy(filter, { transaction });
-                await sequelize.models.TokenBalanceChange.destroy(filter, { transaction });
-                await sequelize.models.TokenTransfer.destroy(filter, { transaction });
-                await sequelize.models.Transaction.destroy(filter, { transaction });
-                await sequelize.models.Block.destroy(filter, { transaction });
-                await sequelize.models.Contract.destroy(filter, { transaction });
-                await sequelize.models.Account.destroy(filter, { transaction });
-            }
-        );
+        const destroyAll = async (transaction) => {
+            await sequelize.models.IntegrityCheck.destroy(filter, { transaction });
+            await sequelize.models.RpcHealthCheck.destroy(filter, { transaction });
+            await sequelize.models.CustomField.destroy(filter, { transaction });
+            await sequelize.models.TokenBalanceChange.destroy(filter, { transaction });
+            await sequelize.models.Block.destroy(filter, { transaction });
+            await sequelize.models.Transaction.destroy(filter, { transaction });
+            await sequelize.models.TransactionReceipt.destroy(filter, { transaction });
+            await sequelize.models.TransactionLog.destroy(filter, { transaction });
+            await sequelize.models.Contract.destroy(filter, { transaction });
+            await sequelize.models.Account.destroy(filter, { transaction });
+        };
+
+        return transaction ?
+            destroyAll(transaction) :
+            sequelize.transaction({ deferrable: Sequelize.Deferrable.SET_DEFERRED }, destroyAll);
     }
 
     async removeContractByAddress(address) {
