@@ -59,10 +59,13 @@ module.exports = (sequelize, DataTypes) => {
         if (explorer)
             throw new Error(`This workspace has an explorer associated to it. Please delete it or change its associated workspace first.`);
 
-        return sequelize.transaction(async (transaction) => {
-            await this.reset(null, transaction);
-            return this.destroy({ transaction });
-        });
+        return sequelize.transaction(
+            { deferrable: Sequelize.Deferrable.SET_DEFERRED },
+            async (transaction) => {
+                await this.reset(null, transaction);
+                return this.destroy({ transaction });
+            }
+        );
     }
 
     async getContractByAddress(address) {
