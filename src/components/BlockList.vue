@@ -12,10 +12,11 @@
         :hide-default-header="dense"
         :item-class="rowClasses"
         :footer-props="{
-            itemsPerPageOptions: [10, 25, 100]
+            itemsPerPageOptions: [10, 25, 100],
         }"
         :headers="headers"
         @update:options="getBlocks">
+        <template v-if="disableCount" v-slot:[`footer.page-text`]=""></template>
         <template v-slot:no-data>
             No blocks found
         </template>Jul 26 2022, 4:49 PM

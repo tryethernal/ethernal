@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <Transactions-List></Transactions-List>
+        <Transactions-List :disableCount="true"></Transactions-List>
     </v-container>
 </template>
 

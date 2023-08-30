@@ -15,6 +15,7 @@
         }"
         item-key="hash"
         @update:options="getTransactions">
+        <template v-if="disableCount" v-slot:[`footer.page-text`]=""></template>
         <template v-slot:no-data>
             No transactions found
         </template>
@@ -89,7 +90,7 @@ import HashLink from './HashLink.vue';
 
 export default {
     name: 'TransactionsList',
-    props: ['currentAddress', 'dense', 'blockNumber', 'address'],
+    props: ['currentAddress', 'dense', 'blockNumber', 'address', 'disableCount'],
     components: {
         HashLink
     },
