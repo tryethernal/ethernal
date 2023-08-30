@@ -949,8 +949,13 @@ module.exports = (sequelize, DataTypes) => {
             await sequelize.models.RpcHealthCheck.destroy(filter, { transaction });
             await sequelize.models.CustomField.destroy(filter, { transaction });
             await sequelize.models.TokenBalanceChange.destroy(filter, { transaction });
+            await sequelize.models.TokenTransfer.destroy(filter, { transaction });
+            await sequelize.models.ContractSource.destroy(filter, { transaction });
+            await sequelize.models.ContractVerification.destroy(filter, { transaction });
+            await sequelize.models.Erc721Token.destroy(filter, { transaction });
             await sequelize.models.Block.destroy(filter, { transaction });
             await sequelize.models.Transaction.destroy(filter, { transaction });
+            await sequelize.models.TransactionTraceStep.destroy(filter, { transaction });
             await sequelize.models.TransactionReceipt.destroy(filter, { transaction });
             await sequelize.models.TransactionLog.destroy(filter, { transaction });
             await sequelize.models.Contract.destroy(filter, { transaction });
