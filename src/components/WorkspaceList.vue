@@ -57,8 +57,6 @@ export default {
         shortRpcUrl,
         deleteWorkspace(workspace) {
             this.errorMessage = null;
-            this.loading = true;
-            this.disabled = true;
 
             if (this.currentWorkspace.id == workspace.id)
                 return this.errorMessage = `You can't delete your current workspace. Switch to another one first.`;
@@ -70,13 +68,18 @@ export default {
             if(!confirm(text))
                 return;
 
+            this.loading = true;
+            this.disabled = true;
+
             this.server.deleteWorkspace(workspace.id)
                 .then(this.getWorkspaces)
                 .catch(error => {
                     this.errorMessage = error.response && error.response.data || 'Error while deleting the workspace. Please retry';
-                    this.loading = false;
                 })
-                .finally(() => this.disabled = false);
+                .finally(() => {
+                    this.disabled = false;
+                    this.loading = false;
+                });
         },
         switchWorkspace(name) {
             this.server.setCurrentWorkspace(name).then(() => document.location.reload());

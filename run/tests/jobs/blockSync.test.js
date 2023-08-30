@@ -16,7 +16,9 @@ describe('blockSync', () => {
     jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({
         id: 1,
         rpcServer: 'http://localhost:8545',
-        explorer: {}
+        explorer: {
+            stripeSubscription: {}
+        }
     });
 
     it('Should sync partial block', (done) => {
@@ -41,7 +43,9 @@ describe('blockSync', () => {
             id: 1,
             rpcServer: 'http://localhost:8545',
             integrityCheck: { isHealthy: true },
-            explorer: {}
+            explorer: {
+                stripeSubscription: {}
+            }
         });
         blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1, source: 'recovery' }})
             .then(() => {
@@ -55,7 +59,9 @@ describe('blockSync', () => {
             id: 1,
             rpcServer: 'http://localhost:8545',
             integrityCheck: { isRecovering: true },
-            explorer: {}
+            explorer: {
+                stripeSubscription: {}
+            }
         });
         blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1, source: 'api' }})
             .then(() => {

@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.18.26] - 2023-08-29
+### Fixed
+- Defer constraints when reseting workspace on delete
+
+## [3.18.25] - 2023-08-29
+### Fixed
+- Deleting workspace was spiking db CPU
+
+## [3.18.24] - 2023-08-27
+### Fixed
+- [Public Explorer] Bug when falling to raw request during block fetching
+
+## [3.18.23] - 2023-08-27
+### Fixed
+- [Public Explorer] Bug preventing creating new explorer from new workspace
+
+## [3.18.22] - 2023-08-27
+### Changed
+- [Public Explorer] Do not allow sync without an active subscription
+
+## [3.18.21] - 2023-08-27
+### Changed
+- [Public Explorer] Check for flag before processing ERC721 tokens
+
+## [3.18.20] - 2023-08-27
+### Changed
+- [Public Explorer] Fail receipt sync gracefully
+
 ## [3.18.19] - 2023-08-27
 ### Fixed
 - [Public Explorer] Bug preventing receipt processing queuing happening when tracing is enabled
