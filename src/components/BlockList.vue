@@ -16,7 +16,7 @@
         }"
         :headers="headers"
         @update:options="getBlocks">
-        <template v-if="disableCount" v-slot:[`footer.page-text`]=""></template>
+        <template v-if="!withCount" v-slot:[`footer.page-text`]=""></template>
         <template v-slot:no-data>
             No blocks found
         </template>Jul 26 2022, 4:49 PM
@@ -50,7 +50,7 @@
 const moment = require('moment');
 export default {
     name: 'BlockList',
-    props: ['dense', 'disableCount'],
+    props: ['dense', 'withCount'],
     data: () => ({
         blocks: [],
         blockCount: 0,
@@ -90,7 +90,7 @@ export default {
                 itemsPerPage: this.currentOptions.itemsPerPage,
                 order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
             };
-            this.server.getBlocks(options, !this.dense && !this.disableCount)
+            this.server.getBlocks(options, !this.dense || this.withCount)
                 .then(({ data }) => {
                     this.blocks = data.items;
                     this.blockCount = data.items.length == this.currentOptions.itemsPerPage ?

@@ -175,10 +175,10 @@ router.post('/:hash/storage', workspaceAuthMiddleware, async (req, res) => {
 });
 
 router.get('/', workspaceAuthMiddleware, async (req, res) => {
-    const data = req.query;
+    const data = { ...req.query, ...req.params };
 
     try {
-        const transactions = await db.getWorkspaceTransactions(data.workspace.id, data.page, data.itemsPerPage, data.order || 'DESC');
+        const transactions = await db.getWorkspaceTransactions(data.workspace.id, data.page, data.itemsPerPage, data.order, data.orderBy, data.withCount);
 
         res.status(200).json(transactions);
     } catch(error) {

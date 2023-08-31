@@ -15,7 +15,7 @@
         }"
         item-key="hash"
         @update:options="getTransactions">
-        <template v-if="disableCount" v-slot:[`footer.page-text`]=""></template>
+        <template v-if="!withCount" v-slot:[`footer.page-text`]=""></template>
         <template v-slot:no-data>
             No transactions found
         </template>
@@ -90,7 +90,7 @@ import HashLink from './HashLink.vue';
 
 export default {
     name: 'TransactionsList',
-    props: ['currentAddress', 'dense', 'blockNumber', 'address', 'disableCount'],
+    props: ['currentAddress', 'dense', 'blockNumber', 'address', 'withCount'],
     components: {
         HashLink
     },
@@ -99,12 +99,14 @@ export default {
     },
     data: () => ({
         headers: [],
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] },
+        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] },
         transactions: [],
         transactionCount: 0,
         loading: false
     }),
     mounted() {
+        this.currentOptions = { page: 1, itemsPerPage: 10, sortBy: [this.blockNumber ? 'timestamp' : 'blockNumber'], sortDesc: [true] };
+
         this.pusherUnsubscribe = this.pusher.onNewTransaction(transaction => {
             if (this.blockNumber) {
                 if (transaction.blockNumber == this.blockNumber)
@@ -128,7 +130,7 @@ export default {
             this.headers = [
                 { text: 'Txn Hash', value: 'hash', align: 'start' },
                 { text: 'Method', value: 'method', sortable: false },
-                { text: 'Block', value: 'blockNumber' },
+                { text: 'Block', value: 'blockNumber', sortable: !this.blockNumber },
                 { text: 'Mined On', value: 'timestamp' },
                 { text: 'From', value: 'from' },
                 { text: 'To', value: 'to' },
@@ -175,14 +177,20 @@ export default {
             };
 
             const query = this.blockNumber ?
-                this.server.getBlockTransactions(this.blockNumber, options) :
+                this.server.getBlockTransactions(this.blockNumber, options, !this.dense && !!this.withCount) :
                     this.address ?
-                        this.server.getAddressTransactions(this.address, options) :
-                        this.server.getTransactions(options);
+                        this.server.getAddressTransactions(this.address, options, !this.dense && !!this.withCount) :
+                        this.server.getTransactions(options, !this.dense && !!this.withCount);
 
             query.then(({ data }) => {
                 this.transactions = data.items;
-                this.transactionCount = data.total;
+                if (data.total)
+                    this.transactionCount = data.total;
+                else
+                    this.transactionCount = data.items.length == this.currentOptions.itemsPerPage ?
+                        (this.currentOptions.page * data.items.length) + 1 :
+                        this.currentOptions.page * data.items.length;
+
                 this.$emit('listUpdated');
             })
             .catch(console.log)
