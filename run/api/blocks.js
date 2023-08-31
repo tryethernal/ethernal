@@ -11,13 +11,13 @@ const { enqueue } = require('../lib/queue');
 const router = express.Router();
 
 router.get('/:number/transactions', workspaceAuthMiddleware, async (req, res) => {
-    const data = req.query;
+    const data = { ...req.query, ...req.params };
 
     try {
-        if (!req.params.number)
+        if (!data.number)
             throw new Error('Missing parameter.');
 
-        const { transactions: items, count: total } = await db.getBlockTransactions(data.workspace.id, req.params.number, data.page, data.itemsPerPage, data.order, data.orderBy);
+        const { rows: items, count: total } = await db.getBlockTransactions(data.workspace.id, req.params.number, data.page, data.itemsPerPage, data.order, data.orderBy, data.withCount);
 
         res.status(200).json({ items, total });
     } catch(error) {
@@ -52,11 +52,11 @@ router.post('/syncRange', authMiddleware, async (req, res) => {
 });
 
 router.get('/', workspaceAuthMiddleware, async (req, res) => {
-    const data = req.query;
+    const data = { ...req.query, ...req.params };
 
     try {
-        const blocks = await db.getWorkspaceBlocks(data.workspace.id, data.page, data.itemsPerPage, data.order);
-        
+        const blocks = await db.getWorkspaceBlocks(data.workspace.id, data.page, data.itemsPerPage, data.order, data.withCount);
+
         res.status(200).json(blocks);
     } catch(error) {
         logger.error(error.message, { location: 'get.api.blocks', error: error, data: data });

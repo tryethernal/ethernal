@@ -6,6 +6,7 @@ let helper;
 const stubs = [
     'Hash-Link',
     'Stat-Number',
+    'Transactions-List',
     'Contract-Interaction',
     'ERC-2O-Token-Holders',
     'ERC-2O-Contract-Analytics',
@@ -42,7 +43,7 @@ describe('ERC20Contract.vue', () => {
             propsData: {
                 address: '0x123'
             },
-            stubs: stubs
+            stubs
         });
 
         await flushPromises();
@@ -58,7 +59,7 @@ describe('ERC20Contract.vue', () => {
                 tokenTotalSupply: null,
                 tokenDecimals: null,
                 address: '0x123',
-                creationTransaction: { hash: '0xabc' }
+                creationTransaction: { hash: '0xabc' }
             }});
 
         jest.spyOn(helper.mocks.server, 'getContractStats')
@@ -72,7 +73,7 @@ describe('ERC20Contract.vue', () => {
             propsData: {
                 address: '0x123'
             },
-            stubs: stubs
+            stubs
         });
 
         await flushPromises();

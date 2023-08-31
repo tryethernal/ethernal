@@ -989,10 +989,12 @@ const getWorkspaceBlock = async (workspaceId, number) => {
     return block ? block.toJSON() : null;
 };
 
-const getWorkspaceBlocks = async (workspaceId, page = 1, itemsPerPage = 10, order = 'DESC') => {
+const getWorkspaceBlocks = async (workspaceId, page = 1, itemsPerPage = 10, order = 'DESC', withCount = 'true') => {
     const workspace = await Workspace.findByPk(workspaceId);
     const blocks = await workspace.getFilteredBlocks(page, itemsPerPage, order);
-    const totalBlockCount = await workspace.countBlocks();
+    let totalBlockCount;
+    if (withCount == 'true')
+        totalBlockCount = await workspace.countBlocks();
 
     return {
         items: blocks.map(b => b.toJSON()),
@@ -1007,7 +1009,7 @@ const getWorkspaceTransaction = async (workspaceId, hash) => {
     return transaction.toJSON();
 };
 
-const getBlockTransactions = async (workspaceId, blockNumber, page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'blockNumber') => {
+const getBlockTransactions = async (workspaceId, blockNumber, page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'timestamp', withCount = 'true') => {
     if (!workspaceId || !blockNumber)
         throw new Error('Missing parameters');
 
@@ -1015,12 +1017,10 @@ const getBlockTransactions = async (workspaceId, blockNumber, page = 1, itemsPer
     if (!workspace)
         throw new Error('Cannot find workspace');
 
-    let sanitizedOrderBy = ['hash', 'timestamp', 'value', 'from', 'to'].indexOf(orderBy) > -1 ? [orderBy] : 'blockNumber';
-    if (sanitizedOrderBy == 'blockNumber') {
-        sanitizedOrderBy = ['block', 'number'];
-    }
+    const sanitizedOrderBy = ['hash', 'timestamp', 'value', 'from', 'to'].indexOf(orderBy) > -1 ? [orderBy] : ['timestamp'];
 
-    const { count, rows: transactions } = await Transaction.findAndCountAll({
+    const fun = withCount == 'false' ? 'findAll' : 'findAndCountAll';
+    const res = await Transaction[fun]({
         where: { blockNumber, workspaceId },
         include: [
             {
@@ -1043,13 +1043,20 @@ const getBlockTransactions = async (workspaceId, blockNumber, page = 1, itemsPer
         order: [[...sanitizedOrderBy, order]]
     });
 
-    return { transactions, count };
+    return res.rows && res.count ? { ...res } : { rows: res };
 }
 
-const getWorkspaceTransactions = async (workspaceId, page, itemsPerPage, order, orderBy) => {
+const getWorkspaceTransactions = async (workspaceId, page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'blockNumber', withCount = 'true') => {
     const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Cannot find workspace');
+
+    let totalTransactionCount;
+    if (withCount == 'true')
+        totalTransactionCount = await workspace.countTransactions();
+
     const transactions = await workspace.getFilteredTransactions(page, itemsPerPage, order, orderBy);
-    const totalTransactionCount = await workspace.countTransactions();
+
     return {
         items: transactions.map(t => t.toJSON()),
         total: totalTransactionCount

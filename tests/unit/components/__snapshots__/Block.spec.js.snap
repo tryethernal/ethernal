@@ -31,7 +31,7 @@ exports[`Block.vue Should show a message if the block is syncing 1`] = `
   </div>
   <h4>Transactions</h4>
   <div class="v-card v-sheet v-sheet--outlined theme--light">
-    <transactions-list-stub blocknumber="1"></transactions-list-stub>
+    <transactions-list-stub withcount="true" blocknumber="1"></transactions-list-stub>
   </div>
 </div>
 `;
@@ -67,7 +67,7 @@ exports[`Block.vue Should show the block component 1`] = `
   </div>
   <h4>Transactions</h4>
   <div class="v-card v-sheet v-sheet--outlined theme--light">
-    <transactions-list-stub blocknumber="1"></transactions-list-stub>
+    <transactions-list-stub withcount="true" blocknumber="1"></transactions-list-stub>
   </div>
 </div>
 `;
