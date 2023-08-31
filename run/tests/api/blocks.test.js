@@ -21,7 +21,7 @@ beforeEach(() => {
 
 describe(`GET ${BASE_URL}/:number/transactions`, () => {
     it('Should return rows & transactions', (done) => {
-        jest.spyOn(db, 'getBlockTransactions').mockResolvedValue({ count: 1, transactions: [{ id: 1 }] });
+        jest.spyOn(db, 'getBlockTransactions').mockResolvedValue({ count: 1, rows: [{ id: 1 }] });
         request.get(`${BASE_URL}/1234/transactions`)
             .expect(200)
             .then(({ body }) => {
@@ -149,7 +149,7 @@ describe(`GET ${BASE_URL}`, () => {
                 expect(body).toEqual([
                     { number: 1234 }
                 ]);
-                expect(db.getWorkspaceBlocks).toHaveBeenCalledWith(1, undefined, undefined, undefined);
+                expect(db.getWorkspaceBlocks).toHaveBeenCalledWith(1, undefined, undefined, undefined, undefined);
                 done();
             });
     });

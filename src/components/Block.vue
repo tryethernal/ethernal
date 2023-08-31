@@ -27,7 +27,7 @@
         </v-row>
         <h4>Transactions</h4>
         <v-card outlined>
-            <Transactions-List @listUpdated="loadBlock(number)" :blockNumber="number" />
+            <Transactions-List @listUpdated="loadBlock(number)" :blockNumber="number" :withCount="true" />
         </v-card>
     </v-container>
 </template>

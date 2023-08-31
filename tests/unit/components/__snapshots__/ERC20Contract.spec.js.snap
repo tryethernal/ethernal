@@ -68,64 +68,7 @@ exports[`ERC20Contract.vue Should display contract info 1`] = `
       <transition-stub name="">
         <div class="v-window-item v-window-item--active" id="transactions">
           <div class="container container--fluid">
-            <div class="v-data-table v-data-table--has-bottom theme--light">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <colgroup>
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                  </colgroup>
-                  <thead class="v-data-table-header">
-                    <tr>
-                      <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
-                      <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="v-data-table__empty-wrapper">
-                      <td colspan="8">
-                        No transactions found
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="v-data-footer">
-                <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-47" class="v-input__slot">
-                        <div class="v-select__slot">
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-47" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-                          </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="10">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-data-footer__pagination">–</div>
-                <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-                <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
-              </div>
-            </div>
+            <transactions-list-stub address="0x123" currentaddress="0x123"></transactions-list-stub>
           </div>
         </div>
       </transition-stub>
@@ -212,64 +155,7 @@ exports[`ERC20Contract.vue Should display placeholders 1`] = `
       <transition-stub name="v-window-x-transition">
         <div class="v-window-item v-window-item--active" id="transactions">
           <div class="container container--fluid">
-            <div class="v-data-table v-data-table--has-bottom theme--light">
-              <div class="v-data-table__wrapper">
-                <table>
-                  <colgroup>
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                    <col class="">
-                  </colgroup>
-                  <thead class="v-data-table-header">
-                    <tr>
-                      <th role="columnheader" scope="col" aria-label="Txn Hash: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Txn Hash</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Method" class="text-start"><span>Method</span></th>
-                      <th role="columnheader" scope="col" aria-label="Block: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Block</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Mined On: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Mined On</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="From: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>From</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="To: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>To</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Value: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Value</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                      <th role="columnheader" scope="col" aria-label="Fee" class="text-start"><span>Fee</span></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="v-data-table__empty-wrapper">
-                      <td colspan="8">
-                        No transactions found
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="v-data-footer">
-                <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select">
-                    <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-108" class="v-input__slot">
-                        <div class="v-select__slot">
-                          <div class="v-select__selections">
-                            <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-108" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
-                          </div>
-                          <div class="v-input__append-inner">
-                            <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
-                          </div><input type="hidden" value="10">
-                        </div>
-                        <div class="v-menu">
-                          <!---->
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-data-footer__pagination">–</div>
-                <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
-                <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
-              </div>
-            </div>
+            <transactions-list-stub address="0x123" currentaddress="0x123"></transactions-list-stub>
           </div>
         </div>
       </transition-stub>
