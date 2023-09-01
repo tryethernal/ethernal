@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.19.1] - 2023-09-01
+### Fixed
+- API login error on some endpoints
+
 ## [3.19.0] - 2023-09-01
 ### Removed
 - Block counter & transaction counter on /blocks & /transactions page. Counting everything was really slowing down loading speed. Next step will be to replace with an approximate counting.
