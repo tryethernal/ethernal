@@ -108,7 +108,7 @@ export default Vue.extend({
             };
         }
 
-        this.server.getBlocks({ page: 1, itemsPerPage: 1 }).then(({ data: { items }}) => {
+        this.server.getBlocks({ page: 1, itemsPerPage: 1 }, false).then(({ data: { items }}) => {
             if (items.length) {
                 this.$store.dispatch('updateCurrentBlock', items[0]);
             }

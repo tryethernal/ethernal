@@ -90,7 +90,7 @@ export default {
                 itemsPerPage: this.currentOptions.itemsPerPage,
                 order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
             };
-            this.server.getBlocks(options, !this.dense || !!this.withCount)
+            this.server.getBlocks(options, !this.dense && !!this.withCount)
                 .then(({ data }) => {
                     this.blocks = data.items;
                     this.blockCount = data.items.length == this.currentOptions.itemsPerPage ?
