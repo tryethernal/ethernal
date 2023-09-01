@@ -45,6 +45,7 @@ module.exports = async (req, res, next) => {
 
             if (!firebaseUser)
                 throw new Error('You must be signed in to do this.');
+            req.body.data.user = await db.getUser(firebaseUser.user_id, ['apiKey', 'stripeCustomerId']);
             req.body.data.uid = firebaseUser.user_id;
             next();
         }
