@@ -114,7 +114,7 @@ module.exports = (sequelize, DataTypes) => {
                 include: [
                     {
                         model: sequelize.models.TokenTransfer,
-                        attributes: ['src', 'dst', 'token'],
+                        attributes: ['id', 'src', 'dst', 'token'],
                         as: 'tokenTransfers',
                     },
                     {
