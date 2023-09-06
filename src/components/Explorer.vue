@@ -18,8 +18,10 @@
                 This explorer is on a free trial plan. To keep it running once it's over, add a payment method.
             </v-alert>
             <v-alert text type="error" v-if="!explorer.stripeSubscription">This explorer is not active. To activate it, start a subscription.</v-alert>
-            <h2>{{ explorer.name }}</h2>
-            <v-row>
+            <h2>
+                {{ explorer.name }} <span v-if="explorerDomain" class="text-caption">- (<a :href="'//' + explorerDomain" target="_blank">{{ explorerDomain }}</a>)</span>
+            </h2>
+            <v-row class="mt-2">
                 <v-col cols="6">
                     <h4>Settings</h4>
                     <Explorer-Settings :key="JSON.stringify(capabilities)" :explorer="explorer" :workspaces="workspaces" @updated="loadExplorer(id)"/>
@@ -74,7 +76,8 @@ export default {
         workspaces: [],
         explorer: null,
         capabilities: {},
-        refreshInterval: null
+        refreshInterval: null,
+        explorerDomain: null
     }),
     methods: {
         loadExplorer(id) {
@@ -90,13 +93,17 @@ export default {
                             clearInterval(this.refreshInterval);
                         this.capabilities = this.explorer.stripeSubscription.stripePlan.capabilities;
                     }
+                    this.explorerDomain = this.explorer.domains.length ?
+                        this.explorer.domains[0].domain :
+                        `${this.explorer.slug}.${this.mainDomain}`;
                 })
                 .catch(console.log);
         }
     },
     computed: {
         ...mapGetters([
-            'isBillingEnabled'
+            'isBillingEnabled',
+            'mainDomain'
         ]),
         justCreated() {
             if (!this.explorer)
