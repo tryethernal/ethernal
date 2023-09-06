@@ -14,7 +14,7 @@ describe('Explorer.vue', () => {
 
     it('Should display inactive subscription message', async() => {
         jest.spyOn(helper.mocks.server, 'getWorkspaces').mockResolvedValueOnce({ data: [{ id: 1 }]});
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({ data: { id: 1 }});
+        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({ data: { id: 1, slug: 'test', domains: [] }});
         const wrapper = helper.mountFn(Explorer, {
             stubs: ['Explorer-Settings', 'Explorer-Billing', 'Explorer-Domains-List', 'Explorer-Branding', 'Explorer-Danger-Zone']
         });
@@ -25,7 +25,7 @@ describe('Explorer.vue', () => {
 
     it('Should display trial message', async() => {
         jest.spyOn(helper.mocks.server, 'getWorkspaces').mockResolvedValueOnce({ data: [{ id: 1 }]});
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({ data: { id: 1, stripeSubscription: { isTrialing: true, stripePlan: { capabilities: {}}}}});
+        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({ data: { id: 1, slug: 'test', domains: [], stripeSubscription: { isTrialing: true, stripePlan: { capabilities: {}}}}});
         const wrapper = helper.mountFn(Explorer, {
             stubs: ['Explorer-Settings', 'Explorer-Billing', 'Explorer-Domains-List', 'Explorer-Branding', 'Explorer-Danger-Zone']
         });
@@ -36,7 +36,7 @@ describe('Explorer.vue', () => {
 
     it('Should display the explorer page', async () => {
         jest.spyOn(helper.mocks.server, 'getWorkspaces').mockResolvedValueOnce({ data: [{ id: 1 }]});
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({ data: { id: 1, stripeSubscription: { stripePlan: { capabilities: {}}}}});
+        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({ data: { id: 1, slug: 'test', domains: [{ domain: 'a.test.com' }], stripeSubscription: { stripePlan: { capabilities: {}}}}});
         const wrapper = helper.mountFn(Explorer, {
             stubs: ['Explorer-Settings', 'Explorer-Billing', 'Explorer-Domains-List', 'Explorer-Branding', 'Explorer-Danger-Zone']
         });

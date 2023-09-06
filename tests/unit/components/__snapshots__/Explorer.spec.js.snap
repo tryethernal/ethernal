@@ -8,8 +8,10 @@ exports[`Explorer.vue Should display inactive subscription message 1`] = `
       <div class="v-alert__content">This explorer is not active. To activate it, start a subscription.</div>
     </div>
   </div>
-  <h2></h2>
-  <div class="row">
+  <h2>
+    <span class="text-caption">- (<a href="//test.tryethernal.com" target="_blank">test.tryethernal.com</a>)</span>
+  </h2>
+  <div class="row mt-2">
     <div class="col col-6">
       <h4>Settings</h4>
       <explorer-settings-stub workspaces="[object Object]" explorer="[object Object]"></explorer-settings-stub>
@@ -55,8 +57,10 @@ exports[`Explorer.vue Should display the explorer page 1`] = `
 <div class="container container--fluid">
   <!---->
   <!---->
-  <h2></h2>
-  <div class="row">
+  <h2>
+    <span class="text-caption">- (<a href="//a.test.com" target="_blank">a.test.com</a>)</span>
+  </h2>
+  <div class="row mt-2">
     <div class="col col-6">
       <h4>Settings</h4>
       <explorer-settings-stub workspaces="[object Object]" explorer="[object Object]"></explorer-settings-stub>
@@ -93,8 +97,10 @@ exports[`Explorer.vue Should display trial message 1`] = `
     </div>
   </div>
   <!---->
-  <h2></h2>
-  <div class="row">
+  <h2>
+    <span class="text-caption">- (<a href="//test.tryethernal.com" target="_blank">test.tryethernal.com</a>)</span>
+  </h2>
+  <div class="row mt-2">
     <div class="col col-6">
       <h4>Settings</h4>
       <explorer-settings-stub workspaces="[object Object]" explorer="[object Object]"></explorer-settings-stub>
