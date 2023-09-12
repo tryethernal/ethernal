@@ -23,7 +23,7 @@
     "@truffle/artifactor": "^4.0.93",
     "@truffle/contract": "^4.3.5",
     "@truffle/contract-sources": "^0.1.10",
-    "@truffle/decoder": "^4.4.18",
+    "@truffle/decoder": "6.1.4",
     "@truffle/expect": "^0.0.15",
     "@vue-stripe/vue-stripe": "^4.2.5",
     "abi-decoder": "^2.3.0",
