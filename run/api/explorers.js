@@ -21,7 +21,7 @@ router.put('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, 
 
         if (!explorer || !explorer.stripeSubscription)
             throw new Error(`Can't find explorer.`);
-        
+
         if (explorer.stripeSubscription.stripePlan.slug != data.newStripePlanSlug && explorer.stripeSubscription.isPendingCancelation)
             throw new Error(`Revert plan cancelation before choosing a new plan.`);
 
@@ -229,7 +229,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
         if (!explorer)
             throw new Error('Could not create explorer.');
-        
+
         if (!isStripeEnabled() || user.canUseDemoPlan) {
             const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
             if (!stripePlan)
