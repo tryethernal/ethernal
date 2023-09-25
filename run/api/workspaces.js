@@ -110,7 +110,6 @@ router.post('/settings', authMiddleware, async (req, res) => {
             try {
                 await withTimeout(provider.fetchNetworkId());
             } catch(error) {
-                console.log(error)
                 throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
             }
             const pm2 = new PM2(getPm2Host(), getPm2Secret());

@@ -1,3 +1,14 @@
+const mockPm2Start = jest.fn();
+const mockPm2Find = jest.fn();
+const mockPm2Restart = jest.fn();
+
+jest.mock('../../lib/pm2', () => {
+    return jest.fn().mockImplementation(() => ({
+        start: mockPm2Start,
+        find: mockPm2Find,
+        restart: mockPm2Restart
+    }))
+});
 require('../mocks/lib/rpc');
 require('../mocks/models');
 require('../mocks/lib/firebase');
@@ -86,6 +97,53 @@ describe(`POST ${BASE_URL}/setCurrent`, () => {
 describe(`POST ${BASE_URL}/settings`, () => {
     beforeEach(() => jest.clearAllMocks());
 
+    it.only('Should restart if workspace is public & rpc is reachable', (done) => {
+        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ public: true, rpcServer: 'myrpc', explorer: { slug: 'slug' }});
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchNetworkId: jest.fn().mockResolvedValue(1)
+        }));
+        mockPm2Find.mockResolvedValue({ data: { id: 1 }});
+
+        request.post(`${BASE_URL}/settings`)
+            .send({ data: { workspace: 'My Workspace', settings: { rpcServer: 'otherrpc' }}})
+            .expect(200)
+            .then(() => {
+                expect(mockPm2Restart).toHaveBeenCalledWith('slug');
+                done();
+            });
+    });
+
+    it.only('Should start if workspace is public & rpc is reachable & process not found', (done) => {
+        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ id: 1, public: true, rpcServer: 'myrpc', explorer: { slug: 'slug' }});
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchNetworkId: jest.fn().mockResolvedValue(1)
+        }));
+        mockPm2Find.mockResolvedValue({ data: null });
+
+        request.post(`${BASE_URL}/settings`)
+            .send({ data: { workspace: 'My Workspace', settings: { rpcServer: 'otherrpc' }}})
+            .expect(200)
+            .then(() => {
+                expect(mockPm2Start).toHaveBeenCalledWith('slug', 1);
+                done();
+            });
+    });
+
+    it.only('Should fail if workspace is public & rpc is not reachable', (done) => {
+        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ id: 1, public: true, rpcServer: 'myrpc', explorer: { slug: 'slug' }});
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchNetworkId: jest.fn().mockRejectedValue()
+        }));
+
+        request.post(`${BASE_URL}/settings`)
+            .send({ data: { workspace: 'My Workspace', settings: { rpcServer: 'otherrpc' }}})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
+                done();
+            });
+    });
+
     it('Should return 200 status code', (done) => {
         request.post(`${BASE_URL}/settings`)
             .send({ data: { workspace: 'My Workspace', settings: { rpcServer: 'http://localhost:8545' }}})
@@ -105,6 +163,7 @@ describe(`POST ${BASE_URL}`, () => {
         ProviderConnector.mockImplementationOnce(() => ({
             fetchNetworkId: jest.fn().mockRejectedValue()
         }));
+        mockPm2Find.mockResolvedValue({ data: { id: 1 }});
 
         request.post(`${BASE_URL}`)
             .send({ data: { name: 'My Workspace', workspaceData: { public: true, rpcServer: 'http://localhost:8545' }}})
