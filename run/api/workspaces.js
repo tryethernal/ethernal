@@ -5,6 +5,8 @@ const secretMiddleware = require('../middlewares/secret');
 const { sanitize, stringifyBns, withTimeout } = require('../lib/utils');
 const db = require('../lib/firebase');
 const { ProviderConnector } = require('../lib/rpc');
+const PM2 = require('../lib/pm2');
+const { getPm2Host, getPm2Secret } = require('../lib/env');
 const router = express.Router();
 
 router.delete('/:id', [authMiddleware], async (req, res) => {
@@ -101,6 +103,23 @@ router.post('/settings', authMiddleware, async (req, res) => {
     try {
         if (!data.uid || !data.workspace || !data.settings)
             throw new Error('Missing parameter.');
+
+        const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
+        if (workspace.public && data.settings.rpcServer != workspace.rpcServer) {
+            const provider = new ProviderConnector(data.settings.rpcServer);
+            try {
+                await withTimeout(provider.fetchNetworkId());
+            } catch(error) {
+                console.log(error)
+                throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
+            }
+            const pm2 = new PM2(getPm2Host(), getPm2Secret());
+            const { data: pm2Process } = await pm2.find(workspace.explorer.slug);
+            if (pm2Process)
+                await pm2.restart(workspace.explorer.slug);
+            else
+                await pm2.start(workspace.explorer.slug, workspace.id);
+        }
 
         await db.updateWorkspaceSettings(data.uid, data.workspace, data.settings);
 
