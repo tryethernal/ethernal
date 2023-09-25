@@ -57,6 +57,7 @@ module.exports = async job => {
         return db.storeTransactionReceipt(data.transactionId, receipt);
     } catch(error) {
         logger.error(error.message, { location: 'jobs.receiptSync', error, data });
+        await db.incrementFailedAttempts(transaction.workspace.id);
         throw error;
     } 
 };

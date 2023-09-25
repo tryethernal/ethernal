@@ -3,7 +3,7 @@
         "blockSync",
         "batchBlockSync",
         "sendResetPasswordEmail",
-        "processStripeSubscription",
+        "updateExplorerSyncingProcess",
         "updateApproximatedRecord",
         "receiptSync"
     ],
@@ -24,7 +24,7 @@
         "integrityCheck",
         "rpcHealthCheck",
         "rpcHealthCheckStarter",
-        "subscriptionCheck",
+        "explorerSyncCheck",
         "refreshMaterializedViews"
     ]
 }

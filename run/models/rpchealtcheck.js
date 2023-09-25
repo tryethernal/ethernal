@@ -13,10 +13,19 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       RpcHealthCheck.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
     }
+
+    increaseFailedAttempts() {
+      return this.increment('failedAttempts');
+    }
+
+    resetFailedAttempts() {
+      return this.update({ failedAttempts: 0 });
+    }
   }
   RpcHealthCheck.init({
     workspaceId: DataTypes.INTEGER,
     isReachable: DataTypes.BOOLEAN,
+    failedAttempts: DataTypes.INTEGER,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
   }, {

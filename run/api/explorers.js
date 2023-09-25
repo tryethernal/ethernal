@@ -6,9 +6,76 @@ const { getAppDomain, getDefaultPlanSlug } = require('../lib/env');
 const { ProviderConnector } = require('../lib/rpc');
 const { withTimeout } = require('../lib/utils');
 const logger = require('../lib/logger');
+const PM2 = require('../lib/pm2');
 const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
+
+router.put('/:id/stopSync', [authMiddleware], async (req, res) => {
+    try {
+        if (!req.params.id)
+            throw new Error('Missing parameters');
+
+        const explorer = await db.getExplorerById(req.body.data.user.id, req.params.id);
+        if (!explorer)
+            throw new Error(`Couldn't find explorer.`);
+
+        // We rely on the afterUpdate hook to update the pm2 process. The frontend needs to take care of waiting for the new state
+        await db.stopExplorerSync(explorer.id);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'put.api.explorers.id.stopSync', error });
+        res.status(400).send(error.message);
+    }
+});
+
+router.put('/:id/startSync', [authMiddleware], async (req, res) => {
+    try {
+        if (!req.params.id)
+            throw new Error('Missing parameters');
+
+        const explorer = await db.getExplorerById(req.body.data.user.id, req.params.id);
+
+        if (!explorer)
+            throw new Error(`Couldn't find explorer.`);
+
+        const provider = new ProviderConnector(explorer.workspace.rpcServer);
+        try {
+            await withTimeout(provider.fetchNetworkId());
+        } catch(error) {
+            throw new Error(`This explorer's RPC is not reachable. Please update it in order to start syncing.`);
+        }
+
+        // We rely on the afterUpdate hook to update the pm2 process. The frontend needs to take care of waiting for the new state
+        await db.startExplorerSync(explorer.id);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'put.api.explorers.id.startSync', error });
+        res.status(400).send(error.message);
+    }
+});
+
+router.get('/:id/syncStatus', [authMiddleware], async (req, res) => {
+    try {
+        if (!req.params.id)
+            throw new Error('Missing parameters');
+
+        const explorer = await db.getExplorerById(req.body.data.user.id, req.params.id);
+
+        const pm2 = new PM2(process.env.PM2_HOST, process.env.PM2_SECRET);
+        const { data: { pm2_env: { status }}} = await pm2.find(explorer.slug);
+
+        if (!process)
+            throw new Error(`Couldn't find process for explorer.`);
+
+        res.status(200).json({ status });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.explorers.id.syncStatus', error });
+        res.status(400).send(error.message);
+    }
+});
 
 router.put('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, res) => {
     const data = req.body.data;

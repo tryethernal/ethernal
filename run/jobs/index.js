@@ -3,7 +3,7 @@ module.exports = {
     blockSync: require('./blockSync'),
     batchBlockSync: require('./batchBlockSync'),
     sendResetPasswordEmail: require('./sendResetPasswordEmail'),
-    processStripeSubscription: require('./processStripeSubscription'),
+    updateExplorerSyncingProcess: require('./updateExplorerSyncingProcess'),
     updateApproximatedRecord: require('./updateApproximatedRecord'),
     receiptSync: require('./receiptSync'),
 
@@ -24,6 +24,6 @@ module.exports = {
     integrityCheck: require('./integrityCheck'),
     rpcHealthCheck: require('./rpcHealthCheck'),
     rpcHealthCheckStarter: require('./rpcHealthCheckStarter'),
-    subscriptionCheck: require('./subscriptionCheck'),
+    explorerSyncCheck: require('./explorerSyncCheck'),
     refreshMaterializedViews: require('./refreshMaterializedViews')
 };

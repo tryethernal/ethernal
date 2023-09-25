@@ -34,10 +34,10 @@ module.exports = async job => {
    const provider = workspace.getProvider();
 
    try {
-       const networkId = await withTimeout(provider.fetchNetworkId());
-       await db.updateWorkspaceRpcHealthCheck(workspace.id, networkId !== undefined && networkId !== null);
+        const networkId = await withTimeout(provider.fetchNetworkId());
+        await db.updateWorkspaceRpcHealthCheck(workspace.id, networkId !== undefined && networkId !== null);
     } catch(error) {
-       await db.updateWorkspaceRpcHealthCheck(workspace.id, false);
+        await db.updateWorkspaceRpcHealthCheck(workspace.id, false);
     }
 
     return true;

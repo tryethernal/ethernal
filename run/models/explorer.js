@@ -131,6 +131,14 @@ module.exports = (sequelize, DataTypes) => {
         return explorer;
     }
 
+    startSync() {
+        return this.update({ shouldSync: true });
+    }
+
+    stopSync() {
+        return this.update({ shouldSync: false });
+    }
+
     async safeCreateDomain(domain) {
         if (!domain) throw new Error('Missing parameter');
 
@@ -276,12 +284,21 @@ module.exports = (sequelize, DataTypes) => {
     slug: DataTypes.STRING,
     themes: DataTypes.JSON,
     token: DataTypes.STRING,
-    totalSupply: DataTypes.STRING
+    totalSupply: DataTypes.STRING,
+    shouldSync: DataTypes.BOOLEAN
   }, {
     hooks: {
+        afterUpdate(explorer, options) {
+            const afterUpdateFn = () => {
+                return enqueue('updateExplorerSyncingProcess', `updateExplorerSyncingProcess-${explorer.slug}`, {
+                    explorerSlug: explorer.slug
+                });
+            };
+            return options.transaction ? options.transaction.afterCommit(afterUpdateFn) : afterUpdateFn();
+        },
         afterDestroy(explorer, options) {
             const afterDestroyFn = () => {
-                return enqueue('processStripeSubscription', `processStripeSubscription-${explorer.slug}`, {
+                return enqueue('updateExplorerSyncingProcess', `updateExplorerSyncingProcess-${explorer.slug}`, {
                     explorerSlug: explorer.slug
                   });
             };

@@ -1,7 +1,6 @@
 const { ProviderConnector } = require('../lib/rpc');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
-const { bulkEnqueue } = require('../lib/queue');
 
 module.exports = async job => {
     const data = job.data;
@@ -19,6 +18,9 @@ module.exports = async job => {
 
     if (!workspace.explorer.stripeSubscription)
         return 'No active subscription';
+
+    if (workspace.browserSyncEnabled)
+        await db.updateBrowserSync(workspace.id, false);
 
     const existingBlock = await db.getWorkspaceBlock(workspace.id, data.blockNumber);
     if (existingBlock)
@@ -40,9 +42,13 @@ module.exports = async job => {
         if (!syncedBlock)
             throw new Error("Couldn't store block");
 
+        if (workspace.rpcHealthCheck && workspace.rpcHealthCheck.failedAttempts > 0)
+            await db.resetFailedAttempts(workspace.id);
+
         return 'Block synced';
     } catch(error) {
         logger.error(error.message, { location: 'jobs.blockSync', error, data });
+        await db.incrementFailedAttempts(workspace.id);
         throw error;
     }
 };
