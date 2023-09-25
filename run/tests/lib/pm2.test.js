@@ -10,6 +10,22 @@ beforeEach(() => jest.clearAllMocks());
 const host = 'http://pm2';
 const secret= 'secret';
 
+describe('restart', () => {
+    it('Should throw an error if missing parameter', async () => {
+        const pm2 = new PM2(host, secret);
+        expect(() => pm2.restart()).toThrow('Missing parameter');
+    });
+
+    it('Should restart the process', (done) => {
+        const pm2 = new PM2(host, secret);
+        pm2.restart('slug')
+            .then(() => {
+                expect(axios.post).toHaveBeenCalledWith('http://pm2/processes/slug/restart?secret=secret');
+                done();
+            });
+    });
+});
+
 describe('start', () => {
     it('Should throw an error if missing parameter', async () => {
         const pm2 = new PM2(host, secret);
