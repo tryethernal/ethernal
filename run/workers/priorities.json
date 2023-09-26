@@ -25,6 +25,7 @@
         "rpcHealthCheck",
         "rpcHealthCheckStarter",
         "explorerSyncCheck",
-        "refreshMaterializedViews"
+        "refreshMaterializedViews",
+        "resetFailedRpcAttempts"
     ]
 }

@@ -252,11 +252,14 @@ export default {
                         this.updateSuccess = true;
                         this.$store.dispatch('updateCurrentWorkspace', this.settings);
                     })
-                    .catch(() => this.updateError = true)
+                    .catch(error => {
+                        this.updateError = true;
+                        this.errorMessage = error.response && error.response.data || 'Error while updating settings. Please retry.';
+                    })
                     .finally(() => this.loading = false);
                 })
                 .catch((error) => {
-                    this.errorMessage = error.reason;
+                    this.errorMessage = error.reason || error.message;
                     this.loading = false;
                 });
         },

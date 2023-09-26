@@ -33,6 +33,13 @@ class PM2 {
         return withTimeout(axios.post(resource));
     }
 
+    restart(slug) {
+        if (!slug) throw new Error('Missing parameter');
+
+        const resource = `${this.host}/processes/${slug}/restart?secret=${this.secret}`;
+        return withTimeout(axios.post(resource));
+    }
+
     find(slug) {
         if (!slug) throw new Error('Missing parameter');
 

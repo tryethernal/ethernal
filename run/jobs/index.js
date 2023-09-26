@@ -25,5 +25,6 @@ module.exports = {
     rpcHealthCheck: require('./rpcHealthCheck'),
     rpcHealthCheckStarter: require('./rpcHealthCheckStarter'),
     explorerSyncCheck: require('./explorerSyncCheck'),
-    refreshMaterializedViews: require('./refreshMaterializedViews')
+    refreshMaterializedViews: require('./refreshMaterializedViews'),
+    resetFailedRpcAttempts: require('./resetFailedRpcAttempts')
 };

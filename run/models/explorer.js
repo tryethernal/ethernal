@@ -5,6 +5,7 @@ const {
 const { sanitize } = require('../lib/utils');
 const { isStripeEnabled, isSubscriptionCheckEnabled } = require('../lib/flags');
 const { enqueue } = require('../lib/queue');
+const MAX_RPC_ATTEMPTS = 3;
 
 module.exports = (sequelize, DataTypes) => {
   class Explorer extends Model {
@@ -137,6 +138,13 @@ module.exports = (sequelize, DataTypes) => {
 
     stopSync() {
         return this.update({ shouldSync: false });
+    }
+
+    async hasTooManyFailedAttempts() {
+        const workspace = await this.getWorkspace({ include: 'rpcHealthCheck' });
+        if (workspace.rpcHealthCheck && workspace.rpcHealthCheck.failedAttempts <= MAX_RPC_ATTEMPTS)
+            return true;
+        return false;
     }
 
     async safeCreateDomain(domain) {

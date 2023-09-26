@@ -16,6 +16,12 @@ module.exports = async job => {
     if (!workspace.explorer)
         return 'No active explorer for this workspace';
 
+    if (!workspace.explorer.shouldSync)
+        return 'Sync is disabled';
+
+    if (workspace.explorer.rpcHealthCheck && workspace.explorer.rpcHealthCheck.tooManyFailedAttempts())
+        return 'Too many failed RPC requests';
+
     if (!workspace.explorer.stripeSubscription)
         return 'No active subscription';
 

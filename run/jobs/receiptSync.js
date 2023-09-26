@@ -43,6 +43,12 @@ module.exports = async job => {
     if (!transaction.workspace.explorer)
         return 'Inactive explorer';
 
+    if (!transaction.workspace.explorer.shouldSync)
+        return 'Sync is disabled';
+
+    if (transaction.workspace.explorer.rpcHealthCheck && transaction.workspace.explorer.rpcHealthCheck.tooManyFailedAttempts())
+        return 'Too many failed RPC requests';
+
     if (!transaction.workspace.explorer.stripeSubscription)
         return 'No active subscription';
 
@@ -53,7 +59,7 @@ module.exports = async job => {
 
         if (!receipt)
             throw new Error('Failed to fetch receipt');
-    
+
         return db.storeTransactionReceipt(data.transactionId, receipt);
     } catch(error) {
         logger.error(error.message, { location: 'jobs.receiptSync', error, data });

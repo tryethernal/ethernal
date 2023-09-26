@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const MAX_FAILED_RPC_ATTEMPTS = 3;
 
 module.exports = (sequelize, DataTypes) => {
   class RpcHealthCheck extends Model {
@@ -21,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
     resetFailedAttempts() {
       return this.update({ failedAttempts: 0 });
     }
+
+    tooManyFailedAttempts() {
+      return this.failedAttempts > MAX_FAILED_RPC_ATTEMPTS;
+    }
   }
   RpcHealthCheck.init({
     workspaceId: DataTypes.INTEGER,
@@ -29,6 +34,17 @@ module.exports = (sequelize, DataTypes) => {
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
   }, {
+    hooks: {
+      afterUpdate(rpcHealthCheck, options) {
+        const afterUpdateFn = async () => {
+          if (rpcHealthCheck.failedAttempts > 2) {
+            const workspace = await rpcHealthCheck.getWorkspace({ include: 'explorer' });
+            return workspace.explorer.stopSync();
+          }
+        };
+        return options.transaction ? options.transaction.afterCommit(afterUpdateFn) : afterUpdateFn();
+      }
+    },
     sequelize,
     modelName: 'RpcHealthCheck',
     tableName: 'rpc_health_checks'
