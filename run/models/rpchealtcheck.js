@@ -16,15 +16,19 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     increaseFailedAttempts() {
-      return this.increment('failedAttempts');
+      return sequelize.transaction(async transaction => {
+        if (this.failedAttempts >= MAX_FAILED_RPC_ATTEMPTS - 1)
+          await this.update({ isReachable: false }, { transaction });
+        return this.increment('failedAttempts', { transaction });
+      })
     }
 
     resetFailedAttempts() {
       return this.update({ failedAttempts: 0 });
     }
 
-    tooManyFailedAttempts() {
-      return this.failedAttempts > MAX_FAILED_RPC_ATTEMPTS;
+    hasTooManyFailedAttempts() {
+      return this.failedAttempts >= MAX_FAILED_RPC_ATTEMPTS;
     }
   }
   RpcHealthCheck.init({
@@ -34,17 +38,6 @@ module.exports = (sequelize, DataTypes) => {
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
   }, {
-    hooks: {
-      afterUpdate(rpcHealthCheck, options) {
-        const afterUpdateFn = async () => {
-          if (rpcHealthCheck.failedAttempts > 2) {
-            const workspace = await rpcHealthCheck.getWorkspace({ include: 'explorer' });
-            return workspace.explorer.stopSync();
-          }
-        };
-        return options.transaction ? options.transaction.afterCommit(afterUpdateFn) : afterUpdateFn();
-      }
-    },
     sequelize,
     modelName: 'RpcHealthCheck',
     tableName: 'rpc_health_checks'

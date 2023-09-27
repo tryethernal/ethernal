@@ -1,5 +1,5 @@
 const { ProviderConnector } = require('../lib/rpc');
-const { Workspace, Explorer, StripeSubscription, Transaction, TransactionReceipt } = require('../models');
+const { Workspace, Explorer, StripeSubscription, Transaction, TransactionReceipt, RpcHealthCheck } = require('../models');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 
@@ -14,15 +14,21 @@ module.exports = async job => {
             {
                 model: Workspace,
                 as: 'workspace',
-                attributes: ['rpcServer'],
-                include: {
-                    model: Explorer,
-                    as: 'explorer',
-                    include: {
-                        model: StripeSubscription,
-                        as: 'stripeSubscription',
+                attributes: ['id', 'rpcServer'],
+                include: [
+                    {
+                        model: Explorer,
+                        as: 'explorer',
+                        include: {
+                            model: StripeSubscription,
+                            as: 'stripeSubscription',
+                        }
+                    },
+                    {
+                        model: RpcHealthCheck,
+                        as: 'rpcHealthCheck'
                     }
-                }
+                ]
             },
             {
                 model: TransactionReceipt,
@@ -46,7 +52,7 @@ module.exports = async job => {
     if (!transaction.workspace.explorer.shouldSync)
         return 'Sync is disabled';
 
-    if (transaction.workspace.explorer.rpcHealthCheck && transaction.workspace.explorer.rpcHealthCheck.tooManyFailedAttempts())
+    if (transaction.workspace.rpcHealthCheck && !transaction.workspace.rpcHealthCheck.isReachable)
         return 'Too many failed RPC requests';
 
     if (!transaction.workspace.explorer.stripeSubscription)

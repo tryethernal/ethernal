@@ -1,4 +1,5 @@
 const { ProviderConnector } = require('../lib/rpc');
+const { User } = require('../models');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 
@@ -8,7 +9,11 @@ module.exports = async job => {
     if (!data.userId || !data.workspace || data.blockNumber === undefined || data.blockNumber === null)
         return 'Missing parameter';
 
-    const workspace = await db.getWorkspaceByName(data.userId, data.workspace);
+    const user = await User.findByAuthIdWithWorkspace(data.userId, data.workspace);
+    if (!user)
+        return 'Cannot find user';
+
+    const workspace = user.workspaces[0];
 
     if (!workspace)
         return 'Invalid workspace.';
@@ -19,7 +24,7 @@ module.exports = async job => {
     if (!workspace.explorer.shouldSync)
         return 'Sync is disabled';
 
-    if (workspace.explorer.rpcHealthCheck && workspace.explorer.rpcHealthCheck.tooManyFailedAttempts())
+    if (workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
         return 'Too many failed RPC requests';
 
     if (!workspace.explorer.stripeSubscription)
@@ -47,9 +52,6 @@ module.exports = async job => {
         const syncedBlock = await db.syncPartialBlock(workspace.id, block);
         if (!syncedBlock)
             throw new Error("Couldn't store block");
-
-        if (workspace.rpcHealthCheck && workspace.rpcHealthCheck.failedAttempts > 0)
-            await db.resetFailedAttempts(workspace.id);
 
         return 'Block synced';
     } catch(error) {

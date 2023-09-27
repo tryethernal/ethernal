@@ -408,7 +408,7 @@ const getExplorerById = async (userId, id) => {
                     {
                         model: RpcHealthCheck,
                         as: 'rpcHealthCheck',
-                        attributes: ['failedAttempts']
+                        attributes: ['failedAttempts', 'isReachable']
                     }
                 ]
             }
@@ -479,10 +479,10 @@ const updateWorkspaceIntegrityCheck = async (workspaceId, { blockId, status }) =
     return workspace.safeCreateOrUpdateIntegrityCheck({ blockId, status });
 };
 
-const getTransactionForProcessing = async transactionId => {
+const getTransactionForProcessing = transactionId => {
     if (!transactionId) throw new Error('Missing parameter.');
 
-    const transaction = await Transaction.findOne({
+    return Transaction.findOne({
         where: { id: transactionId },
         include: [
             {
@@ -497,16 +497,25 @@ const getTransactionForProcessing = async transactionId => {
                 model: Workspace,
                 as: 'workspace',
                 attributes: ['id', 'name', 'public', 'rpcServer'],
-                include: {
-                    model: User,
-                    as: 'user',
-                    attributes: ['id', 'firebaseUserId']
-                }
+                include: [
+                    {
+                        model: User,
+                        as: 'user',
+                        attributes: ['id', 'firebaseUserId']
+                    },
+                    {
+                        model: RpcHealthCheck,
+                        as: 'rpcHealthCheck'
+                    },
+                    {
+                        model: Explorer,
+                        as: 'explorer',
+                        include: 'stripeSubscription'
+                    }
+                ]
             }
         ]
     });
-
-    return transaction ? transaction.toJSON() : null;
 };
 
 const revertPartialBlock = async (blockId) => {

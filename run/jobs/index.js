@@ -6,6 +6,7 @@ module.exports = {
     updateExplorerSyncingProcess: require('./updateExplorerSyncingProcess'),
     updateApproximatedRecord: require('./updateApproximatedRecord'),
     receiptSync: require('./receiptSync'),
+    removeStalledBlock: require('./removeStalledBlock'),
 
     // Medium Priority
     processContract: require('./processContract'),
@@ -25,6 +26,5 @@ module.exports = {
     rpcHealthCheck: require('./rpcHealthCheck'),
     rpcHealthCheckStarter: require('./rpcHealthCheckStarter'),
     explorerSyncCheck: require('./explorerSyncCheck'),
-    refreshMaterializedViews: require('./refreshMaterializedViews'),
-    resetFailedRpcAttempts: require('./resetFailedRpcAttempts')
+    refreshMaterializedViews: require('./refreshMaterializedViews')
 };

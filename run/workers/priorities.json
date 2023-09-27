@@ -5,7 +5,8 @@
         "sendResetPasswordEmail",
         "updateExplorerSyncingProcess",
         "updateApproximatedRecord",
-        "receiptSync"
+        "receiptSync",
+        "removeStalledBlock"
     ],
     "medium": [
         "processContract",
@@ -25,7 +26,6 @@
         "rpcHealthCheck",
         "rpcHealthCheckStarter",
         "explorerSyncCheck",
-        "refreshMaterializedViews",
-        "resetFailedRpcAttempts"
+        "refreshMaterializedViews"
     ]
 }

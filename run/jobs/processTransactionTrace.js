@@ -21,7 +21,7 @@ module.exports = async job => {
     if (!transaction.workspace.explorer.shouldSync)
         return 'Sync is disabled';
 
-    if (transaction.workspace.explorer.rpcHealthCheck && transaction.workspace.explorer.rpcHealthCheck.tooManyFailedAttempts())
+    if (transaction.workspace.rpcHealthCheck && !transaction.workspace.rpcHealthCheck.isReachable)
         return 'Too many failed RPC requests';
 
     if (!transaction.workspace.explorer.stripeSubscription)

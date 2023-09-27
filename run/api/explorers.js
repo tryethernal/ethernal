@@ -64,11 +64,15 @@ router.get('/:id/syncStatus', [authMiddleware], async (req, res) => {
 
         const explorer = await db.getExplorerById(req.body.data.user.id, req.params.id);
 
-        const pm2 = new PM2(process.env.PM2_HOST, process.env.PM2_SECRET);
-        const { data: { pm2_env: { status }}} = await pm2.find(explorer.slug);
-
-        if (!process)
-            throw new Error(`Couldn't find process for explorer.`);
+        let status;
+        if (explorer.workspace.rpcHealthCheck && !explorer.workspace.rpcHealthCheck.isReachable) {
+            status = 'unreachable'
+        }
+        else {
+            const pm2 = new PM2(process.env.PM2_HOST, process.env.PM2_SECRET);
+            const { data: { pm2_env: pm2Process }} = await pm2.find(explorer.slug);
+            status = pm2Process ? pm2Process.status : 'stopped';
+        }
 
         res.status(200).json({ status });
     } catch(error) {

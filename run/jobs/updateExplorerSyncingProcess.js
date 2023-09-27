@@ -1,4 +1,4 @@
-const { Explorer } = require('../models');
+const { Explorer, Workspace, RpcHealthCheck } = require('../models');
 const PM2 = require('../lib/pm2');
 
 module.exports = async job => {
@@ -7,28 +7,44 @@ module.exports = async job => {
     if (!data.explorerSlug)
         return 'Missing parameter.';
 
-    const explorer = await Explorer.findOne({ where: { slug: data.explorerSlug }});
+    const explorer = await Explorer.findOne({
+        where: { slug: data.explorerSlug },
+        include: {
+            model: Workspace,
+            as: 'workspace',
+            include: {
+                model: RpcHealthCheck,
+                as: 'rpcHealthCheck'
+            }
+        }
+    });
 
     const pm2 = new PM2(process.env.PM2_HOST, process.env.PM2_SECRET);
-
-    if (!explorer) {
-        await pm2.delete(data.explorerSlug);
-        return 'Process deleted (no explorer).';
-    }
-
-    // We check if we have a current process running
     const { data: existingProcess } = await pm2.find(explorer.slug);
 
-    if (!explorer.shouldSync && existingProcess && existingProcess.status != 'stopped') {
-        await pm2.stop(explorer.slug);
-        return 'Process stopped.';
+    if (!explorer && existingProcess) {
+        await pm2.delete(data.explorerSlug);
+        return 'Process deleted: no explorer.';
     }
-
-    // If the process doesn't exist or is not running, we create it
-    if (explorer.shouldSync && (!existingProcess || existingProcess.status != 'online')) {
+    else if (!explorer && !existingProcess) {
+        return 'No process change.';
+    }
+    else if (explorer.workspace.rpcHealthCheck && explorer.workspace.rpcHealthCheck.hasTooManyFailedAttempts() && existingProcess) {
+        await pm2.delete(data.explorerSlug);
+        return 'Process deleted: too many failed RPC attempts.';
+    }
+    else if (!explorer.shouldSync && existingProcess) {
+        await pm2.delete(explorer.slug);
+        return 'Process deleted: should not sync.';
+    }
+    else if (explorer.shouldSync && !existingProcess) {
         await pm2.start(explorer.slug, explorer.workspaceId);
         return 'Process started.';
     }
-
-    return 'No process change.';
+    else if (explorer.shouldSync && existingProcess && existingProcess.status == 'stopped') {
+        await pm2.resume(explorer.slug, explorer.workspaceId);
+        return 'Process started.';
+    }
+    else
+        return 'No process change.';
 };

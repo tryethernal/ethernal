@@ -3,7 +3,6 @@ const { enqueue } = require('./lib/queue');
 const INTEGRITY_CHECK_INTERVAL = 5 * 60 * 1000;
 const RPC_HEALTH_CHECK_INTERVAL = 1 * 60 * 1000;
 const SUBSCRIPTION_CHECK_INTERVAL = 5 * 60 * 1000;
-const RESET_RPC_ATTEMPTS_INTERVAL = 5 * 60 * 1000;
 const MV_TO_REFRESH = ['transaction_volume_14d', 'wallet_volume_14d'];
 
 (async () => {
@@ -46,13 +45,5 @@ const MV_TO_REFRESH = ['transaction_volume_14d', 'wallet_volume_14d'];
         {},
         10,
         { every: SUBSCRIPTION_CHECK_INTERVAL }
-    );
-
-    await enqueue(
-        'resetFailedRpcAttempts',
-        'resetFailedRpcAttempts',
-        {},
-        10,
-        { every: RESET_RPC_ATTEMPTS_INTERVAL }
     );
 })();

@@ -1,14 +1,17 @@
 <template>
     <v-card outlined class="flex-grow-1">
         <v-card-text>
+            <v-alert v-if="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
             <div>
                 <b class="success--text" v-if="isSyncActive">Your explorer is synchronizing blocks.</b>
-                <b class="error--text" v-else-if="isSyncStopped">Your explorer is not synchronizing blocks.</b>
+                <b class="error--text" v-else-if="isSyncStopped">
+                    Your explorer is not synchronizing blocks<span v-if="isRpcUnreachable"> (RPC is unreachable, sync will resume automatically as soon as our servers will be able to query it again)</span>.
+                </b>
                 <b class="warning--text" v-else-if="isSyncStarting">Starting synchronization...</b>
                 <b class="warning--text" v-else-if="isSyncStopping">Stopping synchronization...</b>
                 <b class="error--text" v-else>Unknown synchronization status ({{ syncStatus }}).</b>
             </div>
-            <v-btn v-if="isSyncActive" :loading="loading" class="mt-2" color="primary" @click="stopSync()">Stop Sync</v-btn>
+            <v-btn v-if="isSyncActive || isRpcUnreachable" :loading="loading" class="mt-2" color="primary" @click="stopSync()">Stop Sync</v-btn>
             <v-btn v-else :loading="loading" class="mt-2" color="primary" @click="startSync()">Start Sync</v-btn>
         </v-card-text>
     </v-card>
@@ -23,7 +26,8 @@ export default {
     props: ['explorer'],
     data: () => ({
         loading: false,
-        syncStatus: null
+        syncStatus: null,
+        errorMessage: null
     }),
     mounted() {
         this.getSyncStatus();
@@ -39,6 +43,7 @@ export default {
         },
         stopSync() {
             this.loading = true;
+            this.errorMessage = null;
             this.server.stopExplorerSync(this.explorer.id)
                 .then(() => this.waitForStatus('stopped'))
                 .catch(error => {
@@ -48,10 +53,11 @@ export default {
         },
         startSync() {
             this.loading = true;
+            this.errorMessage = null;
             this.server.startExplorerSync(this.explorer.id)
                 .then(() => this.waitForStatus('online'))
                 .catch(error => {
-                    console.log(error);
+                    this.errorMessage = error.response && error.response.data || 'Error while starting sync. Please retry.';
                     this.loading = false;
                 });
         },
@@ -78,7 +84,8 @@ export default {
         isSyncActive() { return this.syncStatus == 'online' },
         isSyncStarting() { return this.syncStatus == 'launching' },
         isSyncStopping() { return this.syncStatus == 'stopping' },
-        isSyncStopped() { return this.syncStatus == 'stopped' }
+        isSyncStopped() { return this.syncStatus == 'stopped' || this.syncStatus == 'unreachable' },
+        isRpcUnreachable() { return this.syncStatus == 'unreachable' }
     }
 }
 </script>

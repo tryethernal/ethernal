@@ -115,10 +115,13 @@ module.exports = (sequelize, DataTypes) => {
 
         const rpcHealthCheck = await this.getRpcHealthCheck();
 
-        if (rpcHealthCheck) {
+        if (rpcHealthCheck) {
             // This is necessary otherwise Sequelize won't update the value with no other changes
             rpcHealthCheck.changed('updatedAt', true);
-            return rpcHealthCheck.update({ isReachable, updatedAt: new Date() });
+
+            // If rpc is reachable we reset failed attempts as well
+            const fields = isReachable ? { isReachable, failedAttempts: 0, updatedAt: new Date() } : { isReachable, updatedAt: new Date() }
+            return rpcHealthCheck.update(fields);
         }
         else
             return this.createRpcHealthCheck({ isReachable });
@@ -928,15 +931,22 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     updateSettings(data) {
-        return this.update(sanitize({
-            statusPageEnabled: data.statusPageEnabled,
-            chain: data.chain,
-            rpcServer: data.rpcServer,
-            tracing: data.advancedOptions && data.advancedOptions.tracing,
-            defaultAccount: data.settings && data.settings.defaultAccount,
-            gasLimit: data.settings && data.settings.gasLimit,
-            gasPrice: data.settings && data.settings.gasPrice
-        }));
+        return sequelize.transaction(async (transaction) => {
+            if (data.rpcServer) {
+                const explorer = await this.getExplorer();
+                if (explorer)
+                    await explorer.update({ rpcServer: data.rpcServer }, { transaction });
+            }
+            return this.update(sanitize({
+                statusPageEnabled: data.statusPageEnabled,
+                chain: data.chain,
+                rpcServer: data.rpcServer,
+                tracing: data.advancedOptions && data.advancedOptions.tracing,
+                defaultAccount: data.settings && data.settings.defaultAccount,
+                gasLimit: data.settings && data.settings.gasLimit,
+                gasPrice: data.settings && data.settings.gasPrice
+            }), { transaction });
+        });
     }
 
     async reset(dayInterval, transaction) {
