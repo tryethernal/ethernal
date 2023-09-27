@@ -75,7 +75,7 @@ app.post('/processes', secretMiddleware, async (req, res) => {
             if (existingProcess.pm2_env.status != 'online') {
                 const pm2Process = await pm2.resume(data.slug)
                 return res.status(200).send(pm2Process);
-            } else
+            } else
                 return res.sendStatus(200);
         }
 

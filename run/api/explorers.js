@@ -4,12 +4,37 @@ const router = express.Router();
 const { isStripeEnabled, isSubscriptionCheckEnabled } = require('../lib/flags');
 const { getAppDomain, getDefaultPlanSlug } = require('../lib/env');
 const { ProviderConnector } = require('../lib/rpc');
+const { Explorer } = require('../models');
 const { withTimeout } = require('../lib/utils');
+const { bulkEnqueue } = require('../lib/queue');
 const logger = require('../lib/logger');
 const PM2 = require('../lib/pm2');
 const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
+const secretMiddleware = require('../middlewares/secret');
+
+router.post('/syncExplorers', secretMiddleware, async (req, res) => {
+    try {
+        const explorers = await Explorer.findAll();
+
+        const jobs = [];
+        for (let i = 0; i < explorers.length; i++) {
+            const explorer = explorers[i];
+            jobs.push({
+                name: `updateExplorerSyncingProcess-${explorer.id}`,
+                data: { explorerSlug: explorer.slug }
+            });
+        }
+
+        await bulkEnqueue('updateExplorerSyncingProcess', jobs);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.syncExplorers', error });
+        res.status(400).send(error.message);
+    }
+});
 
 router.put('/:id/stopSync', [authMiddleware], async (req, res) => {
     try {

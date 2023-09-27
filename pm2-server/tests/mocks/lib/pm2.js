@@ -5,5 +5,6 @@ jest.mock('../../../lib/pm2', () => ({
     reload: jest.fn(),
     restart: jest.fn(),
     delete: jest.fn(),
-    start: jest.fn()
+    start: jest.fn(),
+    resume: jest.fn()
 }));
