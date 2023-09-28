@@ -16,8 +16,10 @@ describe('receiptSync', () => {
     it('Should throw an error if receipt is not available', (done) => {
         jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
             workspace: {
+                id: 1,
                 rpcServer: 'rpc',
                 explorer: {
+                    shouldSync: true,
                     stripeSubscription: { status: 'active' }
                 }
             }
@@ -29,15 +31,70 @@ describe('receiptSync', () => {
         receiptSync({ data : { transactionId: 1 }})
             .catch(error => {
                 expect(error.message).toEqual('Failed to fetch receipt');
+                expect(db.incrementFailedAttempts).toHaveBeenCalledWith(1);
+                done();
+            });
+    });
+
+    it('Should return if already a receipt', (done) => {
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+            workspace: {
+                rpcServer: 'rpc',
+                explorer: {
+                    stripeSubscription: { status: 'active' }
+                }
+            },
+            receipt: {}
+        });
+
+        receiptSync({ data : { transactionId: 1 }})
+            .then(res => {
+                expect(res).toEqual('Receipt has already been synced');
+                done();
+            });
+    });
+
+    it('Should return if sync is disabled', (done) => {
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+            workspace: {
+                rpcServer: 'rpc',
+                explorer: {
+                    shouldSync: false,
+                    stripeSubscription: { status: 'active' }
+                }
+            },
+        });
+
+        receiptSync({ data : { transactionId: 1 }})
+            .then(res => {
+                expect(res).toEqual('Sync is disabled');
+                done();
+            });
+    });
+
+    it('Should return if RPC is unreachable', (done) => {
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+            workspace: {
+                rpcServer: 'rpc',
+                rpcHealthCheck: {
+                    isReachable: false
+                },
+                explorer: {
+                    shouldSync: true,
+                    stripeSubscription: { status: 'active' }
+                }
+            },
+        });
+
+        receiptSync({ data : { transactionId: 1 }})
+            .then(res => {
+                expect(res).toEqual('RPC is unreachable');
                 done();
             });
     });
 
     it('Should return if no transaction', (done) => {
         jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce(null);
-        ProviderConnector.mockImplementationOnce(() => ({
-            fetchTransactionReceipt: jest.fn().mockResolvedValueOnce(null)
-        }));
 
         receiptSync({ data : { transactionId: 1 }})
             .then(res => {
@@ -50,7 +107,9 @@ describe('receiptSync', () => {
         jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
             workspace: {
                 rpcServer: 'rpc',
-                explorer: {}
+                explorer: {
+                    shouldSync: true
+                }
             }
         });
         ProviderConnector.mockImplementationOnce(() => ({
@@ -69,6 +128,7 @@ describe('receiptSync', () => {
             workspace: {
                 rpcServer: 'rpc',
                 explorer: {
+                    shouldSync: true,
                     stripeSubscription: { status: 'active' }
                 }
             }
