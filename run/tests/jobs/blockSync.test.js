@@ -122,6 +122,30 @@ describe('blockSync', () => {
             });
     });
 
+    it('Should disable browser sync', (done) => {
+        jest.spyOn(User, 'findByAuthIdWithWorkspace').mockResolvedValueOnce({
+            workspaces: [{
+                id: 1,
+                browserSyncEnabled: true,
+                rpcServer: 'http://localhost:8545',
+                rpcHealthCheck: {
+                    isReachable: true
+                },
+                explorer: {
+                    shouldSync: true,
+                    stripeSubscription: {}
+                }
+            }]
+        });
+        jest.spyOn(db, 'syncPartialBlock').mockResolvedValue({ transactions: [] });
+        blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+            .then(res => {
+                expect(res).toEqual('Block synced');
+                expect(db.updateBrowserSync).toHaveBeenCalledWith(1, false);
+                done();
+            });
+    });
+
     it('Should set recovery status for integrity check', (done) => {
         jest.spyOn(User, 'findByAuthIdWithWorkspace').mockResolvedValueOnce({
             workspaces: [{
