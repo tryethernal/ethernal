@@ -6,7 +6,6 @@ require('../mocks/lib/logger');
 
 const db = require('../../lib/firebase');
 const { ProviderConnector } = require('../../lib/rpc');
-const { bulkEnqueue } = require('../../lib/queue');
 
 const blockSync = require('../../jobs/blockSync');
 

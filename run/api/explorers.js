@@ -91,6 +91,8 @@ router.get('/:id/syncStatus', [authMiddleware], async (req, res) => {
             throw new Error('Missing parameters');
 
         const explorer = await db.getExplorerById(req.body.data.user.id, req.params.id);
+        if (!explorer)
+            throw new Error(`Can't find explorer.`);
 
         let status;
         if (explorer.workspace.rpcHealthCheck && !explorer.workspace.rpcHealthCheck.isReachable) {
