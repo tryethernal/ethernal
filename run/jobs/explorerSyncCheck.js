@@ -5,7 +5,7 @@ module.exports = async () => {
     const explorers = await Explorer.findAll();
 
     const jobs = explorers.map(e => ({
-        name: `updateExplorerSyncingProcess-${e.slug}`,
+        name: `updateExplorerSyncingProcess-${e.id}`,
         data: { explorerSlug: e.slug }
     }));
 
