@@ -1,4 +1,4 @@
-const { Block, Transaction } = require('../models');
+const { Block } = require('../models');
 
 module.exports = async (job) => {
     const data = job.data;
@@ -12,7 +12,7 @@ module.exports = async (job) => {
     if (!block)
         return 'Could not find block';
 
-    const hasTransactionSyncing = block.transactions.map(t => t.isSyncing).length > 0;
+    const hasTransactionSyncing = block.transactions.length > 0 && block.transactions.filter(t => t.isSyncing).length > 0;
     if (hasTransactionSyncing) {
         await block.revertIfPartial();
         return `Removed stalled block ${block.id} - Workspace ${block.workspaceId} - #${block.number}`;
