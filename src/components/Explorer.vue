@@ -96,6 +96,7 @@ export default {
                         if (this.refreshInterval)
                             clearInterval(this.refreshInterval);
                         this.capabilities = this.explorer.stripeSubscription.stripePlan.capabilities;
+                        this.$root.$emit('waitForOnlineSync');
                     }
                     this.explorerDomain = this.explorer.domains.length ?
                         this.explorer.domains[0].domain :

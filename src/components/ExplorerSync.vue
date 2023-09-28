@@ -2,7 +2,7 @@
     <v-card outlined class="flex-grow-1">
         <v-card-text>
             <v-alert v-if="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
-            <div>
+            <div v-if="explorer.stripeSubscription">
                 <b class="success--text" v-if="isSyncActive">Your explorer is synchronizing blocks.</b>
                 <b class="error--text" v-else-if="isSyncStopped">
                     Your explorer is not synchronizing blocks<span v-if="isRpcUnreachable"> (RPC is unreachable, sync will resume automatically as soon as our servers will be able to query it again)</span>.
@@ -11,8 +11,11 @@
                 <b class="warning--text" v-else-if="isSyncStopping">Stopping synchronization...</b>
                 <b class="error--text" v-else>Unknown synchronization status ({{ syncStatus }}).</b>
             </div>
-            <v-btn v-if="isSyncActive || isRpcUnreachable" :loading="loading" class="mt-2" color="primary" @click="stopSync()">Stop Sync</v-btn>
-            <v-btn v-else :loading="loading" class="mt-2" color="primary" @click="startSync()">Start Sync</v-btn>
+            <div v-else>
+                <b class="error--text">Synchronization will become available once a subscription has been started.</b>
+            </div>
+            <v-btn v-if="(isSyncActive || isRpcUnreachable) && explorer.stripeSubscription" :loading="loading" class="mt-2" color="primary" @click="stopSync()">Stop Sync</v-btn>
+            <v-btn v-else :loading="loading" :disabled="!explorer.stripeSubscription" class="mt-2" color="primary" @click="startSync()">Start Sync</v-btn>
         </v-card-text>
     </v-card>
 </template>
@@ -31,6 +34,10 @@ export default {
     }),
     mounted() {
         this.getSyncStatus();
+        this.$root.$on('waitForOnlineSync', () => {
+            this.loading = true;
+            this.waitForStatus('online');
+        });
     },
     methods: {
         moment,

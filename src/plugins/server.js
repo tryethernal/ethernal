@@ -3,7 +3,8 @@ const Web3 = require('web3');
 const Decoder = require('@truffle/decoder');
 const Axios = require('axios');
 let setupCache;
-if (process.env.NODE_ENV == 'development')
+const DEBUG_AXIOS_CACHE_INTERCEPTOR = false;
+if (process.env.NODE_ENV == 'development' && DEBUG_AXIOS_CACHE_INTERCEPTOR)
     ({ setupCache } = require('axios-cache-interceptor/dev'));
 else
     ({ setupCache } = require('axios-cache-interceptor'));

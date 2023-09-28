@@ -65,6 +65,9 @@ router.put('/:id/startSync', [authMiddleware], async (req, res) => {
         if (!explorer)
             throw new Error(`Couldn't find explorer.`);
 
+        if (!explorer.stripeSubscription)
+            throw new Error(`No active subscription for this explorer.`);
+
         const provider = new ProviderConnector(explorer.workspace.rpcServer);
         try {
             await withTimeout(provider.fetchNetworkId());
