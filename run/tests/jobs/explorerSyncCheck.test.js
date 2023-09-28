@@ -7,7 +7,7 @@ const explorerSyncCheck = require('../../jobs/explorerSyncCheck');
 beforeEach(() => jest.clearAllMocks());
 
 describe('explorerSyncCheck', () => {
-    it('Should send the delete command & return with message if no explorer', (done) => {
+    it('Should enqueue all explorers', (done) => {
         jest.spyOn(Explorer, 'findAll').mockResolvedValue([
             { id: 1, slug: 'explorer-1' },
             { id: 2, slug: 'explorer-2' }
