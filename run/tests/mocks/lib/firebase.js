@@ -112,6 +112,7 @@ jest.mock('../../../lib/firebase', () => {
         deleteWorkspace: jest.fn(),
         startExplorerSync: jest.fn(),
         stopExplorerSync: jest.fn(),
+        incrementFailedAttempts: jest.fn(),
         Workspace: Workspace
     }
 });

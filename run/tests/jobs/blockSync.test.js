@@ -3,6 +3,7 @@ require('../mocks/lib/queue');
 require('../mocks/lib/firebase');
 require('../mocks/lib/transactions');
 require('../mocks/lib/logger');
+const { User } = require('../mocks/models');
 
 const db = require('../../lib/firebase');
 const { ProviderConnector } = require('../../lib/rpc');
@@ -12,16 +13,100 @@ const blockSync = require('../../jobs/blockSync');
 beforeEach(() => jest.clearAllMocks());
 
 describe('blockSync', () => {
-    jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({
-        id: 1,
-        rpcServer: 'http://localhost:8545',
-        explorer: {
-            stripeSubscription: {}
-        }
+    jest.spyOn(User, 'findByAuthIdWithWorkspace').mockResolvedValue({
+        workspaces: [{
+            id: 1,
+            rpcServer: 'http://localhost:8545',
+            rpcHealthCheck: {
+                isReachable: true
+            },
+            explorer: {
+                stripeSubscription: {},
+                shouldSync: true
+            }
+        }]
+    });
+
+    it('Should return if no active explorer', (done) => {
+        jest.spyOn(User, 'findByAuthIdWithWorkspace').mockResolvedValueOnce({
+            workspaces: [{
+                id: 1,
+                rpcServer: 'http://localhost:8545',
+                rpcHealthCheck: {
+                    isReachable: true
+                },
+                explorer: null
+            }]
+        });
+        blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+            .then(res => {
+                expect(res).toEqual('No active explorer for this workspace');
+                done();
+            });
+    });
+
+    it('Should return if sync is disabled', (done) => {
+        jest.spyOn(User, 'findByAuthIdWithWorkspace').mockResolvedValueOnce({
+            workspaces: [{
+                id: 1,
+                rpcServer: 'http://localhost:8545',
+                rpcHealthCheck: {
+                    isReachable: true
+                },
+                explorer: {
+                    shouldSync: false
+                }
+            }]
+        });
+        blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+            .then(res => {
+                expect(res).toEqual('Sync is disabled');
+                done();
+            });
+    });
+
+    it('Should return if too many failed rpc requests', (done) => {
+        jest.spyOn(User, 'findByAuthIdWithWorkspace').mockResolvedValueOnce({
+            workspaces: [{
+                id: 1,
+                rpcServer: 'http://localhost:8545',
+                rpcHealthCheck: {
+                    isReachable: false
+                },
+                explorer: {
+                    shouldSync: true
+                }
+            }]
+        });
+        blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+            .then(res => {
+                expect(res).toEqual('RPC is not reachable');
+                done();
+            });
+    });
+
+    it('Should return if no subscription', (done) => {
+        jest.spyOn(User, 'findByAuthIdWithWorkspace').mockResolvedValueOnce({
+            workspaces: [{
+                id: 1,
+                rpcServer: 'http://localhost:8545',
+                rpcHealthCheck: {
+                    isReachable: true
+                },
+                explorer: {
+                    shouldSync: true
+                }
+            }]
+        });
+        blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+            .then(res => {
+                expect(res).toEqual('No active subscription');
+                done();
+            });
     });
 
     it('Should sync partial block', (done) => {
-        jest.spyOn(db, 'syncPartialBlock').mockResolvedValue({ transactions: [] })
+        jest.spyOn(db, 'syncPartialBlock').mockResolvedValue({ transactions: [] });
         blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(res).toEqual('Block synced');
@@ -38,13 +123,16 @@ describe('blockSync', () => {
     });
 
     it('Should set recovery status for integrity check', (done) => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({
-            id: 1,
-            rpcServer: 'http://localhost:8545',
-            integrityCheck: { isHealthy: true },
-            explorer: {
-                stripeSubscription: {}
-            }
+        jest.spyOn(User, 'findByAuthIdWithWorkspace').mockResolvedValueOnce({
+            workspaces: [{
+                id: 1,
+                rpcServer: 'http://localhost:8545',
+                integrityCheck: { isHealthy: true },
+                explorer: {
+                    stripeSubscription: {},
+                    shouldSync: true
+                }
+            }]
         });
         blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1, source: 'recovery' }})
             .then(() => {
@@ -54,13 +142,16 @@ describe('blockSync', () => {
     });
 
     it('Should set healthy status for integrity check', (done) => {
-        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({
-            id: 1,
-            rpcServer: 'http://localhost:8545',
-            integrityCheck: { isRecovering: true },
-            explorer: {
-                stripeSubscription: {}
-            }
+        jest.spyOn(User, 'findByAuthIdWithWorkspace').mockResolvedValueOnce({
+            workspaces: [{
+                id: 1,
+                rpcServer: 'http://localhost:8545',
+                integrityCheck: { isRecovering: true },
+                explorer: {
+                    stripeSubscription: {},
+                    shouldSync: true
+                }
+            }]
         });
         blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1, source: 'api' }})
             .then(() => {
@@ -82,6 +173,7 @@ describe('blockSync', () => {
             }
         }).catch(error => {
             expect(error.message).toEqual("Couldn't fetch block from provider");
+            expect(db.incrementFailedAttempts).toHaveBeenCalledWith(1);
             done();
         });
     });
