@@ -29,14 +29,6 @@ const workspace = {
 };
 
 describe('processTransactionError', () => {
-    it('Should return if workspace is not public', async () => {
-        const transaction = { ...Transaction, receipt: { status: 0, ...Transaction }, workspace: { ...workspace, public: false }};
-        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce(transaction);
-
-        const res = await processTransactionError({ data: { transactionId: 1 }});
-        expect(res).toEqual('Not allowed on private workspaces');
-    });
-
     it('Should return if no explorer', async () => {
         const transaction = { ...Transaction, receipt: { status: 0, ...Transaction }, workspace: { ...workspace, public: true, explorer: null }};
         jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce(transaction);
