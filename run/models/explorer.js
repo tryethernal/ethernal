@@ -196,6 +196,10 @@ module.exports = (sequelize, DataTypes) => {
                     await domains[i].destroy({ transaction });
                 if (stripeSubscription)
                     await stripeSubscription.destroy({ transaction });
+
+                const workspace = await this.getWorkspace();
+                await workspace.update({ public: false, rpcHealthCheckEnabled: false, integrityCheckStartBlockNumber: null }, { transaction });
+
                 return this.destroy({ transaction });
             });
         else if (stripeSubscription.isActive)

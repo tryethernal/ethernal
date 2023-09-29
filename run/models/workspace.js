@@ -1055,8 +1055,7 @@ module.exports = (sequelize, DataTypes) => {
 
     async safeCreateExplorer() {
         return sequelize.transaction(async (transaction) => {
-            if (!this.public)
-                await this.update({ public: true, browserSyncEnabled: false }, { transaction });
+            await this.update({ public: true, browserSyncEnabled: false, rpcHealthCheckEnabled: true }, { transaction });
 
             const existingExplorer = await sequelize.models.Explorer.findOne({ where: { slug: slugify(this.name) }});
             const slug = existingExplorer ?
