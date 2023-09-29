@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.20.0] - 2023-09-29
+### Added
+- [Public Explorer] Ability to stop/start sync from explorer settings
+- [Public Explorer] After 3 failed RPC requests attempts, jobs will start failing gracefully until RPC is back up
+
 ## [3.19.8] - 2023-09-15
 ### Changed
 - [Public Explorer] Changing RPC check for reachability & restarts the PM2 process
