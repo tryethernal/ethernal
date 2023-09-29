@@ -4,8 +4,10 @@ const {
   Sequelize
 } = require('sequelize');
 const { trigger } = require('../lib/pusher');
-const { bulkEnqueue } = require('../lib/queue');
+const { enqueue, bulkEnqueue } = require('../lib/queue');
+const { getNodeEnv } = require('../lib/env');
 const moment = require('moment');
+const STALLED_BLOCK_REMOVAL_DELAY = getNodeEnv() == 'production' ? 1 * 60 * 1000 : 15 * 60 * 1000;
 
 module.exports = (sequelize, DataTypes) => {
   class Block extends Model {
@@ -20,15 +22,18 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async revertIfPartial() {
-        if (this.state !== 'syncing')
-            return;
+        const transactions = await this.getTransactions();
+        const isSyncing = transactions.map(t => t.isSyncing).length > 0;
+
+        if (!isSyncing)
+          return;
 
         return sequelize.transaction(
           { deferrable: Sequelize.Deferrable.SET_DEFERRED },
           async transaction => {
             const transactions = await this.getTransactions();
             for (let i = 0; i < transactions.length; i++)
-              await transactions[i].destroy({ transaction });
+              await transactions[i].safeDestroy(transaction);
             return this.destroy({ transaction });
           }
         );
@@ -60,6 +65,7 @@ module.exports = (sequelize, DataTypes) => {
         async afterCreate(block, options) {
           const workspace = await block.getWorkspace();
           if (workspace.public) {
+            await enqueue('removeStalledBlock', `removeStalledBlock-${block.id}`, { blockId: block.id }, null, null, STALLED_BLOCK_REMOVAL_DELAY);
             const afterCreateFn = async () => {
               const transactions = block.transactions;
               const jobs = [];
@@ -95,7 +101,7 @@ module.exports = (sequelize, DataTypes) => {
                 const workspace = await block.getWorkspace();
                 const [latestBlock] = await workspace.getBlocks({ order: [['number', 'DESC']], limit: 1 });
                 if (latestBlock.number - block.number < 10)
-                  await trigger(`private-blocks;workspace=${block.workspaceId}`, 'new', { number: block.number, withTransactions: block.transactionsCount > 0 });
+                  trigger(`private-blocks;workspace=${block.workspaceId}`, 'new', { number: block.number, withTransactions: block.transactionsCount > 0 });
             };
 
             if (options.transaction)

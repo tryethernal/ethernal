@@ -3,9 +3,10 @@
         "blockSync",
         "batchBlockSync",
         "sendResetPasswordEmail",
-        "processStripeSubscription",
+        "updateExplorerSyncingProcess",
         "updateApproximatedRecord",
-        "receiptSync"
+        "receiptSync",
+        "removeStalledBlock"
     ],
     "medium": [
         "processContract",
@@ -24,7 +25,7 @@
         "integrityCheck",
         "rpcHealthCheck",
         "rpcHealthCheckStarter",
-        "subscriptionCheck",
+        "explorerSyncCheck",
         "refreshMaterializedViews"
     ]
 }

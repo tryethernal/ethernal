@@ -80,6 +80,18 @@ describe('POST /processes/:slug/:command', () => {
 });
 
 describe('POST /processes', () => {
+    it('Should start existing stopped process', (done) => {
+        jest.spyOn(pm2, 'show').mockResolvedValue({ pm2_env: { status: 'stopped' }});
+        jest.spyOn(pm2, 'resume').mockResolvedValue({ process: 1 });
+        request.post('/processes')
+            .send({ slug: 'my-explorer', workspaceId: 1 })
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ process: 1 });
+                done();
+            });
+    });
+
     it('Should return created process', (done) => {
         jest.spyOn(pm2, 'start').mockResolvedValue({ process: 1 });
         jest.spyOn(pm2, 'show').mockResolvedValue(null);

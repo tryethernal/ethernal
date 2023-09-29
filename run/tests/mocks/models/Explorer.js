@@ -6,6 +6,7 @@ const explorer = {
 
 const Explorer = {
     findAndCountAll: jest.fn(),
+    findAll: jest.fn(),
     findOne: jest.fn(),
     findByPk: jest.fn(),
     findBySlug: jest.fn().mockResolvedValue(explorer),

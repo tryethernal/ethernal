@@ -7,6 +7,7 @@ jest.mock('pm2', () => ({
     restart: jest.fn((_, cb) => cb()),
     delete: jest.fn((_, cb) => cb()),
     start: jest.fn((_, cb) => cb()),
+    resume: jest.fn((_, cb) => cb())
 }));
 const pm2 = require('pm2');
 const pm2Lib = require('../../lib/pm2');
@@ -59,6 +60,17 @@ describe('restart', () => {
     it('Should resolve with restarted process', (done) => {
         jest.spyOn(pm2, 'describe').mockImplementation((_, cb) => cb(null, [{ process: 1 }]));
         pm2Lib.restart('slug')
+            .then(process => {
+                expect(process).toEqual({ process: 1 });
+                done();
+            });
+    });
+});
+
+describe('restart', () => {
+    it('Should return with resumed process', (done) => {
+        jest.spyOn(pm2, 'describe').mockImplementation((_, cb) => cb(null, [{ process: 1 }]));
+        pm2Lib.resume('slug')
             .then(process => {
                 expect(process).toEqual({ process: 1 });
                 done();

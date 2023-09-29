@@ -5,9 +5,9 @@ const uniqueQueues = ["blockSync", "batchBlockSync"];
 
 const MAX_BATCH_SIZE = 2000;
 
-const enqueue = (queueName, jobName, data, priority = 10, repeat) => {
+const enqueue = (queueName, jobName, data, priority = 10, repeat, delay) => {
     const jobId = uniqueQueues.indexOf(queueName) > -1 ? jobName : null;
-    return queues[queueName].add(jobName || jobName, data, sanitize({ priority, repeat, jobId: jobId }));
+    return queues[queueName].add(jobName || jobName, data, sanitize({ priority, repeat, jobId: jobId, delay }));
 };
 
 const bulkEnqueue = (queueName, jobData, priority = 1) => {

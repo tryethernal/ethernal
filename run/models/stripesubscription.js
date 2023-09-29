@@ -53,23 +53,19 @@ module.exports = (sequelize, DataTypes) => {
     updatedAt: DataTypes.DATE,
   }, {
     hooks: {
-      afterSave(stripeSubscription, options) {
-        const afterSaveFn = async () => {
+      afterCreate(stripeSubscription, options) {
+        const afterCreateFn = async () => {
           const explorer = await stripeSubscription.getExplorer();
           if (!explorer) return;
-          return enqueue('processStripeSubscription', `processStripeSubscription-${explorer.slug}`, {
-            explorerSlug: explorer.slug
-          });
+          return explorer.startSync();
         };
-        return options.transaction ? options.transaction.afterCommit(afterSaveFn) : afterSaveFn();
+        return options.transaction ? options.transaction.afterCommit(afterCreateFn) : afterCreateFn();
       },
       afterDestroy(stripeSubscription, options) {
         const afterDestroyFn = async () => {
           const explorer = await stripeSubscription.getExplorer();
           if (!explorer) return;
-          return enqueue('processStripeSubscription', `processStripeSubscription-${explorer.slug}`, {
-            explorerSlug: explorer.slug
-          });
+          return explorer.stopSync();
         };
         return options.transaction ? options.transaction.afterCommit(afterDestroyFn) : afterDestroyFn();
       }

@@ -5,6 +5,7 @@ const {
 const { sanitize } = require('../lib/utils');
 const { isStripeEnabled, isSubscriptionCheckEnabled } = require('../lib/flags');
 const { enqueue } = require('../lib/queue');
+const MAX_RPC_ATTEMPTS = 3;
 
 module.exports = (sequelize, DataTypes) => {
   class Explorer extends Model {
@@ -131,6 +132,21 @@ module.exports = (sequelize, DataTypes) => {
         return explorer;
     }
 
+    startSync() {
+        return this.update({ shouldSync: true });
+    }
+
+    stopSync() {
+        return this.update({ shouldSync: false });
+    }
+
+    async hasTooManyFailedAttempts() {
+        const workspace = await this.getWorkspace({ include: 'rpcHealthCheck' });
+        if (workspace.rpcHealthCheck && workspace.rpcHealthCheck.failedAttempts <= MAX_RPC_ATTEMPTS)
+            return true;
+        return false;
+    }
+
     async safeCreateDomain(domain) {
         if (!domain) throw new Error('Missing parameter');
 
@@ -180,6 +196,10 @@ module.exports = (sequelize, DataTypes) => {
                     await domains[i].destroy({ transaction });
                 if (stripeSubscription)
                     await stripeSubscription.destroy({ transaction });
+
+                const workspace = await this.getWorkspace();
+                await workspace.update({ public: false, rpcHealthCheckEnabled: false, integrityCheckStartBlockNumber: null }, { transaction });
+
                 return this.destroy({ transaction });
             });
         else if (stripeSubscription.isActive)
@@ -276,12 +296,21 @@ module.exports = (sequelize, DataTypes) => {
     slug: DataTypes.STRING,
     themes: DataTypes.JSON,
     token: DataTypes.STRING,
-    totalSupply: DataTypes.STRING
+    totalSupply: DataTypes.STRING,
+    shouldSync: DataTypes.BOOLEAN
   }, {
     hooks: {
+        afterUpdate(explorer, options) {
+            const afterUpdateFn = () => {
+                return enqueue('updateExplorerSyncingProcess', `updateExplorerSyncingProcess-${explorer.slug}`, {
+                    explorerSlug: explorer.slug
+                });
+            };
+            return options.transaction ? options.transaction.afterCommit(afterUpdateFn) : afterUpdateFn();
+        },
         afterDestroy(explorer, options) {
             const afterDestroyFn = () => {
-                return enqueue('processStripeSubscription', `processStripeSubscription-${explorer.slug}`, {
+                return enqueue('updateExplorerSyncingProcess', `updateExplorerSyncingProcess-${explorer.slug}`, {
                     explorerSlug: explorer.slug
                   });
             };

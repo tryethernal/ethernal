@@ -41,6 +41,16 @@ module.exports = (sequelize, DataTypes) => {
       Transaction.hasMany(models.TransactionTraceStep, { foreignKey: 'transactionId', as: 'traceSteps' });
     }
 
+    async safeDestroy(transaction) {
+        const receipt = await this.getReceipt();
+        if (receipt)
+            await receipt.safeDestroy(transaction);
+        const traceSteps = await this.getTraceSteps();
+        for (let i = 0; i < traceSteps.length; i++)
+            await traceSteps[i].destroy(transaction);
+        return this.destroy({ transaction });
+    }
+
     async safeCreateReceipt(receipt) {
         if (!receipt) throw new Error('Missing parameter');
 

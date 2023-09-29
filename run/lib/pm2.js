@@ -12,11 +12,25 @@ class PM2 {
         this.secret = secret;
     }
 
-    start(slug, workspaceId) {
+    async start(slug, workspaceId) {
         if (!slug || !workspaceId) throw new Error('Missing parameter');
+
+        const { data: existingProcess } = await this.find(slug);
+
+        if (existingProcess && existingProcess.pm2_env.status != 'online') {
+            const resource = `${this.host}/processes/${slug}/resume?secret=${this.secret}`
+            return withTimeout(axios.post(resource));
+        }
 
         const resource = `${this.host}/processes?secret=${this.secret}`;
         return withTimeout(axios.post(resource, { slug, workspaceId }));
+    }
+
+    resume(slug) {
+        if (!slug) throw new Error('Missing parameter');
+
+        const resource = `${this.host}/processes/${slug}/resume?secret=${this.secret}`
+        return withTimeout(axios.post(resource));
     }
 
     restart(slug) {
@@ -31,6 +45,13 @@ class PM2 {
 
         const resource = `${this.host}/processes/${slug}?secret=${this.secret}`;
         return withTimeout(axios.get(resource));
+    }
+
+    stop(slug) {
+        if (!slug) throw new Error('Missing parameter');
+
+        const resource = `${this.host}/processes/${slug}/stop?secret=${this.secret}`
+        return withTimeout(axios.post(resource));
     }
 
     delete(slug) {

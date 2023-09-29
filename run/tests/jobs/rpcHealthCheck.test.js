@@ -14,7 +14,7 @@ describe('rpcHealthCheck', () => {
     it('Should update healtcheck status if it is reachable', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             id: 1,
-            getProvider: jest.fn().mockReturnValue({ fetchNetworkId: jest.fn().mockResolvedValue(true) })
+            getProvider: jest.fn().mockReturnValue({ fetchLatestBlock: jest.fn().mockResolvedValue(1) })
         });
 
         await rpcHealthCheck(job);
@@ -25,7 +25,7 @@ describe('rpcHealthCheck', () => {
     it('Should update healtcheck status if no response', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             id: 1,
-            getProvider: jest.fn().mockReturnValue({ fetchNetworkId: jest.fn().mockResolvedValue(null) })
+            getProvider: jest.fn().mockReturnValue({ fetchLatestBlock: jest.fn().mockResolvedValue(null) })
         });
 
         await rpcHealthCheck(job);
@@ -36,7 +36,7 @@ describe('rpcHealthCheck', () => {
     it('Should update healtcheck status if request times out', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             id: 1,
-            getProvider: jest.fn().mockReturnValue({ fetchNetworkId: jest.fn().mockRejectedValueOnce(new Error('Cant reach server')) })
+            getProvider: jest.fn().mockReturnValue({ fetchLatestBlock: jest.fn().mockRejectedValueOnce(new Error('Cant reach server')) })
         });
 
         await rpcHealthCheck(job);
