@@ -17,6 +17,14 @@ module.exports = (sequelize, DataTypes) => {
       TransactionReceipt.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'transaction' });
       TransactionReceipt.hasMany(models.TransactionLog, { foreignKey: 'transactionReceiptId', as: 'logs' });
     }
+
+    async safeDestroy(transaction) {
+        const logs = await this.getLogs();
+        for (let i = 0; i < logs.length; i++) {
+            await logs[i].safeDestroy(transaction);
+        }
+        return this.destroy({ transaction });
+    }
   }
   TransactionReceipt.init({
     blockHash: DataTypes.STRING,

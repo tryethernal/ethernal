@@ -90,6 +90,26 @@ const restart = (slug) => {
     });
 };
 
+const resume = (slug) => {
+    return new Promise((resolve, reject) => {
+        if (!slug) reject(new Error('Missing parameter'));
+
+        pm2.connect(error => {
+            if (error) reject(new Error(error));
+
+            pm2.start(slug, (error) => {
+                if (error) reject(new Error(error));
+
+                pm2.describe(slug, (error, process) => {
+                    if (error) reject(new Error(error));
+
+                    resolve(process[0]);
+                });
+            });
+        });
+    });
+};
+
 const _delete = (slug) => {
     return new Promise((resolve, reject) => {
         if (!slug) reject(new Error('Missing parameter'));
@@ -139,4 +159,4 @@ const start = (slug, workspaceId) => {
     });
 };
 
-module.exports = { list, show, stop, reload, restart, delete: _delete, start };
+module.exports = { list, show, stop, reload, restart, delete: _delete, start, resume };

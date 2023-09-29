@@ -19,12 +19,18 @@ jest.mock('stripe', () => {
 
 require('../mocks/lib/queue');
 require('../mocks/lib/rpc');
+require('../mocks/lib/utils');
 require('../mocks/lib/firebase');
+require('../mocks/lib/pm2');
 require('../mocks/lib/flags');
 require('../mocks/lib/env');
 require('../mocks/middlewares/auth');
+const { Explorer } = require('../mocks/models');
+const { bulkEnqueue } = require('../../lib/queue');
 const db = require('../../lib/firebase');
+const PM2 = require('../../lib/pm2');
 const { ProviderConnector } = require('../../lib/rpc');
+const { withTimeout } = require('../../lib/utils');
 const flags = require('../../lib/flags');
 const authMiddleware = require('../../middlewares/auth');
 
@@ -40,6 +46,127 @@ beforeEach(() => {
         fetchNetworkId: jest.fn().mockResolvedValue(1)
     }));
     jest.spyOn(db, 'getWorkspaceById').mockResolvedValue({ id: 1 });
+});
+
+describe(`POST ${BASE_URL}/syncExplorers`, () => {
+    it('Should enqueue all explorers for processing', (done) => {
+        jest.spyOn(Explorer, 'findAll').mockResolvedValue([
+            { id: 1, slug: 'explorer-1' },
+            { id: 2, slug: 'explorer-2' }
+        ]);
+        request.post(`${BASE_URL}/syncExplorers`)
+            .expect(200)
+            .then(() => {
+                expect(bulkEnqueue).toHaveBeenCalledWith('updateExplorerSyncingProcess', [
+                    { name: 'updateExplorerSyncingProcess-1', data: { explorerSlug: 'explorer-1' }},
+                    { name: 'updateExplorerSyncingProcess-2', data: { explorerSlug: 'explorer-2' }}
+                ]);
+                done();
+            });
+    });
+});
+
+describe(`PUT ${BASE_URL}/:id/stopSync`, () => {
+    it('Should return an error if cannot find explorer', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce(null);
+        request.put(`${BASE_URL}/1/stopSync`)
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Couldn't find explorer.`);
+                done();
+            });
+    });
+
+    it('Should stop sync', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { rpcServer: 'rpc' }, stripeSubscription: {}});
+        request.put(`${BASE_URL}/1/stopSync`)
+            .expect(200)
+            .then(() => {
+                expect(db.stopExplorerSync).toHaveBeenCalledWith(1);
+                done();
+            });
+    });
+});
+
+describe(`PUT ${BASE_URL}/:id/startSync`, () => {
+    it('Should return an error if cannot find explorer', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce(null);
+        request.put(`${BASE_URL}/1/startSync`)
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Couldn't find explorer.`);
+                done();
+            });
+    });
+
+    it('Should return an error if no subscription', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        request.put(`${BASE_URL}/1/startSync`)
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`No active subscription for this explorer.`);
+                done();
+            });
+    });
+
+    it('Should return an error if rpc not reachable', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { rpcServer: 'rpc' }, stripeSubscription: {}});
+        withTimeout.mockRejectedValueOnce('Timeout');
+        request.put(`${BASE_URL}/1/startSync`)
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`This explorer's RPC is not reachable. Please update it in order to start syncing.`);
+                done();
+            });
+    });
+
+    it('Should start sync', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { rpcServer: 'rpc' }, stripeSubscription: {}});
+        request.put(`${BASE_URL}/1/startSync`)
+            .expect(200)
+            .then(() => {
+                expect(db.startExplorerSync).toHaveBeenCalledWith(1);
+                done();
+            });
+    });
+});
+
+describe(`GET ${BASE_URL}/:id/syncStatus`, () => {
+    it('Should return unreachable status if rpchealthcheck fails', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { rpcHealthCheck: { isReachable: false }}});
+        request.get(`${BASE_URL}/1/syncStatus`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ status: 'unreachable' });
+                done();
+            });
+    });
+
+    it('Should return pm2 process status', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { rpcHealthCheck: { isReachable: true }}});
+        PM2.mockImplementation(() => ({
+            find: jest.fn().mockResolvedValue({ data: { pm2_env: { status: 'online' }}})
+        }));
+        request.get(`${BASE_URL}/1/syncStatus`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ status: 'online' });
+                done();
+            });
+    });
+
+    it('Should return stopped status if cannot find process', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { rpcHealthCheck: { isReachable: true }}});
+        PM2.mockImplementation(() => ({
+            find: jest.fn().mockResolvedValue({ data: { pm2_env: null }})
+        }));
+        request.get(`${BASE_URL}/1/syncStatus`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ status: 'stopped' });
+                done();
+            });
+    });
 });
 
 describe(`PUT ${BASE_URL}/:id/subscription`, () => {

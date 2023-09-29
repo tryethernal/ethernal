@@ -110,6 +110,9 @@ jest.mock('../../../lib/firebase', () => {
         storeTransactionReceipt: jest.fn(),
         canUserSyncBlock: jest.fn(),
         deleteWorkspace: jest.fn(),
+        startExplorerSync: jest.fn(),
+        stopExplorerSync: jest.fn(),
+        incrementFailedAttempts: jest.fn(),
         Workspace: Workspace
     }
 });

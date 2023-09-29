@@ -1,7 +1,7 @@
 const { ProviderConnector } = require('../lib/rpc');
+const { User } = require('../models');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
-const { bulkEnqueue } = require('../lib/queue');
 
 module.exports = async job => {
     const data = job.data;
@@ -9,7 +9,11 @@ module.exports = async job => {
     if (!data.userId || !data.workspace || data.blockNumber === undefined || data.blockNumber === null)
         return 'Missing parameter';
 
-    const workspace = await db.getWorkspaceByName(data.userId, data.workspace);
+    const user = await User.findByAuthIdWithWorkspace(data.userId, data.workspace);
+    if (!user)
+        return 'Cannot find user';
+
+    const workspace = user.workspaces[0];
 
     if (!workspace)
         return 'Invalid workspace.';
@@ -17,8 +21,17 @@ module.exports = async job => {
     if (!workspace.explorer)
         return 'No active explorer for this workspace';
 
+    if (!workspace.explorer.shouldSync)
+        return 'Sync is disabled';
+
+    if (workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
+        return 'RPC is not reachable';
+
     if (!workspace.explorer.stripeSubscription)
         return 'No active subscription';
+
+    if (workspace.browserSyncEnabled)
+        await db.updateBrowserSync(workspace.id, false);
 
     const existingBlock = await db.getWorkspaceBlock(workspace.id, data.blockNumber);
     if (existingBlock)
@@ -43,6 +56,7 @@ module.exports = async job => {
         return 'Block synced';
     } catch(error) {
         logger.error(error.message, { location: 'jobs.blockSync', error, data });
+        await db.incrementFailedAttempts(workspace.id);
         throw error;
     }
 };

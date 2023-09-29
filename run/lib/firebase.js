@@ -14,6 +14,53 @@ const Block = models.Block;
 const StripeSubscription = models.StripeSubscription;
 const StripePlan = models.StripePlan;
 const ExplorerDomain = models.ExplorerDomain;
+const RpcHealthCheck = models.RpcHealthCheck;
+
+const stopExplorerSync = async (explorerId) => {
+    if (!explorerId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findByPk(explorerId);
+    if (!explorer)
+        throw new Error('Cannot find explorer');
+
+    return explorer.update({ shouldSync: false });
+};
+
+const startExplorerSync = async (explorerId) => {
+    if (!explorerId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findByPk(explorerId);
+    if (!explorer)
+        throw new Error('Cannot find explorer');
+
+    return explorer.update({ shouldSync: true });
+};
+
+const resetFailedAttempts = async (workspaceId) => {
+    if (!workspaceId) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId, {
+        include: 'rpcHealthCheck'
+    });
+
+    if (!workspace || !workspace.rpcHealthCheck)
+        return null;
+
+    return workspace.rpcHealthCheck.resetFailedAttempts();
+};
+
+const incrementFailedAttempts = async (workspaceId) => {
+    if (!workspaceId) throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId, {
+        include: 'rpcHealthCheck'
+    });
+
+    if (!workspace || !workspace.rpcHealthCheck)
+        return null;
+
+    return workspace.rpcHealthCheck.incrementFailedAttempts();
+};
 
 const canUserSyncBlock = async (userId) => {
     if (!userId) throw new Error('Missing parameter');
@@ -356,7 +403,14 @@ const getExplorerById = async (userId, id) => {
             },
             {
                 model: Workspace,
-                as: 'workspace'
+                as: 'workspace',
+                include: [
+                    {
+                        model: RpcHealthCheck,
+                        as: 'rpcHealthCheck',
+                        attributes: ['failedAttempts', 'isReachable']
+                    }
+                ]
             }
         ]
     });
@@ -425,10 +479,10 @@ const updateWorkspaceIntegrityCheck = async (workspaceId, { blockId, status }) =
     return workspace.safeCreateOrUpdateIntegrityCheck({ blockId, status });
 };
 
-const getTransactionForProcessing = async transactionId => {
+const getTransactionForProcessing = transactionId => {
     if (!transactionId) throw new Error('Missing parameter.');
 
-    const transaction = await Transaction.findOne({
+    return Transaction.findOne({
         where: { id: transactionId },
         include: [
             {
@@ -443,16 +497,25 @@ const getTransactionForProcessing = async transactionId => {
                 model: Workspace,
                 as: 'workspace',
                 attributes: ['id', 'name', 'public', 'rpcServer'],
-                include: {
-                    model: User,
-                    as: 'user',
-                    attributes: ['id', 'firebaseUserId']
-                }
+                include: [
+                    {
+                        model: User,
+                        as: 'user',
+                        attributes: ['id', 'firebaseUserId']
+                    },
+                    {
+                        model: RpcHealthCheck,
+                        as: 'rpcHealthCheck'
+                    },
+                    {
+                        model: Explorer,
+                        as: 'explorer',
+                        include: 'stripeSubscription'
+                    }
+                ]
             }
         ]
     });
-
-    return transaction ? transaction.toJSON() : null;
 };
 
 const revertPartialBlock = async (blockId) => {
@@ -1609,5 +1672,9 @@ module.exports = {
     getBlockTransactions: getBlockTransactions,
     deleteWorkspace: deleteWorkspace,
     canUserSyncBlock: canUserSyncBlock,
+    resetFailedAttempts: resetFailedAttempts,
+    incrementFailedAttempts: incrementFailedAttempts,
+    stopExplorerSync: stopExplorerSync,
+    startExplorerSync: startExplorerSync,
     Workspace: Workspace
 };

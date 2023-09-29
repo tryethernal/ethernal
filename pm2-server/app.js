@@ -5,7 +5,7 @@ const pm2 = require('./lib/pm2.js');
 const bodyParser = require('body-parser')
 app.use(bodyParser.json());
 
-const commands = ['stop', 'reload', 'restart', 'delete'];
+const commands = ['stop', 'reload', 'restart', 'delete', 'resume'];
 
 const secretMiddleware = (req, res, next) => {
     if (req.query.secret == process.env.SECRET)
@@ -71,8 +71,13 @@ app.post('/processes', secretMiddleware, async (req, res) => {
 
         const existingProcess = await pm2.show(data.slug);
 
-        if (existingProcess)
-            return res.sendStatus(200);
+        if (existingProcess) {
+            if (existingProcess.pm2_env.status != 'online') {
+                const pm2Process = await pm2.resume(data.slug)
+                return res.status(200).send(pm2Process);
+            } else
+                return res.sendStatus(200);
+        }
 
         const pm2Process = await pm2.start(data.slug, data.workspaceId);
 

@@ -3,7 +3,8 @@ const Web3 = require('web3');
 const Decoder = require('@truffle/decoder');
 const Axios = require('axios');
 let setupCache;
-if (process.env.NODE_ENV == 'development')
+const DEBUG_AXIOS_CACHE_INTERCEPTOR = false;
+if (process.env.NODE_ENV == 'development' && DEBUG_AXIOS_CACHE_INTERCEPTOR)
     ({ setupCache } = require('axios-cache-interceptor/dev'));
 else
     ({ setupCache } = require('axios-cache-interceptor'));
@@ -357,6 +358,21 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            startExplorerSync(id) {
+                const resource = `${store.getters.apiRoot}/api/explorers/${id}/startSync`;
+                return axios.put(resource);
+            },
+
+            stopExplorerSync(id) {
+                const resource = `${store.getters.apiRoot}/api/explorers/${id}/stopSync`;
+                return axios.put(resource);
+            },
+
+            getExplorerSyncStatus(id) {
+                const resource = `${store.getters.apiRoot}/api/explorers/${id}/syncStatus`;
+                return axios.get(resource);
+            },
+
             deleteWorkspace(id) {
                 const resource = `${store.getters.apiRoot}/api/workspaces/${id}`;
                 return axios.delete(resource);

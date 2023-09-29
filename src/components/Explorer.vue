@@ -27,11 +27,13 @@
                     <Explorer-Settings :key="JSON.stringify(capabilities)" :explorer="explorer" :workspaces="workspaces" @updated="loadExplorer(id)"/>
                 </v-col>
                 <v-col cols="6">
+                    <h4>Sync</h4>
+                    <Explorer-Sync :explorer="explorer" />
                     <template v-if="isBillingEnabled">
-                        <h4>Billing</h4>
+                        <h4 class="mt-2">Billing</h4>
                         <Explorer-Billing :explorer="explorer" @updated="loadExplorer(id)" />
                     </template>
-                    <h4 :class="{ 'mt-2': isBillingEnabled }">Domain Aliases</h4>
+                    <h4 class="mt-2">Domain Aliases</h4>
                     <Explorer-Domains-List :key="JSON.stringify(capabilities)" :explorer="explorer" :disabled="isBillingEnabled && (!explorer.stripeSubscription || !explorer.stripeSubscription.stripePlan.capabilities.customDomain)" @updated="loadExplorer(id)" />
                 </v-col>
             </v-row>
@@ -57,6 +59,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import ExplorerSettings from './ExplorerSettings';
+import ExplorerSync from './ExplorerSync';
 import ExplorerBilling from './ExplorerBilling';
 import ExplorerDomainsList from './ExplorerDomainsList';
 import ExplorerBranding from './ExplorerBranding';
@@ -67,6 +70,7 @@ export default {
     props: ['id'],
     components: {
         ExplorerSettings,
+        ExplorerSync,
         ExplorerBilling,
         ExplorerDomainsList,
         ExplorerBranding,
@@ -92,6 +96,7 @@ export default {
                         if (this.refreshInterval)
                             clearInterval(this.refreshInterval);
                         this.capabilities = this.explorer.stripeSubscription.stripePlan.capabilities;
+                        this.$root.$emit('waitForOnlineSync');
                     }
                     this.explorerDomain = this.explorer.domains.length ?
                         this.explorer.domains[0].domain :

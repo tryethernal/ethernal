@@ -112,12 +112,14 @@ router.post('/settings', authMiddleware, async (req, res) => {
             } catch(error) {
                 throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
             }
-            const pm2 = new PM2(getPm2Host(), getPm2Secret());
-            const { data: pm2Process } = await pm2.find(workspace.explorer.slug);
-            if (pm2Process)
-                await pm2.restart(workspace.explorer.slug);
-            else
-                await pm2.start(workspace.explorer.slug, workspace.id);
+            if (workspace.explorer && workspace.explorer.shouldSync) {
+                const pm2 = new PM2(getPm2Host(), getPm2Secret());
+                const { data: pm2Process } = await pm2.find(workspace.explorer.slug);
+                if (pm2Process)
+                    await pm2.restart(workspace.explorer.slug);
+                else
+                    await pm2.start(workspace.explorer.slug, workspace.id);
+            }
         }
 
         await db.updateWorkspaceSettings(data.uid, data.workspace, data.settings);

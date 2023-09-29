@@ -22,9 +22,8 @@ module.exports = async job => {
             {
                 model: models.RpcHealthCheck,
                 as: 'rpcHealthCheck',
-                require: false,
-            },
-            { model: models.User, as: 'user' }
+                require: false
+            }
         ]
     });
 
@@ -34,11 +33,12 @@ module.exports = async job => {
    const provider = workspace.getProvider();
 
    try {
-       const networkId = await withTimeout(provider.fetchNetworkId());
-       await db.updateWorkspaceRpcHealthCheck(workspace.id, networkId !== undefined && networkId !== null);
+        const latestBlock = await withTimeout(provider.fetchLatestBlock());
+        const isReachable = latestBlock !== undefined && latestBlock !== null;
+        await db.updateWorkspaceRpcHealthCheck(workspace.id, isReachable);
+        return isReachable;
     } catch(error) {
-       await db.updateWorkspaceRpcHealthCheck(workspace.id, false);
+        await db.updateWorkspaceRpcHealthCheck(workspace.id, false);
+        return false;
     }
-
-    return true;
 };

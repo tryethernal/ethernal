@@ -40,8 +40,8 @@ const MV_TO_REFRESH = ['transaction_volume_14d', 'wallet_volume_14d'];
     );
 
     await enqueue(
-        'subscriptionCheck',
-        'subscriptionCheck',
+        'explorerSyncCheck',
+        'explorerSyncCheck',
         {},
         10,
         { every: SUBSCRIPTION_CHECK_INTERVAL }

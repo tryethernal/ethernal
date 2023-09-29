@@ -4,11 +4,112 @@ const router = express.Router();
 const { isStripeEnabled, isSubscriptionCheckEnabled } = require('../lib/flags');
 const { getAppDomain, getDefaultPlanSlug } = require('../lib/env');
 const { ProviderConnector } = require('../lib/rpc');
+const { Explorer } = require('../models');
 const { withTimeout } = require('../lib/utils');
+const { bulkEnqueue } = require('../lib/queue');
 const logger = require('../lib/logger');
+const PM2 = require('../lib/pm2');
 const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
+const secretMiddleware = require('../middlewares/secret');
+
+router.post('/syncExplorers', secretMiddleware, async (req, res) => {
+    try {
+        const explorers = await Explorer.findAll();
+
+        const jobs = [];
+        for (let i = 0; i < explorers.length; i++) {
+            const explorer = explorers[i];
+            jobs.push({
+                name: `updateExplorerSyncingProcess-${explorer.id}`,
+                data: { explorerSlug: explorer.slug }
+            });
+        }
+
+        await bulkEnqueue('updateExplorerSyncingProcess', jobs);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.syncExplorers', error });
+        res.status(400).send(error.message);
+    }
+});
+
+router.put('/:id/stopSync', [authMiddleware], async (req, res) => {
+    try {
+        if (!req.params.id)
+            throw new Error('Missing parameters');
+
+        const explorer = await db.getExplorerById(req.body.data.user.id, req.params.id);
+        if (!explorer)
+            throw new Error(`Couldn't find explorer.`);
+
+        // We rely on the afterUpdate hook to update the pm2 process. The frontend needs to take care of waiting for the new state
+        await db.stopExplorerSync(explorer.id);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'put.api.explorers.id.stopSync', error });
+        res.status(400).send(error.message);
+    }
+});
+
+router.put('/:id/startSync', [authMiddleware], async (req, res) => {
+    try {
+        if (!req.params.id)
+            throw new Error('Missing parameters');
+
+        const explorer = await db.getExplorerById(req.body.data.user.id, req.params.id);
+
+        if (!explorer)
+            throw new Error(`Couldn't find explorer.`);
+
+        if (!explorer.stripeSubscription)
+            throw new Error(`No active subscription for this explorer.`);
+
+        const provider = new ProviderConnector(explorer.workspace.rpcServer);
+        try {
+            await withTimeout(provider.fetchNetworkId());
+        } catch(error) {
+            throw new Error(`This explorer's RPC is not reachable. Please update it in order to start syncing.`);
+        }
+
+        // We rely on the afterUpdate hook to update the pm2 process. The frontend needs to take care of waiting for the new state
+        await db.startExplorerSync(explorer.id);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'put.api.explorers.id.startSync', error });
+        res.status(400).send(error.message);
+    }
+});
+
+router.get('/:id/syncStatus', [authMiddleware], async (req, res) => {
+    try {
+        if (!req.params.id)
+            throw new Error('Missing parameters');
+
+        const explorer = await db.getExplorerById(req.body.data.user.id, req.params.id);
+        if (!explorer)
+            throw new Error(`Can't find explorer.`);
+
+        let status;
+        if (explorer.workspace.rpcHealthCheck && !explorer.workspace.rpcHealthCheck.isReachable) {
+            status = 'unreachable'
+        }
+        else {
+            const pm2 = new PM2(process.env.PM2_HOST, process.env.PM2_SECRET);
+            const { data: { pm2_env: pm2Process }} = await pm2.find(explorer.slug);
+            status = pm2Process ? pm2Process.status : 'stopped';
+        }
+
+        res.status(200).json({ status });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.explorers.id.syncStatus', error });
+        res.status(400).send(error.message);
+    }
+});
 
 router.put('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, res) => {
     const data = req.body.data;

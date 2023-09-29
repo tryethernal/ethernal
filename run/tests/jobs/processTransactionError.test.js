@@ -17,16 +17,56 @@ const workspace = {
     id: 1,
     name: 'hardhat',
     rpcServer: 'http://test.com',
-    user: { id: 1, firebaseUserId: '123' }
+    user: { id: 1, firebaseUserId: '123' },
+    public: false,
+    explorer: {
+        shouldSync: true,
+        stripeSubscription: {}
+    },
+    rpcHealthCheck: {
+        isReachable: true
+    }
 };
 
 describe('processTransactionError', () => {
+    it('Should return if no explorer', async () => {
+        const transaction = { ...Transaction, receipt: { status: 0, ...Transaction }, workspace: { ...workspace, public: true, explorer: null }};
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce(transaction);
+
+        const res = await processTransactionError({ data: { transactionId: 1 }});
+        expect(res).toEqual('Inactive explorer');
+    });
+
+    it('Should return if sync is disabled', async () => {
+        const transaction = { ...Transaction, receipt: { status: 0, ...Transaction }, workspace: { ...workspace, public: true, explorer: { shouldSync: false }}};
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce(transaction);
+
+        const res = await processTransactionError({ data: { transactionId: 1 }});
+        expect(res).toEqual('Sync is disabled');
+    });
+
+    it('Should return if RPC is not reachable ', async () => {
+        const transaction = { ...Transaction, receipt: { status: 0, ...Transaction }, workspace: { ...workspace, public: true, rpcHealthCheck: { isReachable: false }}};
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce(transaction);
+
+        const res = await processTransactionError({ data: { transactionId: 1 }});
+        expect(res).toEqual('RPC is not reachable');
+    });
+
+    it('Should return if no subscription', async () => {
+        const transaction = { ...Transaction, receipt: { status: 0, ...Transaction }, workspace: { ...workspace, public: true, explorer: { shouldSync: true, stripeSubscription: null }}};
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce(transaction);
+
+        const res = await processTransactionError({ data: { transactionId: 1 }});
+        expect(res).toEqual('No active subscription');
+    });
+
     it('Should store a parsed failed transaction error return by the rpc call', async () => {
         getProvider.mockImplementationOnce(() => ({
             call: jest.fn().mockResolvedValueOnce('0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000a48656c6c6f6f6f6f6f6f00000000000000000000000000000000000000000000')
         }));
 
-        const transaction = { ...Transaction, receipt: { status: 0, ...Transaction }, workspace: { ...workspace, public: true }};
+        const transaction = { ...Transaction, receipt: { status: 0, ...Transaction }, workspace: { ...workspace, public: true, public: true }};
         jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce(transaction);
 
         await processTransactionError({ data: { transactionId: 1 }});

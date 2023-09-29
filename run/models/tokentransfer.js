@@ -1,8 +1,7 @@
 'use strict';
 const {
   Model,
-  Sequelize,
-  QueryTypes
+  Sequelize
 } = require('sequelize');
 const Op = Sequelize.Op
 const moment = require('moment');
@@ -36,6 +35,13 @@ module.exports = (sequelize, DataTypes) => {
           constraints: false
       });
       TokenTransfer.hasMany(models.TokenBalanceChange, { foreignKey: 'tokenTransferId', as: 'tokenBalanceChanges' });
+    }
+
+    async safeDestroy(transaction) {
+        const tokenBalanceChanges = await this.getTokenBalanceChanges();
+        for (let i = 0; i < tokenBalanceChanges.length; i++)
+            await tokenBalanceChanges[i].destroy({ transaction});
+        return this.destroy({ transaction });
     }
 
     getContract() {

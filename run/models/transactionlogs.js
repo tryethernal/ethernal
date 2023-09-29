@@ -52,6 +52,13 @@ module.exports = (sequelize, DataTypes) => {
         });
         return this.createTokenTransfer(sanitizedTokenTransfer, { transaction: transaction });
     }
+
+    async safeDestroy(transaction) {
+      const tokenTransfer = await this.getTokenTransfer();
+      if (tokenTransfer)
+        await tokenTransfer.safeDestroy(transaction);
+      return this.destroy({ transaction });
+    }
   }
   TransactionLog.init({
     workspaceId: DataTypes.INTEGER,
