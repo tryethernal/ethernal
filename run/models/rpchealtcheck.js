@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       RpcHealthCheck.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
     }
 
-    increaseFailedAttempts() {
+    incrementFailedAttempts() {
       return sequelize.transaction(async transaction => {
         if (this.failedAttempts >= MAX_FAILED_RPC_ATTEMPTS - 1)
           await this.update({ isReachable: false }, { transaction });

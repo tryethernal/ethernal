@@ -11,6 +11,91 @@ const db = require('../../lib/firebase');
 
 beforeEach(() => jest.clearAllMocks());
 
+describe('stopExplorerSync', () => {
+    it('Should throw an error if no explorer', (done) => {
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce(null);
+        db.stopExplorerSync(1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Cannot find explorer'));
+                done();
+            });
+    });
+
+    it('Should update the explorer', (done) => {
+        const update = jest.fn();
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ update });
+        db.stopExplorerSync(1)
+            .then(() => {
+                expect(update).toHaveBeenCalledWith({ shouldSync: false });
+                done();
+            });
+    });
+});
+
+describe('startExplorerSync', () => {
+    it('Should throw an error if no explorer', (done) => {
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce(null);
+        db.startExplorerSync(1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Cannot find explorer'));
+                done();
+            });
+    });
+
+    it('Should update the explorer', (done) => {
+        const update = jest.fn();
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ update });
+        db.startExplorerSync(1)
+            .then(() => {
+                expect(update).toHaveBeenCalledWith({ shouldSync: true });
+                done();
+            });
+    });
+});
+
+describe('resetFailedAttempts', () => {
+    it('Should return null if no healthcheck', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ rpcHealthCheck: null });
+        db.resetFailedAttempts(1)
+            .then(res => {
+                expect(res).toEqual(null);
+                done();
+            })
+    });
+
+    it('Should call reset method', (done) => {
+        const resetFailedAttempts = jest.fn();
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ rpcHealthCheck: { resetFailedAttempts }});
+        db.resetFailedAttempts(1)
+            .then(() => {
+                expect(resetFailedAttempts).toHaveBeenCalled();
+                done();
+            });
+    });
+});
+
+
+describe('incrementFailedAttempts', () => {
+    it('Should return null if no healthcheck', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ rpcHealthCheck: null });
+        db.incrementFailedAttempts(1)
+            .then(res => {
+                expect(res).toEqual(null);
+                done();
+            })
+    });
+
+    it('Should call increment method', (done) => {
+        const incrementFailedAttempts = jest.fn();
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ rpcHealthCheck: { incrementFailedAttempts }});
+        db.incrementFailedAttempts(1)
+            .then(() => {
+                expect(incrementFailedAttempts).toHaveBeenCalled();
+                done();
+            });
+    });
+});
+
 describe('canUserSyncBlock', () => {
     it('Should return true if user is premium', (done) => {
         jest.spyOn(User, 'findByPk').mockResolvedValueOnce({ isPremium: true });

@@ -21,7 +21,7 @@ const stopExplorerSync = async (explorerId) => {
 
     const explorer = await Explorer.findByPk(explorerId);
     if (!explorer)
-        throw new Error('Missing parameter');
+        throw new Error('Cannot find explorer');
 
     return explorer.update({ shouldSync: false });
 };
@@ -31,7 +31,7 @@ const startExplorerSync = async (explorerId) => {
 
     const explorer = await Explorer.findByPk(explorerId);
     if (!explorer)
-        throw new Error('Missing parameter');
+        throw new Error('Cannot find explorer');
 
     return explorer.update({ shouldSync: true });
 };
@@ -59,7 +59,7 @@ const incrementFailedAttempts = async (workspaceId) => {
     if (!workspace || !workspace.rpcHealthCheck)
         return null;
 
-    return workspace.rpcHealthCheck.increaseFailedAttempts();
+    return workspace.rpcHealthCheck.incrementFailedAttempts();
 };
 
 const canUserSyncBlock = async (userId) => {
