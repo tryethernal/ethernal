@@ -11,7 +11,7 @@ const host = 'http://pm2';
 const secret= 'secret';
 
 describe('restart', () => {
-    it('Should throw an error if missing parameter', async () => {
+    it('Should throw an error if missing parameter', () => {
         const pm2 = new PM2(host, secret);
         expect(() => pm2.restart()).toThrow('Missing parameter');
     });
@@ -27,23 +27,54 @@ describe('restart', () => {
 });
 
 describe('start', () => {
-    it('Should throw an error if missing parameter', async () => {
+    it('Should throw an error if missing parameter', (done) => {
         const pm2 = new PM2(host, secret);
-        expect(() => pm2.start()).toThrow('Missing parameter');
+        pm2.start()
+            .catch(error => {
+                expect(error).toEqual(new Error('Missing parameter'));
+                done();
+            });
     });
 
     it('Should start a process', (done) => {
         const pm2 = new PM2(host, secret);
+        jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: null });
         pm2.start('slug', 1)
             .then(() => {
                 expect(axios.post).toHaveBeenCalledWith('http://pm2/processes?secret=secret', { slug: 'slug', workspaceId: 1 });
                 done();
             });
     });
+
+    it('Should resume existing process', (done) => {
+        const pm2 = new PM2(host, secret);
+        jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: { pm2_env: { status: 'stopped' }}});
+        pm2.start('slug', 1)
+            .then(() => {
+                expect(axios.post).toHaveBeenCalledWith('http://pm2/processes/slug/resume?secret=secret');
+                done();
+            });
+    });
+});
+
+describe('resume', () => {
+    it('Should throw an error if missing parameter', () => {
+        const pm2 = new PM2(host, secret);
+        expect(() => pm2.restart()).toThrow('Missing parameter');
+    });
+
+    it('Should resume the process', (done) => {
+        const pm2 = new PM2(host, secret);
+        pm2.resume('slug')
+            .then(() => {
+                expect(axios.post).toHaveBeenCalledWith('http://pm2/processes/slug/resume?secret=secret');
+                done();
+            });
+    });
 });
 
 describe('find', () => {
-    it('Should throw an error if missing parameter', async () => {
+    it('Should throw an error if missing parameter', () => {
         const pm2 = new PM2(host, secret);
         expect(() => pm2.find()).toThrow('Missing parameter');
     });
@@ -61,7 +92,7 @@ describe('find', () => {
 });
 
 describe('delete', () => {
-    it('Should throw an error if missing parameter', async () => {
+    it('Should throw an error if missing parameter', () => {
         const pm2 = new PM2(host, secret);
         expect(() => pm2.delete()).toThrow('Missing parameter');
     });
