@@ -63,6 +63,7 @@ jest.mock('@/plugins/server', () => ({
                 searchIcon: jest.fn(),
                 updateExplorerSubscription: jest.fn(),
                 cancelExplorerSubscription: jest.fn(),
+                getExplorerSyncStatus: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))
