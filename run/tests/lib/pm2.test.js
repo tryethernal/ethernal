@@ -91,6 +91,22 @@ describe('find', () => {
     });
 });
 
+describe('stop', () => {
+    it('Should throw an error if missing parameter', () => {
+        const pm2 = new PM2(host, secret);
+        expect(() => pm2.restart()).toThrow('Missing parameter');
+    });
+
+    it('Should stop the process', (done) => {
+        const pm2 = new PM2(host, secret);
+        pm2.stop('slug')
+            .then(() => {
+                expect(axios.post).toHaveBeenCalledWith('http://pm2/processes/slug/stop?secret=secret');
+                done();
+            });
+    });
+});
+
 describe('delete', () => {
     it('Should throw an error if missing parameter', () => {
         const pm2 = new PM2(host, secret);
