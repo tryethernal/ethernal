@@ -310,27 +310,53 @@ router.post('/', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
     try {
-        if (!data.workspaceId)
+        if (!data.workspaceId && !(data.rpcServer && data.name))
             throw new Error('Missing parameters.');
-
-        const workspace = await db.getWorkspaceById(data.workspaceId);
-        if (!workspace)
-            throw new Error('Invalid workspace.');
-
-        const provider = new ProviderConnector(workspace.rpcServer);
-        try {
-            await withTimeout(provider.fetchNetworkId());
-        } catch(error) {
-            throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
-        }
 
         const user = await db.getUser(data.uid, ['stripeCustomerId', 'canUseDemoPlan']);
 
-        const explorer = await db.createExplorerFromWorkspace(user.id, data.workspaceId);
+        let workspace;
+        if (data.workspaceId) {
+            workspace = await db.getWorkspaceById(data.workspaceId);
+            if (!workspace)
+                throw new Error('Invalid workspace.');
+
+            const provider = new ProviderConnector(workspace.rpcServer);
+            try {
+                await withTimeout(provider.fetchNetworkId());
+            } catch(error) {
+                throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
+            }
+        }
+        else {
+            const provider = new ProviderConnector(data.rpcServer);
+            let networkId;
+            try {
+                networkId = await withTimeout(provider.fetchNetworkId());
+            } catch(error) {
+                networkId = null;
+            }
+
+            if (!networkId)
+                throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
+
+            const workspaceData = {
+                name: data.name,
+                chain: 'ethereum',
+                networkId,
+                rpcServer: data.rpcServer,
+                public: true,
+                tracing: data.tracing,
+                dataRetentionLimit: user.defaultDataRetentionLimit
+            }
+        }
+
+
+        const explorer = await db.createExplorerFromWorkspace(user.id, workspace.id);
 
         if (!explorer)
             throw new Error('Could not create explorer.');
-
+        
         if (!isStripeEnabled() || user.canUseDemoPlan) {
             const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
             if (!stripePlan)
