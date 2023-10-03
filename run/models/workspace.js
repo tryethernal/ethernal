@@ -1053,8 +1053,8 @@ module.exports = (sequelize, DataTypes) => {
         })
     }
 
-    async safeCreateExplorer() {
-        return sequelize.transaction(async (transaction) => {
+    async safeCreateExplorer(transaction) {
+        const creationFn = async transaction => {
             await this.update({ public: true, browserSyncEnabled: false, rpcHealthCheckEnabled: true }, { transaction });
 
             const existingExplorer = await sequelize.models.Explorer.findOne({ where: { slug: slugify(this.name) }});
@@ -1070,8 +1070,9 @@ module.exports = (sequelize, DataTypes) => {
                 slug: slug,
                 themes: { "default": {}},
                 domain: `${slug}.${process.env.APP_DOMAIN}`
-            });
-        });
+            }, { transaction });
+        }
+        return transaction ? creationFn(transaction) : sequelize.transaction(creationFn);
     }
   }
 
