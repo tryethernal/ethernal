@@ -8,5 +8,6 @@ module.exports = {
     getGhostEndpoint: () => process.env.GHOST_ENDPOINT,
     getMixpanelApiToken: () => process.env.MIXPANEL_API_TOKEN,
     getPm2Host: () => process.env.PM2_HOST,
-    getPm2Secret: () => process.env.PM2_SECRET
+    getPm2Secret: () => process.env.PM2_SECRET,
+    getDemoUserId: () => 5
 };

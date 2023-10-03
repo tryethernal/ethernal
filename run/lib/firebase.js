@@ -16,6 +16,16 @@ const StripePlan = models.StripePlan;
 const ExplorerDomain = models.ExplorerDomain;
 const RpcHealthCheck = models.RpcHealthCheck;
 
+const createExplorerWithWorkspace = async (userId, workspaceData) => {
+    if (!workspaceData) throw new Error('Missing parameter');
+
+    const user = await User.findByPk(userId);
+    if (!user)
+        throw new Error('Cannot find user');
+
+    return user.safeCreateWorkspaceWithExplorer(workspaceData);
+};
+
 const stopExplorerSync = async (explorerId) => {
     if (!explorerId) throw new Error('Missing parameter');
 
@@ -1676,5 +1686,6 @@ module.exports = {
     incrementFailedAttempts: incrementFailedAttempts,
     stopExplorerSync: stopExplorerSync,
     startExplorerSync: startExplorerSync,
+    createExplorerWithWorkspace: createExplorerWithWorkspace,
     Workspace: Workspace
 };

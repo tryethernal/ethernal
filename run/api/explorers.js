@@ -315,9 +315,9 @@ router.post('/', authMiddleware, async (req, res) => {
 
         const user = await db.getUser(data.uid, ['stripeCustomerId', 'canUseDemoPlan']);
 
-        let workspace;
+        let explorer;
         if (data.workspaceId) {
-            workspace = await db.getWorkspaceById(data.workspaceId);
+            const workspace = await db.getWorkspaceById(data.workspaceId);
             if (!workspace)
                 throw new Error('Invalid workspace.');
 
@@ -327,6 +327,8 @@ router.post('/', authMiddleware, async (req, res) => {
             } catch(error) {
                 throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
             }
+
+            explorer = await db.createExplorerFromWorkspace(user.id, workspace.id);
         }
         else {
             const provider = new ProviderConnector(data.rpcServer);
@@ -349,10 +351,9 @@ router.post('/', authMiddleware, async (req, res) => {
                 tracing: data.tracing,
                 dataRetentionLimit: user.defaultDataRetentionLimit
             }
+
+            explorer = await db.createExplorerWithWorkspace(user.id, workspaceData);
         }
-
-
-        const explorer = await db.createExplorerFromWorkspace(user.id, workspace.id);
 
         if (!explorer)
             throw new Error('Could not create explorer.');
