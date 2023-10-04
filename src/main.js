@@ -10,6 +10,7 @@ import { firestorePlugin } from 'vuefire';
 import 'ace-mode-solidity/build/remix-ide/mode-solidity.js';
 
 import App from './App.vue';
+import DemoExplorer from './DemoExplorer';
 
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
@@ -17,6 +18,8 @@ Vue.use(firestorePlugin);
 Vue.use(require('vue-moment'));
 
 Vue.use(serverPlugin, { store: store });
+
+if (window.location.)
 
 axios.get(`${store.getters.apiRoot}/api/explorers/search?domain=${window.location.host}`)
     .then(({ data }) => {
