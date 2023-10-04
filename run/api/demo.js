@@ -1,18 +1,17 @@
 const express = require('express');
-const cors = require('cors');
 const router = express.Router();
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
 const { getDemoUserId, getDefaultPlanSlug, getAppDomain } = require('../lib/env');
 const db = require('../lib/firebase');
 
-router.post('/explorers', cors({ origin: 'http://app.ethernal.local:8080' }), async (req, res) => {
+router.post('/explorers', async (req, res) => {
     const data = { ...req.query, ...req.body.data };
     try {
         if (!data.name || !data.rpcServer)
             throw new Error('Missing parameters.');
-        console.log(data.rpcServer)
-        const provider = new ProviderConnector(data.rpcServer);
+
+            const provider = new ProviderConnector(data.rpcServer);
         let networkId;
         try {
             networkId = await withTimeout(provider.fetchNetworkId());
