@@ -108,7 +108,8 @@ router.post('/settings', authMiddleware, async (req, res) => {
         if (workspace.public && data.settings.rpcServer != workspace.rpcServer) {
             const provider = new ProviderConnector(data.settings.rpcServer);
             try {
-                await withTimeout(provider.fetchNetworkId());
+                const networkId = await withTimeout(provider.fetchNetworkId());
+                data.settings.networkId = networkId;
             } catch(error) {
                 throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
             }

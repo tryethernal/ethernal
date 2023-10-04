@@ -932,15 +932,16 @@ module.exports = (sequelize, DataTypes) => {
 
     updateSettings(data) {
         return sequelize.transaction(async (transaction) => {
-            if (data.rpcServer) {
+            if (data.rpcServer && data.networkId) {
                 const explorer = await this.getExplorer();
                 if (explorer)
-                    await explorer.update({ rpcServer: data.rpcServer }, { transaction });
+                    await explorer.update({ rpcServer: data.rpcServer, chainId: data.networkId }, { transaction });
             }
             return this.update(sanitize({
                 statusPageEnabled: data.statusPageEnabled,
                 chain: data.chain,
                 rpcServer: data.rpcServer,
+                networkId: data.networkId,
                 tracing: data.advancedOptions && data.advancedOptions.tracing,
                 defaultAccount: data.settings && data.settings.defaultAccount,
                 gasLimit: data.settings && data.settings.gasLimit,
