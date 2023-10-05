@@ -18,7 +18,6 @@ import Contract from '../components/Contract.vue';
 import ExplorerStatus from '../components/ExplorerStatus.vue';
 import Explorers from '../components/Explorers.vue';
 import Explorer from '../components/Explorer.vue';
-import DemoExplorer from '../components/DemoExplorer.vue';
 
 const auth = () => {
     return { currentUser: router.app.$store.getters.user };
@@ -60,7 +59,6 @@ const routes = [
     { path: '/explorers', component: Explorers, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/explorers/:id', component: Explorer, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/status', component: ExplorerStatus, beforeEnter: redirectIfLoggedOut },
-    { path: '/demo', component: DemoExplorer },
     { path: '*', redirect: '/overview' }
 ];
 
