@@ -136,7 +136,7 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         if (existingWorkspace)
-            throw new Error('A workspace with this name already exists.');
+            throw new Error('An explorer with this name already exists.');
 
         return sequelize.transaction(async transaction => {
             const workspace = await this.createWorkspace(sanitize({

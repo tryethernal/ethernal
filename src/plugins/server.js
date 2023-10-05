@@ -358,6 +358,11 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            createDemoExplorer(name, rpcServer, nativeToken) {
+                const resource = `${store.getters.apiRoot}/api/demo/explorers`;
+                return axios.post(resource, { name, rpcServer, nativeToken });
+            },
+
             startExplorerSync(id) {
                 const resource = `${store.getters.apiRoot}/api/explorers/${id}/startSync`;
                 return axios.put(resource);
