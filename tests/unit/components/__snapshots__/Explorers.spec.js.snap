@@ -20,9 +20,7 @@ exports[`Explorers.vue Should display public explorer explainer when no explorer
         <li>Chain analytics</li>
         <li>Custom branding with your colors, logo, etc...</li>
         <li>And of course all the feature that you are already currently using such as transaction decoding, transfers &amp; balance changes display, tokens detection, etc...</li>
-      </ul> <br>
-
-      Here is a preview of what it can look like: <a href="https://mainnet.num.network" target="_blank">Numbers Network</a>
+      </ul>
       <div align="center" class="mt-4"><button type="button" class="mr-2 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-plus theme--light"></i>Create Explorer
                 </span></button></div>
     </div>
