@@ -19,9 +19,6 @@
                     <li>Custom branding with your colors, logo, etc...</li>
                     <li>And of course all the feature that you are already currently using such as transaction decoding, transfers & balance changes display, tokens detection, etc...</li>
                 </ul>
-                <br>
-
-                Here is a preview of what it can look like: <a href="https://mainnet.num.network" target="_blank">Numbers Network</a>
 
                 <div class="mt-4" align="center">
                     <v-btn depressed color="primary" class="mr-2" @click="openCreateExplorerModal()">
