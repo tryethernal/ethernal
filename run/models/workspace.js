@@ -68,6 +68,8 @@ module.exports = (sequelize, DataTypes) => {
         );
     }
 
+    async 
+
     async getContractByAddress(address) {
         if (!address) throw new Error('Missing parameter');
 
@@ -930,7 +932,21 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    updateSettings(data) {
+    async updateSettings(data) {
+        if (data.name) {
+            const existing = await sequelize.models.Workspace.findOne({
+                where: {
+                    userId: this.userId,
+                    name: data.name,
+                    id: {
+                        [Op.not]: this.id
+                    }
+                }
+            });
+            if (existing)
+                throw new Error('You already have a workspace with this name.');
+        }
+
         return sequelize.transaction(async (transaction) => {
             if (data.rpcServer) {
                 const explorer = await this.getExplorer();
@@ -938,6 +954,7 @@ module.exports = (sequelize, DataTypes) => {
                     await explorer.update({ rpcServer: data.rpcServer }, { transaction });
             }
             return this.update(sanitize({
+                name: data.name,
                 statusPageEnabled: data.statusPageEnabled,
                 chain: data.chain,
                 rpcServer: data.rpcServer,

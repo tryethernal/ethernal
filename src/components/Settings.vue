@@ -17,6 +17,14 @@
                             <v-card-text>
                                 <v-text-field
                                     outlined
+                                    v-model="settings.name"
+                                    hide-details="auto"
+                                    id="name"
+                                    label="Workspace Name">
+                                </v-text-field>
+                                <v-text-field
+                                    outlined
+                                    class="mt-3"
                                     v-model="settings.rpcServer"
                                     hide-details="auto"
                                     id="rpcServer"
@@ -240,6 +248,7 @@ export default {
             this.server.initRpcServer(this.settings.rpcServer)
                 .then(() => {
                     this.server.updateWorkspaceSettings({
+                        name: this.settings.name,
                         rpcServer: this.settings.rpcServer,
                         chain: this.settings.chain,
                         settings: {

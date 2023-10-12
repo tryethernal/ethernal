@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const models = require('../models');
 const { firebaseHash }  = require('./crypto');
+const { getDemoUserId } = require('../lib/env');
 
 const Op = Sequelize.Op;
 const User = models.User;
@@ -15,6 +16,30 @@ const StripeSubscription = models.StripeSubscription;
 const StripePlan = models.StripePlan;
 const ExplorerDomain = models.ExplorerDomain;
 const RpcHealthCheck = models.RpcHealthCheck;
+
+const makeExplorerDemo = async (explorerId) => {
+    if (!explorerId) throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findByPk(explorerId);
+    if (!explorer)
+        throw new Error('Cannot find explorer');
+
+    return explorer.update({ isDemo: true });
+};
+
+const migrateDemoExplorer = async (explorerId, userId, stripeSubscription) => {
+    if (!explorerId || !userId || !stripeSubscription) throw new Error('Missing parameter');
+
+    const user = await User.findByPk(userId);
+    if (!user)
+        throw new Error('Cannot find user');
+
+    const explorer = await Explorer.findByPk(explorerId);
+    if (!explorer)
+        throw new Error('Cannot find explorer');
+
+    return explorer.migrateDemoTo(userId, stripeSubscription);
+};
 
 const createExplorerWithWorkspace = async (userId, workspaceData) => {
     if (!workspaceData) throw new Error('Missing parameter');
@@ -395,8 +420,8 @@ const updateExplorerWorkspace = async (explorerId, workspaceId) => {
 const getExplorerById = async (userId, id) => {
     if (!id) throw new Error('Missing parameter');
 
-    const explorer = await Explorer.findByPk(id, {
-        where: { userId: userId },
+    const explorer = await Explorer.findOne({
+        where: { userId },
         include: [
             {
                 model: ExplorerDomain,
@@ -1687,5 +1712,7 @@ module.exports = {
     stopExplorerSync: stopExplorerSync,
     startExplorerSync: startExplorerSync,
     createExplorerWithWorkspace: createExplorerWithWorkspace,
+    migrateDemoExplorer: migrateDemoExplorer,
+    makeExplorerDemo: makeExplorerDemo,
     Workspace: Workspace
 };

@@ -2,11 +2,67 @@ const express = require('express');
 const { generateSlug } = require('random-word-slugs');
 const router = express.Router();
 const { ProviderConnector } = require('../lib/rpc');
-const { encode } = require('../lib/crypto');
+const { encode, decode } = require('../lib/crypto');
 const { withTimeout, sanitize } = require('../lib/utils');
 const logger = require('../lib/logger');
 const { getDemoUserId, getDefaultPlanSlug, getAppDomain } = require('../lib/env');
+const authMiddleware = require('../middlewares/auth');
 const db = require('../lib/firebase');
+
+router.get('/explorers', async (req, res) => {
+    const data = req.query;
+
+    try {
+        if (!data.token)
+            throw new Error('Missing parameter.');
+
+        const decodedToken = decode(data.token);
+        if (!decodedToken || !decodedToken.explorerId)
+            throw new Error('Invalid token.');
+
+        const explorer = await db.getExplorerById(getDemoUserId(), decodedToken.explorerId);
+        if (!explorer)
+            throw new Error('Could not find explorer.');
+
+        if (!explorer.demo)
+            throw new Error('This token has already been used. Please create another demo explorer and try again.');
+
+        res.status(200).send({ id: explorer.id, name: explorer.name, rpcServer: explorer.rpcServer });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.demo.explorers', error: error });
+        res.status(400).send(error.message);
+    }
+});
+
+router.post('/migrateExplorer', authMiddleware, async (req, res) => {
+    const data = req.body.data;
+    try {
+        if (!data.token)
+            throw new Error('Missing parameter.');
+
+        const decodedToken = decode(data.token);
+        if (!decodedToken || !decodedToken.explorerId)
+            throw new Error('Invalid token.');
+
+        const explorer = await db.getExplorerById(decodedToken.explorerId);
+        if (!explorer)
+            throw new Error('Could not find explorer.');
+
+        if (!explorer.demo)
+            throw new Error('This token has already been used. Please create another demo explorer and try again.');
+
+        const user = await db.getUser(data.uid);
+        if (!user)
+            throw new Error('Could not find user.');
+
+        await db.migrateDemoExplorer(user.id);
+
+        res.status(200).send({ explorerId: explorer.id });
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.demo.migrateExplorer', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
 
 router.post('/explorers', async (req, res) => {
     const data = req.body;
@@ -37,27 +93,26 @@ router.post('/explorers', async (req, res) => {
             dataRetentionLimit: 1
         };
 
-        const explorer = await db.createExplorerWithWorkspace(user.id, workspaceData);
-        if (explorer) {
-            const jwtToken = encode({ explorerId: explorer.id });
-            const banner = `
-                This is a demo. It will expire after 24 hours. To set this explorer up permanently, <a href="//app.${getAppDomain}/demo/upgradeExplorer?token=${jwtToken}" target="_blank">click here</a>.
-            `;
-            await db.updateExplorerSettings(explorer.id, sanitize({
-                name: data.name,
-                token: data.nativeToken,
-            }));
-            await db.updateExplorerBranding(explorer.id, { banner });
-        }
-        else
+        const explorer = await db.createExplorerWithWorkspace(user.id, workspaceData, true);
+        if (!explorer)
             throw new Error('Could not create explorer. Please retry.');
 
-        const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
+        await db.makeExplorerDemo(explorer.id);
 
+        const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
         if (!stripePlan)
-            throw new Error(`Error setting up the explorer. Please retry.`);
+            throw new Error('Error setting up the explorer. Please retry.');
 
         await db.createExplorerSubscription(user.id, explorer.id, stripePlan.id);
+
+        await db.updateExplorerSettings(explorer.id, sanitize({
+            name: data.name,
+            token: data.nativeToken,
+        }));
+
+        const jwtToken = encode({ explorerId: explorer.id });
+        const banner = `This is a demo explorer that will expire after 24 hours. To set it up permanently,&nbsp;<a href="//app.${getAppDomain()}/transactions?explorerToken=${jwtToken}" target="_blank">click here</a>.`;
+        await db.updateExplorerBranding(explorer.id, { banner });
 
         res.status(200).send({ domain: `${explorer.slug}.${getAppDomain()}` });
     } catch(error) {
