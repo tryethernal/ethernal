@@ -4,13 +4,14 @@ import axios from 'axios';
 
 import vuetify from './plugins/vuetify';
 import router from './plugins/router';
+import demoRouter from './plugins/demoRouter';
 import { serverPlugin } from './plugins/server';
 import store from './plugins/store';
 import { firestorePlugin } from 'vuefire';
 import 'ace-mode-solidity/build/remix-ide/mode-solidity.js';
 
 import App from './App.vue';
-import DemoExplorer from './components/DemoExplorer.vue';
+import Demo from './Demo.vue';
 
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
@@ -18,11 +19,12 @@ Vue.use(firestorePlugin);
 Vue.use(require('vue-moment'));
 Vue.use(serverPlugin, { store: store });
 
-if (store.getters.hasDemoEnabled && window.location.pathname == '/demo') {
+if (store.getters.hasDemoEnabled && window.location.pathname.startsWith('/demo')) {
     new Vue({
         vuetify,
         store: store,
-        render: h => h(DemoExplorer)
+        router: demoRouter,
+        render: h => h(Demo)
     }).$mount('#app');
 }
 else {

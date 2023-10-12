@@ -358,6 +358,11 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            getExplorerFromToken(token) {
+                const resource = `${store.getters.apiRoot}/api/demo/explorers`;
+                return axios.get(resource, { params: { token }});
+            },
+
             createDemoExplorer(name, rpcServer, nativeToken) {
                 const resource = `${store.getters.apiRoot}/api/demo/explorers`;
                 return axios.post(resource, { name, rpcServer, nativeToken });
@@ -491,14 +496,14 @@ export const serverPlugin = {
                 return axios.post(resource, { email });
             },
 
-            signUp(email, password) {
+            signUp(email, password, explorerToken) {
                 const resource = `${store.getters.apiRoot}/api/users/signup`;
-                return axios.post(resource, { email, password });
+                return axios.post(resource, { email, password, explorerToken });
             },
 
-            signIn(email, password) {
+            signIn(email, password, explorerToken) {
                 const resource = `${store.getters.apiRoot}/api/users/signin`;
-                return axios.post(resource, { email, password });
+                return axios.post(resource, { email, password, explorerToken });
             },
 
             getAddressTokenTransfers(address, options) {

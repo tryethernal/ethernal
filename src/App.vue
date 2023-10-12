@@ -182,6 +182,8 @@
             </template>
         </v-navigation-drawer>
 
+        <Explorer-Migrated-Modal ref="explorerMigratedModal" v-if="justMigrated" />
+        <Migrate-Explorer-Modal ref="migrateExplorerModal" v-if="explorerToken" />
         <Onboarding-Modal ref="onboardingModal" />
         <Browser-Sync-Explainer-Modal ref="browserSyncExplainerModal" v-if="currentWorkspace.browserSyncEnabled" />
 
@@ -207,6 +209,8 @@ import { mapGetters } from 'vuex';
 import RpcConnector from './components/RpcConnector';
 import OnboardingModal from './components/OnboardingModal';
 import BrowserSyncExplainerModal from './components/BrowserSyncExplainerModal';
+import MigrateExplorerModal from './components/MigrateExplorerModal';
+import ExplorerMigratedModal from './components/ExplorerMigratedModal';
 
 export default {
     name: 'App',
@@ -214,6 +218,8 @@ export default {
         RpcConnector,
         OnboardingModal,
         BrowserSyncExplainerModal,
+        MigrateExplorerModal,
+        ExplorerMigratedModal,
         Icon
     },
     data: () => ({
@@ -248,15 +254,37 @@ export default {
             this.server.getCurrentUser()
                 .then(({ data }) => {
                     this.authStateChanged(data);
-                    data.currentWorkspace ?
-                        this.initWorkspace(data.currentWorkspace) :
-                        this.launchOnboarding();
+                    if (this.justMigrated) {
+                        this.isOverlayActive = false;
+                        this.$refs.explorerMigratedModal
+                            .open({ explorerId: this.$route.query.justMigrated })
+                            .then(() => document.location.href = `/explorers/${this.$route.query.justMigrated}`);
+                    } else if (this.explorerToken)
+                        this.migrateExplorer();
+                    else
+                        data.currentWorkspace ?
+                            this.initWorkspace(data.currentWorkspace) :
+                            this.launchOnboarding();
                 })
                 .catch(() => {
                     this.isOverlayActive = false;
                     this.routerComponent = 'router-view';
                     this.authStateChanged(null);
                 })
+        },
+        migrateExplorer() {
+            this.server.getExplorerFromToken(this.explorerToken)
+                .then(({ data }) => {
+                    this.isOverlayActive = false;
+                    this.$refs.migrateExplorerModal.open({
+                        explorer: data,
+                        explorerToken: this.explorerToken
+                    });
+                })
+                .catch(error => {
+                    alert(error.response && error.response.data || 'Error while setting up explorer. Please try generating another demo.');
+                    document.location.href = '/transactions';
+                });
         },
         toggleMenu() {
             this.drawer = !this.drawer;
@@ -420,7 +448,9 @@ export default {
             return `0x${parseInt(this.currentWorkspace.networkId).toString(16)}`;
         },
         isAuthPage() { return this.$route.path.indexOf('/auth') > -1 },
-        canDisplaySides() { return (this.isUserLoggedIn || this.isPublicExplorer) && !this.isAuthPage }
+        canDisplaySides() { return (this.isUserLoggedIn || this.isPublicExplorer) && !this.isAuthPage },
+        explorerToken() { return this.$route.query.explorerToken },
+        justMigrated() { return !!this.$route.query.justMigrated }
     }
 };
 </script>
