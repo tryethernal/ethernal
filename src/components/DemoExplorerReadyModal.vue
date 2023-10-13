@@ -6,7 +6,7 @@
                 Your explorer is ready!
             </v-card-title>
             <v-card-text>
-                You can access it here: <a :href="domain" target="_blank">{{ domain }}</a>
+                You can access it here: <a :href="`//${domain}`" target="_blank">{{ domain }}</a>
             </v-card-text>
         </v-card>
     </v-dialog>

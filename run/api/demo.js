@@ -24,7 +24,7 @@ router.get('/explorers', async (req, res) => {
         if (!explorer)
             throw new Error('Could not find explorer.');
 
-        if (!explorer.demo)
+        if (!explorer.isDemo)
             throw new Error('This token has already been used. Please create another demo explorer and try again.');
 
         res.status(200).send({ id: explorer.id, name: explorer.name, rpcServer: explorer.rpcServer });
@@ -48,7 +48,7 @@ router.post('/migrateExplorer', authMiddleware, async (req, res) => {
         if (!explorer)
             throw new Error('Could not find explorer.');
 
-        if (!explorer.demo)
+        if (!explorer.isDemo)
             throw new Error('This token has already been used. Please create another demo explorer and try again.');
 
         const user = await db.getUser(data.uid);
