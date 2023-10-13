@@ -1,7 +1,7 @@
 <template>
     <v-layout fill-height class="background">
         <v-row class="fill-height my-0">
-            <v-col cols="7" class="fill-height">
+            <v-col cols="7" class="fill-height hidden-md-and-down">
                 <v-row class="fill-height" align="center">
                     <v-col class="text-center">
                         <h1 class="logo">Ethernal</h1>
@@ -14,7 +14,7 @@
                     </v-col>
                 </v-row>
             </v-col>
-            <v-col cols="5" class="primary fill-height">
+            <v-col md="12" lg="5" class="primary fill-height">
                 <v-row class="fill-height" align-self="center" align="center">
                     <v-col cols="2"></v-col>
                     <v-col cols="8">

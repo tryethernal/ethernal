@@ -1,10 +1,8 @@
 <template>
-    <v-dialog v-model="dialog" max-width="1200">
+    <v-dialog v-model="dialog" max-width="1200" :persistent="true">
         <v-card outlined v-if="explorer">
             <v-card-title>
                 <template>Finalize your explorer setup</template>
-                <v-spacer></v-spacer>
-                <v-btn icon @click="close()" ><v-icon>mdi-close</v-icon></v-btn>
             </v-card-title>
             <v-card-text>
                 <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
