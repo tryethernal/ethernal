@@ -9,5 +9,5 @@ module.exports = {
     getMixpanelApiToken: () => process.env.MIXPANEL_API_TOKEN,
     getPm2Host: () => process.env.PM2_HOST,
     getPm2Secret: () => process.env.PM2_SECRET,
-    getDemoUserId: () => 5
+    getDemoUserId: () => process.env.DEMO_USER_ID
 };

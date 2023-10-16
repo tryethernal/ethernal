@@ -506,6 +506,32 @@ describe(`POST ${BASE_URL}/:id/settings`, () => {
 });
 
 describe(`POST ${BASE_URL}`, () => {
+    it('Should create both the explorer and workspace', (done) => {
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchNetworkId: jest.fn().mockResolvedValue(1)
+        }));
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
+        jest.spyOn(db, 'createExplorerWithWorkspace').mockResolvedValueOnce({ id: 1 });
+
+        request.post(BASE_URL)
+            .send({ data: { rpcServer: 'test.rpc', name: 'explorer' }})
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ id: 1 });
+                done();
+            });
+    });
+
+    it('Should not accept a rpc without a name', (done) => {
+        request.post(BASE_URL)
+            .send({ data: { rpcServer: 'test.rpc' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Missing parameters.');
+                done();
+            });
+    });
+
     it('Should return an error if explorer cannot be created', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
         jest.spyOn(db, 'createExplorerFromWorkspace').mockResolvedValueOnce(null);

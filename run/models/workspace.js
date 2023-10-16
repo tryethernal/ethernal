@@ -68,8 +68,6 @@ module.exports = (sequelize, DataTypes) => {
         );
     }
 
-    async 
-
     async getContractByAddress(address) {
         if (!address) throw new Error('Missing parameter');
 

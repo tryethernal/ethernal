@@ -2,6 +2,7 @@ jest.mock('random-word-slugs', () => ({
     generateSlug: jest.fn()
 }));
 require('../mocks/lib/queue');
+require('../mocks/lib/flags');
 require('../mocks/lib/rpc');
 require('../mocks/lib/crypto');
 require('../mocks/lib/utils');
