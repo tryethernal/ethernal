@@ -1,5 +1,5 @@
 const express = require('express');
-const { isStripeEnabled, isMarketingEnabled } = require('../lib/flags');
+const { isStripeEnabled, isMarketingEnabled, isDemoEnabled } = require('../lib/flags');
 const router = express.Router();
 
 const blocks = require('./blocks');
@@ -18,7 +18,6 @@ const erc721Tokens = require('./erc721Tokens');
 const status = require('./status');
 const external = require('./external');
 const domains = require('./domains');
-const demo = require('./demo');
 
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
@@ -37,7 +36,11 @@ router.use('/erc721Tokens', erc721Tokens);
 router.use('/status', status);
 router.use('/external', external);
 router.use('/domains', domains);
-router.use('/demo', demo);
+
+if (isDemoEnabled()) {
+    const demo = require('./demo');
+    router.use('/demo', demo);
+}
 
 if (isStripeEnabled()) {
     const stripe = require('./stripe');
