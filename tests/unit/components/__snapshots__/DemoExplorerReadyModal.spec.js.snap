@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DemoExplorerReadyModal.vue Should display link to demo explorer 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 800px;">
+        <div class="v-card v-sheet v-sheet--outlined theme--light">
+          <div class="v-card__title success--text"><i aria-hidden="true" class="v-icon notranslate success--text mr-2 mdi mdi-check-circle theme--light"></i>
+            Your explorer is ready!
+          </div>
+          <div class="v-card__text">
+            You can access it here: <a href="//http://my.explorer.com" target="_blank">http://my.explorer.com</a></div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
