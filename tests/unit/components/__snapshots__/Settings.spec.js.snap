@@ -44,6 +44,16 @@ exports[`Settings.vue Should load the settings page 1`] = `
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
+                        <div class="v-text-field__slot"><label for="name" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Workspace Name</label><input id="name" type="text"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="v-input mt-3 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                    <div class="v-input__control">
+                      <div class="v-input__slot">
+                        <fieldset aria-hidden="true">
+                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                        </fieldset>
                         <div class="v-text-field__slot"><label for="rpcServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server</label><input id="rpcServer" type="text"></div>
                       </div>
                     </div>
@@ -51,7 +61,7 @@ exports[`Settings.vue Should load the settings page 1`] = `
                   You will need to restart the CLI or the Hardhat node for a server change to take effect.
                   <div class="v-input mt-3 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-69" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-71" class="v-input__slot">
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
@@ -79,7 +89,7 @@ exports[`Settings.vue Should load the settings page 1`] = `
                 <div class="v-card__text">
                   <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-74" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-76" class="v-input__slot">
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
@@ -131,12 +141,12 @@ exports[`Settings.vue Should load the settings page 1`] = `
                     <div class="col">
                       <div class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
                         <div class="v-input__control">
-                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-83" class="v-input__slot">
+                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-85" class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                             </fieldset>
-                            <div class="v-select__slot"><label for="input-83" class="v-label theme--light" style="left: 0px; position: absolute;">Status</label>
-                              <div class="v-select__selections"><input id="input-83" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                            <div class="v-select__slot"><label for="input-85" class="v-label theme--light" style="left: 0px; position: absolute;">Status</label>
+                              <div class="v-select__selections"><input id="input-85" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
                               <div class="v-input__append-inner">
                                 <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
                               </div><input type="hidden">
@@ -229,6 +239,16 @@ exports[`Settings.vue Should not display the Billing tab if stripe is disabled 1
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
+                        <div class="v-text-field__slot"><label for="name" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Workspace Name</label><input id="name" type="text"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="v-input mt-3 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                    <div class="v-input__control">
+                      <div class="v-input__slot">
+                        <fieldset aria-hidden="true">
+                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                        </fieldset>
                         <div class="v-text-field__slot"><label for="rpcServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server</label><input id="rpcServer" type="text"></div>
                       </div>
                     </div>
@@ -236,7 +256,7 @@ exports[`Settings.vue Should not display the Billing tab if stripe is disabled 1
                   You will need to restart the CLI or the Hardhat node for a server change to take effect.
                   <div class="v-input mt-3 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-22" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-23" class="v-input__slot">
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
@@ -264,7 +284,7 @@ exports[`Settings.vue Should not display the Billing tab if stripe is disabled 1
                 <div class="v-card__text">
                   <div class="v-input v-input--hide-details theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
                     <div class="v-input__control">
-                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-27" class="v-input__slot">
+                      <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-28" class="v-input__slot">
                         <fieldset aria-hidden="true">
                           <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                         </fieldset>
@@ -316,12 +336,12 @@ exports[`Settings.vue Should not display the Billing tab if stripe is disabled 1
                     <div class="col">
                       <div class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
                         <div class="v-input__control">
-                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-36" class="v-input__slot">
+                          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-37" class="v-input__slot">
                             <fieldset aria-hidden="true">
                               <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                             </fieldset>
-                            <div class="v-select__slot"><label for="input-36" class="v-label theme--light" style="left: 0px; position: absolute;">Status</label>
-                              <div class="v-select__selections"><input id="input-36" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                            <div class="v-select__slot"><label for="input-37" class="v-label theme--light" style="left: 0px; position: absolute;">Status</label>
+                              <div class="v-select__selections"><input id="input-37" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
                               <div class="v-input__append-inner">
                                 <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
                               </div><input type="hidden">
