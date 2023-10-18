@@ -47,6 +47,12 @@ module.exports = async job => {
     if (!workspace.public)
         return 'Not allowed on private workspaces';
 
+    if (!workspace.explorer)
+        return 'Should have an explorer associated';
+
+    if (!workspace.explorer.shouldSync)
+        return 'Sync is disabled';
+
     if (workspace.integrityCheckStartBlockNumber === null || workspace.integrityCheckStartBlockNumber === undefined)
         return 'Integrity checks not enabled';
 

@@ -89,7 +89,7 @@ export default {
                 .then(({ data }) => this.workspaces = data)
                 .catch(console.log);
 
-            this.server.getExplorer(id)
+                this.server.getExplorer(id)
                 .then(({ data }) => {
                     this.explorer = data;
                     if (this.explorer.stripeSubscription) {

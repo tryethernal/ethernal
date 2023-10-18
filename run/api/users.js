@@ -11,7 +11,6 @@ const { randomUUID } = require('crypto');
 const authMiddleware = require('../middlewares/auth');
 const { encrypt, decode, firebaseHash } = require('../lib/crypto');
 const localAuth = require('../middlewares/passportLocalStrategy');
-const tokenAuth = require('../middlewares/passportTokenStrategy');
 
 const findUser = async (email, nextPageToken) => {
     const listUsersResult = await getAuth().listUsers(500, nextPageToken);

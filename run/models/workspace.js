@@ -930,7 +930,21 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    updateSettings(data) {
+    async updateSettings(data) {
+        if (data.name) {
+            const existing = await sequelize.models.Workspace.findOne({
+                where: {
+                    userId: this.userId,
+                    name: data.name,
+                    id: {
+                        [Op.not]: this.id
+                    }
+                }
+            });
+            if (existing)
+                throw new Error('You already have a workspace with this name.');
+        }
+
         return sequelize.transaction(async (transaction) => {
             if (data.rpcServer && data.networkId) {
                 const explorer = await this.getExplorer();
@@ -938,6 +952,7 @@ module.exports = (sequelize, DataTypes) => {
                     await explorer.update({ rpcServer: data.rpcServer, chainId: data.networkId }, { transaction });
             }
             return this.update(sanitize({
+                name: data.name,
                 statusPageEnabled: data.statusPageEnabled,
                 chain: data.chain,
                 rpcServer: data.rpcServer,
@@ -1054,8 +1069,8 @@ module.exports = (sequelize, DataTypes) => {
         })
     }
 
-    async safeCreateExplorer() {
-        return sequelize.transaction(async (transaction) => {
+    async safeCreateExplorer(transaction) {
+        const creationFn = async transaction => {
             await this.update({ public: true, browserSyncEnabled: false, rpcHealthCheckEnabled: true }, { transaction });
 
             const existingExplorer = await sequelize.models.Explorer.findOne({ where: { slug: slugify(this.name) }});
@@ -1071,8 +1086,9 @@ module.exports = (sequelize, DataTypes) => {
                 slug: slug,
                 themes: { "default": {}},
                 domain: `${slug}.${process.env.APP_DOMAIN}`
-            });
-        });
+            }, { transaction });
+        }
+        return transaction ? creationFn(transaction) : sequelize.transaction(creationFn);
     }
   }
 

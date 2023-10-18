@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const logger = require('../lib//logger');
+const logger = require('../lib/logger');
 const db = require('../lib/firebase');
 const { encrypt } = require('../lib/crypto');
 const authMiddleware = require('../middlewares/auth');

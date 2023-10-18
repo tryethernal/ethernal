@@ -18,7 +18,7 @@ jest.mock('stripe', () => {
     });
 });
 require('../mocks/lib/firebase');
-const { StripePlan } = require('../mocks/models');
+const { StripePlan, Explorer } = require('../mocks/models');
 const db = require('../../lib/firebase');
 const { handleStripePaymentSucceeded, handleStripeSubscriptionUpdate, handleStripeSubscriptionDeletion } = require('../../lib/stripe');
 const StripePaymentSucceededWebhookBody = require('../fixtures/StripePaymentSucceededWebhookBody');
@@ -104,6 +104,7 @@ describe('handleStripeSubscriptionUpdate', () => {
     it('Should cancel & return', (done) => {
         jest.spyOn(db, 'getUserbyStripeCustomerId').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({});
 
         handleStripeSubscriptionUpdate({ metadata: { explorerId: 1 }, status: 'active', cancel_at_period_end: true })
             .then(res => {
@@ -115,7 +116,7 @@ describe('handleStripeSubscriptionUpdate', () => {
 
     it('Should revert the cancelation', (done) => {
         jest.spyOn(db, 'getUserbyStripeCustomerId').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { isPendingCancelation: true }});
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ id: 1, stripeSubscription: { isPendingCancelation: true }});
         jest.spyOn(StripePlan, 'findOne').mockResolvedValueOnce({ id: 1 });
 
         const data = {
@@ -136,7 +137,7 @@ describe('handleStripeSubscriptionUpdate', () => {
 
     it('Should update the subscription plan', (done) => {
         jest.spyOn(db, 'getUserbyStripeCustomerId').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { isPendingCancelation: false }});
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ id: 1, stripeSubscription: { isPendingCancelation: false }});
         jest.spyOn(StripePlan, 'findOne').mockResolvedValueOnce({ id: 1 });
         mockCustomerRetrieve.mockResolvedValueOnce({ id: 1 });
 
@@ -159,7 +160,7 @@ describe('handleStripeSubscriptionUpdate', () => {
 
     it('Should create the subscription', (done) => {
         jest.spyOn(db, 'getUserbyStripeCustomerId').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(StripePlan, 'findOne').mockResolvedValueOnce({ id: 1 });
         mockCustomerRetrieve.mockResolvedValueOnce({ id: 1 });
 
@@ -183,7 +184,7 @@ describe('handleStripeSubscriptionUpdate', () => {
 
     it('Should disable trials for user', (done) => {
         jest.spyOn(db, 'getUserbyStripeCustomerId').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(StripePlan, 'findOne').mockResolvedValueOnce({ id: 1 });
         mockCustomerRetrieve.mockResolvedValueOnce({ id: 1 });
 
