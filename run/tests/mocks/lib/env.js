@@ -4,5 +4,6 @@ jest.mock('../../../lib/env', () => ({
     getScannerKey: jest.fn(() => 'key'),
     getGhostApiKey: jest.fn(),
     getGhostEndpoint: jest.fn(),
-    getMixpanelApiToken: jest.fn()
+    getMixpanelApiToken: jest.fn(),
+    getDemoUserId: jest.fn(() => 1)
 }));

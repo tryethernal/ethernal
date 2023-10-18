@@ -127,6 +127,35 @@ module.exports = (sequelize, DataTypes) => {
         return this.update({ canTrial: false });
     }
 
+    async safeCreateWorkspaceWithExplorer(data) {
+        const existingWorkspace = await sequelize.models.Workspace.findOne({
+            where: {
+                userId: this.id,
+                name: data.name
+            }
+        });
+
+        if (existingWorkspace)
+            throw new Error('An explorer with this name already exists.');
+
+        return sequelize.transaction(async transaction => {
+            const workspace = await this.createWorkspace(sanitize({
+                name: data.name,
+                public: true,
+                chain: 'ethereum',
+                networkId: data.networkId,
+                rpcServer: data.rpcServer,
+                tracing: data.tracing,
+                dataRetentionLimit: this.defaultDataRetentionLimit
+            }), { transaction });
+
+            if (!workspace)
+                throw new Error('Could not create explorer.');
+
+            return workspace.safeCreateExplorer(transaction);
+        });
+    };
+
     async safeCreateWorkspace(data) {
         const existingWorkspace = await this.getWorkspaces({
             where: {
@@ -135,7 +164,7 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         if (existingWorkspace.length > 0)
-            throw new Error('A workspace with this name already exists');
+            throw new Error('A workspace with this name already exists.');
 
         return sequelize.transaction(async transaction => {
             const workspace = await this.createWorkspace(sanitize({

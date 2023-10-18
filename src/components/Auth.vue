@@ -1,7 +1,7 @@
 <template>
     <v-layout fill-height class="background">
         <v-row class="fill-height my-0">
-            <v-col cols="7" class="fill-height">
+            <v-col cols="7" class="fill-height hidden-md-and-down">
                 <v-row class="fill-height" align="center">
                     <v-col class="text-center">
                         <h1 class="logo">Ethernal</h1>
@@ -14,11 +14,12 @@
                     </v-col>
                 </v-row>
             </v-col>
-            <v-col cols="5" class="primary fill-height">
+            <v-col md="12" lg="5" class="primary fill-height">
                 <v-row class="fill-height" align-self="center" align="center">
                     <v-col cols="2"></v-col>
                     <v-col cols="8">
                         <v-card v-if="signInMode" outlined>
+                            <v-alert class="mb-0" dense text type="info" v-show="explorerToken">Sign in in order to finish setting up your explorer</v-alert>
                             <v-alert class="mb-0" dense text type="error" v-show="error">{{ error }}</v-alert>
                             <v-card-title>Sign In</v-card-title>
                             <v-card-text>
@@ -48,6 +49,7 @@
                             </v-card-text>
                         </v-card>
                         <v-card v-else-if="signUpMode" outlined>
+                            <v-alert class="mb-0" dense text type="info" v-show="explorerToken">Sign up in order to finish setting up your explorer</v-alert>
                             <v-alert class="mb-0" dense text type="error" v-show="error">{{ error }}</v-alert>
                             <v-card-title>Sign Up</v-card-title>
                             <v-card-text>
@@ -140,10 +142,12 @@ export default {
         loading: false,
         mode: 'signin',
         email: null,
-        password: null
+        password: null,
     }),
     mounted() {
-        if (this.$route.query.token)
+        if (this.explorerToken)
+            this.mode = 'signup';
+        else if (this.$route.query.token)
             this.mode = 'resetPwd';
     },
     methods: {
@@ -159,7 +163,9 @@ export default {
             this.error = null;
             this.server.signIn(this.email, this.password)
                 .then(({ data: { user }}) => {
-                    this.$store.dispatch('updateUser', user).then(() => document.location.href = '/transactions');
+                    this.$store.dispatch('updateUser', user).then(() => {
+                        document.location.href = `/transactions${this.explorerToken ? '?explorerToken=' + this.explorerToken : ''}`;
+                    });
                 })
                 .catch(error => {
                     this.error = error.response.data;
@@ -169,9 +175,11 @@ export default {
         signUp() {
             this.loading = true;
             this.error = null;
-            this.server.signUp(this.email, this.password)
+            this.server.signUp(this.email, this.password, this.explorerToken)
                 .then(({ data: { user }}) => {
-                    this.$store.dispatch('updateUser', user).then(() => document.location.href = '/transactions');
+                    this.$store.dispatch('updateUser', user).then(() => {
+                        document.location.href = `/transactions${this.explorerToken ? '?explorerToken=' + this.explorerToken : ''}`;
+                    });
                 })
                 .catch(error => {
                     this.error = error.response.data;
@@ -201,7 +209,8 @@ export default {
         signInMode() { return this.mode == 'signin' },
         signUpMode() { return this.mode == 'signup' },
         forgottenPwdMode() { return this.mode == 'forgottenPwd' },
-        resetPwdMode() { return this.mode == 'resetPwd' }
+        resetPwdMode() { return this.mode == 'resetPwd' },
+        explorerToken() { return this.$route.query.explorerToken }
     }
 }
 </script>

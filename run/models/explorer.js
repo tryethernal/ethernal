@@ -4,6 +4,7 @@ const {
 } = require('sequelize');
 const { sanitize } = require('../lib/utils');
 const { isStripeEnabled, isSubscriptionCheckEnabled } = require('../lib/flags');
+const { getDemoUserId } = require('../lib/env');
 const { enqueue } = require('../lib/queue');
 const MAX_RPC_ATTEMPTS = 3;
 
@@ -173,6 +174,33 @@ module.exports = (sequelize, DataTypes) => {
         return this.createStripeSubscription({ stripePlanId, stripeId, cycleEndsAt, status });
     }
 
+    async migrateDemoTo(userId, stripeSubscriptionData) {
+        if  (!userId || !stripeSubscriptionData) throw new Error('Missing parameter');
+
+        const workspace = await this.getWorkspace();
+        if (!workspace)
+            throw new Error('Cannot find workspace.');
+
+        if (workspace.userId != getDemoUserId() || this.userId != getDemoUserId())
+            throw new Error('Not allowed');
+
+        const stripePlan = await sequelize.models.StripePlan.findOne({ where: { stripePriceId: stripeSubscriptionData.plan.id}});
+        if (!stripePlan)
+            throw new Error('Invalid plan');
+
+        return sequelize.transaction(async transaction => {
+            const stripeSubscription = await this.getStripeSubscription();
+            const newUser = await sequelize.models.User.findByPk(userId);
+
+            await stripeSubscription.update({ stripePlanId: stripePlan.id, stripeId: stripeSubscriptionData.id }, { transaction });
+            await workspace.update({ userId }, { transaction });
+            if (!newUser.currentWorkspaceId)
+                await newUser.update({ currentWorkspaceId: workspace.id }, { transaction });
+            const explorer = await this.update({ userId, themes: { light: {} }, isDemo: false }, { transaction });
+            return explorer;
+        });
+    }
+
     async canUseCapability(capability) {
         if (['customDomain', 'branding', 'nativeToken', 'totalSupply', 'statusPage'].indexOf(capability) < 0)
             return false;
@@ -297,7 +325,8 @@ module.exports = (sequelize, DataTypes) => {
     themes: DataTypes.JSON,
     token: DataTypes.STRING,
     totalSupply: DataTypes.STRING,
-    shouldSync: DataTypes.BOOLEAN
+    shouldSync: DataTypes.BOOLEAN,
+    isDemo: DataTypes.BOOLEAN
   }, {
     hooks: {
         afterUpdate(explorer, options) {

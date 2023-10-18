@@ -11,6 +11,100 @@ const db = require('../../lib/firebase');
 
 beforeEach(() => jest.clearAllMocks());
 
+describe('makeExplorerDemo', () => {
+    it('Should throw an error if no explorer', (done) => {
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce(null);
+        db.makeExplorerDemo(1, 1, {})
+            .catch(error => {
+                expect(error).toEqual(new Error('Cannot find explorer'));
+                done();
+            });
+    });
+
+    it('Should update explorer', (done) => {
+        const update = jest.fn();
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ update });
+        db.makeExplorerDemo(1, 1, {})
+            .then(() => {
+                expect(update).toHaveBeenCalledWith({ isDemo: true });
+                done();
+            });
+    });
+});
+
+describe('migrateDemoExplorer', () => {
+    it('Should throw an error if no user', (done) => {
+        jest.spyOn(User, 'findByPk').mockResolvedValueOnce(null);
+        db.migrateDemoExplorer(1, 1, {})
+            .catch(error => {
+                expect(error).toEqual(new Error('Cannot find user'));
+                done();
+            });
+    });
+
+    it('Should throw an error if no explorer', (done) => {
+        jest.spyOn(User, 'findByPk').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce(null);
+        db.migrateDemoExplorer(1, 1, {})
+            .catch(error => {
+                expect(error).toEqual(new Error('Cannot find explorer'));
+                done();
+            });
+    });
+
+    it('Should call explorer creation function', (done) => {
+        const migrateDemoTo = jest.fn();
+        jest.spyOn(User, 'findByPk').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ migrateDemoTo });
+        db.migrateDemoExplorer(1, 1, {})
+            .then(() => {
+                expect(migrateDemoTo).toHaveBeenCalledWith(1, {});
+                done();
+            });
+    });
+});
+
+describe('getExplorerById', () => {
+    it('Should return explorer', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ toJSON: jest.fn().mockReturnValue({ id: 1})});
+        db.getExplorerById(1, 1)
+            .then(res => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            })
+    });
+
+    it('Should return null if explorer is not found', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
+        db.getExplorerById(1, 1)
+            .then(res => {
+                expect(res).toEqual(null)
+                done();
+            });
+    });
+});
+
+describe('createExplorerWithWorkspace', () => {
+    it('Should throw an error if no user', (done) => {
+        jest.spyOn(User, 'findByPk').mockResolvedValueOnce(null);
+        db.createExplorerWithWorkspace(1, { name: 'explorer' })
+            .catch(error => {
+                expect(error).toEqual(new Error('Cannot find user'));
+                done();
+            });
+    });
+
+    it('Should create the explorer and workspace', (done) => {
+        const safeCreateWorkspaceWithExplorer = jest.fn();
+        jest.spyOn(User, 'findByPk').mockResolvedValueOnce({ safeCreateWorkspaceWithExplorer });
+        db.createExplorerWithWorkspace(1, { name: 'explorer' })
+            .then(() => {
+                expect(safeCreateWorkspaceWithExplorer).toHaveBeenCalledWith({ name: 'explorer' });
+                done();
+            });
+    });
+});
+
 describe('stopExplorerSync', () => {
     it('Should throw an error if no explorer', (done) => {
         jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce(null);
@@ -581,26 +675,6 @@ describe('updateExplorerWorkspace', () => {
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ userId: 2 });
         await expect(db.updateExplorerWorkspace(1, {}))
             .rejects.toThrow('Invalid workspace');
-    });
-});
-
-describe('getExplorerById', () => {
-    it('Should return explorer', (done) => {
-        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ toJSON: jest.fn().mockResolvedValueOnce({ id: 1})});
-        db.getExplorerById(1, {})
-            .then(res => {
-                expect(res).toEqual({ id: 1 });
-                done();
-            })
-    });
-
-    it('Should return null if explorer is not found', (done) => {
-        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce(null);
-        db.getExplorerById(1, {})
-            .then(res => {
-                expect(res).toEqual(null)
-                done();
-            });
     });
 });
 

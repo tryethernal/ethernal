@@ -36,7 +36,7 @@ const updateExplorerSubscription = async (stripeSubscription) => {
     if (!user)
         return 'Cannot find user';
 
-    const explorer = await db.getExplorerById(user.id, explorerId);
+    const explorer = await models.Explorer.findByPk(explorerId, { include: 'stripeSubscription' });
     if (!explorer)
         return 'Cannot find explorer';
 
@@ -54,6 +54,9 @@ const updateExplorerSubscription = async (stripeSubscription) => {
     const stripeCustomer = await stripe.customers.retrieve(stripeSubscription.customer);
 
     if (explorer.stripeSubscription) {
+        if (explorer.isDemo && !explorer.stripeSubscription.stripeId)
+            await db.migrateDemoExplorer(explorer.id, user.id, stripeSubscription);
+
         if (explorer.stripeSubscription.isPendingCancelation && stripeSubscription.cancel_at_period_end == false)
             await db.revertExplorerSubscriptionCancelation(user.id, explorerId);
         else

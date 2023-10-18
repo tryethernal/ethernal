@@ -8,7 +8,6 @@ require('../mocks/lib/firebase');
 require('../mocks/lib/queue');
 
 const db = require('../../lib/firebase');
-const models = require('../../models');
 const { enqueue, bulkEnqueue } = require('../../lib/queue');
 const integrityCheck = require('../../jobs/integrityCheck');
 
@@ -17,9 +16,22 @@ beforeEach(() => jest.clearAllMocks());
 const job = { data: { workspaceId: 1 }};
 
 describe('integrityCheck', () => {
+    it('Should return message saying there is no explorer', async () => {
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({ explorer: { shouldSync: false }, integrityCheckStartBlockNumber: 0, public: true });
+
+        expect(await integrityCheck(job)).toEqual('Sync is disabled');
+    });
+
+    it('Should return message saying there is no explorer', async () => {
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({ integrityCheckStartBlockNumber: 0, public: true });
+
+        expect(await integrityCheck(job)).toEqual('Should have an explorer associated');
+    });
+
     it('Should revert expired pending blocks & update latest checked block', async () => {
         const revertIfPartial = jest.fn();
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            explorer: { shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn()
                 .mockResolvedValueOnce([{ id: 5, number: 5, revertIfPartial }])
@@ -39,13 +51,14 @@ describe('integrityCheck', () => {
     });
 
     it('Should return a message saying integrity checks are not enabled', async () => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({ integrityCheckStartBlockNumber: null, public: true });
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({ integrityCheckStartBlockNumber: null, explorer: { shouldSync: true }, public: true });
 
         expect(await integrityCheck(job)).toEqual('Integrity checks not enabled');
     });
 
     it('Should return a message saying blocks have not been synced', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            explorer: { shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(0),
             integrityCheckStartBlockNumber: 0,
             public: true
@@ -56,6 +69,7 @@ describe('integrityCheck', () => {
 
     it('Should enqueue the first block and exit if no integrity check & the lower block does not exist', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            explorer: { shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn()
                 .mockResolvedValueOnce([])
@@ -80,6 +94,7 @@ describe('integrityCheck', () => {
 
     it('Should enqueue the first block and exit if integrityCheckStartBlockNumber < lowestBlock.number & no lower block', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            explorer: { shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn()
                 .mockResolvedValueOnce([])
@@ -105,6 +120,7 @@ describe('integrityCheck', () => {
 
     it('Should update latest checked if integrityCheckStartBlockNumber > latest checked', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            explorer: { shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn().mockResolvedValueOnce([]).mockResolvedValue([{ id: 1, number: 5 }]),
             integrityCheckStartBlockNumber: 5,
@@ -124,6 +140,7 @@ describe('integrityCheck', () => {
 
     it('Should return if no lower block', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            explorer: { shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn()
                 .mockResolvedValueOnce([])
@@ -142,6 +159,7 @@ describe('integrityCheck', () => {
 
     it('Should return if no upper block', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            explorer: { shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn()
                 .mockResolvedValueOnce([])
@@ -162,6 +180,7 @@ describe('integrityCheck', () => {
 
     it('Should start recovery', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            explorer: { shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn().mockResolvedValueOnce([]).mockResolvedValue([{ id: 1, number: 1 }]),
             integrityCheckStartBlockNumber: 5,
@@ -187,6 +206,7 @@ describe('integrityCheck', () => {
 
     it('Should update integrity status if no gaps', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            explorer: { shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn()
                 .mockResolvedValueOnce([])
@@ -209,6 +229,7 @@ describe('integrityCheck', () => {
 
     it('Should update integrity on start & enqueue gaps', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            explorer: { shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn()
                 .mockResolvedValueOnce([])
