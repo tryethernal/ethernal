@@ -21,7 +21,7 @@ export default {
         explorerId: null,
         dialog: false,
         resolve: null,
-        reject: null,
+        reject: null
     }),
     methods: {
         open(options) {

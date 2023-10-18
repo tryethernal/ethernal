@@ -55,7 +55,6 @@ export default {
             this.valid = false;
             this.errorMessage = null;
             this.loading = false;
-            this.domain = null;
             this.explorer = options.explorer;
             this.explorerToken = options.explorerToken;
             if (this.isBillingEnabled)
