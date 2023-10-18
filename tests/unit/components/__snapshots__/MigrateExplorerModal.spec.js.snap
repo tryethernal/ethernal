@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MigrateExplorerModal.vue Should display pricing options 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 1200px;">
+        <div class="v-card v-sheet v-sheet--outlined theme--light">
+          <div class="v-card__title">Finalize your explorer setup</div>
+          <div class="v-card__text">
+            <!----> <b>Name:</b> explorer<br> <b>RPC:</b> explorer.rpc
+            <br><br>
+            You're almost done with the setup, choose a plan to subscribe to and your explorer will be ready!
+            <ul class="my-4" style="list-style: none;">
+              <li>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
+              <!---->
+            </ul>
+            <div class="row justify-center">
+              <div class="col col-3">
+                <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
+              </div>
+              <div class="col col-3">
+                <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;

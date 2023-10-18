@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ExplorerMigratedModal.vue Should display link to demo explorer 1`] = `
+exports[`ExplorerMigratedModal.vue Should display waiting screen 1`] = `
 <div class="v-dialog__container">
   <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">

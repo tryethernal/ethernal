@@ -9,12 +9,12 @@ beforeEach(() => {
 });
 
 describe('ExplorerMigratedModal.vue', () => {
-    it('Should display link to demo explorer', async () => {
+    it('Should display waiting screen', async () => {
         const wrapper = helper.mountFn(ExplorerMigratedModal, {
             data() {
                 return {
                     dialog: true,
-                    domain: 'http://my.explorer.com',
+                    explorerId: 1
                 }
             }
         });

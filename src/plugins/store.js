@@ -146,7 +146,7 @@ export default new Vuex.Store({
         }
     },
     getters: {
-        hasDemoEnabled: () => true,
+        hasDemoEnabled: () => !!process.env.VUE_APP_DEMO_ENABLED,
         mainDomain: () => process.env.VUE_APP_MAIN_DOMAIN,
         isBillingEnabled: () => !!process.env.VUE_APP_ENABLE_BILLING,
         apiRoot: () => process.env.VUE_APP_API_ROOT,
