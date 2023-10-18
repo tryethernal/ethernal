@@ -59,7 +59,7 @@ describe('Settings.vue', () => {
         await wrapper.find('#updateOptions').trigger('click');
         await flushPromises();
 
-        expect(updateWorkspaceSettingsMock).toHaveBeenCalledWith({ chain: 'bsc', rpcServer: 'http://localhost:1234', settings: expect.anything() });
+        expect(updateWorkspaceSettingsMock).toHaveBeenCalledWith({ name: 'Hardhat', chain: 'bsc', rpcServer: 'http://localhost:1234', settings: expect.anything() });
         expect(helper.actions.updateCurrentWorkspace).toHaveBeenCalledWith(expect.anything(), {
             defaultAccount: null,
             gasLimit: null,
@@ -86,7 +86,7 @@ describe('Settings.vue', () => {
         await wrapper.find('#updateCallOptions').trigger('click');
         await flushPromises();
 
-        expect(updateWorkspaceSettingsMock).toHaveBeenCalledWith({ chain: 'ethereum', rpcServer: 'http://localhost:8545', settings: { defaultAccount: '0x123', gasPrice: '1234', gasLimit: '12345' }});
+        expect(updateWorkspaceSettingsMock).toHaveBeenCalledWith({ name: 'Hardhat', chain: 'ethereum', rpcServer: 'http://localhost:8545', settings: { defaultAccount: '0x123', gasPrice: '1234', gasLimit: '12345' }});
         expect(helper.actions.updateCurrentWorkspace).toHaveBeenCalledWith(expect.anything(), {
             rpcServer: 'http://localhost:8545',
             chain: 'ethereum',
