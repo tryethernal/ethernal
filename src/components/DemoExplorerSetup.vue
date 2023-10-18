@@ -105,8 +105,7 @@ export default {
                 return false;
             }
         },
-    },
-    computed: {}
+    }
 };
 </script>
 <style scoped lang="scss">

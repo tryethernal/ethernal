@@ -9,15 +9,7 @@
 <script>
 
 export default {
-    name: 'Demo',
-    components: {
-    },
-    data: () => ({
-    }),
-    mounted() {
-    },
-    methods: {
-    }
+    name: 'Demo'
 };
 </script>
 <style scoped lang="scss">
