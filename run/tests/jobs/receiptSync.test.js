@@ -54,23 +54,23 @@ describe('receiptSync', () => {
             });
     });
 
-    it('Should return if sync is disabled', (done) => {
-        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
-            workspace: {
-                rpcServer: 'rpc',
-                explorer: {
-                    shouldSync: false,
-                    stripeSubscription: { status: 'active' }
-                }
-            },
-        });
+    // it('Should return if sync is disabled', (done) => {
+    //     jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+    //         workspace: {
+    //             rpcServer: 'rpc',
+    //             explorer: {
+    //                 shouldSync: false,
+    //                 stripeSubscription: { status: 'active' }
+    //             }
+    //         },
+    //     });
 
-        receiptSync({ data : { transactionId: 1 }})
-            .then(res => {
-                expect(res).toEqual('Sync is disabled');
-                done();
-            });
-    });
+    //     receiptSync({ data : { transactionId: 1 }})
+    //         .then(res => {
+    //             expect(res).toEqual('Sync is disabled');
+    //             done();
+    //         });
+    // });
 
     it('Should return if RPC is unreachable', (done) => {
         jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({

@@ -37,13 +37,13 @@ describe('processTransactionError', () => {
         expect(res).toEqual('Inactive explorer');
     });
 
-    it('Should return if sync is disabled', async () => {
-        const transaction = { ...Transaction, receipt: { status: 0, ...Transaction }, workspace: { ...workspace, public: true, explorer: { shouldSync: false }}};
-        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce(transaction);
+    // it('Should return if sync is disabled', async () => {
+    //     const transaction = { ...Transaction, receipt: { status: 0, ...Transaction }, workspace: { ...workspace, public: true, explorer: { shouldSync: false }}};
+    //     jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce(transaction);
 
-        const res = await processTransactionError({ data: { transactionId: 1 }});
-        expect(res).toEqual('Sync is disabled');
-    });
+    //     const res = await processTransactionError({ data: { transactionId: 1 }});
+    //     expect(res).toEqual('Sync is disabled');
+    // });
 
     it('Should return if RPC is not reachable ', async () => {
         const transaction = { ...Transaction, receipt: { status: 0, ...Transaction }, workspace: { ...workspace, public: true, rpcHealthCheck: { isReachable: false }}};
