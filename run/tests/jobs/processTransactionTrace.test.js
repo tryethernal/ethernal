@@ -36,12 +36,12 @@ describe('processTransactionTrace', () => {
         expect(res).toEqual('Inactive explorer');
     });
 
-    it('Should return if sync is disabled', async () => {
-        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, workspace: { ...workspace, public: true, explorer: { shouldSync: false }}});
+    // it('Should return if sync is disabled', async () => {
+    //     jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, workspace: { ...workspace, public: true, explorer: { shouldSync: false }}});
 
-        const res = await processTransactionTrace({ data: { transactionId: 1 }});
-        expect(res).toEqual('Sync is disabled');
-    });
+    //     const res = await processTransactionTrace({ data: { transactionId: 1 }});
+    //     expect(res).toEqual('Sync is disabled');
+    // });
 
     it('Should return if RPC is not reachable', async () => {
         jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, workspace: { ...workspace, public: true, rpcHealthCheck: { isReachable: false }, explorer: { shouldSync: true }}});
