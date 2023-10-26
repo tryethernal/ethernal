@@ -21,7 +21,7 @@ router.get('/explorers', authMiddleware, async (req, res) => {
         if (!decodedToken || !decodedToken.explorerId)
             throw new Error('Invalid token.');
 
-            const explorer = await db.getExplorerById(getDemoUserId(), decodedToken.explorerId);
+        const explorer = await db.getExplorerById(getDemoUserId(), decodedToken.explorerId);
         if (!explorer)
             throw new Error('Could not find explorer.');
 

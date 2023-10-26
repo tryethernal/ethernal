@@ -1,6 +1,16 @@
+const mockSubscriptionCreate = jest.fn().mockResolvedValue({ id: 'id' });
 jest.mock('random-word-slugs', () => ({
     generateSlug: jest.fn()
 }));
+jest.mock('stripe', () => {
+    return jest.fn().mockImplementation(() => {
+        return {
+            subscriptions: {
+                create: mockSubscriptionCreate
+            }
+        }
+    });
+});
 require('../mocks/lib/queue');
 require('../mocks/lib/flags');
 require('../mocks/lib/rpc');
@@ -23,6 +33,19 @@ const BASE_URL = '/api/demo';
 beforeEach(() => jest.clearAllMocks());
 
 describe(`GET ${BASE_URL}/explorers`, () => {
+    it('Should fail if no user', (done) => {
+        jest.spyOn(crypto, 'decode').mockReturnValueOnce({ explorerId: 1 });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, isDemo: true });
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce(null);
+
+        request.get(`${BASE_URL}/explorers?token=token`)
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Could not find user.');
+                done();
+            });
+    });
+
     it('Should return an error if invalid token', (done) => {
         jest.spyOn(crypto, 'decode').mockReturnValueOnce(null);
 
@@ -48,6 +71,7 @@ describe(`GET ${BASE_URL}/explorers`, () => {
 
     it('Should return an error if not a demo anymore', (done) => {
         jest.spyOn(crypto, 'decode').mockReturnValueOnce({ explorerId: 1 });
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, isDemo: false });
 
         request.get(`${BASE_URL}/explorers?token=token`)
@@ -60,6 +84,7 @@ describe(`GET ${BASE_URL}/explorers`, () => {
 
     it('Should return explorer info', (done) => {
         jest.spyOn(crypto, 'decode').mockReturnValueOnce({ explorerId: 1 });
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, isDemo: true, name: 'explorer', rpcServer: 'rpc.demo' });
 
         request.get(`${BASE_URL}/explorers?token=token`)
@@ -73,6 +98,20 @@ describe(`GET ${BASE_URL}/explorers`, () => {
 });
 
 describe(`POST ${BASE_URL}/migrateExplorer`, () => {
+    it('Should fail if trial has already been used', (done) => {
+        jest.spyOn(crypto, 'decode').mockReturnValueOnce({ explorerId: 1 });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, isDemo: true });
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1 });
+
+        request.post(`${BASE_URL}/migrateExplorer`)
+            .send({ data: { token: 'token' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`You've already used your trial.`);
+                done();
+            });
+    });
+
     it('Should fail if token is invalid', (done) => {
         jest.spyOn(crypto, 'decode').mockReturnValueOnce(null);
 
@@ -125,10 +164,26 @@ describe(`POST ${BASE_URL}/migrateExplorer`, () => {
             });
     });
 
+    it('Should fail if cannot find plan', (done) => {
+        jest.spyOn(crypto, 'decode').mockReturnValueOnce({ explorerId: 1 });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, isDemo: true });
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, canTrial: true });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce(null);
+
+        request.post(`${BASE_URL}/migrateExplorer`)
+            .send({ data: { token: 'token' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Could not find plan.');
+                done();
+            });
+    });
+
     it('Should return the migrated explorer id', (done) => {
         jest.spyOn(crypto, 'decode').mockReturnValueOnce({ explorerId: 1 });
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, isDemo: true });
-        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, canTrial: true });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ stripePriceId: 'id' });
         jest.spyOn(db, 'migrateDemoExplorer').mockResolvedValueOnce();
 
         request.post(`${BASE_URL}/migrateExplorer`)
