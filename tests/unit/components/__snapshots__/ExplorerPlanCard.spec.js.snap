@@ -6,6 +6,7 @@ exports[`ExplorerPlanCard.vue Should display card with trial button 1`] = `
     Explorer
     <div class="spacer"></div>
     <!---->
+    <!---->
   </div>
   <div class="v-card__subtitle pb-0">$1,000 / month</div>
   <div class="v-card__text">
@@ -58,7 +59,7 @@ exports[`ExplorerPlanCard.vue Should display card with trial button 1`] = `
         <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
         <div class="v-list-item__content">
           <div class="v-list-item__title" style="font-weight: normal;">
-            Branding
+            Whitelabeling
           </div>
         </div>
       </div>
@@ -73,6 +74,7 @@ exports[`ExplorerPlanCard.vue Should display current plan card 1`] = `
   <div class="v-card__title">
     Explorer
     <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current</span></span>
+    <!---->
   </div>
   <div class="v-card__subtitle pb-0">$1,000 / month</div>
   <div class="v-card__text">
@@ -125,7 +127,7 @@ exports[`ExplorerPlanCard.vue Should display current plan card 1`] = `
         <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
         <div class="v-list-item__content">
           <div class="v-list-item__title" style="font-weight: normal;">
-            Branding
+            Whitelabeling
           </div>
         </div>
       </div>
@@ -141,6 +143,7 @@ exports[`ExplorerPlanCard.vue Should display disabled plan card 1`] = `
     Explorer
     <div class="spacer"></div>
     <!---->
+    <!---->
   </div>
   <div class="v-card__subtitle pb-0">$1,000 / month</div>
   <div class="v-card__text">
@@ -193,7 +196,7 @@ exports[`ExplorerPlanCard.vue Should display disabled plan card 1`] = `
         <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
         <div class="v-list-item__content">
           <div class="v-list-item__title" style="font-weight: normal;">
-            Branding
+            Whitelabeling
           </div>
         </div>
       </div>
@@ -209,140 +212,6 @@ exports[`ExplorerPlanCard.vue Should display loading plan card 1`] = `
     Explorer
     <div class="spacer"></div>
     <!---->
-  </div>
-  <div class="v-card__subtitle pb-0">$1,000 / month</div>
-  <div class="v-card__text">
-    <div role="list" class="v-list v-sheet theme--light v-list--dense v-list--disabled">
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__content py-0">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            1,000 txs / month
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Data Retention: 7 days
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">Custom Domain</div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Native Token
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Total Supply
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Status Page
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Branding
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="v-card__actions justify-center"><button type="button" class="primary v-btn v-btn--is-elevated v-btn--has-bg v-btn--loading theme--light v-size--default"><span class="v-btn__content">Choose Plan</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--visible v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button></div>
-</div>
-`;
-
-exports[`ExplorerPlanCard.vue Should display pending cancelation plan card 1`] = `
-<div class="v-card v-sheet v-sheet--outlined theme--light current-plan-card">
-  <div class="v-card__title">
-    Explorer
-    <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current</span></span>
-  </div>
-  <div class="v-card__subtitle pb-0">$1,000 / month</div>
-  <div class="v-card__text">
-    <div role="list" class="v-list v-sheet theme--light v-list--dense v-list--disabled">
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__content py-0">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            1,000 txs / month
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Data Retention: 7 days
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">Custom Domain</div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Native Token
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Total Supply
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Status Page
-          </div>
-        </div>
-      </div>
-      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-        <div class="v-list-item__content">
-          <div class="v-list-item__title" style="font-weight: normal;">
-            Branding
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="v-card__actions justify-center"><button type="button" class="primary v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Revert Cancelation</span></button></div>
-</div>
-`;
-
-exports[`ExplorerPlanCard.vue Should display regular plan card 1`] = `
-<div class="v-card v-sheet v-sheet--outlined theme--light">
-  <div class="v-card__title">
-    Explorer
-    <div class="spacer"></div>
     <!---->
   </div>
   <div class="v-card__subtitle pb-0">$1,000 / month</div>
@@ -396,7 +265,144 @@ exports[`ExplorerPlanCard.vue Should display regular plan card 1`] = `
         <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
         <div class="v-list-item__content">
           <div class="v-list-item__title" style="font-weight: normal;">
-            Branding
+            Whitelabeling
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="v-card__actions justify-center"><button type="button" class="primary v-btn v-btn--is-elevated v-btn--has-bg v-btn--loading theme--light v-size--default"><span class="v-btn__content">Choose Plan</span><span class="v-btn__loader"><div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular v-progress-circular--visible v-progress-circular--indeterminate" style="height: 23px; width: 23px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="21.904761904761905 21.904761904761905 43.80952380952381 43.80952380952381" style="transform: rotate(0deg);"><circle fill="transparent" cx="43.80952380952381" cy="43.80952380952381" r="20" stroke-width="3.8095238095238093" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle></svg><div class="v-progress-circular__info"></div></div></span></button></div>
+</div>
+`;
+
+exports[`ExplorerPlanCard.vue Should display pending cancelation plan card 1`] = `
+<div class="v-card v-sheet v-sheet--outlined theme--light current-plan-card">
+  <div class="v-card__title">
+    Explorer
+    <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current</span></span>
+    <!---->
+  </div>
+  <div class="v-card__subtitle pb-0">$1,000 / month</div>
+  <div class="v-card__text">
+    <div role="list" class="v-list v-sheet theme--light v-list--dense v-list--disabled">
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__content py-0">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            1,000 txs / month
+          </div>
+        </div>
+      </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            Data Retention: 7 days
+          </div>
+        </div>
+      </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">Custom Domain</div>
+        </div>
+      </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            Native Token
+          </div>
+        </div>
+      </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            Total Supply
+          </div>
+        </div>
+      </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            Status Page
+          </div>
+        </div>
+      </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            Whitelabeling
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="v-card__actions justify-center"><button type="button" class="primary v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Revert Cancelation</span></button></div>
+</div>
+`;
+
+exports[`ExplorerPlanCard.vue Should display regular plan card 1`] = `
+<div class="v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__title">
+    Explorer
+    <div class="spacer"></div>
+    <!---->
+    <!---->
+  </div>
+  <div class="v-card__subtitle pb-0">$1,000 / month</div>
+  <div class="v-card__text">
+    <div role="list" class="v-list v-sheet theme--light v-list--dense v-list--disabled">
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__content py-0">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            1,000 txs / month
+          </div>
+        </div>
+      </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            Data Retention: 7 days
+          </div>
+        </div>
+      </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">Custom Domain</div>
+        </div>
+      </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            Native Token
+          </div>
+        </div>
+      </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            Total Supply
+          </div>
+        </div>
+      </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            Status Page
+          </div>
+        </div>
+      </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            Whitelabeling
           </div>
         </div>
       </div>

@@ -83,7 +83,6 @@ export default {
     computed: {
         ...mapGetters([
             'user',
-            'isBillingEnabled',
             'mainDomain'
         ])
     }

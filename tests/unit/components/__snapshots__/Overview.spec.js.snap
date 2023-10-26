@@ -9,7 +9,7 @@ exports[`Overview.vue Should load the overview page 1`] = `
   </div>
   <div class="row">
     <div class="col-sm-6 col-lg-3 col-12">
-      <stat-number-stub href="/blocks/2" value="2" title="Block Height" type="link"></stat-number-stub>
+      <stat-number-stub href="/blocks/2" value="2" title="Latest Block" type="link"></stat-number-stub>
     </div>
     <div class="col-sm-6 col-lg-3 col-12">
       <stat-number-stub value="10" title="24h Tx Count"></stat-number-stub>

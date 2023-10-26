@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExplorerPlanSelector.vue Should display plans 1`] = `
+<div class="row justify-center">
+  <div class="col col-3">
+    <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
+  </div>
+  <div class="col col-3">
+    <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
+  </div>
+</div>
+`;
