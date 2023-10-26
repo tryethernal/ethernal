@@ -14,6 +14,7 @@
     </v-dialog>
 </template>
 <script>
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'ExplorerMigratedModal',
@@ -36,7 +37,9 @@ export default {
         },
         getExplorer() {
             this.server.getExplorer(this.explorerId)
-                .then(() => {
+                .then(({ data }) => {
+                    if (data.isDemo || data.userId != this.user.id)
+                        return setTimeout(this.getExplorer, 3000);
                     this.explorerId = null;
                     this.resolve();
                     this.resolve = null;
@@ -47,6 +50,11 @@ export default {
                     setTimeout(this.getExplorer, 3000);
                 });
         }
+    },
+    computed: {
+        ...mapGetters([
+            'user'
+        ])
     }
 }
 </script>

@@ -3,7 +3,7 @@
         <v-card outlined>
             <v-card-title class="success--text">
                 <v-icon class="success--text mr-2">mdi-check-circle</v-icon>
-                Your explorer is ready!
+                Your demo explorer is ready!
             </v-card-title>
             <v-card-text>
                 You can access it here: <a :href="`//${domain}`" target="_blank">{{ domain }}</a>

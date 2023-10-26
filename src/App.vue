@@ -30,7 +30,7 @@
             </v-list-item>
 
             <v-list dense nav class="side--text">
-                <v-list-item link :to="'/overview'" v-if="isPublicExplorer">
+                <v-list-item link :to="'/overview'">
                     <v-list-item-icon>
                         <v-icon>mdi-chart-box</v-icon>
                     </v-list-item-icon>
@@ -182,8 +182,7 @@
             </template>
         </v-navigation-drawer>
 
-        <Explorer-Migrated-Modal ref="explorerMigratedModal" v-if="justMigrated" />
-        <Migrate-Explorer-Modal ref="migrateExplorerModal" v-if="explorerToken" />
+        <Migrate-Explorer-Modal ref="migrateExplorerModal" v-if="explorerToken || justMigrated" />
         <Onboarding-Modal ref="onboardingModal" />
         <Browser-Sync-Explainer-Modal ref="browserSyncExplainerModal" v-if="currentWorkspace.browserSyncEnabled" />
 
@@ -210,7 +209,6 @@ import RpcConnector from './components/RpcConnector';
 import OnboardingModal from './components/OnboardingModal';
 import BrowserSyncExplainerModal from './components/BrowserSyncExplainerModal';
 import MigrateExplorerModal from './components/MigrateExplorerModal';
-import ExplorerMigratedModal from './components/ExplorerMigratedModal';
 
 export default {
     name: 'App',
@@ -219,7 +217,6 @@ export default {
         OnboardingModal,
         BrowserSyncExplainerModal,
         MigrateExplorerModal,
-        ExplorerMigratedModal,
         Icon
     },
     data: () => ({
@@ -256,10 +253,9 @@ export default {
                     this.authStateChanged(data);
                     if (this.justMigrated) {
                         this.isOverlayActive = false;
-                        this.$refs.explorerMigratedModal
-                            .open({ explorerId: this.$route.query.justMigrated })
-                            .then(() => document.location.href = `/explorers/${this.$route.query.justMigrated}`);
-                    } else if (this.explorerToken)
+                        this.$refs.migrateExplorerModal.open({ explorerId: parseInt(this.$route.query.justMigrated), justMigrated: true });
+                    }
+                    else if (this.explorerToken)
                         this.migrateExplorer();
                     else
                         data.currentWorkspace ?
@@ -277,7 +273,7 @@ export default {
                 .then(({ data }) => {
                     this.isOverlayActive = false;
                     this.$refs.migrateExplorerModal.open({
-                        explorer: data,
+                        explorerId: data.id,
                         explorerToken: this.explorerToken
                     });
                 })

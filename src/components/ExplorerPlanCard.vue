@@ -1,9 +1,10 @@
 <template>
-    <v-card outlined :class="{ 'current-plan-card': current }">
+    <v-card outlined :class="{ 'current-plan-card': current, 'best-value': bestValue }">
         <v-card-title>
             {{ plan.name }}
             <v-spacer></v-spacer>
             <v-chip class="ml-2" color="primary" small v-if="current">Current</v-chip>
+            <v-chip class="ml-2" color="primary" small v-if="bestValue && !current">Best Value</v-chip>
         </v-card-title>
         <v-card-subtitle class="pb-0">${{ plan.price.toLocaleString() }} / month</v-card-subtitle>
         <v-card-text>
@@ -66,7 +67,7 @@
                     </v-list-item-icon>
                     <v-list-item-content>
                         <v-list-item-title style="font-weight: normal;">
-                            Branding
+                            Whitelabeling
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -85,7 +86,7 @@
 <script>
 export default {
     name: 'ExplorerPlanCard',
-    props: ['plan', 'current', 'loading', 'disabled', 'pendingCancelation', 'trial'],
+    props: ['plan', 'current', 'loading', 'disabled', 'pendingCancelation', 'trial', 'bestValue'],
     methods: {
         changePlan(slug) {
             this.$emit('updatePlan', slug)
@@ -100,7 +101,7 @@ export default {
 }
 </script>
 <style lang="scss">
-.current-plan-card {
+.current-plan-card, .best-value {
     border: 1px solid var(--v-primary-base) !important;
 }
 </style>

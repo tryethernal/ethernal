@@ -1,16 +1,17 @@
 const express = require('express');
+const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey } = require('../lib/env');
+const stripe = require('stripe')(getStripeSecretKey());
 const { generateSlug } = require('random-word-slugs');
 const router = express.Router();
 const { ProviderConnector } = require('../lib/rpc');
 const { encode, decode } = require('../lib/crypto');
 const { withTimeout, sanitize } = require('../lib/utils');
 const logger = require('../lib/logger');
-const { getDemoUserId, getDefaultPlanSlug, getAppDomain } = require('../lib/env');
 const authMiddleware = require('../middlewares/auth');
 const db = require('../lib/firebase');
 
-router.get('/explorers', async (req, res) => {
-    const data = req.query;
+router.get('/explorers', authMiddleware, async (req, res) => {
+    const data = { ...req.query, ...req.body.data };
 
     try {
         if (!data.token)
@@ -20,14 +21,18 @@ router.get('/explorers', async (req, res) => {
         if (!decodedToken || !decodedToken.explorerId)
             throw new Error('Invalid token.');
 
-        const explorer = await db.getExplorerById(getDemoUserId(), decodedToken.explorerId);
+            const explorer = await db.getExplorerById(getDemoUserId(), decodedToken.explorerId);
         if (!explorer)
             throw new Error('Could not find explorer.');
+
+        const user = await db.getUser(data.uid);
+        if (!user)
+            throw new Error('Could not find user.');
 
         if (!explorer.isDemo)
             throw new Error('This token has already been used. Please create another demo explorer and try again.');
 
-        res.status(200).send({ id: explorer.id, name: explorer.name, rpcServer: explorer.rpcServer });
+        res.status(200).send({ id: explorer.id, name: explorer.name, rpcServer: explorer.rpcServer, canTrial: user.canTrial });
     } catch(error) {
         logger.error(error.message, { location: 'get.api.demo.explorers', error: error });
         res.status(400).send(error.message);
@@ -44,18 +49,42 @@ router.post('/migrateExplorer', authMiddleware, async (req, res) => {
         if (!decodedToken || !decodedToken.explorerId)
             throw new Error('Invalid token.');
 
-        const explorer = await db.getExplorerById(decodedToken.explorerId);
+        const explorer = await db.getExplorerById(getDemoUserId(), decodedToken.explorerId);
         if (!explorer)
             throw new Error('Could not find explorer.');
 
         if (!explorer.isDemo)
             throw new Error('This token has already been used. Please create another demo explorer and try again.');
 
-        const user = await db.getUser(data.uid);
+        const user = await db.getUser(data.uid, ['stripeCustomerId', 'canTrial']);
         if (!user)
             throw new Error('Could not find user.');
 
-        await db.migrateDemoExplorer(user.id);
+        if (!user.canTrial)
+            throw new Error(`You've already used your trial.`);
+
+        const plan = await db.getStripePlan(getDemoTrialSlug());
+        if (!plan)
+            throw new Error('Could not find plan.');
+
+        const trial_settings = user.canTrial ? {
+            end_behavior: { missing_payment_method: 'cancel' }
+        } : null;
+
+        const subscription = await stripe.subscriptions.create({
+            customer: user.stripeCustomerId,
+            items: [{ price: plan.stripePriceId }],
+            trial_period_days: 7,
+            trial_settings,
+            metadata: { explorerId: explorer.id }
+        });
+
+        if (!subscription)
+            throw new Error('Error while starting trial. Please try again.')
+
+        await db.disableUserTrial(user.id);
+
+        await db.migrateDemoExplorer(explorer.id, user.id, subscription);
 
         res.status(200).send({ explorerId: explorer.id });
     } catch(error) {

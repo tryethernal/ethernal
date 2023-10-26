@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const models = require('../models');
 const { firebaseHash }  = require('./crypto');
+const { getDemoUserId } = require('./env');
 
 const Op = Sequelize.Op;
 const User = models.User;
@@ -416,11 +417,15 @@ const updateExplorerWorkspace = async (explorerId, workspaceId) => {
     return explorer.update({ workspaceId: workspace.id, rpcServer: workspace.rpcServer, chainId: workspace.networkId });
 };
 
-const getExplorerById = async (userId, id) => {
+const getExplorerById = async (userId, id, withDemo = false) => {
     if (!userId || !id) throw new Error('Missing parameter');
 
-    const explorer = await Explorer.findOne({
-        where: { id, userId },
+    const where = withDemo ?
+        {[Op.or]: [{ id, userId, isDemo: false }, { id, userId: getDemoUserId(), isDemo: true }]} :
+        { id, userId };
+
+        const explorer = await Explorer.findOne({
+        where,
         include: [
             {
                 model: ExplorerDomain,

@@ -1,6 +1,6 @@
 <template>
     <v-data-table
-        dense
+        :dense="dense"
         :loading="loading"
         :items="blocks"
         :sort-by="currentOptions.sortBy[0]"
@@ -19,7 +19,7 @@
         <template v-if="!withCount" v-slot:[`footer.page-text`]=""></template>
         <template v-slot:no-data>
             No blocks found
-        </template>Jul 26 2022, 4:49 PM
+        </template>
         <template v-slot:item.number="{ item }">
             <template>
                 <v-tooltip top>
