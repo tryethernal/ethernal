@@ -39,7 +39,7 @@
                 <Explorer-Plan-Selector
                     :explorerId="explorerId"
                     :stripeSuccessUrl="`http://app.${mainDomain}/overview?justMigrated=${explorerId}`"
-                    :stripeCancelUrl="`http://app.${mainDomain}/transactions?explorerToken=${explorerToken}`"></Explorer-Plan-Selector>
+                    :stripeCancelUrl="`http://app.${mainDomain}/overview?explorerToken=${explorerToken}`"></Explorer-Plan-Selector>
             </template>
         </v-card>
     </v-dialog>
