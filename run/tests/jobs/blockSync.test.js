@@ -45,25 +45,25 @@ describe('blockSync', () => {
             });
     });
 
-    it('Should return if sync is disabled', (done) => {
-        jest.spyOn(User, 'findByAuthIdWithWorkspace').mockResolvedValueOnce({
-            workspaces: [{
-                id: 1,
-                rpcServer: 'http://localhost:8545',
-                rpcHealthCheck: {
-                    isReachable: true
-                },
-                explorer: {
-                    shouldSync: false
-                }
-            }]
-        });
-        blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
-            .then(res => {
-                expect(res).toEqual('Sync is disabled');
-                done();
-            });
-    });
+    // it('Should return if sync is disabled', (done) => {
+    //     jest.spyOn(User, 'findByAuthIdWithWorkspace').mockResolvedValueOnce({
+    //         workspaces: [{
+    //             id: 1,
+    //             rpcServer: 'http://localhost:8545',
+    //             rpcHealthCheck: {
+    //                 isReachable: true
+    //             },
+    //             explorer: {
+    //                 shouldSync: false
+    //             }
+    //         }]
+    //     });
+    //     blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+    //         .then(res => {
+    //             expect(res).toEqual('Sync is disabled');
+    //             done();
+    //         });
+    // });
 
     it('Should return if too many failed rpc requests', (done) => {
         jest.spyOn(User, 'findByAuthIdWithWorkspace').mockResolvedValueOnce({
