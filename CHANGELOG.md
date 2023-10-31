@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated demo setup process
 
+### Added
+- "Custom fields" in plan display
+- Handling of "Enterprise" plan option
+
 ## [3.21.2] - 2023-10-26
 ### Fixed
 - Tests
