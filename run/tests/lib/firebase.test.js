@@ -5,7 +5,7 @@ jest.mock('sequelize', () => ({
         or: 'or'
     }
 }));
-
+require('../mocks/lib/env');
 const { Workspace, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction } = require('../mocks/models');
 const db = require('../../lib/firebase');
 
@@ -65,6 +65,30 @@ describe('migrateDemoExplorer', () => {
 });
 
 describe('getExplorerById', () => {
+    it('Should not look for demo explorers', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ toJSON: jest.fn().mockReturnValue({ id: 1})});
+        db.getExplorerById(1, 1)
+            .then(() => {
+                expect(Explorer.findOne).toHaveBeenCalledWith({
+                    where: { id: 1, userId: 1 },
+                    include: expect.anything()
+                });
+                done();
+            })
+    });
+
+    it('Should look for demo explorers', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ toJSON: jest.fn().mockReturnValue({ id: 1})});
+        db.getExplorerById(1, 1, true)
+            .then(() => {
+                expect(Explorer.findOne).toHaveBeenCalledWith({
+                    where: {'or': [{ id: 1, userId: 1, isDemo: false }, { id: 1, userId: 1, isDemo: true }]},
+                    include: expect.anything()
+                });
+                done();
+            })
+    });
+
     it('Should return explorer', (done) => {
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ toJSON: jest.fn().mockReturnValue({ id: 1})});
         db.getExplorerById(1, 1)

@@ -1,5 +1,6 @@
 <template>
     <v-data-table
+        :dense="dense"
         :loading="loading"
         :items="transactions"
         :sort-by="currentOptions.sortBy[0]"

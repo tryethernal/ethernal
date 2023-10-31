@@ -1,14 +1,14 @@
 <template>
     <v-container fluid>
         <v-row>
-            <v-col cols="12" sm="6" lg="3" v-if="publicExplorer.totalSupply">
+            <v-col cols="12" sm="6" lg="3" v-if="publicExplorer && publicExplorer.totalSupply">
                 <Stat-Number :title="'Total Supply'" :value="publicExplorer.totalSupply" :long="true" />
             </v-col>
         </v-row>
 
         <v-row>
             <v-col cols="12" sm="6" lg="3">
-                <Stat-Number :type="'link'" :title="'Block Height'" :value="currentBlock.number" :loading="globalStatsLoading" :href="`/blocks/${currentBlock.number}`" />
+                <Stat-Number :type="'link'" :title="'Latest Block'" :value="currentBlock.number" :loading="globalStatsLoading" :href="`/block/${currentBlock.number}`" />
             </v-col>
             <v-col cols="12" sm="6" lg="3">
                 <Stat-Number :title="'24h Tx Count'" :value="txCount24h" :loading="globalStatsLoading" />
@@ -68,7 +68,6 @@ const formatUnits = ethers.utils.formatUnits;
 const BigNumber = ethers.BigNumber;
 const moment = require('moment');
 import { mapGetters } from 'vuex';
-import router from '../plugins/router';
 
 import TransactionsList from './TransactionsList';
 import BlockList from './BlockList';
@@ -82,12 +81,6 @@ export default {
         BlockList,
         LineChart,
         StatNumber
-    },
-    beforeRouteEnter(to, from, next) {
-        if(router.app.$store.getters.isPublicExplorer)
-            next();
-        else
-            router.push({ path: 'transactions' });
     },
     data: () => ({
         globalStatsLoading: false,

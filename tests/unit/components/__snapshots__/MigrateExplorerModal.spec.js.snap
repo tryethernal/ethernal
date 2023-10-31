@@ -1,29 +1,121 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MigrateExplorerModal.vue Should display pricing options 1`] = `
+exports[`MigrateExplorerModal.vue Should display loading while waiting for the migration to be finalized 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 600px;">
+        <div class="v-card v-sheet v-sheet--outlined theme--light">
+          <div class="v-card__title">
+            <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+                <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+              </svg>
+              <div class="v-progress-circular__info"></div>
+            </div>
+            Finalizing your explorer
+          </div>
+          <div class="v-card__text">Your explorer is almost ready. You'll soon be able to: <ul class="mt-2 pl-0" style="list-style: none;">
+              <li class="my-2"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-palette-outline theme--light primary--text"></i>Add your logo, colors, fonts</li>
+              <li class="my-2"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-web theme--light primary--text"></i>Add external links</li>
+              <li class="my-2"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-alpha-c-circle-outline theme--light primary--text"></i>Update your native token symbol</li>
+              <li class="my-2"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-link theme--light primary--text"></i>Use your own domain name</li>
+            </ul>
+          </div>
+          <div align="center" class="mb-4"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Continue</span></button></div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`MigrateExplorerModal.vue Should display loading while waiting for trial setup to be finalized 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 600px;">
+        <div class="v-card v-sheet v-sheet--outlined theme--light">
+          <div class="v-card__title">
+            <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+                <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+              </svg>
+              <div class="v-progress-circular__info"></div>
+            </div>
+            Finalizing your explorer
+          </div>
+          <div class="v-card__text">Your explorer is almost ready. You'll soon be able to: <ul class="mt-2 pl-0" style="list-style: none;">
+              <li class="my-2"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-palette-outline theme--light primary--text"></i>Add your logo, colors, fonts</li>
+              <li class="my-2"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-web theme--light primary--text"></i>Add external links</li>
+              <li class="my-2"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-alpha-c-circle-outline theme--light primary--text"></i>Update your native token symbol</li>
+              <li class="my-2"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-link theme--light primary--text"></i>Use your own domain name</li>
+            </ul>
+          </div>
+          <div align="center" class="mb-4"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Continue</span></button></div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`MigrateExplorerModal.vue Should display plan selector if trial not available 1`] = `
 <div class="v-dialog__container">
   <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
       <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 1200px;">
-        <div class="v-card v-sheet v-sheet--outlined theme--light">
-          <div class="v-card__title">Finalize your explorer setup</div>
+        <div class="v-card v-sheet v-sheet--outlined theme--light pa-4">
+          <div class="v-card__title">Setup up your explorer</div>
           <div class="v-card__text">
-            <!----> <b>Name:</b> explorer<br> <b>RPC:</b> explorer.rpc
-            <br><br>
-            You're almost done with the setup, choose a plan to subscribe to and your explorer will be ready!
-            <ul class="my-4" style="list-style: none;">
-              <li>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
-              <!---->
-            </ul>
-            <div class="row justify-center">
-              <div class="col col-3">
-                <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
-              </div>
-              <div class="col col-3">
-                <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
-              </div>
-            </div>
+            You've already used your free trial, please choose a plan below to finalize your explorer.
+            <div>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</div>
           </div>
+          <explorer-plan-selector-stub bestvalueslug="explorer-150" explorerid="1" stripesuccessurl="http://app.tryethernal.com/overview?justMigrated=1" stripecancelurl="http://app.tryethernal.com/overview?explorerToken=token"></explorer-plan-selector-stub>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`MigrateExplorerModal.vue Should display success screen once migration is finalized 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 600px;">
+        <div class="v-card v-sheet v-sheet--outlined theme--light">
+          <div class="v-card__title"><span class="success--text"><i aria-hidden="true" class="v-icon notranslate success--text mr-2 mdi mdi-check-circle-outline theme--light"></i>Your explorer is ready!
+            </span></div>
+          <div class="v-card__text">You can now: <ul class="mt-2 pl-0" style="list-style: none;">
+              <li class="my-2"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-palette-outline theme--light primary--text"></i>Add your logo, colors, fonts</li>
+              <li class="my-2"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-web theme--light primary--text"></i>Add external links</li>
+              <li class="my-2"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-alpha-c-circle-outline theme--light primary--text"></i>Update your native token symbol</li>
+              <li class="my-2"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-link theme--light primary--text"></i>Use your own domain name</li>
+            </ul>
+          </div>
+          <div align="center" class="mb-4"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Continue</span></button></div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`MigrateExplorerModal.vue Should display success screen once trial is finalized 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 600px;">
+        <div class="v-card v-sheet v-sheet--outlined theme--light">
+          <div class="v-card__title"><span class="success--text"><i aria-hidden="true" class="v-icon notranslate success--text mr-2 mdi mdi-check-circle-outline theme--light"></i>Your explorer is ready!
+            </span></div>
+          <div class="v-card__text">You can now: <ul class="mt-2 pl-0" style="list-style: none;">
+              <li class="my-2"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-palette-outline theme--light primary--text"></i>Add your logo, colors, fonts</li>
+              <li class="my-2"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-web theme--light primary--text"></i>Add external links</li>
+              <li class="my-2"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-alpha-c-circle-outline theme--light primary--text"></i>Update your native token symbol</li>
+              <li class="my-2"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-link theme--light primary--text"></i>Use your own domain name</li>
+            </ul>
+          </div>
+          <div align="center" class="mb-4"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Continue</span></button></div>
         </div>
       </div>
     </transition-stub>

@@ -54,7 +54,7 @@ export default {
                 explorerId: this.explorer.id,
                 currentPlanSlug: this.explorer.stripeSubscription && this.explorer.stripeSubscription.stripePlan.slug,
                 pendingCancelation: this.pendingCancelation,
-                isTrialing: false
+                isTrialing: this.trial || this.trialWithCard
             }).then(refresh => {
                 if (refresh)
                     this.$emit('updated');
