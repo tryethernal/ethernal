@@ -73,6 +73,15 @@ exports[`ExplorerPlanCard.vue Should display card with trial button 1`] = `
           </div>
         </div>
       </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            Custom Fields
+            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="v-card__actions justify-center"><button type="button" class="primary v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Start 7 day Trial</span></button></div>
@@ -147,6 +156,15 @@ exports[`ExplorerPlanCard.vue Should display current plan card 1`] = `
         <div class="v-list-item__content">
           <div class="v-list-item__title" style="font-weight: normal;">
             Whitelabeling
+            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
+          </div>
+        </div>
+      </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            Custom Fields
             <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
           </div>
         </div>
@@ -230,6 +248,15 @@ exports[`ExplorerPlanCard.vue Should display disabled plan card 1`] = `
           </div>
         </div>
       </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            Custom Fields
+            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="v-card__actions justify-center"><button type="button" disabled="disabled" class="primary v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Choose Plan</span></button></div>
@@ -305,6 +332,15 @@ exports[`ExplorerPlanCard.vue Should display loading plan card 1`] = `
         <div class="v-list-item__content">
           <div class="v-list-item__title" style="font-weight: normal;">
             Whitelabeling
+            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
+          </div>
+        </div>
+      </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            Custom Fields
             <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
           </div>
         </div>
@@ -387,6 +423,15 @@ exports[`ExplorerPlanCard.vue Should display pending cancelation plan card 1`] =
           </div>
         </div>
       </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            Custom Fields
+            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="v-card__actions justify-center"><button type="button" class="primary v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Revert Cancelation</span></button></div>
@@ -462,6 +507,15 @@ exports[`ExplorerPlanCard.vue Should display regular plan card 1`] = `
         <div class="v-list-item__content">
           <div class="v-list-item__title" style="font-weight: normal;">
             Whitelabeling
+            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
+          </div>
+        </div>
+      </div>
+      <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+        <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light error--text"></i></div>
+        <div class="v-list-item__content">
+          <div class="v-list-item__title" style="font-weight: normal;">
+            Custom Fields
             <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
           </div>
         </div>

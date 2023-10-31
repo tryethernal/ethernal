@@ -20,7 +20,8 @@ const plan = {
         nativeToken: false,
         totalSupply: false,
         statusPage: false,
-        branding: true
+        branding: true,
+        customFields: false
     }
 };
 
