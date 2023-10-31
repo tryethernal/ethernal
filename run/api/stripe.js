@@ -1,9 +1,9 @@
 const express = require('express');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { getAppUrl, getStripeSecretKey } = require('../lib/env');
+const stripe = require('stripe')(getStripeSecretKey());
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');    
 const { sanitize } = require('../lib/utils');
-const { getAppUrl } = require('../lib/env');
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const router = express.Router();
@@ -55,7 +55,7 @@ router.post('/createExplorerCheckoutSession', [authMiddleware, stripeMiddleware]
         if (!selectedPlan || !selectedPlan.public)
             throw new Error(`Coouldn't find plan.`);
 
-        const explorer = await db.getExplorerById(user.id, data.explorerId)
+        const explorer = await db.getExplorerById(user.id, data.explorerId, true)
         if (!explorer)
             throw new Error(`Couldn't find explorer.`);
 

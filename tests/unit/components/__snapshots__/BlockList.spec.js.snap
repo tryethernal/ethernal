@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`BlockList.vue Should display pending blocks 1`] = `
-<div class="v-data-table v-data-table--dense v-data-table--has-bottom theme--light">
+<div class="v-data-table v-data-table--has-bottom theme--light">
   <div class="v-data-table__wrapper">
     <table>
       <colgroup>
@@ -81,7 +81,7 @@ exports[`BlockList.vue Should display pending blocks 1`] = `
 `;
 
 exports[`BlockList.vue Should not show blocks count 1`] = `
-<div class="v-data-table v-data-table--dense v-data-table--has-bottom theme--light">
+<div class="v-data-table v-data-table--has-bottom theme--light">
   <div class="v-data-table__wrapper">
     <table>
       <colgroup>
@@ -155,7 +155,7 @@ exports[`BlockList.vue Should not show blocks count 1`] = `
 `;
 
 exports[`BlockList.vue Should show the blocks list 1`] = `
-<div class="v-data-table v-data-table--dense v-data-table--has-bottom theme--light">
+<div class="v-data-table v-data-table--has-bottom theme--light">
   <div class="v-data-table__wrapper">
     <table>
       <colgroup>
@@ -229,7 +229,7 @@ exports[`BlockList.vue Should show the blocks list 1`] = `
 `;
 
 exports[`BlockList.vue should show the loading message when empty blocks list 1`] = `
-<div class="v-data-table v-data-table--dense v-data-table--has-bottom theme--light">
+<div class="v-data-table v-data-table--has-bottom theme--light">
   <div class="v-data-table__wrapper">
     <table>
       <colgroup>

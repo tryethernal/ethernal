@@ -37,16 +37,10 @@
                             <li v-if="!user.cryptoPaymentEnabled">To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
                             <li v-if="user.canTrial">Each plan includes a 7 day free trial - No credit card needed.</li>
                         </ul>
-                        <v-row justify="center">
-                            <v-col cols="3" v-for="(plan, idx) in plans" :key="idx">
-                                <Explorer-Plan-Card
-                                    :trial="user.canTrial"
-                                    :plan="plan"
-                                    :loading="selectedPlanSlug && selectedPlanSlug == plan.slug"
-                                    :disabled="selectedPlanSlug && selectedPlanSlug != plan.slug"
-                                    @updatePlan="onPlanSelected"></Explorer-Plan-Card>
-                            </v-col>
-                        </v-row>
+                        <Explorer-Plan-Selector v-if="explorer"
+                            :explorerId="explorer.id"
+                            :stripeSuccessUrl="`http://app.${mainDomain}/explorers/${explorer.id}?justCreated=true`"
+                            :stripeCancelUrl="`http://app.${mainDomain}/explorers/${explorer.id}`"></Explorer-Plan-Selector>
                     </v-card-text>
                 </v-card>
             </v-stepper-content>
@@ -55,13 +49,13 @@
 </template>
 <script>
 import { mapGetters } from 'vuex';
-import ExplorerPlanCard from './ExplorerPlanCard.vue';
 import CreateWorkspace from './CreateWorkspace.vue';
+import ExplorerPlanSelector from './ExplorerPlanSelector.vue';
 
 export default {
     name: 'CreateExplorerModal',
     components: {
-        ExplorerPlanCard,
+        ExplorerPlanSelector,
         CreateWorkspace
     },
     data: () => ({
@@ -70,22 +64,14 @@ export default {
         dialog: false,
         resolve: null,
         reject: null,
-        plans: null,
         errorMessage: null,
         workspaces: [],
         workspace: null,
         explorer: null,
-        selectedPlanSlug: null,
     }),
     methods: {
         open() {
             this.dialog = true;
-
-            if (this.isBillingEnabled && !this.user.canUseDemoPlan)
-                this.server.getExplorerPlans()
-                    .then(({ data }) => this.plans = data.sort((a, b) => a.price - b.price))
-                    .catch(console.log);
-
             this.server.getWorkspaces()
                 .then(({ data }) => this.workspaces = data)
                 .catch(console.log);
@@ -118,33 +104,6 @@ export default {
             this.workspace = workspace;
             this.selectWorkspace();
         },
-        onPlanSelected(slug) {
-            this.selectedPlanSlug = slug;
-            this.errorMessage = null;
-            this.loading = true;
-            this.user.cryptoPaymentEnabled ? this.useCryptoPayment() : this.useStripePayment();
-        },
-        useCryptoPayment() {
-            this.server.startCryptoSubscription(this.selectedPlanSlug, this.explorer.id)
-                .then(() => this.$router.push({ path: `/explorers/${this.explorer.id}?status=success`}))
-                .catch(error => {
-                    console.log(error);
-                    this.errorMessage = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
-                    this.loading = false;
-                    this.selectedPlanSlug = null;
-                });
-        },
-        useStripePayment() {
-            const successUrl = `http://app.${this.mainDomain}/explorers/${this.explorer.id}?status=success`;
-            const cancelUrl = `http://app.${this.mainDomain}/explorers/${this.explorer.id}`;
-            this.server.createStripeExplorerCheckoutSession(this.explorer.id, this.selectedPlanSlug, successUrl, cancelUrl)
-                .then(({ data }) => window.location.assign(data.url))
-                .catch(error => {
-                    console.log(error);
-                    this.errorMessage = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
-                    this.selectedPlanSlug = null;
-                });
-        },
         close() {
             this.resolve();
             this.reset();
@@ -158,8 +117,8 @@ export default {
     computed: {
         ...mapGetters([
             'user',
-            'isBillingEnabled',
-            'mainDomain'
+            'mainDomain',
+            'isBillingEnabled'
         ])
     }
 }

@@ -15,14 +15,13 @@ describe('CreateExplorerModal.vue', () => {
         jest.spyOn(helper.mocks.server, 'getExplorerPlans').mockResolvedValueOnce({ data: [] });
 
         const wrapper = helper.mountFn(CreateExplorerModal, {
-            stubs: ['Explorer-Plan-Card', 'Create-Workspace']
+            stubs: ['Create-Workspace', 'Explorer-Plan-Selector']
         });
 
         wrapper.vm.open();
 
         await flushPromises();
 
-        expect(helper.mocks.server.getExplorerPlans).toHaveBeenCalled();
         expect(helper.mocks.server.getWorkspaces).toHaveBeenCalled();
         expect(wrapper.html()).toMatchSnapshot();
     });
@@ -34,7 +33,7 @@ describe('CreateExplorerModal.vue', () => {
         const routerSpy = jest.spyOn(helper.mocks.router, 'push');
 
         const wrapper = helper.mountFn(CreateExplorerModal, {
-            stubs: ['Explorer-Plan-Card', 'Create-Workspace'],
+            stubs: ['Create-Workspace', 'Explorer-Plan-Selector'],
             getters: {
                 isBillingEnabled: jest.fn().mockReturnValue(true),
                 user: jest.fn().mockReturnValue({
@@ -60,7 +59,7 @@ describe('CreateExplorerModal.vue', () => {
         const routerSpy = jest.spyOn(helper.mocks.router, 'push');
 
         const wrapper = helper.mountFn(CreateExplorerModal, {
-            stubs: ['Explorer-Plan-Card', 'Create-Workspace'],
+            stubs: ['Explorer-Plan-Card', 'Create-Workspace', 'Explorer-Plan-Selector'],
             getters: {
                 isBillingEnabled: jest.fn().mockReturnValue(false)
             }
@@ -74,87 +73,5 @@ describe('CreateExplorerModal.vue', () => {
 
         expect(helper.mocks.server.createExplorer).toHaveBeenCalled();
         expect(routerSpy).toBeCalledWith({ path: '/explorers/1?status=success'});
-    });
-
-    it('Should let the user select a plan', async () => {
-        jest.spyOn(helper.mocks.server, 'getWorkspaces').mockResolvedValueOnce([{ name: 'my workspace', rpcServer: 'a', networkId: 1 }]);
-        jest.spyOn(helper.mocks.server, 'getExplorerPlans').mockResolvedValueOnce({ data: [{ slug: 'slug' }, { slug: 'slug2' }] });
-        jest.spyOn(helper.mocks.server, 'createExplorer').mockResolvedValueOnce({ data: { id: 1 }});
-
-        const wrapper = helper.mountFn(CreateExplorerModal, {
-            stubs: ['Explorer-Plan-Card', 'Create-Workspace'],
-            getters: {
-                isBillingEnabled: jest.fn().mockReturnValue(true),
-                user: jest.fn().mockReturnValue({ cryptoPaymentEnabled: false, canTrial: true })
-            }
-        });
-
-        await wrapper.setData({ dialog: true, workspace: { id: 1 }});
-        wrapper.vm.open();
-
-        await wrapper.find('#selectWorkspace').trigger('click');
-        await flushPromises();
-
-        expect(wrapper.html()).toMatchSnapshot();
-    });
-
-    it('Should start a crypto subscription', async () => {
-        jest.spyOn(helper.mocks.server, 'startCryptoSubscription').mockResolvedValueOnce();
-        const routerSpy = jest.spyOn(helper.mocks.router, 'push');
-
-        const wrapper = helper.mountFn(CreateExplorerModal, {
-            stubs: ['Explorer-Plan-Card', 'Create-Workspace'],
-            getters: {
-                isBillingEnabled: jest.fn().mockReturnValue(true),
-                user: jest.fn().mockReturnValue({ cryptoPaymentEnabled: true })
-            }
-        });
-
-        await wrapper.setData({
-            stepperIndex: 2,
-            dialog: true,
-            workspace: { id: 1 },
-            explorer: { id: 1 },
-            plans: [{ slug: 'slug' }, { slug: 'slug2' }]
-        });
-
-        wrapper.vm.onPlanSelected('slug');
-        await flushPromises();
-
-        expect(helper.mocks.server.startCryptoSubscription).toHaveBeenCalledWith('slug', 1);
-        expect(routerSpy).toHaveBeenCalledWith({ path: '/explorers/1?status=success' });
-    });
-
-    it('Should redirect to a stripe checkout url', async () => {
-        jest.spyOn(helper.mocks.server, 'createStripeExplorerCheckoutSession').mockResolvedValueOnce({ data: {url: 'stripe.com' }});
-
-        const oldLocation = window.location;
-        delete window.location;
-        window.location = { ...oldLocation, assign: jest.fn() };
-        const assignSpy = jest.spyOn(window.location, 'assign');
-
-        const wrapper = helper.mountFn(CreateExplorerModal, {
-            stubs: ['Explorer-Plan-Card', 'Create-Workspace'],
-            getters: {
-                isBillingEnabled: jest.fn().mockReturnValue(true),
-                user: jest.fn().mockReturnValue({ cryptoPaymentEnabled: false })
-            }
-        });
-
-        await wrapper.setData({
-            stepperIndex: 2,
-            dialog: true,
-            workspace: { id: 1 },
-            explorer: { id: 1 },
-            plans: [{ slug: 'slug' }, { slug: 'slug2' }]
-        });
-
-        await wrapper.vm.onPlanSelected('slug');
-        await flushPromises();
-
-        expect(helper.mocks.server.createStripeExplorerCheckoutSession)
-            .toHaveBeenCalledWith(1, 'slug', 'http://app.tryethernal.com/explorers/1?status=success', 'http://app.tryethernal.com/explorers/1');
-        expect(assignSpy).toHaveBeenCalledWith('stripe.com');
-        window.location = oldLocation;
     });
 });

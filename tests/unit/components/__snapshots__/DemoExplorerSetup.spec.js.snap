@@ -1,102 +1,166 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DemoExplorerSetup.vue Should display demo explorer setup page 1`] = `
-<div class="container">
-  <div class="v-dialog__container">
-    <!---->
-  </div>
-  <div class="row">
-    <div class="col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__title justify-center">
-          <h1 class="logo">Ethernal</h1>
-        </div>
-        <div class="v-card__text">
-          <p>
-            Ethernal is an open source block explorer for private EVM-based chains.
-          </p>
-          <p>
-            This tool lets you generate a demo block explorer from a RPC url.
-            It will stay up for 24h before getting deleted with all its data.<br><br>
-            You will have the option to subscribe to a plan to keep it up and running longer.
-          </p>
-          <p>
-            With the full version you'll be able to:
-          <ul>
-            <li>Use your own domain names</li>
-            <li>Customize the logo, the colors, add links, change the font, etc...</li>
-            <li>Display your native token total supply</li>
-            <li>Update your RPC &amp; reset your explorer when needed</li>
-          </ul>
-          </p>
-        </div>
-      </div>
+<div class="container container--fluid">
+  <div class="row primary">
+    <div class="logo-white col col-12">
+      <h2>Ethernal</h2>
     </div>
   </div>
-  <div class="row">
-    <div class="col">
-      <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__title">Set Up My Explorer</div>
+  <div class="row align-center justify-center">
+    <div class="col-lg-5 col-12">
+      <h1>See Ethernal In Action</h1>
+      <p class="mb-6">
+        Launch a customized demo explorer, connected to your RPC, displaying your own native token, and get
+        an overview of all of Ethernal's capabilities.
+      </p>
+      <h2 class="mb-4">
+        What can I expect?
+      </h2>
+      <ul class="pl-0" style="list-style: none;">
+        <li class="mb-6"><i aria-hidden="true" class="v-icon notranslate primary--text mr-1 mdi mdi-check theme--light"></i>
+          Real-time synchronization of blocks &amp; transactions.
+        </li>
+        <li class="mb-6"><i aria-hidden="true" class="v-icon notranslate primary--text mr-1 mdi mdi-check theme--light"></i>
+          Processed token transfers &amp; token balance changes for better transaction insights.
+        </li>
+        <li class="mb-6"><i aria-hidden="true" class="v-icon notranslate primary--text mr-1 mdi mdi-check theme--light"></i>
+          NFT galleries, with processed metadata (OpenSea compatible).
+        </li>
+        <li class="mb-6"><i aria-hidden="true" class="v-icon notranslate primary--text mr-1 mdi mdi-check theme--light"></i>
+          A link to setup your demo explorer permanently on your account.
+        </li>
+      </ul>
+    </div>
+    <div class="col-lg-6 col-12">
+      <div class="primary pa-md-10 v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__title white--text">
+          <h2>Get Started</h2>
+        </div>
         <div class="v-card__text">
           <!---->
-          <form novalidate="novalidate" class="v-form">
-            <div class="row">
-              <div class="col col-3">
-                <div class="v-input mb-2 theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <fieldset aria-hidden="true">
-                        <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                      </fieldset>
-                      <div class="v-text-field__slot"><label for="input-9" class="v-label theme--light" style="left: 0px; position: absolute;">Explorer Name</label><input required="required" id="input-9" type="text"></div>
-                    </div>
-                    <div class="v-text-field__details">
-                      <div class="v-messages theme--light">
-                        <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                      </div>
-                    </div>
+          <form novalidate="novalidate" class="v-form white pa-5">
+            <div class="v-input mb-2 theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-10" class="v-label theme--light" style="left: 0px; position: absolute;">Explorer Name</label><input required="required" id="input-10" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
                   </div>
                 </div>
               </div>
-              <div class="col col-6">
-                <div class="v-input mb-2 theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <fieldset aria-hidden="true">
-                        <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                      </fieldset>
-                      <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">RPC URL</label><input required="required" id="input-12" type="text"></div>
-                    </div>
-                    <div class="v-text-field__details">
-                      <div class="v-messages theme--light">
-                        <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                      </div>
-                    </div>
+            </div>
+            <div class="v-input mb-2 theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-13" class="v-label theme--light" style="left: 0px; position: absolute;">RPC URL</label><input required="required" id="input-13" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
                   </div>
                 </div>
               </div>
-              <div class="col col-3">
-                <div class="v-input mb-2 v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <fieldset aria-hidden="true">
-                        <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-                      </fieldset>
-                      <div class="v-text-field__slot"><label for="input-15" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Native Token Name (optional)</label><input required="required" id="input-15" type="text"></div>
-                    </div>
-                    <div class="v-text-field__details">
-                      <div class="v-messages theme--light">
-                        <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                      </div>
-                    </div>
+            </div>
+            <div class="v-input mb-2 v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><label for="input-16" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Native Token Name (optional)</label><input required="required" id="input-16" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
                   </div>
                 </div>
               </div>
             </div> <button type="submit" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--large" style="width: 100%;"><span class="v-btn__content">Generate Explorer</span></button>
           </form>
+          <!---->
         </div>
       </div>
     </div>
+  </div>
+  <hr role="separator" aria-orientation="horizontal" class="my-10 v-divider theme--light">
+  <div align="center">
+    <h2 class="mb-10">
+      What It Looks Like
+    </h2>
+  </div>
+  <div class="row mx-md-6 align-center justify-center">
+    <div class="col-lg-8 col"><video controls="controls" preload="metadata" src="../assets/demo_compressed.mp4" type="video/mp4"></video></div>
+  </div>
+  <hr role="separator" aria-orientation="horizontal" class="my-10 v-divider theme--light">
+  <div class="row mx-sm-6 align-center justify-center">
+    <div class="col-lg-4 col-12">
+      <h4 class="mb-2 primary--text">Transactions List</h4>
+      <div class="v-image v-responsive theme--light">
+        <transition-stub name="fade-transition" mode="in-out">
+          <div class="v-image__image v-image__image--preload v-image__image--cover" style="background-position: center center;"></div>
+        </transition-stub>
+        <div class="v-responsive__content"></div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-12">
+      <h4 class="mb-2 primary--text">Processed Token Transfers</h4>
+      <div class="v-image v-responsive theme--light">
+        <transition-stub name="fade-transition" mode="in-out">
+          <div class="v-image__image v-image__image--preload v-image__image--cover" style="background-position: center center;"></div>
+        </transition-stub>
+        <div class="v-responsive__content"></div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-12">
+      <h4 class="mb-2 primary--text">Analytics</h4>
+      <div class="v-image v-responsive theme--light">
+        <transition-stub name="fade-transition" mode="in-out">
+          <div class="v-image__image v-image__image--preload v-image__image--cover" style="background-position: center center;"></div>
+        </transition-stub>
+        <div class="v-responsive__content"></div>
+      </div>
+    </div>
+  </div>
+  <div class="row mx-md-6 align-center justify-center">
+    <div class="col-lg-4 col-12">
+      <h4 class="mb-2 primary--text">Contract Interaction</h4>
+      <div class="v-image v-responsive theme--light">
+        <transition-stub name="fade-transition" mode="in-out">
+          <div class="v-image__image v-image__image--preload v-image__image--cover" style="background-position: center center;"></div>
+        </transition-stub>
+        <div class="v-responsive__content"></div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-12">
+      <h4 class="mb-2 primary--text">NFT Gallery</h4>
+      <div class="v-image v-responsive theme--light">
+        <transition-stub name="fade-transition" mode="in-out">
+          <div class="v-image__image v-image__image--preload v-image__image--cover" style="background-position: center center;"></div>
+        </transition-stub>
+        <div class="v-responsive__content"></div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-12">
+      <h4 class="mb-2 primary--text">Contract Verification</h4>
+      <div class="v-image v-responsive theme--light">
+        <transition-stub name="fade-transition" mode="in-out">
+          <div class="v-image__image v-image__image--preload v-image__image--cover" style="background-position: center center;"></div>
+        </transition-stub>
+        <div class="v-responsive__content"></div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-4 mb-10 align-center justify-center">
+    + many other things...
   </div>
 </div>
 `;

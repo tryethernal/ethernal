@@ -358,6 +358,11 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            migrateDemoExplorer(token) {
+                const resource = `${store.getters.apiRoot}/api/demo/migrateExplorer`;
+                return axios.post(resource, { data: { token }});
+            },
+
             getExplorerFromToken(token) {
                 const resource = `${store.getters.apiRoot}/api/demo/explorers`;
                 return axios.get(resource, { params: { token }});

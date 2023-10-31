@@ -56,7 +56,7 @@ export default {
         ...mapGetters([
             'isBillingEnabled'
         ]),
-        activeSubscription() { return this.explorer.stripeSubscription && this.explorer.stripeSubscription.status == 'active' },
+        activeSubscription() { return this.explorer.stripeSubscription && (this.explorer.stripeSubscription.status == 'active' || this.explorer.stripeSubscription.status.startsWith('trial'))},
         pendingCancelation() { return this.explorer.stripeSubscription && this.explorer.stripeSubscription.status == 'pending_cancelation' },
     }
 }

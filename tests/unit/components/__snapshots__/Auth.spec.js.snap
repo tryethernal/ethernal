@@ -1,72 +1,59 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Auth.vue Should display an explorer migration message 1`] = `
-<div class="layout background fill-height">
-  <div class="row fill-height my-0">
-    <div class="fill-height hidden-md-and-down col col-7">
-      <div class="row fill-height align-center">
-        <div class="text-center col">
-          <h1 class="logo">Ethernal</h1>
-          <p>
-            Ethernal is an open source block explorer for private EVM-based chains.
-          </p>
-          <p>
-            If you are new to Ethernal, you should keep the <a href="https://doc.tryethernal.com" target="_blank">doc</a> in a tab nearby!
-          </p>
-        </div>
+<div class="layout primary fill-height">
+  <div class="row fill-height ma-0 no-gutters justify-center">
+    <div class="col-lg-4 col align-self-center">
+      <div class="text-center white--text font-weight-medium">
+        <h1 class="logo-white">Ethernal</h1>
+        <p>
+          Ethernal is an open source block explorer for EVM-based chains.
+        </p>
       </div>
-    </div>
-    <div class="primary fill-height col-md-12 col-lg-5 col">
-      <div align-self="center" class="row fill-height align-center">
-        <div class="col col-2"></div>
-        <div class="col col-8">
-          <div class="v-card v-sheet v-sheet--outlined theme--light">
-            <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text info--text">
-              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-information theme--dark info--text"></i>
-                <div class="v-alert__content">Sign in in order to finish setting up your explorer</div>
-              </div>
-            </div>
-            <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
-              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
-                <div class="v-alert__content"></div>
-              </div>
-            </div>
-            <div class="v-card__title">Sign In</div>
-            <div class="v-card__text">
-              <form novalidate="novalidate" class="v-form">
-                <div class="v-input theme--light v-text-field">
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot"><label for="input-10" class="v-label theme--light" style="left: 0px; position: absolute;">Email</label><input required="required" name="email" id="input-10" type="text"></div>
-                    </div>
-                    <div class="v-text-field__details">
-                      <div class="v-messages theme--light">
-                        <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-input theme--light v-text-field">
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot"><label for="input-13" class="v-label theme--light" style="left: 0px; position: absolute;">Password</label><input required="required" name="password" id="input-13" type="password"></div>
-                    </div>
-                    <div class="v-text-field__details">
-                      <div class="v-messages theme--light">
-                        <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-card__actions px-0">
-                  <div style="float: left;"><small><a>Sign Up</a></small><br> <small><a>Forgot My Password</a></small></div>
-                  <div class="spacer"></div> <button type="submit" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Sign In</span></button>
-                </div>
-              </form>
-            </div>
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text info--text">
+          <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-information theme--dark info--text"></i>
+            <div class="v-alert__content">Sign up or sign in in order to finish setting up your explorer</div>
           </div>
         </div>
-        <div class="col col-2"></div>
+        <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
+          <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
+            <div class="v-alert__content"></div>
+          </div>
+        </div>
+        <div class="v-card__title">Sign In</div>
+        <div class="v-card__text">
+          <form novalidate="novalidate" class="v-form">
+            <div class="v-input theme--light v-text-field">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <div class="v-text-field__slot"><label for="input-10" class="v-label theme--light" style="left: 0px; position: absolute;">Email</label><input required="required" name="email" id="input-10" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="v-input theme--light v-text-field">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <div class="v-text-field__slot"><label for="input-13" class="v-label theme--light" style="left: 0px; position: absolute;">Password</label><input required="required" name="password" id="input-13" type="password"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="v-card__actions px-0">
+              <div style="float: left;"><small><a>Sign Up</a></small><br> <small><a>Forgot My Password</a></small></div>
+              <div class="spacer"></div> <button type="submit" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Sign In</span></button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -74,60 +61,47 @@ exports[`Auth.vue Should display an explorer migration message 1`] = `
 `;
 
 exports[`Auth.vue Should load the reset password screen 1`] = `
-<div class="layout background fill-height">
-  <div class="row fill-height my-0">
-    <div class="fill-height hidden-md-and-down col col-7">
-      <div class="row fill-height align-center">
-        <div class="text-center col">
-          <h1 class="logo">Ethernal</h1>
-          <p>
-            Ethernal is an open source block explorer for private EVM-based chains.
-          </p>
-          <p>
-            If you are new to Ethernal, you should keep the <a href="https://doc.tryethernal.com" target="_blank">doc</a> in a tab nearby!
-          </p>
-        </div>
+<div class="layout primary fill-height">
+  <div class="row fill-height ma-0 no-gutters justify-center">
+    <div class="col-lg-4 col align-self-center">
+      <div class="text-center white--text font-weight-medium">
+        <h1 class="logo-white">Ethernal</h1>
+        <p>
+          Ethernal is an open source block explorer for EVM-based chains.
+        </p>
       </div>
-    </div>
-    <div class="primary fill-height col-md-12 col-lg-5 col">
-      <div align-self="center" class="row fill-height align-center">
-        <div class="col col-2"></div>
-        <div class="col col-8">
-          <div class="v-card v-sheet v-sheet--outlined theme--light">
-            <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
-              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
-                <div class="v-alert__content"></div>
-              </div>
-            </div>
-            <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text success--text" style="display: none;">
-              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-check-circle theme--dark success--text"></i>
-                <div class="v-alert__content"></div>
-              </div>
-            </div>
-            <div class="v-card__title">Reset Password</div>
-            <div class="v-card__text">
-              <form novalidate="novalidate" class="v-form">
-                <div class="v-input theme--light v-text-field">
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot"><label for="input-78" class="v-label theme--light" style="left: 0px; position: absolute;">New Password</label><input required="required" name="password" id="input-78" type="password"></div>
-                    </div>
-                    <div class="v-text-field__details">
-                      <div class="v-messages theme--light">
-                        <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-card__actions px-0">
-                  <div style="float: left;"><small><a>Sign In</a></small><br></div>
-                  <div class="spacer"></div> <button type="submit" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Submit</span></button>
-                </div>
-              </form>
-            </div>
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
+          <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
+            <div class="v-alert__content"></div>
           </div>
         </div>
-        <div class="col col-2"></div>
+        <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text success--text" style="display: none;">
+          <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-check-circle theme--dark success--text"></i>
+            <div class="v-alert__content"></div>
+          </div>
+        </div>
+        <div class="v-card__title">Reset Password</div>
+        <div class="v-card__text">
+          <form novalidate="novalidate" class="v-form">
+            <div class="v-input theme--light v-text-field">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <div class="v-text-field__slot"><label for="input-78" class="v-label theme--light" style="left: 0px; position: absolute;">New Password</label><input required="required" name="password" id="input-78" type="password"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="v-card__actions px-0">
+              <div style="float: left;"><small><a>Sign In</a></small><br></div>
+              <div class="spacer"></div> <button type="submit" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Submit</span></button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -135,61 +109,48 @@ exports[`Auth.vue Should load the reset password screen 1`] = `
 `;
 
 exports[`Auth.vue Should load the send reset password email screen 1`] = `
-<div class="layout background fill-height">
-  <div class="row fill-height my-0">
-    <div class="fill-height hidden-md-and-down col col-7">
-      <div class="row fill-height align-center">
-        <div class="text-center col">
-          <h1 class="logo">Ethernal</h1>
-          <p>
-            Ethernal is an open source block explorer for private EVM-based chains.
-          </p>
-          <p>
-            If you are new to Ethernal, you should keep the <a href="https://doc.tryethernal.com" target="_blank">doc</a> in a tab nearby!
-          </p>
-        </div>
+<div class="layout primary fill-height">
+  <div class="row fill-height ma-0 no-gutters justify-center">
+    <div class="col-lg-4 col align-self-center">
+      <div class="text-center white--text font-weight-medium">
+        <h1 class="logo-white">Ethernal</h1>
+        <p>
+          Ethernal is an open source block explorer for EVM-based chains.
+        </p>
       </div>
-    </div>
-    <div class="primary fill-height col-md-12 col-lg-5 col">
-      <div align-self="center" class="row fill-height align-center">
-        <div class="col col-2"></div>
-        <div class="col col-8">
-          <div class="v-card v-sheet v-sheet--outlined theme--light">
-            <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
-              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
-                <div class="v-alert__content"></div>
-              </div>
-            </div>
-            <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text success--text" style="display: none;">
-              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-check-circle theme--dark success--text"></i>
-                <div class="v-alert__content"></div>
-              </div>
-            </div>
-            <div class="v-card__title">Forgotten Password?</div>
-            <div class="v-card__text">
-              Enter your email below and we'll send you a link to reset your password.
-              <form novalidate="novalidate" class="v-form">
-                <div class="v-input theme--light v-text-field">
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot"><label for="input-61" class="v-label theme--light" style="left: 0px; position: absolute;">Email</label><input required="required" name="email" id="input-61" type="text"></div>
-                    </div>
-                    <div class="v-text-field__details">
-                      <div class="v-messages theme--light">
-                        <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-card__actions px-0">
-                  <div style="float: left;"><small><a>Sign In</a></small><br> <small><a>Sign Up</a></small></div>
-                  <div class="spacer"></div> <button type="submit" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Submit</span></button>
-                </div>
-              </form>
-            </div>
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
+          <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
+            <div class="v-alert__content"></div>
           </div>
         </div>
-        <div class="col col-2"></div>
+        <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text success--text" style="display: none;">
+          <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-check-circle theme--dark success--text"></i>
+            <div class="v-alert__content"></div>
+          </div>
+        </div>
+        <div class="v-card__title">Forgotten Password?</div>
+        <div class="v-card__text">
+          Enter your email below and we'll send you a link to reset your password.
+          <form novalidate="novalidate" class="v-form">
+            <div class="v-input theme--light v-text-field">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <div class="v-text-field__slot"><label for="input-61" class="v-label theme--light" style="left: 0px; position: absolute;">Email</label><input required="required" name="email" id="input-61" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="v-card__actions px-0">
+              <div style="float: left;"><small><a>Sign In</a></small><br> <small><a>Sign Up</a></small></div>
+              <div class="spacer"></div> <button type="submit" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Submit</span></button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -197,72 +158,59 @@ exports[`Auth.vue Should load the send reset password email screen 1`] = `
 `;
 
 exports[`Auth.vue Should load the signin screen 1`] = `
-<div class="layout background fill-height">
-  <div class="row fill-height my-0">
-    <div class="fill-height hidden-md-and-down col col-7">
-      <div class="row fill-height align-center">
-        <div class="text-center col">
-          <h1 class="logo">Ethernal</h1>
-          <p>
-            Ethernal is an open source block explorer for private EVM-based chains.
-          </p>
-          <p>
-            If you are new to Ethernal, you should keep the <a href="https://doc.tryethernal.com" target="_blank">doc</a> in a tab nearby!
-          </p>
-        </div>
+<div class="layout primary fill-height">
+  <div class="row fill-height ma-0 no-gutters justify-center">
+    <div class="col-lg-4 col align-self-center">
+      <div class="text-center white--text font-weight-medium">
+        <h1 class="logo-white">Ethernal</h1>
+        <p>
+          Ethernal is an open source block explorer for EVM-based chains.
+        </p>
       </div>
-    </div>
-    <div class="primary fill-height col-md-12 col-lg-5 col">
-      <div align-self="center" class="row fill-height align-center">
-        <div class="col col-2"></div>
-        <div class="col col-8">
-          <div class="v-card v-sheet v-sheet--outlined theme--light">
-            <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text info--text" style="display: none;">
-              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-information theme--dark info--text"></i>
-                <div class="v-alert__content">Sign in in order to finish setting up your explorer</div>
-              </div>
-            </div>
-            <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
-              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
-                <div class="v-alert__content"></div>
-              </div>
-            </div>
-            <div class="v-card__title">Sign In</div>
-            <div class="v-card__text">
-              <form novalidate="novalidate" class="v-form">
-                <div class="v-input theme--light v-text-field">
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot"><label for="input-27" class="v-label theme--light" style="left: 0px; position: absolute;">Email</label><input required="required" name="email" id="input-27" type="text"></div>
-                    </div>
-                    <div class="v-text-field__details">
-                      <div class="v-messages theme--light">
-                        <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-input theme--light v-text-field">
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot"><label for="input-30" class="v-label theme--light" style="left: 0px; position: absolute;">Password</label><input required="required" name="password" id="input-30" type="password"></div>
-                    </div>
-                    <div class="v-text-field__details">
-                      <div class="v-messages theme--light">
-                        <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-card__actions px-0">
-                  <div style="float: left;"><small><a>Sign Up</a></small><br> <small><a>Forgot My Password</a></small></div>
-                  <div class="spacer"></div> <button type="submit" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Sign In</span></button>
-                </div>
-              </form>
-            </div>
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text info--text" style="display: none;">
+          <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-information theme--dark info--text"></i>
+            <div class="v-alert__content">Sign up or sign in in order to finish setting up your explorer</div>
           </div>
         </div>
-        <div class="col col-2"></div>
+        <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
+          <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
+            <div class="v-alert__content"></div>
+          </div>
+        </div>
+        <div class="v-card__title">Sign In</div>
+        <div class="v-card__text">
+          <form novalidate="novalidate" class="v-form">
+            <div class="v-input theme--light v-text-field">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <div class="v-text-field__slot"><label for="input-27" class="v-label theme--light" style="left: 0px; position: absolute;">Email</label><input required="required" name="email" id="input-27" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="v-input theme--light v-text-field">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <div class="v-text-field__slot"><label for="input-30" class="v-label theme--light" style="left: 0px; position: absolute;">Password</label><input required="required" name="password" id="input-30" type="password"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="v-card__actions px-0">
+              <div style="float: left;"><small><a>Sign Up</a></small><br> <small><a>Forgot My Password</a></small></div>
+              <div class="spacer"></div> <button type="submit" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Sign In</span></button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -270,72 +218,59 @@ exports[`Auth.vue Should load the signin screen 1`] = `
 `;
 
 exports[`Auth.vue Should load the signup screen 1`] = `
-<div class="layout background fill-height">
-  <div class="row fill-height my-0">
-    <div class="fill-height hidden-md-and-down col col-7">
-      <div class="row fill-height align-center">
-        <div class="text-center col">
-          <h1 class="logo">Ethernal</h1>
-          <p>
-            Ethernal is an open source block explorer for private EVM-based chains.
-          </p>
-          <p>
-            If you are new to Ethernal, you should keep the <a href="https://doc.tryethernal.com" target="_blank">doc</a> in a tab nearby!
-          </p>
-        </div>
+<div class="layout primary fill-height">
+  <div class="row fill-height ma-0 no-gutters justify-center">
+    <div class="col-lg-4 col align-self-center">
+      <div class="text-center white--text font-weight-medium">
+        <h1 class="logo-white">Ethernal</h1>
+        <p>
+          Ethernal is an open source block explorer for EVM-based chains.
+        </p>
       </div>
-    </div>
-    <div class="primary fill-height col-md-12 col-lg-5 col">
-      <div align-self="center" class="row fill-height align-center">
-        <div class="col col-2"></div>
-        <div class="col col-8">
-          <div class="v-card v-sheet v-sheet--outlined theme--light">
-            <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text info--text" style="display: none;">
-              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-information theme--dark info--text"></i>
-                <div class="v-alert__content">Sign up in order to finish setting up your explorer</div>
-              </div>
-            </div>
-            <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
-              <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
-                <div class="v-alert__content"></div>
-              </div>
-            </div>
-            <div class="v-card__title">Sign Up</div>
-            <div class="v-card__text">
-              <form novalidate="novalidate" class="v-form">
-                <div class="v-input theme--light v-text-field">
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot"><label for="input-44" class="v-label theme--light" style="left: 0px; position: absolute;">Email</label><input required="required" name="email" id="input-44" type="text"></div>
-                    </div>
-                    <div class="v-text-field__details">
-                      <div class="v-messages theme--light">
-                        <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-input theme--light v-text-field">
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot"><label for="input-47" class="v-label theme--light" style="left: 0px; position: absolute;">Password</label><input required="required" name="password" id="input-47" type="password"></div>
-                    </div>
-                    <div class="v-text-field__details">
-                      <div class="v-messages theme--light">
-                        <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="v-card__actions px-0">
-                  <div style="float: left;"><small><a>Sign In</a></small><br> <small><a>Forgot My Password</a></small></div>
-                  <div class="spacer"></div> <button type="submit" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Sign Up</span></button>
-                </div>
-              </form>
-            </div>
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text info--text" style="display: none;">
+          <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-information theme--dark info--text"></i>
+            <div class="v-alert__content">Sign up or sign in in order to finish setting up your explorer</div>
           </div>
         </div>
-        <div class="col col-2"></div>
+        <div role="alert" class="v-alert mb-0 v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
+          <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
+            <div class="v-alert__content"></div>
+          </div>
+        </div>
+        <div class="v-card__title">Sign Up</div>
+        <div class="v-card__text">
+          <form novalidate="novalidate" class="v-form">
+            <div class="v-input theme--light v-text-field">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <div class="v-text-field__slot"><label for="input-44" class="v-label theme--light" style="left: 0px; position: absolute;">Email</label><input required="required" name="email" id="input-44" type="text"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="v-input theme--light v-text-field">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <div class="v-text-field__slot"><label for="input-47" class="v-label theme--light" style="left: 0px; position: absolute;">Password</label><input required="required" name="password" id="input-47" type="password"></div>
+                </div>
+                <div class="v-text-field__details">
+                  <div class="v-messages theme--light">
+                    <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="v-card__actions px-0">
+              <div style="float: left;"><small><a>Sign In</a></small><br> <small><a>Forgot My Password</a></small></div>
+              <div class="spacer"></div> <button type="submit" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Sign Up</span></button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
