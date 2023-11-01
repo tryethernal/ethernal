@@ -10,7 +10,11 @@ exports[`ExplorerPlanCard.vue Should display card with trial button 1`] = `
   </div>
   <div class="v-card__subtitle pb-0">$1,000 / month</div>
   <div class="v-card__text">
+    <div class="mt-3 two-lines">
+      This is a plan
+    </div>
     <div role="list" class="v-list v-sheet theme--light v-list--dense">
+      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
       <div tabindex="-1" role="listitem" class="v-list-item theme--light">
         <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
         <div class="v-list-item__content py-0">
@@ -97,7 +101,11 @@ exports[`ExplorerPlanCard.vue Should display current plan card 1`] = `
   </div>
   <div class="v-card__subtitle pb-0">$1,000 / month</div>
   <div class="v-card__text">
+    <div class="mt-3 two-lines">
+      This is a plan
+    </div>
     <div role="list" class="v-list v-sheet theme--light v-list--dense">
+      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
       <div tabindex="-1" role="listitem" class="v-list-item theme--light">
         <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
         <div class="v-list-item__content py-0">
@@ -185,7 +193,11 @@ exports[`ExplorerPlanCard.vue Should display disabled plan card 1`] = `
   </div>
   <div class="v-card__subtitle pb-0">$1,000 / month</div>
   <div class="v-card__text">
+    <div class="mt-3 two-lines">
+      This is a plan
+    </div>
     <div role="list" class="v-list v-sheet theme--light v-list--dense">
+      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
       <div tabindex="-1" role="listitem" class="v-list-item theme--light">
         <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
         <div class="v-list-item__content py-0">
@@ -273,7 +285,11 @@ exports[`ExplorerPlanCard.vue Should display loading plan card 1`] = `
   </div>
   <div class="v-card__subtitle pb-0">$1,000 / month</div>
   <div class="v-card__text">
+    <div class="mt-3 two-lines">
+      This is a plan
+    </div>
     <div role="list" class="v-list v-sheet theme--light v-list--dense">
+      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
       <div tabindex="-1" role="listitem" class="v-list-item theme--light">
         <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
         <div class="v-list-item__content py-0">
@@ -360,7 +376,11 @@ exports[`ExplorerPlanCard.vue Should display pending cancelation plan card 1`] =
   </div>
   <div class="v-card__subtitle pb-0">$1,000 / month</div>
   <div class="v-card__text">
+    <div class="mt-3 two-lines">
+      This is a plan
+    </div>
     <div role="list" class="v-list v-sheet theme--light v-list--dense">
+      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
       <div tabindex="-1" role="listitem" class="v-list-item theme--light">
         <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
         <div class="v-list-item__content py-0">
@@ -448,7 +468,11 @@ exports[`ExplorerPlanCard.vue Should display regular plan card 1`] = `
   </div>
   <div class="v-card__subtitle pb-0">$1,000 / month</div>
   <div class="v-card__text">
+    <div class="mt-3 two-lines">
+      This is a plan
+    </div>
     <div role="list" class="v-list v-sheet theme--light v-list--dense">
+      <hr role="separator" aria-orientation="horizontal" class="my-2 v-divider theme--light">
       <div tabindex="-1" role="listitem" class="v-list-item theme--light">
         <div class="v-list-item__icon mr-2"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
         <div class="v-list-item__content py-0">

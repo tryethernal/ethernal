@@ -4,7 +4,7 @@ exports[`UpdateExplorerPlanModal.vue Should cancel a subscription 1`] = `
 <div class="v-dialog__container">
   <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 1200px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 1800px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title">
             Select A Plan
@@ -12,15 +12,15 @@ exports[`UpdateExplorerPlanModal.vue Should cancel a subscription 1`] = `
           </div>
           <div class="v-card__text">
             <!---->
-            <ul class="mb-4" style="list-style: none;">
+            <ul class="mb-4 pl-0" style="list-style: none;">
               <li>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
               <!---->
             </ul>
             <div class="row justify-center">
-              <div class="col col-3">
+              <div class="col-md-12 col-lg-3 col">
                 <explorer-plan-card-stub current="true" plan="[object Object]" pendingcancelation="true"></explorer-plan-card-stub>
               </div>
-              <div class="col col-3">
+              <div class="col-md-12 col-lg-3 col">
                 <explorer-plan-card-stub plan="[object Object]" disabled="true"></explorer-plan-card-stub>
               </div>
             </div>
@@ -36,7 +36,7 @@ exports[`UpdateExplorerPlanModal.vue Should start a crypto subscription 1`] = `
 <div class="v-dialog__container">
   <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 1200px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 1800px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title">
             Select A Plan
@@ -46,10 +46,10 @@ exports[`UpdateExplorerPlanModal.vue Should start a crypto subscription 1`] = `
             <!---->
             <!---->
             <div class="row justify-center">
-              <div class="col col-3">
+              <div class="col-md-12 col-lg-3 col">
                 <explorer-plan-card-stub plan="[object Object]" current="true"></explorer-plan-card-stub>
               </div>
-              <div class="col col-3">
+              <div class="col-md-12 col-lg-3 col">
                 <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
               </div>
             </div>
@@ -65,7 +65,7 @@ exports[`UpdateExplorerPlanModal.vue Should start a stripe subscription 1`] = `
 <div class="v-dialog__container">
   <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 1200px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 1800px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title">
             Select A Plan
@@ -73,15 +73,15 @@ exports[`UpdateExplorerPlanModal.vue Should start a stripe subscription 1`] = `
           </div>
           <div class="v-card__text">
             <!---->
-            <ul class="mb-4" style="list-style: none;">
+            <ul class="mb-4 pl-0" style="list-style: none;">
               <li>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
               <li>Each plan includes a 7 day free trial - No credit card needed.</li>
             </ul>
             <div class="row justify-center">
-              <div class="col col-3">
+              <div class="col-md-12 col-lg-3 col">
                 <explorer-plan-card-stub trial="true" plan="[object Object]" loading="true"></explorer-plan-card-stub>
               </div>
-              <div class="col col-3">
+              <div class="col-md-12 col-lg-3 col">
                 <explorer-plan-card-stub trial="true" plan="[object Object]" disabled="true"></explorer-plan-card-stub>
               </div>
             </div>
@@ -97,7 +97,7 @@ exports[`UpdateExplorerPlanModal.vue Should update a subscription 1`] = `
 <div class="v-dialog__container">
   <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 1200px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 1800px;">
         <div class="v-card v-sheet theme--light">
           <div class="v-card__title">
             Select A Plan
@@ -107,10 +107,10 @@ exports[`UpdateExplorerPlanModal.vue Should update a subscription 1`] = `
             <!---->
             <!---->
             <div class="row justify-center">
-              <div class="col col-3">
+              <div class="col-md-12 col-lg-3 col">
                 <explorer-plan-card-stub plan="[object Object]"></explorer-plan-card-stub>
               </div>
-              <div class="col col-3">
+              <div class="col-md-12 col-lg-3 col">
                 <explorer-plan-card-stub plan="[object Object]" current="true"></explorer-plan-card-stub>
               </div>
             </div>
