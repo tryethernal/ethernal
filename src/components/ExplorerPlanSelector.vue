@@ -33,6 +33,8 @@ export default {
             default: 'explorer-150'
         },
         explorerId: Number,
+        currentPlanSlug: String,
+        isTrialing: Boolean,
         stripeSuccessUrl: String,
         stripeCancelUrl: String
     },
@@ -43,7 +45,8 @@ export default {
         loading: false,
         plans: null,
         selectedPlanSlug: null,
-        errorMessage: null
+        errorMessage: null,
+        updatingSlug: null
     }),
     mounted() {
         this.loading = true;
@@ -56,9 +59,102 @@ export default {
     },
     methods: {
         onPlanSelected(slug) {
-            this.selectedPlanSlug = slug;
+            this.selectedPlanSlug = slug || this.currentPlanSlug;
             this.errorMessage = null;
+            if (slug && !this.currentPlanSlug)
+                this.createPlan(slug);
+            else if (slug && this.currentPlanSlug)
+                this.updatePlan(slug);
+            else if (!slug && this.currentPlanSlug)
+                this.cancelPlan();
             this.user.cryptoPaymentEnabled ? this.useCryptoPayment() : this.useStripePayment();
+        },
+        createPlan(slug) {
+            if (this.user.cryptoPaymentEnabled) {
+                this.server.startCryptoSubscription(slug, this.explorerId)
+                    .then(() => {
+                        this.currentPlanSlug = slug;
+                        this.planUpdated = true;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.errorMessage = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
+                    })
+                    .finally(() => this.selectedPlanSlug = null);
+            }
+            else {
+                this.server.startTrial(this.explorerId, slug)
+                    .then(() => window.location.assign(`//app.${this.mainDomain}/explorers/${this.explorerId}`))
+                    .catch(error => {
+                        console.log(error);
+                        this.errorMessage = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
+                        this.selectedPlanSlug = null;
+                    });
+                }
+        },
+        updatePlan(slug) {
+            if (this.isTrialing) {
+                const confirmationMessage = `If you update your plan, you will be charged the amount of the new one at the end of the trial period.
+
+Are you sure you want to change plan?`;
+                if (!confirm(confirmationMessage))
+                    return this.selectedPlanSlug = null;
+            }
+            else if (this.isLessExpensiveThanCurrent(slug)) {
+                const confirmationMessage = `This plan is cheaper than the current one. Your account will be credited with the prorated remainder for this month. These credits will automatically be applied to future invoices.
+
+Are you sure you want to change plan?`;
+                if (!confirm(confirmationMessage))
+                    return this.selectedPlanSlug = null;
+            }
+            else {
+                const confirmationMessage = `You will now be charged for the difference between your current plan and this one.
+
+Are you sure you want to change plan?`;
+                if (!confirm(confirmationMessage))
+                    return this.selectedPlanSlug = null;
+            }
+
+            this.server.updateExplorerSubscription(this.explorerId, slug)
+                .then(() => {
+                    if (this.pendingCancelation && slug)
+                        this.pendingCancelation = false;
+                    this.currentPlanSlug = slug;
+                    this.planUpdated = true;
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.errorMessage = error.response && error.response.data || 'Error while updating the plan. Please retry.';
+                })
+                .finally(() => this.selectedPlanSlug = null);
+        },
+        cancelPlan() {
+            const confirmationMessage = this.isTrialing ?
+                `This will cancel your trial & you won't be charged. Your explorer will be active until the end of the trial period.
+
+Are you sure you want to cancel?` :
+
+                `If you cancel now, your explorer will be available until the end of the current billing period (06-08-2023).
+                After that:
+                - Blocks will stop syncing automatically
+                - The explorer won't be accessible publicly anymore
+                - You will still have access to your data privately in your workspace.
+                If you want to resume the explorer, you'll just need to resubscribe to a plan.
+
+Are you sure you want to cancel?`;
+
+            if (!confirm(confirmationMessage)) return this.selectedPlanSlug = null;
+
+            this.server.cancelExplorerSubscription(this.explorerId)
+                .then(() => {
+                    this.pendingCancelation = true;
+                    this.planUpdated = true;
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.errorMessage = error.response && error.response.data || 'Error while canceling the plan. Please retry.';
+                })
+                .finally(() => this.selectedPlanSlug = null);
         },
         useCryptoPayment() {
             this.server.startCryptoSubscription(this.selectedPlanSlug, this.explorerId)
