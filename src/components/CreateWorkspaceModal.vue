@@ -38,7 +38,7 @@ export default {
         },
         onWorkspaceCreated: function(workspaceData) {
             this.server.setCurrentWorkspace(workspaceData.name)
-                .then(() => document.location = '/blocks');
+                .then(() => document.location = '/overview');
         },
         goToBilling: function() {
             this.close(false);

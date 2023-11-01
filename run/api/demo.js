@@ -86,6 +86,8 @@ router.post('/migrateExplorer', authMiddleware, async (req, res) => {
 
         await db.migrateDemoExplorer(explorer.id, user.id, subscription);
 
+        await db.setCurrentWorkspace(user.firebaseUserId, explorer.workspace.name);
+
         res.status(200).send({ explorerId: explorer.id });
     } catch(error) {
         logger.error(error.message, { location: 'post.api.demo.migrateExplorer', error: error, data: data });

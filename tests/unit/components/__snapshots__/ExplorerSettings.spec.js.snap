@@ -72,7 +72,7 @@ exports[`ExplorerSettings.vue Should display settings with all options 1`] = `
                 <fieldset aria-hidden="true">
                   <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                 </fieldset>
-                <div class="v-text-field__slot"><label for="input-17" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Native Token</label><input id="input-17" type="text"></div>
+                <div class="v-text-field__slot"><label for="input-17" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Native Token Symbol</label><input id="input-17" type="text"></div>
               </div>
               <div class="v-text-field__details">
                 <div class="v-messages theme--light">
@@ -180,7 +180,7 @@ exports[`ExplorerSettings.vue Should display settings with deactivated options 1
                 <fieldset aria-hidden="true">
                   <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                 </fieldset>
-                <div class="v-text-field__slot"><label for="input-41" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Native Token</label><input disabled="disabled" id="input-41" type="text"></div>
+                <div class="v-text-field__slot"><label for="input-41" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Native Token Symbol</label><input disabled="disabled" id="input-41" type="text"></div>
               </div>
               <div class="v-text-field__details">
                 <div class="v-messages theme--light">

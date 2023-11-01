@@ -126,6 +126,8 @@ export default new Vuex.Store({
         },
         updateCurrentWorkspace({ commit }, currentWorkspace) {
             commit('SET_CURRENT_WORKSPACE', currentWorkspace);
+            if (currentWorkspace.explorer)
+            commit('SET_PUBLIC_EXPLORER_DATA', currentWorkspace.explorer);
         },
         updateConnected({ commit }, connected) {
             commit('SET_CONNECTED', connected);
