@@ -10,6 +10,6 @@ module.exports = {
     getPm2Host: () => process.env.PM2_HOST,
     getPm2Secret: () => process.env.PM2_SECRET,
     getDemoUserId: () => process.env.DEMO_USER_ID,
-    getDemoTrialSlug: () => 'explorer-500',
+    getDemoTrialSlug: () => process.env.DEMO_TRIAL_SLUG,
     getStripeSecretKey: () => process.env.STRIPE_SECRET_KEY
 };
