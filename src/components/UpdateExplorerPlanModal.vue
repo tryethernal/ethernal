@@ -75,10 +75,8 @@ export default {
                     .finally(() => this.updatingSlug = null);
             }
             else {
-                const successUrl = `http://app.${this.mainDomain}/explorers/${this.explorerId}?status=success`;
-                const cancelUrl = `http://app.${this.mainDomain}/explorers/${this.explorerId}`;
-                this.server.createStripeExplorerCheckoutSession(this.explorerId, slug, successUrl, cancelUrl)
-                    .then(({ data }) => window.location.assign(data.url))
+                this.server.startTrial(this.explorerId, slug)
+                    .then(() => window.location.assign(`//app.${this.mainDomain}/explorers/${this.explorerId}`))
                     .catch(error => {
                         console.log(error);
                         this.errorMessage = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
