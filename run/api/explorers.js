@@ -14,6 +14,52 @@ const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const secretMiddleware = require('../middlewares/secret');
 
+router.post('/:id/startTrial', authMiddleware, async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        if (!data.stripePlanSlug)
+            throw new Error('Missing parameter');
+
+        const user = await db.getUser(data.uid, ['stripeCustomerId', 'canTrial']);
+        if (!user)
+            throw new Error('Could not find user.');
+
+        if (!user.canTrial)
+            throw new Error(`You've already used your trial.`);
+
+        const explorer = await db.getExplorerById(user.id, req.params.id);
+        if (!explorer)
+            throw new Error('Could not find explorer.');
+
+        const plan = await db.getStripePlan(data.stripePlanSlug);
+        if (!plan)
+            throw new Error('Could not find plan.');
+
+        const subscription = await stripe.subscriptions.create({
+            customer: user.stripeCustomerId,
+            items: [{ price: plan.stripePriceId }],
+            trial_period_days: 7,
+            trial_settings: {
+                end_behavior: { missing_payment_method: 'cancel' }
+            },
+            metadata: { explorerId: explorer.id }
+        });
+        const customer = await stripe.customers.retrieve(subscription.customer);
+
+        if (!subscription)
+            throw new Error('Error while starting trial. Please try again.')
+
+        await db.createExplorerSubscription(user.id, explorer.id,  plan.id, { ...subscription, customer });
+        await db.disableUserTrial(user.id);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.explorers.startTrial', error });
+        res.status(400).send(error.message);
+    }
+});
+
 router.post('/syncExplorers', secretMiddleware, async (req, res) => {
     try {
         const explorers = await Explorer.findAll();
@@ -31,7 +77,7 @@ router.post('/syncExplorers', secretMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.syncExplorers', error });
+        logger.error(error.message, { location: 'post.api.explorers.syncExplorers', error });
         res.status(400).send(error.message);
     }
 });
