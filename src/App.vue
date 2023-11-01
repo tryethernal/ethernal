@@ -340,7 +340,7 @@ export default {
             if (currentPath == '/auth' && user) {
                 const queryParams = { ...this.$route.query };
                 delete queryParams.next;
-                return this.$router.push({ path: this.$route.query.next || '/transactions', query: queryParams});
+                return this.$router.push({ path: this.$route.query.next || '/overview', query: queryParams});
             }
         },
         setupPublicExplorer() {
