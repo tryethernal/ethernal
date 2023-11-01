@@ -23,8 +23,23 @@ module.exports = (sequelize, DataTypes) => {
       User.hasOne(models.StripeSubscription, { foreignKey: 'userId', as: 'stripeSubscription' });
     }
 
-    static findByAuthId(firebaseUserId, extraFields = []) {
-        return User.findOne({
+    static async findByAuthId(firebaseUserId, extraFields = []) {
+        const currentExplorerAttributes = ['id', 'chainId', 'domain', 'isDemo', 'name', 'rpcServer', 'shouldSync', 'slug', 'themes', 'userId', 'workspaceId'];
+        const user = await User.findOne({ where: { firebaseUserId }, include: 'currentWorkspace' })
+        if (user.currentWorkspace) {
+            const currentExplorer = await user.currentWorkspace.getExplorer({
+                include: {
+                    model: sequelize.models.StripeSubscription,
+                    as: 'stripeSubscription',
+                    include: 'stripePlan'
+                }
+            });
+            if (currentExplorer && currentExplorer.stripeSubscription.stripePlan.capabilities.nativeToken)
+                currentExplorerAttributes.push('token');
+            if (currentExplorer && currentExplorer.stripeSubscription.stripePlan.capabilities.totalSupply)
+                currentExplorerAttributes.push('totalSupply');
+        }
+        return  User.findOne({
             where: {
                 firebaseUserId: firebaseUserId
             },
@@ -35,7 +50,15 @@ module.exports = (sequelize, DataTypes) => {
                     as: 'workspaces',
                     include: 'explorer'
                 },
-                'currentWorkspace'
+                {
+                    model: sequelize.models.Workspace,
+                    as: 'currentWorkspace',
+                    include: {
+                        model: sequelize.models.Explorer,
+                        as: 'explorer',
+                        attributes: currentExplorerAttributes
+                    }
+                },
             ]
         });
     }
