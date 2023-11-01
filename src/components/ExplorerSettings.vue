@@ -43,7 +43,7 @@
                             :hint="capabilities.nativeToken ? '' : 'Upgrade your plan to customize your native token symbol.'"
                             v-model="explorer.token"
                             persistent-hint
-                            label="Native Token"></v-text-field>
+                            label="Native Token Symbol"></v-text-field>
                         <v-text-field
                             dense
                             outlined
@@ -97,10 +97,14 @@ export default {
             const settings = {
                 workspace: this.currentWorkspace.name,
                 name: this.explorer.name,
-                slug: this.explorer.slug,
-                token: this.explorer.token,
-                totalSupply: this.explorer.totalSupply,
+                slug: this.explorer.slug
             };
+
+            if (this.capabilities.nativeToken)
+                settings['token'] = this.explorer.token;
+
+            if (this.capabilities.totalSupply)
+                settings['totalSupply'] = this.explorer.totalSupply;
 
             this.server.updateExplorerSettings(this.explorer.id, settings)
                 .then(() => {

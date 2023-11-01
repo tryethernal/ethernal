@@ -181,7 +181,7 @@ describe(`POST ${BASE_URL}/migrateExplorer`, () => {
 
     it('Should return the migrated explorer id', (done) => {
         jest.spyOn(crypto, 'decode').mockReturnValueOnce({ explorerId: 1 });
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, isDemo: true });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, isDemo: true, workspace: { name: 'explorer' }});
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, canTrial: true });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ stripePriceId: 'id' });
         jest.spyOn(db, 'migrateDemoExplorer').mockResolvedValueOnce();

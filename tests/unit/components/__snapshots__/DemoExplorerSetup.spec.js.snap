@@ -76,7 +76,7 @@ exports[`DemoExplorerSetup.vue Should display demo explorer setup page 1`] = `
                   <fieldset aria-hidden="true">
                     <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                   </fieldset>
-                  <div class="v-text-field__slot"><label for="input-16" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Native Token Name (optional)</label><input required="required" id="input-16" type="text"></div>
+                  <div class="v-text-field__slot"><label for="input-16" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Native Token Symbol (optional)</label><input required="required" id="input-16" type="text"></div>
                 </div>
                 <div class="v-text-field__details">
                   <div class="v-messages theme--light">

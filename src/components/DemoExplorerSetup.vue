@@ -47,7 +47,7 @@
                                     v => !!v || 'RPC server is required'
                                 ]"
                                 outlined v-model="rpcServer" label="RPC URL" placeholder="https://my.rpc.com:8545" class="mb-2" required></v-text-field>
-                            <v-text-field outlined v-model="nativeToken" label="Native Token Name (optional)" placeholder="ether" class="mb-2" required></v-text-field>
+                            <v-text-field outlined v-model="nativeToken" label="Native Token Symbol (optional)" placeholder="ETH" class="mb-2" required></v-text-field>
                             <v-btn large width="100%" :loading="loading" color="primary" :disabled="!valid" type="submit">Generate Explorer</v-btn>
                         </v-form>
                         <v-card outlined class="mt-4" v-if="domain">
