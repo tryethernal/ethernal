@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" :max-width="user.canTrial || justMigrated ? 600 : 1200" :persistent="true">
+    <v-dialog v-model="dialog" :max-width="user.canTrial || justMigrated ? 600 : 1800" :persistent="true">
         <v-card outlined v-if="explorerId" :class="{'pa-4': !user.canTrial && !justMigrated }">
             <v-card-title v-if="!user.canTrial && !justMigrated">Setup up your explorer</v-card-title>
             <v-card-title v-else>

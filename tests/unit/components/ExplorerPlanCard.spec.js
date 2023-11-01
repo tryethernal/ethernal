@@ -21,7 +21,8 @@ const plan = {
         totalSupply: false,
         statusPage: false,
         branding: true,
-        customFields: false
+        customFields: false,
+        description: 'This is a plan'
     }
 };
 

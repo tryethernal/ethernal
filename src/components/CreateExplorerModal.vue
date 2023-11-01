@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" max-width="1200">
+    <v-dialog v-model="dialog" :max-width="stepperIndex * 900">
         <v-stepper vertical v-model="stepperIndex">
             <h3 class="ml-6 mt-4">Public Explorer Creation</h3>
             <v-stepper-step step="1" :complete="stepperIndex > 1">Setup The Workspace</v-stepper-step>
@@ -33,7 +33,7 @@
                 <v-card>
                     <v-card-text>
                         <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
-                        <ul style="list-style: none;" v-if="!user.cryptoPaymentEnabled || user.canTrial" class="mb-4">
+                        <ul style="list-style: none;" v-if="!user.cryptoPaymentEnabled || user.canTrial" class="mb-4 pl-0">
                             <li v-if="!user.cryptoPaymentEnabled">To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
                             <li v-if="user.canTrial">Each plan includes a 7 day free trial - No credit card needed.</li>
                         </ul>
