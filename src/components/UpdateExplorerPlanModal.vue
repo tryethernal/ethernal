@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" max-width="1200">
+    <v-dialog v-model="dialog" max-width="1800">
         <v-card>
             <v-card-title>
                 Select A Plan
@@ -8,12 +8,12 @@
             </v-card-title>
             <v-card-text>
                 <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
-                <ul style="list-style: none;" v-if="!user.cryptoPaymentEnabled || user.canTrial" class="mb-4">
+                <ul style="list-style: none;" v-if="!user.cryptoPaymentEnabled || user.canTrial" class="mb-4 pl-0">
                     <li v-if="!user.cryptoPaymentEnabled">To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
                     <li v-if="user.canTrial">Each plan includes a 7 day free trial - No credit card needed.</li>
                 </ul>
                 <v-row justify="center">
-                    <v-col cols="3" v-for="(plan, idx) in plans" :key="idx">
+                    <v-col md="12" lg="3" v-for="(plan, idx) in plans" :key="idx">
                         <Explorer-Plan-Card
                             :trial="user.canTrial"
                             :plan="plan"
@@ -157,7 +157,7 @@ Are you sure you want to cancel?`;
             this.pendingCancelation = options.pendingCancelation;
             this.isTrialing = options.isTrialing;
             this.server.getExplorerPlans()
-                .then(({ data }) => this.plans = data);
+                .then(({ data }) => this.plans = data.sort((a, b) => a.price > b.price && a.price > 0));
             return new Promise((resolve, reject) => {
                 this.resolve = resolve;
                 this.reject = reject;

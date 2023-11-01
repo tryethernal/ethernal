@@ -4,7 +4,7 @@ exports[`CreateExplorerModal.vue Should let the user choose an existing workspac
 <div class="v-dialog__container">
   <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 1200px;">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 900px;">
         <div class="v-stepper v-stepper--vertical v-sheet theme--light">
           <h3 class="ml-6 mt-4">Public Explorer Creation</h3>
           <div tabindex="-1" class="v-stepper__step v-stepper__step--active"><span class="v-stepper__step__step primary">1</span>
@@ -58,7 +58,7 @@ exports[`CreateExplorerModal.vue Should let the user choose an existing workspac
                 <div class="v-card v-sheet theme--light">
                   <div class="v-card__text">
                     <!---->
-                    <ul class="mb-4" style="list-style: none;">
+                    <ul class="mb-4 pl-0" style="list-style: none;">
                       <li>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
                       <!---->
                     </ul>

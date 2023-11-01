@@ -352,7 +352,8 @@ const createExplorerSubscription = async (userId, explorerId, stripePlanId, stri
 const getExplorerPlans = () => {
     return StripePlan.findAll({
         where: { public: true },
-        attributes: ['capabilities', 'id', 'name', 'slug', 'stripePriceId', 'price']
+        attributes: ['capabilities', 'id', 'name', 'slug', 'stripePriceId', 'price'],
+        order: [['id']]
     });
 };
 

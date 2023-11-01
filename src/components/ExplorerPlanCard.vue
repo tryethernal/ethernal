@@ -9,7 +9,11 @@
         <v-card-subtitle v-if="plan.price > 0" class="pb-0">${{ plan.price.toLocaleString() }} / month</v-card-subtitle>
         <v-card-subtitle v-else class="pb-0">Custom Pricing</v-card-subtitle>
         <v-card-text>
+            <div class="mt-3 two-lines">
+                {{ plan.capabilities.description }}
+            </div>
             <v-list dense>
+                <v-divider class="my-2"></v-divider>
                 <v-list-item>
                     <v-list-item-icon class="mr-2">
                         <v-icon color="success">mdi-check</v-icon>
@@ -181,5 +185,9 @@ export default {
 <style lang="scss">
 .current-plan-card, .best-value {
     border: 1px solid var(--v-primary-base) !important;
+}
+.two-lines {
+    line-height: 1.5em;
+    min-height: 3em;
 }
 </style>
