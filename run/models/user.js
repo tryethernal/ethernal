@@ -169,7 +169,8 @@ module.exports = (sequelize, DataTypes) => {
                 networkId: data.networkId,
                 rpcServer: data.rpcServer,
                 tracing: data.tracing,
-                dataRetentionLimit: this.defaultDataRetentionLimit
+                dataRetentionLimit: data.dataRetentionLimit || this.defaultDataRetentionLimit,
+                browserSyncEnabled: false
             }), { transaction });
 
             if (!workspace)
