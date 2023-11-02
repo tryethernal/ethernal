@@ -2,7 +2,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const express = require('express');
 const router = express.Router();
 const { isStripeEnabled, isSubscriptionCheckEnabled } = require('../lib/flags');
-const { getAppDomain, getDefaultPlanSlug } = require('../lib/env');
+const { getAppDomain, getDefaultPlanSlug, getDefaultExplorerTrialDays } = require('../lib/env');
 const { ProviderConnector } = require('../lib/rpc');
 const { Explorer } = require('../models');
 const { withTimeout } = require('../lib/utils');
@@ -13,6 +13,53 @@ const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const secretMiddleware = require('../middlewares/secret');
+
+router.post('/:id/startTrial', authMiddleware, async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        if (!data.stripePlanSlug)
+            throw new Error('Missing parameter');
+
+        const user = await db.getUser(data.uid, ['stripeCustomerId', 'canTrial']);
+        if (!user)
+            throw new Error('Could not find user.');
+
+        if (!user.canTrial)
+            throw new Error(`You've already used your trial.`);
+
+        const explorer = await db.getExplorerById(user.id, req.params.id);
+        if (!explorer)
+            throw new Error('Could not find explorer.');
+
+        const plan = await db.getStripePlan(data.stripePlanSlug);
+        if (!plan)
+            throw new Error('Could not find plan.');
+
+        const subscription = await stripe.subscriptions.create({
+            customer: user.stripeCustomerId,
+            items: [{ price: plan.stripePriceId }],
+            trial_period_days: getDefaultExplorerTrialDays(),
+            trial_settings: {
+                end_behavior: { missing_payment_method: 'cancel' }
+            },
+            metadata: { explorerId: explorer.id }
+        });
+
+        if (!subscription)
+            throw new Error('Error while starting trial. Please try again.')
+
+        const customer = await stripe.customers.retrieve(subscription.customer);
+
+        await db.createExplorerSubscription(user.id, explorer.id,  plan.id, { ...subscription, customer });
+        await db.disableUserTrial(user.id);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.explorers.startTrial', error });
+        res.status(400).send(error.message);
+    }
+});
 
 router.post('/syncExplorers', secretMiddleware, async (req, res) => {
     try {
@@ -31,7 +78,7 @@ router.post('/syncExplorers', secretMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.syncExplorers', error });
+        logger.error(error.message, { location: 'post.api.explorers.syncExplorers', error });
         res.status(400).send(error.message);
     }
 });
@@ -190,7 +237,7 @@ router.post('/:id/cryptoSubscription', [authMiddleware, stripeMiddleware], async
         if (!data.user.cryptoPaymentEnabled)
             throw new Error(`Crypto payment is not available for your account. Please reach out to contact@tryethernal.com if you'd like to enable it.`);
 
-        const explorer = await db.getExplorerById(data.user.id, req.params.id);
+        const explorer = await db.getExplorerById(data.user.id, req.params.id, true);
         if (!explorer)
             throw new Error(`Can't find explorer.`);
 
@@ -201,7 +248,7 @@ router.post('/:id/cryptoSubscription', [authMiddleware, stripeMiddleware], async
         await stripe.subscriptions.create({
             customer: data.user.stripeCustomerId,
             collection_method: 'send_invoice',
-            days_until_due: 7,
+            days_until_due: getDefaultExplorerTrialDays(),
             items: [
                 { price: stripePlan.stripePriceId }
             ],
@@ -344,10 +391,8 @@ router.post('/', authMiddleware, async (req, res) => {
 
             const workspaceData = {
                 name: data.name,
-                chain: 'ethereum',
                 networkId,
                 rpcServer: data.rpcServer,
-                public: true,
                 tracing: data.tracing,
                 dataRetentionLimit: user.defaultDataRetentionLimit
             }

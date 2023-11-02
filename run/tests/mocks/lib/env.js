@@ -7,5 +7,6 @@ jest.mock('../../../lib/env', () => ({
     getMixpanelApiToken: jest.fn(),
     getDemoUserId: jest.fn(() => 1),
     getStripeSecretKey: jest.fn(() => 'x'),
-    getDemoTrialSlug: jest.fn(() => 'slug')
+    getDemoTrialSlug: jest.fn(() => 'slug'),
+    getDefaultExplorerTrialDays: jest.fn(() => 7)
 }));

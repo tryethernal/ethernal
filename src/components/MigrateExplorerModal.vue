@@ -39,7 +39,8 @@
                 <Explorer-Plan-Selector
                     :explorerId="explorerId"
                     :stripeSuccessUrl="`http://app.${mainDomain}/overview?justMigrated=${explorerId}`"
-                    :stripeCancelUrl="`http://app.${mainDomain}/overview?explorerToken=${explorerToken}`"></Explorer-Plan-Selector>
+                    :stripeCancelUrl="`http://app.${mainDomain}/overview?explorerToken=${explorerToken}`"
+                    @planCreated="planCreated"></Explorer-Plan-Selector>
             </template>
         </v-card>
     </v-dialog>
@@ -77,7 +78,7 @@ export default {
                 this.server.migrateDemoExplorer(this.explorerToken)
                     .then(() => this.finalized = true)
                     .catch(console.log);
-            else
+            else if (this.justMigrated)
                 this.waitForMigration();
 
             return new Promise((resolve, reject) => {
@@ -96,6 +97,10 @@ export default {
                 .catch(() => {
                     setTimeout(this.waitForMigration, 3000);
                 });
+        },
+        planCreated() {
+            this.justMigrated = true;
+            this.finalized = true;
         },
         goToOverview() {
             document.location.assign(`//app.${this.mainDomain}/overview`);
