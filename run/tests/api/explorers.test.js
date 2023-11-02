@@ -48,6 +48,91 @@ beforeEach(() => {
     jest.spyOn(db, 'getWorkspaceById').mockResolvedValue({ id: 1 });
 });
 
+describe(`POST ${BASE_URL}/:id/startTrial`, () => {
+    it('Should return an error if cannot find user', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce(null);
+
+        request.post(`${BASE_URL}/1/startTrial`)
+            .send({ data: { stripePlanSlug: 'slug' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Could not find user.`);
+                done();
+            });
+    });
+
+    it('Should return an error if user cannot trial', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ canTrial: false });
+
+        request.post(`${BASE_URL}/1/startTrial`)
+            .send({ data: { stripePlanSlug: 'slug' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`You've already used your trial.`);
+                done();
+            });
+    });
+
+    it('Should return an error if cannot find explorer', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ canTrial: true });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce(null);
+
+        request.post(`${BASE_URL}/1/startTrial`)
+            .send({ data: { stripePlanSlug: 'slug' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Could not find explorer.');
+                done();
+            });
+    });
+
+    it('Should return an error if cannot find plan', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ canTrial: true });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce(null);
+
+        request.post(`${BASE_URL}/1/startTrial`)
+            .send({ data: { stripePlanSlug: 'slug' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Could not find plan.');
+                done();
+            });
+    });
+
+    it('Should return an error if cannot start subscription', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ canTrial: true });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ stripePriceId: 'id' });
+        mockSubscriptionCreate.mockResolvedValueOnce(null);
+
+        request.post(`${BASE_URL}/1/startTrial`)
+            .send({ data: { stripePlanSlug: 'slug' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Error while starting trial. Please try again.');
+                done();
+            });
+    });
+
+    it('Should return a 200 if trial has been started', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, canTrial: true });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1, stripePriceId: 'id' });
+        mockSubscriptionCreate.mockResolvedValueOnce({ id: 'subscription' });
+        mockCustomersRetrieve.mockResolvedValueOnce({ id: 'customer' })
+
+        request.post(`${BASE_URL}/1/startTrial`)
+            .send({ data: { stripePlanSlug: 'slug' }})
+            .expect(200)
+            .then(() => {
+                expect(db.createExplorerSubscription).toHaveBeenCalledWith(1, 1, 1, { id: 'subscription', customer: { id: 'customer' }});
+                expect(db.disableUserTrial).toHaveBeenCalledWith(1);
+                done();
+            });
+    });
+});
+
 describe(`POST ${BASE_URL}/syncExplorers`, () => {
     it('Should enqueue all explorers for processing', (done) => {
         jest.spyOn(Explorer, 'findAll').mockResolvedValue([

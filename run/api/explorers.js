@@ -2,7 +2,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const express = require('express');
 const router = express.Router();
 const { isStripeEnabled, isSubscriptionCheckEnabled } = require('../lib/flags');
-const { getAppDomain, getDefaultPlanSlug } = require('../lib/env');
+const { getAppDomain, getDefaultPlanSlug, getDefaultExplorerTrialDays } = require('../lib/env');
 const { ProviderConnector } = require('../lib/rpc');
 const { Explorer } = require('../models');
 const { withTimeout } = require('../lib/utils');
@@ -39,16 +39,17 @@ router.post('/:id/startTrial', authMiddleware, async (req, res) => {
         const subscription = await stripe.subscriptions.create({
             customer: user.stripeCustomerId,
             items: [{ price: plan.stripePriceId }],
-            trial_period_days: 7,
+            trial_period_days: getDefaultExplorerTrialDays(),
             trial_settings: {
                 end_behavior: { missing_payment_method: 'cancel' }
             },
             metadata: { explorerId: explorer.id }
         });
-        const customer = await stripe.customers.retrieve(subscription.customer);
 
         if (!subscription)
             throw new Error('Error while starting trial. Please try again.')
+
+        const customer = await stripe.customers.retrieve(subscription.customer);
 
         await db.createExplorerSubscription(user.id, explorer.id,  plan.id, { ...subscription, customer });
         await db.disableUserTrial(user.id);
@@ -247,7 +248,7 @@ router.post('/:id/cryptoSubscription', [authMiddleware, stripeMiddleware], async
         await stripe.subscriptions.create({
             customer: data.user.stripeCustomerId,
             collection_method: 'send_invoice',
-            days_until_due: 7,
+            days_until_due: getDefaultExplorerTrialDays(),
             items: [
                 { price: stripePlan.stripePriceId }
             ],
