@@ -236,7 +236,7 @@ router.post('/:id/cryptoSubscription', [authMiddleware, stripeMiddleware], async
         if (!data.user.cryptoPaymentEnabled)
             throw new Error(`Crypto payment is not available for your account. Please reach out to contact@tryethernal.com if you'd like to enable it.`);
 
-        const explorer = await db.getExplorerById(data.user.id, req.params.id);
+        const explorer = await db.getExplorerById(data.user.id, req.params.id, true);
         if (!explorer)
             throw new Error(`Can't find explorer.`);
 
@@ -390,10 +390,8 @@ router.post('/', authMiddleware, async (req, res) => {
 
             const workspaceData = {
                 name: data.name,
-                chain: 'ethereum',
                 networkId,
                 rpcServer: data.rpcServer,
-                public: true,
                 tracing: data.tracing,
                 dataRetentionLimit: user.defaultDataRetentionLimit
             }

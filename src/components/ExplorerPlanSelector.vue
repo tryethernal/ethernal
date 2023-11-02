@@ -1,26 +1,31 @@
 <template>
-    <v-row justify="center">
-        <template v-if="loading">
-            <v-col  cols="3">
-                <v-card outlined><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
+    <div>
+        <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
+        <v-row justify="center">
+            <template v-if="loading">
+                <v-col  cols="3">
+                    <v-card outlined><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
+                </v-col>
+                <v-col  cols="3">
+                    <v-card outlined><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
+                </v-col>
+                <v-col  cols="3">
+                    <v-card outlined><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
+                </v-col>
+            </template>
+            <v-col v-else cols="3" v-for="(plan, idx) in plans" :key="idx">
+                <Explorer-Plan-Card
+                    :current="currentPlanSlug == plan.slug"
+                    :pendingCancelation="pendingCancelation && plan.slug == currentPlanSlug"
+                    :bestValue="!currentPlanSlug && bestValueSlug == plan.slug && !selectedPlanSlug"
+                    :trial="user.canTrial"
+                    :plan="plan"
+                    :loading="selectedPlanSlug && selectedPlanSlug == plan.slug"
+                    :disabled="selectedPlanSlug && selectedPlanSlug != plan.slug"
+                    @updatePlan="onPlanSelected"></Explorer-Plan-Card>
             </v-col>
-            <v-col  cols="3">
-                <v-card outlined><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
-            </v-col>
-            <v-col  cols="3">
-                <v-card outlined><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
-            </v-col>
-        </template>
-        <v-col v-else cols="3" v-for="(plan, idx) in plans" :key="idx">
-            <Explorer-Plan-Card
-                :bestValue="bestValueSlug == plan.slug && !selectedPlanSlug"
-                :trial="user.canTrial"
-                :plan="plan"
-                :loading="selectedPlanSlug && selectedPlanSlug == plan.slug"
-                :disabled="selectedPlanSlug && selectedPlanSlug != plan.slug"
-                @updatePlan="onPlanSelected"></Explorer-Plan-Card>
-        </v-col>
-    </v-row>
+        </v-row>
+    </div>
 </template>
 <script>
 import { mapGetters } from 'vuex';
@@ -35,6 +40,7 @@ export default {
         explorerId: Number,
         currentPlanSlug: String,
         isTrialing: Boolean,
+        pendingCancelation: Boolean,
         stripeSuccessUrl: String,
         stripeCancelUrl: String
     },
@@ -67,14 +73,12 @@ export default {
                 this.updatePlan(slug);
             else if (!slug && this.currentPlanSlug)
                 this.cancelPlan();
-            this.user.cryptoPaymentEnabled ? this.useCryptoPayment() : this.useStripePayment();
         },
         createPlan(slug) {
             if (this.user.cryptoPaymentEnabled) {
                 this.server.startCryptoSubscription(slug, this.explorerId)
                     .then(() => {
-                        this.currentPlanSlug = slug;
-                        this.planUpdated = true;
+                        this.$emit('planCreated', slug);
                     })
                     .catch(error => {
                         console.log(error);
@@ -82,7 +86,7 @@ export default {
                     })
                     .finally(() => this.selectedPlanSlug = null);
             }
-            else {
+            else if (this.user.canTrial) {
                 this.server.startTrial(this.explorerId, slug)
                     .then(() => window.location.assign(`//app.${this.mainDomain}/explorers/${this.explorerId}`))
                     .catch(error => {
@@ -90,7 +94,18 @@ export default {
                         this.errorMessage = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
                         this.selectedPlanSlug = null;
                     });
-                }
+            }
+            else {
+                const successUrl = this.stripeSuccessUrl || `http://app.${this.mainDomain}/explorers/${this.explorerId}?justCreated=true`;
+                const cancelUrl = this.stripeCancelUrl || `http://app.${this.mainDomain}/explorers/${this.explorerId}`;
+                this.server.createStripeExplorerCheckoutSession(this.explorerId, this.selectedPlanSlug, successUrl, cancelUrl)
+                    .then(({ data }) => window.location.assign(data.url))
+                    .catch(error => {
+                        console.log(error);
+                        this.errorMessage = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
+                        this.selectedPlanSlug = null;
+                    });
+            }
         },
         updatePlan(slug) {
             if (this.isTrialing) {
@@ -116,12 +131,7 @@ Are you sure you want to change plan?`;
             }
 
             this.server.updateExplorerSubscription(this.explorerId, slug)
-                .then(() => {
-                    if (this.pendingCancelation && slug)
-                        this.pendingCancelation = false;
-                    this.currentPlanSlug = slug;
-                    this.planUpdated = true;
-                })
+                .then(() => this.$emit('planUpdated', slug))
                 .catch(error => {
                     console.log(error);
                     this.errorMessage = error.response && error.response.data || 'Error while updating the plan. Please retry.';
@@ -147,8 +157,7 @@ Are you sure you want to cancel?`;
 
             this.server.cancelExplorerSubscription(this.explorerId)
                 .then(() => {
-                    this.pendingCancelation = true;
-                    this.planUpdated = true;
+                    this.$emit('planCanceled');
                 })
                 .catch(error => {
                     console.log(error);
@@ -156,27 +165,18 @@ Are you sure you want to cancel?`;
                 })
                 .finally(() => this.selectedPlanSlug = null);
         },
-        useCryptoPayment() {
-            this.server.startCryptoSubscription(this.selectedPlanSlug, this.explorerId)
-                .then(() => window.location.assign(`/explorers/${this.explorerId}?status=success`))
-                .catch(error => {
-                    console.log(error);
-                    this.errorMessage = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
-                    this.loading = false;
-                    this.selectedPlanSlug = null;
-                });
-        },
-        useStripePayment() {
-            const successUrl = this.stripeSuccessUrl || `http://app.${this.mainDomain}/explorers/${this.explorerId}?justCreated=true`;
-            const cancelUrl = this.stripeCancelUrl || `http://app.${this.mainDomain}/explorers/${this.explorerId}`;
-            this.server.createStripeExplorerCheckoutSession(this.explorerId, this.selectedPlanSlug, successUrl, cancelUrl)
-                .then(({ data }) => window.location.assign(data.url))
-                .catch(error => {
-                    console.log(error);
-                    this.errorMessage = error.response && error.response.data || 'Error while subscribing to the selected plan. Please retry.';
-                    this.selectedPlanSlug = null;
-                });
-        },
+        isLessExpensiveThanCurrent(slug) {
+            let currentPlan, newPlan;
+            for (let i = 0; i < this.plans.length; i++) {
+                if (this.plans[i].slug == slug)
+                    newPlan = this.plans[i];
+                if (this.plans[i].slug == this.currentPlanSlug)
+                    currentPlan = this.plans[i];
+            }
+            if (newPlan.price < currentPlan.price)
+                return true;
+            return false;
+        }
     },
     computed: {
         ...mapGetters([
