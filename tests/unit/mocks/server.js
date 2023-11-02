@@ -67,6 +67,7 @@ jest.mock('@/plugins/server', () => ({
                 stopExplorerSync: jest.fn(),
                 startExplorerSync: jest.fn(),
                 migrateDemoExplorer: jest.fn(),
+                startTrial: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))
