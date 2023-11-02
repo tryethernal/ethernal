@@ -57,9 +57,7 @@ export default {
     mounted() {
         this.loading = true;
         this.server.getExplorerPlans()
-            .then(({ data }) => {
-                this.plans = data.sort((a, b) => a.price - b.price && b.price > 0);
-            })
+            .then(({ data }) => this.plans = data.sort((a, b) => a.price - b.price && b.price > 0))
             .catch(console.log)
             .finally(() => this.loading = false);
     },
