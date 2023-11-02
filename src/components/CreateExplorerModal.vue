@@ -40,7 +40,8 @@
                         <Explorer-Plan-Selector v-if="explorer"
                             :explorerId="explorer.id"
                             :stripeSuccessUrl="`http://app.${mainDomain}/explorers/${explorer.id}?justCreated=true`"
-                            :stripeCancelUrl="`http://app.${mainDomain}/explorers/${explorer.id}`"></Explorer-Plan-Selector>
+                            :stripeCancelUrl="`http://app.${mainDomain}/explorers/${explorer.id}`"
+                            @planCreated="planCreated"></Explorer-Plan-Selector>
                     </v-card-text>
                 </v-card>
             </v-stepper-content>
@@ -99,6 +100,9 @@ export default {
                     this.errorMessage = error.response && error.response.data || 'Error while creating explorer. Please retry.';
                 })
                 .finally(() => this.loading = false);
+        },
+        planCreated() {
+            this.$router.push({ path: `/explorers/${this.explorer.id}?status=success` });
         },
         onWorkspaceCreated(workspace) {
             this.workspace = workspace;

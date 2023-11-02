@@ -116,11 +116,8 @@ router.post('/explorers', async (req, res) => {
 
         const workspaceData = {
             name: generateSlug(),
-            chain: 'ethereum',
             networkId,
             rpcServer: data.rpcServer,
-            public: true,
-            tracing: data.tracing,
             dataRetentionLimit: 1
         };
 

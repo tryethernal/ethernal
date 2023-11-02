@@ -358,6 +358,11 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            startTrial(explorerId, stripePlanSlug) {
+                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/startTrial`;
+                return axios.post(resource, { data: { stripePlanSlug }});
+            },
+
             migrateDemoExplorer(token) {
                 const resource = `${store.getters.apiRoot}/api/demo/migrateExplorer`;
                 return axios.post(resource, { data: { token }});
