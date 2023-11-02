@@ -11,5 +11,6 @@ module.exports = {
     getPm2Secret: () => process.env.PM2_SECRET,
     getDemoUserId: () => process.env.DEMO_USER_ID,
     getDemoTrialSlug: () => 'explorer-500',
-    getStripeSecretKey: () => process.env.STRIPE_SECRET_KEY
+    getStripeSecretKey: () => process.env.STRIPE_SECRET_KEY,
+    getDefaultExplorerTrialDays: () => process.env.DEFAULT_EXPLORER_TRIAL_DAYS || 7
 };
