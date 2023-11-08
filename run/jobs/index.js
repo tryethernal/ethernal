@@ -18,7 +18,6 @@ module.exports = {
 
     // Low Priority
     submitExplorerLead: require('./submitExplorerLead'),
-    processWorkspace: require('./processWorkspace'),
     processUser: require('./processUser'),
     enforceDataRetentionForWorkspace: require('./enforceDataRetentionForWorkspace'),
     integrityCheckStarter: require('./integrityCheckStarter'),

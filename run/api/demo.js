@@ -7,11 +7,8 @@ const { ProviderConnector } = require('../lib/rpc');
 const { encode, decode } = require('../lib/crypto');
 const { withTimeout, sanitize } = require('../lib/utils');
 const logger = require('../lib/logger');
-const Analytics = require('../lib/analytics');
 const authMiddleware = require('../middlewares/auth');
 const db = require('../lib/firebase');
-
-const analytics = new Analytics();
 
 router.get('/explorers', authMiddleware, async (req, res) => {
     const data = { ...req.query, ...req.body.data };
@@ -83,17 +80,6 @@ router.post('/migrateExplorer', authMiddleware, async (req, res) => {
         if (!subscription)
             throw new Error('Error while starting trial. Please try again.')
 
-        // await db.disableUserTrial(user.id);
-
-        // await db.migrateDemoExplorer(explorer.id, user.id, subscription);
-        // analytics.track(user.id, 'explorer:demo_migrate', {
-        //     is_trial: true,
-        //     plan_slug: getDemoTrialSlug()
-        // });
-
-        // await db.setCurrentWorkspace(user.firebaseUserId, explorer.workspace.name);
-
-        // analytics.shutdown();
         res.status(200).send({ explorerId: explorer.id });
     } catch(error) {
         logger.error(error.message, { location: 'post.api.demo.migrateExplorer', error: error, data: data });

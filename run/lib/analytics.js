@@ -17,21 +17,6 @@ class Analytics {
         if (!isMarketingEnabled) return;
         this.posthog.shutdown();
     }
-
-    setUser(uid, params = {}) {
-        if (!this.token || !uid) return;
-        this.mixpanel.people.set(uid, params);
-    }
-
-    setSubscription(uid, status, plan, subscriptionCancelsAtPeriodEnd) {
-        if (!this.token || status === undefined || !plan || subscriptionCancelsAtPeriodEnd === undefined) return;
-        const params = {
-            subscriptionStatus: status,
-            plan: plan,
-            subscriptionCancelsAtPeriodEnd: subscriptionCancelsAtPeriodEnd
-        };
-        this.mixpanel.people.set(uid, params);
-    }
 }
 
 module.exports = Analytics;
