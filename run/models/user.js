@@ -34,9 +34,9 @@ module.exports = (sequelize, DataTypes) => {
                     include: 'stripePlan'
                 }
             });
-            if (currentExplorer && currentExplorer.stripeSubscription.stripePlan.capabilities.nativeToken)
+            if (currentExplorer && (currentExplorer.isDemo || currentExplorer.stripeSubscription.stripePlan.capabilities.nativeToken))
                 currentExplorerAttributes.push('token');
-            if (currentExplorer && currentExplorer.stripeSubscription.stripePlan.capabilities.totalSupply)
+            if (currentExplorer && (currentExplorer.isDemo || currentExplorer.stripeSubscription.stripePlan.capabilities.totalSupply))
                 currentExplorerAttributes.push('totalSupply');
         }
         return  User.findOne({

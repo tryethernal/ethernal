@@ -1,5 +1,5 @@
 const express = require('express');
-const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey } = require('../lib/env');
+const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey, getDefaultExplorerTrialDays } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const { generateSlug } = require('random-word-slugs');
 const router = express.Router();
@@ -7,8 +7,11 @@ const { ProviderConnector } = require('../lib/rpc');
 const { encode, decode } = require('../lib/crypto');
 const { withTimeout, sanitize } = require('../lib/utils');
 const logger = require('../lib/logger');
+const Analytics = require('../lib/analytics');
 const authMiddleware = require('../middlewares/auth');
 const db = require('../lib/firebase');
+
+const analytics = new Analytics();
 
 router.get('/explorers', authMiddleware, async (req, res) => {
     const data = { ...req.query, ...req.body.data };
@@ -67,27 +70,30 @@ router.post('/migrateExplorer', authMiddleware, async (req, res) => {
         if (!plan)
             throw new Error('Could not find plan.');
 
-        const trial_settings = user.canTrial ? {
-            end_behavior: { missing_payment_method: 'cancel' }
-        } : null;
-
         const subscription = await stripe.subscriptions.create({
             customer: user.stripeCustomerId,
             items: [{ price: plan.stripePriceId }],
-            trial_period_days: 7,
-            trial_settings,
+            trial_period_days: getDefaultExplorerTrialDays(),
+            trial_settings: {
+                end_behavior: { missing_payment_method: 'cancel' }
+            },
             metadata: { explorerId: explorer.id }
         });
 
         if (!subscription)
             throw new Error('Error while starting trial. Please try again.')
 
-        await db.disableUserTrial(user.id);
+        // await db.disableUserTrial(user.id);
 
-        await db.migrateDemoExplorer(explorer.id, user.id, subscription);
+        // await db.migrateDemoExplorer(explorer.id, user.id, subscription);
+        // analytics.track(user.id, 'explorer:demo_migrate', {
+        //     is_trial: true,
+        //     plan_slug: getDemoTrialSlug()
+        // });
 
-        await db.setCurrentWorkspace(user.firebaseUserId, explorer.workspace.name);
+        // await db.setCurrentWorkspace(user.firebaseUserId, explorer.workspace.name);
 
+        // analytics.shutdown();
         res.status(200).send({ explorerId: explorer.id });
     } catch(error) {
         logger.error(error.message, { location: 'post.api.demo.migrateExplorer', error: error, data: data });
@@ -139,7 +145,7 @@ router.post('/explorers', async (req, res) => {
         }));
 
         const jwtToken = encode({ explorerId: explorer.id });
-        const banner = `This is a demo explorer that will expire after 24 hours. To set it up permanently,&nbsp;<a href="//app.${getAppDomain()}/transactions?explorerToken=${jwtToken}" target="_blank">click here</a>.`;
+        const banner = `This is a demo explorer that will expire after 24 hours. To set it up permanently,&nbsp;<a id="migrate-explorer-link" href="//app.${getAppDomain()}/transactions?explorerToken=${jwtToken}" target="_blank">click here</a>.`;
         await db.updateExplorerBranding(explorer.id, { banner });
 
         res.status(200).send({ domain: `${explorer.slug}.${getAppDomain()}` });

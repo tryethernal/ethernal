@@ -1,5 +1,6 @@
 const express = require('express');
 const logger = require('../lib/logger');
+const analytics = require('../lib/analytics');
 const authMiddleware = require('../middlewares/auth');
 const secretMiddleware = require('../middlewares/secret');
 const { sanitize, stringifyBns, withTimeout } = require('../lib/utils');

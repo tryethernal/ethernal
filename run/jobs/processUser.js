@@ -1,11 +1,15 @@
 const GhostAdminAPI = require('@tryghost/admin-api');
 const Analytics = require('../lib/analytics');
 const db = require('../lib/firebase');
-const { getGhostApiKey, getGhostEndpoint, getMixpanelApiToken } = require('../lib/env');
+const { getGhostApiKey, getGhostEndpoint, getPostHogApiKey } = require('../lib/env');
+const { isMarketingEnabled } = require('../lib/flags');
 
 module.exports = async job => {
     const data = job.data;
     try {
+        if (!isMarketingEnabled())
+            return 'Marketing is not enabled';
+
         if (!data.id)
             throw new Error('Missing parameter');
 
@@ -26,17 +30,19 @@ module.exports = async job => {
             await api.members.add({ email: user.email });
         }
 
-        if (getMixpanelApiToken()) {
-            const analytics = new Analytics(getMixpanelApiToken());
+        const analytics = new Analytics();
+        analytics.track(user.id, 'auth:user_signup', {
+            $set: {
+                email: user.email,
+                plan: 'free',
+                can_trial: true
+            },
+            $set_once: {
+                created_at: user.createdAt
+            }
+        });
 
-            analytics.setUser(data.firebaseUserId, {
-                $email: user.email,
-                $created: (new Date()).toISOString(),
-            });
-
-            analytics.setSubscription(data.firebaseUserId, null, 'free', null, false);
-            return analytics.track(data.firebaseUserId, 'Sign Up');
-        }
+        return analytics.shutdown();
     } catch(error) {
         if (error.context && error.context.startsWith('Member already exists'))
             return;

@@ -1,19 +1,21 @@
-const Mixpanel = require('mixpanel');
+const { PostHog } = require('posthog-node');
+const { getPostHogApiKey } = require('./env');
+const { isMarketingEnabled } = require('./flags');
 
 class Analytics {
-    constructor(token) {
-        this.token = token;
-        if (this.token) {
-            this.mixpanel = Mixpanel.init(this.token);
-        }
+    constructor() {
+        if (!isMarketingEnabled()) return;
+        this.posthog = new PostHog(getPostHogApiKey());
     }
 
-    track(uid, event, params = {}) {
-        if (!this.token || !uid) return;
-        this.mixpanel.track(event, {
-            ...params,
-            distinct_id: uid
-        });
+    track(distinctId, event, properties) {
+        if (!this.posthog || !distinctId || !event || !isMarketingEnabled) return;
+        this.posthog.capture({ distinctId, event, properties });
+    }
+
+    shutdown() {
+        if (!isMarketingEnabled) return;
+        this.posthog.shutdown();
     }
 
     setUser(uid, params = {}) {

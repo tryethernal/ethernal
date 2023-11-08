@@ -1,9 +1,6 @@
-const { ProviderConnector } = require('../lib/rpc');
 const { isMarketingEnabled } = require('../lib/flags');
-const { withTimeout } = require('../lib/utils');
+const Analytics = require('../lib/analytics');
 const db = require('../lib/firebase');
-
-const NETWORK_ID_TIMEOUT = 10 * 1000;
 
 module.exports = async job => {
     const data = job.data;
@@ -11,17 +8,15 @@ module.exports = async job => {
         throw new Error('Missing parameter.');
 
     if (!isMarketingEnabled())
-        return;
+        return 'Marketing is not enabled';
 
     const workspace = await db.getWorkspaceById(data.workspaceId);
 
-    try {
-        const provider = new ProviderConnector(workspace.rpcServer);
-        const networkId = await withTimeout(provider.fetchNetworkId(), NETWORK_ID_TIMEOUT);
-        await db.setWorkspaceRemoteFlag(workspace.id, networkId !== undefined && networkId !== null);
-    } catch(_error) {
-        await db.setWorkspaceRemoteFlag(workspace.id, false);
-        return false;
-    }
+    const analytics = new Analytics();
+    analytics.track({
+        distinctId: workspace.userId,
+        event: 'workspace:created'
+    })
+
     return true;
 };

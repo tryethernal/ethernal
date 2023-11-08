@@ -76,7 +76,7 @@ export default {
 
             if (this.user.canTrial)
                 this.server.migrateDemoExplorer(this.explorerToken)
-                    .then(() => this.finalized = true)
+                    .then(this.waitForMigration)
                     .catch(console.log);
             else if (this.justMigrated)
                 this.waitForMigration();

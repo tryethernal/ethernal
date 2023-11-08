@@ -2,7 +2,8 @@
 const {
   Model
 } = require('sequelize');
-const { enqueue } = require('../lib/queue');
+const Analytics = require('../lib/analytics');
+const analytics = new Analytics();
 
 module.exports = (sequelize, DataTypes) => {
   class StripeSubscription extends Model {
@@ -53,10 +54,31 @@ module.exports = (sequelize, DataTypes) => {
     updatedAt: DataTypes.DATE,
   }, {
     hooks: {
+      afterUpdate(stripeSubscription, options) {
+        const afterUpdate = async () => {
+          const explorer = await stripeSubscription.getExplorer();
+          if (!explorer) return;
+          const stripePlan = await stripeSubscription.getStripePlan();
+          analytics.track(explorer.userId, 'explorer:subscription_update', {
+            is_demo: explorer.isDemo,
+            plan_slug: stripePlan.slug,
+            status: stripeSubscription.status
+          });
+          return analytics.shutdown();
+        };
+        return options.transaction ? options.transaction.afterCommit(afterUpdate) : afterUpdate();
+      },
       afterCreate(stripeSubscription, options) {
         const afterCreateFn = async () => {
           const explorer = await stripeSubscription.getExplorer();
           if (!explorer) return;
+          const stripePlan = await stripeSubscription.getStripePlan();
+          analytics.track(explorer.userId, 'explorer:subscription_create', {
+            is_demo: explorer.isDemo,
+            plan_slug: stripePlan.slug,
+            status: stripeSubscription.status
+          });
+          analytics.shutdown();
           return explorer.startSync();
         };
         return options.transaction ? options.transaction.afterCommit(afterCreateFn) : afterCreateFn();
@@ -65,6 +87,12 @@ module.exports = (sequelize, DataTypes) => {
         const afterDestroyFn = async () => {
           const explorer = await stripeSubscription.getExplorer();
           if (!explorer) return;
+          const stripePlan = await stripeSubscription.getStripePlan();
+          analytics.track(explorer.userId, 'explorer:subscription_delete', {
+            is_demo: explorer.isDemo,
+            plan_slug: stripePlan.slug,
+          });
+          analytics.shutdown();
           return explorer.stopSync();
         };
         return options.transaction ? options.transaction.afterCommit(afterDestroyFn) : afterDestroyFn();

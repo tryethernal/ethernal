@@ -7,6 +7,7 @@ import router from './plugins/router';
 import demoRouter from './plugins/demoRouter';
 import { serverPlugin } from './plugins/server';
 import store from './plugins/store';
+import posthogPlugin from "./plugins/posthog";
 import { firestorePlugin } from 'vuefire';
 import 'ace-mode-solidity/build/remix-ide/mode-solidity.js';
 
@@ -17,7 +18,10 @@ Vue.config.productionTip = false;
 Vue.use(VueRouter);
 Vue.use(firestorePlugin);
 Vue.use(require('vue-moment'));
-Vue.use(serverPlugin, { store: store });
+Vue.use(serverPlugin, { store });
+
+if (store.getters.hasAnalyticsEnabled)
+    Vue.use(posthogPlugin, { store });
 
 if (store.getters.hasDemoEnabled && window.location.pathname.startsWith('/demo')) {
     new Vue({
