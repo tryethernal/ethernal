@@ -3,7 +3,7 @@ import MockHelper from '../MockHelper';
 import BlockList from '@/components/BlockList.vue';
 
 describe('BlockList.vue', () => {
-    let helper, blocks;
+    let helper;
 
     beforeEach(() => {
         helper = new MockHelper();
