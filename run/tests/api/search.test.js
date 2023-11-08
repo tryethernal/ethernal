@@ -2,6 +2,7 @@ jest.mock('axios', () => ({
     get: jest.fn()
 }));
 require('../mocks/lib/queue');
+require('../mocks/lib/analytics');
 require('../mocks/lib/firebase');
 require('../mocks/lib/flags');
 require('../mocks/middlewares/workspaceAuth');

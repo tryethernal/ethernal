@@ -1,7 +1,7 @@
 const GhostAdminAPI = require('@tryghost/admin-api');
 const Analytics = require('../lib/analytics');
 const db = require('../lib/firebase');
-const { getGhostApiKey, getGhostEndpoint, getPostHogApiKey } = require('../lib/env');
+const { getGhostApiKey, getGhostEndpoint } = require('../lib/env');
 const { isMarketingEnabled } = require('../lib/flags');
 
 module.exports = async job => {
