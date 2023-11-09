@@ -1,5 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const logger = require('../lib/logger');
+const Analytics = require('../lib/analytics');
 const { isStripeEnabled, isSendgridEnabled, isFirebaseAuthEnabled } = require('../lib/flags');
 const { getAuth } = require('firebase-admin/auth');
 const uuidAPIKey = require('uuid-apikey');
@@ -11,6 +12,8 @@ const { randomUUID } = require('crypto');
 const authMiddleware = require('../middlewares/auth');
 const { encrypt, decode, firebaseHash } = require('../lib/crypto');
 const localAuth = require('../middlewares/passportLocalStrategy');
+
+const analytics = new Analytics();
 
 const findUser = async (email, nextPageToken) => {
     const listUsersResult = await getAuth().listUsers(500, nextPageToken);
@@ -95,6 +98,9 @@ router.post('/getFirebaseHashes', async (req, res) => {
 
 router.post('/signin', localAuth, async (req, res) => {
     try {
+        analytics.track(req.user.id, 'auth:user_signin');
+        analytics.shutdown();
+
         res.status(200).json({ user: req.user });
     } catch(error) {
         logger.error(error.message, { location: 'get.api.users.me.signin', error: error, user: req.user });

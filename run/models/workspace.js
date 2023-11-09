@@ -5,9 +5,9 @@ const {
   QueryTypes,
 } = require('sequelize');
 const { sanitize, slugify } = require('../lib/utils');
-const { enqueue } = require('../lib/queue');
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
+const Analytics = require('../lib/analytics');
 
 const Op = Sequelize.Op;
 const INTEGRATION_FIELD_MAPPING = {
@@ -1119,15 +1119,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     hooks: {
-        afterSave(workspace, options) {
-            return enqueue('processWorkspace', `processWorkspace-${workspace.id}-${workspace.name}`, {
-                workspaceId: workspace.id,
-            });
-        },
-        afterUpdate(workspace, options) {
-            return enqueue('processWorkspace', `processWorkspace-${workspace.id}-${workspace.name}`, {
-                workspaceId: workspace.id,
-            });
+        afterCreate(workspace, options) {
+            const afterCreateFn = () => {
+                const analytics = new Analytics();
+                analytics.track(workspace.userId, 'workspace:workspace_create');
+                analytics.shutdown();
+            }
+            return options.transaction ? options.transaction.afterCommit(afterCreateFn) : afterCreateFn();
         }
     },
     sequelize,

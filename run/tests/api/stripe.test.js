@@ -16,6 +16,7 @@ jest.mock('stripe', () => {
     });
 });
 require('../mocks/lib/queue');
+require('../mocks/lib/analytics');
 require('../mocks/middlewares/auth');
 require('../mocks/lib/firebase');
 require('../mocks/lib/flags');

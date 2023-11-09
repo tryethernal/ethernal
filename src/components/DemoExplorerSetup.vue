@@ -115,6 +115,7 @@
 </template>
 
 <script>
+import store from '../plugins/store';
 
 export default {
     name: 'DemoExplorerSetup',
@@ -128,6 +129,9 @@ export default {
         domain: null
     }),
     mounted() {
+        this.server.getCurrentUser()
+            .then(({ data }) => store.dispatch('updateUser', data))
+            .catch(() => store.dispatch('updateUser', null));
     },
     methods: {
         submit() {
@@ -137,6 +141,9 @@ export default {
             this.server.createDemoExplorer(this.name, this.rpcServer, this.nativeToken)
                 .then(({ data }) => {
                     this.domain = data.domain;
+                    this.$posthog.capture('explorer:explorer_create', {
+                        is_demo: true
+                    });
                 })
                 .catch(error => {
                     console.log(error)

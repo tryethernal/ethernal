@@ -1,9 +1,8 @@
 require('../mocks/lib/queue');
+require('../mocks/lib/analytics');
 require('../mocks/lib/flags');
 require('../mocks/middlewares/workspaceAuth');
 require('../mocks/lib/pusher');
-
-const pusher = require('pusher');
 
 const supertest = require('supertest');
 const app = require('../../app');

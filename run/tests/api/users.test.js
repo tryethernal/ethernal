@@ -1,4 +1,5 @@
 require('../mocks/models');
+require('../mocks/lib/analytics');
 require('../mocks/lib/firebase');
 require('../mocks/lib/firebase-admin');
 require('../mocks/lib/crypto');
