@@ -1,5 +1,5 @@
 const express = require('express');
-const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey } = require('../lib/env');
+const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey, getDefaultExplorerTrialDays } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const { generateSlug } = require('random-word-slugs');
 const router = express.Router();
@@ -67,26 +67,18 @@ router.post('/migrateExplorer', authMiddleware, async (req, res) => {
         if (!plan)
             throw new Error('Could not find plan.');
 
-        const trial_settings = user.canTrial ? {
-            end_behavior: { missing_payment_method: 'cancel' }
-        } : null;
-
         const subscription = await stripe.subscriptions.create({
             customer: user.stripeCustomerId,
             items: [{ price: plan.stripePriceId }],
-            trial_period_days: 7,
-            trial_settings,
+            trial_period_days: getDefaultExplorerTrialDays(),
+            trial_settings: {
+                end_behavior: { missing_payment_method: 'cancel' }
+            },
             metadata: { explorerId: explorer.id }
         });
 
         if (!subscription)
             throw new Error('Error while starting trial. Please try again.')
-
-        await db.disableUserTrial(user.id);
-
-        await db.migrateDemoExplorer(explorer.id, user.id, subscription);
-
-        await db.setCurrentWorkspace(user.firebaseUserId, explorer.workspace.name);
 
         res.status(200).send({ explorerId: explorer.id });
     } catch(error) {
@@ -139,7 +131,7 @@ router.post('/explorers', async (req, res) => {
         }));
 
         const jwtToken = encode({ explorerId: explorer.id });
-        const banner = `This is a demo explorer that will expire after 24 hours. To set it up permanently,&nbsp;<a href="//app.${getAppDomain()}/transactions?explorerToken=${jwtToken}" target="_blank">click here</a>.`;
+        const banner = `This is a demo explorer that will expire after 24 hours. To set it up permanently,&nbsp;<a id="migrate-explorer-link" href="//app.${getAppDomain()}/transactions?explorerToken=${jwtToken}" target="_blank">click here</a>.`;
         await db.updateExplorerBranding(explorer.id, { banner });
 
         res.status(200).send({ domain: `${explorer.slug}.${getAppDomain()}` });

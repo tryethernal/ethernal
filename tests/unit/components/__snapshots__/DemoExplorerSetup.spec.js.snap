@@ -46,7 +46,7 @@ exports[`DemoExplorerSetup.vue Should display demo explorer setup page 1`] = `
                   <fieldset aria-hidden="true">
                     <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                   </fieldset>
-                  <div class="v-text-field__slot"><label for="input-10" class="v-label theme--light" style="left: 0px; position: absolute;">Explorer Name</label><input required="required" id="input-10" type="text"></div>
+                  <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">Explorer Name</label><input required="required" id="input-12" type="text"></div>
                 </div>
                 <div class="v-text-field__details">
                   <div class="v-messages theme--light">
@@ -61,7 +61,7 @@ exports[`DemoExplorerSetup.vue Should display demo explorer setup page 1`] = `
                   <fieldset aria-hidden="true">
                     <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                   </fieldset>
-                  <div class="v-text-field__slot"><label for="input-13" class="v-label theme--light" style="left: 0px; position: absolute;">RPC URL</label><input required="required" id="input-13" type="text"></div>
+                  <div class="v-text-field__slot"><label for="input-15" class="v-label theme--light" style="left: 0px; position: absolute;">RPC URL</label><input required="required" id="input-15" type="text"></div>
                 </div>
                 <div class="v-text-field__details">
                   <div class="v-messages theme--light">
@@ -76,7 +76,7 @@ exports[`DemoExplorerSetup.vue Should display demo explorer setup page 1`] = `
                   <fieldset aria-hidden="true">
                     <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                   </fieldset>
-                  <div class="v-text-field__slot"><label for="input-16" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Native Token Symbol (optional)</label><input required="required" id="input-16" type="text"></div>
+                  <div class="v-text-field__slot"><label for="input-18" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Native Token Symbol (optional)</label><input required="required" id="input-18" type="text"></div>
                 </div>
                 <div class="v-text-field__details">
                   <div class="v-messages theme--light">

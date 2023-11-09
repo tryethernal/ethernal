@@ -1,4 +1,5 @@
 require('../mocks/lib/firebase');
+require('../mocks/lib/analytics');
 require('../mocks/lib/flags');
 require('../mocks/middlewares/auth');
 require('../mocks/lib/queue');
@@ -6,7 +7,6 @@ jest.mock('jsonwebtoken', () => ({
     sign: jest.fn().mockReturnValue('token')
 }));
 const db = require('../../lib/firebase');
-const { enqueue } = require('../../lib/queue');
 
 const supertest = require('supertest');
 const app = require('../../app');

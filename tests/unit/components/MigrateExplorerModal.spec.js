@@ -11,7 +11,7 @@ beforeEach(() => {
 
 describe('MigrateExplorerModal.vue', () => {
     it('Should display plan selector if trial not available', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockRejectedValue(null);
+        jest.spyOn(helper.mocks.server, 'getExplorer').mockRejectedValueOnce(null);
         const wrapper = helper.mountFn(MigrateExplorerModal, {
             stubs: ['Explorer-Plan-Selector'],
             getters: {
@@ -28,7 +28,7 @@ describe('MigrateExplorerModal.vue', () => {
     });
 
     it('Should display loading while waiting for trial setup to be finalized', async () => {
-        jest.spyOn(helper.mocks.server, 'migrateDemoExplorer').mockRejectedValue(null);
+        jest.spyOn(helper.mocks.server, 'migrateDemoExplorer').mockRejectedValueOnce(null);
         const wrapper = helper.mountFn(MigrateExplorerModal, {
             stubs: ['Explorer-Plan-Selector'],
             getters: {
@@ -45,7 +45,7 @@ describe('MigrateExplorerModal.vue', () => {
     });
 
     it('Should display loading while waiting for the migration to be finalized', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockRejectedValue(null);
+        jest.spyOn(helper.mocks.server, 'getExplorer').mockRejectedValueOnce(null);
         const wrapper = helper.mountFn(MigrateExplorerModal, {
             stubs: ['Explorer-Plan-Selector'],
             getters: {
@@ -63,7 +63,8 @@ describe('MigrateExplorerModal.vue', () => {
     });
 
     it('Should display success screen once trial is finalized', async () => {
-        jest.spyOn(helper.mocks.server, 'migrateDemoExplorer').mockResolvedValue();
+        jest.spyOn(helper.mocks.server, 'migrateDemoExplorer').mockResolvedValueOnce();
+        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({ data: { isDemo: false, userId: 1 }});
         const wrapper = helper.mountFn(MigrateExplorerModal, {
             stubs: ['Explorer-Plan-Selector'],
             getters: {
@@ -79,8 +80,8 @@ describe('MigrateExplorerModal.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it.only('Should display success screen once migration is finalized', async () => {
-        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValue({ data: { userId: 1, isDemo: false }});
+    it('Should display success screen once migration is finalized', async () => {
+        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({ data: { userId: 1, isDemo: false }});
         const wrapper = helper.mountFn(MigrateExplorerModal, {
             stubs: ['Explorer-Plan-Selector'],
             getters: {

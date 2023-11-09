@@ -10,6 +10,7 @@ beforeEach(() => {
 
 describe('DemoExplorerSetup.vue', () => {
     it('Should display demo explorer setup page', async () => {
+        jest.spyOn(helper.mocks.server, 'getCurrentUser').mockResolvedValue({ data: { id: 1 }});
         const wrapper = helper.mountFn(DemoExplorerSetup);
 
         expect(wrapper.html()).toMatchSnapshot();

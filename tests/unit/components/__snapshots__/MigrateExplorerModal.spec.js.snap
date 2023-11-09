@@ -62,7 +62,7 @@ exports[`MigrateExplorerModal.vue Should display plan selector if trial not avai
 <div class="v-dialog__container">
   <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 1200px;">
+      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 1800px;">
         <div class="v-card v-sheet v-sheet--outlined theme--light pa-4">
           <div class="v-card__title">Setup up your explorer</div>
           <div class="v-card__text">

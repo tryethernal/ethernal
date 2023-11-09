@@ -7,7 +7,7 @@ exports[`Account.vue Should load the account tab 1`] = `
       <h4>Api Token</h4>
       <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
         <div class="v-card__text">
-          <div aria-busy="true" aria-live="polite" role="alert" class="v-skeleton-loader v-skeleton-loader--is-loading theme--light">
+          <div aria-busy="true" aria-live="polite" aria-label="Loading..." role="alert" class="v-skeleton-loader v-skeleton-loader--is-loading theme--light">
             <div class="v-skeleton-loader__list-item-two-line v-skeleton-loader__bone">
               <div class="v-skeleton-loader__sentences v-skeleton-loader__bone">
                 <div class="v-skeleton-loader__text v-skeleton-loader__bone"></div>

@@ -114,11 +114,14 @@ export default new Vuex.Store({
                     canUseDemoPlan: user.canUseDemoPlan
                 }));
 
-                if (process.env.VUE_APP_ENABLE_ANALYTICS)
+                if (process.env.VUE_APP_ENABLE_ANALYTICS) {
                     LogRocket.identify(user.firebaseUserId, { email: user.email });
+                    this._vm.$posthog.identify(user.id, { email: user.email });
+                }
             }
             else {
                 commit('SET_USER', null);
+                this._vm.$posthog.reset();
             }
         },
         updateCurrentBlock({ commit }, newBlock) {
@@ -127,7 +130,7 @@ export default new Vuex.Store({
         updateCurrentWorkspace({ commit }, currentWorkspace) {
             commit('SET_CURRENT_WORKSPACE', currentWorkspace);
             if (currentWorkspace.explorer)
-            commit('SET_PUBLIC_EXPLORER_DATA', currentWorkspace.explorer);
+                commit('SET_PUBLIC_EXPLORER_DATA', currentWorkspace.explorer);
         },
         updateConnected({ commit }, connected) {
             commit('SET_CONNECTED', connected);
@@ -148,6 +151,8 @@ export default new Vuex.Store({
         }
     },
     getters: {
+        postHogApiKey: () => process.env.VUE_APP_POSTHOG_API_KEY,
+        hasAnalyticsEnabled: () => !!process.env.VUE_APP_ENABLE_ANALYTICS,
         hasDemoEnabled: () => !!process.env.VUE_APP_ENABLE_DEMO,
         mainDomain: () => process.env.VUE_APP_MAIN_DOMAIN,
         isBillingEnabled: () => !!process.env.VUE_APP_ENABLE_BILLING,

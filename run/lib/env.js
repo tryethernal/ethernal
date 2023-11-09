@@ -12,5 +12,6 @@ module.exports = {
     getDemoUserId: () => process.env.DEMO_USER_ID,
     getDemoTrialSlug: () => process.env.DEMO_TRIAL_SLUG,
     getStripeSecretKey: () => process.env.STRIPE_SECRET_KEY,
-    getDefaultExplorerTrialDays: () => process.env.DEFAULT_EXPLORER_TRIAL_DAYS || 7
+    getDefaultExplorerTrialDays: () => process.env.DEFAULT_EXPLORER_TRIAL_DAYS || 7,
+    getPostHogApiKey: () => process.env.POST_HOG_API_KEY
 };

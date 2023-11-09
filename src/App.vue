@@ -309,6 +309,7 @@ export default {
             this.$refs.browserSyncExplainerModal.open();
         },
         logOut() {
+            this.$posthog.reset();
             localStorage.clear();
             document.location.reload();
         },
@@ -325,14 +326,14 @@ export default {
             document.title = name;
         },
         authStateChanged(user) {
-            if (user && process.env.VUE_APP_ENABLE_ANALYTICS && window.location.host == 'app.tryethernal.com') {
+            if (user && this.hasAnalyticsEnabled && window.location.host == 'app.tryethernal.com') {
                 LogRocket.init(process.env.VUE_APP_LOGROCKET_ID);
             }
 
             const currentPath = this.$router.currentRoute.path;
             const publicExplorerMode = store.getters.publicExplorerMode;
 
-            store.dispatch('updateUser', user || {});
+            store.dispatch('updateUser', user);
 
             if (currentPath != '/auth' && !user && !publicExplorerMode) {
                 return this.$router.push('/auth');
@@ -428,6 +429,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'hasAnalyticsEnabled',
             'accounts',
             'isPublicExplorer',
             'publicExplorer',

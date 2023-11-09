@@ -1,6 +1,7 @@
 require('../mocks/lib/queue');
 require('../mocks/lib/env');
 require('../mocks/lib/firebase');
+require('../mocks/lib/flags');
 const mockMembersAdd = jest.fn().mockResolvedValue(true);
 jest.mock('@tryghost/admin-api', () => {
     return function() {
@@ -12,14 +13,10 @@ jest.mock('@tryghost/admin-api', () => {
     }
 });
 
-
-
-
 const db = require('../../lib/firebase');
 const env = require('../../lib/env')
 
 const processUser = require('../../jobs/processUser');
-const { bulkEnqueue } = require('../../lib/queue');
 
 beforeEach(() => jest.clearAllMocks());
 

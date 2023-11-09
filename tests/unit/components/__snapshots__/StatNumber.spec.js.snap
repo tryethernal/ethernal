@@ -53,7 +53,7 @@ exports[`StatNumber.vue Should show the loading skeleton 1`] = `
     <!---->
   </div>
   <div align="center" class="v-card__text text-h3">
-    <div aria-busy="true" aria-live="polite" role="alert" class="v-skeleton-loader v-skeleton-loader--is-loading theme--light">
+    <div aria-busy="true" aria-live="polite" aria-label="Loading..." role="alert" class="v-skeleton-loader v-skeleton-loader--is-loading theme--light">
       <div class="v-skeleton-loader__list-item v-skeleton-loader__bone">
         <div class="v-skeleton-loader__text v-skeleton-loader__bone"></div>
       </div>

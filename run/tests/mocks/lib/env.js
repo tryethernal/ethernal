@@ -8,5 +8,6 @@ jest.mock('../../../lib/env', () => ({
     getDemoUserId: jest.fn(() => 1),
     getStripeSecretKey: jest.fn(() => 'x'),
     getDemoTrialSlug: jest.fn(() => 'slug'),
-    getDefaultExplorerTrialDays: jest.fn(() => 7)
+    getDefaultExplorerTrialDays: jest.fn(() => 7),
+    getPostHogApiKey: jest.fn(() => 'x')
 }));

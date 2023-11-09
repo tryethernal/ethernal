@@ -6,6 +6,8 @@ const { sanitize } = require('../lib/utils');
 const { isStripeEnabled, isSubscriptionCheckEnabled } = require('../lib/flags');
 const { getDemoUserId } = require('../lib/env');
 const { enqueue } = require('../lib/queue');
+const Analytics = require('../lib/analytics');
+const analytics = new Analytics();
 const MAX_RPC_ATTEMPTS = 3;
 
 module.exports = (sequelize, DataTypes) => {
@@ -189,15 +191,13 @@ module.exports = (sequelize, DataTypes) => {
             throw new Error('Invalid plan');
 
         return sequelize.transaction(async transaction => {
-            const stripeSubscription = await this.getStripeSubscription();
             const newUser = await sequelize.models.User.findByPk(userId);
 
-            await stripeSubscription.update({ stripePlanId: stripePlan.id, stripeId: stripeSubscriptionData.id }, { transaction });
+            await newUser.update({ currentWorkspaceId: workspace.id }, { transaction });
             await workspace.update({ userId }, { transaction });
-            if (!newUser.currentWorkspaceId)
-                await newUser.update({ currentWorkspaceId: workspace.id }, { transaction });
-            const explorer = await this.update({ userId, themes: { light: {} }, isDemo: false }, { transaction });
-            return explorer;
+            await this.update({ userId, themes: { light: {} }, isDemo: false }, { transaction });
+
+            return this;
         });
     }
 
@@ -329,6 +329,17 @@ module.exports = (sequelize, DataTypes) => {
     isDemo: DataTypes.BOOLEAN
   }, {
     hooks: {
+        afterCreate(explorer, options) {
+            const afterCreateFn = () => {
+                if (!explorer.isDemo) {
+                    analytics.track(explorer.userId, 'explorer:explorer_create', {
+                        is_demo: false
+                    });
+                    analytics.shutdown();
+                }
+            };
+            return options.transaction ? options.transaction.afterCommit(afterCreateFn) : afterCreateFn();
+        },
         afterUpdate(explorer, options) {
             const afterUpdateFn = () => {
                 return enqueue('updateExplorerSyncingProcess', `updateExplorerSyncingProcess-${explorer.slug}`, {

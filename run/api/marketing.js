@@ -4,7 +4,6 @@ const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
-const { enqueue } = require('../lib/queue');
 
 router.get('/productRoadToken', authMiddleware, async (req, res) => {
     const data = { ...req.query, ...req.body.data };

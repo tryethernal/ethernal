@@ -402,7 +402,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
         if (!explorer)
             throw new Error('Could not create explorer.');
-        
+
         if (!isStripeEnabled() || user.canUseDemoPlan) {
             const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
             if (!stripePlan)

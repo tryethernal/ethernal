@@ -1,5 +1,4 @@
-const fs = require('fs');
-import { mount, createLocalVue, createWrapper } from '@vue/test-utils';
+import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import Vuetify from 'vuetify';
 import VueRouter from 'vue-router';
@@ -7,9 +6,11 @@ import VueRouter from 'vue-router';
 require('./mocks/db');
 require('./mocks/server');
 require('./mocks/pusher');
+require('./mocks/posthog');
 const { dbPlugin } = require('@/plugins/firebase');
 const { serverPlugin } = require('@/plugins/server');
 const { pusherPlugin } = require('@/plugins/pusher');
+const { posthogPlugin } = require('@/plugins/posthog');
 
 class MockHelper {
 
@@ -57,6 +58,7 @@ class MockHelper {
         this.localVue.use(dbPlugin);
         this.localVue.use(serverPlugin);
         this.localVue.use(pusherPlugin);
+        this.localVue.use(posthogPlugin);
 
         this.mocks = {
             db: this.localVue.prototype.db,

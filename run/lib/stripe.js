@@ -2,7 +2,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Analytics = require('./analytics');
 const db = require('./firebase');
 const models = require('../models');
-const analytics = new Analytics(process.env.MIXPANEL_API_TOKEN);
+const analytics = new Analytics();
 
 const deleteExplorerSubscription = async (stripeSubscription) => {
     if (stripeSubscription.status != 'canceled')
@@ -56,18 +56,20 @@ const updateExplorerSubscription = async (stripeSubscription) => {
     if (explorer.stripeSubscription) {
         if (explorer.isDemo && !explorer.stripeSubscription.stripeId) {
             await db.migrateDemoExplorer(explorer.id, user.id, stripeSubscription);
-            await db.setCurrentWorkspace(user.firebaseUserId, explorer.workspace.name);
+            analytics.track(user.id, 'explorer:demo_migrate', {
+                is_trial: stripeSubscription.status == 'trialing',
+                plan_slug: stripePlan.slug
+            });
         }
-
         if (explorer.stripeSubscription.isPendingCancelation && stripeSubscription.cancel_at_period_end == false)
             await db.revertExplorerSubscriptionCancelation(user.id, explorerId);
         else
             await db.updateExplorerSubscription(user.id, explorerId, stripePlan.id, { ...stripeSubscription, customer: stripeCustomer });
-    } else {
+    } else
         await db.createExplorerSubscription(user.id, explorerId, stripePlan.id, { ...stripeSubscription, customer: stripeCustomer });
-        if (stripeSubscription.status == 'trialing')
-            await db.disableUserTrial(user.id);
-    }
+
+    if (stripeSubscription.status == 'trialing')
+        await db.disableUserTrial(user.id);
 }
 
 const updatePlan = async (stripeSubscription) => {
@@ -91,12 +93,6 @@ const updatePlan = async (stripeSubscription) => {
 
     if (plan) {
         await db.updateUserPlan(user.firebaseUserId, plan);
-        analytics.track(user.id, 'Subscription Change', {
-            plan: plan,
-            subscriptionStatus: stripeSubscription.status,
-            cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end
-        });
-        analytics.setSubscription(user.id, stripeSubscription.status, plan, stripeSubscription.cancel_at_period_end);
         return true;
     }
     else

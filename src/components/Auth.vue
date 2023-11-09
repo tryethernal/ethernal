@@ -155,7 +155,8 @@ export default {
                     });
                 })
                 .catch(error => {
-                    this.error = error.response.data;
+                    console.log(error);
+                    this.error = error.response && error.response.data ? error.response.data : 'Error while signing in. Please retry.';
                     this.loading = false
                 });
         },
