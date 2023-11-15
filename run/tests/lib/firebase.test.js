@@ -447,6 +447,7 @@ describe('updateExplorerSubscription', () => {
     it('Should update subscription', (done) => {
         const safeUpdateSubscription = jest.fn();
         const stripeSubscription = {
+            id: '1',
             status: 'active',
             current_period_end: 1,
             customer: { invoice_settings: {} }
@@ -454,7 +455,7 @@ describe('updateExplorerSubscription', () => {
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription });
         db.updateExplorerSubscription(1, 1, 1, stripeSubscription)
             .then(() => {
-                expect(safeUpdateSubscription).toHaveBeenCalledWith(1, new Date(1000), 'active');
+                expect(safeUpdateSubscription).toHaveBeenCalledWith(1, '1', new Date(1000), 'active');
                 done();
             })
     });
@@ -462,6 +463,7 @@ describe('updateExplorerSubscription', () => {
     it('Should update to a trial without a card', (done) => {
         const safeUpdateSubscription = jest.fn();
         const stripeSubscription = {
+            id: '1',
             status: 'trialing',
             current_period_end: 1,
             customer: { invoice_settings: {} }
@@ -469,7 +471,7 @@ describe('updateExplorerSubscription', () => {
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription });
         db.updateExplorerSubscription(1, 1, 1, stripeSubscription)
             .then(() => {
-                expect(safeUpdateSubscription).toHaveBeenCalledWith(1, new Date(1000), 'trial');
+                expect(safeUpdateSubscription).toHaveBeenCalledWith(1, '1', new Date(1000), 'trial');
                 done();
             })
     });
@@ -478,13 +480,14 @@ describe('updateExplorerSubscription', () => {
         const safeUpdateSubscription = jest.fn();
         const stripeSubscription = {
             status: 'trialing',
+            id: '1',
             current_period_end: 1,
             customer: { default_source: 'yes' }
         }
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription });
         db.updateExplorerSubscription(1, 1, 1, stripeSubscription)
             .then(() => {
-                expect(safeUpdateSubscription).toHaveBeenCalledWith(1, new Date(1000), 'trial_with_card');
+                expect(safeUpdateSubscription).toHaveBeenCalledWith(1, '1', new Date(1000), 'trial_with_card');
                 done();
             })
     });
@@ -500,7 +503,7 @@ describe('updateExplorerSubscription', () => {
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription });
         db.updateExplorerSubscription(1, 1, 1, stripeSubscription)
             .then(() => {
-                expect(safeUpdateSubscription).toHaveBeenCalledWith(1, new Date(1000), 'trial_with_card');
+                expect(safeUpdateSubscription).toHaveBeenCalledWith(1, '1', new Date(1000), 'trial_with_card');
                 done();
             })
     });
@@ -510,7 +513,7 @@ describe('updateExplorerSubscription', () => {
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ safeUpdateSubscription });
         db.updateExplorerSubscription(1, 1, 1)
             .then(() => {
-                expect(safeUpdateSubscription).toHaveBeenCalledWith(1, new Date(0), 'active');
+                expect(safeUpdateSubscription).toHaveBeenCalledWith(1, undefined, new Date(0), 'active');
                 done();
             })
     });

@@ -236,14 +236,14 @@ module.exports = (sequelize, DataTypes) => {
             throw new Error('Error deleting the explorer. Please retry');
     }
 
-    async safeUpdateSubscription(stripePlanId, cycleEndsAt, status) {
-        if (!stripePlanId && !cycleEndsAt && !status) throw new Error('Missing parameter');
+    async safeUpdateSubscription(stripePlanId, stripeId, cycleEndsAt, status) {
+        if (!stripePlanId || !stripeId || !cycleEndsAt || !status) throw new Error('Missing parameter');
 
         if (sequelize.models.StripeSubscription.rawAttributes.status.values.indexOf(status) == -1)
             throw new Error('Invalid subscription status');
 
         const stripeSubscription = await this.getStripeSubscription();
-        return stripeSubscription.update(sanitize({ stripePlanId, cycleEndsAt, status }));
+        return stripeSubscription.update(sanitize({ stripePlanId, stripeId, cycleEndsAt, status }));
     }
 
     async safeCancelSubscription() {
