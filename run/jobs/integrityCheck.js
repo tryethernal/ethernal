@@ -37,7 +37,8 @@ module.exports = async job => {
                 require: false,
                 include: { model: models.Block, as: 'block' }
             },
-            { model: models.User, as: 'user' }
+            { model: models.User, as: 'user' },
+            { model: models.Explorer, as: 'explorer' },
         ]
     });
 
