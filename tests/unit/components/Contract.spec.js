@@ -39,7 +39,7 @@ describe('Contract.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: stubs
+            stubs: stubs
         });
 
         await flushPromises();
@@ -58,7 +58,7 @@ describe('Contract.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: stubs
+            stubs: stubs
         });
 
         setTimeout(() => {
@@ -83,14 +83,14 @@ describe('Contract.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: stubs
+            stubs: stubs
         });
 
         await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should not display delete option if not admin', async () => {
+    it('Should not display delete option if not admin', (done) => {
         jest.spyOn(helper.mocks.server, 'getContract')
             .mockResolvedValueOnce({ data: {
                 name: 'ERC721 Contract',
@@ -106,13 +106,15 @@ describe('Contract.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: stubs,
+            stubs: stubs,
             getters: {
                 isUserAdmin: jest.fn(() => false)
             }
         });
 
-        await flushPromises();
-        expect(wrapper.html()).toMatchSnapshot();
+        setTimeout(() => {
+            expect(wrapper.html()).toMatchSnapshot();
+            done();
+        }, 2000);
     });
 });
