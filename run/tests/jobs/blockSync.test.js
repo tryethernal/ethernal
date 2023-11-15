@@ -70,6 +70,7 @@ describe('blockSync', () => {
             workspaces: [{
                 id: 1,
                 rpcServer: 'http://localhost:8545',
+                rpcHealthCheckEnabled: true,
                 rpcHealthCheck: {
                     isReachable: false
                 },
@@ -90,6 +91,7 @@ describe('blockSync', () => {
             workspaces: [{
                 id: 1,
                 rpcServer: 'http://localhost:8545',
+                rpcHealthCheckEnabled: true,
                 rpcHealthCheck: {
                     isReachable: true
                 },

@@ -44,7 +44,7 @@ describe('processTransactionTrace', () => {
     // });
 
     it('Should return if RPC is not reachable', async () => {
-        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, workspace: { ...workspace, public: true, rpcHealthCheck: { isReachable: false }, explorer: { shouldSync: true }}});
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce({ ...Transaction, workspace: { ...workspace, rpcHealthCheckEnabled: true, public: true, rpcHealthCheck: { isReachable: false }, explorer: { shouldSync: true }}});
 
         const res = await processTransactionTrace({ data: { transactionId: 1 }});
         expect(res).toEqual('RPC is not reachable');
