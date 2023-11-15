@@ -1,11 +1,11 @@
 const { PostHog } = require('posthog-node');
-const { getPostHogApiKey } = require('./env');
+const { getPostHogApiKey, getPostHogApiHost } = require('./env');
 const { isMarketingEnabled } = require('./flags');
 
 class Analytics {
     constructor() {
         if (!isMarketingEnabled()) return;
-        this.posthog = new PostHog(getPostHogApiKey());
+        this.posthog = new PostHog(getPostHogApiKey(), { host: getPostHogApiHost() });
     }
 
     track(distinctId, event, properties) {
