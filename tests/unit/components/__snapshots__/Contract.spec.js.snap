@@ -370,7 +370,7 @@ exports[`Contract.vue Should not display delete option if not admin 1`] = `
       </div>
       <div class="v-slide-group__wrapper">
         <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="transition: none;">
+          <div class="v-tabs-slider-wrapper" style="height: 2px; left: 0px; width: 0px;">
             <div class="v-tabs-slider"></div>
           </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active" id="transactionsTab">Transactions</a> <a tabindex="0" href="#interactions" aria-selected="false" role="tab" class="v-tab" id="interactionsTab">Read / Write</a> <a tabindex="0" href="#logs" aria-selected="false" role="tab" class="v-tab" id="logsTab">Logs</a> <a tabindex="0" href="#code" aria-selected="false" role="tab" class="v-tab" id="codeTab">Code</a> <a tabindex="0" href="#storage" aria-selected="false" role="tab" class="v-tab" id="storageTab">Storage</a>
         </div>
