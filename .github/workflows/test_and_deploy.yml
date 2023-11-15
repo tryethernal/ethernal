@@ -180,6 +180,8 @@ jobs:
           VUE_APP_ENABLE_ANALYTICS: true
           VUE_APP_ENABLE_MARKETING: true
           VUE_APP_ENABLE_DEMO: true
+          VUE_APP_POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+          VUE_APP_POSTHOG_API_HOST: ${{ secrets.POSTHOG_API_HOST }}
           COMMIT_REF: ${{ github.sha }}
 
       - uses: nwtgck/actions-netlify@v2.0.0

@@ -152,6 +152,7 @@ export default new Vuex.Store({
     },
     getters: {
         postHogApiKey: () => process.env.VUE_APP_POSTHOG_API_KEY,
+        postHogApiHost: () => process.env.VUE_APP_POSTHOG_API_HOST,
         hasAnalyticsEnabled: () => !!process.env.VUE_APP_ENABLE_ANALYTICS,
         hasDemoEnabled: () => !!process.env.VUE_APP_ENABLE_DEMO,
         mainDomain: () => process.env.VUE_APP_MAIN_DOMAIN,
