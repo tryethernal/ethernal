@@ -119,10 +119,8 @@ export default new Vuex.Store({
                     this._vm.$posthog.identify(user.id, { email: user.email });
                 }
             }
-            else {
+            else
                 commit('SET_USER', null);
-                this._vm.$posthog.reset();
-            }
         },
         updateCurrentBlock({ commit }, newBlock) {
             commit('SET_CURRENT_BLOCK', newBlock);
