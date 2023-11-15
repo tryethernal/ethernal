@@ -76,6 +76,7 @@ describe('receiptSync', () => {
         jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
             workspace: {
                 rpcServer: 'rpc',
+                rpcHealthCheckEnabled: true,
                 rpcHealthCheck: {
                     isReachable: false
                 },
