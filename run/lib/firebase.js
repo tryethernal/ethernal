@@ -300,20 +300,22 @@ const updateExplorerSubscription = async (userId, explorerId, stripePlanId, stri
 
     let cycleEndsAt = new Date(0);
     let status = 'active';
+    let stripeId;
 
     if (stripeSubscription) {
         const customer = stripeSubscription.customer;
         cycleEndsAt = new Date(stripeSubscription.current_period_end * 1000);
+        stripeId = stripeSubscription.id;
 
         if (stripeSubscription.status == 'trialing' && !customer.default_source && !customer.invoice_settings.default_payment_method)
             status = stripeSubscription.default_payment_method ? 'trial_with_card' : 'trial';
-        else if (stripeSubscription.status == 'trialing' && customer.default_source || customer.invoice_settings.default_payment_method)
+        else if (stripeSubscription.status == 'trialing' && (customer.default_source || customer.invoice_settings.default_payment_method))
             status = 'trial_with_card';
         else
             status = stripeSubscription.status;
     }
 
-    return explorer.safeUpdateSubscription(stripePlanId, cycleEndsAt, status);
+    return explorer.safeUpdateSubscription(stripePlanId, stripeId, cycleEndsAt, status);
 };
 
 const createExplorerSubscription = async (userId, explorerId, stripePlanId, stripeSubscription) => {
@@ -340,7 +342,7 @@ const createExplorerSubscription = async (userId, explorerId, stripePlanId, stri
 
         if (stripeSubscription.status == 'trialing' && !customer.default_source && !customer.invoice_settings.default_payment_method)
             status = stripeSubscription.default_payment_method ? 'trial_with_card' : 'trial';
-        else if (stripeSubscription.status == 'trialing' && customer.default_source || customer.invoice_settings.default_payment_method)
+        else if (stripeSubscription.status == 'trialing' && (customer.default_source || customer.invoice_settings.default_payment_method))
             status = 'trial_with_card';
         else
             status = stripeSubscription.status;
