@@ -98,6 +98,14 @@ module.exports = (sequelize, DataTypes) => {
                     }), { transaction });
                 }
             }
+
+            const explorer = await sequelize.models.Explorer.findOne({ where: { workspaceId: this.workspaceId }});
+            if (explorer) {
+                const stripeSubscription = await explorer.getStripeSubscription();
+                if (stripeSubscription)
+                    await stripeSubscription.increment('transactionQuota', { transaction });
+            }
+
             return storedReceipt;
         });
     }

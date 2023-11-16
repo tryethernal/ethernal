@@ -368,6 +368,9 @@ router.post('/', authMiddleware, async (req, res) => {
             if (!workspace)
                 throw new Error('Invalid workspace.');
 
+            if (workspace.explorer)
+                throw new Error('This workspace already has an explorer.');
+
             const provider = new ProviderConnector(workspace.rpcServer);
             try {
                 await withTimeout(provider.fetchNetworkId());
