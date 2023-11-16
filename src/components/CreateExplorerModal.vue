@@ -1,13 +1,16 @@
 <template>
-    <v-dialog v-model="dialog" :max-width="stepperIndex * 900">
+    <v-dialog v-model="dialog" :max-width="stepperIndex * 900" :persistent="true">
         <v-stepper vertical v-model="stepperIndex">
-            <h3 class="ml-6 mt-4">Public Explorer Creation</h3>
-            <v-stepper-step step="1" :complete="stepperIndex > 1">Setup The Workspace</v-stepper-step>
-            <v-stepper-content step="1">
+            <h3 class="mx-6 mt-4">
+                Create Explorer<v-btn style="position: relative;float: right;" icon @click="close()" ><v-icon>mdi-close</v-icon></v-btn>
+            </h3>
+            <v-stepper-step step="1" :complete="stepperIndex > 1">Enter Setup Info</v-stepper-step>
+            <v-stepper-content step="1" class="pt-0">
                 <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
                 <v-row>
                     <v-col cols="12">
                         <v-select primary outlined label="Select Existing Workspace" v-model="workspace" item-text="name"
+                            v-if="workspaces.length"
                             :items="workspaces" return-object clearable class="mt-2">
                             <template v-slot:item="{ item }">
                                 {{ item.name }}<small class="ml-2">({{ item.rpcServer }} | {{  item.networkId }})</small>
@@ -17,7 +20,7 @@
                             </template>
                         </v-select>
                         <template v-if="!workspace">
-                            <h5>Create New Workspace</h5>
+                            <h5 v-if="workspaces.length">Or create a new one:</h5>
                             <Create-Workspace :isPublic="true" @workspaceCreated="onWorkspaceCreated"/>
                         </template>
                         <v-card-actions v-else>
@@ -29,7 +32,7 @@
             </v-stepper-content>
 
             <v-stepper-step v-if="isBillingEnabled" step="2" :complete="stepperIndex > 2">Choose A Plan</v-stepper-step>
-            <v-stepper-content v-if="isBillingEnabled" step="2">
+            <v-stepper-content v-if="isBillingEnabled" step="2" class="pt-0">
                 <v-card>
                     <v-card-text>
                         <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
@@ -74,7 +77,7 @@ export default {
         open() {
             this.dialog = true;
             this.server.getWorkspaces()
-                .then(({ data }) => this.workspaces = data)
+                .then(({ data }) => this.workspaces = data.filter(w => !w.explorer))
                 .catch(console.log);
 
             return new Promise((resolve, reject) => {
@@ -114,6 +117,10 @@ export default {
         },
         reset() {
             this.dialog = false;
+            this.stepperIndex = 1;
+            this.workspaces = [];
+            this.workspace = null;
+            this.explorer = null;
             this.resolve = null;
             this.reject = null;
         }

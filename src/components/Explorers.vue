@@ -133,7 +133,8 @@ export default {
                 .finally(() => this.loading = false);
         },
         openCreateExplorerModal() {
-            this.$refs.createExplorerModalRef.open();
+            this.$refs.createExplorerModalRef.open()
+                .then(this.getExplorers);
         },
         statusClass(subscription) {
             if (!subscription) return 'error';

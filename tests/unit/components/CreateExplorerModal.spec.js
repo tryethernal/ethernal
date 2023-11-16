@@ -10,8 +10,24 @@ describe('CreateExplorerModal.vue', () => {
         helper = new MockHelper();
     });
 
-    it('Should let the user choose an existing workspace or create a new one', async () => {
-        jest.spyOn(helper.mocks.server, 'getWorkspaces').mockResolvedValueOnce([{ name: 'my workspace', rpcServer: 'a', networkId: 1 }]);
+    it('Should let the user choose an existing workspace', async () => {
+        jest.spyOn(helper.mocks.server, 'getWorkspaces').mockResolvedValueOnce({ data: [{ name: 'my workspace', rpcServer: 'a', networkId: 1 }]});
+        jest.spyOn(helper.mocks.server, 'getExplorerPlans').mockResolvedValueOnce({ data: [] });
+
+        const wrapper = helper.mountFn(CreateExplorerModal, {
+            stubs: ['Create-Workspace', 'Explorer-Plan-Selector']
+        });
+
+        wrapper.vm.open();
+
+        await flushPromises();
+
+        expect(helper.mocks.server.getWorkspaces).toHaveBeenCalled();
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should only show creation form if no workspace available', async () => {
+        jest.spyOn(helper.mocks.server, 'getWorkspaces').mockResolvedValueOnce({ data: [{ explorer: {}}]});
         jest.spyOn(helper.mocks.server, 'getExplorerPlans').mockResolvedValueOnce({ data: [] });
 
         const wrapper = helper.mountFn(CreateExplorerModal, {
