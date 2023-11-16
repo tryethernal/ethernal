@@ -607,6 +607,19 @@ describe(`POST ${BASE_URL}`, () => {
             });
     });
 
+    it('Should fail if there is already an explorer for this workspace', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
+        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ explorer: {}});
+
+        request.post(BASE_URL)
+            .send({ data: { workspaceId: 1 }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('This workspace already has an explorer.');
+                done();
+            });
+    });
+
     it('Should not accept a rpc without a name', (done) => {
         request.post(BASE_URL)
             .send({ data: { rpcServer: 'test.rpc' }})

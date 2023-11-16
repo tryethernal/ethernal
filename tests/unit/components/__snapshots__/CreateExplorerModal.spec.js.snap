@@ -1,16 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CreateExplorerModal.vue Should let the user choose an existing workspace or create a new one 1`] = `
+exports[`CreateExplorerModal.vue Should let the user choose an existing workspace 1`] = `
 <div class="v-dialog__container">
   <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
     <transition-stub name="dialog-transition" appear="true">
-      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 900px;">
+      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 900px;">
         <div class="v-stepper v-stepper--vertical v-sheet theme--light">
-          <h3 class="ml-6 mt-4">Public Explorer Creation</h3>
+          <h3 class="mx-6 mt-4">
+            Create Explorer<button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default" style="position: relative; float: right;"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button></h3>
           <div tabindex="-1" class="v-stepper__step v-stepper__step--active"><span class="v-stepper__step__step primary">1</span>
-            <div class="v-stepper__label">Setup The Workspace</div>
+            <div class="v-stepper__label">Enter Setup Info</div>
           </div>
-          <transition-stub name="tab-transition">
+          <transition-stub name="tab-transition" class="pt-0">
             <div class="v-stepper__content">
               <div class="v-stepper__wrapper" style="height: auto;">
                 <!---->
@@ -18,12 +19,12 @@ exports[`CreateExplorerModal.vue Should let the user choose an existing workspac
                   <div class="col col-12">
                     <div class="v-input mt-2 theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
                       <div class="v-input__control">
-                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-12" class="v-input__slot">
+                        <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-19" class="v-input__slot">
                           <fieldset aria-hidden="true">
                             <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                           </fieldset>
-                          <div class="v-select__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">Select Existing Workspace</label>
-                            <div class="v-select__selections"><input primary="" id="input-12" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                          <div class="v-select__slot"><label for="input-19" class="v-label theme--light" style="left: 0px; position: absolute;">Select Existing Workspace</label>
+                            <div class="v-select__selections"><input primary="" id="input-19" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
                             <div class="v-input__append-inner">
                               <div></div>
                             </div>
@@ -42,7 +43,7 @@ exports[`CreateExplorerModal.vue Should let the user choose an existing workspac
                         </div>
                       </div>
                     </div>
-                    <h5>Create New Workspace</h5>
+                    <h5>Or create a new one:</h5>
                     <create-workspace-stub ispublic="true"></create-workspace-stub>
                   </div>
                 </div>
@@ -52,7 +53,58 @@ exports[`CreateExplorerModal.vue Should let the user choose an existing workspac
           <div tabindex="-1" class="v-stepper__step v-stepper__step--inactive"><span class="v-stepper__step__step">2</span>
             <div class="v-stepper__label">Choose A Plan</div>
           </div>
-          <transition-stub name="tab-transition">
+          <transition-stub name="tab-transition" class="pt-0">
+            <div class="v-stepper__content">
+              <div class="v-stepper__wrapper" style="height: 0px;">
+                <div class="v-card v-sheet theme--light">
+                  <div class="v-card__text">
+                    <!---->
+                    <ul class="mb-4 pl-0" style="list-style: none;">
+                      <li>To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
+                      <!---->
+                    </ul>
+                    <!---->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </transition-stub>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`CreateExplorerModal.vue Should only show creation form if no workspace available 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 900px;">
+        <div class="v-stepper v-stepper--vertical v-sheet theme--light">
+          <h3 class="mx-6 mt-4">
+            Create Explorer<button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default" style="position: relative; float: right;"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button></h3>
+          <div tabindex="-1" class="v-stepper__step v-stepper__step--active"><span class="v-stepper__step__step primary">1</span>
+            <div class="v-stepper__label">Enter Setup Info</div>
+          </div>
+          <transition-stub name="tab-transition" class="pt-0">
+            <div class="v-stepper__content">
+              <div class="v-stepper__wrapper" style="height: auto;">
+                <!---->
+                <div class="row">
+                  <div class="col col-12">
+                    <!---->
+                    <!---->
+                    <create-workspace-stub ispublic="true"></create-workspace-stub>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </transition-stub>
+          <div tabindex="-1" class="v-stepper__step v-stepper__step--inactive"><span class="v-stepper__step__step">2</span>
+            <div class="v-stepper__label">Choose A Plan</div>
+          </div>
+          <transition-stub name="tab-transition" class="pt-0">
             <div class="v-stepper__content">
               <div class="v-stepper__wrapper" style="height: 0px;">
                 <div class="v-card v-sheet theme--light">

@@ -1054,11 +1054,14 @@ const getWorkspaceById = async (workspaceId) => {
         throw new Error('Missing parameter');
 
     const workspace = await Workspace.findByPk(workspaceId, {
-        include: {
-            model: User,
-            as: 'user',
-            attributes: ['firebaseUserId']
-        }
+        include: [
+            {
+                model: User,
+                as: 'user',
+                attributes: ['firebaseUserId']
+            },
+            'explorer'
+        ]
     });
 
     if (!workspace)

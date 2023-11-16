@@ -567,12 +567,8 @@ module.exports = (sequelize, DataTypes) => {
                         }
                     }
 
-                    const explorers = await sequelize.models.Explorer.findAll({
-                        where: { workspaceId: this.id }
-                    });
-
-                    for (let j = 0; j < explorers.length; j++) {
-                        const explorer = explorers[j];
+                    const explorer = await this.getExplorer();
+                    if (explorer) {
                         const stripeSubscription = await explorer.getStripeSubscription();
                         if (stripeSubscription)
                             await stripeSubscription.increment('transactionQuota', { transaction: sequelizeTransaction });
