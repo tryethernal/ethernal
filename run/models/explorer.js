@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 const { sanitize } = require('../lib/utils');
-const { isStripeEnabled, isSubscriptionCheckEnabled } = require('../lib/flags');
+const { isStripeEnabled } = require('../lib/flags');
 const { getDemoUserId } = require('../lib/env');
 const { enqueue } = require('../lib/queue');
 const Analytics = require('../lib/analytics');
@@ -78,10 +78,7 @@ module.exports = (sequelize, DataTypes) => {
                     include: {
                         model: sequelize.models.StripePlan,
                         as: 'stripePlan',
-                        where: {
-                            'capabilities.customDomain': true
-                        },
-                        required: isSubscriptionCheckEnabled()
+                        required: true
                     }
                 },
                 {
@@ -116,7 +113,7 @@ module.exports = (sequelize, DataTypes) => {
                             where: {
                                 'capabilities.customDomain': true
                             },
-                            required: isSubscriptionCheckEnabled()
+                            required: true
                         }
                     },
                     {
