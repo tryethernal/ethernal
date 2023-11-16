@@ -6,7 +6,6 @@ module.exports = {
     isFirebaseAuthEnabled: () => !!process.env.ENABLE_FIREBASE_AUTH,
     isGoogleApiEnabled: () => !!process.env.GOOGLE_API_KEY,
     isApproximatedEnabled: () => process.env.APPROXIMATED_API_KEY && process.env.APPROXIMATED_TARGET_IP,
-    isSubscriptionCheckEnabled: () => !process.env.DISABLE_SUBSCRIPTION_CHECK,
     isProductionEnvironment: () => process.env.NODE_ENV == 'production',
     isDevelopmentEnvironment: () => process.env.NODE_ENV == 'development',
     isDemoEnabled: () => !!process.env.DEMO_USER_ID

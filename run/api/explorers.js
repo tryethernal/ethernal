@@ -1,7 +1,7 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const express = require('express');
 const router = express.Router();
-const { isStripeEnabled, isSubscriptionCheckEnabled } = require('../lib/flags');
+const { isStripeEnabled } = require('../lib/flags');
 const { getAppDomain, getDefaultPlanSlug, getDefaultExplorerTrialDays } = require('../lib/env');
 const { ProviderConnector } = require('../lib/rpc');
 const { Explorer } = require('../models');
@@ -471,19 +471,17 @@ router.get('/search', async (req, res) => {
         if (!explorer)
             throw new Error(`Couldn't find explorer.`);
 
-        if (isSubscriptionCheckEnabled()) {
-            if (!explorer.stripeSubscription)
-                throw new Error('This explorer is not active.');
+        if (!explorer.stripeSubscription)
+            throw new Error('This explorer is not active.');
 
-            const capabilities = explorer.stripeSubscription.stripePlan.capabilities;
+        const capabilities = explorer.stripeSubscription.stripePlan.capabilities;
 
-            if (!capabilities.nativeToken)
-                explorer.token = 'ether';
-            if (!capabilities.totalSupply)
-                delete explorer.totalSupply;
-            if (!capabilities.branding)
-                explorer.themes = { 'default': {}};
-        }
+        if (!capabilities.nativeToken)
+            explorer.token = 'ether';
+        if (!capabilities.totalSupply)
+            delete explorer.totalSupply;
+        if (!capabilities.branding)
+            explorer.themes = { 'default': {}};
 
         res.status(200).json({ explorer });
     } catch(error) {
