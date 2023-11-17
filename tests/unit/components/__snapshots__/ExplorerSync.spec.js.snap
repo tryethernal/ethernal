@@ -23,7 +23,7 @@ exports[`ExplorerSync.vue Should display that sync is inactive 1`] = `
   <div class="v-card__text">
     <!---->
     <div><b class="error--text">
-        Your explorer is not synchronizing blocks
+        Your explorer is not synchronizing blocks.
         <!---->.
       </b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
   </div>
@@ -62,8 +62,8 @@ exports[`ExplorerSync.vue Should display unreachable status 1`] = `
   <div class="v-card__text">
     <!---->
     <div><b class="error--text">
-        Your explorer is not synchronizing blocks<span> (RPC is unreachable, sync will resume automatically as soon as our servers will be able to query it again)</span>.
-      </b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Stop Sync</span></button>
+        Your explorer is not synchronizing blocks.<span> RPC is unreachable</span>.
+      </b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
   </div>
 </div>
 `;
@@ -82,7 +82,7 @@ exports[`ExplorerSync.vue Should stop sync 1`] = `
   <div class="v-card__text">
     <!---->
     <div><b class="error--text">
-        Your explorer is not synchronizing blocks
+        Your explorer is not synchronizing blocks.
         <!---->.
       </b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
   </div>

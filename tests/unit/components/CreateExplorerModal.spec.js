@@ -43,7 +43,7 @@ describe('CreateExplorerModal.vue', () => {
     });
 
     it('Should skip billing if user is demo account', async () => {
-        jest.spyOn(helper.mocks.server, 'getWorkspaces').mockResolvedValueOnce([{ name: 'my workspace', rpcServer: 'a', networkId: 1 }]);
+        jest.spyOn(helper.mocks.server, 'getWorkspaces').mockResolvedValueOnce({ data: [{ name: 'my workspace', rpcServer: 'a', networkId: 1 }]});
         jest.spyOn(helper.mocks.server, 'getExplorerPlans').mockResolvedValueOnce({ data: [] });
         jest.spyOn(helper.mocks.server, 'createExplorer').mockResolvedValueOnce({ data: { id: 1 }});
         const routerSpy = jest.spyOn(helper.mocks.router, 'push');
@@ -69,7 +69,7 @@ describe('CreateExplorerModal.vue', () => {
     });
 
     it('Should skip billing if it is not enabled', async () => {
-        jest.spyOn(helper.mocks.server, 'getWorkspaces').mockResolvedValueOnce([{ name: 'my workspace', rpcServer: 'a', networkId: 1 }]);
+        jest.spyOn(helper.mocks.server, 'getWorkspaces').mockResolvedValueOnce({ data: [{ name: 'my workspace', rpcServer: 'a', networkId: 1 }]});
         jest.spyOn(helper.mocks.server, 'getExplorerPlans').mockResolvedValueOnce({ data: [] });
         jest.spyOn(helper.mocks.server, 'createExplorer').mockResolvedValueOnce({ data: { id: 1 }});
         const routerSpy = jest.spyOn(helper.mocks.router, 'push');
