@@ -1,11 +1,11 @@
 <template>
     <v-card outlined class="flex-grow-1">
-        <v-card-text>
+        <v-card-text v-if="syncStatus">
             <v-alert v-if="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
             <div v-if="explorer.stripeSubscription">
                 <b class="success--text" v-if="isSyncActive">Your explorer is synchronizing blocks.</b>
                 <b class="error--text" v-else-if="isSyncStopped">
-                    Your explorer is not synchronizing blocks<span v-if="isRpcUnreachable"> (RPC is unreachable, sync will resume automatically as soon as our servers will be able to query it again)</span>.
+                    Your explorer is not synchronizing blocks.<span v-if="isRpcUnreachable"> RPC is unreachable</span>.
                 </b>
                 <b class="warning--text" v-else-if="isSyncStarting">Starting synchronization...</b>
                 <b class="warning--text" v-else-if="isSyncStopping">Stopping synchronization...</b>
@@ -14,8 +14,11 @@
             <div v-else>
                 <b class="error--text">Synchronization will become available once a subscription has been started.</b>
             </div>
-            <v-btn v-if="(isSyncActive || isRpcUnreachable) && explorer.stripeSubscription" :loading="loading" class="mt-2" color="primary" @click="stopSync()">Stop Sync</v-btn>
+            <v-btn v-if="isSyncActive && explorer.stripeSubscription" :loading="loading" class="mt-2" color="primary" @click="stopSync()">Stop Sync</v-btn>
             <v-btn v-else :loading="loading" :disabled="!explorer.stripeSubscription" class="mt-2" color="primary" @click="startSync()">Start Sync</v-btn>
+        </v-card-text>
+        <v-card-text v-else>
+            <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
         </v-card-text>
     </v-card>
 </template>
@@ -30,7 +33,8 @@ export default {
     data: () => ({
         loading: false,
         syncStatus: null,
-        errorMessage: null
+        errorMessage: null,
+        timeout: null
     }),
     mounted() {
         this.getSyncStatus();
@@ -38,6 +42,10 @@ export default {
             this.loading = true;
             this.waitForStatus('online');
         });
+    },
+    destroyed() {
+        if (this.timeout)
+            clearTimeout(this.timeout);
     },
     methods: {
         moment,
@@ -73,7 +81,11 @@ export default {
             this.server.getExplorerSyncStatus(this.explorer.id)
                 .then(({ data: { status }}) => {
                     this.syncStatus = status;
-                    if (status != newStatus)
+                    if (status != newStatus && newStatus == 'online') {
+                        if (this.isRpcUnreachable) this.loading = false;
+                        else this.timeout = setTimeout(() => this.waitForStatus(newStatus), 1000);
+                    }
+                    else if (status != newStatus)
                         setTimeout(() => this.waitForStatus(newStatus), 1000);
                     else
                         this.loading = false;
