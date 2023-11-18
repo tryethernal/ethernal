@@ -443,7 +443,7 @@ module.exports = (sequelize, DataTypes) => {
                     s: transaction.s,
                     timestamp: block.timestamp,
                     to: transaction.to,
-                    transactionIndex: transaction.transactionIndex || transaction.index,
+                    transactionIndex: transaction.transactionIndex !== undefined && transaction.transactionIndex !== null ? transaction.transactionIndex : transaction.index,
                     type_: transaction.type,
                     v: transaction.v,
                     value: transaction.value,
@@ -612,7 +612,6 @@ module.exports = (sequelize, DataTypes) => {
 
     async safeCreateTransaction(transaction, blockId) {
         return sequelize.transaction(async (sequelizeTransaction) => {
-            console.log(transaction)
             const storedTx = await this.createTransaction(sanitize({
                 blockHash: transaction.blockHash,
                 blockNumber: transaction.blockNumber,
