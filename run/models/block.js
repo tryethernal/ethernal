@@ -67,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
           if (workspace.public) {
             await enqueue('removeStalledBlock', `removeStalledBlock-${block.id}`, { blockId: block.id }, null, null, STALLED_BLOCK_REMOVAL_DELAY);
             const afterCreateFn = async () => {
-              const transactions = await block.getTransactions();
+              const transactions = block.transactions;
               const jobs = [];
               for (let i = 0; i < transactions.length; i++) {
                 const transaction = transactions[i];
