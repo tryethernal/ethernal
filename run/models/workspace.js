@@ -612,6 +612,7 @@ module.exports = (sequelize, DataTypes) => {
 
     async safeCreateTransaction(transaction, blockId) {
         return sequelize.transaction(async (sequelizeTransaction) => {
+            console.log(transaction)
             const storedTx = await this.createTransaction(sanitize({
                 blockHash: transaction.blockHash,
                 blockNumber: transaction.blockNumber,
@@ -633,7 +634,7 @@ module.exports = (sequelize, DataTypes) => {
                 s: transaction.s,
                 timestamp: transaction.timestamp,
                 to: transaction.to,
-                transactionIndex: transaction.transactionIndex || transaction.index,
+                transactionIndex: transaction.transactionIndex !== undefined && transaction.transactionIndex !== null ? transaction.transactionIndex : transaction.index,
                 type_: transaction.type,
                 v: transaction.v,
                 value: transaction.value,
@@ -642,6 +643,8 @@ module.exports = (sequelize, DataTypes) => {
 
             const receipt = transaction.receipt;
             if (receipt) {
+                console.log(receipt)
+                console.log()
                 const storedReceipt = await storedTx.createReceipt(sanitize({
                     workspaceId: storedTx.workspaceId,
                     blockHash: receipt.blockHash,
@@ -656,7 +659,7 @@ module.exports = (sequelize, DataTypes) => {
                     status: receipt.status,
                     to: receipt.to,
                     transactionHash: receipt.transactionHash || receipt.hash || storedTx.hash,
-                    transactionIndex: receipt.transactionIndex || receipt.index,
+                    transactionIndex: receipt.transactionIndex !== undefined && receipt.transactionIndex !== null ? receipt.transactionIndex : receipt.index,
                     type_: receipt.type,
                     raw: receipt
                 }), { transaction: sequelizeTransaction });
