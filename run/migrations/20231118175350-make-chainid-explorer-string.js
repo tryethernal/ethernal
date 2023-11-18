@@ -10,8 +10,8 @@ module.exports = {
       }, { transaction });
 
       await queryInterface.changeColumn('transactions', 'chainId', {
-        type: Sequelize.STRING,
-        allowNull: false
+        type: Sequelize.INTEGER,
+        allowNull: true
       }, { transaction });
       await transaction.commit();
     } catch(error) {
