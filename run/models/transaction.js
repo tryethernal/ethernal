@@ -69,8 +69,8 @@ module.exports = (sequelize, DataTypes) => {
                 logsBloom: receipt.logsBloom,
                 status: receipt.status,
                 to: receipt.to,
-                transactionHash: receipt.transactionHash === undefined ? receipt.hash : receipt.transactionHash,
-                transactionIndex: receipt.transactionIndex === undefined ? receipt.index : receipt.transactionIndex,
+                transactionHash: receipt.transactionHash !== undefined ? receipt.transactionHash : receipt.hash,
+                transactionIndex: receipt.transactionIndex !== undefined && receipt.transactionIndex !== null ? receipt.transactionIndex : receipt.index,
                 type: receipt.type,
                 raw: receipt
             })), { transaction });
