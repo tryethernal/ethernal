@@ -642,8 +642,6 @@ module.exports = (sequelize, DataTypes) => {
 
             const receipt = transaction.receipt;
             if (receipt) {
-                console.log(receipt)
-                console.log()
                 const storedReceipt = await storedTx.createReceipt(sanitize({
                     workspaceId: storedTx.workspaceId,
                     blockHash: receipt.blockHash,
