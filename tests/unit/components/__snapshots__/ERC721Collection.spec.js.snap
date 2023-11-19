@@ -5,7 +5,10 @@ exports[`ERC721Collection.vue Should display contract info 1`] = `
   <div class="row mb-1">
     <div class="col-lg-5 col-12">
       <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-        <div class="v-card__title">Amalfi</div>
+        <div class="v-card__title">
+          <!---->
+          Amalfi
+        </div>
         <div class="v-card__subtitle"><span class="success mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">
                         ERC 721
                     </span></span></div>
@@ -94,7 +97,10 @@ exports[`ERC721Collection.vue Should display placeholders 1`] = `
   <div class="row mb-1">
     <div class="col-lg-5 col-12">
       <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-        <div class="v-card__title"></div>
+        <div class="v-card__title">
+          <!---->
+
+        </div>
         <div class="v-card__subtitle"></div>
         <div class="v-card__text">
           <div class="row">

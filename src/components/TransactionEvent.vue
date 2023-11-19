@@ -1,6 +1,6 @@
 <template>
     <div v-if="rawMode" class="my-3">
-        <b>Emitter:</b> <Hash-Link :type="'address'" :hash="log.address"></Hash-Link><br>
+        <b>Emitter:</b> <Hash-Link :type="'address'" :hash="log.address" :contract="contract"></Hash-Link><br>
         <b>Data:</b>
         <Formatted-Sol-Var :input="{ type: 'string' }" :value="JSON.stringify(log.raw)" :notInteractive="true" :isArrayEl="true" class="ml-4" />
     </div>
@@ -13,7 +13,7 @@
             </template>
             <span style="white-space: pre">
                 <template v-if="parsedLog">
-                    <span v-if="parsedLog.args.length > 0"><Hash-Link :type="'address'" :unlink="true" :notCopiable="true" :withTokenName="true" :withName="true" :hash="this.log.address" />{{ `.${parsedLog.name}(\n` }}</span>
+                    <span v-if="parsedLog.args.length > 0"><Hash-Link :type="'address'" :unlink="true" :notCopiable="true" :withTokenName="true" :withName="true" :hash="this.log.address" :contract="contract" />{{ `.${parsedLog.name}(\n` }}</span>
                     <span v-else>{{ `${ contract.name }.${parsedLog.name}` }}()</span>
                     <div style="white-space: pre;" v-for="(input, index) in parsedLog.eventFragment.inputs" :key="index">
                         <Formatted-Sol-Var :notInteractive="true" :input="input" :value="parsedLog.args[index]" class="ml-4" />
@@ -21,7 +21,7 @@
                     <span v-if="parsedLog.args.length > 0">{{ ')' }}</span>
                 </template>
                 <template v-else>
-                    <b>Emitter:</b> <Hash-Link :unlink="true" :notCopiable="true" :type="'address'" :hash="log.address"></Hash-Link><br>
+                    <b>Emitter:</b> <Hash-Link :unlink="true" :notCopiable="true" :type="'address'" :hash="log.address" :contract="contract"></Hash-Link><br>
                     <b>Topics:</b>
                     <ul>
                         <li v-for="(topic, idx) in log.topics" :key="idx">{{ topic }}</li>
@@ -33,7 +33,7 @@
     </div>
     <div v-else class="my-3">
         <template v-if="parsedLog">
-            <span v-if="parsedLog.args.length > 0"><Hash-Link :type="'address'" :notCopiable="true" :withTokenName="true" :withName="true" :hash="this.log.address" />{{ `.${parsedLog.name}(\n` }}</span>
+            <span v-if="parsedLog.args.length > 0"><Hash-Link :type="'address'" :notCopiable="true" :withTokenName="true" :withName="true" :hash="this.log.address" :contract="contract"/>{{ `.${parsedLog.name}(\n` }}</span>
             <span v-else>{{ `${ contract.name }.${parsedLog.name}` }}()</span>
             <div style="white-space: pre;" v-for="(input, index) in parsedLog.eventFragment.inputs" :key="index">
                 <Formatted-Sol-Var :input="input" :value="parsedLog.args[index]" class="ml-4" />
@@ -41,7 +41,7 @@
             <span v-if="parsedLog.args.length > 0">{{ ')' }}</span>
         </template>
         <template v-else>
-            <b>Emitter:</b> <Hash-Link :type="'address'" :hash="log.address"></Hash-Link><br>
+            <b>Emitter:</b> <Hash-Link :type="'address'" :hash="log.address" :contract="contract"></Hash-Link><br>
             <b>Topics:</b>
             <ul>
                 <li v-for="(topic, idx) in log.topics" :key="idx">{{ topic }}</li>
@@ -79,7 +79,7 @@ export default {
                 this.parsedLog = decodeLog(this.log, abi);
         }
 
-        if (this.parsedLog) return;
+        // if (this.parsedLog) return;
 
         this.server.getContract(this.log.address)
             .then(({ data }) => {

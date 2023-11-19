@@ -2,7 +2,6 @@
     <v-card outlined class="mb-6">
         <v-card-title>Contract Verification</v-card-title>
         <v-card-text>
-            <v-alert v-if="verificationSuccess" text type="success">Contract has been verified successfully!</v-alert>
             <v-alert v-if="verificationErrorMessage" text type="error">{{ verificationErrorMessage }}</v-alert>
             <v-form ref="form" v-model="canSubmit">
                 <h4>Compiler Settings</h4>
@@ -204,7 +203,9 @@ export default {
         releasesCompilerVersions: [],
         evmVersions: [
             { value: null, text: 'default (compiler default)' },
-            { value: 'london', text: 'london (latest version)' },
+            { value: 'shanghai', text: 'shanghai (latest version)' },
+            { value: 'paris', text: 'paris' },
+            { value: 'london', text: 'london' },
             { value: 'berlin', text: 'berlin' },
             { value: 'istanbul', text: 'instanbul' },
             { value: 'petersburg', text: 'petersburg' },
@@ -277,7 +278,10 @@ export default {
             });
 
             this.server.verifyContract(this.address, data)
-                .then(() => this.verificationSuccess = true)
+                .then(() => {
+                    this.verificationSuccess = true;
+                    this.$root.$emit('contractVerified');
+                })
                 .catch(({ response: { data }}) => this.verificationErrorMessage =`Verification failed. ${data}`)
                 .finally(() => {
                     this.loading = false;

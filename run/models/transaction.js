@@ -116,7 +116,12 @@ module.exports = (sequelize, DataTypes) => {
             include: {
                 model: sequelize.models.Contract,
                 as: 'contract',
-                attributes: ['tokenSymbol', 'tokenDecimals', 'isToken', 'patterns', 'name', 'tokenName']
+                attributes: ['tokenSymbol', 'tokenDecimals', 'isToken', 'patterns', 'name', 'tokenName'],
+                include: {
+                    model: sequelize.models.ContractVerification,
+                    as: 'verification',
+                    attributes: ['createdAt']
+                }
             },
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,

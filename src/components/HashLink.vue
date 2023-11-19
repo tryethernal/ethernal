@@ -2,7 +2,7 @@
     <span>
         <v-tooltip top v-if="verified">
             <template v-slot:activator="{on, attrs}">
-                <v-icon v-bind="attrs" v-on="on" class="success--text mr-1" small v-if="verified">mdi-check-circle</v-icon>
+                <v-icon v-bind="attrs" v-on="on" class="success--text mr-1" small>mdi-check-circle</v-icon>
             </template>
             Verified contract.
         </v-tooltip>
@@ -42,15 +42,27 @@ export default {
                     if (hash == '0x0000000000000000000000000000000000000000')
                         return this.contractName = 'Black Hole';
 
-                    if (this.contract) {
-                        if (this.contract.tokenName || this.contract.tokenSymbol)
-                            this.token = sanitize({
-                                name: this.contract.tokenName,
-                                symbol: this.contract.tokenSymbol
-                            });
-                        this.verified = this.contract.verificationStatus == 'success';
-                        this.contractName = this.contract.name;
-                    }
+                if (this.contract) {
+                    if (this.contract.tokenName || this.contract.tokenSymbol)
+                        this.token = sanitize({
+                            name: this.contract.tokenName,
+                            symbol: this.contract.tokenSymbol
+                        });
+                    this.verified = !!this.contract.verification;
+                    this.contractName = this.contract.name;
+                }
+                else {
+                    this.server.getContract(hash)
+                        .then(({ data }) => {
+                            if (data.tokenName || data.tokenSymbol)
+                                this.token = sanitize({
+                                    name: data.tokenName,
+                                    symbol: this.contract.tokenSymbol
+                                });
+                            this.verified = !!data.verification;
+                            this.contractName = data.name;
+                        })
+                }
             }
         }
     },

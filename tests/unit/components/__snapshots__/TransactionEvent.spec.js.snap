@@ -10,7 +10,7 @@ exports[`TransactionEvent.vue Should display in raw mode if no topics 1`] = `
 exports[`TransactionEvent.vue Should display short version 1`] = `<div class="my-3"><span class="primary lighten-1 v-chip v-chip--label v-chip--no-color theme--light v-size--small" aria-haspopup="true" aria-expanded="false"><span class="v-chip__content"><span class="color--text event-name">Transfer</span></span></span><span class="v-tooltip v-tooltip--top"><!----></span></div>`;
 
 exports[`TransactionEvent.vue Should display transaction event 1`] = `
-<div class="my-3"><span><hash-link-stub withtokenname="true" notcopiable="true" withname="true" hash="0xc00e94Cb662C3520282E6f5717214004A7f26888" type="address"></hash-link-stub>.Transfer(
+<div class="my-3"><span><hash-link-stub withtokenname="true" notcopiable="true" withname="true" hash="0xc00e94Cb662C3520282E6f5717214004A7f26888" type="address" contract="[object Object]"></hash-link-stub>.Transfer(
 </span>
   <div style="white-space: pre;">
     <formatted-sol-var-stub value="0xE93381fB4c4F14bDa253907b18faD305D799241a" input="[object Object]" class="ml-4"></formatted-sol-var-stub>
@@ -25,7 +25,7 @@ exports[`TransactionEvent.vue Should display transaction event 1`] = `
 `;
 
 exports[`TransactionEvent.vue Should display transaction event for a proxied contract 1`] = `
-<div class="my-3"><span><hash-link-stub withtokenname="true" notcopiable="true" withname="true" hash="0xc00e94Cb662C3520282E6f5717214004A7f26888" type="address"></hash-link-stub>.Transfer(
+<div class="my-3"><span><hash-link-stub withtokenname="true" notcopiable="true" withname="true" hash="0xc00e94Cb662C3520282E6f5717214004A7f26888" type="address" contract="[object Object]"></hash-link-stub>.Transfer(
 </span>
   <div style="white-space: pre;">
     <formatted-sol-var-stub value="0xE93381fB4c4F14bDa253907b18faD305D799241a" input="[object Object]" class="ml-4"></formatted-sol-var-stub>
@@ -52,7 +52,7 @@ exports[`TransactionEvent.vue Should display warning if no ABI 1`] = `
 `;
 
 exports[`TransactionEvent.vue Should load erc20 abi if event is detected 1`] = `
-<div class="my-3"><span><hash-link-stub withtokenname="true" notcopiable="true" withname="true" hash="0xc00e94Cb662C3520282E6f5717214004A7f26888" type="address"></hash-link-stub>.Transfer(
+<div class="my-3"><span><hash-link-stub withtokenname="true" notcopiable="true" withname="true" hash="0xc00e94Cb662C3520282E6f5717214004A7f26888" type="address" contract="[object Object]"></hash-link-stub>.Transfer(
 </span>
   <div style="white-space: pre;">
     <formatted-sol-var-stub value="0xE93381fB4c4F14bDa253907b18faD305D799241a" input="[object Object]" class="ml-4"></formatted-sol-var-stub>

@@ -99,17 +99,11 @@ describe('processContractVerification', () => {
         };
 
         await processContractVerification(db, message); 
-        expect(db.updateContractVerificationStatus).toHaveBeenCalledWith(
-            1,
-            1,
-            '0x123',
-            'success'
-        );
         expect(db.storeContractVerificationData).toHaveBeenCalledWith(1, '0x123', {
             compilerVersion: '1',
             constructorArguments: '',
             contractName: 'MyContract',
-            evmVersion: 'london',
+            evmVersion: 'shanghai',
             sources: message.code.sources,
             libraries: undefined,
             runs: undefined
@@ -171,7 +165,7 @@ describe('processContractVerification', () => {
                 sources: { source: 'source' },
                 imports: { import: { contents: 'import' }}
             },
-            evmVersion: 'paris',
+            evmVersion: 'Saint Même le Tenu',
             publicExplorerParams: {
                 userId: 1,
                 workspaceId: 1
@@ -182,7 +176,7 @@ describe('processContractVerification', () => {
 
         await expect(async () => {
             await processContractVerification(db, message); 
-        }).rejects.toEqual(new Error(`Invalid EVM version "paris". Valid versions are: homestead, tangerineWhistle, spuriousDragon, byzantium, constantinople, petersburg, istanbul, berlin, london.`));
+        }).rejects.toEqual(new Error(`Invalid EVM version "Saint Même le Tenu". Valid versions are: homestead, tangerineWhistle, spuriousDragon, byzantium, constantinople, petersburg, istanbul, berlin, london, paris, shanghai.`));
     });
 
     it('Should throw an error if there is a user / workspace mismatch', async () => {
@@ -239,79 +233,6 @@ describe('processContractVerification', () => {
         }).rejects.toEqual(new Error('Missing source code.'));
     });
 
-    it('Should set the verification status to success if source code is matching', async () => {
-        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x12341234123412341234123412341234000100011110001' });
-
-        const message = {
-            code: {
-                sources: { source: 'source' },
-                imports: { import: { contents: 'import' }}
-            },
-            publicExplorerParams: {
-                userId: 1,
-                workspaceId: 1
-            },
-            contractAddress: '0x123',
-            contractName: 'MyContract'
-        };
-
-        await processContractVerification(db, message);
-        expect(db.updateContractVerificationStatus).toHaveBeenCalledWith(
-            1,
-            1,
-            '0x123',
-            'pending'
-        );
-        expect(db.updateContractVerificationStatus).toHaveBeenCalledWith(
-            1,
-            1,
-            '0x123',
-            'success'
-        );
-        expect(db.storeContractData).toHaveBeenCalledWith(
-            '123',
-            'test',
-            '0x123',
-            expect.anything()
-        );
-        expect(db.storeContractVerificationData).toHaveBeenCalled();
-    });
-
-    it('Should set the verification status to failed if source code is not matching', async () => {
-        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x567895678956789567895678956789567895678956789567895678956789567895678956789567895678956789567895678956789567895678956700010001111000167895678956678956678956678956678956678956678956678956678956678956789567895678956789567895678956789000100011110001' });
-
-        const message = {
-            code: {
-                sources: { source: 'source' },
-                imports: { import: { contents: 'import' }}
-            },
-            publicExplorerParams: {
-                userId: 1,
-                workspaceId: 1
-            },
-            contractAddress: '0x123',
-            contractName: 'MyContract'
-        };
-
-        await expect(async () => {
-            await processContractVerification(db, message); 
-        }).rejects.toEqual(new Error("Compiled bytecode doesn't match runtime bytecode. Make sure you uploaded the correct source code, linked all the libraries and provided the constructor arguments."));
-
-        expect(db.updateContractVerificationStatus).toHaveBeenCalledWith(
-            1,
-            1,
-            '0x123',
-            'pending'
-        );
-        expect(db.updateContractVerificationStatus).toHaveBeenCalledWith(
-            1,
-            1,
-            '0x123',
-            'failed'
-        );
-        expect(db.storeContractData).not.toHaveBeenCalled();
-    });
-
     it('Should link bytecode if libraries are passed', async () => {
         jest.spyOn(db, 'getContractDeploymentTxByAddress').mockResolvedValueOnce({ data: '0x12341234123412341234123412341234abcd000100011110001' });
 
@@ -335,18 +256,6 @@ describe('processContractVerification', () => {
         };
 
         await processContractVerification(db, message);
-        expect(db.updateContractVerificationStatus).toHaveBeenCalledWith(
-            1,
-            1,
-            '0x123',
-            'pending'
-        );
-        expect(db.updateContractVerificationStatus).toHaveBeenCalledWith(
-            1,
-            1,
-            '0x123',
-            'success'
-        );
         expect(db.storeContractData).toHaveBeenCalledWith(
             '123',
             'test',
@@ -385,18 +294,6 @@ describe('processContractVerification', () => {
         };
 
         await processContractVerification(db, message);
-        expect(db.updateContractVerificationStatus).toHaveBeenCalledWith(
-            1,
-            1,
-            '0x123',
-            'pending'
-        );
-        expect(db.updateContractVerificationStatus).toHaveBeenCalledWith(
-            1,
-            1,
-            '0x123',
-            'success'
-        );
         expect(db.storeContractData).toHaveBeenCalledWith(
             '123',
             'test',
@@ -412,40 +309,5 @@ describe('processContractVerification', () => {
             libraries: undefined,
             runs: 200
         });
-    });
-
-    it('Should set the verification status to failed if there is an error during the process', async () => {
-        jest.spyOn(db, 'getContractDeploymentTxByAddress').mockRejectedValueOnce(new Error('Error!'));
-
-        const message = {
-            code: {
-                sources: { source: 'source' },
-                imports: { import: { contents: 'import' }}
-            },
-            publicExplorerParams: {
-                userId: 1,
-                workspaceId: 1
-            },
-            contractAddress: '0x123',
-            contractName: 'MyContract'
-        };
-
-        await expect(async () => {
-            await processContractVerification(db, message); 
-        }).rejects.toEqual(new Error("Error!"));
-
-        expect(db.updateContractVerificationStatus).toHaveBeenCalledWith(
-            1,
-            1,
-            '0x123',
-            'pending'
-        );
-        expect(db.updateContractVerificationStatus).toHaveBeenCalledWith(
-            1,
-            1,
-            '0x123',
-            'failed'
-        );
-        expect(db.storeContractData).not.toHaveBeenCalled();
     });
 });

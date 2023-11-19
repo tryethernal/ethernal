@@ -5,7 +5,6 @@ exports[`ContractVerification.vue Should load the UI & the Solidity releases 1`]
   <div class="v-card__title">Contract Verification</div>
   <div class="v-card__text">
     <!---->
-    <!---->
     <form novalidate="novalidate" class="v-form">
       <h4>Compiler Settings</h4>
       <div class="mb-2 v-card v-sheet v-sheet--outlined theme--light">
