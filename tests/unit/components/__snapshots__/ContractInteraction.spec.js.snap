@@ -18,22 +18,22 @@ exports[`ContractInteraction.vue Should display ABI editor & methods 1`] = `
     <div>
       <div class="v-card__text">
         <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-12 col">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
             <contract-read-method-stub signature="_feeBasisPoints()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
           </div>
         </div>
         <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-12 col">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
             <contract-read-method-stub signature="owner()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
           </div>
         </div>
         <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-12 col">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
             <contract-read-method-stub signature="depositsOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
           </div>
         </div>
         <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-12 col">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
             <contract-read-method-stub signature="maturityOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
           </div>
         </div>
@@ -151,8 +151,7 @@ exports[`ContractInteraction.vue Should display verified contract 1`] = `
   <h4>ABI</h4>
   <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
     <!---->
-    <div class="v-card__text mb-1 success--text"><i aria-hidden="true" class="v-icon notranslate success--text mr-1 mdi mdi-check-circle theme--light" style="font-size: 16px;"></i>Verified contract.
-    </div>
+    <!---->
     <div class="v-card__text">
       An ABI has been uploaded.
       <!---->
@@ -167,22 +166,22 @@ exports[`ContractInteraction.vue Should display verified contract 1`] = `
     <div>
       <div class="v-card__text">
         <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-12 col">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
             <contract-read-method-stub signature="_feeBasisPoints()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
           </div>
         </div>
         <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-12 col">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
             <contract-read-method-stub signature="owner()" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
           </div>
         </div>
         <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-12 col">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
             <contract-read-method-stub signature="depositsOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
           </div>
         </div>
         <div class="row pb-4">
-          <div class="col-sm-12 col-md-6 col-lg-12 col">
+          <div class="col-sm-12 col-md-6 col-lg-3 col">
             <contract-read-method-stub signature="maturityOf(address)" options="[object Object]" contract="[object Object]" method="[object Object]"></contract-read-method-stub>
           </div>
         </div>

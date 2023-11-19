@@ -109,6 +109,7 @@ exports[`Contract.vue Should display only address & creation if not a token 1`] 
       <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
         <!---->
         <div class="v-card__title">
+          <!---->
           Contract
           <div class="spacer"></div>
           <remove-contract-confirmation-modal-stub></remove-contract-confirmation-modal-stub> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light red--text"></i></span></button>
@@ -209,6 +210,7 @@ exports[`Contract.vue Should display token info if available 1`] = `
       <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
         <!---->
         <div class="v-card__title">
+          <!---->
           ERC20 Contract
           <div class="spacer"></div>
           <remove-contract-confirmation-modal-stub></remove-contract-confirmation-modal-stub> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light red--text"></i></span></button>
@@ -311,6 +313,7 @@ exports[`Contract.vue Should not display delete option if not admin 1`] = `
       <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
         <!---->
         <div class="v-card__title">
+          <!---->
           ERC721 Contract
           <!---->
         </div>

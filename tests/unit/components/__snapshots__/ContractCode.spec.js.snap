@@ -2,6 +2,7 @@
 
 exports[`ContractCode.vue Should display contract verification info if public explorer and verified 1`] = `
 <div class="container container--fluid">
+  <!---->
   <contract-verification-info-stub contract="[object Object]"></contract-verification-info-stub>
   <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
     <div class="v-card__title">Bytecode</div>
@@ -35,6 +36,7 @@ exports[`ContractCode.vue Should display contract verification info if public ex
 
 exports[`ContractCode.vue Should display the contract verification panel for public explorers 1`] = `
 <div class="container container--fluid">
+  <!---->
   <contract-verification-stub></contract-verification-stub>
   <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
     <div class="v-card__title">Bytecode</div>
@@ -68,6 +70,7 @@ exports[`ContractCode.vue Should display the contract verification panel for pub
 
 exports[`ContractCode.vue Should not display the contract verification panel if not public explorer 1`] = `
 <div class="container container--fluid">
+  <!---->
   <!---->
   <div class="mb-6 v-card v-sheet v-sheet--outlined theme--light">
     <div class="v-card__title">Bytecode</div>
