@@ -15,7 +15,7 @@
                     </v-toolbar>
                 </template>
                 <template v-slot:item.token="{ item }">
-                    <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" />
+                    <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" :contract="item.tokenContract" />
                 </template>
                 <template v-slot:item.currentBalance="{ item }">
                     {{ item.currentBalance | fromWei(item.tokenContract && item.tokenContract.tokenDecimals, item.tokenContract && item.tokenContract.tokenSymbol, unformatted) }}

@@ -5,7 +5,7 @@
             <v-skeleton-loader v-if="loading" class="col-4" type="list-item-three-line"></v-skeleton-loader>
             <template v-else>
                 <Import-Artifact-Modal ref="importArtifactModal" v-if="isUserAdmin" />
-                <v-card-text v-if="isContractVerified" class="mb-1 success--text">
+                <v-card-text v-if="isContractVerified" class="pb-0 success--text">
                     <v-icon class="success--text mr-1" small>mdi-check-circle</v-icon>Verified contract.
                 </v-card-text>
                 <v-card-text v-if="contract.abi">
@@ -39,7 +39,7 @@
             <div v-else>
                 <v-card-text v-if="contract.abi">
                     <v-row v-for="(method, idx) in contractReadMethods" :key="idx" class="pb-4">
-                        <v-col lg="12" md="6" sm="12">
+                        <v-col lg="3" md="6" sm="12">
                             <Contract-Read-Method :active="rpcConnectionStatus" :contract="contract" :signature="method[0]" :method="method[1]" :options="callOptions" :senderMode="senderMode" />
                         </v-col>
                     </v-row>
@@ -163,7 +163,7 @@ export default {
             'isUserAdmin'
         ]),
         isContractVerified() {
-            return this.contract.verificationStatus == 'success';
+            return !!this.contract.verification;
         },
         isAccountMode() {
             return this.senderMode === 'accounts';

@@ -28,7 +28,7 @@ const removeMetadata = (bytecode) => {
 };
 
 module.exports = async function(db, payload) {
-    const VALID_EVM_VERSIONS = ['homestead', 'tangerineWhistle', 'spuriousDragon', 'byzantium', 'constantinople', 'petersburg', 'istanbul', 'berlin', 'london'];
+    const VALID_EVM_VERSIONS = ['homestead', 'tangerineWhistle', 'spuriousDragon', 'byzantium', 'constantinople', 'petersburg', 'istanbul', 'berlin', 'london', 'paris', 'shanghai'];
     const solc = require('solc');
     const linker = require('solc/linker');
     const code = payload.code;
@@ -60,97 +60,92 @@ module.exports = async function(db, payload) {
     if (optimizer && parseInt(runs) < 0)
         throw new Error('"runs" must be greater than 0.')
 
-    try {
-        await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'pending');
-
-        const compiler = await new Promise((resolve, reject) => {
-            solc.loadRemoteVersion(compilerVersion, (err, solc) => {
-                if (err)
-                    reject(err);
-                resolve(solc);
-            });
+    const compiler = await new Promise((resolve, reject) => {
+        solc.loadRemoteVersion(compilerVersion, (err, solc) => {
+            if (err)
+                reject(err);
+            resolve(solc);
         });
+    });
 
-        const inputs = {
-            language: 'Solidity',
+    const inputs = {
+        language: 'Solidity',
+        sources: code.sources,
+        settings: {
+            outputSelection: {
+                '*': { '*': ['abi', 'evm.bytecode.object'] }
+            },
+            optimizer: {
+                enabled: optimizer,
+                runs: optimizer ? runs : undefined
+            },
+            evmVersion: evmVersion
+        }
+    };
+
+    const missingImports = [];
+    const compiledCode = compiler.compile(JSON.stringify(inputs), { import : function(path) {
+        if (!imports[path]) {
+            missingImports.push(path);
+            return { content: null };
+        }
+        else
+            return imports[path];
+    }});
+
+    if (missingImports.length)
+        throw new Error(`Missing following imports: ${missingImports.join(', ')}`);
+
+    const parsedCompiledCode = JSON.parse(compiledCode);
+
+    if (parsedCompiledCode.errors) {
+        for (let error of parsedCompiledCode.errors)
+            if (error.severity && error.severity != 'warning')
+                throw error;
+    }
+
+    if (!parsedCompiledCode.contracts[contractFile][contractName])
+        throw new Error(`Couldn't find contract "${contractName}" in the uploaded files.`);
+
+    const abi = parsedCompiledCode.contracts[contractFile][contractName].abi;
+
+    let bytecode = parsedCompiledCode.contracts[contractFile][contractName].evm.bytecode.object;
+
+    if (typeof code.libraries == 'object' && Object.keys(code.libraries).length > 0) {
+        const linkedBytecode = linker.linkBytecode(bytecode, code.libraries);
+        bytecode = linkedBytecode;
+    }
+
+    const includedBytecodes = [];
+    for (const [name, data] of Object.entries(parsedCompiledCode.contracts[contractFile]))
+        if (name != contractName && data.evm.bytecode.object.length > 0) {
+            const includedBytecode = data.evm.bytecode.object;
+            const metadataLength = parseInt(includedBytecode.slice(includedBytecode.length - 4, includedBytecode.length), 16) * 2 + 4;
+            includedBytecodes.push({ data: removeMetadata(data.evm.bytecode.object), metadataLength: metadataLength });
+        }
+
+    const compiledRuntimeBytecodeWithoutMetadata = `0x${stripBytecodeMetadata(bytecode, includedBytecodes)}${constructorArguments}`.toLowerCase();
+
+    const deploymentTx = await db.getContractDeploymentTxByAddress(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress);
+    if (!deploymentTx)
+        throw new Error("This contract cannot be verified at the moment because the deployment transaction hasn't been indexed.");
+
+    let deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length), includedBytecodes) + constructorArguments).toLowerCase();
+    if (!deployedRuntimeBytecodeWithoutMetadata.startsWith('0x'))
+        deployedRuntimeBytecodeWithoutMetadata = '0x' + deployedRuntimeBytecodeWithoutMetadata;
+
+        if (compiledRuntimeBytecodeWithoutMetadata === deployedRuntimeBytecodeWithoutMetadata) {
+        const verificationData = {
+            compilerVersion, constructorArguments, runs, contractName,
+            evmVersion: evmVersion || VALID_EVM_VERSIONS[VALID_EVM_VERSIONS.length - 1],
             sources: code.sources,
-            settings: {
-                outputSelection: {
-                    '*': { '*': ['abi', 'evm.bytecode.object'] }
-                },
-                optimizer: {
-                    enabled: optimizer,
-                    runs: optimizer ? runs : undefined
-                },
-                evmVersion: evmVersion
-            }
+            libraries: code.libraries
         };
-
-        const missingImports = [];
-        const compiledCode = compiler.compile(JSON.stringify(inputs), { import : function(path) {
-            if (!imports[path]) {
-                missingImports.push(path);
-                return { content: null };
-            }
-            else
-                return imports[path];
-        }});
-
-        if (missingImports.length)
-            throw new Error(`Missing following imports: ${missingImports.join(', ')}`);
-
-        const parsedCompiledCode = JSON.parse(compiledCode);
-
-        if (parsedCompiledCode.errors) {
-            for (let error of parsedCompiledCode.errors)
-                if (error.severity && error.severity != 'warning')
-                    throw error;
-        }
-
-        const abi = parsedCompiledCode.contracts[contractFile][contractName].abi;
-
-        let bytecode = parsedCompiledCode.contracts[contractFile][contractName].evm.bytecode.object;
-
-        if (typeof code.libraries == 'object' && Object.keys(code.libraries).length > 0) {
-            const linkedBytecode = linker.linkBytecode(bytecode, code.libraries);
-            bytecode = linkedBytecode;
-        }
-
-        const includedBytecodes = [];
-        for (const [name, data] of Object.entries(parsedCompiledCode.contracts[contractFile]))
-            if (name != contractName && data.evm.bytecode.object.length > 0) {
-                const includedBytecode = data.evm.bytecode.object;
-                const metadataLength = parseInt(includedBytecode.slice(includedBytecode.length - 4, includedBytecode.length), 16) * 2 + 4;
-                includedBytecodes.push({ data: removeMetadata(data.evm.bytecode.object), metadataLength: metadataLength });
-            }
-
-        const compiledRuntimeBytecodeWithoutMetadata = `0x${stripBytecodeMetadata(bytecode, includedBytecodes)}${constructorArguments}`.toLowerCase();
-
-        const deploymentTx = await db.getContractDeploymentTxByAddress(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress);
-
-        let deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length), includedBytecodes) + constructorArguments).toLowerCase();
-        if (!deployedRuntimeBytecodeWithoutMetadata.startsWith('0x'))
-            deployedRuntimeBytecodeWithoutMetadata = '0x' + deployedRuntimeBytecodeWithoutMetadata;
-
-            if (compiledRuntimeBytecodeWithoutMetadata === deployedRuntimeBytecodeWithoutMetadata) {
-            await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'success');
-            const verificationData = {
-                compilerVersion, constructorArguments, runs, contractName,
-                evmVersion: evmVersion || VALID_EVM_VERSIONS[VALID_EVM_VERSIONS.length - 1],
-                sources: code.sources,
-                libraries: code.libraries
-            };
-            await db.storeContractVerificationData(publicExplorerParams.workspaceId, contractAddress, verificationData);
-            await db.storeContractData(user.firebaseUserId, workspace.name, contractAddress, { name: contractName, abi: abi });
-            return {
-                verificationSucceded: true
-            };
-        }
-        else {
-            throw new Error("Compiled bytecode doesn't match runtime bytecode. Make sure you uploaded the correct source code, linked all the libraries and provided the constructor arguments.");
-        }
-    } catch(error) {
-        await db.updateContractVerificationStatus(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress, 'failed');
-        throw error;        
+        await db.storeContractVerificationData(publicExplorerParams.workspaceId, contractAddress, verificationData);
+        await db.storeContractData(user.firebaseUserId, workspace.name, contractAddress, { name: contractName, abi: abi });
+        return { verificationSucceded: true };
+    }
+    else {
+        throw new Error("Compiled bytecode doesn't match runtime bytecode. Make sure you uploaded the correct source code, linked all the libraries and provided the constructor arguments.");
     }
 }

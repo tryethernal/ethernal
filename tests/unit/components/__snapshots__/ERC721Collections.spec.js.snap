@@ -24,7 +24,7 @@ exports[`ERC721Collections.vue Should load & display erc721 contracts 1`] = `
         <tbody>
           <tr class="">
             <td class="text-start">
-              <hash-link-stub hash="0x123" type="nft"></hash-link-stub>
+              <hash-link-stub contract="[object Object]" hash="0x123" type="nft"></hash-link-stub>
             </td>
             <td class="text-start">
               Ethernal

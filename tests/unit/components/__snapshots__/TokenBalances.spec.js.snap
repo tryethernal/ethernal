@@ -41,7 +41,7 @@ exports[`TokenBalances.vue Should display token balances 1`] = `
             <tbody>
               <tr class="">
                 <td class="text-start">
-                  <hash-link-stub withtokenname="true" withname="true" hash="0x123" type="address"></hash-link-stub>
+                  <hash-link-stub contract="[object Object]" withtokenname="true" withname="true" hash="0x123" type="address"></hash-link-stub>
                 </td>
                 <td class="text-start">
                   99,999,989,989.989999 ETL
@@ -49,7 +49,7 @@ exports[`TokenBalances.vue Should display token balances 1`] = `
               </tr>
               <tr class="">
                 <td class="text-start">
-                  <hash-link-stub withtokenname="true" withname="true" hash="0x456" type="address"></hash-link-stub>
+                  <hash-link-stub contract="[object Object]" withtokenname="true" withname="true" hash="0x456" type="address"></hash-link-stub>
                 </td>
                 <td class="text-start">
                   999,999.899899 USDC
@@ -107,7 +107,7 @@ exports[`TokenBalances.vue Should hide the topbar if in dense mode 1`] = `
             <tbody>
               <tr class="">
                 <td class="text-start">
-                  <hash-link-stub withtokenname="true" withname="true" hash="0x456" type="address"></hash-link-stub>
+                  <hash-link-stub contract="[object Object]" withtokenname="true" withname="true" hash="0x456" type="address"></hash-link-stub>
                 </td>
                 <td class="text-start">
                   2
@@ -115,7 +115,7 @@ exports[`TokenBalances.vue Should hide the topbar if in dense mode 1`] = `
               </tr>
               <tr class="">
                 <td class="text-start">
-                  <hash-link-stub withtokenname="true" withname="true" hash="0x123" type="address"></hash-link-stub>
+                  <hash-link-stub contract="[object Object]" withtokenname="true" withname="true" hash="0x123" type="address"></hash-link-stub>
                 </td>
                 <td class="text-start">
                   1

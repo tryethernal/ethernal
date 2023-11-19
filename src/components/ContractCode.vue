@@ -1,5 +1,6 @@
 <template>
     <v-container fluid>
+        <v-alert v-if="contractVerified" text type="success">Contract has been verified successfully!</v-alert>
         <v-card outlined v-if="loading">
             <v-card-text>
                 <v-skeleton-loader class="col-4" type="list-item-three-line"></v-skeleton-loader>
@@ -54,8 +55,12 @@ export default {
         ContractVerificationInfo
     },
     data: () => ({
-        loading: false
+        loading: false,
+        contractVerified: false
     }),
+    mounted() {
+        this.$root.$on('contractVerified', () => this.contractVerified = true);
+    },
     computed: {
         ...mapGetters([
             'isPublicExplorer'
