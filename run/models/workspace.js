@@ -831,7 +831,7 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.TokenBalanceChange,
                     attributes: ['token', 'address', 'currentBalance', 'previousBalance', 'diff', 'transactionId'],
-                    as: 'tokenBalanceChanges',
+                    as: 'tokenBalanceChanges'
                 },
                 {
                     model: sequelize.models.Block,
