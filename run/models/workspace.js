@@ -356,7 +356,12 @@ module.exports = (sequelize, DataTypes) => {
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
             order: [[orderBy, order]],
-            attributes: ['address', 'name', 'timestamp', 'patterns', 'workspaceId', 'tokenName', 'tokenSymbol', 'tokenTotalSupply']
+            attributes: ['address', 'name', 'timestamp', 'patterns', 'workspaceId', 'tokenName', 'tokenSymbol', 'tokenTotalSupply'],
+            include: {
+                model: sequelize.models.ContractVerification,
+                as: 'verification',
+                attributes: ['createdAt']
+            }
         });
     }
 
@@ -737,13 +742,18 @@ module.exports = (sequelize, DataTypes) => {
 
     findContractsByText(text) {
         return this.getContracts({
-            attributes: ['id', 'address', 'name', 'tokenName', 'tokenSymbol', 'patterns', 'verificationStatus'],
+            attributes: ['id', 'address', 'name', 'tokenName', 'tokenSymbol', 'patterns'],
             where: {
                 [Op.or]: [
                     { name: { [Op.iLike]: `%${text}%` } },
                     { tokenName: { [Op.iLike]: `%${text}%` } },
                     { tokenSymbol: { [Op.iLike]: `%${text}%` } },
                 ]
+            },
+            include: {
+                model: sequelize.models.ContractVerification,
+                as: 'verification',
+                attributes: ['createdAt']
             }
         })
     }
@@ -793,7 +803,7 @@ module.exports = (sequelize, DataTypes) => {
                     include: [
                         {
                             model: sequelize.models.Contract,
-                            attributes: ['abi', 'address' , 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'verificationStatus', 'workspaceId'],
+                            attributes: ['abi', 'address' , 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'workspaceId'],
                             include: [
                                 {
                                     model: sequelize.models.Contract,
@@ -807,6 +817,11 @@ module.exports = (sequelize, DataTypes) => {
                                         ),
                                     },
                                     required: false
+                                },
+                                {
+                                    model: sequelize.models.ContractVerification,
+                                    attributes: ['createdAt'],
+                                    as: 'verification'
                                 }
                             ],
                             as: 'contract'
@@ -816,7 +831,7 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.TokenBalanceChange,
                     attributes: ['token', 'address', 'currentBalance', 'previousBalance', 'diff', 'transactionId'],
-                    as: 'tokenBalanceChanges'
+                    as: 'tokenBalanceChanges',
                 },
                 {
                     model: sequelize.models.Block,
@@ -825,7 +840,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Contract,
-                    attributes: ['abi', 'address', 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'verificationStatus', 'workspaceId'],
+                    attributes: ['abi', 'address', 'name', 'tokenDecimals', 'tokenName', 'tokenSymbol', 'workspaceId'],
                     as: 'contract'
                 }
             ]

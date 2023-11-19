@@ -68,7 +68,7 @@
                 </v-col>
                 <v-col cols="5" class="text-truncate" v-else>
                     <div class="text-overline">Contract Created</div>
-                    <Hash-Link v-if="transaction.receipt" :type="'address'" :hash="transaction.receipt.contractAddress" :fullHash="true" />
+                    <Hash-Link v-if="transaction.receipt" :type="'address'" :hash="transaction.receipt.contractAddress" :fullHash="true" :withName="true" />
                     <v-chip small class="grey white--text" v-else>
                         Address Not Available
                     </v-chip>

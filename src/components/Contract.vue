@@ -7,6 +7,12 @@
                     <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
                     <template v-if="contract.name">
                         <v-card-title>
+                            <v-tooltip top v-if="contract.verification">
+                                <template v-slot:activator="{on, attrs}">
+                                    <v-icon v-bind="attrs" v-on="on" class="success--text mr-1" small v-if="contract.verification">mdi-check-circle</v-icon>
+                                </template>
+                                Verified contract.
+                            </v-tooltip>
                             {{ contract.name }}
                             <template v-if="isUserAdmin">
                                 <v-spacer></v-spacer>
@@ -192,11 +198,23 @@ export default {
     }),
     mounted() {
         this.server.getAccountBalance(this.address).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
+        this.$root.$on('contractVerified', () => this.loadContract(this.address));
     },
     methods: {
         moment: moment,
         formatNumber: formatNumber,
         formatContractPattern: formatContractPattern,
+        loadContract(address) {
+            this.loadingContract = true;
+            this.server.getContract(address)
+                .then(({ data }) => {
+                    if (data) {
+                        this.contract = data;
+                    } else
+                        this.notAContract = true;
+                })
+                .finally(() => this.loadingContract = false);
+        },
         openRemoveContractConfirmationModal() {
             this.$refs.removeContractConfirmationModal
                 .open({ address: this.address, workspace: this.currentWorkspace.name });
@@ -206,15 +224,7 @@ export default {
         address: {
             immediate: true,
             handler(address) {
-                this.server.getContract(address)
-                    .then(({ data }) => {
-                        if (data)
-                            this.contract = data
-                        else
-                            this.notAContract = true;
-                    })
-                    .finally(() => this.loadingContract = false);
-
+                this.loadContract(address);
                 this.server.getAddressStats(address)
                     .then(({ data }) => {
                         this.receivedTransactionCount = data.receivedTransactionCount;

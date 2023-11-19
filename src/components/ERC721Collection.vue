@@ -4,7 +4,15 @@
             <v-col cols="12" lg="5">
                 <v-card outlined style="height: 100%">
                     <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
-                    <v-card-title v-else>{{ contract.tokenName }}</v-card-title>
+                    <v-card-title v-else>
+                        <v-tooltip top v-if="contract.verification">
+                            <template v-slot:activator="{on, attrs}">
+                                <v-icon v-bind="attrs" v-on="on" class="success--text mr-1" small v-if="contract.verification">mdi-check-circle</v-icon>
+                            </template>
+                            Verified contract.
+                        </v-tooltip>
+                        {{ contract.tokenName }}
+                    </v-card-title>
                     <v-card-subtitle>
                         <v-skeleton-loader v-if="loadingContract" type="chip"></v-skeleton-loader>
                         <v-chip v-else v-for="(pattern, idx) in contract.patterns" :key="idx" x-small class="success mr-2">
