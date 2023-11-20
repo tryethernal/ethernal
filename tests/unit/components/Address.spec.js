@@ -42,7 +42,7 @@ describe('Address.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it.only('Should display ERC20 contract stats', async () => {
+    it('Should display ERC20 contract stats', async () => {
         jest.spyOn(helper.mocks.server, 'getContract')
             .mockResolvedValueOnce({ data: {
                 name: 'ERC20 Contract',
@@ -62,6 +62,7 @@ describe('Address.vue', () => {
         });
 
         await flushPromises();
+        await flushPromises(); // Need that second one, not everything seems to be flushed here for some reason....
         expect(wrapper.html()).toMatchSnapshot();
     });
 
