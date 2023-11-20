@@ -11,10 +11,9 @@ module.exports = {
             .plugin('html')
             .tap(args => {
                 return [{
-                    enableAnalytics: !!process.env.VUE_APP_ENABLE_ANALYTICS,
-                    enableFeedback: !!process.env.VUE_APP_ENABLE_FEEDBACK,
-                    ...args
-                }['0']];
+                    feedbackDomain: process.env.VUE_APP_MAIN_DOMAIN,
+                    ...args['0']
+                }];
             })
     },
     configureWebpack: {

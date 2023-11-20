@@ -69,10 +69,6 @@
                 <v-divider vertical inset class="mx-2"></v-divider>
                 <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
             </div>
-            <v-spacer></v-spacer>
-            <a v-if="isFeedbackEnabled" class="ml-4" data-feedbackfin-button>
-                <v-icon color="primary" class="mr-1">mdi-comment-quote</v-icon>Feedback?
-            </a>
         </template>
     </v-toolbar>
 </template>
@@ -93,20 +89,10 @@ export default Vue.extend({
         showSearchBar: false,
         processingContracts: false,
         page: null,
-        isFeedbackEnabled: false,
     }),
     created() {
         this.getAccounts();
         this.page = this.$route.path;
-
-        if (process.env.VUE_APP_ENABLE_FEEDBACK && window.feedbackfin) {
-            this.isFeedbackEnabled = true;
-            window.feedbackfin.config.user = {
-                domain: location.host,
-                page: location.pathname,
-                ...window.feedbackfin.config.user
-            };
-        }
 
         this.server.getBlocks({ page: 1, itemsPerPage: 1 }, false).then(({ data: { items }}) => {
             if (items.length) {
@@ -255,11 +241,4 @@ export default Vue.extend({
     }
 });
 </script>
-<style lang="scss">
-:root {
-    --feedbackfin-primary-color: var(--v-primary-base);
-}
-#feedbackfin__container {
-    font-family: 'Roboto';
-}
-</style>
+

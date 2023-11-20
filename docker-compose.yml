@@ -42,6 +42,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
+      - ./public:/app/public
       - ./src:/app/src
       - type: bind
         source: package.json

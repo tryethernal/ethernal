@@ -35,7 +35,7 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: stubs
+            stubs: stubs
         });
 
         await flushPromises();
@@ -58,7 +58,7 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: stubs
+            stubs: stubs
         });
 
         await flushPromises();
@@ -82,7 +82,7 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: stubs
+            stubs: stubs
         });
 
         await flushPromises();

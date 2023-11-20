@@ -34,8 +34,6 @@ exports[`RpcConnector.vue Should display the correct info 1`] = `
         <div class="v-progress-circular__info"></div>
       </div>Processing Contracts...
     </div>
-    <div class="spacer"></div>
-    <!---->
   </div>
 </header>
 `;
