@@ -117,6 +117,10 @@ export default new Vuex.Store({
                 if (process.env.VUE_APP_ENABLE_ANALYTICS) {
                     LogRocket.identify(user.firebaseUserId, { email: user.email });
                     this._vm.$posthog.identify(user.id, { email: user.email });
+                    if (window.smartsupp) {
+                        window.smartsupp('name', user.email);
+                        window.smartsupp('email', user.email);
+                    }
                 }
             }
             else

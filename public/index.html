@@ -4,19 +4,26 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <meta name="monetization" content="$ilp.uphold.com/wdpXiaHA48j3">
     <link rel="icon" id="favicon" href="<%= BASE_URL %>favicon.ico">
     <title>Ethernal</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo:600">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
-
-    <% if (htmlWebpackPlugin.options.enableFeedback) { %>
-        <script src="https://unpkg.com/feedbackfin@^1" defer></script>
-        <script>
-            window.feedbackfin = { config: {}, ...window.feedbackfin };
-            window.feedbackfin.config.url = "https://rowy-hooks-pql6sv7epq-uw.a.run.app/wh/feedbacks/o77imujzrz0mcayz88vrxc";
-        </script>
+    <% if (htmlWebpackPlugin.options.feedbackDomain) { %>
+       <!-- Smartsupp Live Chat script -->
+      <script type="text/javascript">
+        if (window.location.host == 'app.<%= htmlWebpackPlugin.options.feedbackDomain %>') {
+          var _smartsupp = _smartsupp || {};
+          _smartsupp.key = 'b05ecebef7c8e655ff9daeae7058d669afd1a54a';
+          window.smartsupp||(function(d) {
+            var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+            s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+            c.type='text/javascript';c.charset='utf-8';c.async=true;
+            c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+          })(document);
+        }
+      </script>
+      <noscript> Powered by <a href=“https://www.smartsupp.com” target=“_blank”>Smartsupp</a></noscript>
     <% } %>
   </head>
   <body>

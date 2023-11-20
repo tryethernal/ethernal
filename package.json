@@ -8,7 +8,7 @@
     "test:unit": "vue-cli-service test:unit",
     "test:unit:update": "vue-cli-service test:unit -u",
     "lint": "vue-cli-service lint",
-    "dev": "firebase emulators:start --import=./firebase-emulator --export-on-exit & vue-cli-service serve"
+    "dev": "vue-cli-service serve"
   },
   "dependencies": {
     "@codemirror/commands": "^6.2.4",
