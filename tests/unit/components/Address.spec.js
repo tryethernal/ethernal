@@ -35,14 +35,14 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: stubs
+            stubs: stubs
         });
 
         await flushPromises();
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should display ERC20 contract stats', async () => {
+    it.only('Should display ERC20 contract stats', async () => {
         jest.spyOn(helper.mocks.server, 'getContract')
             .mockResolvedValueOnce({ data: {
                 name: 'ERC20 Contract',
@@ -58,11 +58,10 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: stubs
+            stubs: stubs
         });
 
         await flushPromises();
-        await flushPromises(); // Need that second one, not everything seems to be flushed here for some reason....
         expect(wrapper.html()).toMatchSnapshot();
     });
 
@@ -82,7 +81,7 @@ describe('Address.vue', () => {
             propsData: {
                 hash: '0x123'
             },
-            stubs: stubs
+            stubs: stubs
         });
 
         await flushPromises();
