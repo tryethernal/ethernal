@@ -90,8 +90,15 @@ router.post('/migrateExplorer', authMiddleware, async (req, res) => {
 router.post('/explorers', async (req, res) => {
     const data = req.body;
     try {
-        if (!data.name || !data.rpcServer)
+        if (!data.rpcServer)
             throw new Error('Missing parameters.');
+
+        let name = data.name;
+        let slugGenerated = false;
+        if (!name) {
+            name = generateSlug();
+            slugGenerated = true;
+        }
 
         const provider = new ProviderConnector(data.rpcServer);
         let networkId;
@@ -107,7 +114,7 @@ router.post('/explorers', async (req, res) => {
         const user = await db.getUserById(getDemoUserId());
 
         const workspaceData = {
-            name: generateSlug(),
+            name: slugGenerated ? name : generateSlug(),
             networkId,
             rpcServer: data.rpcServer,
             dataRetentionLimit: 1
