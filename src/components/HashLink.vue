@@ -54,13 +54,15 @@ export default {
                 else {
                     this.server.getContract(hash)
                         .then(({ data }) => {
-                            if (data.tokenName || data.tokenSymbol)
-                                this.token = sanitize({
-                                    name: data.tokenName,
-                                    symbol: this.contract.tokenSymbol
-                                });
-                            this.verified = !!data.verification;
-                            this.contractName = data.name;
+                            if (data) {
+                                if (data.tokenName || data.tokenSymbol)
+                                    this.token = sanitize({
+                                        name: data.tokenName,
+                                        symbol: this.contract.tokenSymbol
+                                    });
+                                this.verified = !!data.verification;
+                                this.contractName = data.name;
+                            }
                         })
                 }
             }
