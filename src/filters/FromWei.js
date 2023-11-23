@@ -7,10 +7,19 @@ const commify = ethers.utils.commify;
 export default function (amount = 0, to, symbol = 'ether', unformatted = false) {
     if (unformatted || !to) return amount;
 
+    let amountInt;
+    try {
+        let parsedBigNumberAmount = BigNumber.from(JSON.parse(amount))
+        amountInt = parsedBigNumberAmount.toString();
+    } catch(_) {
+        console.log(_)
+        amountInt = amount
+    }
+
     if (['wei', 'kwei', 'mwei', 'gwei', 'szabo', 'finney'].indexOf(to) > -1)
         symbol = to;
 
-    let stringedAmount = typeof amount.toLocaleString === 'function' ? amount.toLocaleString('fullwide', { useGrouping:false }) : String(amount);
+    let stringedAmount = typeof amountInt.toLocaleString === 'function' ? amountInt.toLocaleString('fullwide', { useGrouping:false }) : String(amountInt);
 
     const ethAmount = BigNumber.from(stringedAmount);
     const roundedAmount = formatUnits(ethAmount, to)
