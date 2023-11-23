@@ -84,7 +84,7 @@
                 </v-col>
                 <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Gas Price</div>
-                    {{ transaction.gasPrice | fromWei('gwei', chain.token) }}
+                    {{ transaction.receipt && transaction.receipt.effectiveGasPrice || transaction.gasPrice | fromWei('gwei', chain.token) }}
                 </v-col>
                 <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Cost</div>
