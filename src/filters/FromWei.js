@@ -10,9 +10,11 @@ export default function (amount = 0, to, symbol = 'ether', unformatted = false) 
     let amountInt;
     try {
         let parsedBigNumberAmount = BigNumber.from(JSON.parse(amount))
-        amountInt = parsedBigNumberAmount.toString();
+        if (typeof parsedBigNumberAmount == 'bigint')
+            amountInt = parsedBigNumberAmount.toString();
+        else
+            amountInt = parsedBigNumberAmount;
     } catch(_) {
-        console.log(_)
         amountInt = amount
     }
 
