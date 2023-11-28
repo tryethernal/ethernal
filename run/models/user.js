@@ -93,7 +93,11 @@ module.exports = (sequelize, DataTypes) => {
                             as: 'explorer',
                             include: {
                                 model: sequelize.models.StripeSubscription,
-                                as: 'stripeSubscription'
+                                as: 'stripeSubscription',
+                                include: {
+                                    model: sequelize.models.StripePlan,
+                                    as: 'stripePlan'
+                                }
                             }
                         },
                         {
