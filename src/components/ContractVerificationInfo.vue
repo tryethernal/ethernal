@@ -34,7 +34,7 @@
             <v-card-text>
                 <template v-if="formattedConstructorArguments">
                     <div v-for="(arg, idx) in decodedConstructorArguments" :key="idx" style="white-space: pre;">
-                        <Formatted-Sol-Var :input="arg" :notInteractive="true" :value="arg.value" />
+                        <Formatted-Sol-Var :input="arg" :value="arg.value" />
                     </div>
                 </template>
                 <span v-else>{{ zeroXifiedConstructorArguments }}</span>

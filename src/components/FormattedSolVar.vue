@@ -68,6 +68,8 @@ export default {
             return typeof data === 'string' ? `"${this.formatString(data)}"` : defaultFormatResult;
         },
         formatString: function(data) {
+            if (typeof data != 'string')
+                return data
             const urlPattern = new RegExp('^https?|ipfs://', 'i');
             if (urlPattern.test(data)) {
                 return `<a href="${data}" target="_blank">${data}</a>`;
@@ -95,7 +97,7 @@ export default {
         },
         isValueDataUriJson: function() {
             if (this.input.type != 'string') return false;
-            return this.value.startsWith('data:application/json;base64,');
+            return typeof this.value == 'string' && this.value.startsWith('data:application/json;base64,');
         },
         inputLabel: function() {
             if (this.input.name)
