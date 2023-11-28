@@ -56,10 +56,10 @@ exports[`ContractVerificationInfo.vue Should display code / constructor argument
     </div>
     <div class="v-card__text">
       <div style="white-space: pre;">
-        <formatted-sol-var-stub notinteractive="true" value="abcd" input="[object Object]"></formatted-sol-var-stub>
+        <formatted-sol-var-stub value="abcd" input="[object Object]"></formatted-sol-var-stub>
       </div>
       <div style="white-space: pre;">
-        <formatted-sol-var-stub notinteractive="true" value="abcd,a,b,true,5" input="[object Object]"></formatted-sol-var-stub>
+        <formatted-sol-var-stub value="abcd,a,b,true,5" input="[object Object]"></formatted-sol-var-stub>
       </div>
     </div>
   </div>

@@ -21,7 +21,10 @@ describe('ContractReadMethod.vue', () => {
     });
 
     it('Should display the UI to interact with a method', () => {
-        const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
+        const wrapper = helper.mountFn(ContractReadMethod, {
+            propsData: props,
+            stubs: ['Formatted-Sol-Var']
+        });
 
         expect(wrapper.html()).toMatchSnapshot();
     });
@@ -51,12 +54,15 @@ describe('ContractReadMethod.vue', () => {
             "constant": true
         };
 
-        const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
+        const wrapper = helper.mountFn(ContractReadMethod, {
+            propsData: props,
+            stubs: ['Formatted-Sol-Var']
+        });
 
         await wrapper.find('input').setValue('[1,2]');
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
-        
+
         expect(wrapper.vm.results.length).toEqual(1);
         expect(wrapper.vm.results).toEqual([
             {
@@ -75,7 +81,10 @@ describe('ContractReadMethod.vue', () => {
         jest.spyOn(helper.mocks.server, 'callContractReadMethod')
             .mockResolvedValue(['true']);
 
-        const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
+        const wrapper = helper.mountFn(ContractReadMethod, {
+            propsData: props,
+            stubs: ['Formatted-Sol-Var']
+        });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
@@ -102,7 +111,8 @@ describe('ContractReadMethod.vue', () => {
             propsData: props,
             getters: {
                 isPublicExplorer: jest.fn().mockReturnValue(true)
-            }
+            },
+            stubs: ['Formatted-Sol-Var']
         });
 
         await wrapper.find('button').trigger('click');
@@ -138,7 +148,10 @@ describe('ContractReadMethod.vue', () => {
             "type": "function",
             "constant": true
         };
-        const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
+        const wrapper = helper.mountFn(ContractReadMethod, {
+            propsData: props,
+            stubs: ['Formatted-Sol-Var']
+        });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
@@ -174,7 +187,10 @@ describe('ContractReadMethod.vue', () => {
             "type": "function",
             "constant": true
         };
-        const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
+        const wrapper = helper.mountFn(ContractReadMethod, {
+            propsData: props,
+            stubs: ['Formatted-Sol-Var']
+        });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
@@ -215,7 +231,10 @@ describe('ContractReadMethod.vue', () => {
             "type": "function",
             "constant": true
         };
-        const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
+        const wrapper = helper.mountFn(ContractReadMethod, {
+            propsData: props,
+            stubs: ['Formatted-Sol-Var']
+        });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
@@ -245,7 +264,10 @@ describe('ContractReadMethod.vue', () => {
         jest.spyOn(helper.mocks.server, 'callContractReadMethod')
             .mockRejectedValue({ reason: 'Wrong parameters' });
 
-        const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
+        const wrapper = helper.mountFn(ContractReadMethod, {
+            propsData: props,
+            stubs: ['Formatted-Sol-Var']
+        });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
@@ -259,7 +281,10 @@ describe('ContractReadMethod.vue', () => {
         jest.spyOn(helper.mocks.server, 'callContractReadMethod')
             .mockImplementation(() => { throw 'Error' });
 
-        const wrapper = helper.mountFn(ContractReadMethod, { propsData: props });
+        const wrapper = helper.mountFn(ContractReadMethod, {
+            propsData: props,
+            stubs: ['Formatted-Sol-Var']
+        });
 
         await wrapper.find('button').trigger('click');
         await new Promise(process.nextTick);
@@ -267,5 +292,5 @@ describe('ContractReadMethod.vue', () => {
         expect(wrapper.vm.error).toEqual('Error while calling the method');
         expect(wrapper.vm.results).toEqual([]);
         expect(wrapper.html()).toMatchSnapshot();
-    });    
+    });
 });
