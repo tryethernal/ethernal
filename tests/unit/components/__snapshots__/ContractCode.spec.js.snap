@@ -22,7 +22,7 @@ exports[`ContractCode.vue Should display contract verification info if public ex
             </div>
           </div>
         </div>
-      </div> <input type="hidden" id="copyElement" value="0x60">
+      </div> <input type="hidden" id="copyBytecode" value="0x60">
     </div>
   </div>
   <div class="v-card v-sheet v-sheet--outlined theme--light">
@@ -56,7 +56,7 @@ exports[`ContractCode.vue Should display the contract verification panel for pub
             </div>
           </div>
         </div>
-      </div> <input type="hidden" id="copyElement" value="0x60">
+      </div> <input type="hidden" id="copyBytecode" value="0x60">
     </div>
   </div>
   <div class="v-card v-sheet v-sheet--outlined theme--light">
