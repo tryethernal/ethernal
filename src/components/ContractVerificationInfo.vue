@@ -28,7 +28,7 @@
                 Constructor Arguments
                 <v-spacer></v-spacer>
                 <span class="text-caption">
-                    <a :class="{ underlined: formattedConstructorArguments }" @click="formattedConstructorArguments = true">Formatted</a> | <a :class="{ underlined: !formattedConstructorArguments }" @click="formattedConstructorArguments = false">Raw</a>
+                    <a :class="{ underlined: !formattedConstructorArguments }" @click="formattedConstructorArguments = true">Formatted</a> | <a :class="{ underlined: formattedConstructorArguments }" @click="formattedConstructorArguments = false">Raw</a>
                 </span>
             </v-card-title>
             <v-card-text>
@@ -47,6 +47,20 @@
                 <div v-for="(libraryName, idx) in Object.keys(contract.verification.libraries)" :key="idx">
                     {{ libraryName }} => {{ contract.verification.libraries[libraryName] }}
                 </div>
+            </v-card-text>
+        </v-card>
+
+        <v-card v-if="contract.abi" outlined class="mb-6">
+            <v-card-title>ABI</v-card-title>
+            <v-card-text>
+                <v-textarea dense outlined disabled :value="JSON.stringify(contract.abi)">
+                    <template v-slot:append>
+                        <v-btn icon @click="copyAbi()">
+                            <v-icon small>mdi-content-copy</v-icon>
+                        </v-btn>
+                    </template>
+                </v-textarea>
+                <input type="hidden" id="copyAbi" :value="JSON.stringify(contract.abi)">
             </v-card-text>
         </v-card>
     </div>
@@ -79,9 +93,25 @@ export default {
         }
     },
     methods: {
-        editorInit: function () {
+        editorInit() {
             require('brace/ext/language_tools')
             require('brace/theme/chrome')
+        },
+        copyAbi() {
+            const webhookField = document.querySelector('#copyAbi');
+            webhookField.setAttribute('type', 'text');
+            webhookField.select();
+
+            try {
+                const copied = document.execCommand('copy');
+                const message = copied ? 'ABI copied!' : `Couldn't copy ABI`;
+                alert(message);
+            } catch(error) {
+                alert(`Couldn't copy ABI`);
+            } finally {
+                webhookField.setAttribute('type', 'hidden');
+                window.getSelection().removeAllRanges();
+            }
         }
     },
     computed: {
