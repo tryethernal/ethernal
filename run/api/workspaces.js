@@ -4,10 +4,27 @@ const authMiddleware = require('../middlewares/auth');
 const secretMiddleware = require('../middlewares/secret');
 const { sanitize, stringifyBns, withTimeout } = require('../lib/utils');
 const db = require('../lib/firebase');
+const { enqueue } = require('../lib/queue');
 const { ProviderConnector } = require('../lib/rpc');
 const PM2 = require('../lib/pm2');
 const { getPm2Host, getPm2Secret } = require('../lib/env');
 const router = express.Router();
+
+router.post('/reprocessTransactionTraces', [secretMiddleware], async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        if (!data.workspaceId)
+            throw new Error('Missing parameters.');
+
+        await enqueue('reprocessWorkspaceTransactionTraces', `reprocessWorkspaceTransactionTraces-${data.workspaceId}`, { workspaceId: data.workspaceId });
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.workspaces.reprocessTransactions', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
 
 router.delete('/:id', [authMiddleware], async (req, res) => {
     const data = req.body.data;
