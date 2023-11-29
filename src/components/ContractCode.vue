@@ -16,13 +16,13 @@
                 <v-card-title>Bytecode</v-card-title>
                 <v-card-text v-if="contract.bytecode">
                     <v-textarea dense outlined disabled :value="contract.bytecode">
-                            <template v-slot:append>
-                                <v-btn icon @click="copyBytecode()">
-                                    <v-icon small>mdi-content-copy</v-icon>
-                                </v-btn>
-                            </template>
-                        </v-textarea>
-                        <input type="hidden" id="copyElement" :value="contract.bytecode">
+                        <template v-slot:append>
+                            <v-btn icon @click="copyBytecode()">
+                                <v-icon small>mdi-content-copy</v-icon>
+                            </v-btn>
+                        </template>
+                    </v-textarea>
+                    <input type="hidden" id="copyBytecode" :value="contract.bytecode">
                 </v-card-text>
                 <v-card-text v-else>
                     No bytecode for this contract. Redeploy to upload it.
@@ -60,6 +60,24 @@ export default {
     }),
     mounted() {
         this.$root.$on('contractVerified', () => this.contractVerified = true);
+    },
+    methods: {
+        copyBytecode() {
+            const webhookField = document.querySelector('#copyBytecode');
+            webhookField.setAttribute('type', 'text');
+            webhookField.select();
+
+            try {
+                const copied = document.execCommand('copy');
+                const message = copied ? 'Bytecode copied!' : `Couldn't copy bytecode`;
+                alert(message);
+            } catch(error) {
+                alert(`Couldn't copy bytecode`);
+            } finally {
+                webhookField.setAttribute('type', 'hidden');
+                window.getSelection().removeAllRanges();
+            }
+        }
     },
     computed: {
         ...mapGetters([
