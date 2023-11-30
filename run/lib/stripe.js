@@ -5,7 +5,7 @@ const models = require('../models');
 const analytics = new Analytics();
 
 const renewSubscriptionCycle = async (stripeInvoice) => {
-    if (stripeInvoice.billing_reason != 'subscription_cycle')
+    if (stripeInvoice.billing_reason != 'subscription_cycle' && stripeInvoice.billing_reason != 'subscription_create')
         return 'Subscription is not renewing';
 
     const explorerId = parseInt(stripeInvoice.subscription_details.metadata.explorerId);
@@ -154,7 +154,7 @@ module.exports = {
             }
 
             if (subscription) {
-                if (subscription.metadata.explorerId)
+                if (subscription.metadata && subscription.metadata.explorerId)
                     return await renewSubscriptionCycle(data); // This means trial is ending and subscription is starting
                 else
                     return await updatePlan(subscription); // Premium plan creation/renewing

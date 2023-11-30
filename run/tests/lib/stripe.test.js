@@ -25,6 +25,98 @@ const StripePaymentSucceededWebhookBody = require('../fixtures/StripePaymentSucc
 
 beforeEach(() => jest.clearAllMocks());
 
+describe('renewSubscriptionCycle', () => {
+    it('Should return if cannot find user', (done) => {
+        const data = {
+            billing_reason: 'subscription_cycle',
+            customer: 'cus_123',
+            subscription_details: {
+                metadata: { explorerId: 1 }
+            }
+        };
+
+        jest.spyOn(db, 'getUserbyStripeCustomerId').mockResolvedValueOnce(null);
+        handleStripePaymentSucceeded(data)
+            .then(res => {
+                expect(res).toEqual('Cannot find user');
+                done();
+            });
+    });
+
+    it('Should return if cannot find explorer', (done) => {
+        const data = {
+            billing_reason: 'subscription_cycle',
+            customer: 'cus_123',
+            subscription_details: {
+                metadata: { explorerId: 1 }
+            }
+        };
+
+        jest.spyOn(db, 'getUserbyStripeCustomerId').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce(null);
+        handleStripePaymentSucceeded(data)
+            .then(res => {
+                expect(res).toEqual('Cannot find explorer');
+                done();
+            });
+    });
+
+    it('Should return if no active subscription', (done) => {
+        const data = {
+            billing_reason: 'subscription_cycle',
+            customer: 'cus_123',
+            subscription_details: {
+                metadata: { explorerId: 1 }
+            }
+        };
+
+        jest.spyOn(db, 'getUserbyStripeCustomerId').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({});
+        handleStripePaymentSucceeded(data)
+            .then(res => {
+                expect(res).toEqual('No active subscription');
+                done();
+            });
+    });
+
+    it('Should reset transaction quota if subscription has been created', (done) => {
+        const data = {
+            billing_reason: 'subscription_create',
+            customer: 'cus_123',
+            subscription_details: {
+                metadata: { explorerId: 1 }
+            }
+        };
+
+        jest.spyOn(db, 'getUserbyStripeCustomerId').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ id: 1, stripeSubscription: {} });
+        mockSubscriptionRetrieve.mockResolvedValueOnce({ metadata: { explorerId: 1 }});
+        handleStripePaymentSucceeded(data)
+            .then(() => {
+                expect(db.resetExplorerTransactionQuota).toHaveBeenCalledWith(1, 1);
+                done();
+            });
+    });
+
+    it('Should reset transaction quota if subscription is renewing', (done) => {
+        const data = {
+            billing_reason: 'subscription_cycle',
+            customer: 'cus_123',
+            subscription_details: {
+                metadata: { explorerId: 1 }
+            }
+        };
+
+        jest.spyOn(db, 'getUserbyStripeCustomerId').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ id: 1, stripeSubscription: {} });
+        handleStripePaymentSucceeded(data)
+            .then(() => {
+                expect(db.resetExplorerTransactionQuota).toHaveBeenCalledWith(1, 1);
+                done();
+            });
+    });
+});
+
 describe('handleStripeSubscriptionDeletion', () => {
     it('Should return if subscription is not canceled', (done) => {
         handleStripeSubscriptionDeletion({ metadata: { explorerId: 1 }, status: 'active' })
@@ -214,10 +306,12 @@ describe('handleStripePaymentSucceeded', () => {
             id: 1,
             firebaseUserId: 'abcd'
         });
+
         const data = {
             billing_reason: 'subscription_create',
             subscription: '1',
-            payment_intent: '1'
+            payment_intent: '1',
+            metadata: {}
         };
 
         const result = await handleStripePaymentSucceeded(data);
@@ -233,6 +327,7 @@ describe('handleStripePaymentSucceeded', () => {
         });
         const data = {
             ...StripePaymentSucceededWebhookBody.data.object,
+            metadata: {},
             payment_intent: null
         };
 

@@ -31,7 +31,7 @@ const resetExplorerTransactionQuota = async (userId, explorerId) => {
     if (!explorer)
         throw new Error(`Can't find explorer`);
 
-    return explorer.resetExplorerTransactionQuota();
+    return explorer.resetTransactionQuota();
 };
 
 const makeExplorerDemo = async (explorerId) => {
