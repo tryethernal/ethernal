@@ -122,7 +122,6 @@ router.put('/:id/startSync', [authMiddleware], async (req, res) => {
         try {
             await withTimeout(provider.fetchNetworkId());
         } catch(error) {
-            console.log(error)
             throw new Error(`This explorer's RPC is not reachable. Please update it in order to start syncing.`);
         }
 
