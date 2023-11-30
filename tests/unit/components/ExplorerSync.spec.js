@@ -102,6 +102,21 @@ describe('ExplorerSync.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
+    it('Should display quota reached status', async () => {
+        jest.spyOn(helper.mocks.server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'transactionQuotaReached' }});
+        const wrapper = helper.mountFn(ExplorerSync, {
+            propsData: {
+                explorer: {
+                    id: 1,
+                    stripeSubscription: {}
+                }
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should display no subscription status', async () => {
         jest.spyOn(helper.mocks.server, 'getExplorerSyncStatus').mockResolvedValueOnce({ data: { status: 'unreachable' }});
         const wrapper = helper.mountFn(ExplorerSync, {
