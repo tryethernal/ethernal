@@ -6,7 +6,7 @@ module.exports = {
     await queryInterface.addColumn('explorers', 'shouldEnforceQuota', {
       type: Sequelize.DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: false
+      defaultValue: true
     });
   },
 
