@@ -83,15 +83,20 @@ export default {
             this.server.getExplorerSyncStatus(this.explorer.id)
                 .then(({ data: { status }}) => {
                     this.syncStatus = status;
-                    if (status != newStatus && newStatus == 'online') {
+                    if (this.hasReachedTransactionQuota) {
+                        this.loading = false;
                         this.errorMessage = null;
+                    }
+                    else if (status != newStatus && newStatus == 'online') {
                         if (this.isRpcUnreachable) this.loading = false;
                         else this.timeout = setTimeout(() => this.waitForStatus(newStatus), 1000);
                     }
                     else if (status != newStatus)
                         setTimeout(() => this.waitForStatus(newStatus), 1000);
-                    else
+                    else {
                         this.loading = false;
+                        this.errorMessage = null;
+                    }
                 })
                 .catch(error => {
                     console.log(error);
