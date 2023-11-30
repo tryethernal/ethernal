@@ -1,4 +1,4 @@
-const { Explorer, Workspace, RpcHealthCheck } = require('../models');
+const { Explorer, Workspace, RpcHealthCheck, StripeSubscription, StripePlan } = require('../models');
 const PM2 = require('../lib/pm2');
 
 module.exports = async job => {
@@ -9,14 +9,24 @@ module.exports = async job => {
 
     const explorer = await Explorer.findOne({
         where: { slug: data.explorerSlug },
-        include: {
-            model: Workspace,
-            as: 'workspace',
-            include: {
-                model: RpcHealthCheck,
-                as: 'rpcHealthCheck'
+        include: [
+            {
+                model: Workspace,
+                as: 'workspace',
+                include: {
+                    model: RpcHealthCheck,
+                    as: 'rpcHealthCheck'
+                }
+            },
+            {
+                model: StripeSubscription,
+                as: 'stripeSubscription',
+                include: {
+                    model: StripePlan,
+                    as: 'stripePlan'
+                }
             }
-        }
+        ]
     });
 
     const pm2 = new PM2(process.env.PM2_HOST, process.env.PM2_SECRET);
@@ -36,6 +46,10 @@ module.exports = async job => {
     else if (!explorer.shouldSync && existingProcess) {
         await pm2.delete(explorer.slug);
         return 'Process deleted: sync is disabled.';
+    }
+    else if (await explorer.hasReachedTransactionQuota()) {
+        await pm2.delete(explorer.slug);
+        return 'Process deleted: transaction quota reached.';
     }
     else if (explorer.shouldSync && !existingProcess) {
         await pm2.start(explorer.slug, explorer.workspaceId);

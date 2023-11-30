@@ -4,6 +4,28 @@ const db = require('./firebase');
 const models = require('../models');
 const analytics = new Analytics();
 
+const renewSubscriptionCycle = async (stripeInvoice) => {
+    if (stripeInvoice.billing_reason != 'subscription_cycle')
+        return 'Subscription is not renewing';
+
+    const explorerId = parseInt(stripeInvoice.subscription_details.metadata.explorerId);
+    if (!explorerId)
+        return 'Invalid explorer id';
+
+    const user = await db.getUserbyStripeCustomerId(stripeInvoice.customer);
+    if (!user)
+        return 'Cannot find user';
+
+    const explorer = await models.Explorer.findByPk(explorerId, { include: ['stripeSubscription', 'workspace']});
+    if (!explorer)
+        return 'Cannot find explorer';
+
+    if (!explorer.stripeSubscription)
+        return 'No active subscription';
+
+    await db.resetExplorerTransactionQuota(user.id, explorer.id);
+};
+
 const deleteExplorerSubscription = async (stripeSubscription) => {
     if (stripeSubscription.status != 'canceled')
         return 'Subscription is not canceled';
@@ -132,11 +154,16 @@ module.exports = {
             }
 
             if (subscription) {
-                await updatePlan(subscription);
-                return true;
+                if (subscription.metadata.explorerId)
+                    return await renewSubscriptionCycle(data); // This means trial is ending and subscription is starting
+                else
+                    return await updatePlan(subscription); // Premium plan creation/renewing
             }
 
             return false;
+        }
+        else if (data.billing_reason == 'subscription_cycle') {
+            return await renewSubscriptionCycle(data);
         }
     }
 };

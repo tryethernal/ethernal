@@ -5,7 +5,9 @@
             <div v-if="explorer.stripeSubscription">
                 <b class="success--text" v-if="isSyncActive">Your explorer is synchronizing blocks.</b>
                 <b class="error--text" v-else-if="isSyncStopped">
-                    Your explorer is not synchronizing blocks.<span v-if="isRpcUnreachable"> RPC is unreachable</span>.
+                    Your explorer is not synchronizing blocks.
+                    <span v-if="isRpcUnreachable"> RPC is unreachable.</span>
+                    <span v-if="hasReachedTransactionQuota"> Transaction quota reached, upgrade your plan to resume sync.</span>
                 </b>
                 <b class="warning--text" v-else-if="isSyncStarting">Starting synchronization...</b>
                 <b class="warning--text" v-else-if="isSyncStopping">Stopping synchronization...</b>
@@ -82,6 +84,7 @@ export default {
                 .then(({ data: { status }}) => {
                     this.syncStatus = status;
                     if (status != newStatus && newStatus == 'online') {
+                        this.errorMessage = null;
                         if (this.isRpcUnreachable) this.loading = false;
                         else this.timeout = setTimeout(() => this.waitForStatus(newStatus), 1000);
                     }
@@ -103,8 +106,9 @@ export default {
         isSyncActive() { return this.syncStatus == 'online' },
         isSyncStarting() { return this.syncStatus == 'launching' },
         isSyncStopping() { return this.syncStatus == 'stopping' },
-        isSyncStopped() { return this.syncStatus == 'stopped' || this.syncStatus == 'unreachable' },
-        isRpcUnreachable() { return this.syncStatus == 'unreachable' }
+        isSyncStopped() { return this.syncStatus == 'stopped' || this.syncStatus == 'unreachable' || this.syncStatus == 'transactionQuotaReached' },
+        isRpcUnreachable() { return this.syncStatus == 'unreachable' },
+        hasReachedTransactionQuota() { return this.syncStatus == 'transactionQuotaReached' }
     }
 }
 </script>
