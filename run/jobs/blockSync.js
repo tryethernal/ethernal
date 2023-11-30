@@ -49,9 +49,8 @@ module.exports = async job => {
         if (!block)
             throw new Error("Couldn't fetch block from provider");
 
-        const quota = workspace.explorer.stripeSubscription.stripePlan.capabilities.txLimit;
-        const currentTransactionCount = workspace.explorer.stripeSubscription.transactionQuota;
-        if (currentTransactionCount >= quota)
+        const explorer = await workspace.getExplorer();
+        if (await explorer.hasReachedTransactionQuota())
             return 'Transaction quota reached.';
 
         const syncedBlock = await db.syncPartialBlock(workspace.id, block);
