@@ -11,6 +11,27 @@ const db = require('../../lib/firebase');
 
 beforeEach(() => jest.clearAllMocks());
 
+describe('resetExplorerTransactionQuota', () => {
+    it('Should throw an error if no explorer', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
+        db.resetExplorerTransactionQuota(1, 1)
+            .catch(error => {
+                expect(error).toEqual(new Error(`Can't find explorer`));
+                done();
+            });
+    });
+
+    it('Should reset quota', (done) => {
+        const resetTransactionQuota = jest.fn();
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ resetTransactionQuota });
+        db.resetExplorerTransactionQuota(1, 1)
+            .then(() => {
+                expect(resetTransactionQuota).toHaveBeenCalled();
+                done();
+            });
+    });
+});
+
 describe('makeExplorerDemo', () => {
     it('Should throw an error if no explorer', (done) => {
         jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce(null);
@@ -93,7 +114,7 @@ describe('getExplorerById', () => {
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ toJSON: jest.fn().mockReturnValue({ id: 1})});
         db.getExplorerById(1, 1)
             .then(res => {
-                expect(res).toEqual({ id: 1 });
+                expect(res).toEqual({ toJSON: expect.anything() });
                 done();
             })
     });

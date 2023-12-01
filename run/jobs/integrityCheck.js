@@ -57,6 +57,9 @@ module.exports = async job => {
     if (workspace.integrityCheckStartBlockNumber === null || workspace.integrityCheckStartBlockNumber === undefined)
         return 'Integrity checks not enabled';
 
+    if (await workspace.explorer.hasReachedTransactionQuota())
+        return 'Transaction quota reached';
+
     /*
         We don't want to start integrity checks if the sync has never been initiated.
         Mostly to avoid starting in recovery mode. Also, maybe there is a reason the
