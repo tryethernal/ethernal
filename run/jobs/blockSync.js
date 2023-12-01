@@ -35,7 +35,7 @@ module.exports = async job => {
 
     const existingBlock = await db.getWorkspaceBlock(workspace.id, data.blockNumber);
     if (existingBlock)
-        return 'Block already exists in this workspace.';
+        return 'Block already exists in this workspace';
 
     if (data.source == 'recovery' && workspace.integrityCheck && workspace.integrityCheck.isHealthy)
         await db.updateWorkspaceIntegrityCheck(workspace.id, { status: 'recovering' });
@@ -48,6 +48,9 @@ module.exports = async job => {
         const block = await providerConnector.fetchBlockWithTransactions(data.blockNumber);
         if (!block)
             throw new Error("Couldn't fetch block from provider");
+
+        if (await workspace.explorer.hasReachedTransactionQuota())
+            return 'Transaction quota reached';
 
         const syncedBlock = await db.syncPartialBlock(workspace.id, block);
         if (!syncedBlock)

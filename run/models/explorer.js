@@ -140,6 +140,17 @@ module.exports = (sequelize, DataTypes) => {
         return this.update({ shouldSync: false });
     }
 
+    async hasReachedTransactionQuota() {
+        if (!this.shouldEnforceQuota)
+            return false;
+
+        const stripeSubscription = await this.getStripeSubscription({ include: 'stripePlan' });
+        if (!stripeSubscription)
+            return false;
+
+        return stripeSubscription.stripePlan.capabilities.txLimit > 0 && stripeSubscription.transactionQuota >= stripeSubscription.stripePlan.capabilities.txLimit;
+    }
+
     async hasTooManyFailedAttempts() {
         const workspace = await this.getWorkspace({ include: 'rpcHealthCheck' });
         if (workspace.rpcHealthCheck && workspace.rpcHealthCheck.failedAttempts <= MAX_RPC_ATTEMPTS)
@@ -233,6 +244,11 @@ module.exports = (sequelize, DataTypes) => {
             throw new Error('Error deleting the explorer. Please retry');
     }
 
+    async resetExplorerTransactionQuota() {
+        const stripeSubscription = await this.getStripeSubscription();
+        return stripeSubscription.update({ transactionQuota: 0 });
+    }
+
     async safeUpdateSubscription(stripePlanId, stripeId, cycleEndsAt, status) {
         if (!stripePlanId || !stripeId || !cycleEndsAt || !status) throw new Error('Missing parameter');
 
@@ -240,6 +256,7 @@ module.exports = (sequelize, DataTypes) => {
             throw new Error('Invalid subscription status');
 
         const stripeSubscription = await this.getStripeSubscription();
+
         return stripeSubscription.update(sanitize({ stripePlanId, stripeId, cycleEndsAt, status }));
     }
 
@@ -323,6 +340,7 @@ module.exports = (sequelize, DataTypes) => {
     token: DataTypes.STRING,
     totalSupply: DataTypes.STRING,
     shouldSync: DataTypes.BOOLEAN,
+    shouldEnforceQuota: DataTypes.BOOLEAN,
     isDemo: DataTypes.BOOLEAN
   }, {
     hooks: {

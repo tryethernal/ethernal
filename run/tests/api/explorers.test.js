@@ -40,6 +40,8 @@ const request = supertest(app);
 
 const BASE_URL = '/api/explorers';
 
+const hasReachedTransactionQuota = jest.fn().mockResolvedValue(false);
+
 beforeEach(() => {
     jest.clearAllMocks();
     ProviderConnector.mockImplementation(() => ({
@@ -195,7 +197,7 @@ describe(`PUT ${BASE_URL}/:id/startSync`, () => {
     });
 
     it('Should return an error if rpc not reachable', (done) => {
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { rpcServer: 'rpc' }, stripeSubscription: {}});
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, hasReachedTransactionQuota, workspace: { rpcServer: 'rpc' }, stripeSubscription: {}});
         withTimeout.mockRejectedValueOnce('Timeout');
         request.put(`${BASE_URL}/1/startSync`)
             .expect(400)
@@ -205,8 +207,18 @@ describe(`PUT ${BASE_URL}/:id/startSync`, () => {
             });
     });
 
+    it('Should return an error if transaction quota has been reached', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, hasReachedTransactionQuota: jest.fn().mockResolvedValueOnce(true), workspace: { rpcServer: 'rpc' }, stripeSubscription: {}});
+        request.put(`${BASE_URL}/1/startSync`)
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Transaction quota reached. Upgrade your plan to resume sync.`);
+                done();
+            });
+    });
+
     it('Should start sync', (done) => {
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { rpcServer: 'rpc' }, stripeSubscription: {}});
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, hasReachedTransactionQuota, workspace: { rpcServer: 'rpc' }, stripeSubscription: {}});
         request.put(`${BASE_URL}/1/startSync`)
             .expect(200)
             .then(() => {
@@ -218,7 +230,7 @@ describe(`PUT ${BASE_URL}/:id/startSync`, () => {
 
 describe(`GET ${BASE_URL}/:id/syncStatus`, () => {
     it('Should return unreachable status if rpchealthcheck fails', (done) => {
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { rpcHealthCheck: { isReachable: false }}});
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, hasReachedTransactionQuota, workspace: { rpcHealthCheck: { isReachable: false }}});
         request.get(`${BASE_URL}/1/syncStatus`)
             .expect(200)
             .then(({ body }) => {
@@ -227,8 +239,21 @@ describe(`GET ${BASE_URL}/:id/syncStatus`, () => {
             });
     });
 
+    it('Should return quota exceeded status', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, hasReachedTransactionQuota: jest.fn().mockResolvedValueOnce(true), workspace: { rpcHealthCheck: { isReachable: true }}});
+        PM2.mockImplementation(() => ({
+            find: jest.fn().mockResolvedValue({ data: { pm2_env: { status: 'online' }}})
+        }));
+        request.get(`${BASE_URL}/1/syncStatus`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ status: 'transactionQuotaReached' });
+                done();
+            });
+    });
+
     it('Should return pm2 process status', (done) => {
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { rpcHealthCheck: { isReachable: true }}});
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, hasReachedTransactionQuota, workspace: { rpcHealthCheck: { isReachable: true }}});
         PM2.mockImplementation(() => ({
             find: jest.fn().mockResolvedValue({ data: { pm2_env: { status: 'online' }}})
         }));
@@ -241,7 +266,7 @@ describe(`GET ${BASE_URL}/:id/syncStatus`, () => {
     });
 
     it('Should return stopped status if cannot find process', (done) => {
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, workspace: { rpcHealthCheck: { isReachable: true }}});
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, hasReachedTransactionQuota, workspace: { rpcHealthCheck: { isReachable: true }}});
         PM2.mockImplementation(() => ({
             find: jest.fn().mockResolvedValue({ data: { pm2_env: null }})
         }));
@@ -832,7 +857,7 @@ describe(`GET ${BASE_URL}/search`, () => {
 
 describe(`GET ${BASE_URL}/:id`, () => {
     it('Should return the explorer', (done) => {
-        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, toJSON: jest.fn().mockReturnValue({ id: 1 }) });
         request.get(`${BASE_URL}/123`)
             .expect(200)
             .then(({ body }) => {

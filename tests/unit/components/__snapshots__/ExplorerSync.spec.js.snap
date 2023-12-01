@@ -9,6 +9,17 @@ exports[`ExplorerSync.vue Should display no subscription status 1`] = `
 </div>
 `;
 
+exports[`ExplorerSync.vue Should display quota reached status 1`] = `
+<div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__text">
+    <!---->
+    <div><b class="error--text">
+        Your explorer is not synchronizing blocks.
+        <!----> <span> Transaction quota reached, upgrade your plan to resume sync.</span></b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
+  </div>
+</div>
+`;
+
 exports[`ExplorerSync.vue Should display that sync is active 1`] = `
 <div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
   <div class="v-card__text">
@@ -24,8 +35,8 @@ exports[`ExplorerSync.vue Should display that sync is inactive 1`] = `
     <!---->
     <div><b class="error--text">
         Your explorer is not synchronizing blocks.
-        <!---->.
-      </b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
+        <!---->
+        <!----></b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
   </div>
 </div>
 `;
@@ -62,8 +73,9 @@ exports[`ExplorerSync.vue Should display unreachable status 1`] = `
   <div class="v-card__text">
     <!---->
     <div><b class="error--text">
-        Your explorer is not synchronizing blocks.<span> RPC is unreachable</span>.
-      </b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
+        Your explorer is not synchronizing blocks.
+        <span> RPC is unreachable.</span>
+        <!----></b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
   </div>
 </div>
 `;
@@ -83,8 +95,8 @@ exports[`ExplorerSync.vue Should stop sync 1`] = `
     <!---->
     <div><b class="error--text">
         Your explorer is not synchronizing blocks.
-        <!---->.
-      </b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
+        <!---->
+        <!----></b></div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Sync</span></button>
   </div>
 </div>
 `;

@@ -9,6 +9,7 @@ const db = require('../../lib/firebase');
 const { ProviderConnector } = require('../../lib/rpc');
 
 const blockSync = require('../../jobs/blockSync');
+const hasReachedTransactionQuota = jest.fn().mockResolvedValue(false);
 
 beforeEach(() => jest.clearAllMocks());
 
@@ -21,10 +22,33 @@ describe('blockSync', () => {
                 isReachable: true
             },
             explorer: {
+                hasReachedTransactionQuota,
                 stripeSubscription: {},
                 shouldSync: true
             }
         }]
+    });
+
+    it('Should return if transaction quota reached', (done) => {
+        jest.spyOn(User, 'findByAuthIdWithWorkspace').mockResolvedValueOnce({
+            workspaces: [{
+                id: 1,
+                rpcServer: 'http://localhost:8545',
+                rpcHealthCheck: {
+                    isReachable: true
+                },
+                explorer: {
+                    hasReachedTransactionQuota: jest.fn().mockResolvedValue(true),
+                    stripeSubscription: {},
+                    shouldSync: true
+                }
+            }]
+        });
+        blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
+            .then(res => {
+                expect(res).toEqual('Transaction quota reached');
+                done();
+            });
     });
 
     it('Should return if no active explorer', (done) => {
@@ -75,6 +99,7 @@ describe('blockSync', () => {
                     isReachable: false
                 },
                 explorer: {
+                    hasReachedTransactionQuota,
                     shouldSync: true
                 }
             }]
@@ -96,6 +121,7 @@ describe('blockSync', () => {
                     isReachable: true
                 },
                 explorer: {
+                    hasReachedTransactionQuota,
                     shouldSync: true
                 }
             }]
@@ -134,6 +160,7 @@ describe('blockSync', () => {
                     isReachable: true
                 },
                 explorer: {
+                    hasReachedTransactionQuota,
                     shouldSync: true,
                     stripeSubscription: {}
                 }
@@ -155,6 +182,7 @@ describe('blockSync', () => {
                 rpcServer: 'http://localhost:8545',
                 integrityCheck: { isHealthy: true },
                 explorer: {
+                    hasReachedTransactionQuota,
                     stripeSubscription: {},
                     shouldSync: true
                 }
@@ -174,6 +202,7 @@ describe('blockSync', () => {
                 rpcServer: 'http://localhost:8545',
                 integrityCheck: { isRecovering: true },
                 explorer: {
+                    hasReachedTransactionQuota,
                     stripeSubscription: {},
                     shouldSync: true
                 }
@@ -208,7 +237,7 @@ describe('blockSync', () => {
         jest.spyOn(db, 'getWorkspaceBlock').mockResolvedValueOnce({ id: 1 });
         blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1, source: 'api' }})
             .then(res => {
-                expect(res).toEqual('Block already exists in this workspace.');
+                expect(res).toEqual('Block already exists in this workspace');
                 done();
             });
     });

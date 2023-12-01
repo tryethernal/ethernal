@@ -17,6 +17,23 @@ const StripePlan = models.StripePlan;
 const ExplorerDomain = models.ExplorerDomain;
 const RpcHealthCheck = models.RpcHealthCheck;
 
+const resetExplorerTransactionQuota = async (userId, explorerId) => {
+    if (!userId || !explorerId)
+        throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            userId: userId
+        }
+    });
+
+    if (!explorer)
+        throw new Error(`Can't find explorer`);
+
+    return explorer.resetTransactionQuota();
+};
+
 const makeExplorerDemo = async (explorerId) => {
     if (!explorerId) throw new Error('Missing parameter');
 
@@ -420,14 +437,14 @@ const updateExplorerWorkspace = async (explorerId, workspaceId) => {
     return explorer.update({ workspaceId: workspace.id, rpcServer: workspace.rpcServer, chainId: workspace.networkId });
 };
 
-const getExplorerById = async (userId, id, withDemo = false) => {
+const getExplorerById = (userId, id, withDemo = false) => {
     if (!userId || !id) throw new Error('Missing parameter');
 
     const where = withDemo ?
         {[Op.or]: [{ id, userId, isDemo: false }, { id, userId: getDemoUserId(), isDemo: true }]} :
         { id, userId };
 
-        const explorer = await Explorer.findOne({
+    return Explorer.findOne({
         where,
         include: [
             {
@@ -456,8 +473,6 @@ const getExplorerById = async (userId, id, withDemo = false) => {
             }
         ]
     });
-
-    return explorer ? explorer.toJSON() : null;
 }
 
 const getUserExplorers = async (userId, page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'id') => {
@@ -1724,5 +1739,6 @@ module.exports = {
     createExplorerWithWorkspace: createExplorerWithWorkspace,
     migrateDemoExplorer: migrateDemoExplorer,
     makeExplorerDemo: makeExplorerDemo,
+    resetExplorerTransactionQuota: resetExplorerTransactionQuota,
     Workspace: Workspace
 };

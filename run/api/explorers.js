@@ -115,6 +115,9 @@ router.put('/:id/startSync', [authMiddleware], async (req, res) => {
         if (!explorer.stripeSubscription)
             throw new Error(`No active subscription for this explorer.`);
 
+        if (await explorer.hasReachedTransactionQuota())
+            throw new Error('Transaction quota reached. Upgrade your plan to resume sync.');
+
         const provider = new ProviderConnector(explorer.workspace.rpcServer);
         try {
             await withTimeout(provider.fetchNetworkId());
@@ -143,7 +146,10 @@ router.get('/:id/syncStatus', [authMiddleware], async (req, res) => {
 
         let status;
         if (explorer.workspace.rpcHealthCheck && !explorer.workspace.rpcHealthCheck.isReachable) {
-            status = 'unreachable'
+            status = 'unreachable';
+        }
+        else if (await explorer.hasReachedTransactionQuota()) {
+            status = 'transactionQuotaReached';
         }
         else {
             const pm2 = new PM2(process.env.PM2_HOST, process.env.PM2_SECRET);
@@ -505,7 +511,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
         if (!explorer)
             throw new Error('Could not find explorer.');
 
-        res.status(200).json(explorer);
+        res.status(200).json(explorer.toJSON());
     } catch(error) {
         logger.error(error.message, { location: 'get.api.explorers.id', error: error, data: data, queryParams: req.params });
         res.status(400).send(error.message);
