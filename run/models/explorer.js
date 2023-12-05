@@ -244,7 +244,7 @@ module.exports = (sequelize, DataTypes) => {
             throw new Error('Error deleting the explorer. Please retry');
     }
 
-    async resetExplorerTransactionQuota() {
+    async resetTransactionQuota() {
         const stripeSubscription = await this.getStripeSubscription();
         return stripeSubscription.update({ transactionQuota: 0 });
     }
