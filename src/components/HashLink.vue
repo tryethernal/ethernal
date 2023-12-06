@@ -58,7 +58,7 @@ export default {
                                 if (data.tokenName || data.tokenSymbol)
                                     this.token = sanitize({
                                         name: data.tokenName,
-                                        symbol: this.contract.tokenSymbol
+                                        symbol: data.tokenSymbol
                                     });
                                 this.verified = !!data.verification;
                                 this.contractName = data.name;

@@ -150,6 +150,8 @@ export default Vue.extend({
     },
     watch: {
         searchSelectedItem(item) {
+            if (!item)
+                return;
             switch(item.type) {
                 case 'address':
                 case 'contract':
@@ -162,10 +164,15 @@ export default Vue.extend({
                     this.$router.push(`/block/${item.data.number}`);
                     break;
             }
+            this.searchSelectedItem = null;
+            this.clearSearchBar();
 
         },
         search(val) {
-            if (!val) return this.searchItems = [];
+            if (!val) {
+                this.search = null;
+                return this.searchItems = [];
+            }
             if (val === this.model || typeof val == 'object') return;
 
             this.isSearchLoading = true;

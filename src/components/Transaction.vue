@@ -84,11 +84,11 @@
                 </v-col>
                 <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Gas Price</div>
-                    {{ transaction.receipt && transaction.receipt.effectiveGasPrice || transaction.gasPrice | fromWei('gwei', chain.token) }}
+                    {{ getGasPriceFromTransaction(transaction) | fromWei('gwei', chain.token) }}
                 </v-col>
                 <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Cost</div>
-                    <span v-if="transaction.receipt">{{ transaction.receipt.gasUsed * transaction.gasPrice | fromWei('ether', chain.token) }}</span>
+                    <span v-if="transaction.receipt">{{ transaction.receipt.gasUsed * getGasPriceFromTransaction(transaction) | fromWei('ether', chain.token) }}</span>
                     <v-chip small class="grey white--text" v-else>
                         Not Available
                     </v-chip>
@@ -149,7 +149,11 @@
             <v-row class="my-2" v-if="transaction.traceSteps.length">
                 <v-col>
                     <h3 class="mb-2">Trace</h3>
-                    <Trace-Step v-for="step in transaction.traceSteps" :step="step" :key="step.id" />
+                    <v-card outlined class="pb-2">
+                        <v-card-text class="pt-2">
+                            <Trace-Step v-for="step in transaction.traceSteps" :step="step" :key="step.id" />
+                        </v-card-text>
+                    </v-card>
                 </v-col>
             </v-row>
         </template>
@@ -166,6 +170,7 @@
 
 <script>
 const moment = require('moment');
+const { getGasPriceFromTransaction } = require('../lib/utils');
 import { mapGetters } from 'vuex';
 import HashLink from './HashLink';
 import TransactionData from './TransactionData';
@@ -228,7 +233,8 @@ export default {
         }
     },
     methods: {
-        moment: moment,
+        moment,
+        getGasPriceFromTransaction,
         loadTransaction(hash) {
             this.server.getTransaction(hash)
                 .then(({ data }) => this.transaction = data)
