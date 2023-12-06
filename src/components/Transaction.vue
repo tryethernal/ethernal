@@ -84,11 +84,11 @@
                 </v-col>
                 <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Gas Price</div>
-                    {{ gasPrice | fromWei('gwei', chain.token) }}
+                    {{ getGasPriceFromTransaction(transaction) | fromWei('gwei', chain.token) }}
                 </v-col>
                 <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Cost</div>
-                    <span v-if="transaction.receipt">{{ transaction.receipt.gasUsed * gasPrice | fromWei('ether', chain.token) }}</span>
+                    <span v-if="transaction.receipt">{{ transaction.receipt.gasUsed * getGasPriceFromTransaction(transaction) | fromWei('ether', chain.token) }}</span>
                     <v-chip small class="grey white--text" v-else>
                         Not Available
                     </v-chip>
@@ -170,7 +170,7 @@
 
 <script>
 const moment = require('moment');
-const ethers = require('ethers');
+const { getGasPriceFromTransaction } = require('../lib/utils');
 import { mapGetters } from 'vuex';
 import HashLink from './HashLink';
 import TransactionData from './TransactionData';
@@ -233,7 +233,8 @@ export default {
         }
     },
     methods: {
-        moment: moment,
+        moment,
+        getGasPriceFromTransaction,
         loadTransaction(hash) {
             this.server.getTransaction(hash)
                 .then(({ data }) => this.transaction = data)
@@ -264,25 +265,6 @@ export default {
             'currentWorkspace',
             'isPublicExplorer',
         ]),
-        gasPrice() {
-            if (!this.transaction || !this.transaction.receipt)
-                return null;
-
-            const gasPrice = this.transaction.receipt.effectiveGasPrice || this.transaction.receipt.gasPrice;
-
-            let amountInt;
-            try {
-                let parsedBigNumberAmount = ethers.BigNumber.from(JSON.parse(gasPrice))
-                if (typeof parsedBigNumberAmount == 'bigint')
-                    amountInt = parsedBigNumberAmount.toString();
-                else
-                    amountInt = parsedBigNumberAmount;
-            } catch(_) {
-                amountInt = gasPrice
-            }
-
-            return amountInt;
-        },
         txStatus() {
             if (!this.transaction.receipt)
                 return 'unknown';
