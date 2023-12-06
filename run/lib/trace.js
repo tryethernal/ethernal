@@ -30,12 +30,11 @@ exports.parseTrace = async (from, trace, provider) => {
     for (const log of filteredData) {
         switch(log.op) {
             case 'CALL':
-            case 'CALLCODE':
+            case 'CALLCODE': {
                 let input = '', out = '';
 
                 const inputSize = parseInt(log.stack[log.stack.length - 5], 16) * 2;
-                if (inputSize > 0) {
-                    if (!log.memory) continue;
+                if (inputSize > 0 && log.memory) {
                     const inputStart = parseInt(log.stack[log.stack.length - 4], 16) * 2;
                     input = `0x${log.memory.join('').slice(inputStart, inputStart + inputSize)}`;
                 }
@@ -72,13 +71,13 @@ exports.parseTrace = async (from, trace, provider) => {
                     contractHashedBytecode: bytecode != '0x' ? ethers.utils.keccak256(bytecode) : ''
                 })
                 break;
+            }
             case 'DELEGATECALL':
             case 'STATICCALL': {
                 let input = '', out = '';
 
                 const inputSize = parseInt(log.stack[log.stack.length - 4], 16) * 2;
-                if (inputSize > 0) {
-                    if (!log.memory) continue;
+                if (inputSize > 0 && log.memory) {
                     const inputStart = parseInt(log.stack[log.stack.length - 3], 16) * 2;
                     input = `0x${log.memory.join('').slice(inputStart, inputStart + inputSize)}`;
                 }

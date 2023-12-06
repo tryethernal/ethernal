@@ -1145,6 +1145,7 @@ const getBlockTransactions = async (workspaceId, blockNumber, page = 1, itemsPer
     const fun = withCount == 'false' ? 'findAll' : 'findAndCountAll';
     const res = await Transaction[fun]({
         where: { blockNumber, workspaceId },
+        attributes: ['blockNumber', 'from', 'gasPrice', 'hash', 'methodDetails', 'data', 'timestamp', 'to', 'value', 'workspaceId', 'state'],
         include: [
             {
                 model: Block,
@@ -1153,7 +1154,8 @@ const getBlockTransactions = async (workspaceId, blockNumber, page = 1, itemsPer
             },
             {
                 model: TransactionReceipt,
-                as: 'receipt'
+                as: 'receipt',
+                attributes: ['gasUsed', 'status', 'contractAddress', [Sequelize.json('raw.root'), 'root'], 'gasUsed', 'cumulativeGasUsed', [Sequelize.json('raw.effectiveGasPrice'), 'effectiveGasPrice']]
             },
             {
                 model: Contract,

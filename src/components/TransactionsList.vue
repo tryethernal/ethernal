@@ -78,13 +78,14 @@
             {{ item.value | fromWei('ether', chain.token) }}
         </template>
         <template v-slot:item.fee="{ item }">
-            <span v-if="item.receipt">{{ item.gasPrice * (item.gas || item.receipt.gasUsed)  | fromWei('ether', chain.token) }}</span>
+            <span v-if="item.receipt">{{ getGasPriceFromTransaction(item) * (item.gas || item.receipt.gasUsed)  | fromWei('ether', chain.token) }}</span>
         </template>
     </v-data-table>
 </template>
 
 <script>
 const moment = require('moment');
+const { getGasPriceFromTransaction } = require('../lib/utils');
 import { mapGetters } from 'vuex';
 import FromWei from '../filters/FromWei.js';
 import HashLink from './HashLink.vue';
@@ -143,7 +144,8 @@ export default {
         this.pusherUnsubscribe();
     },
     methods: {
-        moment: moment,
+        getGasPriceFromTransaction,
+        moment,
         rowClasses(item) {
             if (item.state == 'syncing')
                 return 'isSyncing'

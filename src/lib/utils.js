@@ -1,6 +1,27 @@
 const Web3 = require('web3');
 const ethers = require('ethers');
 
+export const getGasPriceFromTransaction= (transaction) => {
+    if (!transaction || !transaction.receipt)
+        return null;
+
+    const receipt = transaction.receipt;
+    const gasPrice = receipt.effectiveGasPrice || transaction.gasPrice;
+
+    let amountInt;
+    try {
+        let parsedBigNumberAmount = ethers.BigNumber.from(JSON.parse(gasPrice))
+        if (typeof parsedBigNumberAmount == 'bigint')
+            amountInt = parsedBigNumberAmount.toString();
+        else
+            amountInt = parsedBigNumberAmount;
+    } catch(_) {
+        amountInt = gasPrice
+    }
+
+    return amountInt;
+};
+
 export const shortRpcUrl = (rpc) => {
     try {
         const url = new URL(rpc);
