@@ -6,7 +6,8 @@
         "updateExplorerSyncingProcess",
         "updateApproximatedRecord",
         "receiptSync",
-        "removeStalledBlock"
+        "removeStalledBlock",
+        "increaseStripeBillingQuota"
     ],
     "medium": [
         "processContract",

@@ -7,6 +7,7 @@ module.exports = {
     updateApproximatedRecord: require('./updateApproximatedRecord'),
     receiptSync: require('./receiptSync'),
     removeStalledBlock: require('./removeStalledBlock'),
+    increaseStripeBillingQuota: require('./increaseStripeBillingQuota'),
 
     // Medium Priority
     processContract: require('./processContract'),
