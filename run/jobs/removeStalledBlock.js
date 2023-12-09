@@ -1,4 +1,5 @@
 const { Block } = require('../models');
+const { enqueue } = require('../lib/queue');
 
 module.exports = async (job) => {
     const data = job.data;
@@ -17,6 +18,8 @@ module.exports = async (job) => {
         await block.revertIfPartial();
         return `Removed stalled block ${block.id} - Workspace ${block.workspaceId} - #${block.number}`;
     }
+    else
+        await enqueue('increaseStripeBillingQuota', `increaseStripeBillingQuota-${data.blockId}-${block.workspaceId}`, { blockId: data.blockId });
 
     return true;
 };

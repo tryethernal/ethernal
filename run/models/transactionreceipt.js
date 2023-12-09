@@ -64,11 +64,21 @@ module.exports = (sequelize, DataTypes) => {
                         model: sequelize.models.Workspace,
                         as: 'workspace',
                         attributes: ['id', 'name', 'public', 'userId'],
-                        include: {
-                          model: sequelize.models.User,
-                          as: 'user',
-                          attributes: ['firebaseUserId', 'id']
-                        }
+                        include: [
+                            {
+                                model: sequelize.models.User,
+                                as: 'user',
+                                attributes: ['firebaseUserId', 'id']
+                            },
+                            {
+                                model: sequelize.models.Explorer,
+                                as: 'explorer',
+                                include: {
+                                    model: sequelize.models.StripeSubscription,
+                                    as: 'stripeSubscription'
+                                }
+                            }
+                        ]
                     },
                     {
                         model: sequelize.models.TransactionReceipt,
