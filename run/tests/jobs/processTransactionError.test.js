@@ -61,6 +61,14 @@ describe('processTransactionError', () => {
         expect(res).toEqual('No active subscription');
     });
 
+    it('Should return if no error status', async () => {
+        const transaction = { ...Transaction, receipt: { status: 1, ...Transaction }, workspace: { ...workspace, public: true, explorer: { shouldSync: true, stripeSubscription: {} }}};
+        jest.spyOn(db, 'getTransactionForProcessing').mockResolvedValueOnce(transaction);
+
+        const res = await processTransactionError({ data: { transactionId: 1 }});
+        expect(res).toEqual('No error to process');
+    });
+
     it('Should store a parsed failed transaction error return by the rpc call', async () => {
         getProvider.mockImplementationOnce(() => ({
             call: jest.fn().mockResolvedValueOnce('0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000a48656c6c6f6f6f6f6f6f00000000000000000000000000000000000000000000')

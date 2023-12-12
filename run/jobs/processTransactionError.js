@@ -29,6 +29,9 @@ module.exports = async job => {
     if (!transaction.workspace.explorer.stripeSubscription)
         return 'No active subscription';
 
+    if (transaction.receipt.status != 0)
+        return 'No error to process';
+
     let errorObject;
     try {
         const provider = getProvider(transaction.workspace.rpcServer);
