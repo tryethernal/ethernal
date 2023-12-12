@@ -494,6 +494,25 @@ module.exports = (sequelize, DataTypes) => {
                 metadata: token.metadata
             }));
     }
+
+    async safeDestroy(transaction) {
+        await sequelize.models.ContractSource.destroy(
+            { where: { workspaceId: this.id }},
+            { transaction }
+        );
+
+        await sequelize.models.ContractVerification.destroy(
+            { where: { workspaceId: this.id }},
+            { transaction }
+        );
+
+        await sequelize.models.Erc721Token.destroy(
+            { where: { workspaceId: this.id }},
+            { transaction }
+        );
+
+        return this.destroy({ transaction });
+    }
   }
   Contract.init({
     isToken: {

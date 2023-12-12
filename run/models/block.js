@@ -21,6 +21,13 @@ module.exports = (sequelize, DataTypes) => {
       Block.hasMany(models.Transaction, { foreignKey: 'blockId', as: 'transactions' });
     }
 
+    async safeDestroy(transaction) {
+      const transactions = await this.getTransactions();
+      for (let i = 0; i < transactions.length; i++)
+        await transactions[i].safeDestroy(transaction);
+      return this.destroy({ transaction });
+    }
+
     async revertIfPartial() {
         const transactions = await this.getTransactions();
         const isSyncing = transactions.map(t => t.isSyncing).length > 0;
@@ -30,12 +37,7 @@ module.exports = (sequelize, DataTypes) => {
 
         return sequelize.transaction(
           { deferrable: Sequelize.Deferrable.SET_DEFERRED },
-          async transaction => {
-            const transactions = await this.getTransactions();
-            for (let i = 0; i < transactions.length; i++)
-              await transactions[i].safeDestroy(transaction);
-            return this.destroy({ transaction });
-          }
+          async transaction => this.safeDestroy(transaction)
         );
     }
   }

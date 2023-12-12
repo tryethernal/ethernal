@@ -5,6 +5,7 @@ const {
   QueryTypes,
 } = require('sequelize');
 const { sanitize, slugify } = require('../lib/utils');
+const { enqueue } = require('../lib/queue');
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
 const Analytics = require('../lib/analytics');
@@ -974,6 +975,43 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    safeDestroyBlocks(ids) {
+        return sequelize.transaction(
+            { deferrable: Sequelize.Deferrable.SET_DEFERRED },
+            async transaction => {
+                const blocks = await this.getBlocks({ where: { id: ids }});
+                for (let i = 0; i < blocks.length; i++)
+                    await blocks[i].safeDestroy(transaction);
+            }
+        );
+    }
+
+    safeDestroyContracts(ids) {
+        return sequelize.transaction(
+            { deferrable: Sequelize.Deferrable.SET_DEFERRED },
+            async transaction => {
+                const contracts = await this.getContracts({ where: { id: ids }});
+                for (let i = 0; i < contracts.length; i++)
+                    await contracts[i].safeDestroy(transaction);
+            }
+        );
+    }
+
+    safeDestroyIntegrityCheck() {
+        return sequelize.models.IntegrityCheck.destroy({ where: { workspaceId: this.id }});
+    }
+
+    safeDestroyAccounts() {
+        return sequelize.models.Account.destroy({ where: { workspaceId: this.id }});
+    }
+
+    startBatchReset(from, to) {
+        if (!from || !to)
+            throw new Error('Missing parameter');
+
+        return enqueue('workspaceReset', `workspaceReset-${this.id}`, { workspaceId: this.id, from, to });
+    }
+
     async reset(dayInterval, transaction) {
         const filter = { where: { workspaceId: this.id }};
         if (dayInterval)
@@ -981,8 +1019,6 @@ module.exports = (sequelize, DataTypes) => {
 
         const destroyAll = async (transaction) => {
             await sequelize.models.IntegrityCheck.destroy(filter, { transaction });
-            await sequelize.models.RpcHealthCheck.destroy(filter, { transaction });
-            await sequelize.models.CustomField.destroy(filter, { transaction });
             await sequelize.models.TokenBalanceChange.destroy(filter, { transaction });
             await sequelize.models.TokenTransfer.destroy(filter, { transaction });
             await sequelize.models.ContractSource.destroy(filter, { transaction });
