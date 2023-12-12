@@ -15,7 +15,8 @@
         "processTransactionError",
         "reloadErc721Token",
         "processTokenTransfer",
-        "reprocessWorkspaceTransactionTraces"
+        "reprocessWorkspaceTransactionTraces",
+        "reprocessWorkspaceTransactionErrors"
     ],
     "low": [
         "submitExplorerLead",

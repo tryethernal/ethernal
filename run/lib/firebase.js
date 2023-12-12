@@ -543,6 +543,11 @@ const getTransactionForProcessing = transactionId => {
         where: { id: transactionId },
         include: [
             {
+                model: Contract,
+                as: 'contract',
+                attributes: ['abi']
+            },
+            {
                 model: TransactionReceipt,
                 as: 'receipt',
             },
