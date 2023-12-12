@@ -50,7 +50,7 @@ const _isJson = function(obj) {
     }
 };
 
-const _sanitize = (obj) => {
+const _sanitize = (obj, numberization = true) => {
     const numberize = ['number', 'difficulty', 'totalDifficulty', 'size', 'timestamp', 'nonce', 'baseFeePerGas', 'blockNumber', 'cumulativeGasUsed', 'effectiveGasPrice', 'gasUsed', 'logIndex', 'chainId', 'gasLimit', 'gasPrice', 'v', 'value', 'type', 'transactionIndex', 'status']
     return Object.fromEntries(
         Object.entries(obj)
@@ -58,9 +58,9 @@ const _sanitize = (obj) => {
             .map(([_, v]) => {
                 if (typeof v == 'string' && v.length == 42 && v.startsWith('0x'))
                     return [_, v.toLowerCase()];
-                else if (typeof v == 'string' && numberize.indexOf(_) > -1 && v.startsWith('0x'))
+                else if (typeof v == 'string' && numberization && numberize.indexOf(_) > -1 && v.startsWith('0x'))
                     return [_, parseInt(v, 16)];
-                else if (typeof v == 'object' && numberize.indexOf(_) > -1 && ethers.BigNumber.isBigNumber(v))
+                else if (typeof v == 'object' && numberization && numberize.indexOf(_) > -1 && ethers.BigNumber.isBigNumber(v))
                     return [_, ethers.BigNumber.from(v).toString()];
                 else
                     return [_, v];

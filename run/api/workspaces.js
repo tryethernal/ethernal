@@ -10,6 +10,22 @@ const PM2 = require('../lib/pm2');
 const { getPm2Host, getPm2Secret } = require('../lib/env');
 const router = express.Router();
 
+router.post('/reprocessTransactionErrors', [secretMiddleware], async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        if (!data.workspaceId)
+            throw new Error('Missing parameters.');
+
+        await enqueue('reprocessWorkspaceTransactionErrors', `reprocessWorkspaceTransactionErrors-${data.workspaceId}`, { workspaceId: data.workspaceId });
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.workspaces.reprocessWorkspaceTransactionErrors', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
 router.post('/reprocessTransactionTraces', [secretMiddleware], async (req, res) => {
     const data = req.body.data;
 
@@ -171,6 +187,7 @@ router.post('/reset', authMiddleware, async (req, res) => {
     try {
         if (!data.uid || !data.workspace)
             throw new Error('Missing parameter.');
+
 
         await db.resetWorkspace(data.uid, data.workspace);
 
