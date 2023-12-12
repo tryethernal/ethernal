@@ -16,6 +16,7 @@ module.exports = {
     processTokenTransfer: require('./processTokenTransfer'),
     reloadErc721Token: require('./reloadErc721Token'),
     reprocessWorkspaceTransactionTraces: require('./reprocessWorkspaceTransactionTraces'),
+    reprocessWorkspaceTransactionErrors: require('./reprocessWorkspaceTransactionErrors'),
 
     // Low Priority
     submitExplorerLead: require('./submitExplorerLead'),
