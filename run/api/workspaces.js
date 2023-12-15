@@ -193,7 +193,7 @@ router.post('/reset', authMiddleware, async (req, res) => {
         const needsBatchReset = await db.workspaceNeedsBatchReset(data.uid, workspace.id);
         if (needsBatchReset)
             await enqueue('workspaceReset', `workspaceReset-${workspace.id}`, {
-                workspaceId: this.id,
+                workspaceId: workspace.id,
                 from: new Date(0),
                 to: new Date()
             });

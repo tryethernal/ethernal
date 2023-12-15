@@ -2,7 +2,7 @@ const { Op } = require('sequelize');
 const { enqueue } = require('../lib/queue');
 const { Workspace } = require('../models');
 
-module.exports = async job => {
+module.exports = async () => {
     const workspaces = await Workspace.findAll({
         where: {
             dataRetentionLimit: {
