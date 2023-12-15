@@ -1,8 +1,8 @@
 const { Sequelize } = require('sequelize');
 const { Workspace } = require('../models');
 const { bulkEnqueue, enqueue } = require('../lib/queue');
+const { getMaxBlockForSyncReset } = require('../lib/env');
 const Op = Sequelize.Op;
-const MAX_BLOCK_BATCH_SIZE = 50;
 
 module.exports = async (job) => {
     const data = job.data;
@@ -20,12 +20,12 @@ module.exports = async (job) => {
     const blockIds = blocks.map(b => b.id);
 
     const blockDeleteJobs = [];
-    for (let i = 0; i < blockIds.length; i += MAX_BLOCK_BATCH_SIZE)
+    for (let i = 0; i < blockIds.length; i += getMaxBlockForSyncReset())
         blockDeleteJobs.push({
-            name: `batchBlockDelete-${data.workspaceId}-${i}-${i + MAX_BLOCK_BATCH_SIZE}`,
+            name: `batchBlockDelete-${data.workspaceId}-${i}-${i + getMaxBlockForSyncReset()}`,
             data: {
                 workspaceId: data.workspaceId,
-                ids: blockIds.slice(i, i + MAX_BLOCK_BATCH_SIZE)
+                ids: blockIds.slice(i, i + getMaxBlockForSyncReset())
             }
         });
     await bulkEnqueue('batchBlockDelete', blockDeleteJobs);
