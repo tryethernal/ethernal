@@ -17,24 +17,6 @@ const StripePlan = models.StripePlan;
 const ExplorerDomain = models.ExplorerDomain;
 const RpcHealthCheck = models.RpcHealthCheck;
 
-const batchResetWorkspace = async (userId, workspaceId, from, to) => {
-    if (!userId || !workspaceId || !from || !to)
-        throw new Error('Missing parameter');
-
-    const workspace = await Workspace.findOne({
-        where: {
-            id: workspaceId,
-            '$user.firebaseUserId$': userId
-        },
-        include: 'user'
-    });
-
-    if (!workspace)
-        throw new Error('Cannot find workspace');
-
-    return workspace.startBatchReset(from, to);
-};
-
 const workspaceNeedsBatchReset = async (userId, workspaceId) => {
     if (!userId || !workspaceId)
         throw new Error('Missing parameter');
@@ -1786,6 +1768,5 @@ module.exports = {
     makeExplorerDemo: makeExplorerDemo,
     resetExplorerTransactionQuota: resetExplorerTransactionQuota,
     workspaceNeedsBatchReset: workspaceNeedsBatchReset,
-    batchResetWorkspace: batchResetWorkspace,
     Workspace: Workspace
 };

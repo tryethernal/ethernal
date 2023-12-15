@@ -12,28 +12,7 @@ const env = require('../../lib/env');
 
 beforeEach(() => jest.clearAllMocks());
 
-describe.only('batchResetWorkspace', () => {
-    it('Should throw an error if no workspace', (done) => {
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce(null);
-        db.batchResetWorkspace(1, 1, new Date(0), new Date(1000))
-            .catch(error => {
-                expect(error).toEqual(new Error('Cannot find workspace'));
-                done();
-            });
-    });
-
-    it('Should call the batch reset function', (done) => {
-        const startBatchReset = jest.fn();
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({ id: 1, startBatchReset });
-        db.batchResetWorkspace(1, 1, new Date(0), new Date(1000))
-            .then(() => {
-                expect(startBatchReset).toHaveBeenCalledWith(new Date(0), new Date(1000));
-                done();
-            });
-    });
-});
-
-describe.only('workspaceNeedsBatchReset', () => {
+describe('workspaceNeedsBatchReset', () => {
     it('Should throw an error if no workspace', (done) => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce(null);
         db.workspaceNeedsBatchReset(1, 1, new Date(0), new Date(1000))

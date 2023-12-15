@@ -1,7 +1,6 @@
 const { Op } = require('sequelize');
-const express = require('express');
-const db = require('../lib/firebase');
-const Workspace = db.Workspace;
+const { enqueue } = require('../lib/queue');
+const { Workspace } = require('../models');
 
 module.exports = async job => {
     const workspaces = await Workspace.findAll({
@@ -14,9 +13,13 @@ module.exports = async job => {
 
     for (let i = 0; i < workspaces.length; i++) {
         const workspace = workspaces[i];
-        const user = await db.getUserById(workspace.userId);
-        if (workspace.dataRetentionLimit > 0)
-            await db.resetWorkspace(user.firebaseUserId, workspace.name, workspace.dataRetentionLimit);
+        if (workspace.dataRetentionLimit > 0) {
+            await enqueue('workspaceReset', `workspaceReset-${workspaces[i].id}`, {
+                workspaceId: workspaces[i].id,
+                from: new Date(0),
+                to: new Date(new Date() - 60 * 60 * 24 * workspace.dataRetentionLimit * 1000)
+            });
+        }
     }
 
     return;

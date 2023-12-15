@@ -1011,13 +1011,6 @@ module.exports = (sequelize, DataTypes) => {
         return sequelize.models.Account.destroy({ where: { workspaceId: this.id }});
     }
 
-    startBatchReset(from, to) {
-        if (!from || !to)
-            throw new Error('Missing parameter');
-
-        return enqueue('workspaceReset', `workspaceReset-${this.id}`, { workspaceId: this.id, from, to });
-    }
-
     async reset(dayInterval, transaction) {
         const filter = { where: { workspaceId: this.id }};
         if (dayInterval)

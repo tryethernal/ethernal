@@ -17,6 +17,7 @@ require('../mocks/middlewares/auth');
 require('../mocks/lib/queue');
 const db = require('../../lib/firebase');
 const { ProviderConnector } = require('../../lib/rpc');
+const { enqueue } = require('../../lib/queue');
 
 const supertest = require('supertest');
 const app = require('../../app');
@@ -77,7 +78,7 @@ describe(`POST ${BASE_URL}/reset`, () => {
             .send({ data: { workspace: 'My Workspace' }})
             .expect(200)
             .then(({ body }) => {
-                expect(db.batchResetWorkspace).toHaveBeenCalledWith('123', 1, expect.anything(), expect.anything());
+                expect(enqueue).toHaveBeenCalledWith('workspaceReset', 'workspaceReset-1', { workspaceId: 1, from: new Date(0), to: expect.anything() });
                 expect(body).toEqual({ needsBatchReset: true });
                 done();
             });

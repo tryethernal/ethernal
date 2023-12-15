@@ -118,7 +118,6 @@ jest.mock('../../../lib/firebase', () => {
         migrateDemoExplorer: jest.fn(),
         resetExplorerTransactionQuota: jest.fn(),
         workspaceNeedsBatchReset: jest.fn(),
-        batchResetWorkspace: jest.fn(),
         Workspace: Workspace
     }
 });
