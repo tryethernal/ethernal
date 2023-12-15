@@ -8,6 +8,7 @@ const { sanitize, slugify } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
+const { getMaxBlockForSyncReset } = require('../lib/env');
 const Analytics = require('../lib/analytics');
 
 const Op = Sequelize.Op;
@@ -56,6 +57,10 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeDelete() {
+        const blocks = await this.getBlocks({ limit: getMaxBlockForSyncReset() });
+        if (blocks.length == getMaxBlockForSyncReset())
+            throw new Error('Please reset this workspace before deleting it.');
+
         const explorer = await this.getExplorer();
         if (explorer)
             throw new Error(`This workspace has an explorer associated to it. Please delete it or change its associated workspace first.`);
@@ -64,6 +69,7 @@ module.exports = (sequelize, DataTypes) => {
             { deferrable: Sequelize.Deferrable.SET_DEFERRED },
             async (transaction) => {
                 await this.reset(null, transaction);
+                await sequelize.models.CustomField.destroy({ where: { workspaceId: this.id }}, { transaction });
                 return this.destroy({ transaction });
             }
         );
@@ -1019,6 +1025,7 @@ module.exports = (sequelize, DataTypes) => {
 
         const destroyAll = async (transaction) => {
             await sequelize.models.IntegrityCheck.destroy(filter, { transaction });
+            await sequelize.models.RpcHealthCheck.destroy(filter, { transaction });
             await sequelize.models.TokenBalanceChange.destroy(filter, { transaction });
             await sequelize.models.TokenTransfer.destroy(filter, { transaction });
             await sequelize.models.ContractSource.destroy(filter, { transaction });

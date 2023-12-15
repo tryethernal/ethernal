@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.22.4] - 2023-12-12
+### Changed
+- More efficient error processing (do not call rpc if receipt.status != 0)
+
+## [3.22.3] - 2023-12-12
+### Fixed
+- Transaction error processing
+
+### Added
+- Admin endpoint to reprocess all transaction errors of a workspace
+
 ## [3.22.2] - 2023-12-09
 ### Added
 - Metered billing

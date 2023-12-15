@@ -1,6 +1,7 @@
 const ethers = require('ethers');
 const db = require('../lib/firebase');
-let { getProvider } = require('../lib/rpc');
+const { sanitize } = require('../lib/utils');
+const { getProvider } = require('../lib/rpc');
 
 module.exports = async job => {
     const data = job.data;
@@ -28,11 +29,20 @@ module.exports = async job => {
     if (!transaction.workspace.explorer.stripeSubscription)
         return 'No active subscription';
 
+    if (transaction.receipt.status != 0)
+        return 'No error to process';
+
     let errorObject;
     try {
         const provider = getProvider(transaction.workspace.rpcServer);
-        const res = await provider.call({ to: transaction.to, data: transaction.data }, transaction.blockNumber);
-        const reason = ethers.utils.toUtf8String('0x' + res.substr(138));
+        const res = await provider.call({ to: transaction.to, data: transaction.data, value: transaction.value }, transaction.blockNumber);
+
+        let reason;
+        if (transaction.contract && transaction.contract.abi) {
+            const iface = new ethers.utils.Interface(transaction.contract.abi);
+            reason = iface.decodeErrorResult(res.substring(0, 10), res);
+        } else
+            reason = ethers.utils.toUtf8String('0x' + res.substr(138));
         errorObject = { parsed: true, message: reason };
     } catch(error) {
         if (error.response) {
@@ -42,7 +52,13 @@ module.exports = async job => {
             else
                 errorObject = { parsed: false, message: parsed };
         }
-        else
+        else if (error.reason) {
+            let message = error.reason;
+            const extra = sanitize({ code: error.code, argument: error.argument, value: error.value }, false);
+            if (Object.keys(extra).length)
+                message += ` - ${JSON.stringify(extra)}`;
+            errorObject = { parsed: true, message };
+        } else
             errorObject = { parsed: false, message: JSON.stringify(error) };
     }
 

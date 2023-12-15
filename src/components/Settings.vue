@@ -279,8 +279,11 @@ export default {
             if (confirm(`Are you sure you want to reset the workspace ${this.currentWorkspace.name}? This action is definitive.`)) {
                 this.resetWorkspaceLoading = true;
                 this.server.resetWorkspace()
-                    .then(() => {
-                        alert('Workspace reset finished!');
+                    .then(res => {
+                        if (res.needs_batch_reset)
+                            alert('Your workspace is being reset. It might take some time for all the data to be cleared.')
+                        else
+                            alert('Workspace reset finished!');
                     })
                     .catch((error) => {
                         alert('Error while resetting the workspace, please retry');
