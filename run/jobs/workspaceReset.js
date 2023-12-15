@@ -1,4 +1,4 @@
-const { Sequelize } = require('sequelize');
+const Sequelize = require('sequelize');
 const { Workspace } = require('../models');
 const { bulkEnqueue, enqueue } = require('../lib/queue');
 const { getMaxBlockForSyncReset } = require('../lib/env');

@@ -7,6 +7,8 @@ module.exports = async (job) => {
         throw new Error('Missing parameter');
 
     const workspace = await Workspace.findByPk(data.workspaceId);
+    if (!workspace)
+        return 'Cannot find workspace';
 
     return workspace.safeDestroyBlocks(data.ids);
 };

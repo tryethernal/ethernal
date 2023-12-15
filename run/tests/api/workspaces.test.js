@@ -69,12 +69,29 @@ describe(`GET ${BASE_URL}`, () => {
 describe(`POST ${BASE_URL}/reset`, () => {
     beforeEach(() => jest.clearAllMocks());
 
-    it('Should return 200 status code', (done) => {
+    it('Should return batch reset flag at true', (done) => {
+        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ id: 1  });
+        jest.spyOn(db, 'workspaceNeedsBatchReset').mockResolvedValueOnce(true);
+
         request.post(`${BASE_URL}/reset`)
             .send({ data: { workspace: 'My Workspace' }})
             .expect(200)
-            .then(() => {
+            .then(({ body }) => {
+                expect(db.batchResetWorkspace).toHaveBeenCalledWith('123', 1, expect.anything(), expect.anything());
+                expect(body).toEqual({ needsBatchReset: true });
+                done();
+            });
+    });
+
+    it('Should return batch reset flag at false', (done) => {
+        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ id: 1  });
+        jest.spyOn(db, 'workspaceNeedsBatchReset').mockResolvedValueOnce(false);
+        request.post(`${BASE_URL}/reset`)
+            .send({ data: { workspace: 'My Workspace' }})
+            .expect(200)
+            .then(({ body }) => {
                 expect(db.resetWorkspace).toHaveBeenCalledWith('123', 'My Workspace');
+                expect(body).toEqual({ needsBatchReset: false });
                 done();
             });
     });
