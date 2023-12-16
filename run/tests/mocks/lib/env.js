@@ -10,5 +10,6 @@ jest.mock('../../../lib/env', () => ({
     getDemoTrialSlug: jest.fn(() => 'slug'),
     getDefaultExplorerTrialDays: jest.fn(() => 7),
     getPostHogApiKey: jest.fn(() => 'x'),
-    getPostHogApiHost: jest.fn(() => 'x')
+    getPostHogApiHost: jest.fn(() => 'x'),
+    getMaxBlockForSyncReset: jest.fn(() => 1)
 }));

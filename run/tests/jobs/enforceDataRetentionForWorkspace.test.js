@@ -1,30 +1,35 @@
-require('../mocks/models');
-require('../mocks/lib/firebase');
-const db = require('../../lib/firebase');
+require('../mocks/lib/queue');
+
+const { Workspace } = require('../mocks/models');
+const { enqueue } = require('../../lib/queue');
 
 const enforceDataRetentionForWorkspace = require('../../jobs/enforceDataRetentionForWorkspace');
 
 beforeEach(() => jest.clearAllMocks());
 
 describe('enforceDataRetentionForWorkspace', () => {
-    it('Should call the resetWorkspace function with the data retention limit', (done) => {
-        jest.spyOn(db.Workspace, 'findAll').mockResolvedValueOnce([{ dataRetentionLimit: 7, userId: 1, name: 'My Workspace' }]);
-        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ firebaseUserId: '123' });
+    it('Should enqueue resetWorkspace tasks with the data retention limit', (done) => {
+        jest.spyOn(Workspace, 'findAll').mockResolvedValueOnce([{ dataRetentionLimit: 7, id: 1 }]);
+        jest.useFakeTimers()
+            .setSystemTime(new Date('2023-12-15'));
 
-        enforceDataRetentionForWorkspace({ data: { workspaceId: 123 }})
+            enforceDataRetentionForWorkspace()
             .then(() => {
-                expect(db.resetWorkspace).toHaveBeenCalledWith('123', 'My Workspace', 7);
+                expect(enqueue).toHaveBeenCalledWith('workspaceReset', 'workspaceReset-1', {
+                    workspaceId: 1,
+                    from: new Date(0),
+                    to: new Date('2023-12-08')
+                });
                 done();
             });
     });
 
-    it('Should not call the resetWorkspace function', (done) => {
-        jest.spyOn(db.Workspace, 'findAll').mockResolvedValueOnce([{ dataRetentionLimit: 0, userId: 1 }]);
-        jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ firebaseUserId: '123' });
+    it('Should not call the resetWorkspace function', (done) => {
+        jest.spyOn(Workspace, 'findAll').mockResolvedValueOnce([{ dataRetentionLimit: 0, userId: 1 }]);
         
         enforceDataRetentionForWorkspace({ data: { workspaceId: 123 }})
             .then(() => {
-                expect(db.resetWorkspace).not.toHaveBeenCalled();
+                expect(enqueue).not.toHaveBeenCalled();
                 done();
             });
     });

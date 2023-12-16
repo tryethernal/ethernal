@@ -8,8 +8,42 @@ jest.mock('sequelize', () => ({
 require('../mocks/lib/env');
 const { Workspace, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction } = require('../mocks/models');
 const db = require('../../lib/firebase');
+const env = require('../../lib/env');
 
 beforeEach(() => jest.clearAllMocks());
+
+describe('workspaceNeedsBatchReset', () => {
+    it('Should throw an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce(null);
+        db.workspaceNeedsBatchReset(1, 1, new Date(0), new Date(1000))
+            .catch(error => {
+                expect(error).toEqual(new Error('Cannot find workspace'));
+                done();
+            });
+    });
+
+    it('Should return false if under limit', (done) => {
+        const getBlocks = jest.fn().mockResolvedValueOnce([{ id: 1 }]);
+        jest.spyOn(env, 'getMaxBlockForSyncReset').mockImplementation(() => 2);
+        jest.spyOn(Workspace, 'findOne').mockResolvedValue({ getBlocks });
+        db.workspaceNeedsBatchReset(1, 1)
+            .then(res => {
+                expect(res).toEqual(false);
+                done();
+            });
+    });
+
+    it('Should return true if at the limit', (done) => {
+        const getBlocks = jest.fn().mockResolvedValueOnce([{ id: 1 }, { id: 2 }]);
+        jest.spyOn(env, 'getMaxBlockForSyncReset').mockImplementation(() => 2);
+        jest.spyOn(Workspace, 'findOne').mockResolvedValue({ getBlocks });
+        db.workspaceNeedsBatchReset(1, 1)
+            .then(res => {
+                expect(res).toEqual(true);
+                done();
+            });
+    });
+});
 
 describe('resetExplorerTransactionQuota', () => {
     it('Should throw an error if no explorer', (done) => {

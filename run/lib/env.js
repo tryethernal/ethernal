@@ -14,5 +14,6 @@ module.exports = {
     getStripeSecretKey: () => process.env.STRIPE_SECRET_KEY,
     getDefaultExplorerTrialDays: () => process.env.DEFAULT_EXPLORER_TRIAL_DAYS || 7,
     getPostHogApiKey: () => process.env.POST_HOG_API_KEY,
-    getPostHogApiHost: () => process.env.POST_HOG_API_HOST
+    getPostHogApiHost: () => process.env.POST_HOG_API_HOST,
+    getMaxBlockForSyncReset: () => process.env.MAX_BLOCK_FOR_SYNC_RESET || 50
 };
