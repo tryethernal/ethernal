@@ -28,6 +28,9 @@
         "rpcHealthCheck",
         "rpcHealthCheckStarter",
         "explorerSyncCheck",
-        "refreshMaterializedViews"
+        "refreshMaterializedViews",
+        "workspaceReset",
+        "batchBlockDelete",
+        "batchContractDelete"
     ]
 }

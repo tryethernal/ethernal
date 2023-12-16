@@ -17,6 +17,7 @@ require('../mocks/middlewares/auth');
 require('../mocks/lib/queue');
 const db = require('../../lib/firebase');
 const { ProviderConnector } = require('../../lib/rpc');
+const { enqueue } = require('../../lib/queue');
 
 const supertest = require('supertest');
 const app = require('../../app');
@@ -69,12 +70,29 @@ describe(`GET ${BASE_URL}`, () => {
 describe(`POST ${BASE_URL}/reset`, () => {
     beforeEach(() => jest.clearAllMocks());
 
-    it('Should return 200 status code', (done) => {
+    it('Should return batch reset flag at true', (done) => {
+        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ id: 1  });
+        jest.spyOn(db, 'workspaceNeedsBatchReset').mockResolvedValueOnce(true);
+
         request.post(`${BASE_URL}/reset`)
             .send({ data: { workspace: 'My Workspace' }})
             .expect(200)
-            .then(() => {
+            .then(({ body }) => {
+                expect(enqueue).toHaveBeenCalledWith('workspaceReset', 'workspaceReset-1', { workspaceId: 1, from: new Date(0), to: expect.anything() });
+                expect(body).toEqual({ needsBatchReset: true });
+                done();
+            });
+    });
+
+    it('Should return batch reset flag at false', (done) => {
+        jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ id: 1  });
+        jest.spyOn(db, 'workspaceNeedsBatchReset').mockResolvedValueOnce(false);
+        request.post(`${BASE_URL}/reset`)
+            .send({ data: { workspace: 'My Workspace' }})
+            .expect(200)
+            .then(({ body }) => {
                 expect(db.resetWorkspace).toHaveBeenCalledWith('123', 'My Workspace');
+                expect(body).toEqual({ needsBatchReset: false });
                 done();
             });
     });

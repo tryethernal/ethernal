@@ -1,7 +1,6 @@
 const logger = require('../lib/logger');
 module.exports = {
     development: {
-        "database": "ethernal_dev",
         "host": process.env.DB_HOST,
         "username": process.env.DB_USER,
         "database": "ethernal",

@@ -10,13 +10,13 @@ const enqueue = (queueName, jobName, data, priority = 1, repeat, delay) => {
     return queues[queueName].add(jobName || jobName, data, sanitize({ priority, repeat, jobId: jobId, delay }));
 };
 
-const bulkEnqueue = (queueName, jobData, priority = 10) => {
+const bulkEnqueue = (queueName, jobData, priority = 10, maxBatchSize = MAX_BATCH_SIZE) => {
     if (!queueName || !jobData || !jobData.length) return;
 
     const promises = [];
     const batchedJobs = [];
-    for (let i = 0; i < jobData.length; i += MAX_BATCH_SIZE)
-        batchedJobs.push(jobData.slice(i, i + MAX_BATCH_SIZE));
+    for (let i = 0; i < jobData.length; i += maxBatchSize)
+        batchedJobs.push(jobData.slice(i, i + maxBatchSize));
 
     for (let i = 0; i < batchedJobs.length; i++) {
         const jobs = batchedJobs[i].map(job => {

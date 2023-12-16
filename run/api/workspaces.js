@@ -188,10 +188,19 @@ router.post('/reset', authMiddleware, async (req, res) => {
         if (!data.uid || !data.workspace)
             throw new Error('Missing parameter.');
 
+        const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
 
-        await db.resetWorkspace(data.uid, data.workspace);
+        const needsBatchReset = await db.workspaceNeedsBatchReset(data.uid, workspace.id);
+        if (needsBatchReset)
+            await enqueue('workspaceReset', `workspaceReset-${workspace.id}`, {
+                workspaceId: workspace.id,
+                from: new Date(0),
+                to: new Date()
+            });
+        else
+            await db.resetWorkspace(data.uid, data.workspace);
 
-        res.sendStatus(200);
+        res.status(200).json({ needsBatchReset });
     } catch(error) {
         logger.error(error.message, { location: 'post.api.workspaces.reset', error: error, data: data });
         res.status(400).send(error);
