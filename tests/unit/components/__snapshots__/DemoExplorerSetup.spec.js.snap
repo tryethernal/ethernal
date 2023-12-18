@@ -21,7 +21,7 @@ exports[`DemoExplorerSetup.vue Should display demo explorer setup page 1`] = `
           </h2>
           <ul class="pl-0" style="list-style: none;">
             <li class="mb-6"><i aria-hidden="true" class="v-icon notranslate primary--text mr-1 mdi mdi-check theme--light"></i>
-              Real-time synchronization of blocks &amp; transactions.
+              Real-time synchronization of blocks &amp; transactions (up to 5,000 transactions).
             </li>
             <li class="mb-6"><i aria-hidden="true" class="v-icon notranslate primary--text mr-1 mdi mdi-check theme--light"></i>
               Processed token transfers &amp; token balance changes for better transaction insights.
