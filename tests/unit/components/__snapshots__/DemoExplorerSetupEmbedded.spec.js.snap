@@ -40,7 +40,8 @@ exports[`DemoExplorerSetupEmbedded.vue Should display success message with domai
           Your explorer is ready!
         </div>
         <div class="v-card__text">
-          You can access it here: <a href="//my.explorer.com" target="_blank">https://my.explorer.com</a></div>
+          You can access it here: <a href="//my.explorer.com" target="_blank">https://my.explorer.com</a> (blocks might take a few seconds to start appearing).
+        </div>
       </div>
     </div>
   </div>
