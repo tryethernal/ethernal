@@ -24,7 +24,7 @@
                     Your explorer is ready!
                 </v-card-title>
                 <v-card-text>
-                    You can access it here: <a :href="`//${domain}`" target="_blank">https://{{ domain }}</a>
+                    You can access it here: <a :href="`//${domain}`" target="_blank">https://{{ domain }}</a> (blocks might take a few seconds to start appearing).
                 </v-card-text>
             </v-card>
         </v-container>
