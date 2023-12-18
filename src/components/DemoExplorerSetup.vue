@@ -17,7 +17,7 @@
                     <ul style="list-style: none;" class="pl-0">
                         <li class="mb-6">
                             <v-icon class="primary--text mr-1">mdi-check</v-icon>
-                            Real-time synchronization of blocks & transactions.
+                            Real-time synchronization of blocks & transactions (up to 5,000 transactions).
                         </li>
                         <li class="mb-6">
                             <v-icon class="primary--text mr-1">mdi-check</v-icon>
