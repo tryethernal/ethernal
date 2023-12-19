@@ -1,4 +1,4 @@
-FROM node:16 AS base
+FROM node:18 AS base
 WORKDIR /app
 ENV ETHERNAL_API_ROOT=
 ENV NODE_ENV=production
