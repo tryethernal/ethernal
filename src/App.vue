@@ -467,6 +467,7 @@ export default {
     max-width: 250px;
     max-height: 50px;
     text-align: center;
-    vertical-align: middle
+    vertical-align: middle;
+    border: none;
 }
 </style>
