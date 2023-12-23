@@ -43,7 +43,7 @@ const deleteExplorerSubscription = async (stripeSubscription) => {
     if (!explorer || !explorer.stripeSubscription || explorer.stripeSubscription.stripeId != stripeSubscription.id)
         return 'Cannot find explorer';
 
-    await db.deleteExplorerSubscription(user.id, explorerId, stripeSubscription.id);
+    await db.deleteExplorerSubscription(user.id, explorerId, stripeSubscription.stripeId);
 }
 
 const updateExplorerSubscription = async (stripeSubscription) => {

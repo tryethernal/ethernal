@@ -21,8 +21,8 @@ module.exports = async job => {
     if (!workspace.explorer)
         return 'No active explorer for this workspace';
 
-    // if (!workspace.explorer.shouldSync)
-    //     return 'Sync is disabled';
+    if (!workspace.explorer.shouldSync)
+        return 'Sync is disabled';
 
     if (workspace.rpcHealthCheckEnabled && workspace.rpcHealthCheck && !workspace.rpcHealthCheck.isReachable)
         return 'RPC is not reachable';
