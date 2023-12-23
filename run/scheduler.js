@@ -17,7 +17,7 @@ const MV_TO_REFRESH = ['transaction_volume_14d', 'wallet_volume_14d'];
 
     await enqueue(
         'enforceDataRetentionForWorkspace',
-        'enforceDataRetention ForWorkspace',
+        'enforceDataRetentionForWorkspace',
         {},
         10,
         { pattern: '0 0 * * *' }
