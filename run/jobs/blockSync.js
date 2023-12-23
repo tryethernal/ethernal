@@ -1,5 +1,5 @@
 const { ProviderConnector } = require('../lib/rpc');
-const { User } = require('../models');
+const { Workspace, Explorer, StripeSubscription, StripePlan, RpcHealthCheck } = require('../models');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 
@@ -9,11 +9,31 @@ module.exports = async job => {
     if (!data.userId || !data.workspace || data.blockNumber === undefined || data.blockNumber === null)
         return 'Missing parameter';
 
-    const user = await User.findByAuthIdWithWorkspace(data.userId, data.workspace);
-    if (!user)
-        return 'Cannot find user';
-
-    const workspace = user.workspaces[0];
+    const workspace = await Workspace.findOne({
+        where: {
+            name: data.workspace,
+            '$user.firebaseUserId$': data.userId
+        },
+        include: [
+            'user',
+            {
+                model: Explorer,
+                as: 'explorer',
+                include: {
+                    model: StripeSubscription,
+                    as: 'stripeSubscription',
+                    include: {
+                        model: StripePlan,
+                        as: 'stripePlan'
+                    }
+                }
+            },
+            {
+                model: RpcHealthCheck,
+                as: 'rpcHealthCheck'
+            }
+        ]
+    });
 
     if (!workspace)
         return 'Invalid workspace.';
