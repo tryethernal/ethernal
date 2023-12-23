@@ -39,8 +39,12 @@ module.exports = async job => {
     else if (!explorer && !existingProcess) {
         return 'No process change.';
     }
+    else if (explorer && !explorer.stripeSubscription) {
+        await pm2.delete(explorer.slug);
+        return 'Process deleted: no subscription.';
+    }
     else if (explorer.workspace.rpcHealthCheck && !explorer.workspace.rpcHealthCheck.isReachable && existingProcess) {
-        await pm2.delete(data.explorerSlug);
+        await pm2.delete(explorer.slug);
         return 'Process deleted: RPC is not reachable.';
     }
     else if (!explorer.shouldSync && existingProcess) {
