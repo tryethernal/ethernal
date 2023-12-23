@@ -45,6 +45,7 @@ describe('updateExplorerSyncingProcess', () => {
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
             hasReachedTransactionQuota: hasReachedTransactionQuota.mockResolvedValueOnce(true),
             shouldSync: true,
+            stripeSubscription: {},
             workspace: {
                 rpcHealthCheck: {
                     isReachable: true
@@ -65,6 +66,7 @@ describe('updateExplorerSyncingProcess', () => {
             find: jest.fn().mockResolvedValue({ data: { pm2_env: { status: 'online' }}})
         }));
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
+            stripeSubscription: {},
             hasReachedTransactionQuota,
             workspace: {
                 rpcHealthCheck: {
@@ -80,6 +82,26 @@ describe('updateExplorerSyncingProcess', () => {
             });
     });
 
+    it('Should delete if no subscription', (done) => {
+        PM2.mockImplementationOnce(() => ({
+            delete: jest.fn(),
+            find: jest.fn().mockResolvedValue({ data: { pm2_env: { status: 'online' }}})
+        }));
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
+            workspace: {
+                rpcHealthCheck: {
+                    isReachable: false
+                }
+            }
+        });
+
+        updateExplorerSyncingProcess({ data: { explorerSlug: 'explorer' }})
+            .then(res => {
+                expect(res).toEqual('Process deleted: no subscription.');
+                done();
+            });
+    });
+
     it('Should delete if sync is disabled', (done) => {
         PM2.mockImplementationOnce(() => ({
             delete: jest.fn(),
@@ -87,6 +109,7 @@ describe('updateExplorerSyncingProcess', () => {
         }));
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
             hasReachedTransactionQuota,
+            stripeSubscription: {},
             shouldSync: false,
             workspace: {}
         });
@@ -105,6 +128,7 @@ describe('updateExplorerSyncingProcess', () => {
         }));
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
             hasReachedTransactionQuota,
+            stripeSubscription: {},
             shouldSync: false,
             workspace: {}
         });
@@ -123,6 +147,7 @@ describe('updateExplorerSyncingProcess', () => {
         }));
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
             hasReachedTransactionQuota,
+            stripeSubscription: {},
             shouldSync: true,
             workspace: {}
         });
@@ -141,6 +166,7 @@ describe('updateExplorerSyncingProcess', () => {
         }));
         jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
             hasReachedTransactionQuota,
+            stripeSubscription: {},
             shouldSync: true,
             workspace: {}
         });
