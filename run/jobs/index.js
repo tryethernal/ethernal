@@ -30,5 +30,6 @@ module.exports = {
     refreshMaterializedViews: require('./refreshMaterializedViews'),
     workspaceReset: require('./workspaceReset'),
     batchBlockDelete: require('./batchBlockDelete'),
-    batchContractDelete: require('./batchContractDelete')
+    batchContractDelete: require('./batchContractDelete'),
+    cancelDemoExplorers: require('./cancelDemoExplorers')
 };
