@@ -32,6 +32,7 @@
         "workspaceReset",
         "batchBlockDelete",
         "batchContractDelete",
-        "cancelDemoExplorers"
+        "cancelDemoExplorers",
+        "deleteWorkspace"
     ]
 }
