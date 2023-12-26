@@ -112,7 +112,8 @@ router.post('/', authMiddleware, async (req, res) => {
             settings: data.workspaceData.settings,
             public: data.workspaceData.public,
             tracing: data.workspaceData.tracing,
-            dataRetentionLimit: user.defaultDataRetentionLimit
+            dataRetentionLimit: user.defaultDataRetentionLimit,
+            erc721LoadingEnabled: false
         }));
 
         const workspace = await db.createWorkspace(data.uid, filteredWorkspaceData);

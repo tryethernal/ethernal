@@ -216,7 +216,8 @@ describe(`POST ${BASE_URL}`, () => {
                 expect(db.createWorkspace).toHaveBeenCalledWith('123', {
                     name: 'My Workspace',
                     rpcServer: 'http://localhost:8545',
-                    dataRetentionLimit: 7
+                    dataRetentionLimit: 7,
+                    erc721LoadingEnabled: false
                 });
                 done();
             });
