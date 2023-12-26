@@ -7,22 +7,25 @@ module.exports = async () => {
         where: {
             isDemo: true,
             createdAt: {
-                [Op.lt]: new Date(new Date() - 60 * 60 * 24 * 1000)
+                [Op.lt]: new Date(new Date() - 24 * 60 * 60 * 1000)
             }
         },
-        include: 'stripeSubscription'
+        include: ['stripeSubscription', 'workspace']
     });
 
     const deleted = [];
     for (let i = 0; i < explorers.length; i++) {
         const explorer = explorers[i];
-        if (explorer.stripeSubscription) {
-            await explorer.safeDeleteSubscription(explorer.stripeSubscription.stripeId);
-            await enqueue('updateExplorerSyncingProcess', `updateExplorerSyncingProcess-${explorer.slug}`, {
-                explorerSlug: explorer.slug
-            });
-            deleted.push(explorer.slug)
-        }
+        await explorer.safeDeleteSubscription(explorer.stripeSubscription.stripeId);
+        await explorer.safeDelete();
+        await explorer.workspace.update({ pendingDeletion: true, public: false });
+        await enqueue('workspaceReset', `workspaceReset-${explorer.workspaceId}`, {
+            workspaceId: explorer.workspaceId,
+            from: new Date(0),
+            to: new Date()
+        });
+        await enqueue('deleteWorkspace', `deleteWorkspace-${explorer.workspaceId}`, { workspaceId: explorer.workspaceId });
+        deleted.push(explorer.slug);
     }
     return deleted;
 };
