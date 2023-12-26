@@ -119,7 +119,7 @@ const _delete = (slug) => {
 
             pm2.delete(slug, (error) => {
                 if (error) {
-                    if (error.message == 'process or namespace not found')
+                    if (error.message && error.message.match('not found'))
                         resolve();
                     else
                         reject(new Error(error));
