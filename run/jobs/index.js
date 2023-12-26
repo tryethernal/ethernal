@@ -31,5 +31,6 @@ module.exports = {
     workspaceReset: require('./workspaceReset'),
     batchBlockDelete: require('./batchBlockDelete'),
     batchContractDelete: require('./batchContractDelete'),
-    cancelDemoExplorers: require('./cancelDemoExplorers')
+    cancelDemoExplorers: require('./cancelDemoExplorers'),
+    deleteWorkspace: require('./deleteWorkspace')
 };

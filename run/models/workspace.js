@@ -68,6 +68,12 @@ module.exports = (sequelize, DataTypes) => {
         return sequelize.transaction(
             { deferrable: Sequelize.Deferrable.SET_DEFERRED },
             async (transaction) => {
+                const user = await this.getUser();
+                if (user.currentWorkspaceId == this.id) {
+                    const workspaces = (await user.getWorkspaces()).filter(w => w.id != this.id);
+                    const currentWorkspaceId = workspaces.length ? workspaces[0].id : null;
+                    await user.update({ currentWorkspaceId });
+                }
                 await this.reset(null, transaction);
                 await sequelize.models.CustomField.destroy({ where: { workspaceId: this.id }}, { transaction });
                 return this.destroy({ transaction });
@@ -1156,6 +1162,7 @@ module.exports = (sequelize, DataTypes) => {
     browserSyncEnabled: DataTypes.BOOLEAN,
     rpcHealthCheckEnabled: DataTypes.BOOLEAN,
     statusPageEnabled: DataTypes.BOOLEAN,
+    pendingDeletion: DataTypes.BOOLEAN,
     integrityCheckStartBlockNumber: {
         type: DataTypes.INTEGER,
         get() {

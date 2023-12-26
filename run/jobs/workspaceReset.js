@@ -44,4 +44,9 @@ module.exports = async (job) => {
 
     await workspace.safeDestroyIntegrityCheck();
     await workspace.safeDestroyAccounts();
+
+    if (data.withDeletion) {
+        await workspace.update({ pendingDeletion: true });
+        await enqueue('deleteWorkspace', `deleteWorkspace-${data.workspaceId}`, { workspaceId: data.workspaceId });
+    }
 };
