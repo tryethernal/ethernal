@@ -1,11 +1,22 @@
-const Sequelize = require('sequelize');
-const models = require('../models');
+const { Workspace, Explorer, StripeSubscription } = require('../models');
 const { enqueue } = require('../lib/queue');
 
-module.exports = async job => {
-    const workspaces = await models.Workspace.findAll({
+module.exports = async () => {
+    const workspaces = await Workspace.findAll({
         where: {
-            rpcHealthCheckEnabled: true
+            rpcHealthCheckEnabled: true,
+            public: true,
+            pendingDeletion: false
+        },
+        include: {
+            model: Explorer,
+            as: 'explorer',
+            required: true,
+            include: {
+                model: StripeSubscription,
+                as: 'stripeSubscription',
+                required: true
+            }
         }
     });
 
