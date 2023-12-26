@@ -174,7 +174,8 @@ module.exports = (sequelize, DataTypes) => {
                 rpcServer: data.rpcServer,
                 tracing: data.tracing,
                 dataRetentionLimit: data.dataRetentionLimit || this.defaultDataRetentionLimit,
-                browserSyncEnabled: false
+                browserSyncEnabled: false,
+                erc721LoadingEnabled: false
             }), { transaction });
 
             if (!workspace)
