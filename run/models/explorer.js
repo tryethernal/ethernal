@@ -262,17 +262,20 @@ module.exports = (sequelize, DataTypes) => {
 
     async safeCancelSubscription() {
         const stripeSubscription = await this.getStripeSubscription();
-        return stripeSubscription.update({ status: 'pending_cancelation' });
+        if (stripeSubscription)
+            return stripeSubscription.update({ status: 'pending_cancelation' });
     }
 
     async safeRevertSubscriptionCancelation() {
         const stripeSubscription = await this.getStripeSubscription();
-        return stripeSubscription.update({ status: 'active' });
+        if (stripeSubscription)
+            return stripeSubscription.update({ status: 'active' });
     }
 
     async safeDeleteSubscription() {
         const stripeSubscription = await this.getStripeSubscription();
-        return stripeSubscription.destroy();
+        if (stripeSubscription)
+            return stripeSubscription.destroy();
     }
 
     async safeUpdateSettings(settings) {
