@@ -65,19 +65,23 @@ module.exports = (sequelize, DataTypes) => {
         if (explorer)
             throw new Error(`This workspace has an explorer associated to it. Please delete it or change its associated workspace first.`);
 
-        return sequelize.transaction(
-            async (transaction) => {
-                const user = await this.getUser();
-                if (user.currentWorkspaceId == this.id) {
-                    const workspaces = (await user.getWorkspaces()).filter(w => w.id != this.id);
-                    const currentWorkspaceId = workspaces.length ? workspaces[0].id : null;
-                    await user.update({ currentWorkspaceId });
-                }
-                await this.reset(null, transaction);
-                await sequelize.models.CustomField.destroy({ where: { workspaceId: this.id }}, { transaction });
-                return this.destroy({ transaction });
+        const transaction = await sequelize.transaction();
+        try {
+            const user = await this.getUser();
+            if (user.currentWorkspaceId == this.id) {
+                const workspaces = (await user.getWorkspaces()).filter(w => w.id != this.id);
+                const currentWorkspaceId = workspaces.length ? workspaces[0].id : null;
+                await user.update({ currentWorkspaceId });
             }
-        );
+            await this.reset(null, transaction);
+            await sequelize.models.CustomField.destroy({ where: { workspaceId: this.id }}, { transaction });
+            await this.destroy({ transaction });
+
+            await transaction.commit();
+        } catch(error) {
+            await transaction.rollback();
+            throw error;
+        }
     }
 
     async getContractByAddress(address) {
