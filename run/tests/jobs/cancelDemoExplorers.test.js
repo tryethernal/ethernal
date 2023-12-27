@@ -28,7 +28,7 @@ describe('cancelDemoExplorers', () => {
 
         cancelDemoExplorers()
             .then(res => {
-                expect(safeDeleteSubscription).toHaveBeenCalledWith('123');
+                expect(safeDeleteSubscription).toHaveBeenCalledWith();
                 expect(safeDelete).toHaveBeenCalled();
                 expect(update).toHaveBeenCalledWith({ pendingDeletion: true, public: false });
                 expect(enqueue).toHaveBeenCalledWith('workspaceReset', 'workspaceReset-1', {

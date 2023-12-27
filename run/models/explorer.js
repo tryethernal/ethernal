@@ -270,10 +270,9 @@ module.exports = (sequelize, DataTypes) => {
         return stripeSubscription.update({ status: 'active' });
     }
 
-    async safeDeleteSubscription(stripeId) {
+    async safeDeleteSubscription() {
         const stripeSubscription = await this.getStripeSubscription();
-        if (stripeSubscription.stripeId == stripeId)
-            await stripeSubscription.destroy();
+        return stripeSubscription.destroy();
     }
 
     async safeUpdateSettings(settings) {
