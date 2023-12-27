@@ -155,7 +155,7 @@ describe('handleStripeSubscriptionDeletion', () => {
 
         handleStripeSubscriptionDeletion({ id: 1, metadata: { explorerId: 1 }, status: 'canceled' })
             .then(res => {
-                expect(db.deleteExplorerSubscription).toHaveBeenCalledWith(1, 1, 1);
+                expect(db.deleteExplorerSubscription).toHaveBeenCalledWith(1, 1);
                 done();
             });
     });

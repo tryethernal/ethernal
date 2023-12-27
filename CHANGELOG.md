@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Marketing job
 
+### Changed
+- RPC healtcheck interval 1 minute > 5 minutes
+
 ## [3.25.0] - 2023-12-27
 ### Changed
 - Improved explorer cleanup

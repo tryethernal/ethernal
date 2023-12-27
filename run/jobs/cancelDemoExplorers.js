@@ -7,7 +7,7 @@ module.exports = async () => {
         where: {
             isDemo: true,
             createdAt: {
-                [Op.lt]: new Date(new Date() - 24 * 60 * 60 * 1000)
+                [Op.lt]: new Date(new Date())
             }
         },
         include: ['stripeSubscription', 'workspace']
@@ -16,7 +16,7 @@ module.exports = async () => {
     const deleted = [];
     for (let i = 0; i < explorers.length; i++) {
         const explorer = explorers[i];
-        await explorer.safeDeleteSubscription(explorer.stripeSubscription.stripeId);
+        await explorer.safeDeleteSubscription();
         await explorer.safeDelete();
         await explorer.workspace.update({ pendingDeletion: true, public: false });
         await enqueue('workspaceReset', `workspaceReset-${explorer.workspaceId}`, {

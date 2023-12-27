@@ -274,7 +274,7 @@ const getContractById = async (contractId) => {
     return contract ? contract.toJSON() : null;
 };
 
-const deleteExplorerSubscription = async (userId, explorerId, stripeId) => {
+const deleteExplorerSubscription = async (userId, explorerId) => {
     if (!userId || !explorerId) throw new Error('Missing parameter');
 
     const explorer = await Explorer.findOne({
@@ -287,7 +287,7 @@ const deleteExplorerSubscription = async (userId, explorerId, stripeId) => {
     if (!explorer)
         throw new Error(`Can't find explorer`);
 
-    return explorer.safeDeleteSubscription(stripeId);
+    return explorer.safeDeleteSubscription();
 };
 
 const cancelExplorerSubscription = async (userId, explorerId) => {
