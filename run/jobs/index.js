@@ -19,7 +19,6 @@ module.exports = {
     reprocessWorkspaceTransactionErrors: require('./reprocessWorkspaceTransactionErrors'),
 
     // Low Priority
-    submitExplorerLead: require('./submitExplorerLead'),
     processUser: require('./processUser'),
     enforceDataRetentionForWorkspace: require('./enforceDataRetentionForWorkspace'),
     integrityCheckStarter: require('./integrityCheckStarter'),
