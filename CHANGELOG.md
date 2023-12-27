@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.25.6] - 2023-12-27
+### Fixed
+- Demo explorer deletion interval
+
+### Changed
+- Remove deferrable when batch deleting blocks & contracts
+
 ## [3.25.5] - 2023-12-27
 ### Fixed
 - Do not throw error if workspace does not exist when doing healthchecks
