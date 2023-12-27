@@ -993,6 +993,7 @@ module.exports = (sequelize, DataTypes) => {
                 const blocks = await this.getBlocks({ where: { id: ids }});
                 for (let i = 0; i < blocks.length; i++)
                     await blocks[i].safeDestroy(transaction);
+                return true;
             }
         );
     }
@@ -1003,6 +1004,7 @@ module.exports = (sequelize, DataTypes) => {
                 const contracts = await this.getContracts({ where: { id: ids }});
                 for (let i = 0; i < contracts.length; i++)
                     await contracts[i].safeDestroy(transaction);
+                return true;
             }
         );
     }
