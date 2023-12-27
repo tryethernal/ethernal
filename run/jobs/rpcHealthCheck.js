@@ -28,7 +28,7 @@ module.exports = async job => {
     });
 
     if (!workspace)
-        throw new Error('Could not find workspace');
+        return 'Could not find workspace';
 
    const provider = workspace.getProvider();
 
