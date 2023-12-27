@@ -225,8 +225,9 @@ module.exports = (sequelize, DataTypes) => {
 
     async safeDelete() {
         const stripeSubscription = await this.getStripeSubscription();
-        if (!stripeSubscription || stripeSubscription && stripeSubscription.isPendingCancelation || !isStripeEnabled())
-            return sequelize.transaction(async transaction => {
+        if (!stripeSubscription || stripeSubscription && stripeSubscription.isPendingCancelation || !isStripeEnabled()) {
+            const transaction = await sequelize.transaction();
+            try {
                 const domains = await this.getDomains();
                 for (let i = 0; i < domains.length; i++)
                     await domains[i].destroy({ transaction });
@@ -236,9 +237,14 @@ module.exports = (sequelize, DataTypes) => {
                 const workspace = await this.getWorkspace();
                 await workspace.update({ public: false, rpcHealthCheckEnabled: false, integrityCheckStartBlockNumber: null }, { transaction });
 
-                return this.destroy({ transaction });
-            });
-        else if (stripeSubscription.isActive)
+                await this.destroy({ transaction });
+
+                await transaction.commit();
+            } catch(error) {
+                await transaction.rollback();
+                throw error;
+            }
+        } else if (stripeSubscription.isActive)
             throw new Error(`Can't delete explorer with an active subscription. Cancel it and wait until the end of the billing period.`);
         else
             throw new Error('Error deleting the explorer. Please retry');

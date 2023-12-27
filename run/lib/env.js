@@ -15,6 +15,6 @@ module.exports = {
     getDefaultExplorerTrialDays: () => process.env.DEFAULT_EXPLORER_TRIAL_DAYS || 7,
     getPostHogApiKey: () => process.env.POST_HOG_API_KEY,
     getPostHogApiHost: () => process.env.POST_HOG_API_HOST,
-    getMaxBlockForSyncReset: () => parseInt(process.env.MAX_BLOCK_FOR_SYNC_RESET) || 50,
+    getMaxBlockForSyncReset: () => parseInt(process.env.MAX_BLOCK_FOR_SYNC_RESET) || 10,
     getMaxContractForReset: () => parseInt(process.env.MAX_CONTRACT_FOR_RESET) || 5
 };
