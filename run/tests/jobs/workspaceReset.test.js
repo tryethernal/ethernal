@@ -7,7 +7,7 @@ require('../mocks/lib/firebase');
 require('../mocks/lib/queue');
 require('../mocks/lib/env');
 
-const { enqueue, bulkEnqueue } = require('../../lib/queue');
+const { bulkEnqueue } = require('../../lib/queue');
 const { Workspace } = require('../mocks/models');
 
 const workspaceReset = require('../../jobs/workspaceReset');
@@ -38,7 +38,10 @@ describe('workspaceReset', () => {
                     { name: 'batchBlockDelete-1-0-1', data: { workspaceId: 1, ids: [0] }},
                     { name: 'batchBlockDelete-1-1-2', data: { workspaceId: 1, ids: [1] }}
                 ]);
-                expect(enqueue).toHaveBeenCalledWith('batchContractDelete', 'batchContractDelete-1', { workspaceId: 1, ids: [0, 1] });
+                expect(bulkEnqueue).toHaveBeenCalledWith('batchContractDelete', [
+                    { name: 'batchContractDelete-1-0-1', data: { workspaceId: 1, ids: [0] }},
+                    { name: 'batchContractDelete-1-1-2', data: { workspaceId: 1, ids: [1] }}
+                ]);
                 expect(safeDestroyAccounts).toHaveBeenCalled();
                 expect(safeDestroyIntegrityCheck).toHaveBeenCalled();
                 done();

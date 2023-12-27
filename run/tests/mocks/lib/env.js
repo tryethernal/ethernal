@@ -11,5 +11,6 @@ jest.mock('../../../lib/env', () => ({
     getDefaultExplorerTrialDays: jest.fn(() => 7),
     getPostHogApiKey: jest.fn(() => 'x'),
     getPostHogApiHost: jest.fn(() => 'x'),
-    getMaxBlockForSyncReset: jest.fn(() => 1)
+    getMaxBlockForSyncReset: jest.fn(() => 1),
+    getMaxContractForReset: jest.fn(() => 1)
 }));

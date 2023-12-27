@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const { Workspace } = require('../models');
-const { bulkEnqueue, enqueue } = require('../lib/queue');
-const { getMaxBlockForSyncReset } = require('../lib/env');
+const { bulkEnqueue } = require('../lib/queue');
+const { getMaxBlockForSyncReset, getMaxContractForReset } = require('../lib/env');
 const Op = Sequelize.Op;
 
 module.exports = async (job) => {
@@ -30,17 +30,18 @@ module.exports = async (job) => {
         });
     await bulkEnqueue('batchBlockDelete', blockDeleteJobs);
 
-    const contracts = await workspace.getContracts({
-        attributes: ['id'],
-        where: {
-            createdAt: {
-                [Op.between]: [data.from, data.to]
-            }
-        }
-    });
+    const contracts = await workspace.getContracts({ where, attributes: ['id'] });
     const contractIds = contracts.map(b => b.id);
-
-    await enqueue('batchContractDelete', `batchContractDelete-${data.workspaceId}`, { workspaceId: data.workspaceId, ids: contractIds });
+    const contractDeleteJobs =[];
+    for (let i = 0; i < contractIds.length; i += getMaxContractForReset())
+        contractDeleteJobs.push({
+            name: `batchContractDelete-${data.workspaceId}-${i}-${i + getMaxContractForReset()}`,
+            data: {
+                workspaceId: data.workspaceId,
+                ids: contractIds.slice(i, i + getMaxContractForReset())
+            }
+        });
+    await bulkEnqueue('batchContractDelete', contractDeleteJobs);
 
     await workspace.safeDestroyIntegrityCheck();
     await workspace.safeDestroyAccounts();
