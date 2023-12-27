@@ -19,7 +19,6 @@
         "reprocessWorkspaceTransactionErrors"
     ],
     "low": [
-        "submitExplorerLead",
         "processWorkspace",
         "processUser",
         "enforceDataRetentionForWorkspace",
