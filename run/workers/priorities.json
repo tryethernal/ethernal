@@ -19,7 +19,6 @@
         "reprocessWorkspaceTransactionErrors"
     ],
     "low": [
-        "processWorkspace",
         "processUser",
         "enforceDataRetentionForWorkspace",
         "integrityCheckStarter",

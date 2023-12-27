@@ -989,7 +989,6 @@ module.exports = (sequelize, DataTypes) => {
 
     safeDestroyBlocks(ids) {
         return sequelize.transaction(
-            { deferrable: Sequelize.Deferrable.SET_DEFERRED },
             async transaction => {
                 const blocks = await this.getBlocks({ where: { id: ids }});
                 for (let i = 0; i < blocks.length; i++)
@@ -1000,7 +999,6 @@ module.exports = (sequelize, DataTypes) => {
 
     safeDestroyContracts(ids) {
         return sequelize.transaction(
-            { deferrable: Sequelize.Deferrable.SET_DEFERRED },
             async transaction => {
                 const contracts = await this.getContracts({ where: { id: ids }});
                 for (let i = 0; i < contracts.length; i++)
