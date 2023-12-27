@@ -49,10 +49,13 @@ describe('rpcHealthCheck', () => {
             .rejects.toThrow('Missing parameter');
     });
 
-    it('Should throw an error if workspace does not exist', async () => {
+    it('Should throw an error if workspace does not exist', done => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce(null);
 
-        await expect(rpcHealthCheck(job))
-            .rejects.toThrow('Could not find workspace');
+        rpcHealthCheck(job)
+            .then(res => {
+                expect(res).toEqual('Could not find workspace');
+                done();
+            });
     });
 });
