@@ -32,21 +32,36 @@ describe('cancelDemoExplorers', () => {
     });
 
     it('Should reenqueue if too many blocks to delete now', (done) => {
-        const getBlocks = jest.fn().mockResolvedValueOnce([{}, {}]);
-        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ id: 1, getBlocks, pendingDeletion: true });
+        const getBlocks = jest.fn().mockResolvedValueOnce([{}]);
+        const getContracts = jest.fn().mockResolvedValueOnce([]);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ id: 1, getContracts, getBlocks, pendingDeletion: true });
 
         deleteWorkspace({ data: { workspaceId: 1 }})
             .then(res => {
                 expect(enqueue).toHaveBeenCalledWith('deleteWorkspace', 'deleteWorkspace-1', { workspaceId: 1 }, 1, null, 3600000);
-                expect(res).toEqual('Too many blocks for deletion');
+                expect(res).toEqual('Too many blocks/contracts for deletion');
+                done();
+            });
+    });
+
+    it.only('Should reenqueue if too many contracts to delete now', (done) => {
+        const getBlocks = jest.fn().mockResolvedValueOnce([]);
+        const getContracts = jest.fn().mockResolvedValueOnce([{}]);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ id: 1, getContracts, getBlocks, pendingDeletion: true });
+
+        deleteWorkspace({ data: { workspaceId: 1 }})
+            .then(res => {
+                expect(enqueue).toHaveBeenCalledWith('deleteWorkspace', 'deleteWorkspace-1', { workspaceId: 1 }, 1, null, 3600000);
+                expect(res).toEqual('Too many blocks/contracts for deletion');
                 done();
             });
     });
 
     it('Should delete workspace now', (done) => {
         const getBlocks = jest.fn().mockResolvedValueOnce([{}]);
+        const getContracts = jest.fn().mockResolvedValueOnce([]);
         const safeDelete = jest.fn();
-        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ id: 1, safeDelete, getBlocks, pendingDeletion: true });
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ id: 1, safeDelete, getContracts, getBlocks, pendingDeletion: true });
 
         deleteWorkspace({ data: { workspaceId: 1 }})
             .then(() => {

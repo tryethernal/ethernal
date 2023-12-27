@@ -66,7 +66,6 @@ module.exports = (sequelize, DataTypes) => {
             throw new Error(`This workspace has an explorer associated to it. Please delete it or change its associated workspace first.`);
 
         return sequelize.transaction(
-            { deferrable: Sequelize.Deferrable.SET_DEFERRED },
             async (transaction) => {
                 const user = await this.getUser();
                 if (user.currentWorkspaceId == this.id) {
