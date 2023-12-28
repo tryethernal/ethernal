@@ -496,17 +496,15 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeDestroy(transaction) {
-        await sequelize.models.ContractSource.destroy(
-            { where: { workspaceId: this.id }},
-            { transaction }
-        );
+        const sources = await this.getSources();
+        for (let i = 0; i < sources.length; i++)
+            await sources[i].destroy({ transaction });
 
-        await sequelize.models.ContractVerification.destroy(
-            { where: { workspaceId: this.id }},
-            { transaction }
-        );
+        const verification = await this.getVerification();
+        if (verification)
+            await verification.destroy({ transaction });
 
-        const tokens = await sequelize.models.Erc721Token.findAll({ where: { workspaceId: this.id }});
+        const tokens = await sequelize.models.Erc721Token.findAll({ where: { contractId: this.id }});
         for (let i = 0; i < tokens.length; i++)
             await tokens[i].destroy({ transaction });
 
