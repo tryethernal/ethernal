@@ -7,7 +7,7 @@ module.exports = async () => {
         where: {
             isDemo: true,
             createdAt: {
-                [Op.lt]: new Date(new Date())
+                [Op.lt]: new Date(new Date() - 24 * 60 * 60 * 1000)
             }
         },
         include: ['stripeSubscription', 'workspace']

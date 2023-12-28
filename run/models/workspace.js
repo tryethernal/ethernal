@@ -990,26 +990,32 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    safeDestroyBlocks(ids) {
-        return sequelize.transaction(
-            async transaction => {
-                const blocks = await this.getBlocks({ where: { id: ids }});
-                for (let i = 0; i < blocks.length; i++)
-                    await blocks[i].safeDestroy(transaction);
-                return true;
-            }
-        );
+    async safeDestroyBlocks(ids) {
+        const transaction = await sequelize.transaction();
+        try {
+            const blocks = await this.getBlocks({ where: { id: ids }});
+            for (let i = 0; i < blocks.length; i++)
+                await blocks[i].safeDestroy(transaction);
+
+            await transaction.commit();
+        } catch(error) {
+            await transaction.rollback();
+            throw error;
+        }
     }
 
-    safeDestroyContracts(ids) {
-        return sequelize.transaction(
-            async transaction => {
-                const contracts = await this.getContracts({ where: { id: ids }});
-                for (let i = 0; i < contracts.length; i++)
-                    await contracts[i].safeDestroy(transaction);
-                return true;
-            }
-        );
+    async safeDestroyContracts(ids) {
+        const transaction = await sequelize.transaction();
+        try {
+            const contracts = await this.getContracts({ where: { id: ids }});
+            for (let i = 0; i < contracts.length; i++)
+                await contracts[i].safeDestroy(transaction);
+
+            await transaction.commit();
+        } catch(error) {
+            await transaction.rollback();
+            throw error;
+        }
     }
 
     safeDestroyIntegrityCheck() {
