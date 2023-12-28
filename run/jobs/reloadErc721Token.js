@@ -7,7 +7,7 @@ module.exports = async job => {
     const data = job.data;
 
     if (!data.workspaceId || !data.address || data.tokenId === undefined || data.tokenId === null)
-        throw new Error('Missing parameter.');
+        return 'Missing parameter.';
 
     const workspace = await db.getWorkspaceById(data.workspaceId);
     if (!workspace.erc721LoadingEnabled)
