@@ -50,33 +50,35 @@ module.exports = (sequelize, DataTypes) => {
                 image_data = `<img style="height: 100%; width: 100%; object-fit: cover" src="${insertableImage}" />`;
             }
 
-            const properties = (this.metadata.attributes || []).filter(metadata => {
+            const attributes = this.metadata.attributes && typeof this.metadata.attributes.filter == 'function' ? this.metadata.attributes : [];
+
+            const properties = attributes.filter(metadata => {
                 return metadata.value &&
                     !metadata.display_type &&
                     typeof metadata.value == 'string';
             });
 
-            const levels = (this.metadata.attributes || []).filter(metadata => {
+            const levels = attributes.filter(metadata => {
                 return metadata.value &&
                     !metadata.display_type &&
                     typeof metadata.value == 'number';
             });
 
-            const boosts = (this.metadata.attributes || []).filter(metadata => {
+            const boosts = attributes.filter(metadata => {
                 return metadata.display_type &&
                     metadata.value &&
                     typeof metadata.value == 'number' &&
                     ['boost_number', 'boost_percentage'].indexOf(metadata.display_type) > -1;
             });
 
-            const stats = (this.metadata.attributes || []).filter(metadata => {
+            const stats = attributes.filter(metadata => {
                 return metadata.display_type &&
                     metadata.value &&
                     typeof metadata.value == 'number' &&
                     metadata.display_type == 'number';
             });
 
-            const dates = (this.metadata.attributes || []).filter(metadata => {
+            const dates = attributes.filter(metadata => {
                 return metadata.display_type &&
                     metadata.display_type == 'date';
             });
