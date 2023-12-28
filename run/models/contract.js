@@ -506,10 +506,9 @@ module.exports = (sequelize, DataTypes) => {
             { transaction }
         );
 
-        await sequelize.models.Erc721Token.destroy(
-            { where: { workspaceId: this.id }},
-            { transaction }
-        );
+        const tokens = await sequelize.models.Erc721Token.findAll({ where: { workspaceId: this.id }});
+        for (let i = 0; i < tokens.length; i++)
+            await tokens[i].destroy({ transaction });
 
         return this.destroy({ transaction });
     }
