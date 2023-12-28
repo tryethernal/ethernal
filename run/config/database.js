@@ -19,6 +19,9 @@ module.exports = {
         "dialect": "postgres",
         "logging": function(sql, sequelizeObject) {
             logger.debug(sql, { instance: sequelizeObject.instance });
+        },
+        "pool": {
+            max: 400
         }
     }
 }
