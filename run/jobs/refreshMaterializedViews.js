@@ -8,5 +8,5 @@ module.exports = job => {
     if (ALLOWED_MVS.indexOf(view) == -1)
         return 'Invalid view';
     
-    return models.sequelize.query(`REFRESH MATERIALIZED VIEW "${view}";`);
+    return models.sequelize.query(`REFRESH MATERIALIZED VIEW CONCURRENTLY "${view}";`);
 };
