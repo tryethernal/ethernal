@@ -17,7 +17,7 @@ priorities['high'].forEach(jobName => {
                 delay: 1000
             }
         },
-        connection
+        connection,
     });
 });
 
