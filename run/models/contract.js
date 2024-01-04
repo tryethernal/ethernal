@@ -58,7 +58,6 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     safeCreateVerification(verificationData) {
-        console.log(verificationData)
         const { compilerVersion, evmVersion, runs, sources, libraries, constructorArguments, contractName } = verificationData;
 
         if (!compilerVersion || !evmVersion || !sources)
@@ -89,44 +88,13 @@ module.exports = (sequelize, DataTypes) => {
         if (!from || !to) return new Promise(resolve => resolve([]));
 
         return sequelize.query(`
-            WITH days as (
-                SELECT
-                    date_trunc('day', d) as day
-                FROM generate_series(timestamp :from, timestamp :to, interval  '1 day') d
-            ),
-            data as (
-                SELECT
-                    days.day,
-                    (
-                        SELECT COUNT(DISTINCT(address))
-                        FROM token_balance_changes
-                        LEFT JOIN transactions ON token_balance_changes."transactionId" = transactions.id
-                        WHERE token_balance_changes.token = :token
-                        AND (
-                            SELECT SUM(diff::numeric) AS value
-                            FROM token_balance_changes
-                            LEFT JOIN transactions ON token_balance_changes."transactionId" = transactions.id
-                            WHERE token_balance_changes."workspaceId" = :workspaceId
-                            AND token_balance_changes.token = :token
-                            AND transactions.timestamp::date <= days.day
-                            AND token_balance_changes.address = address
-                        )::numeric > 0 
-                        AND token_balance_changes."workspaceId" = :workspaceId
-                        AND transactions.timestamp::date <= days.day
-                    ) AS count
-                FROM days
-                GROUP BY days.day
-            )
-
-            SELECT
-                day AS timestamp,
-                count
-            FROM data
-            ORDER BY day ASC
+            SELECT timestamp, count
+            FROM token_holder_count_14d
+            WHERE "workspaceId" = :workspaceId
+            AND token = :token
+            ORDER BY timestamp ASC
         `, {
             replacements: {
-                from: from,
-                to: to,
                 token: this.address,
                 workspaceId: this.workspaceId
             },
@@ -138,43 +106,13 @@ module.exports = (sequelize, DataTypes) => {
         if (!from || !to) return new Promise(resolve => resolve([]));
 
         return sequelize.query(`
-            WITH init as (
-                SELECT coalesce(sum(diff::numeric), 0) as supply
-                FROM token_balance_changes
-                LEFT JOIN transactions ON token_balance_changes."transactionId" = transactions.id
-                WHERE token_balance_changes.token = :token
-                AND token_balance_changes."workspaceId" = :workspaceId
-                AND transactions.timestamp::date < :from
-            ),
-            days as (
-                SELECT
-                    date_trunc('day', d) as day
-                FROM generate_series(timestamp :from, timestamp :to, interval  '1 day') d
-            ),
-            data as (
-                SELECT
-                    days.day,
-                    (
-                        SELECT coalesce(sum(diff::numeric), 0)
-                        FROM token_balance_changes
-                        LEFT JOIN transactions ON token_balance_changes."transactionId" = transactions.id
-                        WHERE token_balance_changes.token = :token
-                        AND token_balance_changes."workspaceId" = :workspaceId
-                        AND transactions.timestamp::date = days.day
-                    ) AS supply
-                FROM days
-                GROUP BY days.day
-            )
-
-            SELECT
-                day AS timestamp,
-                (sum(data.supply) OVER (order by day asc rows between unbounded preceding and current row)) + init.supply AS "cumulativeSupply"
-            FROM data
-            CROSS JOIN init
+            SELECT timestamp, supply
+            FROM token_circulating_supply_14d
+            WHERE "workspaceId" = :workspaceId
+            AND token = :token
+            ORDER BY timestamp ASC
         `, {
             replacements: {
-                from: from,
-                to: to,
                 token: this.address,
                 workspaceId: this.workspaceId
             },
@@ -186,35 +124,13 @@ module.exports = (sequelize, DataTypes) => {
         if (!from || !to) return new Promise(resolve => resolve([]));
 
         return sequelize.query(`
-            WITH days as (
-                SELECT
-                    date_trunc('day', d) as day
-                FROM generate_series(timestamp :from, timestamp :to, interval  '1 day') d
-            ),
-            data as (
-                SELECT
-                    days.day,
-                    (
-                        SELECT count(1)
-                        FROM token_transfers
-                        LEFT JOIN transactions ON token_transfers."transactionId" = transactions.id
-                        WHERE token_transfers.token = :token
-                        AND transactions.timestamp::date = days.day
-                        AND token_transfers."workspaceId" = :workspaceId
-                    ) AS count
-                FROM days
-                GROUP BY days.day
-            )
-
-            SELECT
-                day AS timestamp,
-                count
-            FROM data
-            ORDER BY day ASC
+            SELECT timestamp, count
+            FROM token_transfer_volume_14d
+            WHERE "workspaceId" = :workspaceId
+            AND token = :token
+            ORDER BY timestamp ASC
         `, {
             replacements: {
-                from: from,
-                to: to,
                 token: this.address,
                 workspaceId: this.workspaceId
             },

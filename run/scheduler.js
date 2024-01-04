@@ -4,7 +4,7 @@ const INTEGRITY_CHECK_INTERVAL = 5 * 60 * 1000;
 const RPC_HEALTH_CHECK_INTERVAL = 5 * 60 * 1000;
 const SUBSCRIPTION_CHECK_INTERVAL = 5 * 60 * 1000;
 const CANCEL_DEMO_INTERVAL = 60 * 60 * 1000;
-const MV_TO_REFRESH = ['transaction_volume_14d', 'wallet_volume_14d'];
+const MV_TO_REFRESH = ['transaction_volume_14d', 'wallet_volume_14d', 'token_holder_count_14d', 'token_transfer_volume_14d', 'token_circulating_supply_14d'];
 
 (async () => {
     await enqueue(
