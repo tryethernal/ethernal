@@ -75,7 +75,7 @@ export default {
                     .then(({ data }) => {
                         this.cumulativeSupply = {
                             xLabels: data.map(t => moment(t.timestamp).format('DD/MM')),
-                            data: data.map(t => parseFloat(this.formatUnits(this.from(t.cumulativeSupply), this.tokenDecimals)))
+                            data: data.map(t => parseFloat(this.formatUnits(this.from(t.supply), this.tokenDecimals)))
                         }
                     })
                     .catch(console.log)
