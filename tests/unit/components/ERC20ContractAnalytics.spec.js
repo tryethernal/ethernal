@@ -23,8 +23,8 @@ describe('ERC20ContractAnalytics.vue', () => {
 
         jest.spyOn(helper.mocks.server, 'getTokenCumulativeSupply')
             .mockResolvedValueOnce({ data: [
-                { timestamp: 0, cumulativeSupply: 2 },
-                { timestamp: 1, cumulativeSupply: 2 }
+                { timestamp: 0, supply: 2 },
+                { timestamp: 1, supply: 2 }
             ]});
 
         jest.spyOn(helper.mocks.server, 'getTokenHolderHistory')
