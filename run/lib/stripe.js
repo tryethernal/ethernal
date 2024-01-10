@@ -1,6 +1,7 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Analytics = require('./analytics');
 const db = require('./firebase');
+const { enqueue } = require('./queue');
 const models = require('../models');
 const analytics = new Analytics();
 
@@ -72,12 +73,16 @@ const updateExplorerSubscription = async (stripeSubscription) => {
 
     if (!stripePlan)
         return 'Cannot find plan';
-    
+
     const stripeCustomer = await stripe.customers.retrieve(stripeSubscription.customer);
 
     if (explorer.stripeSubscription) {
         if (explorer.isDemo && !explorer.stripeSubscription.stripeId) {
             await db.migrateDemoExplorer(explorer.id, user.id, stripeSubscription);
+            await enqueue('updateExplorerSyncingProcess', `updateExplorerSyncingProcess-${explorer.id}`, {
+                explorerSlug: explorer.slug, reset: true
+            });
+
             analytics.track(user.id, 'explorer:demo_migrate', {
                 is_trial: stripeSubscription.status == 'trialing',
                 plan_slug: stripePlan.slug

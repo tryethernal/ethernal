@@ -26,6 +26,13 @@ class PM2 {
         return withTimeout(axios.post(resource, { slug, workspaceId }));
     }
 
+    async reset(slug, workspaceId) {
+        if (!slug || !workspaceId) throw new Error('Missing parameter');
+
+        await this.delete(slug);
+        return this.start(slug, workspaceId);
+    }
+
     resume(slug) {
         if (!slug) throw new Error('Missing parameter');
 

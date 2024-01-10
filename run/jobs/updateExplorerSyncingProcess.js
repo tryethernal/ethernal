@@ -32,7 +32,11 @@ module.exports = async job => {
     const pm2 = new PM2(process.env.PM2_HOST, process.env.PM2_SECRET);
     const { data: existingProcess } = await pm2.find(data.explorerSlug);
 
-    if (!explorer && existingProcess) {
+    if (data.reset) {
+        await pm2.reset(explorer.slug, explorer.workspaceId);
+        return 'Process reset.';
+    }
+    else if (!explorer && existingProcess) {
         await pm2.delete(data.explorerSlug);
         return 'Process deleted: no explorer.';
     }

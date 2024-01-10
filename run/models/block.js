@@ -71,7 +71,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     hooks: {
         async afterCreate(block, options) {
-          const workspace = await block.getWorkspace();
+          const workspace = await block.getWorkspace({ include: 'explorer' });
           if (workspace.public) {
             await enqueue('removeStalledBlock', `removeStalledBlock-${block.id}`, { blockId: block.id }, null, null, STALLED_BLOCK_REMOVAL_DELAY);
             const afterCreateFn = async () => {
@@ -96,6 +96,8 @@ module.exports = (sequelize, DataTypes) => {
                 }
                 await bulkEnqueue('processTransactionTrace', jobs);
               }
+              if (!workspace.integrityCheckStartBlockNumber && workspace.explorer && workspace.explorer.isDemo)
+                await workspace.update({ integrityCheckStartBlockNumber: block.number });
             }
             if (options.transaction)
               return options.transaction.afterCommit(afterCreateFn);

@@ -28,7 +28,7 @@
                     </ul>
                 </v-card-text>
                 <div align="center" class="mb-4">
-                    <v-btn :disabled="!finalized" color="primary" @click="goToOverview()">Continue</v-btn>
+                    <v-btn :disabled="!finalized" color="primary" @click="goToExplorer()">Continue</v-btn>
                 </div>
             </template>
             <template v-else>
@@ -102,8 +102,8 @@ export default {
             this.justMigrated = true;
             this.finalized = true;
         },
-        goToOverview() {
-            document.location.assign(`//app.${this.mainDomain}/overview`);
+        goToExplorer() {
+            document.location.assign(`//app.${this.mainDomain}/explorers/${this.explorerId}`);
         },
         close(refresh) {
             this.resolve(refresh);
