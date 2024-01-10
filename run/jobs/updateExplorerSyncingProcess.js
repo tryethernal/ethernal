@@ -34,7 +34,7 @@ module.exports = async job => {
 
     if (data.reset) {
         await pm2.reset(explorer.slug, explorer.workspaceId);
-        return 'Process reset';
+        return 'Process reset.';
     }
     else if (!explorer && existingProcess) {
         await pm2.delete(data.explorerSlug);

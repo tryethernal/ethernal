@@ -8,7 +8,30 @@ const PM2 = require('../../lib/pm2');
 beforeEach(() => jest.clearAllMocks());
 
 const host = 'http://pm2';
-const secret= 'secret';
+const secret = 'secret';
+
+describe('reset', () => {
+    it('Should throw an error if missing parameter', (done) => {
+        const pm2 = new PM2(host, secret);
+        pm2.reset()
+            .catch(error => {
+                expect(error).toEqual(new Error('Missing parameter'));
+                done();
+            });
+    });
+
+    it('Should reset the process', (done) => {
+        jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: null });
+
+        const pm2 = new PM2(host, secret);
+        pm2.reset('slug', 1)
+            .then(() => {
+                expect(axios.post).toHaveBeenCalledWith('http://pm2/processes/slug/delete?secret=secret');
+                expect(axios.post).toHaveBeenCalledWith('http://pm2/processes?secret=secret', { slug: 'slug', workspaceId: 1 });
+                done();
+            });
+    });
+});
 
 describe('restart', () => {
     it('Should throw an error if missing parameter', () => {
