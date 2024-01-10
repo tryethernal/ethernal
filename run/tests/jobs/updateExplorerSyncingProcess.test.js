@@ -10,6 +10,22 @@ beforeEach(() => jest.clearAllMocks());
 const hasReachedTransactionQuota = jest.fn().mockResolvedValue(false);
 
 describe('updateExplorerSyncingProcess', () => {
+    it('Should reset if flag is passed', (done) => {
+        const reset = jest.fn();
+        PM2.mockImplementationOnce(() => ({
+            reset,
+            find: jest.fn().mockResolvedValue({ data: { pm2_env: { status: 'online' }}})
+        }));
+        jest.spyOn(Explorer, 'findOne').mockResolvedValue({ slug: 'slug', workspaceId: 1 });
+
+        updateExplorerSyncingProcess({ data: { explorerSlug: 'explorer', reset: true }})
+            .then(res => {
+                expect(reset).toHaveBeenCalledWith('slug', 1);
+                expect(res).toEqual('Process reset.');
+                done();
+            });
+    });
+
     it('Should delete if no explorer', (done) => {
         PM2.mockImplementationOnce(() => ({
             delete: jest.fn(),
