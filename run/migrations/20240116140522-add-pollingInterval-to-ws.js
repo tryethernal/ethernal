@@ -5,7 +5,7 @@ module.exports = {
     await queryInterface.addColumn('workspaces', 'pollingInterval', {
       type: Sequelize.DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 4000
+      defaultValue: 1000
     });
   },
 
