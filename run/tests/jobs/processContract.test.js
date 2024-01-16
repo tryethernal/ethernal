@@ -20,7 +20,7 @@ require('../mocks/lib/yasold');
 
 const axios = require('axios');
 const db = require('../../lib/firebase');
-const { ContractConnector } = require('../../lib/rpc');
+const { ContractConnector, ERC721Connector } = require('../../lib/rpc');
 
 const processContract = require('../../jobs/processContract');
 
@@ -42,6 +42,12 @@ describe('processContract', () => {
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 1, firebaseUserId: '123' });
         jest.spyOn(db, 'getContractById').mockResolvedValueOnce({ workspaceId: 1, address: '0x123' });
         jest.spyOn(db, 'getContractByHashedBytecode').mockResolvedValueOnce(null);
+        ContractConnector.mockImplementation(() => ({
+            isErc20: jest.fn().mockResolvedValue(false),
+            isErc721: jest.fn().mockResolvedValue(false),
+            isErc1155: jest.fn().mockResolvedValue(false),
+            getBytecode: jest.fn().mockResolvedValue('0x1234')
+        }));
         processContract({ data: { contractId: 2 }})
             .then(() => {
                 expect(db.storeContractData).toHaveBeenCalledWith('123', 'My Workspace', '0x123', { patterns: [], asm: 'asm', bytecode: '0x1234', hashedBytecode: '0x56570de287d73cd1cb6092bb8fdee6173974955fdef345ae579ee9f475ea7432', name: 'Contract', abi: [{ my: 'function' }]});
@@ -54,6 +60,16 @@ describe('processContract', () => {
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 1, firebaseUserId: '123' });
         jest.spyOn(db, 'getContractById').mockResolvedValueOnce({ workspaceId: 1, address: '0x123' });
         jest.spyOn(db, 'getContractByHashedBytecode').mockResolvedValueOnce(null);
+        ContractConnector.mockImplementation(() => ({
+            isErc20: jest.fn().mockResolvedValue(false),
+            isErc721: jest.fn().mockResolvedValue(false),
+            isErc1155: jest.fn().mockResolvedValue(false),
+            decimals: jest.fn().mockResolvedValue(null),
+            symbol: jest.fn().mockResolvedValue('ETL'),
+            name: jest.fn().mockResolvedValue('Ethernal'),
+            totalSupply: jest.fn().mockResolvedValue('1000'),
+            getBytecode: jest.fn().mockResolvedValue('0x1234')
+        }));
         jest.spyOn(axios, 'get').mockResolvedValueOnce({
             data: {
                 message: 'OK',
@@ -99,6 +115,10 @@ describe('processContract', () => {
             totalSupply: jest.fn().mockResolvedValue('1000'),
             getBytecode: jest.fn().mockResolvedValue('0x1234')
         }));
+        ERC721Connector.mockImplementation(() => ({
+            isEnumerable: jest.fn().mockResolvedValueOnce(true),
+            hasMetadata: jest.fn().mockResolvedValueOnce(true)
+        }));
 
         processContract({
             data: {
@@ -113,7 +133,9 @@ describe('processContract', () => {
                 tokenTotalSupply: "1000",
                 asm: 'asm',
                 bytecode: '0x1234',
-                hashedBytecode: '0x56570de287d73cd1cb6092bb8fdee6173974955fdef345ae579ee9f475ea7432'
+                hashedBytecode: '0x56570de287d73cd1cb6092bb8fdee6173974955fdef345ae579ee9f475ea7432',
+                has721Enumerable: true,
+                has721Metadata: true
             });
             done();
         });
