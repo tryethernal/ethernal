@@ -4,7 +4,8 @@ module.exports = {
         "host": process.env.DB_HOST,
         "username": process.env.DB_USER,
         "database": "ethernal",
-        "password": process.env.DB_PASSWORD,
+        "port": process.env.DB_PORT,
+        "password": 'postgres',
         "dialect": "postgres",
         "logging": function(sql, sequelizeObject) {
             logger.debug(sql, { instance: sequelizeObject.instance });
