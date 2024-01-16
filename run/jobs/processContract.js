@@ -3,50 +3,45 @@ const ethers = require('ethers');
 const { sanitize, withTimeout } = require('../lib/utils');
 const yasold = require('../lib/yasold');
 const db = require('../lib/firebase');
-const { ContractConnector } = require('../lib/rpc');
+const { ContractConnector, ERC721Connector } = require('../lib/rpc');
 const { getScannerKey } = require('../lib/env');
 const logger = require('../lib/logger');
 const { trigger } = require('../lib/pusher');
 
 const findPatterns = async (rpcServer, contractAddress, abi) => {
     let tokenData = { patterns: [] };
-    try {
-        const contract = new ContractConnector(rpcServer, contractAddress, abi);
-        const isErc20 = await contract.isErc20();
-        const isErc721 = await contract.isErc721();
-        const isErc1155 = await contract.isErc1155();
+    const contract = new ContractConnector(rpcServer, contractAddress, abi);
+    const isErc20 = await contract.isErc20();
+    const isErc721 = await contract.isErc721();
+    const isErc1155 = await contract.isErc1155();
 
-        if (isErc20 || isErc721 || isErc1155) {
-            tokenData = sanitize({
-                ...tokenData,
-                tokenDecimals: await contract.decimals(),
-                tokenSymbol: await contract.symbol(),
-                tokenName: await contract.name(),
-                tokenTotalSupply: await contract.totalSupply(),
-            });
+    if (isErc20 || isErc721 || isErc1155) {
+        tokenData = sanitize({
+            ...tokenData,
+            tokenDecimals: await contract.decimals(),
+            tokenSymbol: await contract.symbol(),
+            tokenName: await contract.name(),
+            tokenTotalSupply: await contract.totalSupply(),
+        });
 
-            if (isErc20) tokenData.patterns.push('erc20');
-            if (isErc721) tokenData.patterns.push('erc721');
-            if (isErc1155) tokenData.patterns.push('erc1155');
+        if (isErc20) tokenData.patterns.push('erc20');
+        if (isErc721) tokenData.patterns.push('erc721');
+        if (isErc1155) tokenData.patterns.push('erc1155');
 
-            const isProxy = await contract.isProxy();
-            if (isProxy)
-                tokenData.patterns.push('proxy');
-        }
-
-        if (isErc721) {
-            const has721Metadata = await contract.has721Metadata();
-            const has721Enumerable = await contract.has721Enumerable();
-
-            tokenData = sanitize({ ...tokenData, has721Metadata, has721Enumerable });
-        }
-
-        return tokenData;
-    } catch(error) {
-        if (error.message && error.message.startsWith('Timed out'))
-            throw error;
-        return tokenData;
+        const isProxy = await contract.isProxy();
+        if (isProxy)
+            tokenData.patterns.push('proxy');
     }
+
+    if (isErc721) {
+        const erc721Connector = new ERC721Connector(rpcServer, contractAddress, abi);
+        const has721Metadata = await erc721Connector.hasMetadata();
+        const has721Enumerable = await erc721Connector.isEnumerable();
+
+        tokenData = sanitize({ ...tokenData, has721Metadata, has721Enumerable });
+    }
+
+    return tokenData;
 };
 
 const fetchEtherscanData = async (address, chain) => {
