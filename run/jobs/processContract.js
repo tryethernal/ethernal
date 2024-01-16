@@ -133,41 +133,26 @@ module.exports = async job => {
 
     if (matchingLocalContract && matchingLocalContract.address != contract.address) {
         await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, {
-            isToken: matchingLocalContract.isToken,
             abi: matchingLocalContract.abi,
-            address: contract.address,
-            name: matchingLocalContract.name,
-            patterns: matchingLocalContract.patterns,
-            proxy: matchingLocalContract.proxy,
-            tokenDecimals: matchingLocalContract.tokenDecimals,
-            tokenName: matchingLocalContract.tokenName,
-            tokenSymbol: matchingLocalContract.tokenSymbol,
-            verificationStatus: matchingLocalContract.verificationStatus,
-            has721Metadata: matchingLocalContract.has721Metadata,
-            has721Enumerable: matchingLocalContract.has721Enumerable,
-            tokenTotalSupply: matchingLocalContract.tokenTotalSupply,
-            ast: matchingLocalContract.ast,
-            hashedBytecode, bytecode, asm
         });
     }
-    else {
-        const scannerMetadata = await findScannerMetadata(workspace, contract);
 
-        const abi = contract.abi || scannerMetadata.abi;
-        const tokenData = workspace.public ? await findPatterns(workspace.rpcServer, contract.address, abi) : {};
+    const scannerMetadata = await findScannerMetadata(workspace, contract);
 
-        let metadata = sanitize({
-            bytecode, hashedBytecode, asm, abi,
-            name: contract.name || scannerMetadata.name,
-            proxy: scannerMetadata.proxy,
-            ...tokenData
-        });
+    const abi = contract.abi || scannerMetadata.abi;
+    const tokenData = workspace.public ? await findPatterns(workspace.rpcServer, contract.address, abi) : {};
 
-        if (metadata.proxy)
-            await db.storeContractData(user.firebaseUserId, workspace.name, metadata.proxy, { address: metadata.proxy });
+    let metadata = sanitize({
+        bytecode, hashedBytecode, asm, abi,
+        name: contract.name || scannerMetadata.name,
+        proxy: scannerMetadata.proxy,
+        ...tokenData
+    });
 
-        await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, metadata);
-    }
+    if (metadata.proxy)
+        await db.storeContractData(user.firebaseUserId, workspace.name, metadata.proxy, { address: metadata.proxy });
+
+    await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, metadata);
 
     return trigger(`private-contracts;workspace=${contract.workspaceId};address=${contract.address}`, 'updated', null);
 };
