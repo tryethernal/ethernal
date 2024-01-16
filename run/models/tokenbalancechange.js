@@ -29,6 +29,15 @@ module.exports = (sequelize, DataTypes) => {
              constraints: false
           });
     }
+
+    getContract() {
+      return sequelize.models.Contract.findOne({
+          where: {
+              workspaceId: this.workspaceId,
+              address: this.token
+          }
+      });
+  }
   }
   TokenBalanceChange.init({
     transactionId: DataTypes.INTEGER,
