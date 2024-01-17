@@ -4,6 +4,7 @@ module.exports = {
         "host": process.env.DB_HOST,
         "username": process.env.DB_USER,
         "database": "ethernal",
+        "port": process.env.DB_PORT,
         "password": process.env.DB_PASSWORD,
         "port": process.env.DB_PORT,
         "dialect": "postgres",

@@ -3,50 +3,45 @@ const ethers = require('ethers');
 const { sanitize, withTimeout } = require('../lib/utils');
 const yasold = require('../lib/yasold');
 const db = require('../lib/firebase');
-const { ContractConnector } = require('../lib/rpc');
+const { ContractConnector, ERC721Connector } = require('../lib/rpc');
 const { getScannerKey } = require('../lib/env');
 const logger = require('../lib/logger');
 const { trigger } = require('../lib/pusher');
 
 const findPatterns = async (rpcServer, contractAddress, abi) => {
     let tokenData = { patterns: [] };
-    try {
-        const contract = new ContractConnector(rpcServer, contractAddress, abi);
-        const isErc20 = await contract.isErc20();
-        const isErc721 = await contract.isErc721();
-        const isErc1155 = await contract.isErc1155();
+    const contract = new ContractConnector(rpcServer, contractAddress, abi);
+    const isErc20 = await contract.isErc20();
+    const isErc721 = await contract.isErc721();
+    const isErc1155 = await contract.isErc1155();
 
-        if (isErc20 || isErc721 || isErc1155) {
-            tokenData = sanitize({
-                ...tokenData,
-                tokenDecimals: await contract.decimals(),
-                tokenSymbol: await contract.symbol(),
-                tokenName: await contract.name(),
-                tokenTotalSupply: await contract.totalSupply(),
-            });
+    if (isErc20 || isErc721 || isErc1155) {
+        tokenData = sanitize({
+            ...tokenData,
+            tokenDecimals: await contract.decimals(),
+            tokenSymbol: await contract.symbol(),
+            tokenName: await contract.name(),
+            tokenTotalSupply: await contract.totalSupply(),
+        });
 
-            if (isErc20) tokenData.patterns.push('erc20');
-            if (isErc721) tokenData.patterns.push('erc721');
-            if (isErc1155) tokenData.patterns.push('erc1155');
+        if (isErc20) tokenData.patterns.push('erc20');
+        if (isErc721) tokenData.patterns.push('erc721');
+        if (isErc1155) tokenData.patterns.push('erc1155');
 
-            const isProxy = await contract.isProxy();
-            if (isProxy)
-                tokenData.patterns.push('proxy');
-        }
-
-        if (isErc721) {
-            const has721Metadata = await contract.has721Metadata();
-            const has721Enumerable = await contract.has721Enumerable();
-
-            tokenData = sanitize({ ...tokenData, has721Metadata, has721Enumerable });
-        }
-
-        return tokenData;
-    } catch(error) {
-        if (error.message && error.message.startsWith('Timed out'))
-            throw error;
-        return tokenData;
+        const isProxy = await contract.isProxy();
+        if (isProxy)
+            tokenData.patterns.push('proxy');
     }
+
+    if (isErc721) {
+        const erc721Connector = new ERC721Connector(rpcServer, contractAddress, abi);
+        const has721Metadata = await erc721Connector.hasMetadata();
+        const has721Enumerable = await erc721Connector.isEnumerable();
+
+        tokenData = sanitize({ ...tokenData, has721Metadata, has721Enumerable });
+    }
+
+    return tokenData;
 };
 
 const fetchEtherscanData = async (address, chain) => {
@@ -138,41 +133,26 @@ module.exports = async job => {
 
     if (matchingLocalContract && matchingLocalContract.address != contract.address) {
         await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, {
-            isToken: matchingLocalContract.isToken,
             abi: matchingLocalContract.abi,
-            address: contract.address,
-            name: matchingLocalContract.name,
-            patterns: matchingLocalContract.patterns,
-            proxy: matchingLocalContract.proxy,
-            tokenDecimals: matchingLocalContract.tokenDecimals,
-            tokenName: matchingLocalContract.tokenName,
-            tokenSymbol: matchingLocalContract.tokenSymbol,
-            verificationStatus: matchingLocalContract.verificationStatus,
-            has721Metadata: matchingLocalContract.has721Metadata,
-            has721Enumerable: matchingLocalContract.has721Enumerable,
-            tokenTotalSupply: matchingLocalContract.tokenTotalSupply,
-            ast: matchingLocalContract.ast,
-            hashedBytecode, bytecode, asm
         });
     }
-    else {
-        const scannerMetadata = await findScannerMetadata(workspace, contract);
 
-        const abi = contract.abi || scannerMetadata.abi;
-        const tokenData = workspace.public ? await findPatterns(workspace.rpcServer, contract.address, abi) : {};
+    const scannerMetadata = await findScannerMetadata(workspace, contract);
 
-        let metadata = sanitize({
-            bytecode, hashedBytecode, asm, abi,
-            name: contract.name || scannerMetadata.name,
-            proxy: scannerMetadata.proxy,
-            ...tokenData
-        });
+    const abi = contract.abi || scannerMetadata.abi;
+    const tokenData = workspace.public ? await findPatterns(workspace.rpcServer, contract.address, abi) : {};
 
-        if (metadata.proxy)
-            await db.storeContractData(user.firebaseUserId, workspace.name, metadata.proxy, { address: metadata.proxy });
+    let metadata = sanitize({
+        bytecode, hashedBytecode, asm, abi,
+        name: contract.name || scannerMetadata.name,
+        proxy: scannerMetadata.proxy,
+        ...tokenData
+    });
 
-        await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, metadata);
-    }
+    if (metadata.proxy)
+        await db.storeContractData(user.firebaseUserId, workspace.name, metadata.proxy, { address: metadata.proxy });
+
+    await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, metadata);
 
     return trigger(`private-contracts;workspace=${contract.workspaceId};address=${contract.address}`, 'updated', null);
 };

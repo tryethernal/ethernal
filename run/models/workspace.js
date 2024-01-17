@@ -1162,6 +1162,9 @@ module.exports = (sequelize, DataTypes) => {
     rpcHealthCheckEnabled: DataTypes.BOOLEAN,
     statusPageEnabled: DataTypes.BOOLEAN,
     pendingDeletion: DataTypes.BOOLEAN,
+    pollingInterval: DataTypes.INTEGER,
+    emitMissedBlocks: DataTypes.BOOLEAN,
+    skipFirstBlock: DataTypes.BOOLEAN,
     integrityCheckStartBlockNumber: {
         type: DataTypes.INTEGER,
         get() {
