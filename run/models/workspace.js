@@ -1163,6 +1163,8 @@ module.exports = (sequelize, DataTypes) => {
     statusPageEnabled: DataTypes.BOOLEAN,
     pendingDeletion: DataTypes.BOOLEAN,
     pollingInterval: DataTypes.INTEGER,
+    emitMissedBlocks: DataTypes.BOOLEAN,
+    skipFirstBlock: DataTypes.BOOLEAN,
     integrityCheckStartBlockNumber: {
         type: DataTypes.INTEGER,
         get() {
