@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.26.7] - 2024-01-19
+### Added
+- Raw ERC721 metadata display
+
+### Changed
+- Display ERC721 gallery if circulating supply > total supply
+
 ## [3.26.6] - 2024-01-17
 ### Added
 - More configuration options for backend sync: skipFirstBlock & emitMissedBlocks
