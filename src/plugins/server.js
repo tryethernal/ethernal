@@ -779,10 +779,11 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            getTransactionVolume() {
+            getTransactionVolume(from, to) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name
+                    workspace: store.getters.currentWorkspace.name,
+                    from, to
                 };
                 const resource = `${store.getters.apiRoot}/api/stats/transactions`;
                 return axios.get(resource, { params });

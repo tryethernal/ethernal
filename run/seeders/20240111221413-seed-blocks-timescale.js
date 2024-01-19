@@ -61,7 +61,7 @@ module.exports = {
           timestamp: transfer.transaction.timestamp,
           amount: BigNumber.from(transfer.amount).toString(),
           token: transfer.token,
-          tokenType: contract.patterns[0],
+          tokenType: contract ? contract.patterns[0] : null,
           src: transfer.src,
           dst: transfer.dst
         });
@@ -94,7 +94,7 @@ module.exports = {
           token: balance.token,
           address: balance.address,
           currentBalance: BigNumber.from(balance.currentBalance).toString(),
-          tokenType: contract.patterns[0]
+          tokenType: contract ? contract.patterns[0] : null
         });
       }
       await TokenBalanceChangeEvent.bulkCreate(events);

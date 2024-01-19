@@ -22,10 +22,10 @@ router.get('/wallets', workspaceAuthMiddleware, async (req, res) => {
 router.get('/transactions', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
     try {
-        if (!data.workspace)
+        if (!data.workspace || !data.from || !data.to)
             throw new Error('Missing parameters.');
 
-        const transactions = await db.getTransactionVolume(data.workspace.id);
+        const transactions = await db.getTransactionVolume(data.workspace.id, data.from, data.to);
 
         res.status(200).json(transactions);
     } catch(error) {

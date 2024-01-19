@@ -260,14 +260,24 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async getTransactionVolume() {
+    async getTransactionVolume(from, to) {
+        if (!from || !to) throw new Error('Missing parameter');
+
         const [transactions,] = await sequelize.query(`
-            SELECT timestamp, count
-            FROM transaction_volume_14d 
-            WHERE "workspaceId" = :workspaceId
-            ORDER BY timestamp ASC
+            SELECT
+                time_bucket_gapfill('1 day', timestamp) AS date,
+                coalesce(count(1), 0) AS count
+            FROM transaction_events
+            WHERE timestamp >= timestamp :from
+            AND timestamp < timestamp :to
+            AND "workspaceId" = :workspaceId
+            GROUP BY date
+            ORDER BY date DESC;
         `, {
-            replacements: { workspaceId: this.id }
+            replacements: {
+                from, to,
+                workspaceId: this.id
+            }
         });
 
         return transactions;

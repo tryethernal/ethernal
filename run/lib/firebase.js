@@ -988,14 +988,14 @@ const getWalletVolume = async (workspaceId) => {
     return wallets;
 };
 
-const getTransactionVolume = async (workspaceId) => {
-    if (!workspaceId) throw new Error('Missing parameter.');
+const getTransactionVolume = async (workspaceId, from, to) => {
+    if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
         throw new Error('Could not find workspace');
 
-    const transactions = await workspace.getTransactionVolume();
+    const transactions = await workspace.getTransactionVolume(from, to);
     return transactions;
 };
 

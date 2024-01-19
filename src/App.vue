@@ -93,6 +93,15 @@
                     </v-list-item-content>
                 </v-list-item>
 
+                <v-list-item link :to="'/analytics'" v-if="isPublicExplorer">
+                    <v-list-item-icon>
+                        <v-icon>mdi-chart-box</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>Analytics</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
                 <v-list-item link :to="'/status'" v-if="(isUserAdmin && currentWorkspace.public) || currentWorkspace.statusPageEnabled">
                     <v-list-item-icon>
                         <v-icon>mdi-heart-circle</v-icon>
@@ -110,7 +119,7 @@
                             <v-icon>mdi-earth</v-icon>
                         </v-list-item-icon>
                         <v-list-item-content>
-                            <v-list-item-title>Public Explorers<sup class="error--text ml-1">NEW</sup></v-list-item-title>
+                            <v-list-item-title>Explorers<sup class="error--text ml-1">NEW</sup></v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
 

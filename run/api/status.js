@@ -16,8 +16,8 @@ router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
         if ((workspace.integrityCheckStartBlockNumber === null || workspace.integrityCheckStartBlockNumber === undefined) && !workspace.rpcHealthCheckEnabled)
             throw new Error('Status is not available on this workspace');
 
-        const integrityCheck = workspace.integrityCheck || {};
-        const rpcHealthCheck = workspace.rpcHealthCheck || {};
+        const integrityCheck = workspace.integrityCheck || {};
+        const rpcHealthCheck = workspace.rpcHealthCheck || {};
         const result = sanitize({
             syncStatus: integrityCheck.status,
             latestCheckedBlock: integrityCheck.block && integrityCheck.block.number,
