@@ -141,6 +141,17 @@
                 </v-col>
             </v-row>
         </template>
+
+        <v-expansion-panels accordion>
+            <v-expansion-panel>
+                <v-expansion-panel-header><h3>Raw Metadata</h3></v-expansion-panel-header>
+                <v-expansion-panel-content>
+                    <v-card-text>
+                        <pre style="overflow: hidden;">{{ token.metadata }}</pre>
+                    </v-card-text>
+                </v-expansion-panel-content>
+                </v-expansion-panel>
+        </v-expansion-panels>
     </v-container>
 </template>
 
