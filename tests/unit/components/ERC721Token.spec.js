@@ -30,7 +30,7 @@ describe('ERC721Token.vue', () => {
         });
         jest.spyOn(helper.mocks.server, 'getErc721TokenTransfers')
             .mockResolvedValue({ data: [{ src: '0x123', dst: '0xabc' }]});
-        
+
         const wrapper = helper.mountFn(ERC721Token, {
             propsData: {
                 hash: '0x123',
@@ -39,7 +39,7 @@ describe('ERC721Token.vue', () => {
             stubs: ['ERC721-Token-Transfer-Modal', 'Hash-Link', 'Token-Transfers']
         });
         await flushPromises();
-        
+
         expect(wrapper.html()).toMatchSnapshot();
     });
 });
