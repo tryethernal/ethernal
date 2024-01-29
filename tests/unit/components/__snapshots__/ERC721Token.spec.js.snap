@@ -147,5 +147,17 @@ exports[`ERC721Token.vue Should load & display an erc721 token 1`] = `
       </div>
     </div>
   </div>
+  <div class="v-item-group theme--light v-expansion-panels v-expansion-panels--accordion">
+    <div aria-expanded="false" class="v-expansion-panel"><button type="button" class="v-expansion-panel-header">
+        <h3>Raw Metadata</h3>
+        <transition-stub name="fade-transition">
+          <div class="v-expansion-panel-header__icon"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-down theme--light"></i></div>
+        </transition-stub>
+      </button>
+      <transition-stub name="expand-transition">
+        <!---->
+      </transition-stub>
+    </div>
+  </div>
 </div>
 `;

@@ -110,7 +110,7 @@
             </v-tab-item>
 
             <v-tab-item value="gallery">
-                <ERC-721-Gallery :address="address" :totalSupply="contract.tokenTotalSupply" :has721Enumerable="contract.has721Enumerable" />
+                <ERC-721-Gallery :address="address" :totalSupply="Math.max(contract.tokenTotalSupply, contractStats.tokenCirculatingSupply || 0)" :has721Enumerable="contract.has721Enumerable" />
             </v-tab-item>
 
             <v-tab-item value="analytics">
