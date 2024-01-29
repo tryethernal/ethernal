@@ -10,12 +10,12 @@ class Analytics {
 
     track(distinctId, event, properties) {
         if (!this.posthog || !distinctId || !event || !isMarketingEnabled) return;
-        this.posthog.capture({ distinctId, event, properties });
+        this.posthog && this.posthog.capture({ distinctId, event, properties });
     }
 
     shutdown() {
         if (!isMarketingEnabled) return;
-        this.posthog.shutdown();
+        this.posthog && this.posthog.shutdown();
     }
 }
 
