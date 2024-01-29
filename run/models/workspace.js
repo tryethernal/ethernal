@@ -272,7 +272,7 @@ module.exports = (sequelize, DataTypes) => {
             AND timestamp < timestamp :to
             AND "workspaceId" = :workspaceId
             GROUP BY date
-            ORDER BY date DESC;
+            ORDER BY date ASC;
         `, {
             replacements: {
                 from, to,

@@ -37,7 +37,7 @@ export default {
         this.server.getTransactionVolume(from, to)
             .then(({ data }) => {
                 this.transactionVolume = {
-                    xLabels: data.map(t => moment(t.timestamp).format('DD/MM')),
+                    xLabels: data.map(t => moment(t.date).format('DD/MM')),
                     data: data.map(t => parseInt(t.count))
                 };
             })
