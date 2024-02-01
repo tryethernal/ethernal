@@ -6,14 +6,14 @@ volumes:
 
 services:
   postgres:
-    image: timescale/timescaledb:latest-pg14
+    image: timescale/timescaledb-ha:pg14
     ports:
       - "5433:5432"
     restart: always
     volumes:
       - db:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_PASSWORD=postgres
 
   web: &backend
     volumes:

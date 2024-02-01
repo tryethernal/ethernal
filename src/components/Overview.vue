@@ -24,19 +24,11 @@
 
         <v-row>
             <v-col cols="12" md="6">
-                <v-card outlined class="px-1">
-                    <v-card-subtitle>Daily Transaction Volume (14 Days)</v-card-subtitle>
-                    <Line-Chart v-if="!transactionVolumeLoading && charts['transactionVolume14Days'].data" :xLabels="charts['transactionVolume14Days'].xLabels" :data="charts['transactionVolume14Days'].data" :tooltipUnit="'tx'" :index="0" />
-                    <v-skeleton-loader v-else type="image" class="pa-2"></v-skeleton-loader>
-                </v-card>
+                <Line-Chart :title="'Transaction Volume'" :xLabels="charts['transactionVolume'].xLabels" :data="charts['transactionVolume'].data" :tooltipUnit="'transaction'" :index="0" />
             </v-col>
 
             <v-col cols="12" md="6">
-                <v-card outlined class="px-1">
-                    <v-card-subtitle>Active Wallets Count (14 days)</v-card-subtitle>
-                    <Line-Chart v-if="!walletVolumeLoading && charts['walletVolume14Days'].data" :xLabels="charts['walletVolume14Days'].xLabels" :data="charts['walletVolume14Days'].data" :tooltipUnit="'wallet'" :index="1" />
-                    <v-skeleton-loader v-else type="image" class="pa-2"></v-skeleton-loader>
-                </v-card>
+                <Line-Chart :title="'Active Wallets Count'" :xLabels="charts['uniqueWalletCount'].xLabels" :data="charts['uniqueWalletCount'].data" :tooltipUnit="'wallet'" :index="4" />
             </v-col>
         </v-row>
 
@@ -85,17 +77,16 @@ export default {
     data: () => ({
         globalStatsLoading: false,
         transactionListLoading: false,
-        transactionVolumeLoading: false,
-        walletVolumeLoading: false,
-        transactionVolume: [],
         txCount24h: 0,
         txCountTotal: 0,
         activeWalletCount: 0,
         charts: {
-            'transactionVolume14Days': {},
-            'walletVolume14Days': {}
+            transactionVolume: {},
+            uniqueWalletCount: {}
         },
-        pusherHandler: null
+        pusherHandler: null,
+        from: new Date(new Date() - 14 * 24 * 3600 * 1000),
+        to: new Date(new Date() - 24 * 3600 * 1000)
     }),
     mounted() {
         this.getGlobalStats();
@@ -117,31 +108,25 @@ export default {
                 .finally(() => this.globalStatsLoading = false);
         },
         getTransactionVolume() {
-            this.transactionVolumeLoading = true;
-
-            this.server.getTransactionVolume()
+            this.server.getTransactionVolume(this.from, this.to)
                 .then(({ data }) => {
-                    this.charts['transactionVolume14Days'] = {
-                        xLabels: data.map(t => moment(t.timestamp).format('DD/MM')),
+                    this.charts['transactionVolume'] = {
+                        xLabels: data.map(t => moment(t.date).format('DD/MM')),
                         data: data.map(t => parseInt(t.count))
                     };
                 })
-                .catch(console.log)
-                .finally(() => this.transactionVolumeLoading = false);
+                .catch(console.log);
         },
         getWalletVolume() {
-            this.walletVolumeLoading = true;
-
-            this.server.getWalletVolume()
+            this.server.getUniqueWalletCount(this.from, this.to)
                 .then(({ data }) => {
-                    this.charts['walletVolume14Days'] = {
-                        xLabels: data.map(t => moment(t.timestamp).format('DD/MM')),
+                    this.charts['uniqueWalletCount'] = {
+                        xLabels: data.map(t => moment(t.date).format('DD/MM')),
                         data: data.map(t => parseInt(t.count))
                     };
                 })
-                .catch(console.log)
-                .finally(() => this.walletVolumeLoading = false);
-        }
+                .catch(console.log);
+        },
     },
     computed: {
         ...mapGetters([

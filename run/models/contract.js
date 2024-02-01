@@ -84,58 +84,110 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    getTokenHolderHistory(from, to) {
-        if (!from || !to) return new Promise(resolve => resolve([]));
+    async getTokenHolderHistory(from, to) {
+        if (!from || !to) throw new Error('Missing parameter');
+
+        const earliestTransaction = await sequelize.models.Transaction.findOne({
+            where: {
+                workspaceId: this.workspaceId,
+                to: this.address
+            },
+            attributes: ['timestamp'],
+            order: [['blockNumber', 'ASC']],
+            limit: 1
+        });
+
+        const earliestTimestamp = earliestTransaction.timestamp > new Date(from) ? earliestTransaction.timestamp : new Date(from);
 
         return sequelize.query(`
-            SELECT timestamp, count
-            FROM token_holder_count_14d
-            WHERE "workspaceId" = :workspaceId
-            AND token = :token
-            ORDER BY timestamp ASC
+            WITH days AS (
+                SELECT
+                    d::date as day
+                FROM generate_series(:from::date, :to::date, interval  '1 day') d
+            ),
+            balances AS (
+                SELECT DISTINCT address,
+                    day,
+                    FIRST_VALUE(tbce."currentBalance") OVER(PARTITION BY address ORDER BY "blockNumber" DESC RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+                FROM token_balance_change_events tbce, days
+                WHERE tbce.address = address
+                    AND tbce.timestamp < day
+                    AND tbce."workspaceId" = :workspaceId
+                    AND tbce.token = :token
+            ),
+            positive_balances AS (
+                SELECT time_bucket_gapfill('1 day', day) AS date, locf(COUNT(first_value))
+                FROM balances
+                WHERE day > :from::date
+                    AND day < :to::date
+                    AND first_value > 0
+                GROUP BY date
+                ORDER BY date ASC
+            )
+            SELECT date, COALESCE(locf, 0) AS count
+            FROM positive_balances
         `, {
             replacements: {
-                token: this.address,
-                workspaceId: this.workspaceId
+                from: new Date(earliestTimestamp),
+                to,
+                workspaceId: this.workspaceId,
+                token: this.address
             },
             type: QueryTypes.SELECT
         });
     }
 
-    getTokenCumulativeSupply(from, to) {
-        if (!from || !to) return new Promise(resolve => resolve([]));
+    async getTokenCirculatingSupply(from, to) {
+        if (!from || !to) throw new Error('Missing parameter');
 
-        return sequelize.query(`
-            SELECT timestamp, supply
-            FROM token_circulating_supply_14d
-            WHERE "workspaceId" = :workspaceId
-            AND token = :token
-            ORDER BY timestamp ASC
+        const earliestTransaction = await sequelize.models.Transaction.findOne({
+            where: {
+                workspaceId: this.workspaceId,
+                to: this.address
+            },
+            attributes: ['timestamp'],
+            order: [['blockNumber', 'ASC']],
+            limit: 1
+        });
+
+        const earliestTimestamp = earliestTransaction.timestamp > new Date(from) ? earliestTransaction.timestamp : new Date(from);
+
+        const [cumulativeSupply,] = await sequelize.query(`
+            WITH days AS (
+                SELECT
+                    d::date as day
+                FROM generate_series(:from::date, :to::date, interval  '1 day') d
+            ),
+            balances AS (
+                SELECT DISTINCT address,
+                    day,
+                    FIRST_VALUE(tbce."currentBalance") OVER(PARTITION BY address ORDER BY "blockNumber" DESC RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+                FROM token_balance_change_events tbce, days
+                WHERE tbce.address = address
+                    AND tbce.timestamp < day
+                    AND tbce."workspaceId" = :workspaceId
+                    AND tbce.token = :token
+            ),
+            cumulative_balances AS (
+                SELECT time_bucket_gapfill('1 day', day) AS date, locf(SUM(first_value))
+                FROM balances
+                WHERE day > :from::date
+                    AND day < :to::date
+                GROUP BY date
+                ORDER BY date ASC
+            )
+            SELECT date, COALESCE(locf, 0) amount
+            FROM cumulative_balances
         `, {
             replacements: {
-                token: this.address,
-                workspaceId: this.workspaceId
-            },
-            type: QueryTypes.SELECT
+                from: new Date(earliestTimestamp),
+                to,
+                workspaceId: this.workspaceId,
+                token: this.address
+            }
         });
-    }
 
-    getTokenTransferVolume(from, to) {
-        if (!from || !to) return new Promise(resolve => resolve([]));
-
-        return sequelize.query(`
-            SELECT timestamp, count
-            FROM token_transfer_volume_14d
-            WHERE "workspaceId" = :workspaceId
-            AND token = :token
-            ORDER BY timestamp ASC
-        `, {
-            replacements: {
-                token: this.address,
-                workspaceId: this.workspaceId
-            },
-            type: QueryTypes.SELECT
-        });
+        return cumulativeSupply;
     }
 
     getProxyContract() {
@@ -201,26 +253,26 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    async getTokenCirculatingSupply() {
-        const res = await sequelize.query(`
-            WITH balances AS (
-                SELECT DISTINCT ON (address) address, "blockNumber", "currentBalance"::numeric cb
-                FROM token_balance_changes
-                LEFT JOIN transactions t ON t.id = token_balance_changes."transactionId"
-                WHERE token_balance_changes."workspaceId" = :workspaceId AND token = :token
-                ORDER BY "address", "blockNumber" DESC
-            )
-            SELECT sum("cb"::numeric) AS value FROM balances
-        `, {
-            replacements: {
-                workspaceId: this.workspaceId,
-                token: this.address,
-            },
-            type: QueryTypes.SELECT
-        });
+    // async getTokenCirculatingSupply() {
+    //     const res = await sequelize.query(`
+    //         WITH balances AS (
+    //             SELECT DISTINCT ON (address) address, "blockNumber", "currentBalance"::numeric cb
+    //             FROM token_balance_changes
+    //             LEFT JOIN transactions t ON t.id = token_balance_changes."transactionId"
+    //             WHERE token_balance_changes."workspaceId" = :workspaceId AND token = :token
+    //             ORDER BY "address", "blockNumber" DESC
+    //         )
+    //         SELECT sum("cb"::numeric) AS value FROM balances
+    //     `, {
+    //         replacements: {
+    //             workspaceId: this.workspaceId,
+    //             token: this.address,
+    //         },
+    //         type: QueryTypes.SELECT
+    //     });
 
-        return res[0] && res[0].value;
-    }
+    //     return res[0] && res[0].value;
+    // }
 
     getTokenTransfers(page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC', fromBlock = 0) {
         let sanitizedOrderBy;
@@ -237,6 +289,9 @@ module.exports = (sequelize, DataTypes) => {
                 sanitizedOrderBy = [orderBy];
                 break;
         }
+
+        const filteredItemPerPage = itemsPerPage > 0 ? itemsPerPage : null;
+        const offset = itemsPerPage > 0 ? (page - 1) * itemsPerPage : 0;
 
         return sequelize.models.TokenTransfer.findAndCountAll({
             where: {
@@ -257,8 +312,8 @@ module.exports = (sequelize, DataTypes) => {
                     attributes: ['id', 'patterns', 'tokenName', 'tokenSymbol', 'tokenDecimals']
                 }
             ],
-            offset: (page - 1) * itemsPerPage,
-            limit: itemsPerPage,
+            offset,
+            limit: filteredItemPerPage,
             order: [[...sanitizedOrderBy, order]]
         })
     }

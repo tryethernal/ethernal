@@ -33,7 +33,7 @@ module.exports = {
           to: receipt.to
         });
       }
-      await TransactionEvent.bulkCreate(events);
+      await TransactionEvent.bulkCreate(events, { ignoreDuplicates: true });
       console.log(`${events.length} transaction events inserted.`);
       offset += limit;
     } while (receipts.length > 0)
@@ -66,7 +66,7 @@ module.exports = {
           dst: transfer.dst
         });
       }
-      await TokenTransferEvent.bulkCreate(events);
+      await TokenTransferEvent.bulkCreate(events, { ignoreDuplicates: true });
       console.log(`${events.length} transfer events inserted.`);
       offset += limit;
     } while (transfers.length > 0)
@@ -97,7 +97,7 @@ module.exports = {
           tokenType: contract ? contract.patterns[0] : null
         });
       }
-      await TokenBalanceChangeEvent.bulkCreate(events);
+      await TokenBalanceChangeEvent.bulkCreate(events, { ignoreDuplicates: true });
       console.log(`${events.length} balance change events inserted.`);
       offset += limit;
     } while (balances.length > 0)

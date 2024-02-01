@@ -1,16 +1,31 @@
 <template>
-    <div v-if="data">
-        <a href="#" @click="resetZoom()">Reset Zoom</a>
-        <LineChartGenerator
-            ref="chart"
-            @onZoom="isZoomed = true"
-            :chart-options="options"
-            :chart-data="{ labels: xLabels, datasets: [{ data }]}"
-            :chart-id="'line-chart'"
-            :dataset-id-key="'transactionVolume'"
-            :plugins="plugins"
-        />
-    </div>
+    <v-card outlined class="px-1" v-if="data">
+        <v-card-subtitle>
+            <v-row>
+                <v-col cols="10">{{ title }}</v-col>
+                <v-col cols="2" :align="'end'" v-if="isZoomed">
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn v-bind="attrs" v-on="on" color="primary" dense outlined @click="resetZoom()" small><v-icon small>mdi-restore</v-icon></v-btn>
+                        </template>
+                        Reset Zoom
+                    </v-tooltip>
+                </v-col>
+            </v-row>
+        </v-card-subtitle>
+        <div v-if="data">
+            <LineChartGenerator
+                ref="chart"
+                :style="styles"
+                :chart-options="options"
+                :chart-data="{ labels: xLabels, datasets: [{ data }]}"
+                :chart-id="'line-chart'"
+                :dataset-id-key="'transactionVolume'"
+                :plugins="plugins"
+            />
+        </div>
+    </v-card>
+    <v-skeleton-loader v-else type="card"></v-skeleton-loader>
 </template>
 <script>
 import { Line as LineChartGenerator } from 'vue-chartjs/legacy';
@@ -41,7 +56,7 @@ const { hex2rgba } = require('@/lib/utils');
 
 export default {
     name: 'LineChart',
-    props: ['xLabels', 'data', 'tooltipUnit', 'tokenSymbol'],
+    props: ['title', 'xLabels', 'data', 'tooltipUnit', 'tokenSymbol', 'floating'],
     components: {
         LineChartGenerator
     },
@@ -87,6 +102,7 @@ export default {
         hex2rgba,
         resetZoom() {
             this.$refs.chart.getCurrentChart().resetZoom();
+            this.isZoomed = false;
         },
     },
     computed: {
@@ -99,12 +115,18 @@ export default {
             else
                 return this.tooltipUnit;
         },
+        styles() {
+            return {
+                height: '200px'
+            }
+        },
         options() {
             return {
                 extra: {
                     tokenSymbol: this.tokenSymbol,
                     tooltipUnit: this.tooltipUnit
                 },
+                responsive: true,
                 maintainAspectRatio: false,
                 borderColor: this.$vuetify.theme.themes.light.primary,
                 borderWidth: 1,
@@ -129,9 +151,17 @@ export default {
                 },
                 scales: {
                     y: {
+                        beginAtZero: true,
+                        grace: '15%',
+                        suggestedMax: this.floating ? null : 5,
                         grid: {
                             drawBorder: false,
-                            color: hex2rgba(this.$vuetify.theme.themes.light.primary, 0.8)
+                            color: hex2rgba(this.$vuetify.theme.themes.light.primary, 0.6)
+                        },
+                        ticks: {
+                            precision: this.floating ? null : 0,
+                            autoSkip: false,
+                            maxTicksLimit: 6
                         }
                     },
                     x: {
@@ -155,7 +185,7 @@ export default {
                                 const value = context.parsed.y;
                                 const date = this.xLabels[context.parsed.x];
                                 if (this.tokenSymbol)
-                                    return `${date} - ${value}  ${this.tokenSymbol}`;
+                                    return `${date} - ${value} ${this.tokenSymbol}`;
                                 else {
                                     const unitString = parseInt(value) > 1 ? `${this.tooltipUnit}s` : this.tooltipUnit;
                                     return `${date} - ${value} ${unitString}`;
@@ -166,7 +196,10 @@ export default {
                     zoom: {
                         zoom: {
                             drag: { enabled: true },
-                            mode: 'x'
+                            mode: 'x',
+                            onZoomComplete: () => {
+                                this.isZoomed = true;
+                            }
                         }
                     }
                 }

@@ -93,35 +93,37 @@
             </v-col>
         </v-row>
 
-        <v-tabs v-model="tab">
-            <v-tab id="transactionsTab" href="#transactions">Transactions</v-tab>
-            <v-tab id="interactionsTab" href="#interactions">Read / Write</v-tab>
-            <v-tab id="holdersTab" href="#holders">Holders</v-tab>
-            <v-tab id="transfersTab" href="#transfers">Transfers</v-tab>
-            <v-tab style="display: none;" id="analyticsTab" href="#analytics">Analytics</v-tab>
-        </v-tabs>
+        <v-card outlined>
+            <v-tabs v-model="tab">
+                <v-tab id="transactionsTab" href="#transactions">Transactions</v-tab>
+                <v-tab id="interactionsTab" href="#interactions">Read / Write</v-tab>
+                <v-tab id="holdersTab" href="#holders">Holders</v-tab>
+                <v-tab id="transfersTab" href="#transfers">Transfers</v-tab>
+                <v-tab id="analyticsTab" href="#analytics">Analytics</v-tab>
+            </v-tabs>
 
-        <v-tabs-items :value="tab">
-            <v-tab-item value="transactions">
-                <Address-Transactions-List :address="address" />
-            </v-tab-item>
+            <v-tabs-items :value="tab">
+                <v-tab-item value="transactions">
+                    <Address-Transactions-List :address="address" />
+                </v-tab-item>
 
-            <v-tab-item value="interactions">
-                <Contract-Interaction :address="address" />
-            </v-tab-item>
+                <v-tab-item value="interactions">
+                    <Contract-Interaction :address="address" />
+                </v-tab-item>
 
-            <v-tab-item value="holders">
-                <ERC-20-Token-Holders :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
-            </v-tab-item>
+                <v-tab-item value="holders">
+                    <ERC-20-Token-Holders :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
+                </v-tab-item>
 
-            <v-tab-item value="analytics">
-                <ERC-20-Contract-Analytics :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
-            </v-tab-item>
+                <v-tab-item value="analytics">
+                    <ERC-20-Contract-Analytics :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
+                </v-tab-item>
 
-            <v-tab-item value="transfers">
-                <ERC-20-Token-Transfers :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
-            </v-tab-item>
-        </v-tabs-items>
+                <v-tab-item value="transfers">
+                    <ERC-20-Token-Transfers :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
+                </v-tab-item>
+            </v-tabs-items>
+        </v-card>
     </v-container>
 </template>
 

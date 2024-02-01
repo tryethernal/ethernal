@@ -263,24 +263,279 @@ module.exports = (sequelize, DataTypes) => {
     async getTransactionVolume(from, to) {
         if (!from || !to) throw new Error('Missing parameter');
 
+        const [earliestBlock] = await this.getBlocks({
+            attributes: ['timestamp'],
+            order: [['number', 'ASC']],
+            limit: 1
+        });
+
+        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+
         const [transactions,] = await sequelize.query(`
             SELECT
                 time_bucket_gapfill('1 day', timestamp) AS date,
                 coalesce(count(1), 0) AS count
             FROM transaction_events
             WHERE timestamp >= timestamp :from
-            AND timestamp < timestamp :to
-            AND "workspaceId" = :workspaceId
+                AND timestamp < timestamp :to
+                AND "workspaceId" = :workspaceId
             GROUP BY date
             ORDER BY date ASC;
         `, {
             replacements: {
-                from, to,
+                from: new Date(earliestTimestamp),
+                to,
                 workspaceId: this.id
             }
         });
 
         return transactions;
+    }
+
+    async getDeployedContractCount(from, to) {
+        if (!from || !to) throw new Error('Missing parameter');
+
+        const [earliestBlock] = await this.getBlocks({
+            attributes: ['timestamp'],
+            order: [['number', 'ASC']],
+            limit: 1
+        });
+
+        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+
+        const [deployedContractCount,] = await sequelize.query(`
+            SELECT
+                time_bucket_gapfill('1 day', timestamp) AS date,
+                coalesce(count(1), 0) AS count
+            FROM transaction_events
+            WHERE timestamp >= timestamp :from
+                AND timestamp < timestamp :to
+                AND "to" IS NULL
+                AND "workspaceId" = :workspaceId
+            GROUP BY date
+            ORDER BY date ASC;
+        `, {
+            replacements: {
+                from: new Date(earliestTimestamp),
+                to,
+                workspaceId: this.id
+            }
+        });
+
+        return deployedContractCount;
+    }
+
+    async getCumulativeDeployedContractCount(from, to) {
+        if (!from || !to) throw new Error('Missing parameter');
+
+        const [earliestBlock] = await this.getBlocks({
+            attributes: ['timestamp'],
+            order: [['number', 'ASC']],
+            limit: 1
+        });
+
+        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+
+        const [cumulativeDeployedContractCount,] = await sequelize.query(`
+            WITH days AS (
+                SELECT
+                    d::date as day
+                FROM generate_series(:from::date, :to::date, interval  '1 day') d
+            )
+            SELECT
+                day::timestamptz AS date,
+                count(1) AS count
+            FROM transaction_events, days
+            WHERE timestamp < days.day
+                AND "to" IS NULL
+                AND "workspaceId" = :workspaceId
+            GROUP BY day
+            ORDER BY day ASC
+        `, {
+            replacements: {
+                from: new Date(earliestTimestamp),
+                to,
+                workspaceId: this.id
+            }
+        });
+
+        return cumulativeDeployedContractCount;
+    }
+
+
+    async getCumulativeWalletCount(from, to) {
+        if (!from || !to) throw new Error('Missing parameter');
+
+        const [earliestBlock] = await this.getBlocks({
+            attributes: ['timestamp'],
+            order: [['number', 'ASC']],
+            limit: 1
+        });
+
+        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+
+        const [cumulativeWalletCount,] = await sequelize.query(`
+            WITH days AS (
+                SELECT
+                    d::date as day
+                FROM generate_series(:from::date, :to::date, interval  '1 day') d
+            )
+            SELECT
+                day::timestamptz AS date,
+                coalesce(count(distinct "from"), 0) AS count
+            FROM transaction_events, days
+            WHERE timestamp < days.day AND "workspaceId" = :workspaceId
+            GROUP BY day
+            ORDER BY day ASC
+        `, {
+            replacements: {
+                from: new Date(earliestTimestamp),
+                to,
+                workspaceId: this.id
+            }
+        });
+
+        return cumulativeWalletCount;
+    }
+
+    async getUniqueWalletCount(from, to) {
+        if (!from || !to) throw new Error('Missing parameter');
+
+        const [earliestBlock] = await this.getBlocks({
+            attributes: ['timestamp'],
+            order: [['number', 'ASC']],
+            limit: 1
+        });
+
+        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+
+        const [uniqueWalletCount,] = await sequelize.query(`
+            SELECT
+                time_bucket_gapfill('1 day', timestamp) AS date,
+                coalesce(count(distinct "from"), 0) AS count
+            FROM transaction_events
+            WHERE timestamp >= timestamp :from
+                AND timestamp < timestamp :to
+                AND "workspaceId" = :workspaceId
+            GROUP BY date
+            ORDER BY date ASC;
+        `, {
+            replacements: {
+                from: new Date(earliestTimestamp),
+                to,
+                workspaceId: this.id
+            }
+        });
+
+        return uniqueWalletCount;
+    } 
+
+    async getAverageGasPrice(from, to) {
+        if (!from || !to) throw new Error('Missing parameter');
+
+        const [earliestBlock] = await this.getBlocks({
+            attributes: ['timestamp'],
+            order: [['number', 'ASC']],
+            limit: 1
+        });
+
+        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+
+        const [avgGasPrice,] = await sequelize.query(`
+            SELECT
+                time_bucket_gapfill('1 day', timestamp) AS date,
+                coalesce(round(avg("gasPrice")), 0) AS avg
+            FROM transaction_events
+            WHERE timestamp >= timestamp :from
+                AND timestamp < timestamp :to
+                AND "workspaceId" = :workspaceId
+            GROUP BY date
+            ORDER BY date ASC;
+        `, {
+            replacements: {
+                from: new Date(earliestTimestamp),
+                to,
+                workspaceId: this.id
+            }
+        });
+
+        return avgGasPrice;
+    }
+
+    async getAverageTransactionFee(from, to) {
+        if (!from || !to) throw new Error('Missing parameter');
+
+        const [earliestBlock] = await this.getBlocks({
+            attributes: ['timestamp'],
+            order: [['number', 'ASC']],
+            limit: 1
+        });
+
+        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+
+        const [avgTransactionFee,] = await sequelize.query(`
+            SELECT
+                time_bucket_gapfill('1 day', timestamp) AS date,
+                coalesce(round(avg("transactionFee")), 0) AS avg
+            FROM transaction_events
+            WHERE timestamp >= timestamp :from
+                AND timestamp < timestamp :to
+                AND "workspaceId" = :workspaceId
+            GROUP BY date
+            ORDER BY date ASC;
+        `, {
+            replacements: {
+                from: new Date(earliestTimestamp),
+                to,
+                workspaceId: this.id
+            }
+        });
+
+        return avgTransactionFee;
+    }
+
+    async getTokenTransferVolume(from, to, token, type) {
+        if (!from || !to) throw new Error('Missing parameter');
+
+        const [earliestBlock] = await this.getBlocks({
+            attributes: ['timestamp'],
+            order: [['number', 'ASC']],
+            limit: 1
+        });
+
+        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+
+        let query = `
+            SELECT
+                time_bucket_gapfill('1 day', timestamp) AS date,
+                coalesce(count(1), 0) AS count
+            FROM token_transfer_events
+            WHERE timestamp >= timestamp :from
+                AND timestamp < timestamp :to
+                AND "workspaceId" = :workspaceId`;
+
+        if (token) {
+            query += ` AND token = :token`;
+        }
+
+        if (type) {
+            query += ` AND "tokenType" = :type`;
+        }
+
+        query += ` GROUP BY date
+            ORDER BY date ASC;
+        `;
+
+        const [transfers,] = await sequelize.query(query, {
+            replacements: {
+                from: new Date(earliestTimestamp),
+                to,
+                workspaceId: this.id,
+                token, type
+            }
+        });
+
+        return transfers;
     }
 
     async findActiveWallets() {
