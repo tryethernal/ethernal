@@ -28,6 +28,7 @@
     <v-skeleton-loader v-else type="card"></v-skeleton-loader>
 </template>
 <script>
+const moment = require('moment');
 import { Line as LineChartGenerator } from 'vue-chartjs/legacy';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import {
@@ -53,6 +54,8 @@ ChartJS.register(
 );
 
 const { hex2rgba } = require('@/lib/utils');
+
+const DATE_FORMAT = 'MM/DD';
 
 export default {
     name: 'LineChart',
@@ -169,6 +172,11 @@ export default {
                             display: false,
                             drawBorder: false
                         },
+                        ticks: {
+                            callback: (_value, index) => {
+                                return moment(this.xLabels[index]).format(DATE_FORMAT);
+                            }
+                        }
                     }
                 },
                 plugins: {
@@ -183,7 +191,7 @@ export default {
                             title() {},
                             label: (context) => {
                                 const value = context.parsed.y;
-                                const date = this.xLabels[context.parsed.x];
+                                const date = moment(this.xLabels[context.parsed.x]).format(DATE_FORMAT);
                                 if (this.tokenSymbol)
                                     return `${date} - ${value} ${this.tokenSymbol}`;
                                 else {

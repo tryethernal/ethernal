@@ -95,7 +95,7 @@ export default {
             this.server.getTransactionVolume(this.from, this.to)
                 .then(({ data }) => {
                     this.charts['transactionVolume'] = {
-                        xLabels: data.map(t => moment(t.date).format('DD/MM')),
+                        xLabels: data.map(t => t.date),
                         data: data.map(t => parseInt(t.count))
                     };
                 })
@@ -105,7 +105,7 @@ export default {
             this.server.getTokenTransferVolume(this.from, this.to, null, 'erc20')
                 .then(({ data }) => {
                     this.charts['erc20TransferVolume'] = {
-                        xLabels: data.map(t => moment(t.date).format('DD/MM')),
+                        xLabels: data.map(t => t.date),
                         data: data.map(t => parseInt(t.count))
                     };
                 })
@@ -115,7 +115,7 @@ export default {
             this.server.getAverageGasPrice(this.from, this.to)
                 .then(({ data }) => {
                     this.charts['averageGasPrice'] = {
-                        xLabels: data.map(t => moment(t.date).format('DD/MM')),
+                        xLabels: data.map(t => t.date),
                         data: data.map(t => parseFloat(ethers.utils.formatUnits(ethers.BigNumber.from(t.avg), 'gwei')))
                     };
                 })
@@ -125,7 +125,7 @@ export default {
             this.server.getAverageTransactionFee(this.from, this.to)
                 .then(({ data }) => {
                     this.charts['averageTransactionFee'] = {
-                        xLabels: data.map(t => moment(t.date).format('DD/MM')),
+                        xLabels: data.map(t => t.date),
                         data: data.map(t => parseFloat(ethers.utils.formatUnits(ethers.BigNumber.from(t.avg), 'ether')))
                     };
                 })
@@ -135,7 +135,7 @@ export default {
             this.server.getUniqueWalletCount(this.from, this.to)
                 .then(({ data }) => {
                     this.charts['uniqueWalletCount'] = {
-                        xLabels: data.map(t => moment(t.date).format('DD/MM')),
+                        xLabels: data.map(t => t.date),
                         data: data.map(t => parseInt(t.count))
                     };
                 })
@@ -145,7 +145,7 @@ export default {
             this.server.getCumulativeWalletCount(this.from, this.to)
                 .then(({ data }) => {
                     this.charts['cumulativeWalletCount'] = {
-                        xLabels: data.map(t => moment(t.date).format('DD/MM')),
+                        xLabels: data.map(t => t.date),
                         data: data.map(t => parseInt(t.count))
                     };
                 })
@@ -155,7 +155,7 @@ export default {
             this.server.getDeployedContractCount(this.from, this.to)
                 .then(({ data }) => {
                     this.charts['deployedContractCount'] = {
-                        xLabels: data.map(t => moment(t.date).format('DD/MM')),
+                        xLabels: data.map(t => t.date),
                         data: data.map(t => parseInt(t.count))
                     };
                 })
@@ -165,7 +165,7 @@ export default {
             this.server.getCumulativeDeployedContractCount(this.from, this.to)
                 .then(({ data }) => {
                     this.charts['cumulativeDeployedContractCount'] = {
-                        xLabels: data.map(t => moment(t.date).format('DD/MM')),
+                        xLabels: data.map(t => t.date),
                         data: data.map(t => parseInt(t.count))
                     };
                 })

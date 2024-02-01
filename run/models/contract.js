@@ -111,7 +111,7 @@ module.exports = (sequelize, DataTypes) => {
                     FIRST_VALUE(tbce."currentBalance") OVER(PARTITION BY address ORDER BY "blockNumber" DESC RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
                 FROM token_balance_change_events tbce, days
                 WHERE tbce.address = address
-                    AND tbce.timestamp < day
+                    AND tbce.timestamp <= day
                     AND tbce."workspaceId" = :workspaceId
                     AND tbce.token = :token
             ),
@@ -119,7 +119,7 @@ module.exports = (sequelize, DataTypes) => {
                 SELECT time_bucket_gapfill('1 day', day) AS date, locf(COUNT(first_value))
                 FROM balances
                 WHERE day > :from::date
-                    AND day < :to::date
+                    AND day <= :to::date
                     AND first_value > 0
                 GROUP BY date
                 ORDER BY date ASC
@@ -164,7 +164,7 @@ module.exports = (sequelize, DataTypes) => {
                     FIRST_VALUE(tbce."currentBalance") OVER(PARTITION BY address ORDER BY "blockNumber" DESC RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
                 FROM token_balance_change_events tbce, days
                 WHERE tbce.address = address
-                    AND tbce.timestamp < day
+                    AND tbce.timestamp <= day
                     AND tbce."workspaceId" = :workspaceId
                     AND tbce.token = :token
             ),
@@ -172,7 +172,7 @@ module.exports = (sequelize, DataTypes) => {
                 SELECT time_bucket_gapfill('1 day', day) AS date, locf(SUM(first_value))
                 FROM balances
                 WHERE day > :from::date
-                    AND day < :to::date
+                    AND day <= :to::date
                 GROUP BY date
                 ORDER BY date ASC
             )
@@ -252,27 +252,6 @@ module.exports = (sequelize, DataTypes) => {
             }
         });
     }
-
-    // async getTokenCirculatingSupply() {
-    //     const res = await sequelize.query(`
-    //         WITH balances AS (
-    //             SELECT DISTINCT ON (address) address, "blockNumber", "currentBalance"::numeric cb
-    //             FROM token_balance_changes
-    //             LEFT JOIN transactions t ON t.id = token_balance_changes."transactionId"
-    //             WHERE token_balance_changes."workspaceId" = :workspaceId AND token = :token
-    //             ORDER BY "address", "blockNumber" DESC
-    //         )
-    //         SELECT sum("cb"::numeric) AS value FROM balances
-    //     `, {
-    //         replacements: {
-    //             workspaceId: this.workspaceId,
-    //             token: this.address,
-    //         },
-    //         type: QueryTypes.SELECT
-    //     });
-
-    //     return res[0] && res[0].value;
-    // }
 
     getTokenTransfers(page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC', fromBlock = 0) {
         let sanitizedOrderBy;

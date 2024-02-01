@@ -346,7 +346,7 @@ module.exports = (sequelize, DataTypes) => {
                 day::timestamptz AS date,
                 count(1) AS count
             FROM transaction_events, days
-            WHERE timestamp < days.day
+            WHERE timestamp <= days.day
                 AND "to" IS NULL
                 AND "workspaceId" = :workspaceId
             GROUP BY day
@@ -384,7 +384,7 @@ module.exports = (sequelize, DataTypes) => {
                 day::timestamptz AS date,
                 coalesce(count(distinct "from"), 0) AS count
             FROM transaction_events, days
-            WHERE timestamp < days.day AND "workspaceId" = :workspaceId
+            WHERE timestamp <= days.day AND "workspaceId" = :workspaceId
             GROUP BY day
             ORDER BY day ASC
         `, {

@@ -8,7 +8,7 @@
         </v-row>
         <v-row>
             <v-col cols="12" md="6">
-                <Line-Chart :title="'Transfer Volume'" :xLabels="charts['transferVolume'].xLabels" :data="charts['transferVolume'].data" :tooltipUnit="'transfers'" :index="1" />
+                <Line-Chart :title="'Transfer Volume'" :xLabels="charts['transferVolume'].xLabels" :data="charts['transferVolume'].data" :tooltipUnit="'transfer'" :index="1" />
             </v-col>
 
             <v-col cols="12" md="6">
@@ -58,7 +58,7 @@ export default {
             this.server.getTokenTransferVolume(this.from, this.to, address, 'erc20')
                 .then(({ data }) => {
                     this.charts['transferVolume'] = {
-                        xLabels: data.map(t => moment(t.date).format('DD/MM')),
+                        xLabels: data.map(t => t.date),
                         data: data.map(t => parseInt(t.count))
                     };
                 })
@@ -68,7 +68,7 @@ export default {
             this.server.getTokenCirculatingSupply(this.from, this.to, address)
                 .then(({ data }) => {
                     this.charts['circulatingSupply'] = {
-                        xLabels: data.map(t => moment(t.date).format('DD/MM')),
+                        xLabels: data.map(t => t.date),
                         data: data.map(t => parseFloat(ethers.utils.formatUnits(ethers.BigNumber.from(t.amount), 'ether')))
                     };
                 })
@@ -78,7 +78,7 @@ export default {
             this.server.getTokenHolderHistory(this.from, this.to, address)
                 .then(({ data }) => {
                     this.charts['tokenHolderHistory'] = {
-                        xLabels: data.map(t => moment(t.date).format('DD/MM')),
+                        xLabels: data.map(t => t.date),
                         data: data.map(t => t.count)
                     };
                 })
@@ -98,7 +98,7 @@ export default {
             return this.selectedTimeRange > 0 ? new Date(new Date() - this.selectedTimeRange * 24 * 3600 * 1000) : new Date(0);
         },
         to() {
-            return new Date();
+            return new Date(new Date() - 24 * 3600 * 1000);
         }
     }
 }
