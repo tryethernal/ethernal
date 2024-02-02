@@ -29,7 +29,7 @@ import LineChart from './LineChart';
 
 export default {
     name: 'ERC20ContractAnalytics',
-    props: ['address', 'tokenDecimals', 'tokenSymbol'],
+    props: ['address', 'tokenDecimals', 'tokenSymbol', 'tokenType'],
     components: {
         LineChart
     },
@@ -55,7 +55,7 @@ export default {
             this.getTokenHolderHistory(address || this.address);
         },
         getTransferVolume(address) {
-            this.server.getTokenTransferVolume(this.from, this.to, address, 'erc20')
+            this.server.getTokenTransferVolume(this.from, this.to, address)
                 .then(({ data }) => {
                     this.charts['transferVolume'] = {
                         xLabels: data.map(t => t.date),
@@ -69,7 +69,12 @@ export default {
                 .then(({ data }) => {
                     this.charts['circulatingSupply'] = {
                         xLabels: data.map(t => t.date),
-                        data: data.map(t => parseFloat(ethers.utils.formatUnits(ethers.BigNumber.from(t.amount), 'ether')))
+                        data: data.map(t => {
+                            if (this.tokenType == 'erc20')
+                                return parseFloat(ethers.utils.formatUnits(ethers.BigNumber.from(t.amount), this.tokenDecimals || 'ether'))
+                            else
+                                return t.amount;
+                        })
                     };
                 })
                 .catch(console.log);

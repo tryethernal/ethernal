@@ -829,7 +829,7 @@ const getTokenStats = async (workspaceId, address) => {
     const tokenHolderCount = await contract.countTokenHolders();
     const transactionCount = await contract.countTransactions();
     const tokenTransferCount = await contract.countTokenTransfers();
-    const tokenCirculatingSupply = await contract.getTokenCirculatingSupply();
+    const tokenCirculatingSupply = await contract.getCurrentTokenCirculatingSupply();
 
     return {
         tokenHolderCount: tokenHolderCount,
@@ -1075,18 +1075,17 @@ const getActiveWalletCount = async (workspaceId) => {
     if (!workspace)
         throw new Error('Could not find workspace');
 
-    const wallets = await workspace.findActiveWallets();
-    return wallets.length;
+    return workspace.countActiveWallets();
 };
 
-const getTotalTxCount = async (workspaceId) => {
+const getTotalTxCount = async (workspaceId, since) => {
     if (!workspaceId) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
         throw new Error('Could not find workspace');
 
-    return workspace.countTransactions();
+    return workspace.getTransactionCount(since);
 };
 
 const getTxCount = async (workspaceId, since = 0) => {

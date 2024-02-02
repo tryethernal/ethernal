@@ -146,7 +146,7 @@ router.get('/global', workspaceAuthMiddleware, async (req, res) => {
             throw new Error('Missing parameters.');
 
         const ts24hago = new Date(new Date().getTime() - (24 * 3600 *1000));
-        const txCount24h = await db.getTxCount(data.workspace.id, ts24hago);
+        const txCount24h = await db.getTotalTxCount(data.workspace.id, ts24hago);
         const txCountTotal = await db.getTotalTxCount(data.workspace.id);
         const activeWalletCount = await db.getActiveWalletCount(data.workspace.id);
 

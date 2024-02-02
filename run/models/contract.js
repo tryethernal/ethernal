@@ -87,17 +87,16 @@ module.exports = (sequelize, DataTypes) => {
     async getTokenHolderHistory(from, to) {
         if (!from || !to) throw new Error('Missing parameter');
 
-        const earliestTransaction = await sequelize.models.Transaction.findOne({
+        const earliestBlock = await sequelize.models.Block.findOne({
             where: {
                 workspaceId: this.workspaceId,
-                to: this.address
             },
             attributes: ['timestamp'],
-            order: [['blockNumber', 'ASC']],
+            order: [['number', 'ASC']],
             limit: 1
         });
 
-        const earliestTimestamp = earliestTransaction.timestamp > new Date(from) ? earliestTransaction.timestamp : new Date(from);
+        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
 
         return sequelize.query(`
             WITH days AS (
@@ -118,7 +117,7 @@ module.exports = (sequelize, DataTypes) => {
             positive_balances AS (
                 SELECT time_bucket_gapfill('1 day', day) AS date, locf(COUNT(first_value))
                 FROM balances
-                WHERE day > :from::date
+                WHERE day >= :from::date
                     AND day <= :to::date
                     AND first_value > 0
                 GROUP BY date
@@ -137,20 +136,39 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    async getCurrentTokenCirculatingSupply() {
+        const [{ sum: supply }] = await sequelize.query(`
+            SELECT SUM(first_value) FROM (
+                SELECT DISTINCT address,
+                    FIRST_VALUE(tbce."currentBalance") OVER(PARTITION BY address ORDER BY "blockNumber" DESC RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+                FROM token_balance_change_events tbce
+                WHERE tbce."workspaceId" = :workspaceId
+                    AND tbce.token = :token
+            ) sums
+        `, {
+            replacements: {
+                workspaceId: this.workspaceId,
+                token: this.address
+            },
+            type: QueryTypes.SELECT
+        });
+
+        return supply;
+    }
+
     async getTokenCirculatingSupply(from, to) {
         if (!from || !to) throw new Error('Missing parameter');
 
-        const earliestTransaction = await sequelize.models.Transaction.findOne({
+        const earliestBlock = await sequelize.models.Block.findOne({
             where: {
                 workspaceId: this.workspaceId,
-                to: this.address
             },
             attributes: ['timestamp'],
-            order: [['blockNumber', 'ASC']],
+            order: [['number', 'ASC']],
             limit: 1
         });
 
-        const earliestTimestamp = earliestTransaction.timestamp > new Date(from) ? earliestTransaction.timestamp : new Date(from);
+        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
 
         const [cumulativeSupply,] = await sequelize.query(`
             WITH days AS (
@@ -171,7 +189,7 @@ module.exports = (sequelize, DataTypes) => {
             cumulative_balances AS (
                 SELECT time_bucket_gapfill('1 day', day) AS date, locf(SUM(first_value))
                 FROM balances
-                WHERE day > :from::date
+                WHERE day >= :from::date
                     AND day <= :to::date
                 GROUP BY date
                 ORDER BY date ASC

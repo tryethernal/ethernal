@@ -67,7 +67,7 @@
                     </v-col>
 
                     <v-col cols="12" sm="6" lg="6">
-                        <Stat-Number :loading="loadingStats" :title="'Circulating Supply'" :value="contractStats.tokenCirculatingSupply" :decimals="contract.tokenDecimals" :infoTooltip="'Number of tokens currently in circulation'" />
+                        <Stat-Number :loading="loadingStats" :title="'Circulating Supply'" :value="contractStats.tokenCirculatingSupply" :decimals="contract.tokenDecimals" :infoTooltip="'Number of tokens currently in circulation'" :tokenType="tokenType" :key="contract.id" />
                     </v-col>
 
                     <v-col cols="12" sm="6" lg="6">
@@ -116,7 +116,7 @@
                 </v-tab-item>
 
                 <v-tab-item value="analytics">
-                    <ERC-20-Contract-Analytics :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
+                    <ERC-20-Contract-Analytics :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" :tokenType="tokenType" :key="contract.id" />
                 </v-tab-item>
 
                 <v-tab-item value="transfers">
@@ -208,6 +208,12 @@ export default {
         ...mapGetters([
             'rpcServer'
         ]),
+        tokenType() {
+            if (this.contract && this.contract.patterns)
+                return this.contract.patterns[0];
+            else
+                return 'erc20';
+        },
         tab: {
             set(tab) {
                 this.$router.replace({ query: { ...this.$route.query, tab } }).catch(()=>{});

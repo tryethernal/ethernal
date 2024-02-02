@@ -260,6 +260,28 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    async getTransactionCount(since) {
+        let query = `
+            SELECT COUNT(*)
+            FROM transaction_events
+            WHERE "workspaceId" = :workspaceId
+        `;
+
+        if (since) {
+            query += ' AND timestamp > :since::timestamp';
+        }
+
+        const [{ count },] = await sequelize.query(query, {
+            replacements: {
+                workspaceId: this.id,
+                since
+            },
+            type: QueryTypes.SELECT
+        });
+
+        return parseInt(count);
+    }
+
     async getTransactionVolume(from, to) {
         if (!from || !to) throw new Error('Missing parameter');
 
@@ -538,15 +560,16 @@ module.exports = (sequelize, DataTypes) => {
         return transfers;
     }
 
-    async findActiveWallets() {
-        const [wallets,] = await sequelize.query(`
-            SELECT DISTINCT "from" AS address 
-            FROM transactions
+    async countActiveWallets() {
+        const [{ count },] = await sequelize.query(`
+            SELECT COUNT(DISTINCT "from")
+            FROM transaction_events
             WHERE "workspaceId" = :workspaceId
         `, {
+            type: QueryTypes.SELECT,
             replacements: { workspaceId: this.id }
         });
-        return wallets;
+        return parseInt(count);
     }
 
     async getWalletVolume() {
