@@ -5,6 +5,7 @@ const {
 } = require('sequelize');
 const Op = Sequelize.Op
 const moment = require('moment');
+const ethers = require('ethers');
 const { trigger } = require('../lib/pusher');
 const { enqueue } = require('../lib/queue');
 const { sanitize } = require('../lib/utils');
@@ -51,6 +52,23 @@ module.exports = (sequelize, DataTypes) => {
                 address: this.token
             }
         });
+    }
+
+    async insertAnalyticEvent(sequelizeTransaction) {
+        const transaction = await this.getTransaction();
+        const contract = await this.getContract();
+
+        return sequelize.models.TokenTransferEvent.create({
+            workspaceId: this.workspaceId,
+            tokenTransferId: this.id,
+            blockNumber: transaction.blockNumber,
+            timestamp: transaction.timestamp,
+            amount: ethers.BigNumber.from(this.amount).toString(),
+            token: this.token,
+            tokenType: contract ? contract.patterns[0] : null,
+            src: this.src,
+            dst: this.dst
+        }, { transaction: sequelizeTransaction });
     }
 
     async safeCreateBalanceChange(balanceChange) {
@@ -135,6 +153,8 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 ]
             });
+
+            await tokenTransfer.insertAnalyticEvent(options.transaction);
 
             if (transaction.workspace.public) {
                 options.transaction.afterCommit(() => {

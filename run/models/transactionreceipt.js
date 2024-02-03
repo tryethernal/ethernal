@@ -24,9 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         const transaction = await this.getTransaction();
         const gasPrice = this.raw.effectiveGasPrice || this.raw.gasPrice;
         const transactionFee = BigNumber.from(this.gasUsed).mul(BigNumber.from(gasPrice));
+
         return sequelize.models.TransactionEvent.create({
             workspaceId: this.workspaceId,
-            transactionId: this.transactionId,
+            transactionId: transaction.id,
             blockNumber: this.blockNumber,
             timestamp: transaction.timestamp,
             transactionFee: transactionFee.toString(),
@@ -98,11 +99,6 @@ module.exports = (sequelize, DataTypes) => {
                                 }
                             }
                         ]
-                    },
-                    {
-                        model: sequelize.models.TransactionReceipt,
-                        as: 'receipt',
-                        attributes: ['status']
                     }
                 ]
             });
@@ -123,8 +119,6 @@ module.exports = (sequelize, DataTypes) => {
                         trigger(`private-failedTransactions;workspace=${fullTransaction.workspaceId}`, 'new', fullTransaction.toJSON());
                 }
 
-                await receipt.insertAnalyticEvent();
-
                 return fullTransaction.triggerEvents();
             }
 
@@ -138,6 +132,7 @@ module.exports = (sequelize, DataTypes) => {
                         timestamp: moment(fullTransaction.timestamp).unix()
                     }, options.transaction);
             }
+            await receipt.insertAnalyticEvent(options.transaction);
 
             if (options.transaction) {
                 return options.transaction.afterCommit(afterCommitFn);

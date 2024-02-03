@@ -4,6 +4,7 @@ const {
   Sequelize
 } = require('sequelize');
 const Op = Sequelize.Op;
+const ethers = require('ethers');
 
 module.exports = (sequelize, DataTypes) => {
   class TokenBalanceChange extends Model {
@@ -37,7 +38,23 @@ module.exports = (sequelize, DataTypes) => {
               address: this.token
           }
       });
-  }
+    }
+
+    async insertAnalyticEvent(sequelizeTransaction) {
+      const transaction = await this.getTransaction();
+      const contract = await this.getContract();
+
+      return sequelize.models.TokenBalanceChange.create({
+          workspaceId: this.workspaceId,
+          tokenBalanceChangeId: this.id,
+          blockNumber: transaction.blockNumber,
+          timestamp: transaction.timestamp,
+          token: this.token,
+          address: this.address,
+          currentBalance: ethers.BigNumber.from(this.currentBalance).toString(),
+          tokenType: contract ? contract.patterns[0] : null
+      }, { transaction: sequelizeTransaction });
+    }
   }
   TokenBalanceChange.init({
     transactionId: DataTypes.INTEGER,
@@ -59,6 +76,11 @@ module.exports = (sequelize, DataTypes) => {
     previousBalance: DataTypes.STRING,
     diff: DataTypes.STRING
   }, {
+    hooks: {
+      async afterCreate(tokenBalanceChange, options) {
+        await tokenBalanceChange.insertAnalyticEvent(options.transaction);
+      }
+    },
     sequelize,
     modelName: 'TokenBalanceChange',
     tableName: 'token_balance_changes'

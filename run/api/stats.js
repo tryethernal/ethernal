@@ -4,21 +4,6 @@ const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 
-router.get('/wallets', workspaceAuthMiddleware, async (req, res) => {
-    const data = req.query;
-    try {
-        if (!data.workspace)
-            throw new Error('Missing parameters.');
-
-        const wallets = await db.getWalletVolume(data.workspace.id);
-
-        res.status(200).json(wallets);
-    } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.wallets', error: error, data: data });
-        res.status(400).send(error.message);
-    }
-});
-
 router.get('/transactions', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
     try {

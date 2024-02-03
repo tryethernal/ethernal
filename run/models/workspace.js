@@ -154,6 +154,12 @@ module.exports = (sequelize, DataTypes) => {
             return this.createIntegrityCheck(sanitize({ blockId, status }));
     }
 
+    async safeDeleteIntegrityCheck() {
+        const integrityCheck = await this.getIntegrityCheck();
+        if (integrityCheck)
+            return integrityCheck.destroy();
+    }
+
     async getCustomTransactionFunction() {
        const custom_field = await sequelize.models.CustomField.findOne({
            where: {
@@ -570,18 +576,6 @@ module.exports = (sequelize, DataTypes) => {
             replacements: { workspaceId: this.id }
         });
         return parseInt(count);
-    }
-
-    async getWalletVolume() {
-        const [wallets,] = await sequelize.query(`
-            SELECT timestamp, count
-            FROM wallet_volume_14d
-            WHERE "workspaceId" = :workspaceId
-            ORDER BY timestamp
-        `, {
-            replacements: { workspaceId: this.id }
-        });
-        return wallets;
     }
 
     async safeFindLatestTokenBalances(address, tokenPatterns = []) {

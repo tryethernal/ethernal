@@ -32,7 +32,6 @@ jest.mock('@/plugins/server', () => ({
                 getGlobalStats: jest.fn(),
                 getTransactions: jest.fn(),
                 getTransactionVolume: jest.fn(),
-                getWalletVolume: jest.fn(),
                 getErc721Tokens: jest.fn(),
                 getErc721TokenTransfers: jest.fn(),
                 getErc721Token: jest.fn(),

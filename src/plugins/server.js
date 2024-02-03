@@ -737,15 +737,6 @@ export const serverPlugin = {
                 return axios.post(resource, data);
             },
 
-            getWalletVolume() {
-                const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
-                };
-                const resource = `${store.getters.apiRoot}/api/stats/wallets`;
-                return axios.get(resource, { params });
-            },
-
             getTokenTransferVolume(from, to, address, type) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,

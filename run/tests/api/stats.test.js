@@ -9,27 +9,6 @@ const app = require('../../app');
 const request = supertest(app);
 
 const BASE_URL = '/api/stats';
-
-describe(`GET /wallets`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
-    it('Should return wallet volume', (done) => {
-        workspaceAuthMiddleware.mockImplementationOnce((req, res, next) => {
-            req.query.firebaseUserId = '123';
-            req.query.workspace = { id: 1, name: 'My Workspace', public: true }
-            next();
-        });
-        jest.spyOn(db, 'getWalletVolume').mockResolvedValueOnce([{ timestamp: '2022-04-05', count: 1 }]);
-
-        request.get(`${BASE_URL}/wallets`)
-            .expect(200)
-            .then(({ body }) => {
-                expect(body).toEqual([{ timestamp: '2022-04-05', count: 1 }]);
-                done();
-            });
-    });
-});
-
 describe(`GET /transactions`, () => {
     beforeEach(() => jest.clearAllMocks());
 

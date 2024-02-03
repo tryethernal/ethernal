@@ -979,17 +979,6 @@ const setWorkspaceRemoteFlag = async (workspaceId, flag) => {
     return workspace.update({ isRemote: flag });
 };
 
-const getWalletVolume = async (workspaceId) => {
-    if (!workspaceId) throw new Error('Missing parameter.');
-
-    const workspace = await Workspace.findByPk(workspaceId);
-    if (!workspace)
-        throw new Error('Could not find workspace');
-
-    const wallets = await workspace.getWalletVolume();
-    return wallets;
-};
-
 const getCumulativeDeployedContractCount = async (workspaceId, from, to) => {
     if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
 
@@ -1771,7 +1760,6 @@ module.exports = {
     getTotalTxCount: getTotalTxCount,
     getActiveWalletCount: getActiveWalletCount,
     getTransactionVolume: getTransactionVolume,
-    getWalletVolume: getWalletVolume,
     setWorkspaceRemoteFlag: setWorkspaceRemoteFlag,
     storeErc721Token: storeErc721Token,
     getContractErc721Tokens: getContractErc721Tokens,

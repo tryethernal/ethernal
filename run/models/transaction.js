@@ -91,7 +91,7 @@ module.exports = (sequelize, DataTypes) => {
                         raw: log
                     }), { transaction });
                 } catch(error) {
-                    logger.error(error.message, { location: 'models.transaction.safeCreateReceipt', error: error, transaction: transaction });
+                    logger.error(error.message, { location: 'models.transaction.safeCreateReceipt', error: error, receipt, transaction: this });
                     await storedReceipt.createLog(sanitize({
                         workspaceId: this.workspaceId,
                         raw: log
