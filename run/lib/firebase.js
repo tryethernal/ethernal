@@ -1023,7 +1023,6 @@ const getCumulativeWalletCount = async (workspaceId, from, to) => {
     return cumulativeWalletCount;
 };
 
-
 const getAverageGasPrice = async (workspaceId, from, to) => {
     if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
 
@@ -1075,16 +1074,6 @@ const getTotalTxCount = async (workspaceId, since) => {
         throw new Error('Could not find workspace');
 
     return workspace.getTransactionCount(since);
-};
-
-const getTxCount = async (workspaceId, since = 0) => {
-    if (!workspaceId) throw new Error('Missing parameter.');
-
-    const workspace = await Workspace.findByPk(workspaceId);
-    if (!workspace)
-        throw new Error('Could not find workspace');
-
-    return workspace.countTransactionsSince(since);
 };
 
 const getAddressLatestTokenBalances = async (workspaceId, address, tokenPatterns) => {
@@ -1756,7 +1745,6 @@ module.exports = {
     searchForNumber: searchForNumber,
     searchForText: searchForText,
     getAddressLatestTokenBalances: getAddressLatestTokenBalances,
-    getTxCount: getTxCount,
     getTotalTxCount: getTotalTxCount,
     getActiveWalletCount: getActiveWalletCount,
     getTransactionVolume: getTransactionVolume,
