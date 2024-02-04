@@ -1,4 +1,4 @@
-const { getStripeSecretKey } = require('./lib/env');
+const { getStripeSecretKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const logger = require('../lib/logger');
 const Analytics = require('../lib/analytics');

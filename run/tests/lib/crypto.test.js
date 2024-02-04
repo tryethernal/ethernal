@@ -6,7 +6,7 @@ jest.mock('firebase-scrypt', () => ({
         }
     }
 }));
-
+require('../mocks/lib/env');
 const { encrypt, decrypt, encode, decode, firebaseHash, firebaseVerify } = require('../../lib/crypto');
 
 const ENCRYPTED_KEY = '35748972c841784ea4b296af98f7d01e:628cfc5964f00d912c059335095d51d5c59c12dfcd01138574ba521b1c1a7c90';

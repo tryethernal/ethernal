@@ -20,7 +20,7 @@ describe(`GET /transactions`, () => {
         });
         jest.spyOn(db, 'getTransactionVolume').mockResolvedValueOnce([{ timestamp: '2022-04-05', count: 1 }]);
 
-        request.get(`${BASE_URL}/transactions`)
+        request.get(`${BASE_URL}/transactions?from=2022-04-05&to=2022-04-15`)
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual([{ timestamp: '2022-04-05', count: 1 }]);
@@ -38,8 +38,9 @@ describe(`GET /global`, () => {
             req.query.workspace = { id: 1, name: 'My Workspace', public: true }
             next();
         });
-        jest.spyOn(db, 'getTxCount').mockResolvedValueOnce(10);
-        jest.spyOn(db, 'getTotalTxCount').mockResolvedValueOnce(100);
+        jest.spyOn(db, 'getTotalTxCount')
+            .mockResolvedValueOnce(10)
+            .mockResolvedValueOnce(100);
         jest.spyOn(db, 'getActiveWalletCount').mockResolvedValueOnce(15);
 
         request.get(`${BASE_URL}/global`)
