@@ -105,7 +105,8 @@ const workspace = {
     safeCreatePartialBlock: jest.fn(),
     safeCreateOrUpdateIntegrityCheck: jest.fn(),
     safeCreateOrUpdateRpcHealthCheck: jest.fn(),
-    getTokenTransferVolume: jest.fn()
+    getTokenTransferVolume: jest.fn(),
+    safeDeleteIntegrityCheck: jest.fn()
 };
 
 const Workspace = {

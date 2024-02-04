@@ -31,6 +31,7 @@ describe('integrityCheck', () => {
 
     it('Should revert expired pending blocks & update latest checked block', async () => {
         const revertIfPartial = jest.fn();
+        const safeDeleteIntegrityCheck = jest.fn();
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             explorer: { hasReachedTransactionQuota, shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
@@ -43,10 +44,12 @@ describe('integrityCheck', () => {
             public: true,
             id: 1,
             name: 'hardhat',
-            user: { firebaseUserId: '123', name: 'hardhat' }
+            user: { firebaseUserId: '123', name: 'hardhat' },
+            safeDeleteIntegrityCheck
         });
 
         await integrityCheck(job);
+        expect(safeDeleteIntegrityCheck).toHaveBeenCalled();
         expect(db.updateWorkspaceIntegrityCheck).toHaveBeenCalledWith(1, { blockId: 3 });
         expect(revertIfPartial).toHaveBeenCalledTimes(1);
     });
@@ -80,6 +83,7 @@ describe('integrityCheck', () => {
     });
 
     it('Should enqueue the first block and exit if no integrity check & the lower block does not exist', async () => {
+        const safeDeleteIntegrityCheck = jest.fn();
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             explorer: { hasReachedTransactionQuota, shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
@@ -91,11 +95,13 @@ describe('integrityCheck', () => {
             public: true,
             id: 1,
             name: 'hardhat',
-            user: { firebaseUserId: '123', name: 'hardhat' }
+            user: { firebaseUserId: '123', name: 'hardhat' },
+            safeDeleteIntegrityCheck
         });
 
         await integrityCheck(job);
 
+        expect(safeDeleteIntegrityCheck).toHaveBeenCalled();
         expect(enqueue).toHaveBeenCalledWith('blockSync', 'blockSync-1-5', {
             userId: '123',
             workspace: 'hardhat',
@@ -105,6 +111,7 @@ describe('integrityCheck', () => {
     });
 
     it('Should enqueue the first block and exit if integrityCheckStartBlockNumber < lowestBlock.number & no lower block', async () => {
+        const safeDeleteIntegrityCheck = jest.fn();
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             explorer: { hasReachedTransactionQuota, shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
@@ -117,11 +124,13 @@ describe('integrityCheck', () => {
             public: true,
             id: 1,
             name: 'hardhat',
-            user: { firebaseUserId: '123', name: 'hardhat' }
+            user: { firebaseUserId: '123', name: 'hardhat' },
+            safeDeleteIntegrityCheck
         });
 
         await integrityCheck(job);
 
+        expect(safeDeleteIntegrityCheck).toHaveBeenCalled();
         expect(enqueue).toHaveBeenCalledWith('blockSync', 'blockSync-1-0', {
             userId: '123',
             workspace: 'hardhat',
