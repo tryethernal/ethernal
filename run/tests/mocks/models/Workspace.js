@@ -106,7 +106,8 @@ const workspace = {
     safeCreateOrUpdateIntegrityCheck: jest.fn(),
     safeCreateOrUpdateRpcHealthCheck: jest.fn(),
     getTokenTransferVolume: jest.fn(),
-    safeDeleteIntegrityCheck: jest.fn()
+    safeDeleteIntegrityCheck: jest.fn(),
+    safeDelete: jest.fn()
 };
 
 const Workspace = {
