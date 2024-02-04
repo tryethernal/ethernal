@@ -1,4 +1,5 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { getStripeSecretKey } = require('./lib/env');
+const stripe = require('stripe')(getStripeSecretKey());
 const logger = require('../lib/logger');
 const Analytics = require('../lib/analytics');
 const { isStripeEnabled, isSendgridEnabled, isFirebaseAuthEnabled } = require('../lib/flags');

@@ -104,7 +104,8 @@ const workspace = {
     safeCreateFullBlock: jest.fn(),
     safeCreatePartialBlock: jest.fn(),
     safeCreateOrUpdateIntegrityCheck: jest.fn(),
-    safeCreateOrUpdateRpcHealthCheck: jest.fn()
+    safeCreateOrUpdateRpcHealthCheck: jest.fn(),
+    getTokenTransferVolume: jest.fn()
 };
 
 const Workspace = {

@@ -1,4 +1,5 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { getStripeSecretKey } = require('../lib/env')
+const stripe = require('stripe')(getStripeSecretKey());
 const express = require('express');
 const router = express.Router();
 const stripeLib = require('../lib/stripe');

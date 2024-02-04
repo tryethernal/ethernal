@@ -1007,30 +1007,7 @@ describe('getTokenHolderHistory', () => {
 
     it('Should fail if contract does not exist', (done) => {
         jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce(null);
-        db.getTokenCumulativeSupply(1, '0x123', 'from', 'to')
-            .catch(res => {
-                expect(res.message).toEqual(`Can't find contract at this address`);
-                done();
-            });
-    });
-});
-
-describe('getTokenCumulativeSupply', () => {
-    it('Should return supply if contract exists', (done) => {
-        jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce({
-            getTokenCumulativeSupply: jest.fn().mockResolvedValueOnce([{ address: '0x123' }]),
-        });
-
-        db.getTokenCumulativeSupply(1, '0x123', 'from', 'to')
-            .then(res => {
-                expect(res).toEqual([{ address: '0x123' }]);
-                done();
-            });
-    });
-
-    it('Should fail if contract does not exist', (done) => {
-        jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce(null);
-        db.getTokenCumulativeSupply(1, '0x123', 'from', 'to')
+        db.getTokenHolderHistory(1, '0x123', 'from', 'to')
             .catch(res => {
                 expect(res.message).toEqual(`Can't find contract at this address`);
                 done();
@@ -1039,21 +1016,20 @@ describe('getTokenCumulativeSupply', () => {
 });
 
 describe('getTokenTransferVolume', () => {
-    it('Should return holders if contract exists', (done) => {
-        jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce({
-            getTokenTransferVolume: jest.fn().mockResolvedValueOnce([{ address: '0x123' }]),
-        });
+    it('Should return token volume if contract exists', (done) => {
+        jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce({ address: '0x1' });
+        jest.spyOn(workspace, 'getTokenTransferVolume').mockResolvedValueOnce([{ timestamp: 1, count: 1 }]);
 
-        db.getTokenTransferVolume(1, '0x123', 'from', 'to')
+        db.getTokenTransferVolume(1, 'from', 'to', '0x123')
             .then(res => {
-                expect(res).toEqual([{ address: '0x123' }]);
+                expect(res).toEqual([{ timestamp: 1, count: 1 }]);
                 done();
             });
     });
 
     it('Should fail if contract does not exist', (done) => {
         jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce(null);
-        db.getTokenTransferVolume(1, '0x123', 'from', 'to')
+        db.getTokenTransferVolume(1, 'from', 'to', '0x123')
             .catch(res => {
                 expect(res.message).toEqual(`Can't find contract at this address`);
                 done();
@@ -1098,7 +1074,7 @@ describe('getTokenStats', () => {
             countTokenHolders: jest.fn().mockResolvedValueOnce(1),
             countTransactions: jest.fn().mockResolvedValueOnce(2),
             countTokenTransfers: jest.fn().mockResolvedValueOnce(3),
-            getTokenCirculatingSupply: jest.fn().mockResolvedValueOnce(4)
+            getCurrentTokenCirculatingSupply: jest.fn().mockResolvedValueOnce(4)
         });
 
         db.getTokenStats(1, '0x123')
