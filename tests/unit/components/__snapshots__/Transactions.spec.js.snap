@@ -2,6 +2,10 @@
 
 exports[`Transactions.vue Should display the list 1`] = `
 <div class="container container--fluid">
-  <transactions-list-stub></transactions-list-stub>
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__text">
+      <transactions-list-stub></transactions-list-stub>
+    </div>
+  </div>
 </div>
 `;
