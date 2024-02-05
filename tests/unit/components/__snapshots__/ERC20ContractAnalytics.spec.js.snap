@@ -1,25 +1,80 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ERC20ContractAnalytics.vue Should display contract analytics 1`] = `
+exports[`ERC20ContractAnalytics.vue Should display contract analytics with bignumber formatted amounts 1`] = `
 <div class="container container--fluid">
   <div class="row">
-    <div class="col-md-6 col-12">
-      <div class="px-1 v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__subtitle">Transfer Volume (14 Days) - UTC Time</div>
-        <line-chart-stub tooltipunit="transfer" data="2,2" xlabels="01/01,01/01" index="0"></line-chart-stub>
+    <div class="pb-0 col col-3">
+      <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+        <div class="v-input__control">
+          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-4" class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-select__slot"><label for="input-4" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Time Range</label>
+              <div class="v-select__selections">
+                <div class="v-select__selection v-select__selection--comma">14 Days</div><input id="input-4" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+              </div>
+              <div class="v-input__append-inner">
+                <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+              </div><input type="hidden" value="14">
+            </div>
+            <div class="v-menu">
+              <!---->
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+  </div>
+  <div class="row">
     <div class="col-md-6 col-12">
-      <div class="px-1 v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__subtitle">Circulating Supply (14 Days) - UTC Time</div>
-        <line-chart-stub tokensymbol="ETL" data="0.2,0.2" xlabels="01/01,01/01" index="0"></line-chart-stub>
-      </div>
+      <line-chart-stub tooltipunit="transfer" title="Transfer Volume" index="1" data="2,2" xlabels="0,1"></line-chart-stub>
     </div>
     <div class="col-md-6 col-12">
-      <div class="px-1 v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__subtitle">Holder Count (14 Days) - UTC Time</div>
-        <line-chart-stub tooltipunit="holder" data="2,2" xlabels="01/01,01/01" index="0"></line-chart-stub>
+      <line-chart-stub tokensymbol="ETL" title="Circulating Supply" index="2" data="0.2,0.3" xlabels="0,1"></line-chart-stub>
+    </div>
+    <div class="col-md-6 col-12">
+      <line-chart-stub tooltipunit="holder" title="Token Holder History" index="3" data="2,2" xlabels="0,1"></line-chart-stub>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ERC20ContractAnalytics.vue Should display contract analytics without bignumber formatted amount 1`] = `
+<div class="container container--fluid">
+  <div class="row">
+    <div class="pb-0 col col-3">
+      <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
+        <div class="v-input__control">
+          <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-14" class="v-input__slot">
+            <fieldset aria-hidden="true">
+              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+            </fieldset>
+            <div class="v-select__slot"><label for="input-14" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Time Range</label>
+              <div class="v-select__selections">
+                <div class="v-select__selection v-select__selection--comma">14 Days</div><input id="input-14" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+              </div>
+              <div class="v-input__append-inner">
+                <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+              </div><input type="hidden" value="14">
+            </div>
+            <div class="v-menu">
+              <!---->
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-12">
+      <line-chart-stub tooltipunit="transfer" title="Transfer Volume" index="1" data="2,2" xlabels="0,1"></line-chart-stub>
+    </div>
+    <div class="col-md-6 col-12">
+      <line-chart-stub tokensymbol="ETL" title="Circulating Supply" index="2" data="2,3" xlabels="0,1"></line-chart-stub>
+    </div>
+    <div class="col-md-6 col-12">
+      <line-chart-stub tooltipunit="holder" title="Token Holder History" index="3" data="2,2" xlabels="0,1"></line-chart-stub>
     </div>
   </div>
 </div>

@@ -17,9 +17,9 @@ describe('Overview.vue', () => {
             txCountTotal: 100,
             activeWalletCount: 5
         }});
-        jest.spyOn(helper.mocks.server, 'getTransactions').mockResolvedValue({ data: { items: [] }});
-        jest.spyOn(helper.mocks.server, 'getTransactionVolume').mockResolvedValue({ data: [] });
-        jest.spyOn(helper.mocks.server, 'getWalletVolume').mockResolvedValue({ data: [] });
+        jest.spyOn(helper.mocks.server, 'getTransactions').mockResolvedValue({ data: { items: [{ date: 1, count: 1 }]}});
+        jest.spyOn(helper.mocks.server, 'getTransactionVolume').mockResolvedValue({ data: [{ date: 1, count: 1 }]});
+        jest.spyOn(helper.mocks.server, 'getUniqueWalletCount').mockResolvedValue({ data: [{ date: 1, count: 1 }] });
 
         const wrapper = helper.mountFn(Overview, {
             stubs: ['Transactions-List', 'Block-List', 'Line-Chart', 'Stat-Number'],

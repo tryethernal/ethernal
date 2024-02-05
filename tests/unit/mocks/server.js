@@ -68,6 +68,13 @@ jest.mock('@/plugins/server', () => ({
                 migrateDemoExplorer: jest.fn(),
                 startTrial: jest.fn(),
                 getCurrentUser: jest.fn(),
+                getTokenCirculatingSupply: jest.fn(),
+                getAverageGasPrice: jest.fn(),
+                getAverageTransactionFee: jest.fn(),
+                getUniqueWalletCount: jest.fn(),
+                getCumulativeWalletCount: jest.fn(),
+                getDeployedContractCount: jest.fn(),
+                getCumulativeDeployedContractCount: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))

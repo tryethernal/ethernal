@@ -18,7 +18,7 @@
                     </v-col>
 
                     <v-col cols="12" md="6">
-                        <Line-Chart :title="'Average Gas Price'" :xLabels="charts['averageGasPrice'].xLabels" :data="charts['averageGasPrice'].data" :tokenSymbol="'wei'" :floating="true" :index="2" />
+                        <Line-Chart :title="'Average Gas Price'" :xLabels="charts['averageGasPrice'].xLabels" :data="charts['averageGasPrice'].data" :tokenSymbol="'gwei'" :floating="true" :index="2" />
                     </v-col>
 
                     <v-col cols="12" md="6">
@@ -54,7 +54,6 @@ import LineChart from './LineChart';
 
 export default {
     name: 'ExplorerAnalytics',
-    props: ['id'],
     components: {
         LineChart
     },

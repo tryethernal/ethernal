@@ -22,7 +22,7 @@ exports[`StatNumber.vue Should show a number 1`] = `
 </div>
 `;
 
-exports[`StatNumber.vue Should show the full number 1`] = `
+exports[`StatNumber.vue Should show format if erc20 1`] = `
 <div class="v-card v-sheet v-sheet--outlined theme--light">
   <div class="v-card__subtitle">
     <div class="">Stat</div>
