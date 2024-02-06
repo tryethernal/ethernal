@@ -165,6 +165,24 @@ module.exports = (sequelize, DataTypes) => {
        return custom_field ? custom_field.function : null;
     }
 
+    async getExpiredBlocks(ttlInMinutes = 15) {
+        const blocks = await sequelize.query(`
+            SELECT id FROM blocks
+            WHERE (
+                SELECT COUNT(*) FROM transactions
+                WHERE "blockNumber" = blocks.number
+                AND "workspaceId" = :workspaceId
+            ) <> "transactionsCount"
+            AND "createdAt" <= NOW() - interval '${ttlInMinutes} minute'
+            AND "workspaceId" = :workspaceId;
+        `, {
+            model: sequelize.models.Block,
+            replacements: { workspaceId: this.id }
+        });
+
+        return blocks;
+    }
+
     getFilteredAddressTokenTransfers(address, page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC') {
         if (!address) throw new Error('Missing parameter');
 
