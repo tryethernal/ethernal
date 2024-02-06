@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
 
     async revertIfPartial() {
         const transactions = await this.getTransactions();
-        const isSyncing = transactions.map(t => t.isSyncing).length > 0;
+        const isSyncing = transactions.map(t => t.isSyncing).length > 0 || transactions.length != this.transactionsCount;
 
         if (!isSyncing)
           return;
