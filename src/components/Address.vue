@@ -102,7 +102,7 @@
             </v-tab-item>
 
             <v-tab-item value="erc721Balances">
-                <Token-Balances :address="address" :patterns="['erc721']" :dense="true" />
+                <Address-Erc721-Collections :address="address" />
             </v-tab-item>
         </v-tabs-items>
     </v-container>
@@ -116,6 +116,7 @@ import { mapGetters } from 'vuex';
 
 import AddressTransactionsList from './AddressTransactionsList';
 import AddressTokenTransfers from './AddressTokenTransfers';
+import AddressErc721Collections from './AddressErc721Collections.vue';
 import TokenBalances from './TokenBalances';
 import FromWei from '../filters/FromWei';
 import HashLink from './HashLink';
@@ -127,6 +128,7 @@ export default {
         AddressTransactionsList,
         AddressTokenTransfers,
         TokenBalances,
+        AddressErc721Collections,
         HashLink
     },
     filters: {

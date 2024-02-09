@@ -670,7 +670,10 @@ export const serverPlugin = {
                     const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
                     return new Promise((resolve, reject) => {
                         erc721Connector.fetchTokenById(tokenId)
-                            .then(res => resolve({ data: formatErc721Metadata(res) }))
+                            .then(res => {
+                                resolve({ data: formatErc721Metadata(res) })
+                                console.log(res)
+                            })
                             .catch(reject);
                     });
                 }
