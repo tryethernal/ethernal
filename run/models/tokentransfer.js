@@ -18,10 +18,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      TokenTransfer.belongsTo(models.Transaction, {
-          foreignKey: 'transactionId',
-          as: 'transaction',
-      });
+      TokenTransfer.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'transaction' });
       TokenTransfer.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       TokenTransfer.hasOne(models.Contract, {
           sourceKey: 'token',

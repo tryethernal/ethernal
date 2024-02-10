@@ -58,7 +58,7 @@ module.exports = {
             }
           }, { transaction });
 
-          await queryInterface.sequelize.query(`SELECT create_hypertable('transaction_events', by_range('timestamp'));`, { transaction });
+          await queryInterface.sequelize.query(`SELECT create_hypertable('transaction_events', 'timestamp');`, { transaction });
           await queryInterface.sequelize.query(`
             CREATE INDEX "transaction_events_workspaceId_timestamp" ON transaction_events("workspaceId", timestamp DESC);
           `, { transaction });
@@ -115,7 +115,7 @@ module.exports = {
               allowNull: false
             }
           }, { transaction });
-          await queryInterface.sequelize.query(`SELECT create_hypertable('token_transfer_events', by_range('timestamp'));`, { transaction });
+          await queryInterface.sequelize.query(`SELECT create_hypertable('token_transfer_events', 'timestamp');`, { transaction });
           await queryInterface.sequelize.query(`
             CREATE INDEX "token_transfer_events_workspaceId_timestamp" ON transaction_events("workspaceId", timestamp DESC);
           `, { transaction });
@@ -168,7 +168,7 @@ module.exports = {
               allowNull: true
             },
           }, { transaction });
-          await queryInterface.sequelize.query(`SELECT create_hypertable('token_balance_change_events', by_range('timestamp'));`, { transaction });
+          await queryInterface.sequelize.query(`SELECT create_hypertable('token_balance_change_events', 'timestamp');`, { transaction });
           await queryInterface.sequelize.query(`
             CREATE INDEX "token_balance_change_events_workspaceId_timestamp" ON token_balance_change_events("workspaceId", timestamp DESC);
           `, { transaction });
