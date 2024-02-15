@@ -2,6 +2,8 @@
 const {
   Model
 } = require('sequelize');
+const ethers = require('ethers');
+const BigNumber = ethers.BigNumber;
 const { trigger } = require('../lib/pusher');
 const { enqueue } = require('../lib/queue');
 const moment = require('moment');
@@ -14,8 +16,26 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      TransactionReceipt.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'transaction' });
-      TransactionReceipt.hasMany(models.TransactionLog, { foreignKey: 'transactionReceiptId', as: 'logs' });
+        TransactionReceipt.hasMany(models.TransactionLog, { foreignKey: 'transactionReceiptId', as: 'logs' });
+        TransactionReceipt.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'transaction' });
+    }
+
+    async insertAnalyticEvent(sequelizeTransaction) {
+        const transaction = await this.getTransaction();
+        const gasPrice = this.raw.effectiveGasPrice || this.raw.gasPrice;
+        const transactionFee = BigNumber.from(this.gasUsed).mul(BigNumber.from(gasPrice));
+
+        return sequelize.models.TransactionEvent.create({
+            workspaceId: this.workspaceId,
+            transactionId: transaction.id,
+            blockNumber: this.blockNumber,
+            timestamp: transaction.timestamp,
+            transactionFee: transactionFee.toString(),
+            gasPrice: BigNumber.from(gasPrice).toString(),
+            gasUsed: BigNumber.from(this.gasUsed).toString(),
+            from: this.from,
+            to: this.to
+        }, { transaction: sequelizeTransaction });
     }
 
     async safeDestroy(transaction) {
@@ -79,22 +99,25 @@ module.exports = (sequelize, DataTypes) => {
                                 }
                             }
                         ]
-                    },
-                    {
-                        model: sequelize.models.TransactionReceipt,
-                        as: 'receipt',
-                        attributes: ['status']
                     }
                 ]
             });
 
             // Here is the stuff that we only want to do once everything has been created (typically notifications & jobs queuing)
             const afterCommitFn = async () => {
-                if (receipt.status == 0 && fullTransaction.workspace.public)
-                    await enqueue('processTransactionError', `processTransactionError-${fullTransaction.workspaceId}-${fullTransaction.hash}`, { transactionId: fullTransaction.id }, 1);
+                const explorer = fullTransaction.workspace.explorer;
+                if (!explorer)
+                    return;
 
-                if (!fullTransaction.workspace.public && !fullTransaction.rawError && !fullTransaction.parsedError && fullTransaction.receipt && !fullTransaction.receipt.status)
-                    trigger(`private-failedTransactions;workspace=${fullTransaction.workspaceId}`, 'new', fullTransaction.toJSON());
+                const isExplorerActive = await explorer.isActive();
+                if (!isExplorerActive)
+                    return;
+
+                if (receipt.status == 0) {
+                    await enqueue('processTransactionError', `processTransactionError-${fullTransaction.workspaceId}-${fullTransaction.hash}`, { transactionId: fullTransaction.id }, 1);
+                    if (!fullTransaction.rawError && !fullTransaction.parsedError)
+                        trigger(`private-failedTransactions;workspace=${fullTransaction.workspaceId}`, 'new', fullTransaction.toJSON());
+                }
 
                 return fullTransaction.triggerEvents();
             }
@@ -109,6 +132,7 @@ module.exports = (sequelize, DataTypes) => {
                         timestamp: moment(fullTransaction.timestamp).unix()
                     }, options.transaction);
             }
+            await receipt.insertAnalyticEvent(options.transaction);
 
             if (options.transaction) {
                 return options.transaction.afterCommit(afterCommitFn);
