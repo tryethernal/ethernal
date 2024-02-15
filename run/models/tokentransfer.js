@@ -5,6 +5,7 @@ const {
 } = require('sequelize');
 const Op = Sequelize.Op
 const moment = require('moment');
+const ethers = require('ethers');
 const { trigger } = require('../lib/pusher');
 const { enqueue } = require('../lib/queue');
 const { sanitize } = require('../lib/utils');
@@ -17,10 +18,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      TokenTransfer.belongsTo(models.Transaction, {
-          foreignKey: 'transactionId',
-          as: 'transaction',
-      });
+      TokenTransfer.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'transaction' });
       TokenTransfer.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       TokenTransfer.hasOne(models.Contract, {
           sourceKey: 'token',
@@ -34,13 +32,19 @@ module.exports = (sequelize, DataTypes) => {
           },
           constraints: false
       });
+      TokenTransfer.hasOne(models.TokenTransferEvent, { foreignKey: 'tokenTransferId', as: 'event' });
       TokenTransfer.hasMany(models.TokenBalanceChange, { foreignKey: 'tokenTransferId', as: 'tokenBalanceChanges' });
     }
 
     async safeDestroy(transaction) {
         const tokenBalanceChanges = await this.getTokenBalanceChanges();
         for (let i = 0; i < tokenBalanceChanges.length; i++)
-            await tokenBalanceChanges[i].destroy({ transaction});
+            await tokenBalanceChanges[i].safeDestroy(transaction);
+
+        const event = await this.getEvent();
+        if (event)
+            await event.destroy({ transaction });
+
         return this.destroy({ transaction });
     }
 
@@ -51,6 +55,23 @@ module.exports = (sequelize, DataTypes) => {
                 address: this.token
             }
         });
+    }
+
+    async insertAnalyticEvent(sequelizeTransaction) {
+        const transaction = await this.getTransaction();
+        const contract = await this.getContract();
+
+        return sequelize.models.TokenTransferEvent.create({
+            workspaceId: this.workspaceId,
+            tokenTransferId: this.id,
+            blockNumber: transaction.blockNumber,
+            timestamp: transaction.timestamp,
+            amount: ethers.BigNumber.from(this.amount).toString(),
+            token: this.token,
+            tokenType: contract ? contract.patterns[0] : null,
+            src: this.src,
+            dst: this.dst
+        }, { transaction: sequelizeTransaction });
     }
 
     async safeCreateBalanceChange(balanceChange) {
@@ -135,6 +156,8 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 ]
             });
+
+            await tokenTransfer.insertAnalyticEvent(options.transaction);
 
             if (transaction.workspace.public) {
                 options.transaction.afterCommit(() => {
