@@ -34,9 +34,9 @@ describe('integrityCheck', () => {
         const safeDeleteIntegrityCheck = jest.fn();
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             explorer: { hasReachedTransactionQuota, shouldSync: true },
+            getExpiredBlocks: jest.fn(() => ([{ revertIfPartial }])),
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn()
-                .mockResolvedValueOnce([{ id: 5, number: 5, revertIfPartial }])
                 .mockResolvedValueOnce([{ id: 3, number: 3 }])
                 .mockResolvedValueOnce([])
                 .mockResolvedValueOnce([]),
@@ -62,6 +62,7 @@ describe('integrityCheck', () => {
 
     it('Should return a message saying blocks have not been synced', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            getExpiredBlocks: jest.fn(() => ([])),
             explorer: { hasReachedTransactionQuota, shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(0),
             integrityCheckStartBlockNumber: 0,
@@ -73,6 +74,7 @@ describe('integrityCheck', () => {
 
     it('Should return a message saying transaction quota has been reached', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
+            getExpiredBlocks: jest.fn(() => ([])),
             explorer: { hasReachedTransactionQuota: hasReachedTransactionQuota.mockResolvedValueOnce(true), shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(0),
             integrityCheckStartBlockNumber: 0,
@@ -87,8 +89,8 @@ describe('integrityCheck', () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             explorer: { hasReachedTransactionQuota, shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
+            getExpiredBlocks: jest.fn(() => ([])),
             getBlocks: jest.fn()
-                .mockResolvedValueOnce([])
                 .mockResolvedValueOnce([{ id: 1, number: 1 }])
                 .mockResolvedValueOnce([]),
             integrityCheckStartBlockNumber: 5,
@@ -114,9 +116,9 @@ describe('integrityCheck', () => {
         const safeDeleteIntegrityCheck = jest.fn();
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             explorer: { hasReachedTransactionQuota, shouldSync: true },
+            getExpiredBlocks: jest.fn(() => ([])),
             countBlocks: jest.fn().mockResolvedValueOnce(1),
             getBlocks: jest.fn()
-                .mockResolvedValueOnce([])
                 .mockResolvedValueOnce([{ id: 1, number: 1 }])
                 .mockResolvedValueOnce([]),
             integrityCheckStartBlockNumber: 0,
@@ -143,7 +145,8 @@ describe('integrityCheck', () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             explorer: { hasReachedTransactionQuota, shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
-            getBlocks: jest.fn().mockResolvedValueOnce([]).mockResolvedValue([{ id: 1, number: 5 }]),
+            getExpiredBlocks: jest.fn(() => ([])),
+            getBlocks: jest.fn().mockResolvedValue([{ id: 1, number: 5 }]),
             integrityCheckStartBlockNumber: 5,
             integrityCheck: { block: { number: 2 }},
             public: true,
@@ -163,8 +166,8 @@ describe('integrityCheck', () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             explorer: { hasReachedTransactionQuota, shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
+            getExpiredBlocks: jest.fn(() => ([])),
             getBlocks: jest.fn()
-                .mockResolvedValueOnce([])
                 .mockResolvedValueOnce([{ id: 1, number: 1 }])
                 .mockResolvedValueOnce([]),
             integrityCheckStartBlockNumber: 5,
@@ -182,8 +185,8 @@ describe('integrityCheck', () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             explorer: { hasReachedTransactionQuota, shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
+            getExpiredBlocks: jest.fn(() => ([])),
             getBlocks: jest.fn()
-                .mockResolvedValueOnce([])
                 .mockResolvedValueOnce([{ id: 1, number: 1 }])
                 .mockResolvedValueOnce([]),
             integrityCheckStartBlockNumber: 5,
@@ -203,7 +206,8 @@ describe('integrityCheck', () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             explorer: { hasReachedTransactionQuota, shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
-            getBlocks: jest.fn().mockResolvedValueOnce([]).mockResolvedValue([{ id: 1, number: 1 }]),
+            getExpiredBlocks: jest.fn(() => ([])),
+            getBlocks: jest.fn().mockResolvedValue([{ id: 1, number: 1 }]),
             integrityCheckStartBlockNumber: 5,
             integrityCheck: { block: { number: 1 }},
             id: 1,
@@ -229,8 +233,8 @@ describe('integrityCheck', () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             explorer: { hasReachedTransactionQuota, shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
+            getExpiredBlocks: jest.fn(() => ([])),
             getBlocks: jest.fn()
-                .mockResolvedValueOnce([])
                 .mockResolvedValue([{ id: 1, number: 1 }])
                 .mockResolvedValue([{ id: 2, number: 5 }]),
             integrityCheckStartBlockNumber: 5,
@@ -252,8 +256,8 @@ describe('integrityCheck', () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             explorer: { hasReachedTransactionQuota, shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
+            getExpiredBlocks: jest.fn(() => ([])),
             getBlocks: jest.fn()
-                .mockResolvedValueOnce([])
                 .mockResolvedValue([{ id: 1, number: 1 }])
                 .mockResolvedValue([{ id: 2, number: 5 }]),
             integrityCheckStartBlockNumber: 5,

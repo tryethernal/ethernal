@@ -31,6 +31,7 @@
         "batchBlockDelete",
         "batchContractDelete",
         "cancelDemoExplorers",
-        "deleteWorkspace"
+        "deleteWorkspace",
+        "tokenTransferCleanup"
     ]
 }

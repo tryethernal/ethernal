@@ -73,14 +73,7 @@ module.exports = async job => {
         We assume that if a block stays in a syncing state for more than 15 minutes,
         it is stuck and we can delete it and resync it later through integrity check.
     */
-    const expiredPartialBlocks = await workspace.getBlocks({
-        where: {
-            state: 'syncing',
-            createdAt: {
-                [Op.lte]: moment().subtract(PARTIAL_BLOCK_TTL, 'seconds').toDate()
-            }
-        }
-    });
+    const expiredPartialBlocks = await workspace.getExpiredBlocks(15);
 
     if (expiredPartialBlocks.length > 0) {
         const lowestId = expiredPartialBlocks.map(b => b.id).sort()[0];

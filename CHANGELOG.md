@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.26.10] - 2024-02-15
+### Added
+- Background job to clean dangling token transfers
+- Migration to add missing foreign keys on token_transfers
+
+## [3.26.9] - 2024-02-06
+### Fixed
+- Bug that prevented blocks from being reverted if not synced properly
+
 ## [3.26.8] - 2024-01-29
 ### Fixed
 - Undefined posthog instance
