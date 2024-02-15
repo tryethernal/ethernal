@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       TokenBalanceChange.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'transaction' });
       TokenBalanceChange.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       TokenBalanceChange.belongsTo(models.TokenTransfer, { foreignKey: 'tokenTransferId', as: 'tokenTransfer' });
+      TokenBalanceChange.hasOne(models.TokenBalanceChangeEvent, { foreignKey: 'tokenBalanceChangeId', as: 'event' });
       TokenBalanceChange.hasOne(models.Contract, {
           sourceKey: 'token',
           foreignKey: 'address',
@@ -38,6 +39,14 @@ module.exports = (sequelize, DataTypes) => {
               address: this.token
           }
       });
+    }
+
+    async safeDestroy(transaction) {
+      const event = await this.getEvent();
+      if (event)
+        await event.destroy({ transaction });
+
+      return this.destroy({ transaction });
     }
 
     async insertAnalyticEvent(sequelizeTransaction) {

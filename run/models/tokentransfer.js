@@ -32,13 +32,19 @@ module.exports = (sequelize, DataTypes) => {
           },
           constraints: false
       });
+      TokenTransfer.hasOne(models.TokenTransferEvent, { foreignKey: 'tokenTransferId', as: 'event' });
       TokenTransfer.hasMany(models.TokenBalanceChange, { foreignKey: 'tokenTransferId', as: 'tokenBalanceChanges' });
     }
 
     async safeDestroy(transaction) {
         const tokenBalanceChanges = await this.getTokenBalanceChanges();
         for (let i = 0; i < tokenBalanceChanges.length; i++)
-            await tokenBalanceChanges[i].destroy({ transaction});
+            await tokenBalanceChanges[i].safeDestroy(transaction);
+
+        const event = await this.getEvent();
+        if (event)
+            await event.destroy({ transaction });
+
         return this.destroy({ transaction });
     }
 
