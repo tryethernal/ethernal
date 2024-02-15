@@ -6,7 +6,6 @@ const {
 
 const Op = Sequelize.Op
 const { sanitize, stringifyBns } = require('../lib/utils');
-const { enqueue } = require('../lib/queue');
 const { trigger } = require('../lib/pusher');
 const logger = require('../lib/logger');
 let { getTransactionMethodDetails } = require('../lib/abi');
@@ -36,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
           constraints: false
       });
       Transaction.hasOne(models.TransactionReceipt, { foreignKey: 'transactionId', as: 'receipt' });
+      Transaction.hasOne(models.TransactionEvent, { foreignKey: 'transactionId', as: 'event' });
       Transaction.hasMany(models.TokenTransfer, { foreignKey: 'transactionId', as: 'tokenTransfers' });
       Transaction.hasMany(models.TokenBalanceChange, { foreignKey: 'transactionId', as: 'tokenBalanceChanges' });
       Transaction.hasMany(models.TransactionTraceStep, { foreignKey: 'transactionId', as: 'traceSteps' });
@@ -45,9 +45,15 @@ module.exports = (sequelize, DataTypes) => {
         const receipt = await this.getReceipt();
         if (receipt)
             await receipt.safeDestroy(transaction);
+
         const traceSteps = await this.getTraceSteps();
         for (let i = 0; i < traceSteps.length; i++)
             await traceSteps[i].destroy(transaction);
+
+        const event = await this.getEvent();
+        if (event)
+            await event.destroy({ transaction });
+
         return this.destroy({ transaction });
     }
 
@@ -91,7 +97,7 @@ module.exports = (sequelize, DataTypes) => {
                         raw: log
                     }), { transaction });
                 } catch(error) {
-                    logger.error(error.message, { location: 'models.transaction.safeCreateReceipt', error: error, transaction: transaction });
+                    logger.error(error.message, { location: 'models.transaction.safeCreateReceipt', error: error, receipt, transaction: this });
                     await storedReceipt.createLog(sanitize({
                         workspaceId: this.workspaceId,
                         raw: log
