@@ -1,6 +1,6 @@
 'use strict';
 const ethers = require('ethers');
-const { stringifyBns } = require('../lib/utils');
+const { stringify } = require('../lib/utils');
 const BigNumber = ethers.BigNumber;
 const { TransactionReceipt, TransactionEvent, TokenTransfer, TokenTransferEvent, TokenBalanceChange, TokenBalanceChangeEvent } = require('../models');
 
@@ -19,13 +19,7 @@ module.exports = {
       const events = [];
       for (let i = 0; i < receipts.length; i++) {
         const receipt = receipts[i];
-        const gasPrice = stringifyBns(receipt.raw.effectiveGasPrice) || stringifyBns(receipt.raw.gasPrice);
-        try {
-          BigNumber.from(receipt.gasUsed).mul(BigNumber.from(gasPrice))
-        } catch(error) {
-          console.log(receipt.raw)
-          console.log(gasPrice)
-        }
+        const gasPrice = stringify(receipt.raw.effectiveGasPrice) || stringify(receipt.raw.gasPrice);
         const transactionFee = BigNumber.from(receipt.gasUsed).mul(BigNumber.from(gasPrice))
 
         try {
@@ -34,9 +28,9 @@ module.exports = {
             transactionId: receipt.transactionId,
             blockNumber: receipt.blockNumber,
             timestamp: receipt.transaction.timestamp,
-            transactionFee: transactionFee.toString(),
-            gasPrice: BigNumber.from(gasPrice).toString(),
-            gasUsed: BigNumber.from(receipt.gasUsed).toString(),
+            transactionFee: stringify(transactionFee),
+            gasPrice: stringify(gasPrice),
+            gasUsed: stringify(receipt.gasUsed),
             from: receipt.from,
             to: receipt.to
           });
@@ -71,7 +65,7 @@ module.exports = {
           tokenTransferId: transfer.id,
           blockNumber: transfer.transaction.blockNumber,
           timestamp: transfer.transaction.timestamp,
-          amount: BigNumber.from(transfer.amount).toString(),
+          amount: stringify(transfer.amount),
           token: transfer.token,
           tokenType: contract ? contract.patterns[0] : null,
           src: transfer.src,
@@ -105,7 +99,7 @@ module.exports = {
           timestamp: balance.transaction.timestamp,
           token: balance.token,
           address: balance.address,
-          currentBalance: BigNumber.from(balance.currentBalance).toString(),
+          currentBalance: stringify(balance.currentBalance),
           tokenType: contract ? contract.patterns[0] : null
         });
       }
