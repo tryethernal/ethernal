@@ -68,6 +68,15 @@ const _sanitize = (obj, numberization = true) => {
     );
 };
 
+const stringify = (obj) => {
+    if (ethers.BigNumber.isBigNumber(obj) || isStringifiedBN(obj))
+        return ethers.BigNumber.from(obj).toString();
+    else if (typeof obj.toString == 'function')
+        return obj.toString();
+    else
+        return String(obj);
+};
+
 const _stringifyBns = (obj) => {
     var res = {}
     for (const key in obj) {
@@ -87,5 +96,6 @@ module.exports = {
     isJson: _isJson,
     getEnv: getEnv,
     withTimeout: withTimeout,
-    slugify
+    slugify,
+    stringify
 };

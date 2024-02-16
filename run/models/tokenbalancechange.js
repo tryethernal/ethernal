@@ -4,6 +4,7 @@ const {
   Sequelize
 } = require('sequelize');
 const Op = Sequelize.Op;
+const ethers = require('ethers');
 
 module.exports = (sequelize, DataTypes) => {
   class TokenBalanceChange extends Model {
@@ -16,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       TokenBalanceChange.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'transaction' });
       TokenBalanceChange.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       TokenBalanceChange.belongsTo(models.TokenTransfer, { foreignKey: 'tokenTransferId', as: 'tokenTransfer' });
+      TokenBalanceChange.hasOne(models.TokenBalanceChangeEvent, { foreignKey: 'tokenBalanceChangeId', as: 'event' });
       TokenBalanceChange.hasOne(models.Contract, {
           sourceKey: 'token',
           foreignKey: 'address',
@@ -28,6 +30,39 @@ module.exports = (sequelize, DataTypes) => {
                },
              constraints: false
           });
+    }
+
+    getContract() {
+      return sequelize.models.Contract.findOne({
+          where: {
+              workspaceId: this.workspaceId,
+              address: this.token
+          }
+      });
+    }
+
+    async safeDestroy(transaction) {
+      const event = await this.getEvent();
+      if (event)
+        await event.destroy({ transaction });
+
+      return this.destroy({ transaction });
+    }
+
+    async insertAnalyticEvent(sequelizeTransaction) {
+      const transaction = await this.getTransaction();
+      const contract = await this.getContract();
+
+      return sequelize.models.TokenBalanceChange.create({
+          workspaceId: this.workspaceId,
+          tokenBalanceChangeId: this.id,
+          blockNumber: transaction.blockNumber,
+          timestamp: transaction.timestamp,
+          token: this.token,
+          address: this.address,
+          currentBalance: ethers.BigNumber.from(this.currentBalance).toString(),
+          tokenType: contract ? contract.patterns[0] : null
+      }, { transaction: sequelizeTransaction });
     }
   }
   TokenBalanceChange.init({
@@ -50,6 +85,11 @@ module.exports = (sequelize, DataTypes) => {
     previousBalance: DataTypes.STRING,
     diff: DataTypes.STRING
   }, {
+    hooks: {
+      async afterCreate(tokenBalanceChange, options) {
+        await tokenBalanceChange.insertAnalyticEvent(options.transaction);
+      }
+    },
     sequelize,
     modelName: 'TokenBalanceChange',
     tableName: 'token_balance_changes'
