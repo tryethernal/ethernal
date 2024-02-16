@@ -1067,7 +1067,7 @@ module.exports = (sequelize, DataTypes) => {
 
             const accounts = await sequelize.models.Account.findAll(filter);
             for (let i = 0; i < accounts.length; i++)
-                await accounts[i].safeDestroy(transaction);
+                await accounts[i].destroy({ transaction });
 
         };
 
