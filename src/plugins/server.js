@@ -161,7 +161,7 @@ const serverFunctions = {
             var provider = data.provider ? new ethers.providers.Web3Provider(data.provider, 'any') : serverFunctions._getProvider(data.rpcServer);
             var signer;
             var options = sanitize({
-                gasLimit: data.options.gasLimit || 100000,
+                gasLimit: data.options.gasLimit,
                 gasPrice: data.options.gasPrice,
                 blockTag: data.options.blockTag
             });
