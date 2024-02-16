@@ -100,7 +100,7 @@ export default {
         },
         callOptions: {
             from: null,
-            gasLimit: '100000',
+            gasLimit: null,
             gasPrice: null
         },
         rpcConnectionStatus: false,
