@@ -34,7 +34,7 @@ const workspaceNeedsBatchReset = async (userId, workspaceId) => {
 
     const blocks = await workspace.getBlocks({ limit: getMaxBlockForSyncReset() });
 
-    return false;
+    return blocks.length == getMaxBlockForSyncReset();
 };
 
 const resetExplorerTransactionQuota = async (userId, explorerId) => {
