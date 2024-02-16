@@ -1026,12 +1026,26 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    safeDestroyIntegrityCheck() {
-        return sequelize.models.IntegrityCheck.destroy({ where: { workspaceId: this.id }});
+    async safeDestroyIntegrityCheck(transaction) {
+        const integrityCheck = await this.getIntegrityCheck();
+        if (integrityCheck)
+            await integrityCheck.destroy(transaction);
+
+            return this.update({ integrityCheckStartBlockNumber: null }, { transaction });
     }
 
-    safeDestroyAccounts() {
-        return sequelize.models.Account.destroy({ where: { workspaceId: this.id }});
+    async safeDestroyRpcHealthCheck(transaction) {
+        const rpcHealthCheck = await this.getRpcHealthCheck();
+        if (rpcHealthCheck)
+            return rpcHealthCheck.destroy({ transaction });
+    }
+
+    async safeDestroyAccounts() {
+        return sequelize.transaction(async transaction => {
+            const accounts = await sequelize.models.Account.findAll();
+            for (let i = 0; i < accounts.length; i++)
+                await accounts[i].safeDestroy(transaction);
+        });
     }
 
     async reset(dayInterval, transaction) {
@@ -1039,21 +1053,22 @@ module.exports = (sequelize, DataTypes) => {
         if (dayInterval)
             filter['where']['createdAt'] = { [Op.lt]: sequelize.literal(`NOW() - interval '${dayInterval} day'`)};
 
-        const destroyAll = async (transaction) => {
-            await sequelize.models.IntegrityCheck.destroy(filter, { transaction });
-            await sequelize.models.RpcHealthCheck.destroy(filter, { transaction });
-            await sequelize.models.TokenBalanceChange.destroy(filter, { transaction });
-            await sequelize.models.TokenTransfer.destroy(filter, { transaction });
-            await sequelize.models.ContractSource.destroy(filter, { transaction });
-            await sequelize.models.ContractVerification.destroy(filter, { transaction });
-            await sequelize.models.Erc721Token.destroy(filter, { transaction });
-            await sequelize.models.Block.destroy(filter, { transaction });
-            await sequelize.models.Transaction.destroy(filter, { transaction });
-            await sequelize.models.TransactionTraceStep.destroy(filter, { transaction });
-            await sequelize.models.TransactionReceipt.destroy(filter, { transaction });
-            await sequelize.models.TransactionLog.destroy(filter, { transaction });
-            await sequelize.models.Contract.destroy(filter, { transaction });
-            await sequelize.models.Account.destroy(filter, { transaction });
+        const destroyAll = async transaction => {
+            await this.safeDestroyIntegrityCheck(transaction);
+            await this.safeDestroyRpcHealthCheck(transaction);
+
+            const blocks = await sequelize.models.Block.findAll(filter);
+            for (let i = 0; i < blocks.length; i++)
+                await blocks[i].safeDestroy(transaction);
+
+            const contracts = await sequelize.models.Contract.findAll(filter);
+            for (let i = 0; i < contracts.length; i++)
+                await contracts[i].safeDestroy(transaction);
+
+            const accounts = await sequelize.models.Account.findAll(filter);
+            for (let i = 0; i < accounts.length; i++)
+                await accounts[i].safeDestroy(transaction);
+
         };
 
         return transaction ?
