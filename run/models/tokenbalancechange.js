@@ -53,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
       const transaction = await this.getTransaction();
       const contract = await this.getContract();
 
-      return sequelize.models.TokenBalanceChange.create({
+      return sequelize.models.TokenBalanceChangeEvent.create({
           workspaceId: this.workspaceId,
           tokenBalanceChangeId: this.id,
           blockNumber: transaction.blockNumber,
