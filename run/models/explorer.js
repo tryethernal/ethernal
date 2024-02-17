@@ -140,6 +140,13 @@ module.exports = (sequelize, DataTypes) => {
         return this.update({ shouldSync: false });
     }
 
+    async isActive() {
+        const subscription = await this.getStripeSubscription();
+        const hasReachedTransactionQuota = await this.hasReachedTransactionQuota();
+
+        return subscription && subscription.status == 'active' && !hasReachedTransactionQuota;
+    }
+
     async hasReachedTransactionQuota() {
         if (!this.shouldEnforceQuota)
             return false;
