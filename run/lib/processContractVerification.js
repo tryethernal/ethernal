@@ -120,16 +120,23 @@ module.exports = async function(db, payload) {
         }
     }
 
-    const compiledRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(bytecode, includedBytecodes) + constructorArguments).toLowerCase();
+    let compiledRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(bytecode, includedBytecodes) + constructorArguments).toLowerCase();
+    while (compiledRuntimeBytecodeWithoutMetadata.endsWith('0033'))
+        compiledRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(compiledRuntimeBytecodeWithoutMetadata, includedBytecodes) + constructorArguments).toLowerCase();
 
     const deploymentTx = await db.getContractDeploymentTxByAddress(publicExplorerParams.userId, publicExplorerParams.workspaceId, contractAddress);
     if (!deploymentTx)
         throw new Error("This contract cannot be verified at the moment because the deployment transaction hasn't been indexed.");
 
     let deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length), includedBytecodes) + constructorArguments).toLowerCase();
+    while (deployedRuntimeBytecodeWithoutMetadata.endsWith('0033'))
+    deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deployedRuntimeBytecodeWithoutMetadata, includedBytecodes) + constructorArguments).toLowerCase();
 
     if (!deployedRuntimeBytecodeWithoutMetadata.startsWith('0x'))
         deployedRuntimeBytecodeWithoutMetadata = '0x' + deployedRuntimeBytecodeWithoutMetadata;
+
+    if (!compiledRuntimeBytecodeWithoutMetadata.startsWith('0x'))
+        compiledRuntimeBytecodeWithoutMetadata = '0x' + compiledRuntimeBytecodeWithoutMetadata;
 
     if (compiledRuntimeBytecodeWithoutMetadata === deployedRuntimeBytecodeWithoutMetadata) {
         const verificationData = {
