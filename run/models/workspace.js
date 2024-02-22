@@ -5,7 +5,6 @@ const {
   QueryTypes,
 } = require('sequelize');
 const { sanitize, slugify } = require('../lib/utils');
-const { enqueue } = require('../lib/queue');
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
 const { getMaxBlockForSyncReset } = require('../lib/env');
@@ -311,6 +310,9 @@ module.exports = (sequelize, DataTypes) => {
 
         const [earliestBlock] = await this.getBlocks({
             attributes: ['timestamp'],
+            where: {
+                timestamp: { [Op.gt]: new Date(0) }
+            },
             order: [['number', 'ASC']],
             limit: 1
         });
@@ -343,6 +345,9 @@ module.exports = (sequelize, DataTypes) => {
 
         const [earliestBlock] = await this.getBlocks({
             attributes: ['timestamp'],
+            where: {
+                timestamp: { [Op.gt]: new Date(0) }
+            },
             order: [['number', 'ASC']],
             limit: 1
         });
@@ -375,6 +380,9 @@ module.exports = (sequelize, DataTypes) => {
         if (!from || !to) throw new Error('Missing parameter');
 
         const [earliestBlock] = await this.getBlocks({
+            where: {
+                timestamp: { [Op.gt]: new Date(0) }
+            },
             attributes: ['timestamp'],
             order: [['number', 'ASC']],
             limit: 1
@@ -414,6 +422,9 @@ module.exports = (sequelize, DataTypes) => {
 
         const [earliestBlock] = await this.getBlocks({
             attributes: ['timestamp'],
+            where: {
+                timestamp: { [Op.gt]: new Date(0) }
+            },
             order: [['number', 'ASC']],
             limit: 1
         });
@@ -449,6 +460,9 @@ module.exports = (sequelize, DataTypes) => {
 
         const [earliestBlock] = await this.getBlocks({
             attributes: ['timestamp'],
+            where: {
+                timestamp: { [Op.gt]: new Date(0) }
+            },
             order: [['number', 'ASC']],
             limit: 1
         });
@@ -481,6 +495,9 @@ module.exports = (sequelize, DataTypes) => {
 
         const [earliestBlock] = await this.getBlocks({
             attributes: ['timestamp'],
+            where: {
+                timestamp: { [Op.gt]: new Date(0) }
+            },
             order: [['number', 'ASC']],
             limit: 1
         });
@@ -513,6 +530,9 @@ module.exports = (sequelize, DataTypes) => {
 
         const [earliestBlock] = await this.getBlocks({
             attributes: ['timestamp'],
+            where: {
+                timestamp: { [Op.gt]: new Date(0) }
+            },
             order: [['number', 'ASC']],
             limit: 1
         });
@@ -545,6 +565,9 @@ module.exports = (sequelize, DataTypes) => {
 
         const [earliestBlock] = await this.getBlocks({
             attributes: ['timestamp'],
+            where: {
+                timestamp: { [Op.gt]: new Date(0) }
+            },
             order: [['number', 'ASC']],
             limit: 1
         });
