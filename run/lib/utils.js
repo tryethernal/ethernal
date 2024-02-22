@@ -69,6 +69,8 @@ const _sanitize = (obj, numberization = true) => {
 };
 
 const stringify = (obj) => {
+    if (!obj)
+        return null;
     if (ethers.BigNumber.isBigNumber(obj) || isStringifiedBN(obj))
         return ethers.BigNumber.from(obj).toString();
     else if (typeof obj.toString == 'function')

@@ -176,7 +176,7 @@ class ContractConnector {
         this.abi = abi || ALL_ABIS;
         this.address = address;
         this.provider = getProvider(server);
-        this.contract = new ethers.Contract(address, this. abi, this.provider);
+        this.contract = new ethers.Contract(address, this.abi, this.provider);
     }
 
     // This should be improved by testing functions like transfer/allowance/approve/transferFrom
