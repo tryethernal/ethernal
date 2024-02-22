@@ -90,6 +90,7 @@ module.exports = (sequelize, DataTypes) => {
         const earliestBlock = await sequelize.models.Block.findOne({
             where: {
                 workspaceId: this.workspaceId,
+                timestamp: { [Op.gt]: new Date(0) }
             },
             attributes: ['timestamp'],
             order: [['number', 'ASC']],
@@ -162,6 +163,7 @@ module.exports = (sequelize, DataTypes) => {
         const earliestBlock = await sequelize.models.Block.findOne({
             where: {
                 workspaceId: this.workspaceId,
+                timestamp: { [Op.gt]: new Date(0) }
             },
             attributes: ['timestamp'],
             order: [['number', 'ASC']],
