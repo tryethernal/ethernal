@@ -1,5 +1,7 @@
 require('../mocks/lib/queue');
 require('../mocks/lib/stripe');
+require('../mocks/lib/env');
+require('../mocks/lib/flags');
 require('../mocks/lib/stripeLib');
 require('../mocks/lib/firebase');
 

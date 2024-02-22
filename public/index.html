@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo:600">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
-    <% if (htmlWebpackPlugin.options.feedbackDomain) { %>
+    <% if (htmlWebpackPlugin.options.feedbackDomain && htmlWebpackPlugin.options.isProduction) { %>
        <!-- Smartsupp Live Chat script -->
       <script type="text/javascript">
         if (window.location.host == 'app.<%= htmlWebpackPlugin.options.feedbackDomain %>') {

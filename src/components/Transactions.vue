@@ -1,6 +1,10 @@
 <template>
     <v-container fluid>
-        <Transactions-List></Transactions-List>
+        <v-card outlined>
+            <v-card-text>
+                <Transactions-List></Transactions-List>
+            </v-card-text>
+        </v-card>
     </v-container>
 </template>
 

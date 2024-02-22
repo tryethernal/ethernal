@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExplorerAnalytics.vue Should display charts 1`] = `
+<div class="container container--fluid">
+  <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+    <div class="v-card__text">
+      <div class="row">
+        <div class="pb-0 col col-3">
+          <div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+            <div class="v-input__control">
+              <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-5" class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-select__slot"><label for="input-5" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Time Range</label>
+                  <div class="v-select__selections">
+                    <div class="v-select__selection v-select__selection--comma">14 Days</div><input primary="" id="input-5" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  </div>
+                  <div class="v-input__append-inner">
+                    <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                  </div><input type="hidden" value="14">
+                </div>
+                <div class="v-menu">
+                  <!---->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 col-12">
+          <line-chart-stub tooltipunit="transaction" title="Transaction Volume" index="0" data="2,2" xlabels="0,1"></line-chart-stub>
+        </div>
+        <div class="col-md-6 col-12">
+          <line-chart-stub tooltipunit="transfers" title="ERC20 Transfer Volume" index="1" data="2,2" xlabels="0,1"></line-chart-stub>
+        </div>
+        <div class="col-md-6 col-12">
+          <line-chart-stub floating="true" tokensymbol="gwei" title="Average Gas Price" index="2" data="200000000,300000000" xlabels="0,1"></line-chart-stub>
+        </div>
+        <div class="col-md-6 col-12">
+          <line-chart-stub floating="true" tokensymbol="Ether" title="Average Transaction Fee" index="3" data="0.2,0.3" xlabels="0,1"></line-chart-stub>
+        </div>
+        <div class="col-md-6 col-12">
+          <line-chart-stub tooltipunit="wallet" title="Active Wallets Count" index="4" data="2,2" xlabels="0,1"></line-chart-stub>
+        </div>
+        <div class="col-md-6 col-12">
+          <line-chart-stub tooltipunit="wallet" title="Cumulative Wallets Count" index="5" data="2,2" xlabels="0,1"></line-chart-stub>
+        </div>
+        <div class="col-md-6 col-12">
+          <line-chart-stub tooltipunit="contracts" title="Deployed Contracts Count" index="6" data="2,2" xlabels="0,1"></line-chart-stub>
+        </div>
+        <div class="col-md-6 col-12">
+          <line-chart-stub tooltipunit="contract" title="Cumulative Deployed Contracts Count" index="6" data="2,2" xlabels="0,1"></line-chart-stub>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -53,7 +53,6 @@ module.exports = (sequelize, DataTypes) => {
         const event = await this.getEvent();
         if (event)
             await event.destroy({ transaction });
-
         return this.destroy({ transaction });
     }
 

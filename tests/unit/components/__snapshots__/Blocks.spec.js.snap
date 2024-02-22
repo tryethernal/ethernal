@@ -2,6 +2,10 @@
 
 exports[`Blocks.vue Should show the blocks list 1`] = `
 <div class="container container--fluid">
-  <block-list-stub></block-list-stub>
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__text">
+      <block-list-stub></block-list-stub>
+    </div>
+  </div>
 </div>
 `;

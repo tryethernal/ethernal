@@ -12,6 +12,7 @@ module.exports = {
             .tap(args => {
                 return [{
                     feedbackDomain: process.env.VUE_APP_MAIN_DOMAIN,
+                    isProduction: process.env.NODE_ENV == 'production',
                     ...args['0']
                 }];
             })

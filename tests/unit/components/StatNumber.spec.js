@@ -23,12 +23,14 @@ describe('StatNumber.vue', () => {
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should show the full number', () => {
+    it('Should show format if erc20', () => {
         const wrapper = helper.mountFn(StatNumber, {
             propsData: {
                 title: 'Stat',
                 value: "83742318000000000000000000",
                 loading: false,
+                decimals: 18,
+                tokenType: 'erc20',
                 long: true
             }
         });
@@ -39,7 +41,8 @@ describe('StatNumber.vue', () => {
         const wrapper = helper.mountFn(StatNumber, {
             propsData: {
                 title: 'Stat',
-                value: 1,
+                value: '1',
+                tokenType: 'erc721',
                 loading: false
             }
         });

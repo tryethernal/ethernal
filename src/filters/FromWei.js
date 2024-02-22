@@ -21,7 +21,7 @@ export default function (amount = 0, to, symbol = 'ether', unformatted = false) 
     if (['wei', 'kwei', 'mwei', 'gwei', 'szabo', 'finney'].indexOf(to) > -1)
         symbol = to;
 
-    let stringedAmount = typeof amountInt.toLocaleString === 'function' ? amountInt.toLocaleString('fullwide', { useGrouping:false }) : String(amountInt);
+    let stringedAmount = typeof amountInt.toLocaleString === 'function' ? amountInt.toLocaleString('fullwide', { useGrouping: false }) : String(amountInt);
 
     const ethAmount = BigNumber.from(stringedAmount);
     const roundedAmount = formatUnits(ethAmount, to)

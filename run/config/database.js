@@ -6,13 +6,14 @@ module.exports = {
         "database": "ethernal",
         "port": process.env.DB_PORT,
         "password": process.env.DB_PASSWORD,
+        "port": process.env.DB_PORT,
         "dialect": "postgres",
         "logging": function(sql, sequelizeObject) {
             logger.debug(sql, { instance: sequelizeObject.instance });
         }
     },
     production: {
-        "username": process.env.DB_USERNAME,
+        "username": process.env.DB_USER,
         "password": process.env.DB_PASSWORD,
         "database": process.env.DB_NAME,
         "host": process.env.DB_HOST,

@@ -6,11 +6,10 @@ const { sanitize } = require('../lib/utils');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
 const processContractVerification = require('../lib/processContractVerification');
-const { holderHistory, cumulativeSupply, transferVolume, holders, transfers } = require('./modules/tokens');
+const { holderHistory, circulatingSupply, holders, transfers } = require('./modules/tokens');
 
 router.get('/:address/holderHistory', workspaceAuthMiddleware, holderHistory);
-router.get('/:address/cumulativeSupply', workspaceAuthMiddleware, cumulativeSupply);
-router.get('/:address/transferVolume', workspaceAuthMiddleware, transferVolume);
+router.get('/:address/circulatingSupply', workspaceAuthMiddleware, circulatingSupply);
 router.get('/:address/holders', workspaceAuthMiddleware, holders);
 router.get('/:address/transfers', workspaceAuthMiddleware, transfers);
 

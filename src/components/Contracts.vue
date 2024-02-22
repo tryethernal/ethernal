@@ -1,61 +1,65 @@
 <template>
     <v-container fluid>
-        <template v-if="isUserAdmin">
-            <v-alert v-if="removedContract" dense text type="success">Contract at address <b>{{ removedContract }}</b> has been successfully removed.</v-alert>
-            <v-alert dense text v-show="!canImport" type="warning">Free plan users are limited to 10 synced contracts. Remove some contracts or <Upgrade-Link @goToBilling="goToBilling" :emit="true">upgrade</Upgrade-Link> to the Premium plan for more.</v-alert>
-            <Import-Contract-Modal ref="importContractModal" />
-            <Remove-Contract-Confirmation-Modal @refresh="getContracts" ref="removeContractConfirmationModal" />
-        </template>
-        <v-data-table
-            :loading="loading"
-            :items="contracts"
-            :headers="headers"
-            :sort-by="currentOptions.sortBy[0]"
-            :must-sort="true"
-            :sort-desc="true"
-            :server-items-length="contractCount"
-            :footer-props="{
-                itemsPerPageOptions: [10, 25, 100]
-            }"
-            item-key="address"
-            @update:options="getContracts">
-            <template v-slot:top v-if="isUserAdmin">
-                <v-toolbar flat dense class="py-0">
-                    <v-spacer></v-spacer>
-                    <v-btn small depressed color="primary" class="mr-2" @click="openImportContractModal()">
-                        <v-icon small class="mr-1">mdi-import</v-icon>Import Contract
-                    </v-btn>
-                </v-toolbar>
-            </template>
-            <template v-slot:no-data>
-                No contracts found
-            </template>
-            <template v-slot:item.tags="{ item }">
-                <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" x-small class="success mr-2">
-                    {{ formatContractPattern(pattern) }}
-                </v-chip>
-            </template>
-            <template v-slot:item.address="{ item }">
-                <Hash-Link :type="'contract'" :hash="item.address" :contract="item" />
-            </template>
-            <template v-slot:item.timestamp="{ item }">
-                <template v-if="item.timestamp">
-                    <v-tooltip top :open-delay="150" color="grey darken-3">
-                        <template v-slot:activator="{ on, attrs }">
-                            <span v-bind="attrs" v-on="on">
-                                {{ moment(item.timestamp) | moment('MM/DD h:mm:ss A') }}
-                            </span>
-                        </template>
-                        {{ moment(item.timestamp).fromNow() }}
-                    </v-tooltip>
+        <v-card outlined>
+            <v-card-text>
+                <template v-if="isUserAdmin">
+                    <v-alert v-if="removedContract" dense text type="success">Contract at address <b>{{ removedContract }}</b> has been successfully removed.</v-alert>
+                    <v-alert dense text v-show="!canImport" type="warning">Free plan users are limited to 10 synced contracts. Remove some contracts or <Upgrade-Link @goToBilling="goToBilling" :emit="true">upgrade</Upgrade-Link> to the Premium plan for more.</v-alert>
+                    <Import-Contract-Modal ref="importContractModal" />
+                    <Remove-Contract-Confirmation-Modal @refresh="getContracts" ref="removeContractConfirmationModal" />
                 </template>
-            </template>
-            <template v-slot:item.actions="{ item }" v-if="isUserAdmin">
-                <v-btn color="error" x-small icon @click="openRemoveContractConfirmationModal(item.address)">
-                    <v-icon>mdi-delete</v-icon>
-                </v-btn>
-            </template>
-        </v-data-table>
+                <v-data-table
+                    :loading="loading"
+                    :items="contracts"
+                    :headers="headers"
+                    :sort-by="currentOptions.sortBy[0]"
+                    :must-sort="true"
+                    :sort-desc="true"
+                    :server-items-length="contractCount"
+                    :footer-props="{
+                        itemsPerPageOptions: [10, 25, 100]
+                    }"
+                    item-key="address"
+                    @update:options="getContracts">
+                    <template v-slot:top v-if="isUserAdmin">
+                        <v-toolbar flat dense class="py-0">
+                            <v-spacer></v-spacer>
+                            <v-btn small depressed color="primary" class="mr-2" @click="openImportContractModal()">
+                                <v-icon small class="mr-1">mdi-import</v-icon>Import Contract
+                            </v-btn>
+                        </v-toolbar>
+                    </template>
+                    <template v-slot:no-data>
+                        No contracts found
+                    </template>
+                    <template v-slot:item.tags="{ item }">
+                        <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" x-small class="success mr-2">
+                            {{ formatContractPattern(pattern) }}
+                        </v-chip>
+                    </template>
+                    <template v-slot:item.address="{ item }">
+                        <Hash-Link :type="'contract'" :hash="item.address" :contract="item" />
+                    </template>
+                    <template v-slot:item.timestamp="{ item }">
+                        <template v-if="item.timestamp">
+                            <v-tooltip top :open-delay="150" color="grey darken-3">
+                                <template v-slot:activator="{ on, attrs }">
+                                    <span v-bind="attrs" v-on="on">
+                                        {{ moment(item.timestamp) | moment('MM/DD h:mm:ss A') }}
+                                    </span>
+                                </template>
+                                {{ moment(item.timestamp).fromNow() }}
+                            </v-tooltip>
+                        </template>
+                    </template>
+                    <template v-slot:item.actions="{ item }" v-if="isUserAdmin">
+                        <v-btn color="error" x-small icon @click="openRemoveContractConfirmationModal(item.address)">
+                            <v-icon>mdi-delete</v-icon>
+                        </v-btn>
+                    </template>
+                </v-data-table>
+            </v-card-text>
+        </v-card>
     </v-container>
 </template>
 <script>

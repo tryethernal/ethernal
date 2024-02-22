@@ -36,7 +36,7 @@ exports[`ERC20Contract.vue Should display contract info 1`] = `
           <stat-number-stub title="Transfers" value="2"></stat-number-stub>
         </div>
         <div class="col-sm-6 col-lg-6 col-12">
-          <stat-number-stub infotooltip="Number of tokens currently in circulation" title="Circulating Supply" decimals="2" value="1000000000"></stat-number-stub>
+          <stat-number-stub tokentype="erc20" infotooltip="Number of tokens currently in circulation" title="Circulating Supply" decimals="2" value="1000000000"></stat-number-stub>
         </div>
         <div class="col-sm-6 col-lg-6 col-12">
           <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
@@ -49,44 +49,46 @@ exports[`ERC20Contract.vue Should display contract info 1`] = `
       </div>
     </div>
   </div>
-  <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="transition: none;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active" id="transactionsTab">Transactions</a> <a tabindex="0" href="#interactions" aria-selected="false" role="tab" class="v-tab" id="interactionsTab">Read / Write</a> <a tabindex="0" href="#holders" aria-selected="false" role="tab" class="v-tab" id="holdersTab">Holders</a> <a tabindex="0" href="#transfers" aria-selected="false" role="tab" class="v-tab" id="transfersTab">Transfers</a> <a tabindex="0" href="#analytics" aria-selected="false" role="tab" class="v-tab" style="display: none;" id="analyticsTab">Analytics</a>
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-tabs theme--light">
+      <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
+        <div class="v-slide-group__prev v-slide-group__prev--disabled">
+          <transition-stub name="fade-transition"></transition-stub>
         </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-    </div>
-  </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
-    <div class="v-window__container">
-      <transition-stub name="">
-        <div class="v-window-item v-window-item--active" id="transactions">
-          <div class="container container--fluid">
-            <transactions-list-stub address="0x123" currentaddress="0x123"></transactions-list-stub>
+        <div class="v-slide-group__wrapper">
+          <div class="v-slide-group__content v-tabs-bar__content">
+            <div class="v-tabs-slider-wrapper" style="transition: none;">
+              <div class="v-tabs-slider"></div>
+            </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active" id="transactionsTab">Transactions</a> <a tabindex="0" href="#interactions" aria-selected="false" role="tab" class="v-tab" id="interactionsTab">Read / Write</a> <a tabindex="0" href="#holders" aria-selected="false" role="tab" class="v-tab" id="holdersTab">Holders</a> <a tabindex="0" href="#transfers" aria-selected="false" role="tab" class="v-tab" id="transfersTab">Transfers</a> <a tabindex="0" href="#analytics" aria-selected="false" role="tab" class="v-tab" id="analyticsTab">Analytics</a>
           </div>
         </div>
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
-      <transition-stub name="">
-        <!---->
-      </transition-stub>
+        <div class="v-slide-group__next v-slide-group__next--disabled">
+          <transition-stub name="fade-transition"></transition-stub>
+        </div>
+      </div>
+    </div>
+    <div class="v-window v-item-group theme--light v-tabs-items">
+      <div class="v-window__container">
+        <transition-stub name="">
+          <div class="v-window-item v-window-item--active" id="transactions">
+            <div class="container container--fluid">
+              <transactions-list-stub address="0x123" currentaddress="0x123"></transactions-list-stub>
+            </div>
+          </div>
+        </transition-stub>
+        <transition-stub name="">
+          <!---->
+        </transition-stub>
+        <transition-stub name="">
+          <!---->
+        </transition-stub>
+        <transition-stub name="">
+          <!---->
+        </transition-stub>
+        <transition-stub name="">
+          <!---->
+        </transition-stub>
+      </div>
     </div>
   </div>
 </div>
@@ -139,44 +141,46 @@ exports[`ERC20Contract.vue Should display placeholders 1`] = `
       </div>
     </div>
   </div>
-  <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text" data-booted="true">
-      <div class="v-slide-group__prev v-slide-group__prev--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-      <div class="v-slide-group__wrapper">
-        <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="transition: none;">
-            <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active" id="transactionsTab">Transactions</a> <a tabindex="0" href="#interactions" aria-selected="false" role="tab" class="v-tab" id="interactionsTab">Read / Write</a> <a tabindex="0" href="#holders" aria-selected="false" role="tab" class="v-tab" id="holdersTab">Holders</a> <a tabindex="0" href="#transfers" aria-selected="false" role="tab" class="v-tab" id="transfersTab">Transfers</a> <a tabindex="0" href="#analytics" aria-selected="false" role="tab" class="v-tab" style="display: none;" id="analyticsTab">Analytics</a>
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-tabs theme--light">
+      <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text" data-booted="true">
+        <div class="v-slide-group__prev v-slide-group__prev--disabled">
+          <transition-stub name="fade-transition"></transition-stub>
         </div>
-      </div>
-      <div class="v-slide-group__next v-slide-group__next--disabled">
-        <transition-stub name="fade-transition"></transition-stub>
-      </div>
-    </div>
-  </div>
-  <div class="v-window v-item-group theme--light v-tabs-items">
-    <div class="v-window__container">
-      <transition-stub name="v-window-x-transition">
-        <div class="v-window-item v-window-item--active" id="transactions">
-          <div class="container container--fluid">
-            <transactions-list-stub address="0x123" currentaddress="0x123"></transactions-list-stub>
+        <div class="v-slide-group__wrapper">
+          <div class="v-slide-group__content v-tabs-bar__content">
+            <div class="v-tabs-slider-wrapper" style="transition: none;">
+              <div class="v-tabs-slider"></div>
+            </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active" id="transactionsTab">Transactions</a> <a tabindex="0" href="#interactions" aria-selected="false" role="tab" class="v-tab" id="interactionsTab">Read / Write</a> <a tabindex="0" href="#holders" aria-selected="false" role="tab" class="v-tab" id="holdersTab">Holders</a> <a tabindex="0" href="#transfers" aria-selected="false" role="tab" class="v-tab" id="transfersTab">Transfers</a> <a tabindex="0" href="#analytics" aria-selected="false" role="tab" class="v-tab" id="analyticsTab">Analytics</a>
           </div>
         </div>
-      </transition-stub>
-      <transition-stub name="v-window-x-transition">
-        <!---->
-      </transition-stub>
-      <transition-stub name="v-window-x-transition">
-        <!---->
-      </transition-stub>
-      <transition-stub name="v-window-x-transition">
-        <!---->
-      </transition-stub>
-      <transition-stub name="v-window-x-transition">
-        <!---->
-      </transition-stub>
+        <div class="v-slide-group__next v-slide-group__next--disabled">
+          <transition-stub name="fade-transition"></transition-stub>
+        </div>
+      </div>
+    </div>
+    <div class="v-window v-item-group theme--light v-tabs-items">
+      <div class="v-window__container">
+        <transition-stub name="v-window-x-transition">
+          <div class="v-window-item v-window-item--active" id="transactions">
+            <div class="container container--fluid">
+              <transactions-list-stub address="0x123" currentaddress="0x123"></transactions-list-stub>
+            </div>
+          </div>
+        </transition-stub>
+        <transition-stub name="v-window-x-transition">
+          <!---->
+        </transition-stub>
+        <transition-stub name="v-window-x-transition">
+          <!---->
+        </transition-stub>
+        <transition-stub name="v-window-x-transition">
+          <!---->
+        </transition-stub>
+        <transition-stub name="v-window-x-transition">
+          <!---->
+        </transition-stub>
+      </div>
     </div>
   </div>
 </div>

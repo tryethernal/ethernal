@@ -773,7 +773,7 @@ const getTokenHolderHistory = async (workspaceId, address, from, to) => {
     return contract.getTokenHolderHistory(from, to);
 };
 
-const getTokenCumulativeSupply = async (workspaceId, address, from, to) => {
+const getTokenCirculatingSupply = async (workspaceId, address, from, to) => {
     if (!workspaceId || !address || !from || !to) throw new Error('Missing parameter');
 
     const workspace = await Workspace.findByPk(workspaceId);
@@ -782,19 +782,21 @@ const getTokenCumulativeSupply = async (workspaceId, address, from, to) => {
     if (!contract)
         throw new Error(`Can't find contract at this address`);
 
-    return contract.getTokenCumulativeSupply(from, to);
+    return contract.getTokenCirculatingSupply(from, to);
 };
 
-const getTokenTransferVolume = async (workspaceId, address, from, to) => {
-    if (!workspaceId || !address || !from || !to) throw new Error('Missing parameter');
+const getTokenTransferVolume = async (workspaceId, from, to, address, type) => {
+    if (!workspaceId || !from || !to) throw new Error('Missing parameter');
 
     const workspace = await Workspace.findByPk(workspaceId);
-    const contract = await workspace.findContractByAddress(address);
 
-    if (!contract)
-        throw new Error(`Can't find contract at this address`);
+    if (address) {
+        const contract = await workspace.findContractByAddress(address);
+        if (!contract)
+            throw new Error(`Can't find contract at this address`);
+    }
 
-    return contract.getTokenTransferVolume(from, to);
+    return workspace.getTokenTransferVolume(from, to, address, type);
 };
 
 const getTokenHolders = async (workspaceId, address, page, itemsPerPage, orderBy, order) => {
@@ -827,7 +829,7 @@ const getTokenStats = async (workspaceId, address) => {
     const tokenHolderCount = await contract.countTokenHolders();
     const transactionCount = await contract.countTransactions();
     const tokenTransferCount = await contract.countTokenTransfers();
-    const tokenCirculatingSupply = await contract.getTokenCirculatingSupply();
+    const tokenCirculatingSupply = await contract.getCurrentTokenCirculatingSupply();
 
     return {
         tokenHolderCount: tokenHolderCount,
@@ -977,25 +979,80 @@ const setWorkspaceRemoteFlag = async (workspaceId, flag) => {
     return workspace.update({ isRemote: flag });
 };
 
-const getWalletVolume = async (workspaceId) => {
-    if (!workspaceId) throw new Error('Missing parameter.');
+const getCumulativeDeployedContractCount = async (workspaceId, from, to) => {
+    if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
         throw new Error('Could not find workspace');
 
-    const wallets = await workspace.getWalletVolume();
-    return wallets;
+    const cumulativeDeployedContractCount = await workspace.getCumulativeDeployedContractCount(from, to);
+    return cumulativeDeployedContractCount;
 };
 
-const getTransactionVolume = async (workspaceId) => {
-    if (!workspaceId) throw new Error('Missing parameter.');
+const getDeployedContractCount = async (workspaceId, from, to) => {
+    if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
         throw new Error('Could not find workspace');
 
-    const transactions = await workspace.getTransactionVolume();
+    const deployedContractCount = await workspace.getDeployedContractCount(from, to);
+    return deployedContractCount;
+};
+
+const getUniqueWalletCount = async (workspaceId, from, to) => {
+    if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    const uniqueWalletCount = await workspace.getUniqueWalletCount(from, to);
+    return uniqueWalletCount;
+};
+
+const getCumulativeWalletCount = async (workspaceId, from, to) => {
+    if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    const cumulativeWalletCount = await workspace.getCumulativeWalletCount(from, to);
+    return cumulativeWalletCount;
+};
+
+const getAverageGasPrice = async (workspaceId, from, to) => {
+    if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    const avgGasPrice = await workspace.getAverageGasPrice(from, to);
+    return avgGasPrice;
+};
+
+const getAverageTransactionFee = async (workspaceId, from, to) => {
+    if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    const avgTransactionFee = await workspace.getAverageTransactionFee(from, to);
+    return avgTransactionFee;
+};
+
+const getTransactionVolume = async (workspaceId, from, to) => {
+    if (!workspaceId || !from || !to) throw new Error('Missing parameter.');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    const transactions = await workspace.getTransactionVolume(from, to);
     return transactions;
 };
 
@@ -1006,28 +1063,17 @@ const getActiveWalletCount = async (workspaceId) => {
     if (!workspace)
         throw new Error('Could not find workspace');
 
-    const wallets = await workspace.findActiveWallets();
-    return wallets.length;
+    return workspace.countActiveWallets();
 };
 
-const getTotalTxCount = async (workspaceId) => {
+const getTotalTxCount = async (workspaceId, since) => {
     if (!workspaceId) throw new Error('Missing parameter.');
 
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
         throw new Error('Could not find workspace');
 
-    return workspace.countTransactions();
-};
-
-const getTxCount = async (workspaceId, since = 0) => {
-    if (!workspaceId) throw new Error('Missing parameter.');
-
-    const workspace = await Workspace.findByPk(workspaceId);
-    if (!workspace)
-        throw new Error('Could not find workspace');
-
-    return workspace.countTransactionsSince(since);
+    return workspace.getTransactionCount(since);
 };
 
 const getAddressLatestTokenBalances = async (workspaceId, address, tokenPatterns) => {
@@ -1699,11 +1745,9 @@ module.exports = {
     searchForNumber: searchForNumber,
     searchForText: searchForText,
     getAddressLatestTokenBalances: getAddressLatestTokenBalances,
-    getTxCount: getTxCount,
     getTotalTxCount: getTotalTxCount,
     getActiveWalletCount: getActiveWalletCount,
     getTransactionVolume: getTransactionVolume,
-    getWalletVolume: getWalletVolume,
     setWorkspaceRemoteFlag: setWorkspaceRemoteFlag,
     storeErc721Token: storeErc721Token,
     getContractErc721Tokens: getContractErc721Tokens,
@@ -1717,7 +1761,7 @@ module.exports = {
     getTokenStats: getTokenStats,
     getTokenHolders: getTokenHolders,
     getTokenTransferVolume: getTokenTransferVolume,
-    getTokenCumulativeSupply: getTokenCumulativeSupply,
+    getTokenCirculatingSupply: getTokenCirculatingSupply,
     getTokenHolderHistory: getTokenHolderHistory,
     getTokenTransferForProcessing: getTokenTransferForProcessing,
     getTransactionTokenTransfers: getTransactionTokenTransfers,
@@ -1768,5 +1812,11 @@ module.exports = {
     makeExplorerDemo: makeExplorerDemo,
     resetExplorerTransactionQuota: resetExplorerTransactionQuota,
     workspaceNeedsBatchReset: workspaceNeedsBatchReset,
+    getAverageGasPrice: getAverageGasPrice,
+    getAverageTransactionFee: getAverageTransactionFee,
+    getUniqueWalletCount: getUniqueWalletCount,
+    getCumulativeWalletCount: getCumulativeWalletCount,
+    getDeployedContractCount: getDeployedContractCount,
+    getCumulativeDeployedContractCount: getCumulativeDeployedContractCount,
     Workspace: Workspace
 };

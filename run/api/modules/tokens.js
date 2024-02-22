@@ -16,32 +16,17 @@ const holderHistory = async (req, res) => {
     }
 };
 
-const cumulativeSupply = async (req, res) => {
+const circulatingSupply = async (req, res) => {
     const data = req.query;
     try {
         if (!data.workspace || !data.from || !data.to)
             throw new Error('Missing parameters.');
 
-        const volume = await db.getTokenCumulativeSupply(data.workspace.id, req.params.address, data.from, data.to);
+        const volume = await db.getTokenCirculatingSupply(data.workspace.id, req.params.address, data.from, data.to);
 
         res.status(200).json(volume);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.modules.tokens.cumulativeSupply', error: error, data: data });
-        res.status(400).send(error.message);
-    }
-};
-
-const transferVolume = async (req, res) => {
-    const data = req.query;
-    try {
-        if (!data.workspace || !data.from || !data.to)
-            throw new Error('Missing parameters.');
-
-        const volume = await db.getTokenTransferVolume(data.workspace.id, req.params.address, data.from, data.to);
-
-        res.status(200).json(volume);
-    } catch(error) {
-        logger.error(error.message, { location: 'get.api.modules.tokens.transferVolume', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.modules.tokens.circulatingSupply', error: error, data: data });
         res.status(400).send(error.message);
     }
 };
@@ -76,10 +61,4 @@ const transfers = async (req, res) => {
     }
 };
 
-module.exports = {
-    holderHistory: holderHistory,
-    cumulativeSupply: cumulativeSupply,
-    transferVolume: transferVolume,
-    holders: holders,
-    transfers: transfers
-};
+module.exports = { holderHistory, circulatingSupply, holders, transfers };
