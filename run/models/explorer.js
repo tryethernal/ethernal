@@ -313,6 +313,12 @@ module.exports = (sequelize, DataTypes) => {
                     throw new Error('Upgrade your plan to display a total supply.')
             }
 
+            if (filteredSettings['slug'] && filteredSettings['slug'] != this.slug) {
+                const existingExplorer = await sequelize.models.Explorer.findOne({ where: { slug: filteredSettings['slug'] }});
+                if (existingExplorer)
+                    throw new Error('This domain is not available');
+            }
+
             return this.update(filteredSettings);
         }
     }
