@@ -103,7 +103,7 @@ export default {
             return this.selectedTimeRange > 0 ? new Date(new Date() - this.selectedTimeRange * 24 * 3600 * 1000) : new Date(0);
         },
         to() {
-            return new Date(new Date() - 24 * 3600 * 1000);
+            return new Date();
         }
     }
 }
