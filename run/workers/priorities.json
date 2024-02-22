@@ -7,8 +7,7 @@
         "updateApproximatedRecord",
         "receiptSync",
         "removeStalledBlock",
-        "increaseStripeBillingQuota",
-        "refreshMaterializedViews"
+        "increaseStripeBillingQuota"
     ],
     "medium": [
         "processContract",
