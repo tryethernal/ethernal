@@ -6,7 +6,6 @@ const {
 
 const Op = Sequelize.Op
 const { sanitize, stringifyBns } = require('../lib/utils');
-const { enqueue } = require('../lib/queue');
 const { trigger } = require('../lib/pusher');
 const logger = require('../lib/logger');
 let { getTransactionMethodDetails } = require('../lib/abi');
@@ -54,7 +53,6 @@ module.exports = (sequelize, DataTypes) => {
         const event = await this.getEvent();
         if (event)
             await event.destroy({ transaction });
-        
         return this.destroy({ transaction });
     }
 

@@ -1,7 +1,8 @@
 'use strict';
 const ethers = require('ethers');
+const { stringify } = require('../lib/utils');
 const BigNumber = ethers.BigNumber;
-const { TransactionReceipt, TransactionEvent, TokenTransfer, TokenTransferEvent, TokenBalanceChange, TokenBalanceChangeEvent } = require('../models');
+const { Transaction, TransactionReceipt, TransactionEvent, TokenTransfer, TokenTransferEvent, TokenBalanceChange, TokenBalanceChangeEvent } = require('../models');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -10,28 +11,38 @@ module.exports = {
     let receipts;
     let offset = 0, limit = parseInt(process.env.MAX_NUMBER_TO_INSERT || 1);
     do {
+
       receipts = await TransactionReceipt.findAll({
-        include: 'transaction',
+        include: [{
+          model: Transaction,
+          as: 'transaction',
+        }],
         order: [['id', 'ASC']],
         offset, limit
       });
+
       const events = [];
       for (let i = 0; i < receipts.length; i++) {
         const receipt = receipts[i];
-        const gasPrice = receipt.raw.effectiveGasPrice || receipt.raw.gasPrice;
+        const gasPrice = stringify(receipt.raw.effectiveGasPrice) || stringify(receipt.raw.gasPrice) || stringify(receipt.transaction.gasPrice);
         const transactionFee = BigNumber.from(receipt.gasUsed).mul(BigNumber.from(gasPrice))
 
-        events.push({
-          workspaceId: receipt.workspaceId,
-          transactionId: receipt.transactionId,
-          blockNumber: receipt.blockNumber,
-          timestamp: receipt.transaction.timestamp,
-          transactionFee: transactionFee.toString(),
-          gasPrice: BigNumber.from(gasPrice).toString(),
-          gasUsed: BigNumber.from(receipt.gasUsed).toString(),
-          from: receipt.from,
-          to: receipt.to
-        });
+        try {
+          events.push({
+            workspaceId: receipt.workspaceId,
+            transactionId: receipt.transactionId,
+            blockNumber: receipt.blockNumber,
+            timestamp: receipt.transaction.timestamp,
+            transactionFee: stringify(transactionFee),
+            gasPrice: stringify(gasPrice),
+            gasUsed: stringify(receipt.gasUsed),
+            from: receipt.from,
+            to: receipt.to
+          });
+        } catch(error) {
+          console.log(gasPrice)
+          console.log(receipt)
+        }
       }
       await TransactionEvent.bulkCreate(events, { ignoreDuplicates: true });
       console.log(`${events.length} transaction events inserted.`);
@@ -42,7 +53,12 @@ module.exports = {
     offset = 0;
     do {
       transfers = await TokenTransfer.findAll({
+<<<<<<< HEAD
         include: 'transaction',
+=======
+        include: { model: Transaction, as: 'transaction', attributes: ['blockNumber', 'timestamp'] },
+        attributes: ['token', 'id', 'workspaceId', 'amount', 'src', 'dst'],
+>>>>>>> develop
         order: [['id', 'ASC']],
         offset, limit
       });
@@ -59,7 +75,7 @@ module.exports = {
           tokenTransferId: transfer.id,
           blockNumber: transfer.transaction.blockNumber,
           timestamp: transfer.transaction.timestamp,
-          amount: BigNumber.from(transfer.amount).toString(),
+          amount: stringify(transfer.amount),
           token: transfer.token,
           tokenType: contract ? contract.patterns[0] : null,
           src: transfer.src,
@@ -93,7 +109,7 @@ module.exports = {
           timestamp: balance.transaction.timestamp,
           token: balance.token,
           address: balance.address,
-          currentBalance: BigNumber.from(balance.currentBalance).toString(),
+          currentBalance: stringify(balance.currentBalance),
           tokenType: contract ? contract.patterns[0] : null
         });
       }

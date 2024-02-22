@@ -1547,12 +1547,12 @@ const updateWorkspaceSettings = async (userId, workspace, settings) => {
     return newWorkspace.toJSON();
 };
 
-const resetWorkspace = async (userId, workspace, hourInterval) => {
+const resetWorkspace = async (userId, workspace, dayInterval) => {
     if (!userId || !String(workspace)) throw new Error('Missing parameter.');
 
     const user = await User.findByAuthIdWithWorkspace(userId, String(workspace));
     if (user && user.workspaces.length)
-        await user.workspaces[0].reset(hourInterval);
+        await user.workspaces[0].reset(dayInterval);
 };
 
 const getUserbyStripeCustomerId = async (stripeCustomerId) => {

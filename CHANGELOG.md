@@ -4,6 +4,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.27.7] - 2024-02-21
+### Fixed
+- Contract verification bug
+
+## [3.27.6] - 2024-02-20
+### Fixed
+- Receipt fails to be inserted if gas price wasn't present
+
+## [3.27.5] - 2024-02-17
+### Fixed
+- Token balance change event insertion
+
+## [3.27.4] - 2024-02-17
+### Fixed
+- Missing explorer function
+
+## [3.27.3] - 2024-02-17
+### Fixed
+- Background workspace reset bug
+
+## [3.27.2] - 2024-02-16
+### Fixed
+- Another workspace reset bug
+
+## [3.27.1] - 2024-02-16
+### Fixed
+- Bug preventing workspace from being reset properly
+
+## [3.27.0] - 2024-02-16
+### Added
+- Start inserting analytics events in tsdb
+
+## [3.26.11] - 2024-02-16
+### Fixed
+- Gas limit bug
+
 ## [3.26.10] - 2024-02-15
 ### Added
 - Background job to clean dangling token transfers
