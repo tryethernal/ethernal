@@ -2,7 +2,7 @@
 const ethers = require('ethers');
 const { stringify } = require('../lib/utils');
 const BigNumber = ethers.BigNumber;
-const { TransactionReceipt, TransactionEvent, TokenTransfer, TokenTransferEvent, TokenBalanceChange, TokenBalanceChangeEvent } = require('../models');
+const { Transaction, TransactionReceipt, TransactionEvent, TokenTransfer, TokenTransferEvent, TokenBalanceChange, TokenBalanceChangeEvent } = require('../models');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -11,15 +11,20 @@ module.exports = {
     let receipts;
     let offset = 0, limit = parseInt(process.env.MAX_NUMBER_TO_INSERT || 1);
     do {
+
       receipts = await TransactionReceipt.findAll({
-        include: 'transaction',
+        include: [{
+          model: Transaction,
+          as: 'transaction',
+        }],
         order: [['id', 'ASC']],
         offset, limit
       });
+
       const events = [];
       for (let i = 0; i < receipts.length; i++) {
         const receipt = receipts[i];
-        const gasPrice = stringify(receipt.raw.effectiveGasPrice) || stringify(receipt.raw.gasPrice);
+        const gasPrice = stringify(receipt.raw.effectiveGasPrice) || stringify(receipt.raw.gasPrice) || stringify(receipt.transaction.gasPrice);
         const transactionFee = BigNumber.from(receipt.gasUsed).mul(BigNumber.from(gasPrice))
 
         try {
@@ -48,7 +53,8 @@ module.exports = {
     offset = 0;
     do {
       transfers = await TokenTransfer.findAll({
-        include: 'transaction',
+        include: { model: Transaction, as: 'transaction', attributes: ['blockNumber', 'timestamp'] },
+        attributes: ['token', 'id', 'workspaceId', 'amount', 'src', 'dst'],
         order: [['id', 'ASC']],
         offset, limit
       });
