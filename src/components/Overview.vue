@@ -86,7 +86,7 @@ export default {
         },
         pusherHandler: null,
         from: new Date(new Date() - 14 * 24 * 3600 * 1000),
-        to: new Date(new Date() - 24 * 3600 * 1000)
+        to: new Date()
     }),
     mounted() {
         this.getGlobalStats();
