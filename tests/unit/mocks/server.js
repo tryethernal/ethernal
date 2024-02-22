@@ -32,7 +32,6 @@ jest.mock('@/plugins/server', () => ({
                 getGlobalStats: jest.fn(),
                 getTransactions: jest.fn(),
                 getTransactionVolume: jest.fn(),
-                getWalletVolume: jest.fn(),
                 getErc721Tokens: jest.fn(),
                 getErc721TokenTransfers: jest.fn(),
                 getErc721Token: jest.fn(),
@@ -69,6 +68,13 @@ jest.mock('@/plugins/server', () => ({
                 migrateDemoExplorer: jest.fn(),
                 startTrial: jest.fn(),
                 getCurrentUser: jest.fn(),
+                getTokenCirculatingSupply: jest.fn(),
+                getAverageGasPrice: jest.fn(),
+                getAverageTransactionFee: jest.fn(),
+                getUniqueWalletCount: jest.fn(),
+                getCumulativeWalletCount: jest.fn(),
+                getDeployedContractCount: jest.fn(),
+                getCumulativeDeployedContractCount: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))

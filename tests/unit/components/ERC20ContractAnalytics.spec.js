@@ -14,32 +14,66 @@ describe('ERC20ContractAnalytics.vue', () => {
         helper = new MockHelper();
     });
 
-    it('Should display contract analytics', async () => {
+    it('Should display contract analytics with bignumber formatted amounts', async () => {
         jest.spyOn(helper.mocks.server, 'getTokenTransferVolume')
             .mockResolvedValueOnce({ data: [
-                { timestamp: 0, count: 2 },
-                { timestamp: 1, count: 2 }
+                { date: 0, count: 2 },
+                { date: 1, count: 2 }
             ]});
 
-        jest.spyOn(helper.mocks.server, 'getTokenCumulativeSupply')
+        jest.spyOn(helper.mocks.server, 'getTokenCirculatingSupply')
             .mockResolvedValueOnce({ data: [
-                { timestamp: 0, supply: 2 },
-                { timestamp: 1, supply: 2 }
+                { date: 0, amount: '200000000000000000' },
+                { date: 1, amount: '300000000000000000' }
             ]});
 
         jest.spyOn(helper.mocks.server, 'getTokenHolderHistory')
             .mockResolvedValueOnce({ data: [
-                { timestamp: 0, count: 2 },
-                { timestamp: 1, count: 2 }
+                { date: 0, count: 2 },
+                { date: 1, count: 2 }
             ]});
 
         const wrapper = helper.mountFn(ERC20ContractAnalytics, {
             propsData: {
                 address: '0x123',
-                tokenDecimals: 1,
-                tokenSymbol: 'ETL'
+                tokenDecimals: 18,
+                tokenSymbol: 'ETL',
+                tokenType: 'erc20'
             },
-            stubs: stubs
+            stubs
+        });
+
+        await flushPromises();
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should display contract analytics without bignumber formatted amount', async () => {
+        jest.spyOn(helper.mocks.server, 'getTokenTransferVolume')
+            .mockResolvedValueOnce({ data: [
+                { date: 0, count: 2 },
+                { date: 1, count: 2 }
+            ]});
+
+        jest.spyOn(helper.mocks.server, 'getTokenCirculatingSupply')
+            .mockResolvedValueOnce({ data: [
+                { date: 0, amount: 2 },
+                { date: 1, amount: 3 }
+            ]});
+
+        jest.spyOn(helper.mocks.server, 'getTokenHolderHistory')
+            .mockResolvedValueOnce({ data: [
+                { date: 0, count: 2 },
+                { date: 1, count: 2 }
+            ]});
+
+        const wrapper = helper.mountFn(ERC20ContractAnalytics, {
+            propsData: {
+                address: '0x123',
+                tokenDecimals: 18,
+                tokenSymbol: 'ETL',
+                tokenType: 'erc721'
+            },
+            stubs
         });
 
         await flushPromises();

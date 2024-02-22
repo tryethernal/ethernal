@@ -1,7 +1,7 @@
 require('../../mocks/lib/firebase');
 const db = require('../../../lib/firebase');
 
-const { holderHistory, cumulativeSupply, transferVolume, holders, transfers } = require('../../../api/modules/tokens');
+const { holderHistory, circulatingSupply, holders, transfers } = require('../../../api/modules/tokens');
 
 beforeEach(() => jest.clearAllMocks());
 
@@ -42,7 +42,7 @@ describe('holderHistory', () => {
     });
 });
 
-describe('cumulativeSupply', () => {
+describe('circulatingSupply', () => {
     it('Should return the supply', async () => {
         const req = {
             params: { address: '0x123' },
@@ -52,9 +52,9 @@ describe('cumulativeSupply', () => {
                 to: 'to'
             }
         };
-        jest.spyOn(db, 'getTokenCumulativeSupply').mockResolvedValue({ volume: 3, address: '0x123' });
+        jest.spyOn(db, 'getTokenCirculatingSupply').mockResolvedValue({ volume: 3, address: '0x123' });
 
-        await cumulativeSupply(req, res)
+        await circulatingSupply(req, res)
         expect(status).toHaveBeenCalledWith(200);
         expect(json).toHaveBeenCalledWith({ volume: 3, address: '0x123' });
     });
@@ -69,38 +69,6 @@ describe('cumulativeSupply', () => {
         jest.spyOn(db, 'getTokenCumulativeSupply').mockResolvedValue({ volume: 3, address: '0x123' });
 
         await holderHistory(req, res)
-        expect(status).toHaveBeenCalledWith(400)
-        expect(send).toHaveBeenCalledWith('Missing parameters.');
-    });
-});
-
-describe('transferVolume', () => {
-    it('Should return the volume',  async () => {
-        const req = {
-            params: { address: '0x123' },
-            query: {
-                workspace: 'hardhat',
-                from: 'from',
-                to: 'to'
-            }
-        };
-        jest.spyOn(db, 'getTokenTransferVolume').mockResolvedValue({ volume: 3, address: '0x123' });
-
-        await transferVolume(req, res)
-        expect(status).toHaveBeenCalledWith(200);
-        expect(json).toHaveBeenCalledWith({ volume: 3, address: '0x123' });
-    });
-
-    it('should return an error if missing param', async () => {
-        const req = {
-            query: {
-                workspace: 'hardhat',
-                from: 'from',
-            }
-        };
-        jest.spyOn(db, 'getTokenTransferVolume').mockResolvedValue({ volume: 3, address: '0x123' });
-
-        await transferVolume(req, res)
         expect(status).toHaveBeenCalledWith(400)
         expect(send).toHaveBeenCalledWith('Missing parameters.');
     });

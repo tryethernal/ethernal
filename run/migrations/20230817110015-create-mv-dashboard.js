@@ -30,7 +30,7 @@ module.exports = {
             await queryInterface.sequelize.query(`
                 CREATE INDEX "transaction_volume_14d_workspaceId"
                 ON transaction_volume_14d("workspaceId");
-            `, { transaction });
+            `, { transaction });    
 
             await queryInterface.sequelize.query(`
                 CREATE MATERIALIZED VIEW wallet_volume_14d AS

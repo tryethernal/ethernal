@@ -32,8 +32,9 @@ describe('cancelDemoExplorers', () => {
     });
 
     it('Should reenqueue if too many blocks to delete now', (done) => {
-        const getBlocks = jest.fn().mockResolvedValueOnce([{}]);
+        const getBlocks = jest.fn().mockResolvedValueOnce([{}, {}]);
         const getContracts = jest.fn().mockResolvedValueOnce([]);
+
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ id: 1, getContracts, getBlocks, pendingDeletion: true });
 
         deleteWorkspace({ data: { workspaceId: 1 }})
@@ -44,7 +45,7 @@ describe('cancelDemoExplorers', () => {
             });
     });
 
-    it.only('Should reenqueue if too many contracts to delete now', (done) => {
+    it('Should reenqueue if too many contracts to delete now', (done) => {
         const getBlocks = jest.fn().mockResolvedValueOnce([]);
         const getContracts = jest.fn().mockResolvedValueOnce([{}]);
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ id: 1, getContracts, getBlocks, pendingDeletion: true });

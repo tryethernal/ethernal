@@ -12,9 +12,12 @@ module.exports = {
     getDemoUserId: () => process.env.DEMO_USER_ID,
     getDemoTrialSlug: () => process.env.DEMO_TRIAL_SLUG,
     getStripeSecretKey: () => process.env.STRIPE_SECRET_KEY,
+    getStripeWebhookSecret: () => process.env.STRIPE_WEBHOOK_SECRET,
     getDefaultExplorerTrialDays: () => process.env.DEFAULT_EXPLORER_TRIAL_DAYS || 7,
     getPostHogApiKey: () => process.env.POST_HOG_API_KEY,
     getPostHogApiHost: () => process.env.POST_HOG_API_HOST,
     getMaxBlockForSyncReset: () => parseInt(process.env.MAX_BLOCK_FOR_SYNC_RESET) || 10,
-    getMaxContractForReset: () => parseInt(process.env.MAX_CONTRACT_FOR_RESET) || 5
+    getMaxContractForReset: () => parseInt(process.env.MAX_CONTRACT_FOR_RESET) || 5,
+    getEncryptionKey: () => process.env.ENCRYPTION_KEY,
+    getEncryptionJwtSecret: () => process.env.ENCRYPTION_JWT_SECRET
 };

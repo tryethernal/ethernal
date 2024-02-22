@@ -737,27 +737,17 @@ export const serverPlugin = {
                 return axios.post(resource, data);
             },
 
-            getWalletVolume() {
+            getTokenTransferVolume(from, to, address, type) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
+                    from, to, address, type
                 };
-                const resource = `${store.getters.apiRoot}/api/stats/wallets`;
+                const resource = `${store.getters.apiRoot}/api/stats/tokenTransferVolume`;
                 return axios.get(resource, { params });
             },
 
-            getTokenTransferVolume(address, from, to) {
-                const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
-                    from: from,
-                    to: to
-                };
-                const resource = `${store.getters.apiRoot}/api/contracts/${address}/transferVolume`;
-                return axios.get(resource, { params });
-            },
-
-            getTokenHolderHistory(address, from, to) {
+            getTokenHolderHistory(from, to, address) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
@@ -768,23 +758,84 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            getTokenCumulativeSupply(address, from, to) {
+            getTokenCirculatingSupply(from, to, address) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name,
                     from: from,
                     to: to
                 };
-                const resource = `${store.getters.apiRoot}/api/contracts/${address}/cumulativeSupply`;
+                const resource = `${store.getters.apiRoot}/api/contracts/${address}/circulatingSupply`;
                 return axios.get(resource, { params });
             },
 
-            getTransactionVolume() {
+            getTransactionVolume(from, to) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name
+                    workspace: store.getters.currentWorkspace.name,
+                    from, to
                 };
                 const resource = `${store.getters.apiRoot}/api/stats/transactions`;
+                return axios.get(resource, { params });
+            },
+
+            getUniqueWalletCount(from, to) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    from, to
+                };
+                const resource = `${store.getters.apiRoot}/api/stats/uniqueWalletCount`;
+                return axios.get(resource, { params });
+            },
+
+            getCumulativeWalletCount(from, to) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    from, to
+                };
+                const resource = `${store.getters.apiRoot}/api/stats/cumulativeWalletCount`;
+                return axios.get(resource, { params });
+            },
+
+            getCumulativeDeployedContractCount(from, to) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    from, to
+                };
+                const resource = `${store.getters.apiRoot}/api/stats/cumulativeDeployedContractCount`;
+                return axios.get(resource, { params });
+            },
+
+            getDeployedContractCount(from, to) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    from, to
+                };
+                const resource = `${store.getters.apiRoot}/api/stats/deployedContractCount`;
+                return axios.get(resource, { params });
+            },
+
+            getAverageGasPrice(from, to) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    from, to
+                };
+                const resource = `${store.getters.apiRoot}/api/stats/averageGasPrice`;
+                return axios.get(resource, { params });
+            },
+
+            getAverageTransactionFee(from, to) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    from, to
+                };
+                const resource = `${store.getters.apiRoot}/api/stats/averageTransactionFee`;
                 return axios.get(resource, { params });
             },
 

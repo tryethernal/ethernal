@@ -49,9 +49,7 @@ jest.mock('../../../lib/firebase', () => {
         getPublicExplorerParamsByDomain: jest.fn(),
         searchForNumber: jest.fn(),
         getAddressLatestTokenBalances: jest.fn(),
-        getWalletVolume: jest.fn(),
         getTransactionVolume: jest.fn(),
-        getTxCount: jest.fn(),
         getTotalTxCount: jest.fn(),
         getActiveWalletCount: jest.fn(),
         setWorkspaceRemoteFlag: jest.fn(),
@@ -118,6 +116,13 @@ jest.mock('../../../lib/firebase', () => {
         migrateDemoExplorer: jest.fn(),
         resetExplorerTransactionQuota: jest.fn(),
         workspaceNeedsBatchReset: jest.fn(),
+        getTokenCirculatingSupply: jest.fn(),
+        getUniqueWalletCount: jest.fn(),
+        getCumulativeWalletCount: jest.fn(),
+        getDeployedContractCount: jest.fn(),
+        getCumulativeDeployedContractCount: jest.fn(),
+        getAverageGasPrice: jest.fn(),
+        getAverageTransactionFee: jest.fn(),
         Workspace: Workspace
     }
 });

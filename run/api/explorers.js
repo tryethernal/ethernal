@@ -1,8 +1,8 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { getAppDomain, getDefaultPlanSlug, getDefaultExplorerTrialDays, getStripeSecretKey } = require('../lib/env');
+const stripe = require('stripe')(getStripeSecretKey());
 const express = require('express');
 const router = express.Router();
 const { isStripeEnabled } = require('../lib/flags');
-const { getAppDomain, getDefaultPlanSlug, getDefaultExplorerTrialDays } = require('../lib/env');
 const { ProviderConnector } = require('../lib/rpc');
 const { Explorer } = require('../models');
 const { withTimeout } = require('../lib/utils');

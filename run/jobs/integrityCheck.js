@@ -129,6 +129,7 @@ module.exports = async job => {
             will be able to start integrity checks from it.
         */
         if (!lowerBlock) {
+            await workspace.safeDeleteIntegrityCheck();
             return await enqueue(`blockSync`, `blockSync-${workspace.id}-${workspace.integrityCheckStartBlockNumber}`, {
                 userId: workspace.user.firebaseUserId,
                 workspace: workspace.name,

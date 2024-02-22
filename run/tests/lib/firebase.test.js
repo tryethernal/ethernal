@@ -1007,7 +1007,8 @@ describe('getTokenHolderHistory', () => {
 
     it('Should fail if contract does not exist', (done) => {
         jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce(null);
-        db.getTokenCumulativeSupply(1, '0x123', 'from', 'to')
+
+        db.getTokenHolderHistory(1, '0x123', 'from', 'to')
             .catch(res => {
                 expect(res.message).toEqual(`Can't find contract at this address`);
                 done();
@@ -1015,45 +1016,47 @@ describe('getTokenHolderHistory', () => {
     });
 });
 
-describe('getTokenCumulativeSupply', () => {
-    it('Should return supply if contract exists', (done) => {
+describe('getTokenCirculatingSupply', () => {
+    const getTokenCirculatingSupply = jest.fn().mockResolvedValueOnce([{ timestamp: 1, amount: 1 }]);
+    it('Should return token circulating supply if contract exists', (done) => {
         jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce({
-            getTokenCumulativeSupply: jest.fn().mockResolvedValueOnce([{ address: '0x123' }]),
+            getTokenCirculatingSupply
         });
 
-        db.getTokenCumulativeSupply(1, '0x123', 'from', 'to')
+        db.getTokenCirculatingSupply(1, 'from', 'to', '0x123')
             .then(res => {
-                expect(res).toEqual([{ address: '0x123' }]);
+                expect(res).toEqual([{ timestamp: 1, amount: 1 }]);
                 done();
             });
     });
 
     it('Should fail if contract does not exist', (done) => {
         jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce(null);
-        db.getTokenCumulativeSupply(1, '0x123', 'from', 'to')
+
+        db.getTokenCirculatingSupply(1, 'from', 'to', '0x123')
             .catch(res => {
                 expect(res.message).toEqual(`Can't find contract at this address`);
                 done();
             });
     });
 });
+
 
 describe('getTokenTransferVolume', () => {
-    it('Should return holders if contract exists', (done) => {
-        jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce({
-            getTokenTransferVolume: jest.fn().mockResolvedValueOnce([{ address: '0x123' }]),
-        });
+    it('Should return token volume if contract exists', (done) => {
+        jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce({ address: '0x1' });
+        jest.spyOn(workspace, 'getTokenTransferVolume').mockResolvedValueOnce([{ timestamp: 1, count: 1 }]);
 
-        db.getTokenTransferVolume(1, '0x123', 'from', 'to')
+        db.getTokenTransferVolume(1, 'from', 'to', '0x123')
             .then(res => {
-                expect(res).toEqual([{ address: '0x123' }]);
+                expect(res).toEqual([{ timestamp: 1, count: 1 }]);
                 done();
             });
     });
 
     it('Should fail if contract does not exist', (done) => {
         jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce(null);
-        db.getTokenTransferVolume(1, '0x123', 'from', 'to')
+        db.getTokenTransferVolume(1, 'from', 'to', '0x123')
             .catch(res => {
                 expect(res.message).toEqual(`Can't find contract at this address`);
                 done();
@@ -1098,7 +1101,7 @@ describe('getTokenStats', () => {
             countTokenHolders: jest.fn().mockResolvedValueOnce(1),
             countTransactions: jest.fn().mockResolvedValueOnce(2),
             countTokenTransfers: jest.fn().mockResolvedValueOnce(3),
-            getTokenCirculatingSupply: jest.fn().mockResolvedValueOnce(4)
+            getCurrentTokenCirculatingSupply: jest.fn().mockResolvedValueOnce(4)
         });
 
         db.getTokenStats(1, '0x123')
@@ -1233,6 +1236,228 @@ describe('getContractErc721Tokens', () => {
                     items: [{ tokenId: '1' }],
                     total: 1
                 });
+                done();
+            });
+    });
+});
+
+describe('getCumulativeDeployedContractCount', () => {
+    it('Should return cumulative contract count', done => {
+        const getCumulativeDeployedContractCount = jest.fn().mockResolvedValueOnce([{ timestamp: '2024-01-01', count: 1 }]);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getCumulativeDeployedContractCount
+        })
+
+        db.getCumulativeDeployedContractCount(1, '2024-01-01', '2024-01-14')
+            .then(res => {
+                expect(res).toEqual([{ timestamp: '2024-01-01', count: 1 }]);
+                done();
+            });
+    });
+
+    it('Should return an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+
+        db.getCumulativeDeployedContractCount(1, '2024-01-01', '2024-01-14')
+            .catch(res => {
+                expect(res.message).toEqual('Could not find workspace');
+                done();
+            });
+    });
+});
+
+describe('getDeployedContractCount', () => {
+    it('Should return contract count', done => {
+        const getDeployedContractCount = jest.fn().mockResolvedValueOnce([{ timestamp: '2024-01-01', count: 1 }]);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getDeployedContractCount
+        })
+
+        db.getDeployedContractCount(1, '2024-01-01', '2024-01-14')
+            .then(res => {
+                expect(res).toEqual([{ timestamp: '2024-01-01', count: 1 }]);
+                done();
+            });
+    });
+
+    it('Should return an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+
+        db.getDeployedContractCount(1, '2024-01-01', '2024-01-14')
+            .catch(res => {
+                expect(res.message).toEqual('Could not find workspace');
+                done();
+            });
+    });
+});
+
+describe('getUniqueWalletCount', () => {
+    it('Should return wallet count', done => {
+        const getUniqueWalletCount = jest.fn().mockResolvedValueOnce([{ timestamp: '2024-01-01', count: 1 }]);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getUniqueWalletCount
+        })
+
+        db.getUniqueWalletCount(1, '2024-01-01', '2024-01-14')
+            .then(res => {
+                expect(res).toEqual([{ timestamp: '2024-01-01', count: 1 }]);
+                done();
+            });
+    });
+
+    it('Should return an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+
+        db.getUniqueWalletCount(1, '2024-01-01', '2024-01-14')
+            .catch(res => {
+                expect(res.message).toEqual('Could not find workspace');
+                done();
+            });
+    });
+});
+
+describe('getCumulativeWalletCount', () => {
+    it('Should return cumulative wallet count', done => {
+        const getCumulativeWalletCount = jest.fn().mockResolvedValueOnce([{ timestamp: '2024-01-01', count: 1 }]);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getCumulativeWalletCount
+        })
+
+        db.getCumulativeWalletCount(1, '2024-01-01', '2024-01-14')
+            .then(res => {
+                expect(res).toEqual([{ timestamp: '2024-01-01', count: 1 }]);
+                done();
+            });
+    });
+
+    it('Should return an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+
+        db.getCumulativeWalletCount(1, '2024-01-01', '2024-01-14')
+            .catch(res => {
+                expect(res.message).toEqual('Could not find workspace');
+                done();
+            });
+    });
+});
+
+describe('getAverageGasPrice', () => {
+    it('Should return average gas price', done => {
+        const getAverageGasPrice = jest.fn().mockResolvedValueOnce([{ timestamp: '2024-01-01', count: 1 }]);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getAverageGasPrice
+        })
+
+        db.getAverageGasPrice(1, '2024-01-01', '2024-01-14')
+            .then(res => {
+                expect(res).toEqual([{ timestamp: '2024-01-01', count: 1 }]);
+                done();
+            });
+    });
+
+    it('Should return an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+
+        db.getAverageGasPrice(1, '2024-01-01', '2024-01-14')
+            .catch(res => {
+                expect(res.message).toEqual('Could not find workspace');
+                done();
+            });
+    });
+});
+
+describe('getAverageTransactionFee', () => {
+    it('Should return average transaction fee', done => {
+        const getAverageTransactionFee = jest.fn().mockResolvedValueOnce([{ timestamp: '2024-01-01', count: 1 }]);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getAverageTransactionFee
+        })
+
+        db.getAverageTransactionFee(1, '2024-01-01', '2024-01-14')
+            .then(res => {
+                expect(res).toEqual([{ timestamp: '2024-01-01', count: 1 }]);
+                done();
+            });
+    });
+
+    it('Should return an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+
+        db.getAverageTransactionFee(1, '2024-01-01', '2024-01-14')
+            .catch(res => {
+                expect(res.message).toEqual('Could not find workspace');
+                done();
+            });
+    });
+});
+
+describe('getTransactionVolume', () => {
+    it('Should return transaction volume', done => {
+        const getTransactionVolume = jest.fn().mockResolvedValueOnce([{ timestamp: '2024-01-01', count: 1 }]);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getTransactionVolume
+        })
+        db.getTransactionVolume(1, '2024-01-01', '2024-01-14')
+            .then(res => {
+                expect(res).toEqual([{ timestamp: '2024-01-01', count: 1 }]);
+                done();
+            });
+    });
+
+    it('Should return an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+
+        db.getTransactionVolume(1, '2024-01-01', '2024-01-14')
+            .catch(res => {
+                expect(res.message).toEqual('Could not find workspace');
+                done();
+            });
+    });
+});
+
+describe('getActiveWalletCount', () => {
+    it('Should return active wallet count', done => {
+        const countActiveWallets = jest.fn().mockResolvedValueOnce([{ timestamp: '2024-01-01', count: 1 }]);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            countActiveWallets
+        })
+        db.getActiveWalletCount(1)
+            .then(res => {
+                expect(res).toEqual([{ timestamp: '2024-01-01', count: 1 }]);
+                done();
+            });
+    });
+
+    it('Should return an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+
+        db.getActiveWalletCount(1)
+            .catch(res => {
+                expect(res.message).toEqual('Could not find workspace');
+                done();
+            });
+    });
+});
+
+describe('getTotalTxCount', () => {
+    it('Should return total tx count', done => {
+        const getTransactionCount = jest.fn().mockResolvedValueOnce([{ timestamp: '2024-01-01', count: 1 }]);
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({
+            getTransactionCount
+        })
+        db.getTotalTxCount(1)
+            .then(res => {
+                expect(res).toEqual([{ timestamp: '2024-01-01', count: 1 }]);
+                done();
+            });
+    });
+
+    it('Should return an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+
+        db.getTotalTxCount(1)
+            .catch(res => {
+                expect(res.message).toEqual('Could not find workspace');
                 done();
             });
     });

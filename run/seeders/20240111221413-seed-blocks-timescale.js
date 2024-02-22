@@ -53,8 +53,12 @@ module.exports = {
     offset = 0;
     do {
       transfers = await TokenTransfer.findAll({
+<<<<<<< HEAD
+        include: 'transaction',
+=======
         include: { model: Transaction, as: 'transaction', attributes: ['blockNumber', 'timestamp'] },
         attributes: ['token', 'id', 'workspaceId', 'amount', 'src', 'dst'],
+>>>>>>> develop
         order: [['id', 'ASC']],
         offset, limit
       });

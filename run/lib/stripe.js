@@ -1,4 +1,5 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { getStripeSecretKey } = require('./env');
+const stripe = require('stripe')(getStripeSecretKey());
 const Analytics = require('./analytics');
 const db = require('./firebase');
 const { enqueue } = require('./queue');

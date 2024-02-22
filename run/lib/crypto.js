@@ -1,8 +1,8 @@
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const { getEncryptionKey, getEncryptionJwtSecret } = require('./env');
 const { FirebaseScrypt } = require('firebase-scrypt');
 const ALGORITHM = 'aes-256-cbc';
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 const IV_LENGTH = 16;
 const firebaseParameters = {
     algorithm: 'SCRYPT',
@@ -15,7 +15,7 @@ const firebaseParameters = {
 module.exports = {
     encrypt: (data) => {
         const iv = crypto.randomBytes(IV_LENGTH);
-        const cipher = crypto.createCipheriv(ALGORITHM, Buffer.from(ENCRYPTION_KEY), iv);
+        const cipher = crypto.createCipheriv(ALGORITHM, Buffer.from(getEncryptionKey()), iv);
 
         let encryptedData = cipher.update(data);
         encryptedData = Buffer.concat([encryptedData, cipher.final()]);
@@ -27,20 +27,18 @@ module.exports = {
         const iv = Buffer.from(textParts.shift(), 'hex');
 
         const encryptedText = Buffer.from(textParts.join(':'), 'hex');
-        const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
+        const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(getEncryptionKey()), iv);
         decipher.setAutoPadding(false);
         let decrypted = decipher.update(encryptedText);
         decrypted = Buffer.concat([decrypted, decipher.final()]);
 
         return decrypted.toString();
     },
-    encode: (data) => {
-        const jwtSecret = process.env.ENCRYPTION_JWT_SECRET;
-        return jwt.sign(data, jwtSecret);
+    encode: (data) => {;
+        return jwt.sign(data, getEncryptionJwtSecret());
     },
     decode: (token) => {
-        const jwtSecret = process.env.ENCRYPTION_JWT_SECRET;
-        return jwt.verify(token, jwtSecret);
+        return jwt.verify(token, getEncryptionJwtSecret());
     },
     firebaseHash: async (password) => {
         const salt = crypto.randomBytes(12).toString('base64');

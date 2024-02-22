@@ -1,36 +1,40 @@
 <template>
     <v-container fluid>
-        <v-data-table
-            :loading="loading"
-            :items="tokens"
-            :headers="headers"
-            :sort-by="currentOptions.sortBy[0]"
-            :must-sort="true"
-            :sort-desc="true"
-            :server-items-length="tokenCount"
-            :footer-props="{
-                itemsPerPageOptions: [10, 25, 100]
-            }"
-            item-key="address"
-            @update:options="getTokens">
-            <template v-slot:item.address="{ item }">
-                <Hash-Link :type="'nft'" :hash="item.address" :contract="item" />
-            </template>
-            <template v-slot:item.tokenName="{ item }">
-                {{ item.tokenName }}
-            </template>
-            <template v-slot:item.tokenSymbol="{ item }">
-                {{ item.tokenSymbol }}
-            </template>
-            <template v-slot:item.tokenTotalSupply="{ item }">
-                {{ item.tokenTotalSupply ? parseInt(item.tokenTotalSupply).toLocaleString() : 'N/A' }}
-            </template>
-            <template v-slot:item.tags="{ item }">
-                <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" x-small class="success mr-2">
-                    {{ formatContractPattern(pattern) }}
-                </v-chip>
-            </template>
-        </v-data-table>
+        <v-card outlined>
+            <v-card-text>
+                <v-data-table
+                    :loading="loading"
+                    :items="tokens"
+                    :headers="headers"
+                    :sort-by="currentOptions.sortBy[0]"
+                    :must-sort="true"
+                    :sort-desc="true"
+                    :server-items-length="tokenCount"
+                    :footer-props="{
+                        itemsPerPageOptions: [10, 25, 100]
+                    }"
+                    item-key="address"
+                    @update:options="getTokens">
+                    <template v-slot:item.address="{ item }">
+                        <Hash-Link :type="'nft'" :hash="item.address" :contract="item" />
+                    </template>
+                    <template v-slot:item.tokenName="{ item }">
+                        {{ item.tokenName }}
+                    </template>
+                    <template v-slot:item.tokenSymbol="{ item }">
+                        {{ item.tokenSymbol }}
+                    </template>
+                    <template v-slot:item.tokenTotalSupply="{ item }">
+                        {{ item.tokenTotalSupply ? parseInt(item.tokenTotalSupply).toLocaleString() : 'N/A' }}
+                    </template>
+                    <template v-slot:item.tags="{ item }">
+                        <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" x-small class="success mr-2">
+                            {{ formatContractPattern(pattern) }}
+                        </v-chip>
+                    </template>
+                </v-data-table>
+            </v-card-text>
+        </v-card>
     </v-container>
 </template>
 <script>

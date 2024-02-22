@@ -1,60 +1,64 @@
 <template>
     <v-container fluid>
-        <Add-Account-Modal ref="addAccountModalRef" v-if="isUserAdmin" />
-        <Unlock-Account-Modal ref="openUnlockAccountModalRef" v-if="isUserAdmin" />
-        <v-data-table
-            :loading="loading"
-            no-data-text="No Accounts"
-            :items="accounts"
-            :sort-by="currentOptions.sortBy[0]"
-            :must-sort="true"
-            :sort-desc="true"
-            :server-items-length="accountCount"
-            :footer-props="{
-                itemsPerPageOptions: [10, 25, 100]
-            }"
-            :headers="headers"
-            @update:options="getAccounts">
-            <template v-slot:no-data>
-                No Accounts Available
-            </template>
-            <template v-slot:item.address="{ item }">
-                <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                        <span v-show="item.privateKey">
-                            <v-icon v-bind="attrs" v-on="on" small class="mr-2">mdi-lock-open-outline</v-icon>
-                        </span>
+        <v-card outlined>
+            <v-card-text>
+                <Add-Account-Modal ref="addAccountModalRef" v-if="isUserAdmin" />
+                <Unlock-Account-Modal ref="openUnlockAccountModalRef" v-if="isUserAdmin" />
+                <v-data-table
+                    :loading="loading"
+                    no-data-text="No Accounts"
+                    :items="accounts"
+                    :sort-by="currentOptions.sortBy[0]"
+                    :must-sort="true"
+                    :sort-desc="true"
+                    :server-items-length="accountCount"
+                    :footer-props="{
+                        itemsPerPageOptions: [10, 25, 100]
+                    }"
+                    :headers="headers"
+                    @update:options="getAccounts">
+                    <template v-slot:no-data>
+                        No Accounts Available
                     </template>
-                    <span>Account has been unlocked with private key.</span>
-                </v-tooltip>
-                <Hash-Link :type="'address'" :hash="item.address" />
-            </template>
-            <template v-slot:top>
-                <v-toolbar flat dense class="py-0" v-if="isUserAdmin">
-                    <v-spacer></v-spacer>
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn id="resyncAllAccounts" :disabled="loading" v-bind="attrs" v-on="on" small depressed color="primary" class="mr-2" @click="syncAccounts()">
-                                <v-icon small class="mr-1">mdi-sync</v-icon>Resync
+                    <template v-slot:item.address="{ item }">
+                        <v-tooltip top>
+                            <template v-slot:activator="{ on, attrs }">
+                                <span v-show="item.privateKey">
+                                    <v-icon v-bind="attrs" v-on="on" small class="mr-2">mdi-lock-open-outline</v-icon>
+                                </span>
+                            </template>
+                            <span>Account has been unlocked with private key.</span>
+                        </v-tooltip>
+                        <Hash-Link :type="'address'" :hash="item.address" />
+                    </template>
+                    <template v-slot:top>
+                        <v-toolbar flat dense class="py-0" v-if="isUserAdmin">
+                            <v-spacer></v-spacer>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn id="resyncAllAccounts" :disabled="loading" v-bind="attrs" v-on="on" small depressed color="primary" class="mr-2" @click="syncAccounts()">
+                                        <v-icon small class="mr-1">mdi-sync</v-icon>Resync
+                                    </v-btn>
+                                </template>
+                                This will send a request with the 'eth_accounts' method to the RPC server, and add returned addresses to your accounts list.
+                            </v-tooltip>
+                            <v-btn small depressed color="primary" class="mr-2" @click="openAddAccountModal()">
+                                <v-icon small class="mr-1">mdi-plus</v-icon>Add Account
                             </v-btn>
-                        </template>
-                        This will send a request with the 'eth_accounts' method to the RPC server, and add returned addresses to your accounts list.
-                    </v-tooltip>
-                    <v-btn small depressed color="primary" class="mr-2" @click="openAddAccountModal()">
-                        <v-icon small class="mr-1">mdi-plus</v-icon>Add Account
-                    </v-btn>
-                </v-toolbar>
-            </template>
-            <template v-slot:item.balance="{ item }">
-                <span v-if="item.balance">
-                    {{ item.balance | fromWei('ether', chain.token) }}
-                </span>
-                <span v-else>N/A</span>
-            </template>
-            <template v-slot:item.actions="{ item }" v-if="isUserAdmin">
-                <a href="#" @click.prevent="openUnlockAccountModal(item)">Set Private Key</a>
-            </template>
-        </v-data-table>
+                        </v-toolbar>
+                    </template>
+                    <template v-slot:item.balance="{ item }">
+                        <span v-if="item.balance">
+                            {{ item.balance | fromWei('ether', chain.token) }}
+                        </span>
+                        <span v-else>N/A</span>
+                    </template>
+                    <template v-slot:item.actions="{ item }" v-if="isUserAdmin">
+                        <a href="#" @click.prevent="openUnlockAccountModal(item)">Set Private Key</a>
+                    </template>
+                </v-data-table>
+            </v-card-text>
+        </v-card>
     </v-container>
 </template>
 <script>

@@ -1,4 +1,5 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { getStripeSecretKey, getStripeWebhookSecret } = require('../lib/env');
+const stripe = require('stripe')(getStripeSecretKey());
 const express = require('express');
 const router = express.Router();
 const stripeLib = require('../lib/stripe');
@@ -8,11 +9,10 @@ const logger = require('../lib/logger');
 router.post('/', stripeMiddleware, async (req, res) => {
     try {
         const sig = req.headers['stripe-signature'];
-        const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
         let event, response;
 
         try {
-            event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecret);
+            event = stripe.webhooks.constructEvent(req.rawBody, sig, getStripeWebhookSecret());
         } catch (err) {
             throw err.message;
         }

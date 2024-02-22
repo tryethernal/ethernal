@@ -1,6 +1,10 @@
 <template>
     <v-container fluid>
-        <Block-List />
+        <v-card outlined>
+            <v-card-text>
+                <Block-List />
+            </v-card-text>
+        </v-card>
     </v-container>
 </template>
 

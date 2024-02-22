@@ -108,7 +108,7 @@ describe('formatErc721Metadata', () => {
         });
     });
 
-    it('Should process image link to be insertable', () => {
+    it('Should process image link to be insertable', () => {
         const token = {
             tokenId: 1,
             metadata: {
@@ -141,6 +141,17 @@ describe('findPatterns', () => {
     const rpcServer = 'http://localhost', contractAddress = '0x123';
 
     it('Should find erc20 properties without abi', async () => {
+        ContractConnector.mockImplementation(function() {
+            return {
+                has721Interface: jest.fn().mockResolvedValue(false),
+                has721Enumerable: jest.fn().mockResolvedValue(false),
+                has721Metadata: jest.fn().mockResolvedValue(false),
+                symbol: jest.fn().mockResolvedValue('ETL'),
+                decimals: jest.fn().mockResolvedValue(18),
+                name: jest.fn().mockResolvedValue('Ethernal'),
+                totalSupply: jest.fn().mockResolvedValue(1000)
+            }
+        });
         const properties = await findPatterns(rpcServer, contractAddress);
         expect(properties).toEqual({
             patterns: ['erc20'],
@@ -154,6 +165,17 @@ describe('findPatterns', () => {
     });
 
     it('Should find proxy contract', async () => {
+        ContractConnector.mockImplementation(function() {
+            return {
+                has721Interface: jest.fn().mockResolvedValue(false),
+                has721Enumerable: jest.fn().mockResolvedValue(false),
+                has721Metadata: jest.fn().mockResolvedValue(false),
+                symbol: jest.fn().mockResolvedValue('ETL'),
+                decimals: jest.fn().mockResolvedValue(18),
+                name: jest.fn().mockResolvedValue('Ethernal'),
+                totalSupply: jest.fn().mockResolvedValue(1000)
+            }
+        });
         const properties = await findPatterns(rpcServer, contractAddress, DSProxyContract.abi);
         expect(properties).toEqual({
             patterns: ['erc20', 'proxy'],
