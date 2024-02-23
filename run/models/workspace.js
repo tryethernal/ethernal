@@ -317,6 +317,9 @@ module.exports = (sequelize, DataTypes) => {
             limit: 1
         });
 
+        if (!earliestBlock)
+            return [];
+
         const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
 
         const [transactions,] = await sequelize.query(`
@@ -351,6 +354,9 @@ module.exports = (sequelize, DataTypes) => {
             order: [['number', 'ASC']],
             limit: 1
         });
+
+        if (!earliestBlock)
+            return [];
 
         const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
 
@@ -387,6 +393,9 @@ module.exports = (sequelize, DataTypes) => {
             order: [['number', 'ASC']],
             limit: 1
         });
+
+        if (!earliestBlock)
+            return [];
 
         const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
 
@@ -429,6 +438,9 @@ module.exports = (sequelize, DataTypes) => {
             limit: 1
         });
 
+        if (!earliestBlock)
+            return [];
+
         const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
 
         const [cumulativeWalletCount,] = await sequelize.query(`
@@ -467,6 +479,9 @@ module.exports = (sequelize, DataTypes) => {
             limit: 1
         });
 
+        if (!earliestBlock)
+            return [];
+
         const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
 
         const [uniqueWalletCount,] = await sequelize.query(`
@@ -501,6 +516,9 @@ module.exports = (sequelize, DataTypes) => {
             order: [['number', 'ASC']],
             limit: 1
         });
+
+        if (!earliestBlock)
+            return [];
 
         const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
 
@@ -537,6 +555,9 @@ module.exports = (sequelize, DataTypes) => {
             limit: 1
         });
 
+        if (!earliestBlock)
+            return [];
+
         const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
 
         const [avgTransactionFee,] = await sequelize.query(`
@@ -571,6 +592,9 @@ module.exports = (sequelize, DataTypes) => {
             order: [['number', 'ASC']],
             limit: 1
         });
+
+        if (!earliestBlock)
+            return [];
 
         const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
 

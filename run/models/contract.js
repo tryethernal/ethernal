@@ -97,6 +97,9 @@ module.exports = (sequelize, DataTypes) => {
             limit: 1
         });
 
+        if (!earliestBlock)
+            return [];
+
         const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
 
         return sequelize.query(`
@@ -169,6 +172,9 @@ module.exports = (sequelize, DataTypes) => {
             order: [['number', 'ASC']],
             limit: 1
         });
+
+        if (!earliestBlock)
+            return [];
 
         const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
 
