@@ -4,9 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.28.5] - 2024-02-23
+### Changed
+- Demo banner text
+
+### Fixed
+- Graphs not loading when no data available
+
 ## [3.28.4] - 2024-02-22
 ### Changed
-- Better error message when tryng to use unavailable subdomain
+- Better error message when trying to use unavailable subdomain
 
 ## [3.28.3] - 2024-02-22
 ### Changed
