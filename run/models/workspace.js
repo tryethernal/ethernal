@@ -317,7 +317,7 @@ module.exports = (sequelize, DataTypes) => {
             limit: 1
         });
 
-        if (!earliestBlock)
+        if (!earliestBlock && +new Date(from) == 0)
             return [];
 
         const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
@@ -333,6 +333,7 @@ module.exports = (sequelize, DataTypes) => {
             GROUP BY date
             ORDER BY date ASC;
         `, {
+            logging: console.log,
             replacements: {
                 from: new Date(earliestTimestamp),
                 to,
@@ -355,7 +356,7 @@ module.exports = (sequelize, DataTypes) => {
             limit: 1
         });
 
-        if (!earliestBlock)
+        if (!earliestBlock && +new Date(from) == 0)
             return [];
 
         const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
@@ -394,7 +395,7 @@ module.exports = (sequelize, DataTypes) => {
             limit: 1
         });
 
-        if (!earliestBlock)
+        if (!earliestBlock && +new Date(from) == 0)
             return [];
 
         const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
@@ -449,7 +450,7 @@ module.exports = (sequelize, DataTypes) => {
             limit: 1
         });
 
-        if (!earliestBlock)
+        if (!earliestBlock && +new Date(from) == 0)
             return [];
 
         const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
@@ -501,7 +502,7 @@ module.exports = (sequelize, DataTypes) => {
             limit: 1
         });
 
-        if (!earliestBlock)
+        if (!earliestBlock && +new Date(from) == 0)
             return [];
 
         const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
@@ -539,7 +540,7 @@ module.exports = (sequelize, DataTypes) => {
             limit: 1
         });
 
-        if (!earliestBlock)
+        if (!earliestBlock && +new Date(from) == 0)
             return [];
 
         const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
@@ -577,7 +578,7 @@ module.exports = (sequelize, DataTypes) => {
             limit: 1
         });
 
-        if (!earliestBlock)
+        if (!earliestBlock && +new Date(from) == 0)
             return [];
 
         const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
@@ -615,7 +616,7 @@ module.exports = (sequelize, DataTypes) => {
             limit: 1
         });
 
-        if (!earliestBlock)
+        if (!earliestBlock && +new Date(from) == 0)
             return [];
 
         const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
