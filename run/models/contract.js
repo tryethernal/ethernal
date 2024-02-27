@@ -100,7 +100,7 @@ module.exports = (sequelize, DataTypes) => {
         if (!earliestBlock)
             return [];
 
-        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+        const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
 
         return sequelize.query(`
             WITH days AS (
@@ -176,7 +176,7 @@ module.exports = (sequelize, DataTypes) => {
         if (!earliestBlock)
             return [];
 
-        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+        const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
 
         const [cumulativeSupply,] = await sequelize.query(`
             WITH days AS (

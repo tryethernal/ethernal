@@ -320,7 +320,7 @@ module.exports = (sequelize, DataTypes) => {
         if (!earliestBlock)
             return [];
 
-        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+        const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
 
         const [transactions,] = await sequelize.query(`
             SELECT
@@ -358,7 +358,7 @@ module.exports = (sequelize, DataTypes) => {
         if (!earliestBlock)
             return [];
 
-        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+        const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
 
         const [deployedContractCount,] = await sequelize.query(`
             SELECT
@@ -397,23 +397,34 @@ module.exports = (sequelize, DataTypes) => {
         if (!earliestBlock)
             return [];
 
-        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+        const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
 
         const [cumulativeDeployedContractCount,] = await sequelize.query(`
             WITH days AS (
                 SELECT
                     d::date as day
                 FROM generate_series(:from::date, :to::date, interval  '1 day') d
+            ),
+            counts AS (
+                SELECT
+                    day::timestamptz AS counts_date,
+                    count(1) AS count
+                FROM transaction_events, days
+                WHERE timestamp <= days.day + interval '1 day'
+                    AND "to" IS NULL
+                    AND "workspaceId" = :workspaceId
+                GROUP BY day
+                ORDER BY day ASC
+            ),
+            filled AS (
+                SELECT
+                    time_bucket_gapfill('1 day', counts_date) AS date,
+                    locf(avg(count))
+                FROM counts
+                WHERE counts_date >= :from::date and counts_date < :to::date
+                GROUP BY date
             )
-            SELECT
-                day::timestamptz AS date,
-                count(1) AS count
-            FROM transaction_events, days
-            WHERE timestamp <= days.day
-                AND "to" IS NULL
-                AND "workspaceId" = :workspaceId
-            GROUP BY day
-            ORDER BY day ASC
+            SELECT date, coalesce(locf, 0)::integer count FROM filled
         `, {
             replacements: {
                 from: new Date(earliestTimestamp),
@@ -441,21 +452,32 @@ module.exports = (sequelize, DataTypes) => {
         if (!earliestBlock)
             return [];
 
-        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+        const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
 
         const [cumulativeWalletCount,] = await sequelize.query(`
             WITH days AS (
                 SELECT
                     d::date as day
                 FROM generate_series(:from::date, :to::date, interval  '1 day') d
+            ),
+            counts AS (
+                SELECT
+                    day::timestamptz AS counts_date,
+                    count(distinct "from")
+                FROM transaction_events, days
+                WHERE timestamp <= days.day + interval '1 day' AND "workspaceId" = :workspaceId
+                GROUP BY day
+                ORDER BY day ASC
+            ),
+            filled AS (
+                SELECT
+                    time_bucket_gapfill('1 day', counts_date) AS date,
+                    locf(avg(count))
+                FROM counts
+                WHERE counts_date >= :from::date and counts_date < :to::date
+                GROUP BY date
             )
-            SELECT
-                day::timestamptz AS date,
-                coalesce(count(distinct "from"), 0) AS count
-            FROM transaction_events, days
-            WHERE timestamp <= days.day AND "workspaceId" = :workspaceId
-            GROUP BY day
-            ORDER BY day ASC
+            SELECT date, coalesce(locf, 0)::integer count FROM filled
         `, {
             replacements: {
                 from: new Date(earliestTimestamp),
@@ -482,7 +504,7 @@ module.exports = (sequelize, DataTypes) => {
         if (!earliestBlock)
             return [];
 
-        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+        const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
 
         const [uniqueWalletCount,] = await sequelize.query(`
             SELECT
@@ -520,7 +542,7 @@ module.exports = (sequelize, DataTypes) => {
         if (!earliestBlock)
             return [];
 
-        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+        const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
 
         const [avgGasPrice,] = await sequelize.query(`
             SELECT
@@ -558,7 +580,7 @@ module.exports = (sequelize, DataTypes) => {
         if (!earliestBlock)
             return [];
 
-        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+        const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
 
         const [avgTransactionFee,] = await sequelize.query(`
             SELECT
@@ -596,7 +618,7 @@ module.exports = (sequelize, DataTypes) => {
         if (!earliestBlock)
             return [];
 
-        const earliestTimestamp = earliestBlock.timestamp > new Date(from) ? earliestBlock.timestamp : new Date(from);
+        const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
 
         let query = `
             SELECT
