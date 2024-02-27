@@ -34,7 +34,7 @@
                     </v-col>
 
                     <v-col cols="12" md="6">
-                        <Line-Chart :title="'Deployed Contracts Count'" :xLabels="charts['deployedContractCount'].xLabels" :data="charts['deployedContractCount'].data" :tooltipUnit="'contracts'" :index="6" />
+                        <Line-Chart :title="'Deployed Contracts Count'" :xLabels="charts['deployedContractCount'].xLabels" :data="charts['deployedContractCount'].data" :tooltipUnit="'contract'" :index="6" />
                     </v-col>
 
                     <v-col cols="12" md="6">
