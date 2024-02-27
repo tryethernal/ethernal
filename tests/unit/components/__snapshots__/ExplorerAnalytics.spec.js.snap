@@ -48,7 +48,7 @@ exports[`ExplorerAnalytics.vue Should display charts 1`] = `
           <line-chart-stub tooltipunit="wallet" title="Cumulative Wallets Count" index="5" data="2,2" xlabels="0,1"></line-chart-stub>
         </div>
         <div class="col-md-6 col-12">
-          <line-chart-stub tooltipunit="contracts" title="Deployed Contracts Count" index="6" data="2,2" xlabels="0,1"></line-chart-stub>
+          <line-chart-stub tooltipunit="contract" title="Deployed Contracts Count" index="6" data="2,2" xlabels="0,1"></line-chart-stub>
         </div>
         <div class="col-md-6 col-12">
           <line-chart-stub tooltipunit="contract" title="Cumulative Deployed Contracts Count" index="6" data="2,2" xlabels="0,1"></line-chart-stub>
