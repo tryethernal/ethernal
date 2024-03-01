@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const moment = require('moment');
 module.exports = (sequelize, DataTypes) => {
   class TokenBalanceChangeEvent extends Model {
     /**
@@ -19,7 +20,13 @@ module.exports = (sequelize, DataTypes) => {
     blockNumber: DataTypes.INTEGER,
     timestamp: {
       primaryKey: true,
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      set(value) {
+        if (String(value).length > 10)
+          this.setDataValue('timestamp', moment(value).format());
+        else
+          this.setDataValue('timestamp', moment.unix(value).format());
+      }
     },
     token: DataTypes.STRING,
     address: DataTypes.STRING,

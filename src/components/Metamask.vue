@@ -64,7 +64,7 @@ export default {
                                     chainId: this.formattedExpectedChainId,
                                     chainName: this.publicExplorer.name,
                                     rpcUrls: [this.rpcServer],
-                                    blockExplorerUrls: [this.publicExplorer.domain]
+                                    blockExplorerUrls: [this.publicExplorerDomain]
                                 }
                             ]
                         }).catch(console.log);
@@ -87,6 +87,9 @@ export default {
             'currentWorkspace',
             'theme'
         ]),
+        publicExplorerDomain() {
+            return this.publicExplorer.domain.startsWith('https://') ? this.publicExplorer.domain : `https://${this.publicExplorerDomain}`;
+        },
         isChainValid: function() {
             return this.formattedExpectedChainId === this.chainId;
         },
