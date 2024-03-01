@@ -247,7 +247,10 @@ module.exports = (sequelize, DataTypes) => {
     timestamp: {
         type: DataTypes.DATE,
         set(value) {
-            this.setDataValue('timestamp', moment.unix(value).format());
+            if (String(value).length > 10)
+              this.setDataValue('timestamp', moment(value).format());
+            else
+              this.setDataValue('timestamp', moment.unix(value).format());
         }
     },
     to: {
@@ -262,7 +265,17 @@ module.exports = (sequelize, DataTypes) => {
     transactionIndex: DataTypes.INTEGER,
     type: DataTypes.INTEGER,
     v: DataTypes.INTEGER,
-    value: DataTypes.STRING,
+    value: {
+        type: DataTypes.STRING,
+        set(value) {
+            this.setDataValue('value', value.toString(10));
+        },
+        get() {
+            console.log(this.getDataValue('value'))
+            console.log(this.getDataValue('value').toString(10))
+            return this.getDataValue('value') ? this.getDataValue('value').toString(10) : null
+        }
+    },
     storage: DataTypes.JSON,
     raw: DataTypes.JSON,
     formattedBalanceChanges: {

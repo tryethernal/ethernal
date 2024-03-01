@@ -2,13 +2,13 @@
 
 exports[`HashLink.vue Should display a full link to the address 1`] = `
 <span><!----> <a href="/address/0x2D481eeb2bA97955CD081Cf218f453A817259AB1" class="">0x2D481eeb2bA97955CD081Cf218f453A817259AB1</a> <!----> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x2D481eeb2bA97955CD081Cf218f453A817259AB1" value="0x2D481eeb2bA97955CD081Cf218f453A817259AB1"></span>
+        &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x2D481eeb2bA97955CD081Cf218f453A817259AB1" value="0x2D481eeb2bA97955CD081Cf218f453A817259AB1"></span>
 <!----></span>
 `;
 
 exports[`HashLink.vue Should display a shortened link to the address 1`] = `
-<span><!----> <a href="/address/0x2D481eeb2bA97955CD081Cf218f453A817259AB1" class="">0x2D481eeb...59AB1</a> <!----> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x2D481eeb2bA97955CD081Cf218f453A817259AB1" value="0x2D481eeb2bA97955CD081Cf218f453A817259AB1"></span>
+<span><!----> <a href="/address/0x2D481eeb2bA97955CD081Cf218f453A817259AB1" class="">0x2D481e...9AB1</a> <!----> <span>
+        &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x2D481eeb2bA97955CD081Cf218f453A817259AB1" value="0x2D481eeb2bA97955CD081Cf218f453A817259AB1"></span>
 <!----></span>
 `;
 
@@ -16,47 +16,47 @@ exports[`HashLink.vue Should display link to token if tokenId is passed 1`] = `
 <span><!----> <a href="/address/0x123" class="">Ethernal</a> <span>
         &nbsp;(<a href="/address/0x123/1" class="">#1</a>)
     </span> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x123" value="0x123"></span>
+        &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x123" value="0x123"></span>
 <!----></span>
 `;
 
 exports[`HashLink.vue Should display smaller hash if xsHash option is passed 1`] = `
-<span><!----> <a href="/address/0xed5af388653567af2f388e6224dc7c4b3241c544" class="">0xed5...1c544</a> <!----> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
+<span><!----> <a href="/address/0xed5af388653567af2f388e6224dc7c4b3241c544" class="">0xed5...c544</a> <!----> <span>
+        &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
 <!----></span>
 `;
 
 exports[`HashLink.vue Should display the contract name when no token 1`] = `
 <span><!----> <a href="/address/0x123" class="">My Contract</a> <!----> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x123" value="0x123"></span>
+        &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x123" value="0x123"></span>
 <!----></span>
 `;
 
 exports[`HashLink.vue Should display the name for the 0x0 address 1`] = `
 <span><!----> <a href="/address/0x0000000000000000000000000000000000000000" class="">Black Hole</a> <!----> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0000000000000000000000000000000000000000" value="0x0000000000000000000000000000000000000000"></span>
+        &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x0000000000000000000000000000000000000000" value="0x0000000000000000000000000000000000000000"></span>
 <!----></span>
 `;
 
 exports[`HashLink.vue Should display the token name if available & no token symbol 1`] = `
 <span><!----> <a href="/address/0x123" class="">My Contract</a> <!----> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x123" value="0x123"></span>
+        &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x123" value="0x123"></span>
 <!----></span>
 `;
 
 exports[`HashLink.vue Should display the token name if symbol but flag withTokenName 1`] = `
 <span><!----> <a href="/address/0x123" class="">Ethernal</a> <!----> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x123" value="0x123"></span>
+        &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x123" value="0x123"></span>
 <!----></span>
 `;
 
 exports[`HashLink.vue Should display the token symbol if available 1`] = `
 <span><!----> <a href="/address/0x123" class="">My Contract</a> <!----> <span>
-        &nbsp; <button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x123" value="0x123"></span>
+        &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x123" value="0x123"></span>
 <!----></span>
 `;
 
-exports[`HashLink.vue Should not be copiable if the notCopiable flag is passed 1`] = `<span><!----> <a href="/address/0x2D481eeb2bA97955CD081Cf218f453A817259AB1" class="">0x2D481eeb...59AB1</a> <!----> <!----> <!----></span>`;
+exports[`HashLink.vue Should not be copiable if the notCopiable flag is passed 1`] = `<span><!----> <a href="/address/0x2D481eeb2bA97955CD081Cf218f453A817259AB1" class="">0x2D481e...9AB1</a> <!----> <!----> <!----></span>`;
 
 exports[`HashLink.vue Should not create links 1`] = `<span><!----> My Contract <!----> <!----> <!----></span>`;
 

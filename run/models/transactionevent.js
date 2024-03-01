@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const moment = require('moment');
 module.exports = (sequelize, DataTypes) => {
   class TransactionEvent extends Model {
     /**
@@ -19,7 +20,13 @@ module.exports = (sequelize, DataTypes) => {
     blockNumber: DataTypes.INTEGER,
     timestamp: {
       type: DataTypes.DATE,
-      primaryKey: true
+      primaryKey: true,
+      set(value) {
+        if (String(value).length > 10)
+          this.setDataValue('timestamp', moment(value).format());
+        else
+          this.setDataValue('timestamp', moment.unix(value).format());
+      }
     },
     transactionFee: DataTypes.STRING,
     gasPrice: DataTypes.STRING,
