@@ -55,7 +55,10 @@ module.exports = (sequelize, DataTypes) => {
     timestamp: {
         type: DataTypes.DATE,
         set(value) {
-            this.setDataValue('timestamp', moment.unix(value).format());
+            if (String(value).length > 10)
+              this.setDataValue('timestamp', moment(value).format());
+            else
+              this.setDataValue('timestamp', moment.unix(value).format());
         }
     },
     transactionsCount: DataTypes.INTEGER,

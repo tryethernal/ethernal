@@ -519,7 +519,10 @@ module.exports = (sequelize, DataTypes) => {
     timestamp: {
         type: DataTypes.DATE,
         set(value) {
-            this.setDataValue('timestamp', moment.unix(value).format());
+            if (value.length > 10)
+              this.setDataValue('timestamp', moment(value).format());
+            else
+              this.setDataValue('timestamp', moment.unix(value).format());
         }
     },
     tokenDecimals: DataTypes.INTEGER,

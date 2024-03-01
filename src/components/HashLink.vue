@@ -12,7 +12,7 @@
             &nbsp;(<router-link :to="`/address/${hash}/${tokenId}`">#{{ tokenId }}</router-link>)
         </span>
         <span v-if="hash && !copied && !notCopiable">
-            &nbsp; <v-icon @click="copyHash()" x-small>mdi-content-copy</v-icon><input type="hidden" :id="`copyElement-${hash}`" :value="hash">
+            &nbsp;<v-icon @click="copyHash()" x-small>mdi-content-copy</v-icon><input type="hidden" :id="`copyElement-${hash}`" :value="hash">
         </span>
         <span v-if="copied">
             &nbsp; <v-icon x-small>mdi-check</v-icon>
@@ -75,10 +75,10 @@ export default {
                 return this.hash;
             }
             else if (this.xsHash) {
-                return `${this.hash.slice(0, 5)}...${this.hash.slice(-5)}`;
+                return `${this.hash.slice(0, 5)}...${this.hash.slice(-4)}`;
             }
             else {
-                return `${this.hash.slice(0, 10)}...${this.hash.slice(-5)}`;
+                return `${this.hash.slice(0, 8)}...${this.hash.slice(-4)}`;
             }
         },
         name() {
