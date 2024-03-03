@@ -271,8 +271,6 @@ module.exports = (sequelize, DataTypes) => {
             this.setDataValue('value', value.toString(10));
         },
         get() {
-            console.log(this.getDataValue('value'))
-            console.log(this.getDataValue('value').toString(10))
             return this.getDataValue('value') ? this.getDataValue('value').toString(10) : null
         }
     },
