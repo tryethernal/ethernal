@@ -28,6 +28,7 @@
     "cors": "^2.8.5",
     "ethers": "^5.6.4",
     "express": "^4.17.3",
+    "express-basic-auth": "^1.2.1",
     "express-session": "^1.17.3",
     "firebase-admin": "^10.2.0",
     "firebase-scrypt": "^2.2.0",

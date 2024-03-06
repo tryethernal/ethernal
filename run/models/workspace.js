@@ -333,7 +333,6 @@ module.exports = (sequelize, DataTypes) => {
             GROUP BY date
             ORDER BY date ASC;
         `, {
-            logging: console.log,
             replacements: {
                 from: new Date(earliestTimestamp),
                 to,
@@ -1504,7 +1503,7 @@ module.exports = (sequelize, DataTypes) => {
         })
     }
 
-    async safeCreateExplorer(transaction) {
+    async safeCreateExplorer(transaction, shouldSync = true) {
         const creationFn = async transaction => {
             await this.update({ public: true, browserSyncEnabled: false, rpcHealthCheckEnabled: true }, { transaction });
 
@@ -1520,7 +1519,8 @@ module.exports = (sequelize, DataTypes) => {
                 rpcServer: this.rpcServer,
                 slug: slug,
                 themes: { "default": {}},
-                domain: `${slug}.${process.env.APP_DOMAIN}`
+                domain: `${slug}.${process.env.APP_DOMAIN}`,
+                shouldSync
             }, { transaction });
         }
         return transaction ? creationFn(transaction) : sequelize.transaction(creationFn);
@@ -1550,6 +1550,7 @@ module.exports = (sequelize, DataTypes) => {
     pollingInterval: DataTypes.INTEGER,
     emitMissedBlocks: DataTypes.BOOLEAN,
     skipFirstBlock: DataTypes.BOOLEAN,
+    qnEndpointId: DataTypes.STRING,
     integrityCheckStartBlockNumber: {
         type: DataTypes.INTEGER,
         get() {

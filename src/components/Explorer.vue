@@ -31,7 +31,7 @@
                     <Explorer-Sync :explorer="explorer" />
                     <template v-if="isBillingEnabled">
                         <h4 class="mt-2">Billing</h4>
-                        <Explorer-Billing :explorer="explorer" @updated="loadExplorer(id)" />
+                        <Explorer-Billing :explorer="explorer" @updated="loadExplorer(id)" :sso="sso" />
                     </template>
                     <h4 class="mt-2">Domain Aliases</h4>
                     <Explorer-Domains-List :key="JSON.stringify(capabilities)" :explorer="explorer" :disabled="isBillingEnabled && (!explorer.stripeSubscription || !explorer.stripeSubscription.stripePlan.capabilities.customDomain)" @updated="loadExplorer(id)" />
@@ -43,7 +43,7 @@
                     <Explorer-Branding :key="JSON.stringify(capabilities)" :explorer="explorer" :disabled="isBillingEnabled && (!explorer.stripeSubscription || !explorer.stripeSubscription.stripePlan.capabilities.branding)" @updated="loadExplorer(id)" />
                 </v-col>
             </v-row>
-            <v-row>
+            <v-row v-if="!sso">
                 <v-col cols="6">
                     <h4 class="error--text">Danger Zone</h4>
                     <Explorer-Danger-Zone :key="JSON.stringify(capabilities)" :explorer="explorer" />
@@ -67,7 +67,7 @@ import ExplorerDangerZone from './ExplorerDangerZone';
 
 export default {
     name: 'Explorer',
-    props: ['id'],
+    props: ['id', 'sso'],
     components: {
         ExplorerSettings,
         ExplorerSync,

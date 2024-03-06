@@ -8,5 +8,6 @@ module.exports = {
     isApproximatedEnabled: () => process.env.APPROXIMATED_API_KEY && process.env.APPROXIMATED_TARGET_IP,
     isProductionEnvironment: () => process.env.NODE_ENV == 'production',
     isDevelopmentEnvironment: () => process.env.NODE_ENV == 'development',
-    isDemoEnabled: () => !!process.env.DEMO_USER_ID
+    isDemoEnabled: () => !!process.env.DEMO_USER_ID,
+    isQuicknodeEnabled: () => true
 };

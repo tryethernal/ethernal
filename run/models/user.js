@@ -116,7 +116,7 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    static async safeCreate(firebaseUserId, email, apiKey, stripeCustomerId, plan, explorerSubscriptionId, passwordHash, passwordSalt) {
+    static async safeCreate(firebaseUserId, email, apiKey, stripeCustomerId, plan, explorerSubscriptionId, passwordHash, passwordSalt, qnId) {
         if (!firebaseUserId || !email || !apiKey || !stripeCustomerId || !plan) throw new Error('[User.createUser] Missing parameter');
 
         const existingUser = await User.findOne({
@@ -139,7 +139,8 @@ module.exports = (sequelize, DataTypes) => {
             plan: plan,
             explorerSubscriptionId: explorerSubscriptionId,
             passwordHash: passwordHash,
-            passwordSalt: passwordSalt
+            passwordSalt: passwordSalt,
+            qnId
         }));
     }
 
@@ -175,7 +176,8 @@ module.exports = (sequelize, DataTypes) => {
                 tracing: data.tracing,
                 dataRetentionLimit: data.dataRetentionLimit || this.defaultDataRetentionLimit,
                 browserSyncEnabled: false,
-                erc721LoadingEnabled: false
+                erc721LoadingEnabled: false,
+                qnEndpointId: data.qnEndpointId
             }), { transaction });
 
             if (!workspace)
@@ -206,7 +208,8 @@ module.exports = (sequelize, DataTypes) => {
                 gasLimit: data.settings && data.settings.gasLimit,
                 gasPrice: data.settings && data.settings.gasPrice,
                 tracing: data.tracing,
-                dataRetentionLimit: data.dataRetentionLimit
+                dataRetentionLimit: data.dataRetentionLimit,
+                qnEndpointId: data.qnEndpointId
             }), { transaction });
 
             return sequelize.models.Workspace.findOne({
@@ -245,6 +248,7 @@ module.exports = (sequelize, DataTypes) => {
     passwordHash: DataTypes.STRING,
     passwordSalt: DataTypes.STRING,
     canTrial: DataTypes.BOOLEAN,
+    qnId: DataTypes.STRING,
     isPremium: {
         type: DataTypes.VIRTUAL,
         get() {

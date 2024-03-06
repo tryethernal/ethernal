@@ -19,6 +19,8 @@ run/dump.rdb
 functions/report*
 start_explorer.js
 
+qn-marketplace-cli
+
 # local env files
 .env.*
 functions/.runtimeconfig.json

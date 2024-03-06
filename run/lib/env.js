@@ -1,5 +1,6 @@
 module.exports = {
     getAppDomain: () => process.env.APP_DOMAIN,
+    getApiEndpoint:() => 'http://localhost:8888',
     getDefaultPlanSlug: () => process.env.DEFAULT_PLAN_SLUG,
     getAppUrl: () => process.env.APP_URL,
     getScannerKey: (scanner) => process.env[`${scanner}_API_TOKEN`],
@@ -19,5 +20,6 @@ module.exports = {
     getMaxBlockForSyncReset: () => parseInt(process.env.MAX_BLOCK_FOR_SYNC_RESET) || 10,
     getMaxContractForReset: () => parseInt(process.env.MAX_CONTRACT_FOR_RESET) || 5,
     getEncryptionKey: () => process.env.ENCRYPTION_KEY,
-    getEncryptionJwtSecret: () => process.env.ENCRYPTION_JWT_SECRET
+    getEncryptionJwtSecret: () => process.env.ENCRYPTION_JWT_SECRET,
+    getQuicknodeCredentials: () => 'q24rqaergser'
 };

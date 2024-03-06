@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
+const { getDemoUserId, getMaxBlockForSyncReset, getDemoTrialSlug } = require('./env');
 const models = require('../models');
 const { firebaseHash }  = require('./crypto');
-const { getDemoUserId, getMaxBlockForSyncReset } = require('./env');
 
 const Op = Sequelize.Op;
 const User = models.User;
@@ -16,6 +16,123 @@ const StripeSubscription = models.StripeSubscription;
 const StripePlan = models.StripePlan;
 const ExplorerDomain = models.ExplorerDomain;
 const RpcHealthCheck = models.RpcHealthCheck;
+
+const markWorkspaceForDeletion = async (workspaceId) => {
+    if (!workspaceId)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Could not find workspace');
+
+    return workspace.update({ pendingDeletion: true });
+}
+
+const updateQuicknodeSubscription = async (qnId, qnEndpointId, stripePlanId) => {
+    if (!qnId || !qnEndpointId || !stripePlanId)
+        throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            '$admin.qnId$': qnId,
+            '$workspace.qnEndpointId$': qnEndpointId
+        },
+        include: ['admin', 'workspace', 'stripeSubscription']
+    });
+
+    if (!explorer)
+        throw new Error('Could not find explorer');
+
+    if (!explorer.stripeSubscription)
+        throw new Error('Could not find subscription');
+
+    return explorer.stripeSubscription.update({ stripePlanId });
+};
+
+const findQuicknodeExplorer = async (qnId, qnEndpointId) => {
+    if (!qnId || !qnEndpointId)
+        throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            '$admin.qnId$': qnId,
+            '$workspace.qnEndpointId$': qnEndpointId
+        },
+        include: [
+            'admin', 'workspace',
+            {
+                model: StripeSubscription,
+                as: 'stripeSubscription',
+                include: 'stripePlan'
+            }
+        ]
+    });
+
+    return explorer ? explorer.toJSON() : null;
+};
+
+const findQuicknodeUser = async (qnId) => {
+    if (!qnId)
+        throw new Error('Missing parameter');
+
+    const user = await User.findOne({
+        where: { qnId },
+        include: {
+            model: Explorer,
+            as: 'explorers',
+            include: 'workspace'
+        }
+    });
+
+    return user ? user.toJSON() : null;
+};
+
+const findQuicknodeWorkspace = (qnId, qnEndpointId) => {
+    if (!qnId || !qnEndpointId)
+        throw new Error('Missing parameter');
+
+    return Workspace.findOne({
+        where: {
+            qnEndpointId,
+            '$user.qnId$': qnId,
+            pendingDeletion: false
+        },
+        include: ['explorer', 'user']
+    });
+};
+
+const createQuicknodeWorkspace = async (qnId, qnEndpointId, name, rpcServer, networkId) => {
+    if (!qnId || !qnEndpointId || !name || !rpcServer || !networkId)
+        throw new Error('Missing parameter');
+
+    const user = await User.findOne({ where: { qnId }});
+    if (!user)
+        throw new Error('Cannot find user');
+
+    return user.safeCreateWorkspace({
+        name, networkId, rpcServer, qnEndpointId,
+        dataRetentionLimit: 0,
+        public: true,
+        chain: 'ethereum', 
+        browserSyncEnabled: false,
+        erc721LoadingEnabled: false
+    });
+};
+
+const createQuicknodeExplorer = async (qnId, qnEndpointId, name, rpcServer, networkId) => {
+    if (!qnId || !qnEndpointId || !name || !rpcServer || !networkId)
+        throw new Error('Missing parameter');
+
+    const user = await User.findOne({ where: { qnId }});
+    if (!user)
+        throw new Error('Cannot find user');
+
+    const explorer = await user.safeCreateWorkspaceWithExplorer({ qnEndpointId, name, rpcServer, networkId });
+    if (!explorer)
+        throw new Error('Could not create explorer');
+
+    return explorer.toJSON();
+};
 
 const workspaceNeedsBatchReset = async (userId, workspaceId) => {
     if (!userId || !workspaceId)
@@ -1306,7 +1423,7 @@ const getUser = async (id, extraFields = []) => {
 const createUser = async (uid, data) => {
     if (!uid || !data) throw new Error('Missing parameter.');
 
-    const user = await User.safeCreate(uid, data.email, data.apiKey, data.stripeCustomerId, data.plan, data.explorerSubscriptionId, data.passwordHash, data.passwordSalt);
+    const user = await User.safeCreate(uid, data.email, data.apiKey, data.stripeCustomerId, data.plan, data.explorerSubscriptionId, data.passwordHash, data.passwordSalt, data.qnId);
     return user ? user.toJSON() : null;
 };
 
@@ -1485,8 +1602,8 @@ const storeTokenBalanceChanges = async (userId, workspace, tokenTransferId, chan
     if (!userId || !workspace || !tokenTransferId || !changes) throw new Error('Missing parameter.');
 
     const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-    const tokenTransfer = (await user.workspaces[0].getTokenTransfers({ 
-        where: { id :tokenTransferId }
+    const tokenTransfer = (await user.workspaces[0].getTokenTransfers({
+        where: { id :tokenTransferId }
     }))[0];
 
     if (!tokenTransfer)
@@ -1818,5 +1935,12 @@ module.exports = {
     getCumulativeWalletCount: getCumulativeWalletCount,
     getDeployedContractCount: getDeployedContractCount,
     getCumulativeDeployedContractCount: getCumulativeDeployedContractCount,
+    findQuicknodeUser: findQuicknodeUser,
+    findQuicknodeWorkspace: findQuicknodeWorkspace,
+    createQuicknodeExplorer: createQuicknodeExplorer,
+    findQuicknodeExplorer: findQuicknodeExplorer,
+    updateQuicknodeSubscription: updateQuicknodeSubscription,
+    createQuicknodeWorkspace: createQuicknodeWorkspace,
+    markWorkspaceForDeletion: markWorkspaceForDeletion,
     Workspace: Workspace
 };
