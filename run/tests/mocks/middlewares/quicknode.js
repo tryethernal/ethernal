@@ -1,4 +1,4 @@
-jest.mock('../../../middlewares/taskAuth', () => {
+jest.mock('../../../middlewares/quicknode', () => {
     return (req, res, next) => {
         next();
     }

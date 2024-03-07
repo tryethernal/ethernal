@@ -42,8 +42,8 @@ const removeWorkspaceAndExplorer = async (req, res) => {
 
         res.status(200).send({ status: 'success' });
     } catch(error) {
-        logger.error(error.message, { location: 'webhooks.quicknode.update', error: error });
-        res.status(401).json({ message: error });
+        logger.error(error.message, { location: 'webhooks.quicknode.deprovision', error: error });
+        res.status(401).send(error.message);
     }
 };
 
@@ -64,7 +64,7 @@ router.get('/sso', async (req, res) => {
         res.redirect(`${getAppUrl()}/sso?explorerId=${user.explorers[0].id}&apiToken=${user.apiToken}`);
     } catch(error) {
         logger.error(error.message, { location: 'webhooks.quicknode.sso', error: error });
-        res.status(401).json({ message: error });
+        res.status(401).send(error.message);
     }
 });
 
@@ -82,7 +82,7 @@ router.put('/update', quicknodeMiddleware, async (req, res) => {
 
         const stripePlan = await db.getStripePlan(plan);
         if (!stripePlan)
-        throw new Error('Cannot find plan.');
+            throw new Error('Cannot find plan.');
 
         if (explorer.stripeSubscription.stripePlan.slug == stripePlan.slug)
             return res.status(200).send({ status: 'success' });
@@ -92,7 +92,7 @@ router.put('/update', quicknodeMiddleware, async (req, res) => {
         res.status(200).send({ status: 'success' });
     } catch(error) {
         logger.error(error.message, { location: 'webhooks.quicknode.update', error: error });
-        res.status(401).json({ message: error });
+        res.status(401).send(error.message);
     }
 });
 
@@ -100,8 +100,7 @@ router.post('/provision', quicknodeMiddleware, async (req, res) => {
     try {
         const data = req.body;
 
-        // const rpcServer = data['wss-url'] || data['http-url'];
-        const rpcServer = data['http-url'];
+        const rpcServer = data['wss-url'] || data['http-url'];
         const { 'quicknode-id': quicknodeId, 'endpoint-id': quicknodeEndpointId, plan } = data;
 
         if (!rpcServer || !quicknodeId || !quicknodeEndpointId)
@@ -125,7 +124,7 @@ router.post('/provision', quicknodeMiddleware, async (req, res) => {
         let user = await db.findQuicknodeUser(quicknodeId);
 
         if (!user) {
-            const { passwordHash, passwordSalt } = await firebaseHash('antoine');
+            const { passwordHash, passwordSalt } = await firebaseHash(randomUUID());
             const email = `quicknode+${quicknodeId}@tryethernal.com`;
             const clearApiKey = uuidAPIKey.create().apiKey;
             const apiKey = encrypt(clearApiKey);
@@ -137,10 +136,8 @@ router.post('/provision', quicknodeMiddleware, async (req, res) => {
 
         const existingWorkspace = await db.findQuicknodeWorkspace(quicknodeId, quicknodeEndpointId);
 
-        if (existingWorkspace) {
-            console.log('Already a workspace with this endpoint id');
+        if (existingWorkspace)
             return res.status(200).send({ status: 'success' });
-        }
  
         const workspace = await db.createQuicknodeWorkspace(quicknodeId, quicknodeEndpointId, generateSlug(), rpcServer, networkId);
 
@@ -156,7 +153,7 @@ router.post('/provision', quicknodeMiddleware, async (req, res) => {
         res.status(200).send({ status: 'success', 'access-url': explorer.domain, 'dashboard-url': `${getApiEndpoint()}/webhooks/quicknode/sso` });
     } catch(error) {
         logger.error(error.message, { location: 'webhooks.quicknode.provision', error: error });
-        res.status(401).json({ message: error });
+        res.status(401).send(error.message);
     }
 });
 
