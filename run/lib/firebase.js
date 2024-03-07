@@ -41,10 +41,10 @@ const updateQuicknodeSubscription = async (qnId, qnEndpointId, stripePlanId) => 
     });
 
     if (!explorer)
-        throw new Error('Could not find explorer');
+        throw new Error('Cannot find explorer');
 
     if (!explorer.stripeSubscription)
-        throw new Error('Could not find subscription');
+        throw new Error('Cannot find subscription');
 
     return explorer.stripeSubscription.update({ stripePlanId });
 };
@@ -117,21 +117,6 @@ const createQuicknodeWorkspace = async (qnId, qnEndpointId, name, rpcServer, net
         browserSyncEnabled: false,
         erc721LoadingEnabled: false
     });
-};
-
-const createQuicknodeExplorer = async (qnId, qnEndpointId, name, rpcServer, networkId) => {
-    if (!qnId || !qnEndpointId || !name || !rpcServer || !networkId)
-        throw new Error('Missing parameter');
-
-    const user = await User.findOne({ where: { qnId }});
-    if (!user)
-        throw new Error('Cannot find user');
-
-    const explorer = await user.safeCreateWorkspaceWithExplorer({ qnEndpointId, name, rpcServer, networkId });
-    if (!explorer)
-        throw new Error('Could not create explorer');
-
-    return explorer.toJSON();
 };
 
 const workspaceNeedsBatchReset = async (userId, workspaceId) => {
@@ -1937,7 +1922,6 @@ module.exports = {
     getCumulativeDeployedContractCount: getCumulativeDeployedContractCount,
     findQuicknodeUser: findQuicknodeUser,
     findQuicknodeWorkspace: findQuicknodeWorkspace,
-    createQuicknodeExplorer: createQuicknodeExplorer,
     findQuicknodeExplorer: findQuicknodeExplorer,
     updateQuicknodeSubscription: updateQuicknodeSubscription,
     createQuicknodeWorkspace: createQuicknodeWorkspace,

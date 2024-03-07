@@ -12,6 +12,78 @@ const env = require('../../lib/env');
 
 beforeEach(() => jest.clearAllMocks());
 
+describe('markWorkspaceForDeletion', () => {
+    it('Should throw an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        db.markWorkspaceForDeletion(1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find workspace'));
+                done();
+            });
+    });
+
+    it('Should update the workspace', (done) => {
+        const update = jest.fn();
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ update });
+        db.markWorkspaceForDeletion(1)
+            .then(() => {
+                expect(update).toHaveBeenCalledWith({ pendingDeletion: true });
+                done();
+            });
+    });
+});
+
+describe('updateQuicknodeSubscription', () => {
+    it('Should throw an error if no explorer', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
+        db.updateQuicknodeSubscription(1, 1, 1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Cannot find explorer'));
+                done();
+            });
+    });
+
+    it('Should throw an error if no subscription', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ stripeSubscription: null });
+        db.updateQuicknodeSubscription(1, 1, 1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Cannot find subscription'));
+                done();
+            });
+    });
+
+    it('Should update the subscription', (done) => {
+        const update = jest.fn();
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({ stripeSubscription: { update }});
+        db.updateQuicknodeSubscription(1, 1, 1)
+            .then(() => {
+                expect(update).toHaveBeenCalledWith({ stripePlanId: 1 });
+                done();
+            });
+    });
+});
+
+describe('createQuicknodeWorkspace', () => {
+    it('Should throw an error if no user', (done) => {
+        jest.spyOn(User, 'findOne').mockResolvedValueOnce(null);
+        db.createQuicknodeWorkspace(1, 1, 'a', 'a', 1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Cannot find user'));
+                done();
+            });
+    });
+
+    it('Should create a workspace', (done) => {
+        const safeCreateWorkspace = jest.fn();
+        jest.spyOn(User, 'findOne').mockResolvedValueOnce({ safeCreateWorkspace });
+        db.createQuicknodeWorkspace(1, 1, 'a', 'a', 1)
+            .then(() => {
+                expect(safeCreateWorkspace).toHaveBeenCalled();
+                done();
+            });
+    });
+})
+
 describe('workspaceNeedsBatchReset', () => {
     it('Should throw an error if no workspace', (done) => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce(null);
