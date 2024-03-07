@@ -1503,7 +1503,7 @@ module.exports = (sequelize, DataTypes) => {
         })
     }
 
-    async safeCreateExplorer(transaction, shouldSync = true) {
+    async safeCreateExplorer(transaction) {
         const creationFn = async transaction => {
             await this.update({ public: true, browserSyncEnabled: false, rpcHealthCheckEnabled: true }, { transaction });
 
@@ -1519,8 +1519,7 @@ module.exports = (sequelize, DataTypes) => {
                 rpcServer: this.rpcServer,
                 slug: slug,
                 themes: { "default": {}},
-                domain: `${slug}.${process.env.APP_DOMAIN}`,
-                shouldSync
+                domain: `${slug}.${process.env.APP_DOMAIN}`
             }, { transaction });
         }
         return transaction ? creationFn(transaction) : sequelize.transaction(creationFn);
