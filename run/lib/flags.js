@@ -9,5 +9,5 @@ module.exports = {
     isProductionEnvironment: () => process.env.NODE_ENV == 'production',
     isDevelopmentEnvironment: () => process.env.NODE_ENV == 'development',
     isDemoEnabled: () => !!process.env.DEMO_USER_ID,
-    isQuicknodeEnabled: () => true
+    isQuicknodeEnabled: () => !!process.env.QUICKNODE_CREDENTIALS
 };
