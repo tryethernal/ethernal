@@ -6,5 +6,6 @@ jest.mock('../../../lib/flags', () => ({
     isFirebaseAuthEnabled: jest.fn(() => true),
     isGoogleApiEnabled: jest.fn(() => true),
     isApproximatedEnabled: jest.fn(() => true),
-    isDemoEnabled: jest.fn(() => true)
+    isDemoEnabled: jest.fn(() => true),
+    isQuicknodeEnabled: jest.fn(() => true)
 }));
