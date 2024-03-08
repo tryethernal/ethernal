@@ -333,7 +333,6 @@ module.exports = (sequelize, DataTypes) => {
             GROUP BY date
             ORDER BY date ASC;
         `, {
-            logging: console.log,
             replacements: {
                 from: new Date(earliestTimestamp),
                 to,
@@ -1550,6 +1549,7 @@ module.exports = (sequelize, DataTypes) => {
     pollingInterval: DataTypes.INTEGER,
     emitMissedBlocks: DataTypes.BOOLEAN,
     skipFirstBlock: DataTypes.BOOLEAN,
+    qnEndpointId: DataTypes.STRING,
     integrityCheckStartBlockNumber: {
         type: DataTypes.INTEGER,
         get() {

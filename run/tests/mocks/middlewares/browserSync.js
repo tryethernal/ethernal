@@ -1,5 +1,5 @@
 jest.mock('../../../middlewares/browserSync', () => {
-    return (req, res, next) => {
+    return (req, res, next) => {
         next();
     }
 });

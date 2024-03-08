@@ -3,7 +3,7 @@ require('../mocks/lib/queue');
 require('../mocks/lib/firebase');
 require('../mocks/lib/transactions');
 require('../mocks/lib/logger');
-const { User, Workspace } = require('../mocks/models');
+const { Workspace } = require('../mocks/models');
 
 const db = require('../../lib/firebase');
 const { ProviderConnector } = require('../../lib/rpc');

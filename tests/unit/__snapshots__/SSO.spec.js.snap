@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SSO.vue Should show a link 1`] = `
+<div data-app="true" class="v-application v-application--is-ltr theme--light" id="app">
+  <div class="v-application--wrap">
+    <main class="v-main" style="padding: 0px 0px 0px 0px;">
+      <div class="v-main__wrap">
+        <div class="container container--fluid">
+          <explorer-stub sso="true" id="1"></explorer-stub>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+`;
