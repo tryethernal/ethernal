@@ -288,10 +288,19 @@ module.exports = (sequelize, DataTypes) => {
             SELECT COUNT(*)
             FROM transaction_events
             WHERE "workspaceId" = :workspaceId
+                AND timestamp >= :since::timestamp
         `;
 
-        if (since) {
-            query += ' AND timestamp > :since::timestamp';
+        if (!since) {
+            const [earliestBlock] = await this.getBlocks({
+                attributes: ['timestamp'],
+                where: {
+                    timestamp: { [Op.gt]: new Date(0) }
+                },
+                order: [['number', 'ASC']],
+                limit: 1
+            });
+            since = earliestBlock ? new Date(earliestBlock.timestamp) : new Date(0);
         }
 
         const [{ count },] = await sequelize.query(query, {
@@ -654,13 +663,27 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async countActiveWallets() {
+        const [earliestBlock] = await this.getBlocks({
+            attributes: ['timestamp'],
+            where: {
+                timestamp: { [Op.gt]: new Date(0) }
+            },
+            order: [['number', 'ASC']],
+            limit: 1
+        });
+        const since = earliestBlock ? new Date(earliestBlock.timestamp) : new Date(0);
+
         const [{ count },] = await sequelize.query(`
             SELECT COUNT(DISTINCT "from")
             FROM transaction_events
             WHERE "workspaceId" = :workspaceId
+                AND timestamp >= :since::timestamp
         `, {
             type: QueryTypes.SELECT,
-            replacements: { workspaceId: this.id }
+            replacements: {
+                workspaceId: this.id,
+                since
+            }
         });
         return parseInt(count);
     }
