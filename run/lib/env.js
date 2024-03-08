@@ -21,5 +21,5 @@ module.exports = {
     getMaxContractForReset: () => parseInt(process.env.MAX_CONTRACT_FOR_RESET) || 5,
     getEncryptionKey: () => process.env.ENCRYPTION_KEY,
     getEncryptionJwtSecret: () => process.env.ENCRYPTION_JWT_SECRET,
-    getQuicknodeCredentials: () => process.env.QUIKNODE_CREDENTIALS
+    getQuicknodeCredentials: () => process.env.QUICKNODE_CREDENTIALS
 };
