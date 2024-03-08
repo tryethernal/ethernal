@@ -123,6 +123,12 @@ jest.mock('../../../lib/firebase', () => {
         getCumulativeDeployedContractCount: jest.fn(),
         getAverageGasPrice: jest.fn(),
         getAverageTransactionFee: jest.fn(),
+        findQuicknodeUser: jest.fn(),
+        findQuicknodeWorkspace: jest.fn(),
+        createQuicknodeWorkspace: jest.fn(),
+        findQuicknodeExplorer: jest.fn(),
+        updateQuicknodeSubscription: jest.fn(),
+        markWorkspaceForDeletion: jest.fn(),
         Workspace: Workspace
     }
 });

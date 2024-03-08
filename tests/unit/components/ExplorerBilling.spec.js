@@ -61,4 +61,24 @@ describe('ExplorerBilling.vue', () => {
 
         expect(wrapper.html()).toMatchSnapshot();
     });
+
+    it('Should not display update button if sso', async () => {
+        const wrapper = helper.mountFn(ExplorerBilling, {
+            stubs: ['Update-Explorer-Modal'],
+            propsData: {
+                sso: true,
+                explorer: {
+                    stripeSubscription: {
+                        transactionQuota: 10,
+                        status: 'active',
+                        cycleEndsAt: new Date(2023, 7, 28),
+                        stripePlan: { name: 'Explorer 500', capabilities: { txLimit: 20 }}
+                    }
+                }
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
 });

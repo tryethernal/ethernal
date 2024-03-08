@@ -17,6 +17,7 @@ const user = {
 };
 
 const User = {
+    findOne: jest.fn(),
     findByAuthIdWithWorkspace: jest.fn().mockResolvedValue(user),
     findByPk: jest.fn().mockResolvedValue(user),
     findByAuthId: jest.fn().mockResolvedValue(user),

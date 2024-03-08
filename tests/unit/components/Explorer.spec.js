@@ -59,4 +59,18 @@ describe('Explorer.vue', () => {
 
         expect(wrapper.html()).toMatchSnapshot();
     });
+
+    it('Should not display danger zone if SSO', async () => {
+        jest.spyOn(helper.mocks.server, 'getWorkspaces').mockResolvedValueOnce({ data: [{ id: 1 }]});
+        jest.spyOn(helper.mocks.server, 'getExplorer').mockResolvedValueOnce({ data: { id: 1, slug: 'test', domains: [{ domain: 'a.test.com' }], stripeSubscription: { stripePlan: { capabilities: {}}}}});
+        const wrapper = helper.mountFn(Explorer, {
+            propsData: {
+                sso: true
+            },
+            stubs: ['Explorer-Settings', 'Explorer-Billing', 'Explorer-Domains-List', 'Explorer-Branding', 'Explorer-Danger-Zone', 'Explorer-Sync']
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
 });

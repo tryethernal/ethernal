@@ -47,3 +47,24 @@ exports[`ExplorerBilling.vue Should display trial without card message 1`] = `
   </div>
 </div>
 `;
+
+exports[`ExplorerBilling.vue Should not display update button if sso 1`] = `
+<div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-dialog__container">
+    <!---->
+  </div>
+  <div class="v-card__text">
+    <div>Plan: <b>Explorer 500</b></div>
+    <div>
+      Status: <b class="success--text">Active</b>
+      <!---->
+    </div>
+    <div>
+      Monthly Transaction Quota:
+      <b>10 / 20</b> (Resetting Aug. 28th)
+    </div>
+    <!---->
+    <!---->
+  </div>
+</div>
+`;

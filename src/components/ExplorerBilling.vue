@@ -16,8 +16,8 @@
                 </template>
                 <template v-else><b>Unlimited</b></template>
             </div>
-            <v-btn class="mt-2" color="primary" @click="openUpdateExplorerPlanModal()">Update Plan</v-btn>
-            <v-btn class="mt-2 ml-2" v-if="trial" :loading="stripePortalLoading" color="primary" @click="openStripePortal()">Add Payment Method</v-btn>
+            <v-btn v-if="!sso" class="mt-2" color="primary" @click="openUpdateExplorerPlanModal()">Update Plan</v-btn>
+            <v-btn class="mt-2 ml-2" v-if="trial && !sso" :loading="stripePortalLoading" color="primary" @click="openStripePortal()">Add Payment Method</v-btn>
         </v-card-text>
         <v-card-text v-else>
             <v-btn color="primary" @click="openUpdateExplorerPlanModal()">Start Subscription</v-btn>
@@ -32,7 +32,7 @@ import UpdateExplorerPlanModal from './UpdateExplorerPlanModal';
 
 export default {
     name: 'ExplorerBilling',
-    props: ['explorer'],
+    props: ['explorer', 'sso'],
     components: {
         UpdateExplorerPlanModal
     },

@@ -253,6 +253,8 @@ export default {
             this.ethereum = provider;
         });
         this.isOverlayActive = true;
+        if (localStorage.getItem('ssoApiToken'))
+            localStorage.removeItem('ssoApiToken');
         this.publicExplorer ? this.setupPublicExplorer() : this.setupPrivateExplorer();
     },
     methods: {

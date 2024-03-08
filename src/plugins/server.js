@@ -350,7 +350,7 @@ export const serverPlugin = {
 
         axios.interceptors.request.use(
             config => {
-                const apiToken = localStorage.getItem('apiToken');
+                const apiToken = localStorage.getItem('ssoApiToken') || localStorage.getItem('apiToken');
                 if (apiToken)
                     config.headers['Authorization'] = `Bearer ${apiToken}`;
                 return config;

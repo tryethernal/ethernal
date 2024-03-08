@@ -70,8 +70,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       afterCreate(stripeSubscription, options) {
         const afterCreateFn = async () => {
-          const explorer = await stripeSubscription.getExplorer();
-          if (!explorer) return;
+          const explorer = await stripeSubscription.getExplorer({ include: 'workspace' });
+          if (!explorer || explorer.workspace.qnEndpointId) return;
           const stripePlan = await stripeSubscription.getStripePlan();
           analytics.track(explorer.userId, 'explorer:subscription_create', {
             is_demo: explorer.isDemo,

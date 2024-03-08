@@ -5,7 +5,7 @@ const browserSyncMiddleware = require('../../middlewares/browserSync');
 
 beforeEach(() => jest.clearAllMocks());
 
-describe('browserSyncMiddleware', () => {
+describe('browserSyncMiddleware', () => {
     it('Should call next if browser sync is enabled & request comes from browser', async () => {
         jest.spyOn(db, 'getWorkspaceByName').mockResolvedValueOnce({ browserSyncEnabled: true });
         const req = {

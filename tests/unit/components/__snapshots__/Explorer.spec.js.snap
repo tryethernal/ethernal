@@ -132,3 +132,34 @@ exports[`Explorer.vue Should display trial message 1`] = `
   </div>
 </div>
 `;
+
+exports[`Explorer.vue Should not display danger zone if SSO 1`] = `
+<div class="container container--fluid">
+  <!---->
+  <!---->
+  <h2>
+    <span class="text-caption">- (<a href="//a.test.com" target="_blank">a.test.com</a>)</span>
+  </h2>
+  <div class="row mt-2">
+    <div class="col col-6">
+      <h4>Settings</h4>
+      <explorer-settings-stub workspaces="[object Object]" explorer="[object Object]"></explorer-settings-stub>
+    </div>
+    <div class="col col-6">
+      <h4>Sync</h4>
+      <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
+      <h4 class="mt-2">Billing</h4>
+      <explorer-billing-stub sso="true" explorer="[object Object]"></explorer-billing-stub>
+      <h4 class="mt-2">Domain Aliases</h4>
+      <explorer-domains-list-stub disabled="true" explorer="[object Object]"></explorer-domains-list-stub>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h4>Branding</h4>
+      <explorer-branding-stub disabled="true" explorer="[object Object]"></explorer-branding-stub>
+    </div>
+  </div>
+  <!---->
+</div>
+`;
