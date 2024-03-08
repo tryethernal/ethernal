@@ -14,8 +14,9 @@ const { posthogPlugin } = require('@/plugins/posthog');
 
 class MockHelper {
 
-    constructor(initialStoreState = {}, mockDb = true, mockServer = true) {
+    constructor(initialStoreState = {}, mockRouter = true) {
         this.localVue = createLocalVue();
+        this.mockRouter = mockRouter;
 
         this.storeState = {
             user: {},
@@ -40,7 +41,8 @@ class MockHelper {
         this.initMockStore();
         const getters = { ...this.getters, ...options.getters };
         const actions = this.actions;
-        const store = new Vuex.Store({ getters, actions });
+        const store = new Vuex.Store({ getters, actions, dispatch: jest.fn() });
+        this.store = store;
 
         return mount(component, {
             store,
@@ -53,8 +55,10 @@ class MockHelper {
 
     initPlugins() {
         this.vuetify = new Vuetify();
-        this.router = new VueRouter({ mode: 'abstract' });
-        this.localVue.use(VueRouter);
+        if (this.mockRouter) {
+            this.router = new VueRouter({ mode: 'abstract' });
+            this.localVue.use(VueRouter);
+        }
         this.localVue.use(dbPlugin);
         this.localVue.use(serverPlugin);
         this.localVue.use(pusherPlugin);
@@ -64,7 +68,8 @@ class MockHelper {
             db: this.localVue.prototype.db,
             server: this.localVue.prototype.server,
             pusher: this.localVue.prototype.pusher,
-            router: this.router
+            router: this.router,
+            store: this.store
         };
     }
 
@@ -119,7 +124,8 @@ class MockHelper {
             updateTransactionCount: jest.fn(),
             updateBlockCount: jest.fn(),
             updateCurrentBlock: jest.fn(),
-            updateAccounts: jest.fn()
+            updateAccounts: jest.fn(),
+            updateUser: jest.fn()
         };
     }
 }
