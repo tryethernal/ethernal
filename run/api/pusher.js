@@ -1,20 +1,9 @@
 const express = require('express');
-const Pusher = require('pusher');
+const { pusher } = require('../lib/pusher');
 const logger = require('../lib/logger');
 const { isPusherEnabled } = require('../lib/flags');
 const router = express.Router();
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
-
-let pusher;
-if (isPusherEnabled()) {
-    pusher = new Pusher({
-        appId: process.env.PUSHER_APP_ID,
-        key: process.env.PUSHER_KEY,
-        secret: process.env.PUSHER_SECRET,
-        cluster: 'eu',
-        useTLS: true
-    });
-}
 
 const presenceMiddleware = async (req, res, next) => {
     try {
