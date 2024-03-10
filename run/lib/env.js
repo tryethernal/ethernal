@@ -21,5 +21,12 @@ module.exports = {
     getMaxContractForReset: () => parseInt(process.env.MAX_CONTRACT_FOR_RESET) || 5,
     getEncryptionKey: () => process.env.ENCRYPTION_KEY,
     getEncryptionJwtSecret: () => process.env.ENCRYPTION_JWT_SECRET,
-    getQuicknodeCredentials: () => process.env.QUICKNODE_CREDENTIALS
+    getQuicknodeCredentials: () => process.env.QUICKNODE_CREDENTIALS,
+    getSoketiDefaultAppId: () => process.env.SOKETI_DEFAULT_APP_ID,
+    getSoketiDefaultAppKey: () => process.env.SOKETI_DEFAULT_APP_KEY,
+    getSoketiDefaultAppSecret: () => process.env.SOKETI_DEFAULT_APP_SECRET,
+    getSoketiHost: () => process.env.SOKETI_HOST,
+    getSoketiPort: () => process.env.SOKETI_PORT,
+    getSoketiScheme: () => process.env.SOKETI_SCHEME,
+    getSoketiUseTLS: () => process.env.SOKETI_USE_TLS
 };

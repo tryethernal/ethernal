@@ -79,3 +79,9 @@ services:
       dockerfile: Dockerfile.pm2
       target: dev
     env_file: pm2-server/.env
+
+  soketi:
+    image: quay.io/soketi/soketi:1.4-16-debian
+    ports:
+      - "6001:6001"
+    env_file: run/.env
