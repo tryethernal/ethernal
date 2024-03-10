@@ -8,10 +8,14 @@ export const pusherPlugin = {
     async install(Vue, options) {
         const store = options.store;
         const apiToken = localStorage.getItem('apiToken');
+        const pusherKey = store.getters.pusherKey;
 
-        const pusher = process.env.VUE_APP_PUSHER_KEY ?
-            new Pusher(process.env.VUE_APP_PUSHER_KEY, {
-                cluster: 'eu',
+        const pusher = pusherKey ?
+            new Pusher(pusherKey, {
+                wsHost: store.getters.soketiHost,
+                wsPort: store.getters.soketiPort,
+                forceTLS: store.getters.soketiForceTLS,
+                enabledTransports: ['ws', 'wss'],
                 userAuthentication: {
                     headersProvider: () => apiToken ? { 'Authorization': `Bearer ${apiToken}` } : {}
                 },

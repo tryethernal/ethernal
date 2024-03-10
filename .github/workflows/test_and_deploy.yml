@@ -246,6 +246,9 @@ jobs:
       - name: Release PM2 server
         run: flyctl deploy -c fly.pm2.toml -i registry.fly.io/ethernal-pm2:${{ github.sha }}
 
+      - name: Release Soketi server
+        run: flyctl deploy -c fly.soketi.toml
+
       - name: Create New Relic deployment marker
         uses: newrelic/deployment-marker-action@v1
         with:

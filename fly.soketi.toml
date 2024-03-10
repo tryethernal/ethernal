@@ -1,0 +1,35 @@
+# fly.toml app configuration file generated for ethernal-pm2 on 2023-08-11T11:17:21+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "ethernal-soketi"
+primary_region = "cdg"
+kill_signal = "SIGINT"
+kill_timeout = "5s"
+
+[experimental]
+  auto_rollback = true
+
+[build]
+    image = "quay.io/soketi/soketi:1.4-16-debian"
+
+[[services]]
+  internal_port = 6001
+  protocol = "tcp"
+
+  [services.concurrency]
+    hard_limit = 500
+    soft_limit = 200
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = "6001"
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = "443"
+
+  [[services.tcp_checks]]
+    interval = 10000
+    timeout = 2000

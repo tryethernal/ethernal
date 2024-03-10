@@ -18,5 +18,12 @@ jest.mock('../../../lib/env', () => ({
     getMaxContractForReset: jest.fn(() => 1),
     getEncryptionKey: jest.fn(() => '382A5C31A96D38E3DF430E5101E8D07D'),
     getEncryptionJwtSecret: jest.fn(() => '26F95488BA7D7E545B1B8669990739BB21A0A6D3EFB4910C0460B068BDDD3E1C'),
-    getQuicknodeCredentials: jest.fn(() => 'qn')
+    getQuicknodeCredentials: jest.fn(() => 'qn'),
+    getSoketiDefaultAppId: jest.fn(() => 'a'),
+    getSoketiDefaultAppKey: jest.fn(() => 'a'),
+    getSoketiDefaultAppSecret: jest.fn(() => 'a'),
+    getSoketiHost: jest.fn(() => 'a'),
+    getSoketiPort: jest.fn(() => 'a'),
+    getSoketiUseTLS: jest.fn(() => 'a'),
+    getSoketiScheme: jest.fn(() => 'a')
 }));
