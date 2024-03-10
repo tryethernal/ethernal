@@ -24,5 +24,6 @@ jest.mock('../../../lib/env', () => ({
     getSoketiDefaultAppSecret: jest.fn(() => 'a'),
     getSoketiHost: jest.fn(() => 'a'),
     getSoketiPort: jest.fn(() => 'a'),
-    getSoketiUseTLS: jest.fn(() => 'a')
+    getSoketiUseTLS: jest.fn(() => 'a'),
+    getSoketiScheme: jest.fn(() => 'a')
 }));
