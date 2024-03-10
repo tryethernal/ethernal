@@ -27,5 +27,6 @@ module.exports = {
     getSoketiDefaultAppSecret: () => process.env.SOKETI_DEFAULT_APP_SECRET,
     getSoketiHost: () => process.env.SOKETI_HOST,
     getSoketiPort: () => process.env.SOKETI_PORT,
+    getSoketiScheme: () => process.env.SOKETI_SCHEME,
     getSoketiUseTLS: () => process.env.SOKETI_USE_TLS
 };

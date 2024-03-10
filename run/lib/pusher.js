@@ -1,7 +1,7 @@
 const Pusher = require('pusher');
 const logger = require('./logger');
-const { isPusherEnabled, isProductionEnvironment } = require('./flags');
-const { getSoketiDefaultAppId, getSoketiDefaultAppKey, getSoketiDefaultAppSecret, getSoketiHost, getSoketiPort, getSoketiUseTLS } = require('./env');
+const { isPusherEnabled } = require('./flags');
+const { getSoketiDefaultAppId, getSoketiDefaultAppKey, getSoketiDefaultAppSecret, getSoketiHost, getSoketiPort, getSoketiScheme, getSoketiUseTLS } = require('./env');
 
 const pusher = isPusherEnabled() ?
     new Pusher({
@@ -10,7 +10,7 @@ const pusher = isPusherEnabled() ?
         secret: getSoketiDefaultAppSecret(),
         host: getSoketiHost(),
         port: getSoketiPort(),
-        scheme: 'http',
+        scheme: getSoketiScheme(),
         useTLS: getSoketiUseTLS()
     }) :
     { trigger: () => new Promise(resolve => resolve()) };
@@ -21,8 +21,7 @@ module.exports = {
         if (isPusherEnabled()) {
             pusher.trigger(channel, event, data)
                 .catch(error => {
-                    if (isProductionEnvironment())
-                        logger.error(error.message, { location: 'lib.pusher', error, channel, event, data });
+                    logger.error(error.message, { location: 'lib.pusher', error, channel, event, data });
                 });
         }
     }

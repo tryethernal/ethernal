@@ -157,7 +157,6 @@ export default new Vuex.Store({
         soketiPort: () => process.env.VUE_APP_SOKETI_PORT,
         soketiForceTLS: () => !!process.env.VUE_APP_SOKETI_FORCE_TLS,
         pusherKey: () => process.env.VUE_APP_PUSHER_KEY,
-        pusherHost: () => process.env.VUE_APP_SOKETI_HOST,
         postHogApiKey: () => process.env.VUE_APP_POSTHOG_API_KEY,
         postHogApiHost: () => process.env.VUE_APP_POSTHOG_API_HOST,
         hasAnalyticsEnabled: () => !!process.env.VUE_APP_ENABLE_ANALYTICS,
