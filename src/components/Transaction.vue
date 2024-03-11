@@ -103,7 +103,7 @@
                     <v-row>
                         <v-col lg="3" md="6" sm="12">
                             <div class="text-overline">Block</div>
-                            <router-link :to="'/block/' + transaction.blockNumber">{{ transaction.blockNumber }}</router-link>
+                            <router-link :to="'/block/' + transaction.blockNumber">{{ commify(transaction.blockNumber) }}</router-link>
                         </v-col>
                         <v-col lg="3" md="6" sm="12">
                             <div class="text-overline">Mined At</div>
@@ -116,7 +116,7 @@
                         </v-col>
                         <v-col lg="3" md="6" sm="12" v-for="(field, idx) in transaction.extraFields" :key="idx">
                             <div class="text-overline">{{ field.name }}</div>
-                            <Custom-Field :name="field.name" :value="field.value" :type="field.type" :label="field.label" :decimals="field.decimals" :symbol="field.symbol" />
+                            <Custom-Field :name="field.name" :value="field.value" :type="field.type" :label="field.label" :decimals="field.decimals" :symbol="field.symbol" :title="field.title" />
                         </v-col>
                     </v-row>
                 </v-col>
@@ -170,6 +170,7 @@
 
 <script>
 const moment = require('moment');
+const ethers = require('ethers');
 const { getGasPriceFromTransaction } = require('../lib/utils');
 import { mapGetters } from 'vuex';
 import HashLink from './HashLink';
@@ -235,6 +236,7 @@ export default {
     methods: {
         moment,
         getGasPriceFromTransaction,
+        commify: ethers.utils.commify,
         loadTransaction(hash) {
             this.server.getTransaction(hash)
                 .then(({ data }) => this.transaction = data)

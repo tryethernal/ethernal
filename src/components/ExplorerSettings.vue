@@ -45,6 +45,7 @@
                             persistent-hint
                             label="Native Token Symbol"></v-text-field>
                         <v-text-field
+                            class="mb-2"
                             dense
                             outlined
                             type="number"
@@ -54,6 +55,15 @@
                             hide-details="auto"
                             v-model="explorer.totalSupply"
                             label="Total Supply (in wei)"></v-text-field>
+                        <v-text-field
+                            dense
+                            outlined
+                            :rules="[v => !v || this.isUrlValid(v) || 'Invalid URL']"
+                            persistent-hint
+                            placeholder="https://etherscan.io"
+                            v-model="l1Explorer"
+                            :hint="l1Explorer ? `L1 links will look like this: ${l1Explorer}/block/1234` : `If the L1BlockNumber key is on the block object, this setting will be used to display a link to the L1 explorer.${capabilities.l1Explorer ? '' : ' Upgrade your plan to use it.'}`"
+                            label="L1 Explorer Base URL"></v-text-field>
                     </v-col>
                 </v-row>
                 <v-card-actions>
@@ -67,25 +77,26 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { formatNumber, shortRpcUrl } from '../lib/utils';
+import { formatNumber, shortRpcUrl, isUrlValid } from '../lib/utils';
 
 export default {
     name: 'Explorer',
     props: ['explorer', 'workspaces'],
     data: () => ({
+        l1Explorer: null,
         successMessage: null,
         errorMessage: null,
         currentWorkspace: null,
         valid: false,
         loading: false,
-        capabilities: {},
+        capabilities: {}
     }),
     mounted() {
         if (this.explorer.stripeSubscription)
             this.capabilities = this.explorer.stripeSubscription.stripePlan.capabilities;
     },
     methods: {
-        shortRpcUrl,
+        shortRpcUrl, isUrlValid,
         formatTotalSupply() {
             if (!this.explorer.totalSupply) return 'N/A';
             return formatNumber(this.explorer.totalSupply)
@@ -105,6 +116,9 @@ export default {
 
             if (this.capabilities.totalSupply)
                 settings['totalSupply'] = this.explorer.totalSupply;
+
+            if (this.capabilities.l1Explorer)
+                settings['l1Explorer'] = this.l1Explorer;
 
             this.server.updateExplorerSettings(this.explorer.id, settings)
                 .then(() => {

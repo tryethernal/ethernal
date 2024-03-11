@@ -217,7 +217,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async canUseCapability(capability) {
-        if (['customDomain', 'branding', 'nativeToken', 'totalSupply', 'statusPage'].indexOf(capability) < 0)
+        if (['customDomain', 'branding', 'nativeToken', 'totalSupply', 'statusPage', 'l1Explorer'].indexOf(capability) < 0)
             return false;
         
         if (!isStripeEnabled())
@@ -300,6 +300,8 @@ module.exports = (sequelize, DataTypes) => {
                 filteredSettings[key] = settings[key];
         });
 
+        this.updateL1ExplorerSetting(settings['l1Explorer']);
+
         if (Object.keys(filteredSettings).length > 0) {
             if (filteredSettings['token']) {
                 const isNativeTokenAllowed = await this.canUseCapability('nativeToken');
@@ -321,6 +323,42 @@ module.exports = (sequelize, DataTypes) => {
 
             return this.update(filteredSettings);
         }
+    }
+
+    async updateL1ExplorerSetting(explorerUrl) {
+        const customField = await sequelize.models.CustomField.findOne({
+            where: {
+                workspaceId: this.workspaceId,
+                slug: 'l1ExplorerLink'
+            }
+        });
+
+        if (!explorerUrl && customField)
+            return customField.destroy();
+
+        const newFunction = `
+            const overrides = {};
+            const extraFields = [];
+            if (transaction.block.l1BlockNumber)
+                extraFields.push({
+                    type: "link",
+                    value: "${explorerUrl}/" + transaction.block.l1BlockNumber,
+                    label: ethers.utils.commify(transaction.block.l1BlockNumber),
+                    title: "L1 Block"
+                });
+            return { overrides, extraFields };
+        `;
+
+        if (explorerUrl && customField)
+            await customField.update({ function: newFunction });
+
+        if (explorerUrl && !customField)
+            await sequelize.models.CustomField.create({
+                workspaceId: this.workspaceId,
+                slug: 'l1ExplorerLink',
+                function: newFunction,
+                location: 'transaction'
+            });
     }
 
     async safeUpdateBranding(branding) {

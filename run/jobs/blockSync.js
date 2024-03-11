@@ -1,7 +1,8 @@
 const { ProviderConnector } = require('../lib/rpc');
-const { Workspace, Explorer, StripeSubscription, StripePlan, RpcHealthCheck } = require('../models');
+const { Workspace, Explorer, StripeSubscription, StripePlan, RpcHealthCheck, Block } = require('../models');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
+const { sanitize, processRawRpcObject } = require('../lib/utils');
 
 module.exports = async job => {
     const data = job.data;
@@ -65,14 +66,19 @@ module.exports = async job => {
     const providerConnector = new ProviderConnector(workspace.rpcServer);
 
     try {
-        const block = await providerConnector.fetchBlockWithTransactions(data.blockNumber);
+        const block = await providerConnector.fetchRawBlockWithTransactions(data.blockNumber);
         if (!block)
             throw new Error("Couldn't fetch block from provider");
 
         if (await workspace.explorer.hasReachedTransactionQuota())
             return 'Transaction quota reached';
-
-        const syncedBlock = await db.syncPartialBlock(workspace.id, block);
+    
+        const processedBlock = processRawRpcObject(
+            block,
+            Object.keys(Block.rawAttributes).concat(['transactions'])
+        );
+        console.log(processedBlock)
+        const syncedBlock = await db.syncPartialBlock(workspace.id, processedBlock);
         if (!syncedBlock)
             throw new Error("Couldn't store block");
 

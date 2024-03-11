@@ -100,12 +100,16 @@ class ProviderConnector {
         return withTimeout(this.provider.getBlock());
     }
 
+    async fetchRawBlockWithTransactions(blockNumber) {
+        const res = await withTimeout(this.provider.send('eth_getBlockByNumber', [`0x${blockNumber.toString(16)}`, true]))
+        return sanitize(res);
+    }
+
     async fetchBlockWithTransactions(blockNumber) {
         try {
             return await withTimeout(this.provider.getBlockWithTransactions(blockNumber));
         } catch(error) {
-            const rawBlock = await withTimeout(this.provider.send('eth_getBlockByNumber', [`0x${blockNumber.toString(16)}`, true]))
-            return sanitize(rawBlock);
+            return await this.fetchRawBlockWithTransaction(blockNumber);
         }
     }
 

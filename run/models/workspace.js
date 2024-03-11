@@ -833,6 +833,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeCreatePartialBlock(block) {
+        console.log(block)
         return sequelize.transaction(async sequelizeTransaction => {
             const transactions = block.transactions.map(transaction => {
                 return sanitize({
@@ -878,7 +879,8 @@ module.exports = (sequelize, DataTypes) => {
                 timestamp: block.timestamp,
                 transactionsCount: block.transactions ? block.transactions.length : 0,
                 state: 'ready',
-                raw: block,
+                l1BlockNumber: block.l1BlockNumber,
+                raw: block.raw,
                 transactions
             }), {
                 include: [ sequelize.models.Block.associations.transactions ],
