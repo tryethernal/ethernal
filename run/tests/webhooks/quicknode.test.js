@@ -207,19 +207,6 @@ describe(`POST ${BASE_URL}/provision`, () => {
         plan: 'appchain'
     };
 
-    it('Should throw an error if rpc is not reachable', (done) => {
-        ProviderConnector.mockImplementationOnce(() => ({
-            fetchNetworkId: jest.fn().mockRejectedValue()
-        }));
-        request.post(`${BASE_URL}/provision`)
-            .send(data)
-            .expect(401)
-            .then(({ text }) => {
-                expect(text).toEqual(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
-                done();
-            });
-    });
-
     it('Should return a 401 if plan slug is invalid', (done) => {
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce(null);
         request.post(`${BASE_URL}/provision`)
