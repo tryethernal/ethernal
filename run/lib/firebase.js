@@ -1265,21 +1265,27 @@ const getWorkspaceContractById = async (workspaceId, contractId) => {
 };
 
 const getWorkspaceBlock = async (workspaceId, number) => {
-    const workspace = await Workspace.findByPk(workspaceId);
+    const workspace = await Workspace.findByPk(workspaceId, { include: 'explorer' });
+
+    const attributes = [
+        'id', 'number', 'timestamp', 'gasUsed', 'transactionsCount', 'gasLimit', 'hash',
+        [
+            Sequelize.literal(`(
+                SELECT COUNT(*)::INTEGER
+                FROM transactions
+                WHERE transactions."blockId" = "Block".id
+                AND transactions.state = 'ready'
+            )`), 'syncedTransactionCount'
+        ]
+    ];
+
+    if (workspace.explorer)
+        if (await workspace.explorer.canUseCapability('l1Explorer'))
+            attributes.push('l1BlockNumber');
 
     const [block] = await workspace.getBlocks({
         where: { number: number },
-        attributes: [
-            'id', 'number', 'timestamp', 'gasUsed', 'transactionsCount', 'gasLimit', 'hash',
-            [
-                Sequelize.literal(`(
-                    SELECT COUNT(*)::INTEGER
-                    FROM transactions
-                    WHERE transactions."blockId" = "Block".id
-                    AND transactions.state = 'ready'
-                )`), 'syncedTransactionCount'
-            ]
-        ]
+        attributes
     });
 
     return block ? block.toJSON() : null;

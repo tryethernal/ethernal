@@ -103,7 +103,7 @@
                     <v-row>
                         <v-col lg="3" md="6" sm="12">
                             <div class="text-overline">Block</div>
-                            <router-link :to="'/block/' + transaction.blockNumber">{{ commify(transaction.blockNumber) }}</router-link>
+                            <router-link style="text-decoration: none;" :to="'/block/' + transaction.blockNumber">{{ commify(transaction.blockNumber) }}</router-link>
                         </v-col>
                         <v-col lg="3" md="6" sm="12">
                             <div class="text-overline">Mined At</div>
@@ -116,7 +116,7 @@
                         </v-col>
                         <v-col v-if="publicExplorer.l1Explorer && transaction.block.l1BlockNumber" lg="3" md="6" sm="12">
                             <div class="text-overline">L1 Block</div>
-                            <a :href="`${publicExplorer.l1Explorer}/block/${transaction.block.l1BlockNumber}`">{{ transaction.block.l1BlockNumber }}</a>
+                            <a :href="`${publicExplorer.l1Explorer}/block/${transaction.block.l1BlockNumber}`" target="_blank">{{ commify(transaction.block.l1BlockNumber) }}</a>
                         </v-col>
                         <v-col lg="3" md="6" sm="12" v-for="(field, idx) in transaction.extraFields" :key="idx">
                             <div class="text-overline">{{ field.name }}</div>

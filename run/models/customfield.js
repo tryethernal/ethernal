@@ -16,7 +16,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   CustomField.init({
     workspaceId: DataTypes.INTEGER,
-    slug: DataTypes.INTEGER,
     function: DataTypes.TEXT,
     location: DataTypes.STRING,
   }, {

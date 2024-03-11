@@ -5,7 +5,7 @@
                 <v-alert dense text type="warning" class="my-2" v-show="syncing">
                     Some transactions in this block are still being processed ({{ block.syncedTransactionCount }} / {{ block.transactionsCount }}).
                 </v-alert>
-                <h2>Block {{ block.number }}</h2>
+                <h2>Block {{ block.number && commify(block.number) }}</h2>
             </v-col>
         </v-row>
         <v-row class="mb-4">
@@ -20,10 +20,17 @@
                 <small>{{ moment(block.timestamp).fromNow() }}</small>
             </v-col>
             <v-divider vertical></v-divider>
-            <v-col lg="8" md="12" sm="12">
+            <v-col lg="4" md="12" sm="12">
                 <v-subheader class="text-overline">Hash</v-subheader>
                 <span style="overflow-wrap: break-word;">{{ block.hash }}</span>
             </v-col>
+            <template v-if="publicExplorer && publicExplorer.l1Explorer && block.l1BlockNumber">
+                <v-divider vertical></v-divider>
+                <v-col lg="2" md="12" sm="12">
+                    <v-subheader class="text-overline">L1 Block</v-subheader>
+                    <a :href="`${publicExplorer.l1Explorer}/block/${block.l1BlockNumber}`" target="_blank">{{ commify(block.l1BlockNumber) }}</a>
+                </v-col>
+            </template>
         </v-row>
         <h4>Transactions</h4>
         <v-card outlined>
@@ -34,6 +41,8 @@
 
 <script>
 const moment = require('moment');
+const ethers = require('ethers');
+import { mapGetters } from 'vuex';
 import TransactionsList from './TransactionsList';
 
 export default {
@@ -58,7 +67,8 @@ export default {
         this.pusherChannelHandler.unbind(null, null, this);
     },
     methods: {
-        moment: moment,
+        moment,
+        commify: ethers.utils.commify,
         loadBlock(number) {
             this.server.getBlock(number)
                 .then(({ data }) => this.block = data)
@@ -66,6 +76,9 @@ export default {
         }
     },
     computed: {
+        ...mapGetters([
+            'publicExplorer'
+        ]),
         syncing() {
             return this.block && this.block.syncedTransactionCount < this.block.transactionsCount;
         }
