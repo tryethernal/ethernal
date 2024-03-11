@@ -38,6 +38,8 @@ module.exports = (sequelize, DataTypes) => {
                 currentExplorerAttributes.push('token');
             if (currentExplorer && (currentExplorer.isDemo || currentExplorer.stripeSubscription && currentExplorer.stripeSubscription.stripePlan.capabilities.totalSupply))
                 currentExplorerAttributes.push('totalSupply');
+            if (currentExplorer && (currentExplorer.isDemo || currentExplorer.stripeSubscription && currentExplorer.stripeSubscription.stripePlan.capabilities.l1Explorer))
+                currentExplorerAttributes.push('l1Explorer');
         }
         return  User.findOne({
             where: {

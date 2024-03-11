@@ -111,11 +111,8 @@ router.post('/provision', quicknodeMiddleware, async (req, res) => {
         try {
             networkId = await withTimeout(provider.fetchNetworkId());
         } catch(error) {
-            networkId = null;
+            networkId = 1; // We do this because Quicknode is sending test requests with invalid rpc
         }
-
-        if (!networkId)
-            throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
 
         const stripePlan = await db.getStripePlan(plan);
         if (!stripePlan)

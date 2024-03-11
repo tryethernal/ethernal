@@ -114,6 +114,10 @@
                             <div class="text-overline">Gas Limit</div>
                             {{ parseInt(transaction.gasLimit || transaction.block.gasLimit).toLocaleString() }}
                         </v-col>
+                        <v-col v-if="publicExplorer.l1Explorer && transaction.block.l1BlockNumber" lg="3" md="6" sm="12">
+                            <div class="text-overline">L1 Block</div>
+                            <a :href="`${publicExplorer.l1Explorer}/block/${transaction.block.l1BlockNumber}`">{{ transaction.block.l1BlockNumber }}</a>
+                        </v-col>
                         <v-col lg="3" md="6" sm="12" v-for="(field, idx) in transaction.extraFields" :key="idx">
                             <div class="text-overline">{{ field.name }}</div>
                             <Custom-Field :name="field.name" :value="field.value" :type="field.type" :label="field.label" :decimals="field.decimals" :symbol="field.symbol" :title="field.title" />
@@ -266,6 +270,7 @@ export default {
             'chain',
             'currentWorkspace',
             'isPublicExplorer',
+            'publicExplorer'
         ]),
         txStatus() {
             if (!this.transaction.receipt)

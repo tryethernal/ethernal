@@ -1179,6 +1179,12 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async findTransaction(hash) {
+        const blockAttributes = ['gasLimit', 'timestamp'];
+        const explorer = await this.getExplorer();
+        if (explorer && await explorer.canUseCapability('l1Explorer')) {
+            blockAttributes.push('l1BlockNumber')
+        };
+
         const transactions = await this.getTransactions({
             where: {
                 hash: hash
@@ -1245,7 +1251,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Block,
-                    attributes: ['gasLimit', 'timestamp'],
+                    attributes: blockAttributes,
                     as: 'block'
                 },
                 {

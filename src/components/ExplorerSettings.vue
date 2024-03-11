@@ -61,8 +61,8 @@
                             :rules="[v => !v || this.isUrlValid(v) || 'Invalid URL']"
                             persistent-hint
                             placeholder="https://etherscan.io"
-                            v-model="l1Explorer"
-                            :hint="l1Explorer ? `L1 links will look like this: ${l1Explorer}/block/1234` : `If the L1BlockNumber key is on the block object, this setting will be used to display a link to the L1 explorer.${capabilities.l1Explorer ? '' : ' Upgrade your plan to use it.'}`"
+                            v-model="explorer.l1Explorer"
+                            :hint="explorer.l1Explorer ? `L1 links will look like this: ${explorer.l1Explorer}/block/1234` : `If the L1BlockNumber key is on the block object, this setting will be used to display a link to the L1 explorer.${capabilities.l1Explorer ? '' : ' Upgrade your plan to use it.'}`"
                             label="L1 Explorer Base URL"></v-text-field>
                     </v-col>
                 </v-row>
@@ -83,7 +83,6 @@ export default {
     name: 'Explorer',
     props: ['explorer', 'workspaces'],
     data: () => ({
-        l1Explorer: null,
         successMessage: null,
         errorMessage: null,
         currentWorkspace: null,
@@ -108,7 +107,8 @@ export default {
             const settings = {
                 workspace: this.currentWorkspace.name,
                 name: this.explorer.name,
-                slug: this.explorer.slug
+                slug: this.explorer.slug,
+                l1Explorer: this.explorer.l1Explorer
             };
 
             if (this.capabilities.nativeToken)
@@ -118,7 +118,7 @@ export default {
                 settings['totalSupply'] = this.explorer.totalSupply;
 
             if (this.capabilities.l1Explorer)
-                settings['l1Explorer'] = this.l1Explorer;
+                settings['l1Explorer'] = this.explorer.l1Explorer;
 
             this.server.updateExplorerSettings(this.explorer.id, settings)
                 .then(() => {

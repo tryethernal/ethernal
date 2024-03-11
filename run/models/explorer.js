@@ -292,7 +292,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeUpdateSettings(settings) {
-        const ALLOWED_SETTINGS = ['name', 'slug', 'token', 'totalSupply'];
+        const ALLOWED_SETTINGS = ['name', 'slug', 'token', 'totalSupply', 'l1Explorer'];
 
         const filteredSettings = {};
         Object.keys(settings).forEach(key => {
@@ -300,19 +300,17 @@ module.exports = (sequelize, DataTypes) => {
                 filteredSettings[key] = settings[key];
         });
 
-        this.updateL1ExplorerSetting(settings['l1Explorer']);
-
         if (Object.keys(filteredSettings).length > 0) {
             if (filteredSettings['token']) {
                 const isNativeTokenAllowed = await this.canUseCapability('nativeToken');
                 if (!isNativeTokenAllowed)
-                    throw new Error('Upgrade your plan to customize your native token symbol.')
+                    throw new Error('Upgrade your plan to customize your native token symbol.');
             }
 
             if (filteredSettings['totalSupply']) {
                 const isTotalSupplyAllowed = await this.canUseCapability('totalSupply');
                 if (!isTotalSupplyAllowed)
-                    throw new Error('Upgrade your plan to display a total supply.')
+                    throw new Error('Upgrade your plan to display a total supply.');
             }
 
             if (filteredSettings['slug'] && filteredSettings['slug'] != this.slug) {
@@ -321,44 +319,14 @@ module.exports = (sequelize, DataTypes) => {
                     throw new Error('This domain is not available');
             }
 
+            if (filteredSettings['l1Explorer']) {
+                const isL1ExplorerAllowed = await this.canUseCapability('l1Explorer');
+                if (!isL1ExplorerAllowed)
+                    throw new Error('Upgrade your plan to display L1 explorer links.')
+            }
+
             return this.update(filteredSettings);
         }
-    }
-
-    async updateL1ExplorerSetting(explorerUrl) {
-        const customField = await sequelize.models.CustomField.findOne({
-            where: {
-                workspaceId: this.workspaceId,
-                slug: 'l1ExplorerLink'
-            }
-        });
-
-        if (!explorerUrl && customField)
-            return customField.destroy();
-
-        const newFunction = `
-            const overrides = {};
-            const extraFields = [];
-            if (transaction.block.l1BlockNumber)
-                extraFields.push({
-                    type: "link",
-                    value: "${explorerUrl}/" + transaction.block.l1BlockNumber,
-                    label: ethers.utils.commify(transaction.block.l1BlockNumber),
-                    title: "L1 Block"
-                });
-            return { overrides, extraFields };
-        `;
-
-        if (explorerUrl && customField)
-            await customField.update({ function: newFunction });
-
-        if (explorerUrl && !customField)
-            await sequelize.models.CustomField.create({
-                workspaceId: this.workspaceId,
-                slug: 'l1ExplorerLink',
-                function: newFunction,
-                location: 'transaction'
-            });
     }
 
     async safeUpdateBranding(branding) {
@@ -400,7 +368,8 @@ module.exports = (sequelize, DataTypes) => {
     totalSupply: DataTypes.STRING,
     shouldSync: DataTypes.BOOLEAN,
     shouldEnforceQuota: DataTypes.BOOLEAN,
-    isDemo: DataTypes.BOOLEAN
+    isDemo: DataTypes.BOOLEAN,
+    l1Explorer: DataTypes.STRING
   }, {
     hooks: {
         afterCreate(explorer, options) {

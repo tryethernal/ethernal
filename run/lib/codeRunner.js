@@ -27,7 +27,7 @@ const transactionFn = (code, transaction, rpcServer) => {
             const ethers = require('ethers');
             const Web3 = require('web3');
             const Web3Quorum = require('web3js-quorum');
-            console.log(transaction)
+
             try {
                 ${code}
             } catch(error) {

@@ -77,7 +77,7 @@ module.exports = async job => {
             block,
             Object.keys(Block.rawAttributes).concat(['transactions'])
         );
-        console.log(processedBlock)
+
         const syncedBlock = await db.syncPartialBlock(workspace.id, processedBlock);
         if (!syncedBlock)
             throw new Error("Couldn't store block");
