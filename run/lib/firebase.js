@@ -1305,23 +1305,6 @@ const getWorkspaceTransaction = async (workspaceId, hash) => {
     return transaction.toJSON();
 };
 
-const getWorkspaceRawTransaction = async (workspaceId, hash) => {
-    if (!workspaceId || !hash)
-        throw new Error('Missing parameter');
-
-    const transaction = await Transaction.findOne({
-        where: { workspaceId, hash },
-        attributes: ['raw'],
-        include: {
-            model: Block,
-            as: 'block',
-            attributes: ['raw']
-        }
-    });
-
-    return transaction ? transaction.toJSON() : null;
-};
-
 const getBlockTransactions = async (workspaceId, blockNumber, page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'timestamp', withCount = 'true') => {
     if (!workspaceId || !blockNumber)
         throw new Error('Missing parameters');
@@ -1943,6 +1926,5 @@ module.exports = {
     updateQuicknodeSubscription: updateQuicknodeSubscription,
     createQuicknodeWorkspace: createQuicknodeWorkspace,
     markWorkspaceForDeletion: markWorkspaceForDeletion,
-    getWorkspaceRawTransaction: getWorkspaceRawTransaction,
     Workspace: Workspace
 };

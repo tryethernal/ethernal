@@ -833,7 +833,6 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeCreatePartialBlock(block) {
-        console.log(block)
         return sequelize.transaction(async sequelizeTransaction => {
             const transactions = block.transactions.map(transaction => {
                 return sanitize({
