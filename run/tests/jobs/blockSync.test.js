@@ -123,11 +123,26 @@ describe('blockSync', () => {
 
     it('Should sync partial block', (done) => {
         jest.spyOn(db, 'syncPartialBlock').mockResolvedValue({ transactions: [] });
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchRawBlockWithTransactions: jest.fn(() => ({
+                number: '0x1',
+                customField: 1,
+                transactions: [
+                    { hash: '0x123' },
+                    { hash: '0x456' },
+                    { hash: '0x789' }
+                ]
+            })),
+        }));
+
         blockSync({ data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(res).toEqual('Block synced');
                 expect(db.syncPartialBlock).toHaveBeenCalledWith(1, {
                     number: 1,
+                    raw: {
+                        customField: 1
+                    },
                     transactions: [
                         { hash: '0x123' },
                         { hash: '0x456' },
@@ -199,7 +214,7 @@ describe('blockSync', () => {
 
     it('Should fail if block cannot be found', (done) => {
         ProviderConnector.mockImplementationOnce(() => ({
-            fetchBlockWithTransactions: jest.fn().mockResolvedValue(null)
+            fetchRawBlockWithTransactions: jest.fn().mockResolvedValue(null)
         }));
 
         blockSync({

@@ -1,20 +1,23 @@
 <template>
-    <div v-if="isLink">
-        <a target="_blank" :href="value">{{ label || value }}</a>
-    </div>
-    <div v-else-if="isText">
-        {{ value }}
-    </div>
-    <div v-else-if="isBigNumber">
-        <template v-if="decimals">
-            {{ value | fromWei(decimals, symbol) }}
-        </template>
-        <template v-else>
+    <div>
+        <div v-if="title" class="text-overline">{{ title }}</div>
+        <div v-if="isLink">
+            <a target="_blank" :href="value">{{ label || value }}</a>
+        </div>
+        <div v-else-if="isText">
             {{ value }}
-        </template>
-    </div>
-    <div v-else-if="isHash || isAddress">
-        <Hash-Link :type="type" :hash="value" :withName="true" :withTokenName="true" />
+        </div>
+        <div v-else-if="isBigNumber">
+            <template v-if="decimals">
+                {{ value | fromWei(decimals, symbol) }}
+            </template>
+            <template v-else>
+                {{ value }}
+            </template>
+        </div>
+        <div v-else-if="isHash || isAddress">
+            <Hash-Link :type="type" :hash="value" :withName="true" :withTokenName="true" />
+        </div>
     </div>
 </template>
 <script>
@@ -23,7 +26,7 @@ import FromWei from '../filters/FromWei';
 
 export default {
     name: 'CustomField',
-    props: ['name', 'value', 'type', 'label', 'decimals', 'symbol'],
+    props: ['name', 'value', 'type', 'label', 'decimals', 'symbol', 'title'],
     components: {
         HashLink,
     },

@@ -25,9 +25,10 @@ exports[`Block.vue Should show a message if the block is syncing 1`] = `
       10/18 8:28:41 PM<br> <small>in 2 months</small>
     </div>
     <hr role="separator" aria-orientation="vertical" class="v-divider v-divider--vertical theme--light">
-    <div class="col-sm-12 col-md-12 col-lg-8 col">
+    <div class="col-sm-12 col-md-12 col-lg-4 col">
       <div class="v-subheader text-overline theme--light">Hash</div> <span style="overflow-wrap: break-word;">0x98c6edb3bb1124680a97661c1f5794d60617abb57bd1e611d81fc5b941f36d30</span>
     </div>
+    <!---->
   </div>
   <h4>Transactions</h4>
   <div class="v-card v-sheet v-sheet--outlined theme--light">
@@ -61,9 +62,10 @@ exports[`Block.vue Should show the block component 1`] = `
       10/18 8:28:41 PM<br> <small>in 2 months</small>
     </div>
     <hr role="separator" aria-orientation="vertical" class="v-divider v-divider--vertical theme--light">
-    <div class="col-sm-12 col-md-12 col-lg-8 col">
+    <div class="col-sm-12 col-md-12 col-lg-4 col">
       <div class="v-subheader text-overline theme--light">Hash</div> <span style="overflow-wrap: break-word;">0x98c6edb3bb1124680a97661c1f5794d60617abb57bd1e611d81fc5b941f36d30</span>
     </div>
+    <!---->
   </div>
   <h4>Transactions</h4>
   <div class="v-card v-sheet v-sheet--outlined theme--light">

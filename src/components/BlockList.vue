@@ -29,7 +29,7 @@
                     <span v-if="item.state == 'syncing'">Indexing block...</span>
                 </v-tooltip>
             </template>
-            <router-link :to="'/block/' + item.number">{{item.number}}</router-link>
+            <router-link style="text-decoration: none;" :to="'/block/' + item.number">{{ commify(item.number) }}</router-link>
         </template>
         <template v-slot:item.timestamp="{ item }">
             <div class="my-2 text-left">
@@ -38,7 +38,7 @@
             </div>
         </template>
         <template v-slot:item.gasUsed="{ item }">
-            {{ item.gasUsed.toLocaleString()  }}
+            {{ commify(item.gasUsed)  }}
         </template>
         <template v-slot:item.transactionNumber="{ item }">
             {{ item.transactionsCount  }} {{ item.transactionsCount != 1 ? 'transactions' : 'transaction' }}
@@ -48,6 +48,8 @@
 
 <script>
 const moment = require('moment');
+const ethers = require('ethers');
+
 export default {
     name: 'BlockList',
     props: ['dense', 'withCount'],
@@ -74,7 +76,8 @@ export default {
         this.pusherChannelHandler.unbind(null, null, this);
     },
     methods: {
-        moment: moment,
+        moment,
+        commify: ethers.utils.commify,
         rowClasses(item) {
             if (item.state == 'syncing')
                 return 'isSyncing'

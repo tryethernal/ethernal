@@ -217,7 +217,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async canUseCapability(capability) {
-        if (['customDomain', 'branding', 'nativeToken', 'totalSupply', 'statusPage'].indexOf(capability) < 0)
+        if (['customDomain', 'branding', 'nativeToken', 'totalSupply', 'statusPage', 'l1Explorer'].indexOf(capability) < 0)
             return false;
         
         if (!isStripeEnabled())
@@ -292,7 +292,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async safeUpdateSettings(settings) {
-        const ALLOWED_SETTINGS = ['name', 'slug', 'token', 'totalSupply'];
+        const ALLOWED_SETTINGS = ['name', 'slug', 'token', 'totalSupply', 'l1Explorer'];
 
         const filteredSettings = {};
         Object.keys(settings).forEach(key => {
@@ -304,19 +304,25 @@ module.exports = (sequelize, DataTypes) => {
             if (filteredSettings['token']) {
                 const isNativeTokenAllowed = await this.canUseCapability('nativeToken');
                 if (!isNativeTokenAllowed)
-                    throw new Error('Upgrade your plan to customize your native token symbol.')
+                    throw new Error('Upgrade your plan to customize your native token symbol.');
             }
 
             if (filteredSettings['totalSupply']) {
                 const isTotalSupplyAllowed = await this.canUseCapability('totalSupply');
                 if (!isTotalSupplyAllowed)
-                    throw new Error('Upgrade your plan to display a total supply.')
+                    throw new Error('Upgrade your plan to display a total supply.');
             }
 
             if (filteredSettings['slug'] && filteredSettings['slug'] != this.slug) {
                 const existingExplorer = await sequelize.models.Explorer.findOne({ where: { slug: filteredSettings['slug'] }});
                 if (existingExplorer)
                     throw new Error('This domain is not available');
+            }
+
+            if (filteredSettings['l1Explorer']) {
+                const isL1ExplorerAllowed = await this.canUseCapability('l1Explorer');
+                if (!isL1ExplorerAllowed)
+                    throw new Error('Upgrade your plan to display L1 explorer links.')
             }
 
             return this.update(filteredSettings);
@@ -362,7 +368,8 @@ module.exports = (sequelize, DataTypes) => {
     totalSupply: DataTypes.STRING,
     shouldSync: DataTypes.BOOLEAN,
     shouldEnforceQuota: DataTypes.BOOLEAN,
-    isDemo: DataTypes.BOOLEAN
+    isDemo: DataTypes.BOOLEAN,
+    l1Explorer: DataTypes.STRING
   }, {
     hooks: {
         afterCreate(explorer, options) {

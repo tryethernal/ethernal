@@ -63,7 +63,7 @@
             </template>
             <div v-show="currentBlock.number">
                 <v-divider vertical inset class="mx-2"></v-divider>
-                Latest Block: <router-link :to="'/block/' + currentBlock.number">{{ currentBlock.number }}</router-link>
+                Latest Block: <router-link style="text-decoration: none;" :to="'/block/' + currentBlock.number">{{ currentBlock.number && commify(currentBlock.number) }}</router-link>
             </div>
             <div v-show="processingContracts">
                 <v-divider vertical inset class="mx-2"></v-divider>
@@ -74,6 +74,7 @@
 </template>
 
 <script>
+const ethers = require('ethers');
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import { formatContractPattern, shortRpcUrl } from '@/lib/utils';
@@ -117,6 +118,7 @@ export default Vue.extend({
     },
     methods: {
         formatContractPattern, shortRpcUrl,
+        commify: ethers.utils.commify,
         toggleMenu() {
             this.$emit('toggleMenu');
         },
