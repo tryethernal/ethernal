@@ -38,25 +38,7 @@ exports[`NewExplorerLink.vue Should display a new link form 1`] = `
       </div>
     </div>
     <div class="col col-4">
-      <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select v-autocomplete">
-        <div class="v-input__control">
-          <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-10" class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: 0px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-select__slot"><label for="input-10" class="v-label theme--light" style="left: 0px; position: absolute;">Icon</label><input small="" id="input-10" type="text" autocomplete="off"><input type="hidden"></div>
-            <div class="v-menu">
-              <!---->
-            </div>
-          </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-            </div>
-          </div>
-        </div>
-        <div class="v-input__append-outer"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light error--text"></i></span></button></div>
-      </div>
+      <v-autocomplete-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" appendicon="" backgroundcolor="" dense="true" label="Icon" persistenthint="true" loaderheight="2" clearicon="$clear" outlined="true" type="text" valuecomparator="[Function]" nodatatext="$vuetify.noDataText" items="" itemcolor="primary" itemdisabled="disabled" itemtext="name" itemvalue="[Function]" menuprops="[object Object]" autoselectfirst="true" filter="[Function]" hidenodata="true" nofilter="true" small=""><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light error--text"></i></span></button></v-autocomplete-stub>
     </div>
   </div>
 </div>
@@ -72,7 +54,7 @@ exports[`NewExplorerLink.vue Should display an existing link form 1`] = `
             <fieldset aria-hidden="true">
               <legend style="width: -24px;"><span class="notranslate">​</span></legend>
             </fieldset>
-            <div class="v-text-field__slot"><label for="input-20" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">URL *</label><input small="" id="input-20" type="text"></div>
+            <div class="v-text-field__slot"><label for="input-17" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">URL *</label><input small="" id="input-17" type="text"></div>
           </div>
           <div class="v-text-field__details">
             <div class="v-messages theme--light">
@@ -89,7 +71,7 @@ exports[`NewExplorerLink.vue Should display an existing link form 1`] = `
             <fieldset aria-hidden="true">
               <legend style="width: -24px;"><span class="notranslate">​</span></legend>
             </fieldset>
-            <div class="v-text-field__slot"><label for="input-23" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name *</label><input small="" id="input-23" type="text"></div>
+            <div class="v-text-field__slot"><label for="input-20" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name *</label><input small="" id="input-20" type="text"></div>
           </div>
           <div class="v-text-field__details">
             <div class="v-messages theme--light">
@@ -100,29 +82,7 @@ exports[`NewExplorerLink.vue Should display an existing link form 1`] = `
       </div>
     </div>
     <div class="col col-4">
-      <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select v-autocomplete">
-        <div class="v-input__control">
-          <div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-26" class="v-input__slot">
-            <fieldset aria-hidden="true">
-              <legend style="width: -24px;"><span class="notranslate">​</span></legend>
-            </fieldset>
-            <div class="v-select__slot"><label for="input-26" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Icon</label><input small="" id="input-26" type="text" autocomplete="off">
-              <div class="v-input__append-inner">
-                <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-twitter theme--light"></i></div>
-              </div><input type="hidden" value="mdi-twitter">
-            </div>
-            <div class="v-menu">
-              <!---->
-            </div>
-          </div>
-          <div class="v-text-field__details">
-            <div class="v-messages theme--light">
-              <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
-            </div>
-          </div>
-        </div>
-        <div class="v-input__append-outer"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light error--text"></i></span></button></div>
-      </div>
+      <v-autocomplete-stub errorcount="1" errormessages="" messages="" rules="" successmessages="" appendicon="mdi-twitter" backgroundcolor="" dense="true" label="Icon" persistenthint="true" loaderheight="2" clearicon="$clear" outlined="true" type="text" valuecomparator="[Function]" nodatatext="$vuetify.noDataText" items="[object Object]" itemcolor="primary" itemdisabled="disabled" itemtext="name" itemvalue="[Function]" menuprops="[object Object]" autoselectfirst="true" filter="[Function]" hidenodata="true" nofilter="true" small="" value="mdi-twitter"><button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light error--text"></i></span></button></v-autocomplete-stub>
     </div>
   </div>
 </div>

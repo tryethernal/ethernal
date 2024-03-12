@@ -68,7 +68,7 @@
             </template>
         </template>
         <template v-slot:item.blockNumber="{ item }">
-            <router-link :to="'/block/' + item.blockNumber" :contract="item.contract">{{ item.blockNumber }}</router-link>
+            <router-link style="text-decoration: none;" :to="'/block/' + item.blockNumber" :contract="item.contract">{{ commify(item.blockNumber) }}</router-link>
         </template>
         <template v-slot:item.to="{ item }">
             <v-chip x-small class="mr-2" v-if="item.to && item.to === currentAddress">self</v-chip>
@@ -85,6 +85,7 @@
 
 <script>
 const moment = require('moment');
+const ethers = require('ethers');
 const { getGasPriceFromTransaction } = require('../lib/utils');
 import { mapGetters } from 'vuex';
 import FromWei from '../filters/FromWei.js';
@@ -146,6 +147,7 @@ export default {
     methods: {
         getGasPriceFromTransaction,
         moment,
+        commify: ethers.utils.commify,
         rowClasses(item) {
             if (item.state == 'syncing')
                 return 'isSyncing'

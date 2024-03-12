@@ -81,7 +81,7 @@ exports[`ExplorerSettings.vue Should display settings with all options 1`] = `
               </div>
             </div>
           </div>
-          <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+          <div class="v-input mb-2 v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
             <div class="v-input__control">
               <div class="v-input__slot">
                 <fieldset aria-hidden="true">
@@ -93,6 +93,23 @@ exports[`ExplorerSettings.vue Should display settings with all options 1`] = `
                 <div class="v-messages theme--light">
                   <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper">
                     <div class="v-messages__message">In ether: N/A</div>
+                  </transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-input v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><label for="input-23" class="v-label theme--light" style="left: 0px; position: absolute;">L1 Explorer Base URL</label><input id="input-23" type="text"></div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper">
+                    <div class="v-messages__message">If the L1BlockNumber key is on the block object, this setting will be used to display a link to the L1 explorer.</div>
                   </transition-group-stub>
                 </div>
               </div>
@@ -118,13 +135,13 @@ exports[`ExplorerSettings.vue Should display settings with deactivated options 1
         <div class="col">
           <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-select">
             <div class="v-input__control">
-              <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-30" class="v-input__slot">
+              <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-33" class="v-input__slot">
                 <fieldset aria-hidden="true">
                   <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                 </fieldset>
-                <div class="v-select__slot"><label for="input-30" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Associated Workspace</label>
+                <div class="v-select__slot"><label for="input-33" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Associated Workspace</label>
                   <div class="v-select__selections">
-                    Workspace 1<small class="ml-2">(rpc | 1)</small><input id="input-30" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
+                    Workspace 1<small class="ml-2">(rpc | 1)</small><input id="input-33" readonly="readonly" type="text" aria-readonly="false" autocomplete="off"></div>
                   <div class="v-input__append-inner">
                     <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
                   </div><input type="hidden" value="[object Object]">
@@ -146,7 +163,7 @@ exports[`ExplorerSettings.vue Should display settings with deactivated options 1
                 <fieldset aria-hidden="true">
                   <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                 </fieldset>
-                <div class="v-text-field__slot"><label for="input-35" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name</label><input id="input-35" type="text"></div>
+                <div class="v-text-field__slot"><label for="input-38" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Name</label><input id="input-38" type="text"></div>
               </div>
               <div class="v-text-field__details">
                 <div class="v-messages theme--light">
@@ -161,7 +178,7 @@ exports[`ExplorerSettings.vue Should display settings with deactivated options 1
                 <fieldset aria-hidden="true">
                   <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                 </fieldset>
-                <div class="v-text-field__slot"><label for="input-38" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Ethernal Domain</label><input id="input-38" type="text">
+                <div class="v-text-field__slot"><label for="input-41" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Ethernal Domain</label><input id="input-41" type="text">
                   <div class="v-text-field__suffix">.tryethernal.com</div>
                 </div>
               </div>
@@ -180,7 +197,7 @@ exports[`ExplorerSettings.vue Should display settings with deactivated options 1
                 <fieldset aria-hidden="true">
                   <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                 </fieldset>
-                <div class="v-text-field__slot"><label for="input-41" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Native Token Symbol</label><input disabled="disabled" id="input-41" type="text"></div>
+                <div class="v-text-field__slot"><label for="input-44" class="v-label v-label--active v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Native Token Symbol</label><input disabled="disabled" id="input-44" type="text"></div>
               </div>
               <div class="v-text-field__details">
                 <div class="v-messages theme--light">
@@ -191,18 +208,35 @@ exports[`ExplorerSettings.vue Should display settings with deactivated options 1
               </div>
             </div>
           </div>
-          <div class="v-input v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+          <div class="v-input mb-2 v-input--is-disabled v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
             <div class="v-input__control">
               <div class="v-input__slot">
                 <fieldset aria-hidden="true">
                   <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                 </fieldset>
-                <div class="v-text-field__slot"><label for="input-44" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Total Supply (in wei)</label><input disabled="disabled" id="input-44" type="number"></div>
+                <div class="v-text-field__slot"><label for="input-47" class="v-label v-label--is-disabled theme--light" style="left: 0px; position: absolute;">Total Supply (in wei)</label><input disabled="disabled" id="input-47" type="number"></div>
               </div>
               <div class="v-text-field__details">
                 <div class="v-messages theme--light">
                   <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper">
                     <div class="v-messages__message">Upgrade your plan to display a total supply.</div>
+                  </transition-group-stub>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="v-input v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+            <div class="v-input__control">
+              <div class="v-input__slot">
+                <fieldset aria-hidden="true">
+                  <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                </fieldset>
+                <div class="v-text-field__slot"><label for="input-50" class="v-label theme--light" style="left: 0px; position: absolute;">L1 Explorer Base URL</label><input id="input-50" type="text"></div>
+              </div>
+              <div class="v-text-field__details">
+                <div class="v-messages theme--light">
+                  <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper">
+                    <div class="v-messages__message">If the L1BlockNumber key is on the block object, this setting will be used to display a link to the L1 explorer. Upgrade your plan to use it.</div>
                   </transition-group-stub>
                 </div>
               </div>

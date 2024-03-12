@@ -52,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
     nonce: DataTypes.STRING,
     number: DataTypes.INTEGER,
     parentHash: DataTypes.STRING,
+    l1BlockNumber: DataTypes.INTEGER,
     timestamp: {
         type: DataTypes.DATE,
         set(value) {

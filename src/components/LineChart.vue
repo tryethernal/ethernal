@@ -29,6 +29,7 @@
 </template>
 <script>
 const moment = require('moment');
+const ethers = require('ethers');
 import { Line as LineChartGenerator } from 'vue-chartjs/legacy';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import {
@@ -190,7 +191,7 @@ export default {
                         callbacks: {
                             title() {},
                             label: (context) => {
-                                const value = context.parsed.y;
+                                const value = context.parsed.y < 1 ? context.parsed.y : ethers.utils.commify(context.parsed.y);
                                 const date = moment(this.xLabels[context.parsed.x]).format(DATE_FORMAT);
                                 if (this.tokenSymbol)
                                     return `${date} - ${value} ${this.tokenSymbol}`;

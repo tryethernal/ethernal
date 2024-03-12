@@ -878,7 +878,8 @@ module.exports = (sequelize, DataTypes) => {
                 timestamp: block.timestamp,
                 transactionsCount: block.transactions ? block.transactions.length : 0,
                 state: 'ready',
-                raw: block,
+                l1BlockNumber: block.l1BlockNumber,
+                raw: block.raw,
                 transactions
             }), {
                 include: [ sequelize.models.Block.associations.transactions ],
@@ -1177,6 +1178,19 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async findTransaction(hash) {
+        const blockAttributes = ['gasLimit', 'timestamp'];
+        const explorer = await this.getExplorer({
+            include: {
+                model: sequelize.models.StripeSubscription,
+                as: 'stripeSubscription',
+                include: 'stripePlan'
+            }
+        });
+
+        if (explorer && await explorer.canUseCapability('l1Explorer')) {
+            blockAttributes.push('l1BlockNumber')
+        };
+
         const transactions = await this.getTransactions({
             where: {
                 hash: hash
@@ -1243,7 +1257,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Block,
-                    attributes: ['gasLimit', 'timestamp'],
+                    attributes: blockAttributes,
                     as: 'block'
                 },
                 {
