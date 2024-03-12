@@ -1265,7 +1265,17 @@ const getWorkspaceContractById = async (workspaceId, contractId) => {
 };
 
 const getWorkspaceBlock = async (workspaceId, number) => {
-    const workspace = await Workspace.findByPk(workspaceId, { include: 'explorer' });
+    const workspace = await Workspace.findByPk(workspaceId, {
+        include: {
+            model: 'explorer',
+            as: 'explorer',
+            include: {
+                model: 'stripeSubscription',
+                as: 'stripeSubscription',
+                include: 'stripePlan'
+            }
+        }
+    });
 
     const attributes = [
         'id', 'number', 'timestamp', 'gasUsed', 'transactionsCount', 'gasLimit', 'hash',

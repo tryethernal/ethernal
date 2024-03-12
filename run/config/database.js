@@ -9,6 +9,7 @@ module.exports = {
         "port": process.env.DB_PORT,
         "dialect": "postgres",
         "logging": function(sql, sequelizeObject) {
+            console.log(sql)
             logger.debug(sql, { instance: sequelizeObject.instance });
         }
     },
