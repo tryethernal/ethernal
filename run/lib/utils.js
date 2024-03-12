@@ -13,7 +13,7 @@ const processRawRpcObject = (obj, storedKeys) => {
     for (let i = 0; i < rawKeys.length; i++)
         raw[rawKeys[i]] = obj[rawKeys[i]];
 
-    return _sanitize({ ...processedObj, raw });
+    return { ..._sanitize(processedObj), raw: _sanitize(raw) };
 };
 
 // https://gist.github.com/hagemann/382adfc57adbd5af078dc93feef01fe1

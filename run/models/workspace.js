@@ -1179,7 +1179,13 @@ module.exports = (sequelize, DataTypes) => {
 
     async findTransaction(hash) {
         const blockAttributes = ['gasLimit', 'timestamp'];
-        const explorer = await this.getExplorer();
+        const explorer = await this.getExplorer({
+            include: {
+                model: stripeSubscription,
+                as: 'stripeSubscription',
+                include: 'stripePlan'
+            }
+        });
         if (explorer && await explorer.canUseCapability('l1Explorer')) {
             blockAttributes.push('l1BlockNumber')
         };
