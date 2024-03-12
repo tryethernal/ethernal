@@ -114,7 +114,7 @@
                             <div class="text-overline">Gas Limit</div>
                             {{ parseInt(transaction.gasLimit || transaction.block.gasLimit).toLocaleString() }}
                         </v-col>
-                        <v-col v-if="publicExplorer.l1Explorer && transaction.block.l1BlockNumber" lg="3" md="6" sm="12">
+                        <v-col v-if="publicExplorer && publicExplorer.l1Explorer && transaction.block.l1BlockNumber" lg="3" md="6" sm="12">
                             <div class="text-overline">L1 Block</div>
                             <a :href="`${publicExplorer.l1Explorer}/block/${transaction.block.l1BlockNumber}`" target="_blank">{{ commify(transaction.block.l1BlockNumber) }}</a>
                         </v-col>

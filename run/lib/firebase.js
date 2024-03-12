@@ -1267,10 +1267,10 @@ const getWorkspaceContractById = async (workspaceId, contractId) => {
 const getWorkspaceBlock = async (workspaceId, number) => {
     const workspace = await Workspace.findByPk(workspaceId, {
         include: {
-            model: 'explorer',
+            model: Explorer,
             as: 'explorer',
             include: {
-                model: 'stripeSubscription',
+                model: StripeSubscription,
                 as: 'stripeSubscription',
                 include: 'stripePlan'
             }
@@ -1293,8 +1293,8 @@ const getWorkspaceBlock = async (workspaceId, number) => {
         if (await workspace.explorer.canUseCapability('l1Explorer'))
             attributes.push('l1BlockNumber');
 
-    const [block] = await workspace.getBlocks({
-        where: { number: number },
+    const block = await Block.findOne({
+        where: { number, workspaceId },
         attributes
     });
 

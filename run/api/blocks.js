@@ -71,7 +71,7 @@ router.get('/:number', workspaceAuthMiddleware, async (req, res) => {
         if (!req.params.number)
             throw new Error('Missing parameter.');
 
-        const block = await db.getWorkspaceBlock(data.workspace.id, req.params.number, !!data.withTransactions);
+        const block = await db.getWorkspaceBlock(data.workspace.id, req.params.number);
 
         res.status(200).json(block);
     } catch(error) {
