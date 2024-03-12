@@ -11,7 +11,9 @@ beforeEach(() => {
 
 describe('NewExplorerLink.vue', () => {
     it('Should display a new link form', async () => {
-        const wrapper = helper.mountFn(NewExplorerLink);
+        const wrapper = helper.mountFn(NewExplorerLink, {
+            stubs: ['v-autocomplete']
+        });
         await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
@@ -25,7 +27,8 @@ describe('NewExplorerLink.vue', () => {
                 name: 'twitter',
                 icon: 'mdi-twitter',
                 uid: 1234
-            }
+            },
+            stubs: ['v-autocomplete']
         });
         await flushPromises();
 

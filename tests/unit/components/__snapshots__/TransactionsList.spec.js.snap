@@ -98,7 +98,7 @@ exports[`TransactionsList.vue Should display the list 1`] = `
             <hash-link-stub hash="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" type="transaction"></hash-link-stub>
           </td>
           <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
-          <td class="text-start"><a href="/block/1" class="">1</a></td>
+          <td class="text-start"><a href="/block/1" class="" style="text-decoration: none;">1</a></td>
           <td class="text-start">
             <div class="my-2 text-left">
               05/06 7:11:26 PM<br> <small>3 months ago</small></div>
@@ -126,7 +126,7 @@ exports[`TransactionsList.vue Should display the list 1`] = `
             <hash-link-stub hash="0x1234" type="transaction"></hash-link-stub>
           </td>
           <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1" style="display: none;"><span class="v-chip__content"></span></span></span></td>
-          <td class="text-start"><a href="/block/1" class="">1</a></td>
+          <td class="text-start"><a href="/block/1" class="" style="text-decoration: none;">1</a></td>
           <td class="text-start">
             <div class="my-2 text-left">
               05/06 7:11:26 PM<br> <small>3 months ago</small></div>
@@ -211,7 +211,7 @@ exports[`TransactionsList.vue Should not display transactions count 1`] = `
             <!----></span>
           </td>
           <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
-          <td class="text-start"><a href="/block/1" class="">1</a></td>
+          <td class="text-start"><a href="/block/1" class="" style="text-decoration: none;">1</a></td>
           <td class="text-start">
             <div class="my-2 text-left">
               05/06 7:11:26 PM<br> <small>3 months ago</small></div>
