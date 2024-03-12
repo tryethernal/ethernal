@@ -6,7 +6,7 @@ jest.mock('sequelize', () => ({
     }
 }));
 require('../mocks/lib/env');
-const { Workspace, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction } = require('../mocks/models');
+const { Workspace, Block, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction } = require('../mocks/models');
 const db = require('../../lib/firebase');
 const env = require('../../lib/env');
 
@@ -1659,7 +1659,7 @@ describe('getWorkspaceContractById', () => {
 
 describe('getWorkspaceBlock', () => {
     it('Should return the block', (done) => {
-        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ getBlocks: () => ([{ toJSON: () => ({ number: 1 })}])});
+        jest.spyOn(Block, 'findOne').mockResolvedValueOnce({ toJSON: () => ({ number: 1 })});
         db.getWorkspaceBlock(1, 2, false)
             .then(block => {
                 expect(block).toEqual({ number: 1 });

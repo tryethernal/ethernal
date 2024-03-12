@@ -87,7 +87,7 @@ describe(`POST ${BASE_URL}`, () => {
             });
     });
 
-    it.skip('Should refuse server side block sync if workspace is not public', (done) => {
+    it('Should refuse server side block sync if workspace is not public', (done) => {
         jest.spyOn(db, 'getWorkspaceByName').mockResolvedValue({ name: 'My Workspace', public: false });
         request.post(`${BASE_URL}/?serverSync=true`)
             .send({ data: { workspace: 'My Workspace', block: { number: 123 }}})
@@ -134,7 +134,7 @@ describe(`GET ${BASE_URL}/:number`, () => {
                 expect(body).toEqual({
                     number: 1234
                 });
-                expect(db.getWorkspaceBlock).toHaveBeenCalledWith(1, '1234', false);
+                expect(db.getWorkspaceBlock).toHaveBeenCalledWith(1, '1234');
                 done();
             });
     });
