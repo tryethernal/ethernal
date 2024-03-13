@@ -1,4 +1,5 @@
 const ethers = require('ethers');
+const { eToNumber } = require('../lib/utils');
 
 const BigNumber = ethers.BigNumber;
 const formatUnits = ethers.utils.formatUnits;
@@ -23,7 +24,12 @@ export default function (amount = 0, to, symbol = 'ether', unformatted = false) 
 
     let stringedAmount = typeof amountInt.toLocaleString === 'function' ? amountInt.toLocaleString('fullwide', { useGrouping: false }) : String(amountInt);
 
-    const ethAmount = BigNumber.from(stringedAmount);
+    let ethAmount;
+    try {
+        ethAmount = BigNumber.from(stringedAmount);
+    } catch(error) {
+        ethAmount = BigNumber.from(eToNumber(stringedAmount));
+    }
     const roundedAmount = formatUnits(ethAmount, to)
     const commified = commify(roundedAmount);
     const formatted = commified.endsWith('.0') ? commified.split('.')[0] : commified;
