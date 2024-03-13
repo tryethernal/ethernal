@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         StripeSubscription.belongsTo(models.Explorer, { foreignKey: 'explorerId', as: 'explorer' });
         StripeSubscription.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
         StripeSubscription.belongsTo(models.StripePlan, { foreignKey: 'stripePlanId', as: 'stripePlan' });
+        StripeSubscription.hasOne(models.StripeQuotaExtension, { foreignKey: 'stripeSubscriptionId', as: 'stripeQuotaExtension' });
     }
   }
   StripeSubscription.init({

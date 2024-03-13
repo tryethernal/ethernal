@@ -5,14 +5,14 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     const transaction = await queryInterface.sequelize.transaction();
     try {
-        await queryInterface.createTable('stripe_credit_subscriptions', {
+        await queryInterface.createTable('stripe_quota_extensions', {
           id: {
             allowNull: false,
             autoIncrement: true,
             primaryKey: true,
             type: Sequelize.INTEGER
           },
-          explorerId: {
+          stripeSubscriptionId: {
             type: Sequelize.INTEGER,
             allowNull: false,
             references: {
@@ -22,19 +22,24 @@ module.exports = {
                 }
             }
           },
-          stripeSubscriptionId: {
+          stripePlanId: {
             type: Sequelize.INTEGER,
             allowNull: false,
             references: {
                 key: 'id',
                 model: {
-                    tableName: 'stripe_subscriptions'
+                    tableName: 'stripe_plans'
                 }
             }
           },
-          quantity: {
-            type: Sequelize.INTEGER,
+          stripeId: {
+            type: Sequelize.STRING,
             allowNull: false
+          },
+          quota: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            defaultValue: 0
           },
           createdAt: {
             allowNull: false,
@@ -54,6 +59,6 @@ module.exports = {
     }
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('stripe_credit_subscriptions');
+    await queryInterface.dropTable('stripe_quota_subscriptions');
   }
 };
