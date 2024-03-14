@@ -13,7 +13,17 @@ exports[`TransactionData.vue Should display instructions if there is no ABI 1`] 
       <transaction-function-call-stub to="0xc00e94cb662c3520282e6f5717214004a7f26888" value="0" data="0xa9059cbb000000000000000000000000c00e94cb662c3520282e6f5717214004a7f268880000000000000000000000000000000000000000000000000000000000000001"></transaction-function-call-stub>
     </div>
   </div>
-  <!---->
+  <div class="row my-2">
+    <div class="col">
+      <h3 class="mb-2">Emitted Events</h3>
+      <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__text">
+          <transaction-event-stub log="[object Object]"></transaction-event-stub>
+        </div>
+      </div>
+      <!---->
+    </div>
+  </div>
 </div>
 `;
 
@@ -30,6 +40,28 @@ exports[`TransactionData.vue Should display transaction data 1`] = `
       <transaction-function-call-stub to="0xc00e94cb662c3520282e6f5717214004a7f26888" value="0" data="0xa9059cbb000000000000000000000000c00e94cb662c3520282e6f5717214004a7f268880000000000000000000000000000000000000000000000000000000000000001"></transaction-function-call-stub>
     </div>
   </div>
-  <!---->
+  <div class="row my-2">
+    <div class="col">
+      <h3 class="mb-2">Emitted Events</h3>
+      <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__text">
+          <transaction-event-stub log="[object Object]"></transaction-event-stub>
+        </div>
+      </div>
+      <nav role="navigation" aria-label="Pagination Navigation">
+        <ul class="v-pagination theme--light">
+          <li><button disabled="disabled" type="button" aria-label="Previous page" class="v-pagination__navigation v-pagination__navigation--disabled"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></button></li>
+          <li><button type="button" aria-current="true" aria-label="Current Page, Page 1" class="v-pagination__item v-pagination__item--active primary">1</button></li>
+          <li><button type="button" aria-label="Goto Page 2" class="v-pagination__item">2</button></li>
+          <li><button type="button" aria-label="Goto Page 3" class="v-pagination__item">3</button></li>
+          <li><span class="v-pagination__more">...</span></li>
+          <li><button type="button" aria-label="Goto Page 19" class="v-pagination__item">19</button></li>
+          <li><button type="button" aria-label="Goto Page 20" class="v-pagination__item">20</button></li>
+          <li><button type="button" aria-label="Goto Page 21" class="v-pagination__item">21</button></li>
+          <li><button type="button" aria-label="Next page" class="v-pagination__navigation"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></button></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
 </div>
 `;
