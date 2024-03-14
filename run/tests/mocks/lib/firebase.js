@@ -129,6 +129,7 @@ jest.mock('../../../lib/firebase', () => {
         findQuicknodeExplorer: jest.fn(),
         updateQuicknodeSubscription: jest.fn(),
         markWorkspaceForDeletion: jest.fn(),
+        getTransactionLogs: jest.fn(),
         Workspace: Workspace
     }
 });

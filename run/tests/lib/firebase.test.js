@@ -12,6 +12,27 @@ const env = require('../../lib/env');
 
 beforeEach(() => jest.clearAllMocks());
 
+describe('getTransactionLogs', () => {
+    it('Should throw an error if no workspace', (done) => {
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
+        db.getTransactionLogs(1, '0xa')
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find workspace'));
+                done();
+            });
+    });
+
+    it('Should return logs & count', (done) => {
+        const getTransactionLogs = jest.fn().mockResolvedValueOnce({ count: 1, rows: [{ data: '0x' }]});
+        jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ id: 1, getTransactionLogs });
+        db.getTransactionLogs(1, '0xa')
+            .then(res => {
+                expect(res).toEqual({ count: 1, logs: [{ data: '0x' }]});
+                done();
+            });
+    });
+});
+
 describe('markWorkspaceForDeletion', () => {
     it('Should throw an error if no workspace', (done) => {
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce(null);
