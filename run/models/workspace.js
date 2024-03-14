@@ -801,15 +801,7 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.TransactionReceipt,
                     attributes: ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'gasUsed', 'cumulativeGasUsed', [sequelize.json('raw.effectiveGasPrice'), 'effectiveGasPrice']],
-                    as: 'receipt',
-                    include: [
-                        {
-                            model: sequelize.models.TransactionLog,
-                            attributes: ['address', 'data', 'logIndex', 'topics'],
-                            as: 'logs'
-                        }
-
-                    ]
+                    as: 'receipt'
                 },
                 {
                     model: sequelize.models.Contract,
@@ -1177,6 +1169,26 @@ module.exports = (sequelize, DataTypes) => {
         return blocks.length ? blocks[0] : null;
     }
 
+    getTransactionLogs(hash, page = 1, itemsPerPage = 20) {
+        if (!hash)
+            throw new Error('Missing parameter');
+
+        return sequelize.models.TransactionLog.findAndCountAll({
+            where: {
+                workspaceId: this.id,
+                '$receipt.transactionHash$': hash
+            },
+            include: {
+                model: sequelize.models.TransactionReceipt,
+                as: 'receipt',
+                attributes: ['transactionHash']
+            },
+            offset: (page - 1) * itemsPerPage,
+            limit: itemsPerPage,
+            attributes: ['id', 'address', 'data', 'logIndex', 'topics']
+        })
+    }
+
     async findTransaction(hash) {
         const blockAttributes = ['gasLimit', 'timestamp'];
         const explorer = await this.getExplorer({
@@ -1209,14 +1221,7 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.TransactionReceipt,
                     attributes: ['gasUsed', 'status', 'contractAddress', [sequelize.json('raw.root'), 'root'], 'cumulativeGasUsed', 'raw', [sequelize.json('raw.effectiveGasPrice'), 'effectiveGasPrice']],
-                    as: 'receipt',
-                    include: [
-                        {
-                            model: sequelize.models.TransactionLog,
-                            attributes: ['address', 'data', 'logIndex', 'topics', 'raw'],
-                            as: 'logs'
-                        }
-                    ]
+                    as: 'receipt'
                 },
                 {
                     model: sequelize.models.TransactionTraceStep,

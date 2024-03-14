@@ -17,6 +17,19 @@ const StripePlan = models.StripePlan;
 const ExplorerDomain = models.ExplorerDomain;
 const RpcHealthCheck = models.RpcHealthCheck;
 
+const getTransactionLogs = async (workspaceId, hash, page, itemsPerPage) => {
+    if (!workspaceId || !hash || !page || !itemsPerPage)
+        throw new Error('Missing parameter');
+
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Missing parameter');
+
+    const { count, rows: logs } = await workspace.getTransactionLogs(hash, page, itemsPerPage);
+
+    return { count, logs };
+}
+
 const markWorkspaceForDeletion = async (workspaceId) => {
     if (!workspaceId)
         throw new Error('Missing parameter');
@@ -1942,5 +1955,6 @@ module.exports = {
     updateQuicknodeSubscription: updateQuicknodeSubscription,
     createQuicknodeWorkspace: createQuicknodeWorkspace,
     markWorkspaceForDeletion: markWorkspaceForDeletion,
+    getTransactionLogs: getTransactionLogs,
     Workspace: Workspace
 };
