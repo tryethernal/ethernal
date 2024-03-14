@@ -1,3 +1,4 @@
+import flushPromises from 'flush-promises';
 import MockHelper from '../MockHelper';
 
 import TransactionData from '@/components/TransactionData.vue';
@@ -11,7 +12,11 @@ describe('TransactionData.vue', () => {
         helper = new MockHelper();
     });
 
-    it('Should display transaction data', () => {
+    it('Should display transaction data', async () => {
+        jest.spyOn(helper.mocks.server, 'getTransactionLogs')
+            .mockResolvedValue({
+                data: { count: 21, logs: [{}] }
+            });
         jest.spyOn(helper.mocks.server, 'getContract')
             .mockResolvedValue({
                 data: { address: TransactionProp.to, abi: ABIProp }
@@ -24,17 +29,24 @@ describe('TransactionData.vue', () => {
             },
             stubs: ['Transaction-Function-Call', 'Transaction-Event']
         });
+        await flushPromises();
 
         expect(wrapper.html()).toMatchSnapshot();
     });
 
-    it('Should display instructions if there is no ABI', () => {
+    it('Should display instructions if there is no ABI', async () => {
+        jest.spyOn(helper.mocks.server, 'getTransactionLogs')
+            .mockResolvedValue({
+                data: { count: 1, logs: [{}] }
+            });
         const wrapper = helper.mountFn(TransactionData, {
             propsData: {
                 transaction: TransactionProp
             },
             stubs: ['Transaction-Function-Call', 'Transaction-Event']
         });
+        await flushPromises();
+
         expect(wrapper.html()).toMatchSnapshot();
     });
 });
