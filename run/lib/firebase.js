@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const { getDemoUserId, getMaxBlockForSyncReset, getDemoTrialSlug } = require('./env');
+const { getDemoUserId, getMaxBlockForSyncReset } = require('./env');
 const models = require('../models');
 const { firebaseHash }  = require('./crypto');
 
@@ -18,17 +18,17 @@ const ExplorerDomain = models.ExplorerDomain;
 const RpcHealthCheck = models.RpcHealthCheck;
 
 const getTransactionLogs = async (workspaceId, hash, page, itemsPerPage) => {
-    if (!workspaceId || !hash || !page || !itemsPerPage)
+    if (!workspaceId || !hash)
         throw new Error('Missing parameter');
 
     const workspace = await Workspace.findByPk(workspaceId);
     if (!workspace)
-        throw new Error('Missing parameter');
+        throw new Error('Could not find workspace');
 
     const { count, rows: logs } = await workspace.getTransactionLogs(hash, page, itemsPerPage);
 
     return { count, logs };
-}
+};
 
 const markWorkspaceForDeletion = async (workspaceId) => {
     if (!workspaceId)
@@ -39,7 +39,7 @@ const markWorkspaceForDeletion = async (workspaceId) => {
         throw new Error('Could not find workspace');
 
     return workspace.update({ pendingDeletion: true });
-}
+};
 
 const updateQuicknodeSubscription = async (qnId, qnEndpointId, stripePlanId) => {
     if (!qnId || !qnEndpointId || !stripePlanId)
