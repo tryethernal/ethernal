@@ -224,4 +224,20 @@ router.get('/:hash/tokenTransfers', workspaceAuthMiddleware, async (req, res) =>
     }
 });
 
+router.get('/:hash/logs', workspaceAuthMiddleware, async (req, res) => {
+    const data = req.query;
+
+    try {
+        if (!req.params.hash)
+            throw new Error('Missing parameter');
+
+        const result = await db.getTransactionLogs(data.workspace.id, req.params.hash, data.page, data.itemsPerPage);
+
+        res.status(200).json(result);
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.transactions.hash.logs', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
 module.exports = router;

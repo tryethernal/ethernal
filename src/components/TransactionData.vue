@@ -29,14 +29,27 @@
                 <v-textarea dense outlined disabled :value="transaction.data"></v-textarea>
             </v-col>
         </v-row>
-        <v-row class="my-2" v-if="transaction.receipt && transaction.receipt.logs.length > 0">
+        <v-row class="my-2" v-if="logs.length > 0">
             <v-col>
                 <h3 class="mb-2">Emitted Events</h3>
-                <v-card outlined class="my-2" v-for="(log, idx) in transaction.receipt.logs" :key="idx">
+                <template v-if="!transactionLogLoading">
+                    <v-card outlined class="my-2" v-for="log in logs" :key="log.id">
+                        <v-card-text>
+                            <Transaction-Event :log="log" />
+                        </v-card-text>
+                    </v-card>
+                </template>
+                <v-card outlined v-else>
                     <v-card-text>
-                        <Transaction-Event :log="log" />
+                        <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
                     </v-card-text>
                 </v-card>
+                <v-pagination v-if="logCount > 20"
+                    v-model="page"
+                    :length="logCount"
+                    :total-visible="7"
+                    @input="pageChanged">
+                </v-pagination>
             </v-col>
         </v-row>
     </div>
@@ -55,10 +68,34 @@ export default {
         TransactionFunctionCall,
         TransactionEvent
     },
+    data: () => ({
+        page: 1,
+        transactionLogLoading: true,
+        currentOptions: { page: 1, itemsPerPage: 20 },
+        logs: [],
+        logCount: 0
+    }),
+    mounted() {
+        this.loadTransactionLogs();
+    },
     methods: {
-        reload: function() {
+        reload() {
             if (this.transaction.blockNumber)
                 this.$emit('decodeTx', this.transaction);
+        },
+        pageChanged(newPage) {
+            this.currentOptions = { ...this.currentOptions, page: newPage };
+            this.loadTransactionLogs();
+        },
+        loadTransactionLogs() {
+            this.transactionLogLoading = true;
+            this.server.getTransactionLogs(this.transaction.hash, this.currentOptions)
+                .then(({ data: { logs, count } }) => {
+                    this.logs = logs;
+                    this.logCount = count;
+                })
+                .catch(console.log)
+                .finally(() => this.transactionLogLoading = false);
         }
     }
 }

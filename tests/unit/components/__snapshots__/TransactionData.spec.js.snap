@@ -13,16 +13,7 @@ exports[`TransactionData.vue Should display instructions if there is no ABI 1`] 
       <transaction-function-call-stub to="0xc00e94cb662c3520282e6f5717214004a7f26888" value="0" data="0xa9059cbb000000000000000000000000c00e94cb662c3520282e6f5717214004a7f268880000000000000000000000000000000000000000000000000000000000000001"></transaction-function-call-stub>
     </div>
   </div>
-  <div class="row my-2">
-    <div class="col">
-      <h3 class="mb-2">Emitted Events</h3>
-      <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          <transaction-event-stub log="[object Object]"></transaction-event-stub>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!---->
 </div>
 `;
 
@@ -39,15 +30,6 @@ exports[`TransactionData.vue Should display transaction data 1`] = `
       <transaction-function-call-stub to="0xc00e94cb662c3520282e6f5717214004a7f26888" value="0" data="0xa9059cbb000000000000000000000000c00e94cb662c3520282e6f5717214004a7f268880000000000000000000000000000000000000000000000000000000000000001"></transaction-function-call-stub>
     </div>
   </div>
-  <div class="row my-2">
-    <div class="col">
-      <h3 class="mb-2">Emitted Events</h3>
-      <div class="my-2 v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          <transaction-event-stub log="[object Object]"></transaction-event-stub>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!---->
 </div>
 `;

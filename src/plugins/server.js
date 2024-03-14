@@ -555,6 +555,16 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
+            getTransactionLogs(transactionHash, options) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+                const resource = `${store.getters.apiRoot}/api/transactions/${transactionHash}/logs`;
+                return axios.get(resource, { params });
+            },
+
             getContractLogs(address, options) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,

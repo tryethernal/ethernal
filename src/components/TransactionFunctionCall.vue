@@ -7,7 +7,7 @@
             </div>
             )
         </v-card-text>
-         <v-card-text v-else>
+         <v-card-text v-else style="max-height: 250px; overflow-y: scroll; overflow-x: hidden;">
             <div style="float: right;">
                 <a :class="{ underlined: displayUtf8Data }" @click="switchDataFormatting('hex')">Hex</a> | <a :class="{ underlined: !displayUtf8Data }" @click="switchDataFormatting('utf8')">UTF-8</a>
             </div>
