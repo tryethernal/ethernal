@@ -11,7 +11,7 @@ priorities['high'].forEach(jobName => {
     const worker = new Worker(
         jobName,
         async job => await jobs[jobName](job),
-        { concurrency: 200 , connection },
+        { concurrency: 200, maxStalledCount: 5, connection },
     );
     worker.on('failed', (job, error) => {
         return logger.error(error.message, {
