@@ -358,6 +358,16 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            cancelQuotaExtension(explorerId) {
+                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/quotaExtension`;
+                return axios.delete(resource);
+            },
+
+            updateQuotaExtension(explorerId, stripePlanSlug, quota) {
+                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/quotaExtension`;
+                return axios.put(resource, { data: { stripePlanSlug, quota }});
+            },
+
             startTrial(explorerId, stripePlanSlug) {
                 const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/startTrial`;
                 return axios.post(resource, { data: { stripePlanSlug }});

@@ -18,6 +18,31 @@ module.exports = (sequelize, DataTypes) => {
         StripeSubscription.belongsTo(models.StripePlan, { foreignKey: 'stripePlanId', as: 'stripePlan' });
         StripeSubscription.hasOne(models.StripeQuotaExtension, { foreignKey: 'stripeSubscriptionId', as: 'stripeQuotaExtension' });
     }
+
+    async safeDestroyStripeQuotaExtension() {
+      const stripeQuotaExtension = await this.getStripeQuotaExtension();
+
+      if (stripeQuotaExtension)
+        return stripeQuotaExtension.destroy();
+    }
+
+    safeCreateStripeQuotaExtension(stripeId, stripePlanId, quota) {
+      if (!stripeId || !stripePlanId || !quota)
+        throw new Error('Missing parameter');
+
+      return this.createStripeQuotaExtension({ stripeId, stripePlanId, quota });
+    }
+
+    async safeUpdateStripeQuotaExtension(quota) {
+      if (!quota)
+        throw new Error('Missing parameter');
+
+      const stripeQuotaExtension = await this.getStripeQuotaExtension();
+      if (!stripeQuotaExtension)
+        throw new Error('Could not find quota extension');
+
+      return stripeQuotaExtension.update({ quota });
+    }
   }
   StripeSubscription.init({
     explorerId: DataTypes.INTEGER,

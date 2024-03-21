@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
         StripeQuotaExtension.belongsTo(models.StripeSubscription, { foreignKey: 'stripeSubscriptionId', as: 'stripeSubscription' });
+        StripeQuotaExtension.belongsTo(models.StripePlan, { foreignKey: 'stripePlanId', as: 'stripePlan' });
     }
   }
   StripeQuotaExtension.init({

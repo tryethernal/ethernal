@@ -164,6 +164,79 @@ router.get('/:id/syncStatus', [authMiddleware], async (req, res) => {
     }
 });
 
+router.delete('/:id', [authMiddleware, stripeMiddleware], async (req, res) => {
+    try {
+        const explorer = await db.getExplorerById(data.user.id, req.params.id);
+
+        if (!explorer || !explorer.stripeSubscription)
+            throw new Error(`Can't find explorer.`);
+
+        if (!explorer.stripeSubscription.stripeQuotaExtension)
+            return res.sendStatus(200);
+
+        const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
+        const stripeItem = subscription.items.data.find(i => i.price.id == stripePlan.stripePriceId);
+        await stripe.subscriptionItems.del(stripeItem.id);
+
+        await db.destroyStripeQuotaExtension(explorer.stripeSubscription.id);
+
+        await explorer.stripeSubscription.reload();
+
+        res.status(200).json({ stripeSubscription: explorer.stripeSubscription });
+    } catch(error) {
+        logger.error(error.message, { location: 'delete.api.explorers.id.quotaExtension', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
+router.put('/:id/quotaExtension', [authMiddleware, stripeMiddleware], async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        if (!data.quota || !data.stripePlanSlug)
+            throw new Error('Missing parameters.');
+
+        if (data.quota < 10000)
+            throw new Error('Quota extension needs to be at least 10,000.');
+
+        const explorer = await db.getExplorerById(data.user.id, req.params.id);
+
+        if (!explorer || !explorer.stripeSubscription)
+            throw new Error(`Can't find explorer.`);
+
+        const stripePlan = await db.getStripePlan(data.stripePlanSlug);
+        if (!stripePlan || !stripePlan.capabilities.quotaExtension)
+            throw new Error(`Can't find plan.`);
+
+        const stripeQuotaExtension = explorer.stripeSubscription.stripeQuotaExtension;
+        const items = [];
+
+        if (stripeQuotaExtension)
+            items.push({ id: stripeQuotaExtension.stripeId, quantity: data.quota });
+        else
+            items.push({ price: stripePlan.stripePriceId, quantity: data.quota });
+
+        const subscription = await stripe.subscriptions.update(explorer.stripeSubscription.stripeId, {
+            cancel_at_period_end: false,
+            proration_behavior: 'always_invoice',
+            items
+        });
+        const stripeItem = subscription.items.data.find(i => i.price.id == stripePlan.stripePriceId);
+
+        if (stripeQuotaExtension)
+            await db.updateStripeQuotaExtension(explorer.stripeSubscription.id, data.quota);
+        else
+            await db.createStripeQuotaExtension(explorer.stripeSubscription.id, stripeItem.id, stripePlan.id, data.quota);
+
+        await explorer.stripeSubscription.reload();
+
+        res.status(200).json({ stripeSubscription: explorer.stripeSubscription });
+    } catch(error) {
+        logger.error(error.message, { location: 'put.api.explorers.id.quotaExtension', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
 router.put('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, res) => {
     const data = req.body.data;
 

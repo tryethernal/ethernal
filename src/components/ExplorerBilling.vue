@@ -1,6 +1,7 @@
 <template>
     <v-card outlined class="flex-grow-1">
         <Update-Explorer-Plan-Modal ref="updateExplorerPlanModal" />
+        <Explorer-Quota-Management-Modal ref="explorerQuotaManagementModal" />
         <v-card-text v-if="explorer.stripeSubscription">
             <div>Plan: <b>{{ explorer.stripeSubscription.stripePlan.name }}</b></div>
             <div>
@@ -12,7 +13,7 @@
             <div>
                 Monthly Transaction Quota:
                 <template v-if="explorer.stripeSubscription.cycleEndsAt">
-                    <b>{{ explorer.stripeSubscription.transactionQuota.toLocaleString() }} / {{ explorer.stripeSubscription.stripePlan.capabilities.txLimit > 0 ? explorer.stripeSubscription.stripePlan.capabilities.txLimit.toLocaleString() : '&#8734;' }}</b> (Resetting {{ moment(explorer.stripeSubscription.cycleEndsAt) | moment('MMM. Do') }})
+                    <b>{{ explorer.stripeSubscription.transactionQuota.toLocaleString() }} / {{ explorer.stripeSubscription.stripePlan.capabilities.txLimit > 0 ? explorer.stripeSubscription.stripePlan.capabilities.txLimit.toLocaleString() : '&#8734;' }}</b> (Resetting {{ moment(explorer.stripeSubscription.cycleEndsAt) | moment('MMM. Do') }}) | <a href="#" @click="openExplorerQuotaManagementModal()">Manage Quota</a>
                 </template>
                 <template v-else><b>Unlimited</b></template>
             </div>
@@ -28,13 +29,15 @@
 <script>
 import { mapGetters } from 'vuex';
 const moment = require('moment');
-import UpdateExplorerPlanModal from './UpdateExplorerPlanModal';
+import UpdateExplorerPlanModal from './UpdateExplorerPlanModal.vue';
+import ExplorerQuotaManagementModal from './ExplorerQuotaManagementModal.vue';
 
 export default {
     name: 'ExplorerBilling',
     props: ['explorer', 'sso'],
     components: {
-        UpdateExplorerPlanModal
+        UpdateExplorerPlanModal,
+        ExplorerQuotaManagementModal
     },
     data: () => ({
         stripePortalLoading: false
@@ -44,9 +47,7 @@ export default {
         openStripePortal() {
             this.stripePortalLoading = true;
             this.server.createStripePortalSession(`http://app.${this.mainDomain}/explorers/${this.explorer.id}`)
-                .then(({ data }) => {
-                    document.location.href = data.url
-                })
+                .then(({ data }) => document.location.href = data.url)
                 .catch(() => this.stripePortalLoading = false );
         },
         openUpdateExplorerPlanModal() {
@@ -60,6 +61,12 @@ export default {
                     this.$emit('updated');
             });
         },
+        openExplorerQuotaManagementModal() {
+            this.$refs.explorerQuotaManagementModal.open({
+                explorerId: this.explorer.id,
+                subscription: this.explorer.stripeSubscription
+            }).then(() => this.$emit('updated'));
+        }
     },
     computed: {
         ...mapGetters([

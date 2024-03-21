@@ -18,7 +18,7 @@ module.exports = {
             references: {
                 key: 'id',
                 model: {
-                    tableName: 'explorers'
+                    tableName: 'stripe_subscriptions'
                 }
             }
           },
