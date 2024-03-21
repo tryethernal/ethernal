@@ -16,7 +16,8 @@
                 </p>
                 <b>Current Quota:</b> {{ baseQuota.toLocaleString() }} base + {{ currentExtraQuota.toLocaleString() }} extra = {{ currentQuota.toLocaleString() }} txs
                 <v-divider class="mt-2 mb-4"></v-divider>
-                <v-form @submit.prevent="updateQuotaExtension()" v-model="valid">
+                <v-skeleton-loader v-if="stripePlanLoading" type="list-item-three-line"></v-skeleton-loader>
+                <v-form v-else @submit.prevent="updateQuotaExtension()" v-model="valid">
                     <v-text-field
                         :rules="[v => parseInt(v) == 0 || parseInt(v) >= 10000 || 'Cannot be less than 10,000.']"
                         dense
@@ -54,7 +55,7 @@
                         </template>
                     </v-simple-table>
                     <div align="right">
-                        <v-btn color="primary" type="submit" :loading="loading" :disabled="!valid">Update Quota</v-btn>
+                        <v-btn color="primary" type="submit" :loading="loading || stripePlanLoading" :disabled="!valid">Update Quota</v-btn>
                     </div>
                 </v-form>
             </v-card-text>
@@ -75,7 +76,8 @@ export default {
         explorerId: null,
         valid: false,
         loading: false,
-        ranges: [],
+        stripePlanLoading: false,
+        stripePlan: null,
         errorMessage: null,
         successMessage: null
     }),
@@ -83,10 +85,16 @@ export default {
         moment,
         open(options) {
             this.dialog = true;
+            this.stripePlanLoading = true;
             this.subscription = options.subscription;
             this.explorerId = options.explorerId;
-            this.server.getQuotaExtensionPlan
-            this.ranges = this.subscription.stripeQuotaExtension.stripePlan.capabilities.ranges;
+            if (this.subscription.stripeQuotaExtension)
+                this.rawExtraQuota = this.subscription.stripeQuotaExtension.quota;
+
+            this.server.getQuotaExtensionPlan()
+                .then(({ data }) => this.stripePlan = data)
+                .finally(() => this.stripePlanLoading = false);
+
             return new Promise((resolve, reject) => {
                 this.resolve = resolve;
                 this.reject = reject;
@@ -128,7 +136,7 @@ export default {
                         this.loading = false;
                     });
             else
-                this.server.updateQuotaExtension(this.explorerId, this.subscription.stripeQuotaExtension.stripePlan.slug, this.extraQuota)
+                this.server.updateQuotaExtension(this.explorerId, this.stripePlan.slug, this.extraQuota)
                     .then(({ data: { stripeSubscription }}) => {
                         this.successMessage = 'Transaction quota updated.';
                         this.subscription = stripeSubscription;
@@ -142,6 +150,9 @@ export default {
         }
      },
     computed: {
+        ranges() {
+            return this.stripePlan ? this.stripePlan.capabilities.ranges : [];
+        },
         totalQuantity() {
             return this.ranges.reduce((acc, _curr, idx) => acc + this.quantityForRange(idx), 0);
         },

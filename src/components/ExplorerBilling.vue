@@ -13,7 +13,7 @@
             <div>
                 Monthly Transaction Quota:
                 <template v-if="explorer.stripeSubscription.cycleEndsAt">
-                    <b>{{ explorer.stripeSubscription.transactionQuota.toLocaleString() }} / {{ explorer.stripeSubscription.stripePlan.capabilities.txLimit > 0 ? explorer.stripeSubscription.stripePlan.capabilities.txLimit.toLocaleString() : '&#8734;' }}</b> (Resetting {{ moment(explorer.stripeSubscription.cycleEndsAt) | moment('MMM. Do') }}) | <a href="#" @click="openExplorerQuotaManagementModal()">Manage Quota</a>
+                    <b>{{ explorer.stripeSubscription.transactionQuota.toLocaleString() }} / {{ transactionQuota > 0 ? transactionQuota.toLocaleString() : '&#8734;' }}</b> (Resetting {{ moment(explorer.stripeSubscription.cycleEndsAt) | moment('MMM. Do') }}) | <a href="#" @click="openExplorerQuotaManagementModal()">Manage Quota</a>
                 </template>
                 <template v-else><b>Unlimited</b></template>
             </div>
@@ -72,6 +72,14 @@ export default {
         ...mapGetters([
             'mainDomain'
         ]),
+        transactionQuota() {
+            if (!this.explorer || !this.explorer.stripeSubscription)
+                return 0;
+
+            return this.explorer.stripeSubscription.stripeQuotaExtension ?
+                this.explorer.stripeSubscription.stripePlan.capabilities.txLimit + this.explorer.stripeSubscription.stripeQuotaExtension.quota :
+                this.explorer.stripeSubscription.stripePlan.capabilities.txLimit;
+        },
         trial() { return this.explorer.stripeSubscription && this.explorer.stripeSubscription.status == 'trial' },
         trialWithCard() { return this.explorer.stripeSubscription && this.explorer.stripeSubscription.status == 'trial_with_card' },
         activeSubscription() { return this.explorer.stripeSubscription && this.explorer.stripeSubscription.status == 'active' },

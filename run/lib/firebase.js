@@ -18,6 +18,15 @@ const ExplorerDomain = models.ExplorerDomain;
 const RpcHealthCheck = models.RpcHealthCheck;
 const StripeQuotaExtension = models.StripeQuotaExtension;
 
+const getQuotaExtensionPlan = () => {
+    return StripePlan.findOne({
+        where: {
+            'capabilities.quotaExtension': true
+        },
+        attributes: ['capabilities', 'slug']
+    })
+};
+
 const destroyStripeQuotaExtension = async (stripeSubscriptionId) => {
     if (!stripeSubscriptionId)
         throw new Error('Missing parameter');
@@ -1996,5 +2005,6 @@ module.exports = {
     createStripeQuotaExtension: createStripeQuotaExtension,
     updateStripeQuotaExtension: updateStripeQuotaExtension,
     destroyStripeQuotaExtension: destroyStripeQuotaExtension,
+    getQuotaExtensionPlan: getQuotaExtensionPlan,
     Workspace: Workspace
 };
