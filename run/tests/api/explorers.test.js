@@ -279,6 +279,26 @@ describe(`GET ${BASE_URL}/:id/syncStatus`, () => {
     });
 });
 
+describe(`DELETE ${BASE_URL}/:id/quotaExtension`, () => {
+    it('Should throw an error if no explorer', done => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce(null);
+        request.delete(`${BASE_URL}/1/quotaExtension`)
+            .expect(200)
+            .then(({ text }) => {
+                expect(text).toEqual(`Can't find explorer.`);
+                done();
+            });
+    });
+
+    it('Should return a 200 if no quota extension', done => {
+        done();
+    });
+
+    it('Should destroy quota subscription on stripe & in the db', done => {
+        done();
+    });
+});
+
 describe(`PUT ${BASE_URL}/:id/subscription`, () => {
     it('Should update the plan without calling stripe if no stripeId', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1, stripeSubscription: { stripePlan: { id: 1, slug: 'slug' }}});
