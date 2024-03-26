@@ -203,7 +203,15 @@ class ERC721Connector {
                 `https://ipfs.io/ipfs/${URI.slice(7, URI.length)}` : URI;
 
             try {
-                metadata = (await axios.get(axiosableURI)).data;
+                const transformRequest = (data, headers) => {
+                    // IPFS doesn't like those headers
+                    delete headers['pragma'];
+                    delete headers['Authorization'];
+                    delete headers['expires'];
+                    delete headers['cache-control'];
+                    return data;
+                }
+                metadata = (await axios.get(axiosableURI, { transformRequest })).data;
             } catch(error) {
                 metadata = {};
             }
