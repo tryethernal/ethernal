@@ -147,15 +147,27 @@ module.exports = (sequelize, DataTypes) => {
         return subscription && subscription.status == 'active' && !hasReachedTransactionQuota;
     }
 
-    async hasReachedTransactionQuota() {
+    async getTransactionQuota() {
         if (!this.shouldEnforceQuota)
-            return false;
+            return 0;
 
-        const stripeSubscription = await this.getStripeSubscription({ include: 'stripePlan' });
+        const stripeSubscription = await this.getStripeSubscription({ include: ['stripePlan', 'stripeQuotaExtension']});
+        if (!stripeSubscription)
+            return 0;
+
+        const extraQuota = stripeSubscription.stripeQuotaExtension && stripeSubscription.stripeQuotaExtension.quota;
+
+        return stripeSubscription.stripePlan.capabilities.txLimit + extraQuota;
+    }
+
+    async hasReachedTransactionQuota() {
+        const stripeSubscription = await this.getStripeSubscription({ include: ['stripePlan', 'stripeQuotaExtension']});
         if (!stripeSubscription)
             return false;
 
-        return stripeSubscription.stripePlan.capabilities.txLimit > 0 && stripeSubscription.transactionQuota >= stripeSubscription.stripePlan.capabilities.txLimit;
+        const baseQuota = stripeSubscription.stripePlan.capabilities.txLimit;
+        const extraQuota = stripeSubscription.stripeQuotaExtension && stripeSubscription.stripeQuotaExtension.quota;
+        return baseQuota > 0 && stripeSubscription.transactionQuota > baseQuota + extraQuota;
     }
 
     async hasTooManyFailedAttempts() {
