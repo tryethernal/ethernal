@@ -1424,7 +1424,7 @@ module.exports = (sequelize, DataTypes) => {
         if (integrityCheck)
             await integrityCheck.destroy(transaction);
 
-            return this.update({ integrityCheckStartBlockNumber: null }, { transaction });
+        return this.update({ integrityCheckStartBlockNumber: null }, { transaction });
     }
 
     async safeDestroyRpcHealthCheck(transaction) {
