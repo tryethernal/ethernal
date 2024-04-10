@@ -755,7 +755,7 @@ module.exports = (sequelize, DataTypes) => {
             });
     }
 
-    getFilteredContracts(page = 1, itemsPerPage = 10, orderBy = 'timestamp', order = 'DESC', pattern = null) {
+    getFilteredContracts(page = 1, itemsPerPage = 10, orderBy = 'timestamp', order = 'DESC NULLS LAST', pattern = null) {
         const allowedPattern = ['erc20', 'erc721'].indexOf(pattern) > -1 ? pattern : null;
         const where = allowedPattern ? { patterns: { [Op.contains]: [allowedPattern] } } : {};
 
