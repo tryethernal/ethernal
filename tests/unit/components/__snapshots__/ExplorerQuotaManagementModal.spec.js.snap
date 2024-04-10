@@ -1,0 +1,185 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExplorerQuotaManagementModal.vue Should display base cost simulation 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 1200px;">
+        <div class="v-card v-sheet v-sheet--outlined theme--light">
+          <div class="v-card__title">Transaction Quota Management <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button></div>
+          <div class="v-card__text">
+            <!---->
+            <!---->
+            <p>
+              Your plan includes 100,000 transactions per month. If you need more, you can extend your quota here.
+              If set, your quota extension will automatically be renewed every month, but you can adjust or remove it anytime.
+              Increases will be charged for right away, and decreases will result in a prorated credit applied to your future invoices.
+            </p> <b>Current Quota:</b> 100,000 base + 20,000 extra = 120,000 txs
+            <hr role="separator" aria-orientation="horizontal" class="mt-2 mb-4 v-divider theme--light">
+            <form novalidate="novalidate" class="v-form">
+              <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-33" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Extra Transaction Quota</label><input id="input-33" type="number">
+                      <div class="v-text-field__suffix">extra transactions per month</div>
+                    </div>
+                  </div>
+                  <div class="v-text-field__details">
+                    <div class="v-messages theme--light">
+                      <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="v-data-table theme--light">
+                <div class="v-data-table__wrapper">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th class="text-left">Up to</th>
+                        <th class="text-left">Cost per tx</th>
+                        <th class="text-left">Number of txs</th>
+                        <th class="text-left">Total Monthly Cost</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>100,000 txs</td>
+                        <td>$0.005</td>
+                        <td>100,000</td>
+                        <td>$500</td>
+                      </tr>
+                      <tr>
+                        <td>1,000,000 txs</td>
+                        <td>$0.0007</td>
+                        <td>900,000</td>
+                        <td>$630</td>
+                      </tr>
+                      <tr>
+                        <td>10,000,000 txs</td>
+                        <td>$0.00015</td>
+                        <td>3,100,000</td>
+                        <td>$465</td>
+                      </tr>
+                      <tr>
+                        <td>∞ </td>
+                        <td>$0.000045</td>
+                        <td>0</td>
+                        <td>$0</td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="font-weight-bold">4,100,000</td>
+                        <td class="font-weight-bold">$1,595</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+              <div align="right"><button type="submit" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Update Quota</span></button></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
+
+exports[`ExplorerQuotaManagementModal.vue Should display current quota info 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active v-dialog--persistent" style="transform-origin: center center; max-width: 1200px;">
+        <div class="v-card v-sheet v-sheet--outlined theme--light">
+          <div class="v-card__title">Transaction Quota Management <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button></div>
+          <div class="v-card__text">
+            <!---->
+            <!---->
+            <p>
+              Your plan includes 100,000 transactions per month. If you need more, you can extend your quota here.
+              If set, your quota extension will automatically be renewed every month, but you can adjust or remove it anytime.
+              Increases will be charged for right away, and decreases will result in a prorated credit applied to your future invoices.
+            </p> <b>Current Quota:</b> 100,000 base + 20,000 extra = 120,000 txs
+            <hr role="separator" aria-orientation="horizontal" class="mt-2 mb-4 v-divider theme--light">
+            <form novalidate="novalidate" class="v-form">
+              <div class="v-input v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-14" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Extra Transaction Quota</label><input id="input-14" type="number">
+                      <div class="v-text-field__suffix">extra transactions per month</div>
+                    </div>
+                  </div>
+                  <div class="v-text-field__details">
+                    <div class="v-messages theme--light">
+                      <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="v-data-table theme--light">
+                <div class="v-data-table__wrapper">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th class="text-left">Up to</th>
+                        <th class="text-left">Cost per tx</th>
+                        <th class="text-left">Number of txs</th>
+                        <th class="text-left">Total Monthly Cost</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>100,000 txs</td>
+                        <td>$0.005</td>
+                        <td>100,000</td>
+                        <td>$500</td>
+                      </tr>
+                      <tr>
+                        <td>1,000,000 txs</td>
+                        <td>$0.0007</td>
+                        <td>20,000</td>
+                        <td>$14</td>
+                      </tr>
+                      <tr>
+                        <td>10,000,000 txs</td>
+                        <td>$0.00015</td>
+                        <td>0</td>
+                        <td>$0</td>
+                      </tr>
+                      <tr>
+                        <td>∞ </td>
+                        <td>$0.000045</td>
+                        <td>0</td>
+                        <td>$0</td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td class="font-weight-bold">120,000</td>
+                        <td class="font-weight-bold">$514</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+              <div align="right"><button type="submit" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Update Quota</span></button></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;

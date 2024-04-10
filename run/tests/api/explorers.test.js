@@ -2,6 +2,7 @@ const mockCustomersRetrieve = jest.fn();
 const mockSubscriptionCreate = jest.fn();
 const mockSubscriptionRetrieve = jest.fn();
 const mockSubscriptionUpdate = jest.fn();
+const mockSubscriptionItemDelete = jest.fn();
 jest.mock('stripe', () => {
     return jest.fn().mockImplementation(() => {
         return {
@@ -12,6 +13,9 @@ jest.mock('stripe', () => {
                 create: mockSubscriptionCreate,
                 retrieve: mockSubscriptionRetrieve,
                 update: mockSubscriptionUpdate
+            },
+            subscriptionItems: {
+                del: mockSubscriptionItemDelete
             }
         }
     });
@@ -274,6 +278,121 @@ describe(`GET ${BASE_URL}/:id/syncStatus`, () => {
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual({ status: 'stopped' });
+                done();
+            });
+    });
+});
+
+describe(`DELETE ${BASE_URL}/:id/quotaExtension`, () => {
+    it('Should throw an error if no explorer', done => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce(null);
+        request.delete(`${BASE_URL}/1/quotaExtension`)
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Can't find explorer.`);
+                done();
+            });
+    });
+
+    it('Should return a 200 if no quota extension', done => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ stripeSubscription: {} });
+        request.delete(`${BASE_URL}/1/quotaExtension`)
+            .expect(200)
+            .then(() => {
+                done();
+            });
+    });
+
+    it('Should destroy quota extension on stripe & in the db', done => {
+        const reload = jest.fn();
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ stripeSubscription: { id: 1, reload, stripeQuotaExtension: { stripeId: 'id' }}});
+        request.delete(`${BASE_URL}/1/quotaExtension`)
+            .expect(200)
+            .then(() => {
+                expect(mockSubscriptionItemDelete).toHaveBeenCalledWith('id');
+                expect(db.destroyStripeQuotaExtension).toHaveBeenCalledWith(1);
+                expect(reload).toHaveBeenCalled();
+                done();
+            });
+    });
+});
+
+describe(`PUT ${BASE_URL}/:id/quotaExtension`, () => {
+    it('Should throw an error if quota < 10000', done => {
+        request.put(`${BASE_URL}/1/quotaExtension`)
+            .send({ data: { quota: 5, stripePlanSlug: 'quota-extension' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Quota extension needs to be at least 10,000.');
+                done();
+            });
+    });
+
+    it('Should throw an error if no subscription', done => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({});
+        request.put(`${BASE_URL}/1/quotaExtension`)
+            .send({ data: { quota: 20000, stripePlanSlug: 'quota-extension' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Can't find explorer.`);
+                done();
+            });
+    });
+
+    it('Should throw an error if invalid plan', done => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ stripeSubscription: {} });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ capabilities: {} });
+        request.put(`${BASE_URL}/1/quotaExtension`)
+            .send({ data: { quota: 20000, stripePlanSlug: 'quota-extension' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Can't find plan.`);
+                done();
+            });
+    });
+
+    it('Should create the subscription locally & on stripe by updating the existing invoice ', done => {
+        const reload = jest.fn();
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ stripeSubscription: { id: 1, stripeId: 'monthly', reload }});
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1, capabilities: { quotaExtension: true }, stripePriceId: 'quota-extension' });
+        mockSubscriptionUpdate.mockResolvedValueOnce({
+            items: {
+                data: [
+                    { id: 'stripe-quota-id', price: { id: 'quota-extension' }}
+                ]
+            }
+        });
+        request.put(`${BASE_URL}/1/quotaExtension`)
+            .send({ data: { quota: 20000, stripePlanSlug: 'quota-extension' }})
+            .expect(200)
+            .then(({ body }) => {
+                expect(mockSubscriptionUpdate).toHaveBeenCalledWith('monthly', { cancel_at_period_end: false, proration_behavior: 'always_invoice', items: [{ price: 'quota-extension', quantity: 20000 }]});
+                expect(db.createStripeQuotaExtension).toHaveBeenCalledWith(1, 'stripe-quota-id', 1, 20000);
+                expect(reload).toHaveBeenCalled();
+                expect(body).toEqual({ stripeSubscription: { id: 1, stripeId: 'monthly' }});
+                done();
+            });
+    });
+
+    it('Should update the subscription locally & on stripe by updating the existing invoice ', done => {
+        const reload = jest.fn();
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ stripeSubscription: { id: 1, stripeId: 'monthly', stripeQuotaExtension: { stripeId: 'stripe-quota-id' }, reload }});
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1, capabilities: { quotaExtension: true }, stripePriceId: 'quota-extension' });
+        mockSubscriptionUpdate.mockResolvedValueOnce({
+            items: {
+                data: [
+                    { price: { id: 'quota-extension' }}
+                ]
+            }
+        });
+        request.put(`${BASE_URL}/1/quotaExtension`)
+            .send({ data: { quota: 20000, stripePlanSlug: 'quota-extension' }})
+            .expect(200)
+            .then(({ body }) => {
+                expect(mockSubscriptionUpdate).toHaveBeenCalledWith('monthly', { cancel_at_period_end: false, proration_behavior: 'always_invoice', items: [{ id: 'stripe-quota-id', quantity: 20000 }]});
+                expect(db.updateStripeQuotaExtension).toHaveBeenCalledWith(1, 20000);
+                expect(reload).toHaveBeenCalled();
+                expect(body).toEqual({ stripeSubscription: { id: 1, stripeId: 'monthly', stripeQuotaExtension: { stripeId: 'stripe-quota-id' }}});
                 done();
             });
     });
