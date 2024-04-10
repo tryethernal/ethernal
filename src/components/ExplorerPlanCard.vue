@@ -22,6 +22,12 @@
                         <v-list-item-title style="font-weight: normal;">
                             <template v-if="plan.capabilities.txLimit > 0">
                                 {{ plan.capabilities.txLimit.toLocaleString() }} txs / month
+                                <v-tooltip left color="black">
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-icon v-bind="attrs" v-on="on" class="ml-1" small>mdi-help-circle</v-icon>
+                                    </template>
+                                    Extra transactions can be bought on a per-transaction pricing.
+                                </v-tooltip>
                             </template>
                             <template v-else>
                                 Unlimited transactions

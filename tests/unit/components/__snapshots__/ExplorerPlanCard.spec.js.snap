@@ -20,6 +20,7 @@ exports[`ExplorerPlanCard.vue Should display card with trial button 1`] = `
         <div class="v-list-item__content py-0">
           <div class="v-list-item__title" style="font-weight: normal;">
             1,000 txs / month
+            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
           </div>
         </div>
       </div>
@@ -111,6 +112,7 @@ exports[`ExplorerPlanCard.vue Should display current plan card 1`] = `
         <div class="v-list-item__content py-0">
           <div class="v-list-item__title" style="font-weight: normal;">
             1,000 txs / month
+            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
           </div>
         </div>
       </div>
@@ -203,6 +205,7 @@ exports[`ExplorerPlanCard.vue Should display disabled plan card 1`] = `
         <div class="v-list-item__content py-0">
           <div class="v-list-item__title" style="font-weight: normal;">
             1,000 txs / month
+            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
           </div>
         </div>
       </div>
@@ -295,6 +298,7 @@ exports[`ExplorerPlanCard.vue Should display loading plan card 1`] = `
         <div class="v-list-item__content py-0">
           <div class="v-list-item__title" style="font-weight: normal;">
             1,000 txs / month
+            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
           </div>
         </div>
       </div>
@@ -386,6 +390,7 @@ exports[`ExplorerPlanCard.vue Should display pending cancelation plan card 1`] =
         <div class="v-list-item__content py-0">
           <div class="v-list-item__title" style="font-weight: normal;">
             1,000 txs / month
+            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
           </div>
         </div>
       </div>
@@ -478,6 +483,7 @@ exports[`ExplorerPlanCard.vue Should display regular plan card 1`] = `
         <div class="v-list-item__content py-0">
           <div class="v-list-item__title" style="font-weight: normal;">
             1,000 txs / month
+            <span class="v-tooltip v-tooltip--left"><!----></span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate ml-1 mdi mdi-help-circle theme--light" style="font-size: 16px;"></i>
           </div>
         </div>
       </div>
