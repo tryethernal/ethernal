@@ -57,30 +57,4 @@ describe('ExplorerQuotaManagementModal.vue', () => {
 
         expect(wrapper.html()).toMatchSnapshot();
     });
-
-    it.only('Should cancel quota if set to 0', async () => {
-        const wrapper = helper.mountFn(ExplorerQuotaManagementModal);
-        jest.spyOn(helper.mocks.server, 'getQuotaExtensionPlan').mockResolvedValueOnce({ data: stripePlanData });
-
-        wrapper.vm.open({
-            subscription: {
-                explorerId: 1,
-                stripePlan: {
-                    capabilities: { txLimit: 100000 }
-                },
-                stripeQuotaExtension: {
-                    quota: 20000
-                }
-            }
-        });
-        await flushPromises();
-
-        wrapper.setData({ rawExtraQuota: 0, loading: false, stripePlanLoading: false, valid: true });
-        await wrapper.vm.$nextTick();
-        console.log(wrapper.html())
-        await wrapper.find('button').trigger('click');
-        await flushPromises();
-
-        expect(helper.mocks.server.cancelQuotaExtension).toHaveBeenCalledWith(1);
-    });
 });

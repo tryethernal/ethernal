@@ -13,7 +13,7 @@
             <div>
                 Monthly Transaction Quota:
                 <template v-if="explorer.stripeSubscription.cycleEndsAt">
-                    <b>{{ explorer.stripeSubscription.transactionQuota.toLocaleString() }} / {{ transactionQuota > 0 ? transactionQuota.toLocaleString() : '&#8734;' }}</b> (Resetting {{ moment(explorer.stripeSubscription.cycleEndsAt) | moment('MMM. Do') }}) | <a href="#" @click="openExplorerQuotaManagementModal()">Manage Quota</a>
+                    <b>{{ explorer.stripeSubscription.transactionQuota.toLocaleString() }} / {{ transactionQuota > 0 ? transactionQuota.toLocaleString() : '&#8734;' }}</b> (Resetting {{ moment(explorer.stripeSubscription.cycleEndsAt) | moment('MMM. Do') }})<template v-if="activeSubscription"> | <a href="#" @click="openExplorerQuotaManagementModal()">Manage Quota</a></template>
                 </template>
                 <template v-else><b>Unlimited</b></template>
             </div>

@@ -51,7 +51,8 @@ exports[`ExplorerBilling.vue Should display trial without card message 1`] = `
     </div>
     <div>
       Monthly Transaction Quota:
-      <b>10 / 20</b> (Resetting Aug. 28th) | <a href="#">Manage Quota</a>
+      <b>10 / 20</b> (Resetting Aug. 28th)
+      <!---->
     </div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Update Plan</span></button> <button type="button" class="mt-2 ml-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Add Payment Method</span></button>
   </div>
 </div>
