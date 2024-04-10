@@ -1780,7 +1780,10 @@ const getContractDeploymentTxByAddress = async (userId, workspaceId, address) =>
     const user = await User.findByPk(userId);
 
     const workspaces = await user.getWorkspaces({ where: { id: workspaceId }});
-    const transactions = await workspaces[0].getTransactions({ where: { creates: address }});
+    const transactions = await workspaces[0].getTransactions({
+        where: { '$receipt.contractAddress$': address },
+        include: 'receipt'
+    });
     return transactions && transactions.length ? transactions[0].toJSON() : null;
 };
 

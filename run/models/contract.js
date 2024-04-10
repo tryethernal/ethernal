@@ -31,9 +31,9 @@ module.exports = (sequelize, DataTypes) => {
           as: 'proxyContract'
       });
       Contract.hasMany(models.Erc721Token, { foreignKey: 'contractId', as: 'erc721Tokens' });
-      Contract.hasOne(models.Transaction, {
+      Contract.hasOne(models.TransactionReceipt, {
           sourceKey: 'address',
-          foreignKey: 'creates',
+          foreignKey: 'contractAddress',
           as: 'creationTransaction',
           scope: {
               [Op.and]: sequelize.where(sequelize.col("Contract.workspaceId"),
