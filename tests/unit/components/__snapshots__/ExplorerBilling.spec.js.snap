@@ -5,12 +5,18 @@ exports[`ExplorerBilling.vue Should display button to start subscription 1`] = `
   <div class="v-dialog__container">
     <!---->
   </div>
+  <div class="v-dialog__container">
+    <!---->
+  </div>
   <div class="v-card__text"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Start Subscription</span></button></div>
 </div>
 `;
 
 exports[`ExplorerBilling.vue Should display explorer billing status 1`] = `
 <div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-dialog__container">
+    <!---->
+  </div>
   <div class="v-dialog__container">
     <!---->
   </div>
@@ -22,7 +28,7 @@ exports[`ExplorerBilling.vue Should display explorer billing status 1`] = `
     </div>
     <div>
       Monthly Transaction Quota:
-      <b>10 / 20</b> (Resetting Aug. 28th)
+      <b>10 / 20</b> (Resetting Aug. 28th) | <a href="#">Manage Quota</a>
     </div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Update Plan</span></button>
     <!---->
   </div>
@@ -34,6 +40,9 @@ exports[`ExplorerBilling.vue Should display trial without card message 1`] = `
   <div class="v-dialog__container">
     <!---->
   </div>
+  <div class="v-dialog__container">
+    <!---->
+  </div>
   <div class="v-card__text">
     <div>Plan: <b>Explorer 500</b></div>
     <div>
@@ -42,7 +51,7 @@ exports[`ExplorerBilling.vue Should display trial without card message 1`] = `
     </div>
     <div>
       Monthly Transaction Quota:
-      <b>10 / 20</b> (Resetting Aug. 28th)
+      <b>10 / 20</b> (Resetting Aug. 28th) | <a href="#">Manage Quota</a>
     </div> <button type="button" class="mt-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Update Plan</span></button> <button type="button" class="mt-2 ml-2 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Add Payment Method</span></button>
   </div>
 </div>
@@ -50,6 +59,9 @@ exports[`ExplorerBilling.vue Should display trial without card message 1`] = `
 
 exports[`ExplorerBilling.vue Should not display update button if sso 1`] = `
 <div class="flex-grow-1 v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-dialog__container">
+    <!---->
+  </div>
   <div class="v-dialog__container">
     <!---->
   </div>
@@ -61,7 +73,7 @@ exports[`ExplorerBilling.vue Should not display update button if sso 1`] = `
     </div>
     <div>
       Monthly Transaction Quota:
-      <b>10 / 20</b> (Resetting Aug. 28th)
+      <b>10 / 20</b> (Resetting Aug. 28th) | <a href="#">Manage Quota</a>
     </div>
     <!---->
     <!---->
