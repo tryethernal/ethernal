@@ -132,7 +132,7 @@ export default {
                 page: this.currentOptions.page,
                 itemsPerPage: this.currentOptions.itemsPerPage,
                 sortBy: this.currentOptions.sortBy[0],
-                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
+                order: this.currentOptions.sortDesc[0] === false ? 'asc nulls last' : 'desc nulls last'
             };
 
             this.server.getContracts(options)
