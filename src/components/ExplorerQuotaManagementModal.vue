@@ -123,6 +123,7 @@ export default {
             this.loading = true;
             this.successMessage = null;
             this.errorMessage = null;
+
             if (parseInt(this.extraQuota) == 0)
                 this.server.cancelQuotaExtension(this.explorerId)
                     .then(({ data: { stripeSubscription }}) => {
