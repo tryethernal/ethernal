@@ -1320,8 +1320,8 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 },
                 {
-                    model: sequelize.models.Transaction,
-                    attributes: ['blockNumber', 'hash'],
+                    model: sequelize.models.TransactionReceipt,
+                    attributes: ['blockNumber', ['transactionHash', 'hash']],
                     as: 'creationTransaction',
                 },
                 {
