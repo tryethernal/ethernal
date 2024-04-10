@@ -6,11 +6,74 @@ jest.mock('sequelize', () => ({
     }
 }));
 require('../mocks/lib/env');
-const { Workspace, Block, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction } = require('../mocks/models');
+const { Workspace, Block, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction, StripeSubscription } = require('../mocks/models');
 const db = require('../../lib/firebase');
 const env = require('../../lib/env');
 
 beforeEach(() => jest.clearAllMocks());
+
+describe('destroyStripeQuotaExtension', () => {
+    it('Should throw an error if no subscription', (done) => {
+        jest.spyOn(StripeSubscription, 'findByPk').mockResolvedValueOnce(null);
+        db.destroyStripeQuotaExtension(1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find Stripe subscription'));
+                done();
+            });
+    });
+
+    it('Should destroy stripe quota extension locally', (done) => {
+        const safeDestroyStripeQuotaExtension = jest.fn();
+        jest.spyOn(StripeSubscription, 'findByPk').mockResolvedValueOnce({ id: 1, safeDestroyStripeQuotaExtension });
+        db.destroyStripeQuotaExtension(1)
+            .then(() => {
+                expect(safeDestroyStripeQuotaExtension).toHaveBeenCalledWith();
+                done();
+            });
+    });
+});
+
+describe('updateStripeQuotaExtension', () => {
+    it('Should throw an error if no subscription', (done) => {
+        jest.spyOn(StripeSubscription, 'findByPk').mockResolvedValueOnce(null);
+        db.updateStripeQuotaExtension(1, 10000)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find Stripe subscription'));
+                done();
+            });
+    });
+
+    it('Should update stripe quota extension locally', (done) => {
+        const safeUpdateStripeQuotaExtension = jest.fn();
+        jest.spyOn(StripeSubscription, 'findByPk').mockResolvedValueOnce({ id: 1, safeUpdateStripeQuotaExtension });
+        db.updateStripeQuotaExtension(1, 10000)
+            .then(() => {
+                expect(safeUpdateStripeQuotaExtension).toHaveBeenCalledWith(10000);
+                done();
+            });
+    });
+});
+
+describe('createStripeQuotaExtension', () => {
+    it('Should throw an error if no subscription', (done) => {
+        jest.spyOn(StripeSubscription, 'findByPk').mockResolvedValueOnce(null);
+        db.createStripeQuotaExtension(1, 1, 1, 10000)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find Stripe subscription'));
+                done();
+            });
+    });
+
+    it('Should create stripe quota extension locally', (done) => {
+        const safeCreateStripeQuotaExtension = jest.fn();
+        jest.spyOn(StripeSubscription, 'findByPk').mockResolvedValueOnce({ id: 1, safeCreateStripeQuotaExtension });
+        db.createStripeQuotaExtension(1, 1, 1, 10000)
+            .then(() => {
+                expect(safeCreateStripeQuotaExtension).toHaveBeenCalledWith(1, 1, 10000);
+                done();
+            });
+    });
+});
 
 describe('getTransactionLogs', () => {
     it('Should throw an error if no workspace', (done) => {

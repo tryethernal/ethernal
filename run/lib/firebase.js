@@ -16,6 +16,49 @@ const StripeSubscription = models.StripeSubscription;
 const StripePlan = models.StripePlan;
 const ExplorerDomain = models.ExplorerDomain;
 const RpcHealthCheck = models.RpcHealthCheck;
+const StripeQuotaExtension = models.StripeQuotaExtension;
+
+const getQuotaExtensionPlan = () => {
+    return StripePlan.findOne({
+        where: {
+            'capabilities.quotaExtension': true
+        },
+        attributes: ['capabilities', 'slug']
+    })
+};
+
+const destroyStripeQuotaExtension = async (stripeSubscriptionId) => {
+    if (!stripeSubscriptionId)
+        throw new Error('Missing parameter');
+
+    const stripeSubscription = await StripeSubscription.findByPk(stripeSubscriptionId);
+    if (!stripeSubscription)
+        throw new Error('Could not find Stripe subscription');
+
+    return stripeSubscription.safeDestroyStripeQuotaExtension();
+};
+
+const updateStripeQuotaExtension = async (stripeSubscriptionId, quota) => {
+    if (!stripeSubscriptionId || !quota)
+        throw new Error('Missing parameter');
+
+    const stripeSubscription = await StripeSubscription.findByPk(stripeSubscriptionId);
+    if (!stripeSubscription)
+        throw new Error('Could not find Stripe subscription');
+
+    return stripeSubscription.safeUpdateStripeQuotaExtension(quota);
+};
+
+const createStripeQuotaExtension = async (stripeSubscriptionId, stripeId, stripePlanId, quota) => {
+    if (!stripeSubscriptionId || !stripeId || !stripePlanId || !quota)
+        throw new Error('Missing parameter');
+
+    const stripeSubscription = await StripeSubscription.findByPk(stripeSubscriptionId);
+    if (!stripeSubscription)
+        throw new Error('Could not find Stripe subscription');
+
+    return stripeSubscription.safeCreateStripeQuotaExtension(stripeId, stripePlanId, quota);
+};
 
 const getTransactionLogs = async (workspaceId, hash, page, itemsPerPage) => {
     if (!workspaceId || !hash)
@@ -589,7 +632,10 @@ const getExplorerById = (userId, id, withDemo = false) => {
             {
                 model: StripeSubscription,
                 as: 'stripeSubscription',
-                include: { model: StripePlan, as: 'stripePlan' }
+                include: [
+                    { model: StripePlan, as: 'stripePlan' },
+                    { model: StripeQuotaExtension, as: 'stripeQuotaExtension', include: 'stripePlan' }
+                ]
             },
             {
                 model: User,
@@ -1959,5 +2005,9 @@ module.exports = {
     createQuicknodeWorkspace: createQuicknodeWorkspace,
     markWorkspaceForDeletion: markWorkspaceForDeletion,
     getTransactionLogs: getTransactionLogs,
+    createStripeQuotaExtension: createStripeQuotaExtension,
+    updateStripeQuotaExtension: updateStripeQuotaExtension,
+    destroyStripeQuotaExtension: destroyStripeQuotaExtension,
+    getQuotaExtensionPlan: getQuotaExtensionPlan,
     Workspace: Workspace
 };

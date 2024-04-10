@@ -76,6 +76,9 @@ jest.mock('@/plugins/server', () => ({
                 getDeployedContractCount: jest.fn(),
                 getCumulativeDeployedContractCount: jest.fn(),
                 getTransactionLogs: jest.fn(),
+                getQuotaExtensionPlan: jest.fn(),
+                cancelQuotaExtension: jest.fn(),
+                updateQuotaExtension: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))
