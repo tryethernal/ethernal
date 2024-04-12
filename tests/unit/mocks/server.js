@@ -79,6 +79,9 @@ jest.mock('@/plugins/server', () => ({
                 getQuotaExtensionPlan: jest.fn(),
                 cancelQuotaExtension: jest.fn(),
                 updateQuotaExtension: jest.fn(),
+                getErc721TotalSupply: jest.fn(),
+                getErc721TokenById: jest.fn(),
+                getErc721TokenByIndex: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))

@@ -8,8 +8,13 @@
         </router-link>
         <v-skeleton-loader v-else type="image"></v-skeleton-loader>
         <v-card-text>
-            <router-link v-if="name" :to="`/token/${contractAddress}/${tokenId}`">
-                <b>{{ name }}</b>
+            <router-link v-if="name || owner" :to="`/token/${contractAddress}/${tokenId}`">
+                <template v-if="name">
+                    <b>{{ name }}</b>
+                </template>
+                <template v-else>
+                    View
+                </template>
             </router-link>
             <v-skeleton-loader v-else type="heading"></v-skeleton-loader>
             <br/>

@@ -1,22 +1,38 @@
 <template>
     <v-container fluid>
-        <v-row>
-            <v-col cols="6" sm="4" lg="2" v-for="idx in tokens" :key="idx">
-                <ERC721-Token-Card
-                    :index="idx"
-                    :contractAddress="address"></ERC721-Token-Card>
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col>
-                <v-pagination
-                    v-model="page"
-                    :length="length"
-                    :total-visible="7"
-                    @input="pageChanged">
-                </v-pagination>
-            </v-col>
-        </v-row>
+        <template v-if="!totalSupply || totalSupply > 0">
+            <v-row>
+                <v-col v-if="loading">
+                    <v-card outlined>
+                        <v-skeleton-loader type="list-item"></v-skeleton-loader>
+                    </v-card>
+                </v-col>
+                <v-col cols="6" sm="4" lg="2" v-for="idx in tokens" :key="idx">
+                    <ERC721-Token-Card
+                        :index="idx"
+                        :contractAddress="address"></ERC721-Token-Card>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col>
+                    <v-pagination
+                        v-model="page"
+                        :length="length"
+                        :total-visible="7"
+                        @input="pageChanged">
+                    </v-pagination>
+                </v-col>
+            </v-row>
+        </template>
+        <template v-if="totalSupply === '0'">
+            <v-row>
+                <v-col>
+                    <v-card outlined>
+                        <v-card-text>There are no tokens in this collection, or the contract is missing the totalSupply() method.</v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </template>
     </v-container>
 </template>
 
@@ -31,19 +47,23 @@ export default {
         ERC721TokenCard
     },
     data: () => ({
+        loading: false,
         page: 1,
         tokens: [],
         currentOptions: { page: 1, itemsPerPage: 12, sortBy: ['index'], order: 'asc' },
         erc721Connector: null,
-        totalSupply: 0
+        totalSupply: null
     }),
     mounted() {
-        this.server.getErc721TotalSupply(this.address).then(({ data: { totalSupply }}) => {
-            this.totalSupply = totalSupply;
-            if (this.totalSupply)
-                this.getTokens();
-        })
-        .catch(console.log)
+        this.loading = true;
+        this.server.getErc721TotalSupply(this.address)
+            .then(({ data: { totalSupply }}) => {
+                this.totalSupply = totalSupply;
+                if (this.totalSupply)
+                    this.getTokens();
+            })
+            .catch(console.log)
+            .finally(() => this.loading = false);
     },
     methods: {
         pageChanged(newPage) {
@@ -51,19 +71,13 @@ export default {
             this.getTokens();
         },
         getTokens() {
-            this.tokens = Array.from({ length: this.currentOptions.itemsPerPage }, (_, i) => this.currentOptions.itemsPerPage * (this.currentOptions.page - 1) + i);
+            this.tokens = Array.from({ length: Math.min(this.currentOptions.itemsPerPage, this.totalSupply) }, (_, i) => this.currentOptions.itemsPerPage * (this.currentOptions.page - 1) + i);
         }
     },
     computed: {
         ...mapGetters([
             'currentWorkspace'
         ]),
-        maxTokenLength() {
-            if (this.currentOptions.page == this.length)
-                return this.currentOptions.itemsPerPage - (this.length * this.currentOptions.itemsPerPage - this.totalSupply);
-            else
-                return this.currentOptions.itemsPerPage
-        },
         length() {
             return this.totalSupply ? Math.ceil(this.totalSupply / this.currentOptions.itemsPerPage) : 0;
         }

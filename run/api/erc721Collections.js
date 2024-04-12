@@ -10,7 +10,12 @@ router.get('/:address/totalSupply', workspaceAuthMiddleware, async (req, res) =>
 
     try {
         const erc721Connector = new ERC721Connector(data.workspace.rpcServer, req.params.address);
-        const totalSupply = await erc721Connector.totalSupply();
+        let totalSupply;
+        try {
+            totalSupply = await erc721Connector.totalSupply();
+        } catch(error) {
+            totalSupply = '0';
+        }
 
         res.status(200).json({ totalSupply });
     } catch(error) {

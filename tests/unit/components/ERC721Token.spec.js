@@ -9,7 +9,7 @@ describe('ERC721Token.vue', () => {
     beforeEach(() => jest.clearAllMocks());
 
     it('Should load & display an erc721 token', async () => {
-        jest.spyOn(helper.mocks.server, 'getErc721Token')
+        jest.spyOn(helper.mocks.server, 'getErc721TokenById')
             .mockResolvedValue({ data: {
                 metadata: {},
                 attributes: {
