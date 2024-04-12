@@ -1,50 +1,22 @@
 <template>
     <v-container fluid>
-        <template v-if="has721Enumerable && parseInt(totalSupply) > 0">
-            <v-row>
-                <v-col cols="6" sm="4" lg="2" v-for="(token, idx) in tokens" :key="idx">
-                    <ERC721-Token-Card
-                        :owner="token.owner"
-                        :name="token.attributes.name"
-                        :imageData="token.attributes.image_data"
-                        :index="token.index"
-                        :tokenId="token.tokenId"
-                        :contractAddress="address"
-                        :backgroundColor="token.attributes.background_color" />
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col>
-                    <v-pagination
-                        v-model="page"
-                        :length="length"
-                        :total-visible="7"
-                        @input="pageChanged">
-                    </v-pagination>
-                </v-col>
-            </v-row>
-        </template>
-        <template v-else-if="!has721Enumerable">
-            <v-card outlined>
-                <v-card-text>
-                    Collection view is only available for ERC721 contracts that implement the Enumerable extension.
-                </v-card-text>
-            </v-card>
-        </template>
-        <template v-else-if="has721Enumerable && parseInt(totalSupply) == 0">
-            <v-card outlined>
-                <v-card-text>
-                    It looks like this collection is empty. Mint some tokens to see them (if you just minted some, wait a few more seconds for them to be processed).
-                </v-card-text>
-            </v-card>
-        </template>
-        <template v-else>
-            <v-card outlined>
-                <v-card-text>
-                    Error while displaying NFT collection.
-                </v-card-text>
-            </v-card>
-        </template>
+        <v-row>
+            <v-col cols="6" sm="4" lg="2" v-for="idx in tokens" :key="idx">
+                <ERC721-Token-Card
+                    :index="idx"
+                    :contractAddress="address"></ERC721-Token-Card>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-pagination
+                    v-model="page"
+                    :length="length"
+                    :total-visible="7"
+                    @input="pageChanged">
+                </v-pagination>
+            </v-col>
+        </v-row>
     </v-container>
 </template>
 
@@ -54,17 +26,24 @@ import ERC721TokenCard from './ERC721TokenCard';
 
 export default {
     name: 'ERC721Gallery',
-    props: ['address', 'totalSupply', 'has721Enumerable'],
+    props: ['address'],
     components: {
         ERC721TokenCard
     },
     data: () => ({
         page: 1,
         tokens: [],
-        currentOptions: { page: 1, itemsPerPage: 12, sortBy: ['index'], order: 'asc' }
+        currentOptions: { page: 1, itemsPerPage: 12, sortBy: ['index'], order: 'asc' },
+        erc721Connector: null,
+        totalSupply: 0
     }),
     mounted() {
-        this.getTokens();
+        this.server.getErc721TotalSupply(this.address).then(({ data: { totalSupply }}) => {
+            this.totalSupply = totalSupply;
+            if (this.totalSupply)
+                this.getTokens();
+        })
+        .catch(console.log)
     },
     methods: {
         pageChanged(newPage) {
@@ -72,15 +51,7 @@ export default {
             this.getTokens();
         },
         getTokens() {
-            this.tokens = Array(this.maxTokenLength).fill({ attributes: {}});
-            this.server.getErc721Tokens(this.address, this.currentOptions, this.currentWorkspace.erc721LoadingEnabled)
-                .then(({ data: { items } }) => {
-                    const tokens = [];
-                    for (let i = 0; i < this.maxTokenLength; i++)
-                        tokens.push(items[i] ? items[i] : { attributes: {}});
-                    this.tokens = tokens;
-                })
-                .catch(console.log)
+            this.tokens = Array.from({ length: this.currentOptions.itemsPerPage }, (_, i) => this.currentOptions.itemsPerPage * (this.currentOptions.page - 1) + i);
         }
     },
     computed: {
@@ -94,7 +65,7 @@ export default {
                 return this.currentOptions.itemsPerPage
         },
         length() {
-            return Math.ceil(this.totalSupply / this.currentOptions.itemsPerPage);
+            return this.totalSupply ? Math.ceil(this.totalSupply / this.currentOptions.itemsPerPage) : 0;
         }
     }
 }
