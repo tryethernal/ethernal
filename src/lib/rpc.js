@@ -156,7 +156,8 @@ class ERC721Connector {
             const res = await this.contract.tokenByIndex(index);
             return res.toString();
         } catch(_error) {
-            return new Promise(resolve => resolve(null));
+            console.log(_error)
+            return null;
         }
     }
 

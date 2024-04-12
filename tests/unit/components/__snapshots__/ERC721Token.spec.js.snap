@@ -5,7 +5,7 @@ exports[`ERC721Token.vue Should load & display an erc721 token 1`] = `
   <erc721-token-transfer-modal-stub token="[object Object]" address="0x123"></erc721-token-transfer-modal-stub>
   <!---->
   <div class="row mb-3">
-    <div class="col">
+    <div class="col-sm-6 col-lg-4 col-12">
       <div class="mb-1 v-card v-sheet v-sheet--outlined theme--light rounded-xl">
         <div class="fill"><svg id="luchador1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <style>
@@ -65,7 +65,7 @@ exports[`ERC721Token.vue Should load & display an erc721 token 1`] = `
     </div>
     <div class="col-sm-6 col-12">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__subtitle pb-0"><a href="/address/0x123" class="text-h6 text-decoration-none"></a>
+        <div class="v-card__subtitle pb-0"><a href="/nft/0x123" class="text-h6 text-decoration-none"></a>
           <div style="position: relative; float: right;"><a href="http://myimage" aria-haspopup="true" aria-expanded="false" class="text-decoration-none"><i aria-hidden="true" class="v-icon notranslate mr-2 mdi mdi-open-in-new theme--light primary--text"></i></a><span class="v-tooltip v-tooltip--top"><!----></span>
             <!----> <span class="v-tooltip v-tooltip--top"><!----></span><a aria-haspopup="true" aria-expanded="false" class="text-decoration-none"><i aria-hidden="true" class="v-icon notranslate mdi mdi-send theme--light primary--text"></i></a>
           </div>

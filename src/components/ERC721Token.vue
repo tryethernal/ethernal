@@ -4,7 +4,7 @@
 
         <v-alert text v-if="metadataReloaded" type="success">A metadata reload for this token has been queued for processing. It will be updated soon.</v-alert>
         <v-row class="mb-3">
-            <v-col v-if="token.attributes.image_data && !loading">
+            <v-col v-if="token.attributes.image_data && !loading" cols="12" sm="6" lg="4">
                 <v-card :color="token.attributes.background_color ? `#${token.attributes.background_color}` : ''" rounded="xl" outlined class="mb-1">
                     <div class="fill" v-html="token.attributes.image_data"></div>
                 </v-card>
@@ -17,7 +17,7 @@
                 <v-card outlined>
                     <template v-if="!loading">
                         <v-card-subtitle class="pb-0">
-                            <Router-Link :to="`/address/${hash}`" class="text-h6 text-decoration-none">{{ contract.tokenName }}</Router-Link>
+                            <Router-Link :to="`/nft/${hash}`" class="text-h6 text-decoration-none">{{ contract.tokenName }}</Router-Link>
                             <div style="position: relative; float: right">
                                 <v-tooltip v-if="token.attributes.external_url" top>
                                     <template v-slot:activator="{ on, attrs }">
@@ -199,7 +199,7 @@ export default {
         },
         getErc721Token() {
             this.loading = true;
-            this.server.getErc721Token(this.hash, this.tokenId, this.currentWorkspace.erc721LoadingEnabled)
+            this.server.getErc721TokenById(this.hash, this.tokenId)
                 .then(({ data }) => {
                     if (!data) return;
 

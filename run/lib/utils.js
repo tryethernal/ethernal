@@ -4,6 +4,59 @@ const DEFAULT_PROMISE_TIMEOUT = 10 * 1000;
 
 const getEnv = () => process.env.NODE_ENV;
 
+const formatErc721Metadata = (metadata) => {
+    if (!metadata)
+        return {};
+
+    const name = metadata.name || `#${metadata.tokenId}`;
+
+    let image_data;
+    if (metadata.image_data)
+        image_data = metadata.image_data;
+    else if (metadata.image) {
+        const insertableImage = metadata.image.startsWith('ipfs://') ?
+            `https://ipfs.io/ipfs/${metadata.image.slice(7, metadata.image.length)}` :
+            metadata.image;
+
+        image_data = `<img style="height: 100%; width: 100%; object-fit: cover" src="${insertableImage}" />`;
+    }
+
+    const attributes = metadata.attributes && typeof metadata.attributes.filter == 'function' ? metadata.attributes : [];
+
+    const properties = attributes.filter(metadata => {
+        return metadata.value &&
+            !metadata.display_type &&
+            typeof metadata.value == 'string';
+    });
+
+    const levels = attributes.filter(metadata => {
+        return metadata.value &&
+            !metadata.display_type &&
+            typeof metadata.value == 'number';
+    });
+
+    const boosts = attributes.filter(metadata => {
+        return metadata.display_type &&
+            metadata.value &&
+            typeof metadata.value == 'number' &&
+            ['boost_number', 'boost_percentage'].indexOf(metadata.display_type) > -1;
+    });
+
+    const stats = attributes.filter(metadata => {
+        return metadata.display_type &&
+            metadata.value &&
+            typeof metadata.value == 'number' &&
+            metadata.display_type == 'number';
+    });
+
+    const dates = attributes.filter(metadata => {
+        return metadata.display_type &&
+            metadata.display_type == 'date';
+    });
+
+    return { background_color: metadata.background_color, name, image_data, external_url: metadata.external_url, description: metadata.description, properties, levels, boosts, stats, dates };
+};
+
 const processRawRpcObject = (obj, storedKeys) => {
     const rawKeys = Object.keys(obj).filter(k => storedKeys.indexOf(k) == -1);
     const processedObj = {};
@@ -112,5 +165,6 @@ module.exports = {
     withTimeout: withTimeout,
     slugify,
     stringify,
-    processRawRpcObject
+    processRawRpcObject,
+    formatErc721Metadata
 };
