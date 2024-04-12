@@ -54,7 +54,7 @@ router.get('/:address/tokenIndex/:tokenIndex', workspaceAuthMiddleware, async (r
         const tokenId = await erc721Connector.tokenByIndex(req.params.tokenIndex);
 
         if (!tokenId)
-            return res.sendStatus(200);
+            return res.status(200).send(null);
 
         const owner = await erc721Connector.ownerOf(tokenId);
 
