@@ -9,3 +9,9 @@ exports[`ERC721TokenCard.vue Should display an erc721 token card 1`] = `
   </div>
 </div>
 `;
+
+exports[`ERC721TokenCard.vue Should display message if cannot fetch 1`] = `
+<div class="v-card v-sheet theme--light">
+  <div class="v-card__text">Couldn't fetch token information.</div>
+</div>
+`;

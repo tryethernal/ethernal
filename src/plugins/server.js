@@ -690,8 +690,50 @@ export const serverPlugin = {
                 return axios.post(resource, { data });
             },
 
-            getErc721Token(contractAddress, tokenId, loadingEnabled) {
-                if (!store.getters.isPublicExplorer || !loadingEnabled) {
+            getErc721TotalSupply(contractAddress) {
+                if (!store.getters.isPublicExplorer) {
+                    const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
+                    return new Promise((resolve, reject) => {
+                        erc721Connector.totalSupply()
+                            .then(res => resolve({ data: { totalSupply: res }}))
+                            .catch(reject);
+                    });
+                }
+                else {
+                    const params = {
+                        firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                        workspace: store.getters.currentWorkspace.name,
+                    };
+                    const resource = `${store.getters.apiRoot}/api/erc721Collections/${contractAddress}/totalSupply`;
+                    return axios.get(resource, { params });
+                }
+            },
+
+            getErc721TokenByIndex(contractAddress, tokenIndex) {
+                if (!store.getters.isPublicExplorer) {
+                    const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
+                    return erc721Connector.tokenByIndex(tokenIndex)
+                        .then(tokenId => {
+                            if (!tokenId) return null;
+                            return new Promise((resolve, reject) => {
+                                erc721Connector.fetchTokenById(tokenId)
+                                    .then(res => resolve({ data: formatErc721Metadata(res) }))
+                                    .catch(reject);
+                            });
+                        });
+                }
+                else {
+                    const params = {
+                        firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                        workspace: store.getters.currentWorkspace.name,
+                    };
+                    const resource = `${store.getters.apiRoot}/api/erc721Tokens/${contractAddress}/tokenIndex/${tokenIndex}`;
+                    return axios.get(resource, { params });
+                }
+            },
+
+            getErc721TokenById(contractAddress, tokenId) {
+                if (!store.getters.isPublicExplorer) {
                     const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
                     return new Promise((resolve, reject) => {
                         erc721Connector.fetchTokenById(tokenId)
