@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.33.0] - 2024-04-12
+### Changed
+- Better NFT gallery. Proxied via server when possible to avoid cors issues
+
 ## [3.32.0] - 2024-04-11
 ### Added
 - Transaction quota management system: it is now possible to buy transactions if you need to go over the plan transaction limit
