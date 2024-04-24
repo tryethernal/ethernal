@@ -100,7 +100,7 @@ module.exports = (sequelize, DataTypes) => {
                 }
                 await bulkEnqueue('processTransactionTrace', jobs);
               }
-              if (!workspace.integrityCheckStartBlockNumber && workspace.explorer)
+              if (workspace.integrityCheckStartBlockNumber === null && workspace.explorer)
                 await workspace.update({ integrityCheckStartBlockNumber: block.number });
             }
             if (options.transaction)
