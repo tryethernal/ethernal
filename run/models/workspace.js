@@ -1595,7 +1595,10 @@ module.exports = (sequelize, DataTypes) => {
     integrityCheckStartBlockNumber: {
         type: DataTypes.INTEGER,
         get() {
-            return Math.max(this.getDataValue('integrityCheckStartBlockNumber'), 0);
+            const blockNumber = this.getDataValue('integrityCheckStartBlockNumber');
+            return blockNumber !== null && blockNumber !== undefined ?
+                Math.max(this.getDataValue('integrityCheckStartBlockNumber'), 0) :
+                null;
         }
     }
   }, {
