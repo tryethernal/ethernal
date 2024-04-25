@@ -161,6 +161,9 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async hasReachedTransactionQuota() {
+        if (!this.shouldEnforceQuota)
+            return false;
+
         const stripeSubscription = await this.getStripeSubscription({ include: ['stripePlan', 'stripeQuotaExtension']});
         if (!stripeSubscription)
             return false;
