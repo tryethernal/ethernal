@@ -219,9 +219,10 @@ module.exports = (sequelize, DataTypes) => {
 
         return sequelize.transaction(async transaction => {
             const newUser = await sequelize.models.User.findByPk(userId);
+            const dataRetentionLimit = stripePlan.capabilities.txLimit || 0;
 
             await newUser.update({ currentWorkspaceId: workspace.id }, { transaction });
-            await workspace.update({ userId }, { transaction });
+            await workspace.update({ userId, dataRetentionLimit }, { transaction });
             await this.update({ userId, themes: { light: {} }, isDemo: false }, { transaction });
 
             return this;

@@ -1,6 +1,6 @@
 require('../mocks/lib/queue');
 
-const { Workspace } = require('../mocks/models');
+const { Workspace, StripeSubscription } = require('../mocks/models');
 const { enqueue } = require('../../lib/queue');
 
 const enforceDataRetentionForWorkspace = require('../../jobs/enforceDataRetentionForWorkspace');
@@ -10,6 +10,9 @@ beforeEach(() => jest.clearAllMocks());
 describe('enforceDataRetentionForWorkspace', () => {
     it('Should enqueue resetWorkspace tasks with the data retention limit', (done) => {
         jest.spyOn(Workspace, 'findAll').mockResolvedValueOnce([{ dataRetentionLimit: 7, id: 1 }]);
+        jest.spyOn(StripeSubscription, 'findAll').mockResolvedValueOnce([
+            { dataRetentionLimit: 7, id: 1 }
+        ]);
         jest.useFakeTimers()
             .setSystemTime(new Date('2023-12-15'));
 
