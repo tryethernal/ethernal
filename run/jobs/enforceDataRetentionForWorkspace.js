@@ -10,7 +10,8 @@ module.exports = async () => {
             },
             '$explorer$': null
         },
-        include: 'explorer'
+        include: 'explorer',
+        attributes: ['id', 'dataRetentionLimit']
     });
 
     const stripeSubscriptions = await StripeSubscription.findAll({
@@ -29,14 +30,14 @@ module.exports = async () => {
 
     const allWorkspaces = stripeSubscriptions
         .filter(ss => ss.stripePlan.capabilities.dataRetention > 0)
-        .map(ss => ss.explorer.workspace)
+        .map(ss => ({ id: ss.explorer.workspace.id, dataRetentionLimit: ss.stripePlan.capabilities.dataRetention }))
         .concat(workspaces)
         .filter(w => !!w);
 
     for (let i = 0; i < allWorkspaces.length; i++) {
         const workspace = allWorkspaces[i];
-        await enqueue('workspaceReset', `workspaceReset-${workspaces[i].id}`, {
-            workspaceId: workspaces[i].id,
+        await enqueue('workspaceReset', `workspaceReset-${workspace.id}`, {
+            workspaceId: workspace.id,
             from: new Date(0),
             to: new Date(new Date() - 60 * 60 * 24 * workspace.dataRetentionLimit * 1000)
         });
