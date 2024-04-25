@@ -178,6 +178,7 @@ module.exports = (sequelize, DataTypes) => {
                 tracing: data.tracing,
                 dataRetentionLimit: data.dataRetentionLimit || this.defaultDataRetentionLimit,
                 browserSyncEnabled: false,
+                storageEnabled: false,
                 erc721LoadingEnabled: false,
                 qnEndpointId: data.qnEndpointId
             }), { transaction });
