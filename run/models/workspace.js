@@ -1547,7 +1547,7 @@ module.exports = (sequelize, DataTypes) => {
 
     async safeCreateExplorer(transaction) {
         const creationFn = async transaction => {
-            await this.update({ public: true, browserSyncEnabled: false, rpcHealthCheckEnabled: true }, { transaction });
+            await this.update({ storageEnabled: false, public: true, browserSyncEnabled: false, rpcHealthCheckEnabled: true }, { transaction });
 
             const existingExplorer = await sequelize.models.Explorer.findOne({ where: { slug: slugify(this.name) }});
             const slug = existingExplorer ?
@@ -1595,7 +1595,10 @@ module.exports = (sequelize, DataTypes) => {
     integrityCheckStartBlockNumber: {
         type: DataTypes.INTEGER,
         get() {
-            return Math.max(this.getDataValue('integrityCheckStartBlockNumber'), 0);
+            const blockNumber = this.getDataValue('integrityCheckStartBlockNumber');
+            return blockNumber !== null && blockNumber !== undefined ?
+                Math.max(this.getDataValue('integrityCheckStartBlockNumber'), 0) :
+                null;
         }
     }
   }, {
