@@ -14,6 +14,50 @@ const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const secretMiddleware = require('../middlewares/secret');
 
+router.get('/billing', [authMiddleware, stripeMiddleware], async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        const user = await db.getUser(data.uid);
+
+        const result = await db.getUserExplorers(user.id, 1, 100);
+
+        const activeExplorers = [];
+
+        for (let i = 0; i < result.items.length; i++) {
+            const explorer = result.items[i];
+
+            const stripeSubscription = await db.getStripeSubscription(explorer.id);
+            if (!stripeSubscription)
+                continue;
+
+            const planName = stripeSubscription.stripePlan.name;;
+            let planCost = 0;
+
+            if (stripeSubscription.stripeId) {
+                try {
+                    const upcomingLines = await stripe.invoices.listUpcomingLines({ subscription: stripeSubscription.stripeId });
+                    const amounts = upcomingLines.data.map(line => line.amount && line.amount > 0 ? line.amount : 0);
+                    planCost = parseFloat(amounts.reduce((acc, curr) => acc + curr, 0)) / 100;
+                } catch(error) {
+                    if (error.code == 'invoice_upcoming_none')
+                        planCost = 0;
+                    else
+                        throw error;
+                }
+            }
+
+            activeExplorers.push({ id: explorer.id, name: explorer.name, planName, planCost, subscriptionStatus: stripeSubscription.formattedStatus });
+        };
+
+        const totalCost = activeExplorers.reduce((acc, curr) => acc + curr.planCost, 0);
+        res.status(200).json({ activeExplorers, totalCost });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.explorers.billing', error });
+        res.status(400).send(error.message);
+    }
+});
+
 router.post('/:id/startTrial', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
