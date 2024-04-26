@@ -51,6 +51,22 @@ module.exports = (sequelize, DataTypes) => {
     stripeId: DataTypes.STRING,
     status: DataTypes.ENUM('active', 'pending_cancelation', 'trial', 'trial_with_card'),
     transactionQuota: DataTypes.INTEGER,
+    formattedStatus: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        switch(this.getDataValue('status')) {
+          case 'active':
+            return 'Active';
+          case 'trial':
+          case 'trial_with_card':
+            return 'Trial';
+          case 'pending_cancelation':
+            return 'Pending Cancelation';
+          default:
+            return '/';
+        };
+      }
+    },
     isActive: {
         type: DataTypes.VIRTUAL,
         get() {

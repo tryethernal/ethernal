@@ -1,100 +1,131 @@
 <template>
-    <div>
+    <v-container fluid>
+        <Create-Explorer-Modal ref="createExplorerModalRef" />
         <v-alert v-if="!isPremium && justUpgraded" dense text type="success">You've been successfully upgraded to the Premium plan. It is currently being activated, and should be ready in about a minute. Thank you!</v-alert>
         <v-alert v-if="isPremium && justUpgraded" dense text type="success">Your Premium plan is now ready!</v-alert>
         <v-alert v-show="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
-        <v-row>
-            <v-col cols="4">
-                <v-card style="height: 100%" outlined class="mb-4">
-                    <v-card-title>
-                        Free Plan
-                        <v-spacer></v-spacer>
-                        <v-chip class="ml-2" color="primary" small v-if="!isPremium">Current Plan</v-chip>
-                    </v-card-title>
-                    <v-divider></v-divider>
-                    <v-list dense>
-                        <v-list-item v-for="(feature, idx) in plans.free" :key="`free-${idx}`">
-                            <v-list-item-icon v-if="feature" class="mx-0 mr-1"><v-icon color="success">mdi-check</v-icon></v-list-item-icon>
-                            {{ feature }}
-                            <v-tooltip top>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-icon v-bind="attrs" v-on="on" class="ml-1" small v-if="feature.help">mdi-help-circle-outline</v-icon>
-                                </template>
-                                {{ feature.help }}
-                            </v-tooltip>
-                        </v-list-item>
-                    </v-list>
-                </v-card>
-            </v-col>
-            <v-col cols="4">
-                <v-card style="height: 100%" outlined class="mb-4">
-                    <v-card-title>
-                        Premium Plan - $20/month
-                        <v-spacer></v-spacer>
-                        <v-chip class="ml-2" color="primary" small v-if="isPremium">Current Plan</v-chip>
-                    </v-card-title>
-                    <v-divider></v-divider>
-                    <v-list dense>
-                        <v-list-item v-for="(feature, idx) in plans.premium" :key="idx">
-                            <v-list-item-icon v-if="feature" class="mx-0 mr-1"><v-icon color="success">mdi-check</v-icon></v-list-item-icon>
-                            {{ feature }}
-                            <v-tooltip top>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-icon v-bind="attrs" v-on="on" class="ml-1" small v-if="feature.help">mdi-help-circle-outline</v-icon>
-                                </template>
-                                {{ feature.help }}
-                            </v-tooltip>
-                        </v-list-item>
-                    </v-list>
-                    <v-card-actions class="justify-center d-flex flex-column">
-                        <v-btn :loading="subscriptionButtonLoading" color="primary" v-if="isPremium" @click="openStripePortal()">Manage Subscription</v-btn>
-                        <v-btn :loading="subscriptionButtonLoading" color="primary" v-else @click="subscribeToPlan()">Subscribe</v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-col>
-            <v-col cols="4">
-                <v-card style="height: 100%" outlined class="mb-4">
-                    <v-card-title>
-                        Custom Plan
-                        <v-spacer></v-spacer>
-                    </v-card-title>
-                    <v-divider></v-divider>
-                    <v-list dense>
-                        <v-list-item v-for="(feature, idx) in plans.custom" :key="`free-${idx}`">
-                            <v-list-item-icon class="mx-0 mr-1"><v-icon color="success">mdi-check</v-icon></v-list-item-icon>
-                            <a v-if="feature.href" :href="feature.href" target="_blank">{{ feature.message || feature }}</a>
-                            <span v-else>{{ feature.message || feature }}</span>
-                            <v-tooltip top>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-icon v-bind="attrs" v-on="on" class="ml-1" small v-if="feature.help">mdi-help-circle-outline</v-icon>
-                                </template>
-                                {{ feature.help }}
-                            </v-tooltip>
-                        </v-list-item>
-                    </v-list>
-                    <v-card-actions class="justify-center d-flex flex-column">
-                        <v-btn color="primary" :href="'mailto:contact@tryethernal.com?subject=Custom+Ethernal+Subscription'" :target="'blank'">Contact Us</v-btn>
-                        <small>Or ping @antoinedc on <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a></small>
-                    </v-card-actions>
-                </v-card>
-            </v-col>
-        </v-row>
+        <v-card outlined class="mb-4">
+            <v-card-title>Public Explorer Plans</v-card-title>
+            <v-card-text v-if="loading">
+                <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
+            </v-card-text>
+            <v-card-text v-else>
+                You have <strong>{{ activeExplorers.length }}</strong> active public explorer{{ activeExplorers.length != 1 ? `s` : `` }}.
+                <v-row>
+                    <v-col cols="6">
+                        <v-simple-table v-if="activeExplorers.length > 0">
+                            <template v-slot:default>
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th class="text-left">Plan</th>
+                                        <th class="text-left">Cost</th>
+                                        <th class="text-left">Status</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(explorer, idx) in activeExplorers" :key="idx">
+                                        <td>{{ explorer.name }}</td>
+                                        <td>{{ explorer.planName }}</td>
+                                        <td v-if="explorer.planCost > 0">${{ explorer.planCost.toLocaleString() }}/mo</td>
+                                        <td v-else>/</td>
+                                        <td>{{ explorer.subscriptionStatus }}</td>
+                                        <td><router-link :to="`/explorers/${explorer.id}`">Manage</router-link></td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                            Total: <span class="font-weight-bold">${{ activeExplorerCost.toLocaleString() }}/mo</span>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </template>
+                        </v-simple-table>
+                        <v-btn v-else depressed color="primary" class="mt-4" @click="openCreateExplorerModal()">
+                            <v-icon small class="mr-1">mdi-plus</v-icon>Create Explorer
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+        </v-card>
+        <v-card outlined class="mb-4">
+            <v-card-title>Private Explorer Plan</v-card-title>
+            <v-row class="ml-1 mb-1">
+                <v-col cols="4">
+                    <v-card style="height: 100%" outlined>
+                        <v-card-title>
+                            Free
+                            <v-spacer></v-spacer>
+                            <v-chip class="ml-2" color="primary" small v-if="!isPremium">Current</v-chip>
+                        </v-card-title>
+                        <v-divider></v-divider>
+                        <v-list dense>
+                            <v-list-item v-for="(feature, idx) in plans.free" :key="`free-${idx}`">
+                                <v-list-item-icon v-if="feature" class="mx-0 mr-1"><v-icon color="success">mdi-check</v-icon></v-list-item-icon>
+                                {{ feature }}
+                            </v-list-item>
+                        </v-list>
+                    </v-card>
+                </v-col>
+                <v-col cols="4">
+                    <v-card style="height: 100%" outlined>
+                        <v-card-title>
+                            Premium - $20/month
+                            <v-spacer></v-spacer>
+                            <v-chip class="ml-2" color="primary" small v-if="isPremium">Current Plan</v-chip>
+                        </v-card-title>
+                        <v-divider></v-divider>
+                        <v-list dense>
+                            <v-list-item v-for="(feature, idx) in plans.premium" :key="idx">
+                                <v-list-item-icon v-if="feature" class="mx-0 mr-1"><v-icon color="success">mdi-check</v-icon></v-list-item-icon>
+                                {{ feature }}
+                            </v-list-item>
+                        </v-list>
+                        <v-card-actions class="justify-center d-flex flex-column">
+                            <v-btn :loading="subscriptionButtonLoading" color="primary" v-if="isPremium" @click="openStripePortal()">Manage Subscription</v-btn>
+                            <v-btn :loading="subscriptionButtonLoading" color="primary" v-else @click="subscribeToPlan()">Subscribe</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-card>
         <v-row>
             <v-col>
                 <v-card outlined>
                     <v-card-text>
-                        All plans include unlimited blocks/transactions/accounts synchronization, Ganache/Hardhat/Brownie integration, and all Ethernal features.
+                        <strong>What's the difference between "Public Explorer" & "Private Explorer"?</strong>
+                        <p>
+                            Private explorers are only accessible after logging in.
+                            You can't share a transaction page, for example.<br>
+                            You'll also need to either use the CLI or the Hardhat plugin to synchronize blocks.<br>
+                            Recommended if you are a solo developer, working on a local chain.
+                        </p>
+                        <p>
+                            Public explorers are more flexible: you get a public URL for your explorer, blocks are synced automatically,
+                            and you have more customization options (native token name, custom domains, branding, etc..).<br>
+                            Recommended if you have your own app chain, or hosted chain that you are sharing with others.
+                        </p>
                     </v-card-text>
                 </v-card>
             </v-col>
         </v-row>
-    </div>
+    </v-container>
 </template>
 <script>
 import { mapGetters } from 'vuex';
+import CreateExplorerModal from './CreateExplorerModal.vue';
 
 export default {
     name: 'Billing',
+    components: {
+        CreateExplorerModal
+    },
     data: () => ({
         errorMessage: null,
         subscriptionButtonLoading: false,
@@ -109,14 +140,13 @@ export default {
                 'Unlimited contracts',
                 'Unlimited workspaces',
                 'Unlimited data retention'
-            ],
-            custom: [
-                'Custom team pricing (starting at 5 seats)',
-                'Custom on-premise deployment',
-                'Payment in crypto'
             ]
         },
-        pusherUnsubscribe: null
+        pusherUnsubscribe: null,
+        activeExplorers: [],
+        inactiveExplorerCount: 0,
+        activeExplorerCost: 0,
+        loading: false
     }),
     mounted() {
         if (this.justUpgraded && this.user.plan != 'premium') {
@@ -128,12 +158,25 @@ export default {
                 }
             }, this);
         }
+
+        this.loading = true;
+        this.server.getExplorerBilling()
+            .then(({ data: { activeExplorers, inactiveExplorerCount, totalCost }}) => {
+                this.activeExplorers = activeExplorers;
+                this.inactiveExplorerCount = inactiveExplorerCount;
+                this.activeExplorerCost = totalCost;
+            })
+            .catch(console.log)
+            .finally(() => this.loading = false);
     },
     destroyed() {
         if (this.pusherUnsubscribe)
             this.pusherUnsubscribe();
     },
     methods: {
+        openCreateExplorerModal() {
+            this.$refs.createExplorerModalRef.open();
+        },
         openStripePortal() {
             this.subscriptionButtonLoading = true;
             this.server.createStripePortalSession(`http://app.${this.mainDomain}/settings?tab=billing`)

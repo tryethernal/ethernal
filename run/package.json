@@ -44,7 +44,7 @@
     "random-word-slugs": "^0.1.7",
     "sequelize": "^6.19.0",
     "solc": "^0.8.13",
-    "stripe": "^9.8.0",
+    "stripe": "^15.4.0",
     "uuid-apikey": "^1.5.3",
     "vm2": "^3.9.14",
     "web3": "^1.8.2",

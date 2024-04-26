@@ -358,6 +358,11 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            getExplorerBilling() {
+                const resource = `${store.getters.apiRoot}/api/explorers/billing`;
+                return axios.get(resource);
+            },
+
             getQuotaExtensionPlan() {
                 const resource = `${store.getters.apiRoot}/api/explorers/quotaExtensionPlan`;
                 return axios.get(resource);

@@ -18,6 +18,16 @@ const ExplorerDomain = models.ExplorerDomain;
 const RpcHealthCheck = models.RpcHealthCheck;
 const StripeQuotaExtension = models.StripeQuotaExtension;
 
+const getStripeSubscription = async (explorerId) => {
+    if (!explorerId)
+        throw new Error('Missing parameter');
+
+    return StripeSubscription.findOne({
+        where: { explorerId },
+        include: 'stripePlan'
+    });
+};
+
 const getQuotaExtensionPlan = () => {
     return StripePlan.findOne({
         where: {
@@ -2009,5 +2019,6 @@ module.exports = {
     updateStripeQuotaExtension: updateStripeQuotaExtension,
     destroyStripeQuotaExtension: destroyStripeQuotaExtension,
     getQuotaExtensionPlan: getQuotaExtensionPlan,
+    getStripeSubscription: getStripeSubscription,
     Workspace: Workspace
 };
