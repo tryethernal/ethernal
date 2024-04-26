@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Billing.vue Should display the button to manage the subscription when the user has an active premium plan 1`] = `
-<div>
+exports[`Billing.vue Should display active explorers list 1`] = `
+<div class="container container--fluid">
+  <create-explorer-modal-stub></create-explorer-modal-stub>
   <!---->
   <!---->
   <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
@@ -9,88 +10,213 @@ exports[`Billing.vue Should display the button to manage the subscription when t
       <div class="v-alert__content"></div>
     </div>
   </div>
-  <div class="row">
-    <div class="col col-4">
-      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-        <div class="v-card__title">
-          Free Plan
-          <div class="spacer"></div>
-          <!---->
-        </div>
-        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-        <div role="list" class="v-list v-sheet theme--light v-list--dense">
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-            10 contracts
-            <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-            1 workspace
-            <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-            7 days data retention
-            <span class="v-tooltip v-tooltip--top"><!----></span>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">Public Explorer Plans</div>
+    <div class="v-card__text">
+      You have <strong>1</strong> active public explorer.
+      <div class="row">
+        <div class="col col-6">
+          <div class="v-data-table theme--light">
+            <div class="v-data-table__wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th class="text-left">Plan</th>
+                    <th class="text-left">Cost</th>
+                    <th class="text-left">Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Test</td>
+                    <td>Team</td>
+                    <td>/</td>
+                    <td>Active</td>
+                    <td><a href="/explorers/1" class="">Manage</a></td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td>
+                      Total: <span class="font-weight-bold">$100/mo</span></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col col-4">
-      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-        <div class="v-card__title">
-          Premium Plan - $20/month
-          <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current Plan</span></span>
+  </div>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">Private Explorer Plan</div>
+    <div class="row ml-1 mb-1">
+      <div class="col col-4">
+        <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+          <div class="v-card__title">
+            Free
+            <div class="spacer"></div>
+            <!---->
+          </div>
+          <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+          <div role="list" class="v-list v-sheet theme--light v-list--dense">
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              10 contracts
+            </div>
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              1 workspace
+            </div>
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              7 days data retention
+            </div>
+          </div>
         </div>
-        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-        <div role="list" class="v-list v-sheet theme--light v-list--dense">
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-            Unlimited contracts
-            <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-            Unlimited workspaces
-            <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-            Unlimited data retention
-            <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-        </div>
-        <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Manage Subscription</span></button></div>
       </div>
-    </div>
-    <div class="col col-4">
-      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-        <div class="v-card__title">
-          Custom Plan
-          <div class="spacer"></div>
+      <div class="col col-4">
+        <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+          <div class="v-card__title">
+            Premium - $20/month
+            <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current Plan</span></span>
+          </div>
+          <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+          <div role="list" class="v-list v-sheet theme--light v-list--dense">
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              Unlimited contracts
+            </div>
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              Unlimited workspaces
+            </div>
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              Unlimited data retention
+            </div>
+          </div>
+          <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Manage Subscription</span></button></div>
         </div>
-        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-        <div role="list" class="v-list v-sheet theme--light v-list--dense">
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Custom team pricing (starting at 5 seats)</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Custom on-premise deployment</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Payment in crypto</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-        </div>
-        <div class="v-card__actions justify-center d-flex flex-column"><a href="mailto:contact@tryethernal.com?subject=Custom+Ethernal+Subscription" target="blank" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Contact Us</span></a> <small>Or ping @antoinedc on <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a></small></div>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          All plans include unlimited blocks/transactions/accounts synchronization, Ganache/Hardhat/Brownie integration, and all Ethernal features.
+        <div class="v-card__text"><strong>What's the difference between "Public Explorer" &amp; "Private Explorer"?</strong>
+          <p>
+            Private explorers are only accessible after logging in.
+            You can't share a transaction page, for example.<br>
+            You'll also need to either use the CLI or the Hardhat plugin to synchronize blocks.<br>
+            Recommended if you are a solo developer, working on a local chain.
+          </p>
+          <p>
+            Public explorers are more flexible: you get a public URL for your explorer, blocks are synced automatically,
+            and you have more customization options (native token name, custom domains, branding, etc..).<br>
+            Recommended if you have your own app chain, or hosted chain that you are sharing with others.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Billing.vue Should display the button to manage the subscription when the user has an active premium plan 1`] = `
+<div class="container container--fluid">
+  <create-explorer-modal-stub></create-explorer-modal-stub>
+  <!---->
+  <!---->
+  <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
+    <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
+      <div class="v-alert__content"></div>
+    </div>
+  </div>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">Public Explorer Plans</div>
+    <div class="v-card__text">
+      You have <strong>0</strong> active public explorers.
+      <div class="row">
+        <div class="col col-6"><button type="button" class="mt-4 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-plus theme--light" style="font-size: 16px;"></i>Create Explorer
+                    </span></button></div>
+      </div>
+    </div>
+  </div>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">Private Explorer Plan</div>
+    <div class="row ml-1 mb-1">
+      <div class="col col-4">
+        <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+          <div class="v-card__title">
+            Free
+            <div class="spacer"></div>
+            <!---->
+          </div>
+          <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+          <div role="list" class="v-list v-sheet theme--light v-list--dense">
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              10 contracts
+            </div>
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              1 workspace
+            </div>
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              7 days data retention
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col col-4">
+        <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+          <div class="v-card__title">
+            Premium - $20/month
+            <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current Plan</span></span>
+          </div>
+          <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+          <div role="list" class="v-list v-sheet theme--light v-list--dense">
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              Unlimited contracts
+            </div>
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              Unlimited workspaces
+            </div>
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              Unlimited data retention
+            </div>
+          </div>
+          <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Manage Subscription</span></button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="v-card v-sheet v-sheet--outlined theme--light">
+        <div class="v-card__text"><strong>What's the difference between "Public Explorer" &amp; "Private Explorer"?</strong>
+          <p>
+            Private explorers are only accessible after logging in.
+            You can't share a transaction page, for example.<br>
+            You'll also need to either use the CLI or the Hardhat plugin to synchronize blocks.<br>
+            Recommended if you are a solo developer, working on a local chain.
+          </p>
+          <p>
+            Public explorers are more flexible: you get a public URL for your explorer, blocks are synced automatically,
+            and you have more customization options (native token name, custom domains, branding, etc..).<br>
+            Recommended if you have your own app chain, or hosted chain that you are sharing with others.
+          </p>
         </div>
       </div>
     </div>
@@ -99,7 +225,8 @@ exports[`Billing.vue Should display the button to manage the subscription when t
 `;
 
 exports[`Billing.vue Should display the button to start the subscription when the user is on a free plan 1`] = `
-<div>
+<div class="container container--fluid">
+  <create-explorer-modal-stub></create-explorer-modal-stub>
   <!---->
   <!---->
   <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text error--text" style="display: none;">
@@ -107,88 +234,84 @@ exports[`Billing.vue Should display the button to start the subscription when th
       <div class="v-alert__content"></div>
     </div>
   </div>
-  <div class="row">
-    <div class="col col-4">
-      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-        <div class="v-card__title">
-          Free Plan
-          <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current Plan</span></span>
-        </div>
-        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-        <div role="list" class="v-list v-sheet theme--light v-list--dense">
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-            10 contracts
-            <span class="v-tooltip v-tooltip--top"><!----></span>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">Public Explorer Plans</div>
+    <div class="v-card__text">
+      You have <strong>0</strong> active public explorers.
+      <div class="row">
+        <div class="col col-6"><button type="button" class="mt-4 v-btn v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-plus theme--light" style="font-size: 16px;"></i>Create Explorer
+                    </span></button></div>
+      </div>
+    </div>
+  </div>
+  <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__title">Private Explorer Plan</div>
+    <div class="row ml-1 mb-1">
+      <div class="col col-4">
+        <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+          <div class="v-card__title">
+            Free
+            <div class="spacer"></div> <span class="ml-2 v-chip theme--light v-size--small primary"><span class="v-chip__content">Current</span></span>
           </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-            1 workspace
-            <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-            7 days data retention
-            <span class="v-tooltip v-tooltip--top"><!----></span>
+          <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+          <div role="list" class="v-list v-sheet theme--light v-list--dense">
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              10 contracts
+            </div>
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              1 workspace
+            </div>
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              7 days data retention
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="col col-4">
-      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-        <div class="v-card__title">
-          Premium Plan - $20/month
-          <div class="spacer"></div>
-          <!---->
+      <div class="col col-4">
+        <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+          <div class="v-card__title">
+            Premium - $20/month
+            <div class="spacer"></div>
+            <!---->
+          </div>
+          <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
+          <div role="list" class="v-list v-sheet theme--light v-list--dense">
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              Unlimited contracts
+            </div>
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              Unlimited workspaces
+            </div>
+            <div tabindex="-1" role="listitem" class="v-list-item theme--light">
+              <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
+              Unlimited data retention
+            </div>
+          </div>
+          <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Subscribe</span></button></div>
         </div>
-        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-        <div role="list" class="v-list v-sheet theme--light v-list--dense">
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-            Unlimited contracts
-            <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-            Unlimited workspaces
-            <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div>
-            Unlimited data retention
-            <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-        </div>
-        <div class="v-card__actions justify-center d-flex flex-column"><button type="button" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Subscribe</span></button></div>
-      </div>
-    </div>
-    <div class="col col-4">
-      <div class="mb-4 v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
-        <div class="v-card__title">
-          Custom Plan
-          <div class="spacer"></div>
-        </div>
-        <hr role="separator" aria-orientation="horizontal" class="v-divider theme--light">
-        <div role="list" class="v-list v-sheet theme--light v-list--dense">
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Custom team pricing (starting at 5 seats)</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Custom on-premise deployment</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-          <div tabindex="-1" role="listitem" class="v-list-item theme--light">
-            <div class="v-list-item__icon mx-0 mr-1"><i aria-hidden="true" class="v-icon notranslate mdi mdi-check theme--light success--text"></i></div> <span>Payment in crypto</span> <span class="v-tooltip v-tooltip--top"><!----></span>
-          </div>
-        </div>
-        <div class="v-card__actions justify-center d-flex flex-column"><a href="mailto:contact@tryethernal.com?subject=Custom+Ethernal+Subscription" target="blank" class="v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default primary"><span class="v-btn__content">Contact Us</span></a> <small>Or ping @antoinedc on <a href="https://discord.gg/jEAprf45jj" target="_blank">Discord</a></small></div>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col">
       <div class="v-card v-sheet v-sheet--outlined theme--light">
-        <div class="v-card__text">
-          All plans include unlimited blocks/transactions/accounts synchronization, Ganache/Hardhat/Brownie integration, and all Ethernal features.
+        <div class="v-card__text"><strong>What's the difference between "Public Explorer" &amp; "Private Explorer"?</strong>
+          <p>
+            Private explorers are only accessible after logging in.
+            You can't share a transaction page, for example.<br>
+            You'll also need to either use the CLI or the Hardhat plugin to synchronize blocks.<br>
+            Recommended if you are a solo developer, working on a local chain.
+          </p>
+          <p>
+            Public explorers are more flexible: you get a public URL for your explorer, blocks are synced automatically,
+            and you have more customization options (native token name, custom domains, branding, etc..).<br>
+            Recommended if you have your own app chain, or hosted chain that you are sharing with others.
+          </p>
         </div>
       </div>
     </div>

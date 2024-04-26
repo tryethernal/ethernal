@@ -3,6 +3,7 @@ const mockSubscriptionCreate = jest.fn();
 const mockSubscriptionRetrieve = jest.fn();
 const mockSubscriptionUpdate = jest.fn();
 const mockSubscriptionItemDelete = jest.fn();
+const mockInvoiceListUpcomingLines = jest.fn();
 jest.mock('stripe', () => {
     return jest.fn().mockImplementation(() => {
         return {
@@ -16,6 +17,9 @@ jest.mock('stripe', () => {
             },
             subscriptionItems: {
                 del: mockSubscriptionItemDelete
+            },
+            invoices: {
+                listUpcomingLines: mockInvoiceListUpcomingLines
             }
         }
     });
@@ -52,6 +56,92 @@ beforeEach(() => {
         fetchNetworkId: jest.fn().mockResolvedValue(1)
     }));
     jest.spyOn(db, 'getWorkspaceById').mockResolvedValue({ id: 1 });
+});
+
+describe(`GET ${BASE_URL}/billing`, () => {
+    it('Should only return active explorers', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1 });
+        mockInvoiceListUpcomingLines.mockResolvedValueOnce({ data: [{ amount: 10000 }, { amount: 0 }, { amount: -10000 }]});
+        jest.spyOn(db, 'getStripeSubscription')
+            .mockResolvedValueOnce({
+                stripePlan: { name: 'Team' },
+                formattedStatus: 'Active',
+                stripeId: 'test'
+            })
+            .mockResolvedValueOnce(null);
+        jest.spyOn(db, 'getUserExplorers').mockResolvedValueOnce({
+            items: [
+                { id: 1, name: 'Test' },
+                { id: 2 }
+            ]
+        });
+
+        request.get(`${BASE_URL}/billing`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({
+                    activeExplorers: [
+                        { id: 1, name: 'Test', planName: 'Team', planCost: 100, subscriptionStatus: 'Active' }
+                    ],
+                    totalCost: 100
+                });
+                done();
+            });
+    });
+
+    it('Should handle subscription without stripeId', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getStripeSubscription')
+            .mockResolvedValueOnce({
+                stripePlan: { name: 'Team' },
+                formattedStatus: 'Active'
+            });
+        jest.spyOn(db, 'getUserExplorers').mockResolvedValueOnce({
+            items: [
+                { id: 1, name: 'Test' },
+            ]
+        });
+
+        request.get(`${BASE_URL}/billing`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({
+                    activeExplorers: [
+                        { id: 1, name: 'Test', planName: 'Team', planCost: 0, subscriptionStatus: 'Active' }
+                    ],
+                    totalCost: 0
+                });
+                done();
+            });
+    });
+
+    it('Should handle canceled trials', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1 });
+        mockInvoiceListUpcomingLines.mockRejectedValueOnce({ code: 'invoice_upcoming_none' });
+        jest.spyOn(db, 'getStripeSubscription')
+            .mockResolvedValueOnce({
+                stripePlan: { name: 'Team' },
+                formattedStatus: 'Trial',
+                stripeId: 'test'
+            });
+        jest.spyOn(db, 'getUserExplorers').mockResolvedValueOnce({
+            items: [
+                { id: 1, name: 'Test' },
+            ]
+        });
+
+        request.get(`${BASE_URL}/billing`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({
+                    activeExplorers: [
+                        { id: 1, name: 'Test', planName: 'Team', planCost: 0, subscriptionStatus: 'Trial' }
+                    ],
+                    totalCost: 0
+                });
+                done();
+            });
+    });
 });
 
 describe(`POST ${BASE_URL}/:id/startTrial`, () => {

@@ -165,7 +165,7 @@ export default {
     }
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .v-application {
     background: #f7f7f7 !important;
 }

@@ -23,7 +23,7 @@ exports[`Settings.vue Should load the settings page 1`] = `
     <div class="v-window__container">
       <transition-stub name="">
         <div class="v-window-item v-window-item--active" id="workspace">
-          <div class="row">
+          <div class="row px-4 py-2">
             <div class="col-lg-6 col">
               <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text success--text" style="display: none;">
                 <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-check-circle theme--dark success--text"></i>
@@ -218,7 +218,7 @@ exports[`Settings.vue Should not display the Billing tab if stripe is disabled 1
     <div class="v-window__container">
       <transition-stub name="">
         <div class="v-window-item v-window-item--active" id="workspace">
-          <div class="row">
+          <div class="row px-4 py-2">
             <div class="col-lg-6 col">
               <div role="alert" class="v-alert v-sheet theme--dark v-alert--dense v-alert--text success--text" style="display: none;">
                 <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-check-circle theme--dark success--text"></i>

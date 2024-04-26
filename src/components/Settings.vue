@@ -8,7 +8,7 @@
 
         <v-tabs-items :value="tab">
             <v-tab-item value="workspace">
-                <v-row>
+                <v-row class="px-4 py-2">
                     <v-col lg="6">
                         <v-alert v-show="updateSuccess" dense text type="success">Settings updated</v-alert>
                         <v-alert v-show="updateError || errorMessage" dense text type="error">{{ errorMessage  || 'Error while updating settings' }}</v-alert>

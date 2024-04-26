@@ -133,6 +133,7 @@ jest.mock('../../../lib/firebase', () => {
         destroyStripeQuotaExtension: jest.fn(),
         createStripeQuotaExtension: jest.fn(),
         updateStripeQuotaExtension: jest.fn(),
+        getStripeSubscription: jest.fn(),
         Workspace: Workspace
     }
 });
