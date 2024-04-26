@@ -144,7 +144,6 @@ export default {
         },
         pusherUnsubscribe: null,
         activeExplorers: [],
-        inactiveExplorerCount: 0,
         activeExplorerCost: 0,
         loading: false
     }),
@@ -161,9 +160,8 @@ export default {
 
         this.loading = true;
         this.server.getExplorerBilling()
-            .then(({ data: { activeExplorers, inactiveExplorerCount, totalCost }}) => {
+            .then(({ data: { activeExplorers, totalCost }}) => {
                 this.activeExplorers = activeExplorers;
-                this.inactiveExplorerCount = inactiveExplorerCount;
                 this.activeExplorerCost = totalCost;
             })
             .catch(console.log)

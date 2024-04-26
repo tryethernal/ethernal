@@ -26,10 +26,11 @@ router.get('/billing', [authMiddleware, stripeMiddleware], async (req, res) => {
 
         for (let i = 0; i < result.items.length; i++) {
             const explorer = result.items[i];
-            if (!explorer.stripeSubscription)
-                continue;
 
             const stripeSubscription = await db.getStripeSubscription(explorer.id);
+            if (!stripeSubscription)
+                continue;
+
             const planName = stripeSubscription.stripePlan.name;;
             let planCost = 0;
 

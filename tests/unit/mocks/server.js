@@ -82,6 +82,7 @@ jest.mock('@/plugins/server', () => ({
                 getErc721TotalSupply: jest.fn(),
                 getErc721TokenById: jest.fn(),
                 getErc721TokenByIndex: jest.fn(),
+                getExplorerBilling: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))
