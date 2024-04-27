@@ -57,9 +57,7 @@ exports[`Settings.vue Should load the settings page 1`] = `
                         <div class="v-text-field__slot"><label for="rpcServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server</label><input id="rpcServer" type="text"></div>
                       </div>
                     </div>
-                  </div>
-                  You will need to restart the CLI or the Hardhat node for a server change to take effect.
-                  <div class="v-input mt-3 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+                  </div> You will need to restart the CLI or the Hardhat node for a server change to take effect. <div class="v-input mt-3 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
                     <div class="v-input__control">
                       <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-71" class="v-input__slot">
                         <fieldset aria-hidden="true">
@@ -252,9 +250,7 @@ exports[`Settings.vue Should not display the Billing tab if stripe is disabled 1
                         <div class="v-text-field__slot"><label for="rpcServer" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">RPC Server</label><input id="rpcServer" type="text"></div>
                       </div>
                     </div>
-                  </div>
-                  You will need to restart the CLI or the Hardhat node for a server change to take effect.
-                  <div class="v-input mt-3 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
+                  </div> You will need to restart the CLI or the Hardhat node for a server change to take effect. <div class="v-input mt-3 v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-select">
                     <div class="v-input__control">
                       <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-23" class="v-input__slot">
                         <fieldset aria-hidden="true">

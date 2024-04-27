@@ -100,7 +100,8 @@ describe('Settings.vue', () => {
     });
 
     it('Should let the user reset the workspace', async () => {
-        const resetWorkspaceMock = jest.spyOn(helper.mocks.server, 'resetWorkspace');
+        const resetWorkspaceMock = jest.spyOn(helper.mocks.server, 'resetWorkspace')
+            .mockResolvedValueOnce({ data: { needsBatchReset: false }});
         const wrapper = helper.mountFn(Settings, {
             stubs: ['Workspace-List', 'Billing', 'Account']
         });

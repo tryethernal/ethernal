@@ -97,7 +97,7 @@ export default new Vuex.Store({
         updateAccounts({ commit }, accounts) {
             commit('SET_ACCOUNTS', accounts);
         },
-        updateUser({ commit }, user) {
+        updateUser({ commit, getters }, user) {
             if (user) {
                 if (user.apiToken)
                     localStorage.setItem('apiToken', user.apiToken);
@@ -114,7 +114,7 @@ export default new Vuex.Store({
                     canUseDemoPlan: user.canUseDemoPlan
                 }));
 
-                if (process.env.VUE_APP_ENABLE_ANALYTICS) {
+                if (getters.hasAnalyticsEnabled) {
                     LogRocket.identify(user.firebaseUserId, { email: user.email });
                     this._vm.$posthog.identify(user.id, { email: user.email });
                     if (window.smartsupp) {
@@ -137,9 +137,9 @@ export default new Vuex.Store({
         updateConnected({ commit }, connected) {
             commit('SET_CONNECTED', connected);
         },
-        updateUserPlan({ commit }, data) {
+        updateUserPlan({ commit, getters }, data) {
             commit('SET_USER_PLAN', data.plan);
-            if (process.env.VUE_APP_ENABLE_ANALYTICS && data.uid && data.plan && data.plan != 'free')
+            if (getters.hasAnalyticsEnabled && data.uid && data.plan && data.plan != 'free')
                 LogRocket.identify(data.uid, { email: data.email, plan: data.plan });
         },
         updateOnboardedStatus({ commit }, status) {
