@@ -21,9 +21,7 @@ Vue.use(VueRouter);
 Vue.use(firestorePlugin);
 Vue.use(require('vue-moment'));
 Vue.use(serverPlugin, { store });
-
-if (store.getters.hasAnalyticsEnabled)
-    Vue.use(posthogPlugin, { store });
+Vue.use(posthogPlugin, { store });
 
 if (store.getters.hasDemoEnabled && window.location.pathname.startsWith('/demo')) {
     new Vue({
