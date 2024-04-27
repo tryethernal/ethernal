@@ -73,44 +73,49 @@ export default {
     methods: {
         async createWorkspace(name, rpcServer) {
             this.loading = true;
-            try {
-                this.workspace = await this.server.initRpcServer(rpcServer);
-            } catch(error) {
-                this.loading = false;
-                if (error.message.indexOf('Invalid URL') > -1)
-                    return this.errorMessage = `
-                        URL of the rpc server looks invalid. Make sure you entered a valid ws(s) or http(s) url.
-                    `;
-                else if (this.localNetwork && (rpcServer.startsWith('http://') || rpcServer.startsWith('ws://'))) {
-                    return this.errorMessage = `
-                        Can't connect to rpc server, 
-                        make sure your node is up, and reachable from the browser.<br>
-                        If you are using Brave, you'll need to disable Shields. 
-                        Try disabling adblockers as well.<br>
-                        Another option is to setup a public URL such as <a href="https://ngrok.com/" target="_blank">ngrok</a>, and use https to connect.
-                    `;
+            if (!this.isPublic) {
+                try {
+                    this.workspace = await this.server.initRpcServer(rpcServer);
+                } catch(error) {
+                    this.loading = false;
+                    if (error.message.indexOf('Invalid URL') > -1)
+                        return this.errorMessage = `
+                            URL of the rpc server looks invalid. Make sure you entered a valid ws(s) or http(s) url.
+                        `;
+                    else if (this.localNetwork && (rpcServer.startsWith('http://') || rpcServer.startsWith('ws://'))) {
+                        return this.errorMessage = `
+                            Can't connect to rpc server, 
+                            make sure your node is up, and reachable from the browser.<br>
+                            If you are using Brave, you'll need to disable Shields. 
+                            Try disabling adblockers as well.<br>
+                            Another option is to setup a public URL such as <a href="https://ngrok.com/" target="_blank">ngrok</a>, and use https to connect.
+                        `;
+                    }
+                    else if (!this.localNetwork && (rpcServer.startsWith('http://') || rpcServer.startsWith('ws://'))) {
+                        return this.errorMessage = `
+                            Can't connect to remote rpc server.<br>
+                            Make sure your node is up, supports "eth_chainId" & "net_version" requests, and that you've allowed app.tryethernal.com to 
+                            <a href="https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html" target="_blank">load insecure content</a>.<br>
+                            Try using a secure connection (https or wss) if possible.
+                        `;
+                    }
+                    else if (!this.localNetwork && rpcServer.startsWith('wss://')) {
+                        return this.errorMessage = `
+                            Can't connect to remote rpc server. Is your node up?<br>
+                            Check as well that your node supports "eth_chainId" & "net_version" requests.<br>
+                            Try using https if possible.
+                        `;
+                    }
+                    else
+                        return this.errorMessage = `
+                            Can't connect to remote rpc server. Is your node up?<br>
+                            Make sure CORS settings are allowing "app.${process.env.VUE_APP_MAIN_DOMAIN}" to connect to it.<br>
+                            Check as well that your node supports "eth_chainId" & "net_version" requests.<br>
+                        `;
                 }
-                else if (!this.localNetwork && (rpcServer.startsWith('http://') || rpcServer.startsWith('ws://'))) {
-                    return this.errorMessage = `
-                        Can't connect to remote rpc server.<br>
-                        Make sure your node is up, supports "eth_chainId" & "net_version" requests, and that you've allowed app.tryethernal.com to 
-                        <a href="https://experienceleague.adobe.com/docs/target/using/experiences/vec/troubleshoot-composer/mixed-content.html" target="_blank">load insecure content</a>.<br>
-                        Try using a secure connection (https or wss) if possible.
-                    `;
-                }
-                else if (!this.localNetwork && rpcServer.startsWith('wss://')) {
-                    return this.errorMessage = `
-                        Can't connect to remote rpc server. Is your node up?<br>
-                        Check as well that your node supports "eth_chainId" & "net_version" requests.<br>
-                        Try using https if possible.
-                    `;
-                }
-                else
-                    return this.errorMessage = `
-                        Can't connect to remote rpc server. Is your node up?<br>
-                        Make sure CORS settings are allowing "app.${process.env.VUE_APP_MAIN_DOMAIN}" to connect to it.<br>
-                        Check as well that your node supports "eth_chainId" & "net_version" requests.<br>
-                    `;
+            }
+            else {
+                this.workspace = { name, rpcServer, settings: {}};
             }
 
             this.server.createWorkspace(name, { ...this.workspace, chain: this.chain, public: this.isPublic })

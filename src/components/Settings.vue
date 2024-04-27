@@ -30,7 +30,7 @@
                                     id="rpcServer"
                                     label="RPC Server">
                                 </v-text-field>
-                                You will need to restart the CLI or the Hardhat node for a server change to take effect.
+                                <template v-if="!isPublicExplorer">You will need to restart the CLI or the Hardhat node for a server change to take effect.</template>
                                 <v-select id="chain" class="mt-3" item-text="label" item-value="slug" outlined required label="Chain" v-model="settings.chain" :items="availableChains" hide-details="auto"></v-select>
                                 <v-row class="mt-2 pb-1 mr-2">
                                     <v-spacer></v-spacer>
@@ -226,7 +226,7 @@ export default {
         };
     },
     methods: {
-        updateAdvancedOptions: function() {
+        updateAdvancedOptions() {
             this.advancedOptionsLoading = true;
             this.updateSuccess = false;
             this.updateError = false;
@@ -239,43 +239,47 @@ export default {
                 .catch(() => this.updateError = true)
                 .finally(() => this.advancedOptionsLoading = false);
         },
-        update: function() {
+        update() {
             this.loading = true;
             this.updateSuccess = false;
             this.updateError = false;
             this.errorMessage = null;
 
-            this.server.initRpcServer(this.settings.rpcServer)
-                .then(() => {
-                    this.server.updateWorkspaceSettings({
-                        name: this.settings.name,
-                        rpcServer: this.settings.rpcServer,
-                        chain: this.settings.chain,
-                        settings: {
-                            defaultAccount: this.settings.defaultAccount,
-                            gasLimit: this.settings.gasLimit,
-                            gasPrice: this.settings.gasPrice
-                        }
-                    })
-                    .then(() => {
-                        this.updateSuccess = true;
-                        this.$store.dispatch('updateCurrentWorkspace', this.settings);
-                    })
-                    .catch(error => {
-                        this.updateError = true;
-                        this.errorMessage = error.response && error.response.data || 'Error while updating settings. Please retry.';
-                    })
-                    .finally(() => this.loading = false);
-                })
-                .catch((error) => {
-                    this.errorMessage = error.reason || error.message;
-                    this.loading = false;
-                });
+            if (!this.isPublicExplorer)
+                this.server.initRpcServer(this.settings.rpcServer)
+                    .then(this.updateWorkspaceSettings)
+                    .catch((error) => {
+                        this.errorMessage = error.reason || error.message;
+                        this.loading = false;
+                    });
+            else
+                this.updateWorkspaceSettings();
         },
-        callFunction: function(name) {
+        updateWorkspaceSettings() {
+            this.server.updateWorkspaceSettings({
+                name: this.settings.name,
+                rpcServer: this.settings.rpcServer,
+                chain: this.settings.chain,
+                settings: {
+                    defaultAccount: this.settings.defaultAccount,
+                    gasLimit: this.settings.gasLimit,
+                    gasPrice: this.settings.gasPrice
+                }
+            })
+            .then(() => {
+                this.updateSuccess = true;
+                this.$store.dispatch('updateCurrentWorkspace', this.settings);
+            })
+            .catch(error => {
+                this.updateError = true;
+                this.errorMessage = error.response && error.response.data || 'Error while updating settings. Please retry.';
+            })
+            .finally(() => this.loading = false);
+        },
+        callFunction(name) {
             this[name]();
         },
-        resetWorkspace: function() {
+        resetWorkspace() {
             if (confirm(`Are you sure you want to reset the workspace ${this.currentWorkspace.name}? This action is definitive.`)) {
                 this.resetWorkspaceLoading = true;
                 this.server.resetWorkspace()
@@ -295,6 +299,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'isPublicExplorer',
             'isBillingEnabled',
             'currentWorkspace',
             'user',
