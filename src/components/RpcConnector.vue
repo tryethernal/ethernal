@@ -69,6 +69,10 @@
                 <v-divider vertical inset class="mx-2"></v-divider>
                 <v-progress-circular indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>Processing Contracts...
             </div>
+            <v-spacer></v-spacer>
+            <v-btn id="feedbackfin__back" @click="openFeedbackWindow" small color="primary" outlined data-feedbackfin-button>
+                <v-icon class="mr-1">mdi-chat-processing-outline</v-icon>Feedback
+            </v-btn>
         </template>
     </v-toolbar>
 </template>
@@ -119,6 +123,9 @@ export default Vue.extend({
     methods: {
         formatContractPattern, shortRpcUrl,
         commify: ethers.utils.commify,
+        openFeedbackWindow(event) {
+            window.feedbackfin.open(event);
+        },
         toggleMenu() {
             this.$emit('toggleMenu');
         },
@@ -250,4 +257,3 @@ export default Vue.extend({
     }
 });
 </script>
-
