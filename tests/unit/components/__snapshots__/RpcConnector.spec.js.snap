@@ -34,6 +34,8 @@ exports[`RpcConnector.vue Should display the correct info 1`] = `
         <div class="v-progress-circular__info"></div>
       </div>Processing Contracts...
     </div>
+    <div class="spacer"></div> <button type="button" class="v-btn v-btn--outlined theme--light v-size--small primary--text" id="feedbackfin__back" data-feedbackfin-button=""><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-chat-processing-outline theme--light"></i>Feedback
+            </span></button>
   </div>
 </header>
 `;
