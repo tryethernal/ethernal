@@ -1,9 +1,30 @@
-const logger = require('../lib/logger');
 const jwt = require('jsonwebtoken');
+const axios = require('axios');
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
+const logger = require('../lib/logger');
+const { withTimeout } = require('../lib/utils');
+const { getDiscordFeedbackChannelWebhook } = require('../lib/env');
 const authMiddleware = require('../middlewares/auth');
+
+router.post('/feedback', async (req, res) => {
+    const data = req.body;
+    try {
+        const content = `
+            **New ${data.feedbackType} from ${data.email}**
+
+${data.message}
+        `;
+
+        await withTimeout(axios.post(getDiscordFeedbackChannelWebhook(), { content }));
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.marketing.feedback', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
 
 router.get('/productRoadToken', authMiddleware, async (req, res) => {
     const data = { ...req.query, ...req.body.data };

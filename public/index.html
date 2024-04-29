@@ -9,8 +9,16 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo:600">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
-    <% if (htmlWebpackPlugin.options.feedbackDomain && htmlWebpackPlugin.options.isProduction) { %>
-       <!-- Smartsupp Live Chat script -->
+
+    <% if (htmlWebpackPlugin.options.feedbackFinEndpoint) { %>
+      <script src="https://unpkg.com/feedbackfin@^1" defer></script>
+      <script>
+        window.feedbackfin = { config: {}, ...window.feedbackfin };
+        window.feedbackfin.config.url = "<%= htmlWebpackPlugin.options.feedbackFinEndpoint %>";
+      </script>
+    <% } %>
+
+    <% if (htmlWebpackPlugin.options.feedbackDomain && htmlWebpackPlugin.options.isProduction) { %>       <!-- Smartsupp Live Chat script -->
       <script type="text/javascript">
         if (window.location.host == 'app.<%= htmlWebpackPlugin.options.feedbackDomain %>') {
           var _smartsupp = _smartsupp || {};
