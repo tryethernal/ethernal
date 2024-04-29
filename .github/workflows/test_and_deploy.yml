@@ -176,6 +176,7 @@ jobs:
           VUE_APP_SOKETI_HOST: ${{ secrets.SOKETI_HOST }}
           VUE_APP_SOKETI_PORT: ${{ secrets.SOKETI_PORT }}
           VUE_APP_SOKETI_FORCE_TLS: ${{ secrets.SOKETI_FORCE_TLS }}
+          VUE_APP_FEEDBACK_FIN_ENDPOINT: ${{ secrets.FEEDBACK_FIN_ENDPOINT }}
           COMMIT_REF: ${{ github.sha }}
 
       - uses: nwtgck/actions-netlify@v2.0.0

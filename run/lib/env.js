@@ -28,5 +28,6 @@ module.exports = {
     getSoketiHost: () => process.env.SOKETI_HOST,
     getSoketiPort: () => process.env.SOKETI_PORT,
     getSoketiScheme: () => process.env.SOKETI_SCHEME,
-    getSoketiUseTLS: () => process.env.SOKETI_USE_TLS
+    getSoketiUseTLS: () => process.env.SOKETI_USE_TLS,
+    getDiscordFeedbackChannelWebhook: () => process.env.DISCORD_FEEDBACK_CHANNEL_WEBHOOK
 };

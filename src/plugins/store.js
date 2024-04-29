@@ -115,6 +115,7 @@ export default new Vuex.Store({
                 }));
 
                 if (getters.hasAnalyticsEnabled) {
+                    window.feedbackfin.config.user = { email: user.email };
                     LogRocket.identify(user.firebaseUserId, { email: user.email });
                     this._vm.$posthog.identify(user.id, { email: user.email });
                     if (window.smartsupp) {
