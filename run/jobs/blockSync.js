@@ -2,7 +2,13 @@ const { ProviderConnector } = require('../lib/rpc');
 const { Workspace, Explorer, StripeSubscription, StripePlan, RpcHealthCheck, Block } = require('../models');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
-const { sanitize, processRawRpcObject } = require('../lib/utils');
+const { processRawRpcObject } = require('../lib/utils');
+const { RedisRateLimiter } = require("rolling-rate-limiter");
+const Redis = require("ioredis");
+const redis = new Redis({
+    port: process.env.REDIS_PORT,
+    host: process.env.REDIS_HOST
+});
 
 module.exports = async job => {
     const data = job.data;
@@ -64,9 +70,24 @@ module.exports = async job => {
         await db.updateWorkspaceIntegrityCheck(workspace.id, { status: 'healthy' });
 
     const providerConnector = new ProviderConnector(workspace.rpcServer);
+    let block;
 
     try {
-        const block = await providerConnector.fetchRawBlockWithTransactions(data.blockNumber);
+        const limiter = new RedisRateLimiter({
+            client: redis,
+            namespace: 'rate-limiter',
+            interval: 60000,
+            maxInInterval: 5
+        });
+        const info = await limiter.wouldLimitWithInfo(workspace.id);
+        console.log(info)
+        await limiter.limit(workspace.id).then(async blocked => {
+            if (blocked)
+                console.log('Blocked ' + data.blockNumber);
+            else
+                block = await providerConnector.fetchRawBlockWithTransactions(data.blockNumber);
+        });
+
         if (!block)
             throw new Error("Couldn't fetch block from provider");
 
