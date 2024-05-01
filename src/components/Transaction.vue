@@ -1,6 +1,37 @@
 <template>
     <v-container fluid>
-        <template v-if="transaction.hash">
+        <template v-if="loading">
+            <v-row>
+                <v-col>
+                    <h2 class="text-truncate mb-2">Tx {{ hash }}</h2>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="4">
+                    <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
+                </v-col>
+                <v-col cols="4">
+                    <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="4">
+                    <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
+                </v-col>
+                <v-col cols="4">
+                    <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="4">
+                    <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
+                </v-col>
+                <v-col cols="4">
+                    <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
+                </v-col>
+            </v-row>
+        </template>
+        <template v-else-if="transaction.hash && !loading">
             <v-row>
                 <v-col>
                     <v-alert dense text type="warning" class="my-2" v-if="transaction.state == 'syncing'">
@@ -220,7 +251,8 @@ export default {
         jsonInterface: null,
         parsedLogsData: [],
         processing: false,
-        pusherUnsubscribe: null
+        pusherUnsubscribe: null,
+        loading: false
     }),
     mounted() {
         this.pusherUnsubscribe = this.pusher.onNewTransaction(data => {
@@ -242,9 +274,11 @@ export default {
         getGasPriceFromTransaction,
         commify: ethers.utils.commify,
         loadTransaction(hash) {
+            this.loading = true;
             this.server.getTransaction(hash)
                 .then(({ data }) => this.transaction = data)
-                .catch(console.log);
+                .catch(console.log)
+                .finally(() => this.loading = false);
         },
         reprocessTransaction: function() {
             this.processing = true
