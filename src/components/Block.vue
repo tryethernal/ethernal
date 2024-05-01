@@ -11,24 +11,36 @@
         <v-row class="mb-4">
             <v-col lg="2" md="12" sm="12">
                 <v-subheader class="text-overline">Gas Limit</v-subheader>
-                {{ parseInt(block.gasLimit).toLocaleString() }}
+                <template v-if="!loading">
+                    {{ parseInt(block.gasLimit).toLocaleString() }}
+                </template>
+                <v-skeleton-loader type="list-item" v-else></v-skeleton-loader>
             </v-col>
             <v-divider vertical></v-divider>
             <v-col lg="2" md="12" sm="12">
                 <v-subheader class="text-overline">Mined On</v-subheader>
-                {{ moment(block.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
-                <small>{{ moment(block.timestamp).fromNow() }}</small>
+                <template v-if="!loading">
+                    {{ moment(block.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
+                    <small>{{ moment(block.timestamp).fromNow() }}</small>
+                </template>
+                <v-skeleton-loader type="list-item" v-else></v-skeleton-loader>
             </v-col>
             <v-divider vertical></v-divider>
             <v-col lg="4" md="12" sm="12">
                 <v-subheader class="text-overline">Hash</v-subheader>
-                <span style="overflow-wrap: break-word;">{{ block.hash }}</span>
+                <template v-if="!loading">
+                    <span style="overflow-wrap: break-word;">{{ block.hash }}</span>
+                </template>
+                <v-skeleton-loader type="list-item" v-else></v-skeleton-loader>
             </v-col>
             <template v-if="publicExplorer && publicExplorer.l1Explorer && block.l1BlockNumber">
                 <v-divider vertical></v-divider>
                 <v-col lg="2" md="12" sm="12">
                     <v-subheader class="text-overline">L1 Block</v-subheader>
-                    <a :href="`${publicExplorer.l1Explorer}/block/${block.l1BlockNumber}`" target="_blank">{{ commify(block.l1BlockNumber) }}</a>
+                    <template v-if="!loading">
+                        <a :href="`${publicExplorer.l1Explorer}/block/${block.l1BlockNumber}`" target="_blank">{{ commify(block.l1BlockNumber) }}</a>
+                    </template>
+                    <v-skeleton-loader type="list-item" v-else></v-skeleton-loader>
                 </v-col>
             </template>
         </v-row>
@@ -55,7 +67,8 @@ export default {
         block: {
             gasLimit: 0
         },
-        pusherChannelHandler: null
+        pusherChannelHandler: null,
+        loading: false
     }),
     mounted() {
         this.pusherChannelHandler = this.pusher.onNewBlock(data => {
@@ -70,9 +83,11 @@ export default {
         moment,
         commify: ethers.utils.commify,
         loadBlock(number) {
+            this.loading = true;
             this.server.getBlock(number)
                 .then(({ data }) => this.block = data)
-                .catch(console.log);
+                .catch(console.log)
+                .finally(() => this.loading = false);
         }
     },
     computed: {
