@@ -1,17 +1,27 @@
 version: "3.9"
 
 volumes:
-  db:
+  postgres:
+    driver: local
+  redis:
     driver: local
 
 services:
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis:/data
+
   postgres:
     image: timescale/timescaledb-ha:pg14
     ports:
       - "5433:5432"
     restart: always
     volumes:
-      - db:/var/lib/postgresql/data
+      - postgres:/home/postgres/pgdata/data
     environment:
       - POSTGRES_PASSWORD=postgres
 
@@ -22,7 +32,8 @@ services:
         source: ./run/.env
         target: /app/run/.env
     depends_on:
-      - pm2
+      - postgres
+      - redis
     build:
       context: .
       dockerfile: Dockerfile
@@ -74,6 +85,8 @@ services:
       - "9090:9090"
     volumes:
       - ./pm2-server:/app
+    depends_on:
+      - web
     build:
       context: .
       dockerfile: Dockerfile.pm2
@@ -85,3 +98,8 @@ services:
     ports:
       - "6001:6001"
     env_file: run/.env
+
+  stripe:
+    image: stripe/stripe-cli
+    command: listen --forward-to http://web:8888/webhooks/stripe
+    env_file: .env.stripe
