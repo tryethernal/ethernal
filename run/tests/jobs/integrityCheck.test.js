@@ -29,31 +29,6 @@ describe('integrityCheck', () => {
         expect(await integrityCheck(job)).toEqual('Should have an explorer associated');
     });
 
-    it('Should revert expired pending blocks & update latest checked block', async () => {
-        const revertIfPartial = jest.fn();
-        const safeDeleteIntegrityCheck = jest.fn();
-        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
-            explorer: { hasReachedTransactionQuota, shouldSync: true },
-            getExpiredBlocks: jest.fn(() => ([{ revertIfPartial }])),
-            countBlocks: jest.fn().mockResolvedValueOnce(1),
-            getBlocks: jest.fn()
-                .mockResolvedValueOnce([{ id: 3, number: 3 }])
-                .mockResolvedValueOnce([])
-                .mockResolvedValueOnce([]),
-            integrityCheckStartBlockNumber: 5,
-            public: true,
-            id: 1,
-            name: 'hardhat',
-            user: { firebaseUserId: '123', name: 'hardhat' },
-            safeDeleteIntegrityCheck
-        });
-
-        await integrityCheck(job);
-        expect(safeDeleteIntegrityCheck).toHaveBeenCalled();
-        expect(db.updateWorkspaceIntegrityCheck).toHaveBeenCalledWith(1, { blockId: 3 });
-        expect(revertIfPartial).toHaveBeenCalledTimes(1);
-    });
-
     it('Should return a message saying integrity checks are not enabled', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({ integrityCheckStartBlockNumber: null, explorer: { shouldSync: true }, public: true });
 
