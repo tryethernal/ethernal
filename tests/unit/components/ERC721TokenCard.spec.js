@@ -14,6 +14,11 @@ describe('ERC721TokenCard.vue', () => {
                 data: {
                     owner: '0x123',
                     tokenId: '0',
+                    attributes: {
+                        image_data: '<img src="http://image" />',
+                        name: 'Token #1',
+                        backgroundColor: '#1234'
+                    },
                     metadata: {
                         image_data: '<img src="http://image" />',
                         name: 'Token #1',
