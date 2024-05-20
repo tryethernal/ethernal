@@ -338,7 +338,7 @@ export default {
         },
         authStateChanged(user) {
             if (user && this.hasAnalyticsEnabled && window.location.host == 'app.tryethernal.com') {
-                LogRocket.init(process.env.VUE_APP_LOGROCKET_ID);
+                LogRocket.init(this.logRocketId);
             }
 
             const currentPath = this.$router.currentRoute.path;
@@ -431,7 +431,7 @@ export default {
                 this.appBarComponent = 'rpc-connector';
                 this.routerComponent = 'router-view';
 
-                if (!this.publicExplorerMode && process.env.VUE_APP_ENABLE_MARKETING) {
+                if (!this.publicExplorerMode && this.isMarketingEnabled) {
                     this.server.getProductRoadToken().then(res => this.prAuthToken = res.data.token);
                     this.server.getMarketingFlags().then(({ data: { isRemote }}) => this.isRemote = !!isRemote);
                 }
@@ -441,6 +441,8 @@ export default {
     computed: {
         ...mapGetters([
             'hasAnalyticsEnabled',
+            'isMarketingEnabled',
+            'logRocketId',
             'accounts',
             'isPublicExplorer',
             'publicExplorer',
