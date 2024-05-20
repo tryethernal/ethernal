@@ -53,9 +53,9 @@ export default {
                 this.tokenId = data.tokenId;
                 this.owner = data.owner;
                 if (data.metadata) {
-                    this.name = data.metadata.name;
-                    this.imageData = data.metadata.image_data;
-                    this.backgroundColor = data.metadata.backgroundColor;
+                    this.name = data.attributes.name;
+                    this.imageData = data.attributes.image_data;
+                    this.backgroundColor = data.attributes.background_color;
                 }
 
             })
