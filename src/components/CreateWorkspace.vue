@@ -51,6 +51,7 @@
 <script>
 const ipaddr = require('ipaddr.js');
 import { mapGetters } from 'vuex';
+
 export default {
     name: 'CreateWorkspace',
     props: ['isPublic'],
@@ -109,7 +110,7 @@ export default {
                     else
                         return this.errorMessage = `
                             Can't connect to remote rpc server. Is your node up?<br>
-                            Make sure CORS settings are allowing "app.${process.env.VUE_APP_MAIN_DOMAIN}" to connect to it.<br>
+                            Make sure CORS settings are allowing "app.${this.mainDomain}" to connect to it.<br>
                             Check as well that your node supports "eth_chainId" & "net_version" requests.<br>
                         `;
                 }
@@ -152,7 +153,8 @@ export default {
     computed: {
         ...mapGetters([
             'user',
-            'chains'
+            'chains',
+            'mainDomain'
         ]),
         isUsingSafari() {
             return navigator.vendor.match(/apple/i) && !navigator.userAgent.match(/crios/i) && !navigator.userAgent.match(/fxios/i);
