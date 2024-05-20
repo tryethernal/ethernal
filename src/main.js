@@ -51,5 +51,5 @@ else {
                 render: h => h(App)
             }).$mount('#app');
         })
-        .catch(() => document.location.href = `//app.${process.env.VUE_APP_MAIN_DOMAIN}`);
+        .catch(() => document.location.href = `//app.${store.getters.mainDomain}`);
 }

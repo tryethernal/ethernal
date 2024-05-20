@@ -4,6 +4,7 @@ const {
   Sequelize,
   QueryTypes,
 } = require('sequelize');
+const moment = require('moment');
 const { sanitize, slugify } = require('../lib/utils');
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
@@ -172,20 +173,24 @@ module.exports = (sequelize, DataTypes) => {
 
     async getExpiredBlocks(ttlInMinutes = 15) {
         const blocks = await sequelize.query(`
-            SELECT id FROM blocks
-            WHERE (
-                SELECT COUNT(*) FROM transactions
-                WHERE "blockNumber" = blocks.number
-                AND "workspaceId" = :workspaceId
-            ) <> "transactionsCount"
-            AND "createdAt" <= NOW() - interval '${ttlInMinutes} minute'
-            AND "workspaceId" = :workspaceId;
+            SELECT b.id, b."createdAt"
+            FROM blocks b
+            LEFT JOIN (
+                SELECT "blockNumber", COUNT(*) AS txn_count
+                FROM transactions
+                WHERE "workspaceId" = :workspaceId
+                AND state = 'ready'
+                GROUP BY "blockNumber"
+            ) t ON b.number = t."blockNumber"
+            WHERE b."workspaceId" = :workspaceId
+            AND (t.txn_count IS NULL OR t.txn_count <> b."transactionsCount");
         `, {
             model: sequelize.models.Block,
             replacements: { workspaceId: this.id }
         });
 
-        return blocks;
+        // We do this on purpose here, this avoid creating an index on the table, and we shouldn't have a lot of records to filter through anyway
+        return blocks.filter(b => moment().diff(b.createdAt, 'minutes') >= ttlInMinutes);
     }
 
     getFilteredAddressTokenTransfers(address, page = 1, itemsPerPage = 10, orderBy = 'id', order = 'DESC') {
