@@ -69,35 +69,6 @@ module.exports = async job => {
     if (blockCount == 0)
         return 'No block synced yet';
 
-    /*
-        We assume that if a block stays in a syncing state for more than 15 minutes,
-        it is stuck and we can delete it and resync it later through integrity check.
-    */
-    const expiredPartialBlocks = await workspace.getExpiredBlocks(15);
-
-    if (expiredPartialBlocks.length > 0) {
-        const lowestId = expiredPartialBlocks.map(b => b.id).sort()[0];
-        for (let i = 0; i < expiredPartialBlocks.length; i++)
-            await expiredPartialBlocks[i].revertIfPartial();
-
-        /*
-            If we delete past block, we need to restart integrity checks
-            from there.
-        */
-        const [newBlock] = await workspace.getBlocks({
-            attributes: ['id', 'number'],
-            where: {
-                state: 'ready',
-                id: {
-                    [Op.lt]: lowestId
-                }
-            },
-            order: [['number', 'DESC']],
-            limit: 1
-        });
-        await db.updateWorkspaceIntegrityCheck(workspace.id, { blockId: newBlock.id });
-    }
-
     const [lowestBlock] = await workspace.getBlocks({
         where: {
             state: 'ready'
