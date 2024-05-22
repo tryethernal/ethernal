@@ -58,7 +58,12 @@ module.exports = (sequelize, DataTypes) => {
                     include: {
                         model: sequelize.models.Explorer,
                         as: 'explorer',
-                        attributes: currentExplorerAttributes
+                        attributes: currentExplorerAttributes,
+                        include: {
+                            model: sequelize.models.ExplorerDomain,
+                            as: 'domains',
+                            attributes: ['domain']
+                        }
                     }
                 },
             ]

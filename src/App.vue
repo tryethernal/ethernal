@@ -300,7 +300,7 @@ export default {
             if (!this.ethereum) return;
 
             let domain = this.publicExplorer.domain;
-            if (this.publicExplorer.domains.length)
+            if (this.publicExplorer.domains && this.publicExplorer.domains.length)
                 domain = this.publicExplorer.domains[0].domain;
 
             this.ethereum.request({
