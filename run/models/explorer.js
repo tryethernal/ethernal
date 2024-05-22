@@ -47,7 +47,8 @@ module.exports = (sequelize, DataTypes) => {
             include: [
                 {
                     model: sequelize.models.ExplorerDomain,
-                    as: 'domains'
+                    as: 'domains',
+                    attrbutes: ['domain']
                 },
                 {
                     model: sequelize.models.StripeSubscription,
@@ -78,7 +79,8 @@ module.exports = (sequelize, DataTypes) => {
             include: [
                 {
                     model: sequelize.models.ExplorerDomain,
-                    as: 'domains'
+                    as: 'domains',
+                    attrbutes: ['domain']
                 },
                 {
                     model: sequelize.models.StripeSubscription,
