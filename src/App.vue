@@ -299,6 +299,10 @@ export default {
         addNetworkToMetamask() {
             if (!this.ethereum) return;
 
+            let domain = this.publicExplorer.domain;
+            if (this.publicExplorer.domains && this.publicExplorer.domains.length)
+                domain = this.publicExplorer.domains[0].domain;
+
             this.ethereum.request({
                 method: 'wallet_addEthereumChain',
                 params: [
@@ -306,7 +310,7 @@ export default {
                         chainId: this.formattedExpectedChainId,
                         chainName: this.publicExplorer.name,
                         rpcUrls: [this.publicExplorer.rpcServer],
-                        blockExplorerUrls: [`https://${this.publicExplorer.domain}`],
+                        blockExplorerUrls: [`https://${domain}`],
                         nativeCurrency: {
                             name: this.publicExplorer.token,
                             symbol: this.publicExplorer.token,
