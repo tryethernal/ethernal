@@ -3,12 +3,7 @@ const { Workspace, Explorer, StripeSubscription, StripePlan, RpcHealthCheck, Blo
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 const { processRawRpcObject } = require('../lib/utils');
-const { RedisRateLimiter } = require("rolling-rate-limiter");
-const Redis = require("ioredis");
-const redis = new Redis({
-    port: process.env.REDIS_PORT,
-    host: process.env.REDIS_HOST
-});
+const RateLimiter = require('../lib/rateLimiter');
 
 module.exports = async job => {
     const data = job.data;
@@ -69,24 +64,16 @@ module.exports = async job => {
     else if (data.source != 'recovery' && workspace.integrityCheck && workspace.integrityCheck.isRecovering)
         await db.updateWorkspaceIntegrityCheck(workspace.id, { status: 'healthy' });
 
-    const providerConnector = new ProviderConnector(workspace.rpcServer);
+    const limiter = new RateLimiter(workspace.id, 60000);
+    const providerConnector = new ProviderConnector(workspace.rpcServer, limiter);
     let block;
 
     try {
-        const limiter = new RedisRateLimiter({
-            client: redis,
-            namespace: 'rate-limiter',
-            interval: 60000,
-            maxInInterval: 5
-        });
-        const info = await limiter.wouldLimitWithInfo(workspace.id);
-        console.log(info)
-        await limiter.limit(workspace.id).then(async blocked => {
-            if (blocked)
-                console.log('Blocked ' + data.blockNumber);
-            else
-                block = await providerConnector.fetchRawBlockWithTransactions(data.blockNumber);
-        });
+        try {
+            block = await providerConnector.fetchRawBlockWithTransactions(data.blockNumber);
+        } catch(error) {
+            // enqueue but first get when we it's safe
+        }
 
         if (!block)
             throw new Error("Couldn't fetch block from provider");
