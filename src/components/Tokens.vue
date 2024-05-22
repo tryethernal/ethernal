@@ -62,7 +62,8 @@ export default {
             },
             {
                 text: '',
-                value: 'tags'
+                value: 'tags',
+                sortable: false
             }
         ],
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] },

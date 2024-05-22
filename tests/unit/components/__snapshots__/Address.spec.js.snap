@@ -138,7 +138,7 @@ exports[`Address.vue Should display ERC20 contract stats 1`] = `
       </div>
       <div class="v-slide-group__wrapper">
         <div class="v-slide-group__content v-tabs-bar__content">
-          <div class="v-tabs-slider-wrapper" style="height: 2px; left: 0px; width: 0px;">
+          <div class="v-tabs-slider-wrapper" style="transition: none;">
             <div class="v-tabs-slider"></div>
           </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active" id="transactionsTab">Transactions</a> <a tabindex="0" href="#transfers" aria-selected="false" role="tab" class="v-tab" id="transfersTab">Transfers</a> <a tabindex="0" href="#erc20Balances" aria-selected="false" role="tab" class="v-tab" id="erc20BalancesTab">ERC-20 Tokens</a> <a tabindex="0" href="#erc721Balances" aria-selected="false" role="tab" class="v-tab" id="erc721BalancesTab">ERC-721 Tokens</a>
         </div>
