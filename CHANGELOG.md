@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.34.8] - 2024-05-22
+### Changed
+- Deactivate filtering on some columns where it wasn't useful and causing display issues on mobile
+- Add to Metamask button will now use a custom domain if available (first one in the list)
+
 ## [3.34.7] - 2024-05-20
 ### Changed
 - Do not try to remove expired blocks on integrity checks
