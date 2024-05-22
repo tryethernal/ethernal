@@ -62,7 +62,6 @@ describe('Address.vue', () => {
         });
 
         await flushPromises();
-        await flushPromises(); // Need that second one, not everything seems to be flushed here for some reason....
         expect(wrapper.html()).toMatchSnapshot();
     });
 
