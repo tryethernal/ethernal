@@ -57,6 +57,10 @@ export default {
             this.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: this.formattedExpectedChainId }]})
                 .catch((switchError) => {
                     if (switchError.code === 4902) {
+                        let domain = this.publicExplorer.domain;
+                        if (this.publicExplorer.domains && this.publicExplorer.domains.length)
+                            domain = this.publicExplorer.domains[0].domain;
+
                         this.ethereum.request({
                             method: 'wallet_addEthereumChain',
                             params: [
@@ -64,7 +68,12 @@ export default {
                                     chainId: this.formattedExpectedChainId,
                                     chainName: this.publicExplorer.name,
                                     rpcUrls: [this.rpcServer],
-                                    blockExplorerUrls: [this.publicExplorerDomain]
+                                    blockExplorerUrls: [`https://${domain}`],
+                                    nativeCurrency: {
+                                        name: this.publicExplorer.token,
+                                        symbol: this.publicExplorer.token,
+                                        decimals: 18
+                                    }
                                 }
                             ]
                         }).catch(console.log);
@@ -87,9 +96,6 @@ export default {
             'currentWorkspace',
             'theme'
         ]),
-        publicExplorerDomain() {
-            return this.publicExplorer.domain.startsWith('https://') ? this.publicExplorer.domain : `https://${this.publicExplorerDomain}`;
-        },
         isChainValid: function() {
             return this.formattedExpectedChainId === this.chainId;
         },

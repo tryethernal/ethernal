@@ -46,6 +46,11 @@ module.exports = (sequelize, DataTypes) => {
             },
             include: [
                 {
+                    model: sequelize.models.ExplorerDomain,
+                    as: 'domains',
+                    attrbutes: ['domain']
+                },
+                {
                     model: sequelize.models.StripeSubscription,
                     as: 'stripeSubscription',
                     include: {
@@ -72,6 +77,11 @@ module.exports = (sequelize, DataTypes) => {
         explorer = await Explorer.findOne({
             where: { domain: domain },
             include: [
+                {
+                    model: sequelize.models.ExplorerDomain,
+                    as: 'domains',
+                    attrbutes: ['domain']
+                },
                 {
                     model: sequelize.models.StripeSubscription,
                     as: 'stripeSubscription',
