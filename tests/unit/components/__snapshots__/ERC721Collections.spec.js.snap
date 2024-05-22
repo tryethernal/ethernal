@@ -20,7 +20,7 @@ exports[`ERC721Collections.vue Should load & display erc721 contracts 1`] = `
                 <th role="columnheader" scope="col" aria-label="Name: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Name</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
                 <th role="columnheader" scope="col" aria-label="Symbol: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Symbol</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
                 <th role="columnheader" scope="col" aria-label="Total Supply: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Total Supply</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
-                <th role="columnheader" scope="col" aria-label="Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span></span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+                <th role="columnheader" scope="col" aria-label="" class="text-start"><span></span></th>
               </tr>
             </thead>
             <tbody>
@@ -47,10 +47,10 @@ exports[`ERC721Collections.vue Should load & display erc721 contracts 1`] = `
         <div class="v-data-footer">
           <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
               <div class="v-input__control">
-                <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-17" class="v-input__slot">
+                <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-16" class="v-input__slot">
                   <div class="v-select__slot">
                     <div class="v-select__selections">
-                      <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-17" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                      <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-16" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
                     </div>
                     <div class="v-input__append-inner">
                       <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
