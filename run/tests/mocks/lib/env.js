@@ -25,5 +25,11 @@ jest.mock('../../../lib/env', () => ({
     getSoketiHost: jest.fn(() => 'a'),
     getSoketiPort: jest.fn(() => 'a'),
     getSoketiUseTLS: jest.fn(() => 'a'),
-    getSoketiScheme: jest.fn(() => 'a')
+    getSoketiScheme: jest.fn(() => 'a'),
+    getRedisHost: jest.fn(() => 'a'),
+    getRedisPort: jest.fn(() => 'a'),
+    getRedisUsername: jest.fn(() => 'a'),
+    getRedisPassword: jest.fn(() => 'a'),
+    getRedisTls: jest.fn(() => 'a'),
+    getRedisTlsSentinel: jest.fn(() => 'a')
 }));

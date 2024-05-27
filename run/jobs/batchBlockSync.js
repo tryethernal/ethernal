@@ -23,7 +23,8 @@ module.exports = async job => {
                     userId: data.userId,
                     workspace: data.workspace,
                     blockNumber: i,
-                    source: data.source || 'batchSync'
+                    source: data.source || 'batchSync',
+                    rateLimited: true
                 }
             });
         }
