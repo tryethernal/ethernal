@@ -8,10 +8,14 @@ const logger = require('../lib/logger');
 module.exports = async job => {
     const data = job.data;
 
-    if (!data.transactionId)
+    if (!data.transactionHash || !data.workspaceId)
         return 'Missing parameter'
 
-    const transaction = await Transaction.findByPk(data.transactionId, {
+    const transaction = await Transaction.findOne({
+        where: {
+            hash: data.transactionHash,
+            workspaceId: data.workspaceId
+        },
         include: [
             {
                 model: Workspace,
@@ -84,7 +88,7 @@ module.exports = async job => {
         if (!receipt)
             throw new Error('Failed to fetch receipt');
 
-        return db.storeTransactionReceipt(data.transactionId, receipt);
+        return db.storeTransactionReceipt(transaction.id, receipt);
     } catch(error) {
         logger.error(error.message, { location: 'jobs.receiptSync', error, data });
         // await db.incrementFailedAttempts(transaction.workspace.id);

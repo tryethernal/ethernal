@@ -114,7 +114,7 @@ class ProviderConnector {
         await this.checkRateLimit();
 
         const res = await withTimeout(this.provider.send('eth_getBlockByNumber', [`0x${blockNumber.toString(16)}`, true]))
-        return sanitize(res);
+        return res ? sanitize(res) : null;
     }
 
     async fetchBlockWithTransactions(blockNumber) {
