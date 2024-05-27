@@ -91,9 +91,19 @@ const getProvider = function(url) {
 };
 
 class ProviderConnector {
-    constructor(server) {
+    constructor(server, limiter) {
         if (!server) throw '[ProviderConnector] Missing server parameter';
         this.provider = getProvider(server);
+        this.limiter = limiter;
+    }
+
+    async checkRateLimit() {
+        if (this.limiter) {
+            const { blocked: shouldLimit } = await this.limiter.wouldLimit();
+            if (shouldLimit)
+                throw new Error('Rate limited');
+            await this.limiter.limit();
+        }
     }
 
     fetchLatestBlock() {
@@ -101,6 +111,8 @@ class ProviderConnector {
     }
 
     async fetchRawBlockWithTransactions(blockNumber) {
+        await this.checkRateLimit();
+
         const res = await withTimeout(this.provider.send('eth_getBlockByNumber', [`0x${blockNumber.toString(16)}`, true]))
         return sanitize(res);
     }
@@ -114,6 +126,8 @@ class ProviderConnector {
     }
 
     async fetchTransactionReceipt(transactionHash) {
+        await this.checkRateLimit();
+
         try {
             return await withTimeout(this.provider.getTransactionReceipt(transactionHash));
         } catch(error) {

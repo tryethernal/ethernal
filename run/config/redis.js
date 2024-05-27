@@ -1,14 +1,16 @@
+const { getRedisHost, getRedisPort, getRedisUsername, getRedisPassword, getRedisTls, getRedisTlsSentinel } = require('../lib/env');
+
 module.exports = {
     development: {
-        "host": process.env.REDIS_HOST,
-        "port": process.env.REDIS_PORT,
+        'host': getRedisHost(),
+        'port': getRedisPort(),
     },
     production: {
-        "host": process.env.REDIS_HOST,
-        "port": process.env.REDIS_PORT,
-        "username": process.env.REDIS_USERNAME,
-        "password": process.env.REDIS_PASSWORD,
-        "tls": process.env.ENABLE_REDIS_TLS,
-        "enableTLSForSentinelMode": process.env.ENABLE_REDIS_TLS_SENTINEL
+        'host': getRedisHost(),
+        'port': getRedisPort(),
+        'username': getRedisUsername(),
+        'password': getRedisPassword(),
+        'tls': getRedisTls(),
+        'enableTLSForSentinelMode': getRedisTlsSentinel()
     }
 }

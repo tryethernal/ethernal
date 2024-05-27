@@ -1,3 +1,4 @@
+require('../mocks/lib/rateLimiter');
 require('../mocks/lib/rpc');
 require('../mocks/lib/queue');
 require('../mocks/lib/firebase');
@@ -7,6 +8,7 @@ const { Transaction } = require('../mocks/models');
 
 const db = require('../../lib/firebase');
 const { ProviderConnector } = require('../../lib/rpc');
+const { enqueue } = require('../../lib/queue');
 
 const receiptSync = require('../../jobs/receiptSync');
 
@@ -31,7 +33,6 @@ describe('receiptSync', () => {
         receiptSync({ data : { transactionId: 1 }})
             .catch(error => {
                 expect(error.message).toEqual('Failed to fetch receipt');
-                expect(db.incrementFailedAttempts).toHaveBeenCalledWith(1);
                 done();
             });
     });
@@ -54,23 +55,34 @@ describe('receiptSync', () => {
             });
     });
 
-    // it('Should return if sync is disabled', (done) => {
-    //     jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
-    //         workspace: {
-    //             rpcServer: 'rpc',
-    //             explorer: {
-    //                 shouldSync: false,
-    //                 stripeSubscription: { status: 'active' }
-    //             }
-    //         },
-    //     });
+    it('Should re-enqueue if rate limited', (done) => {
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+            id: 1,
+            hash: '0x123',
+            workspace: {
+                id: 1,
+                rpcServer: 'rpc',
+                rateLimitInterval: 5000,
+                explorer: {
+                    stripeSubscription: { status: 'active' }
+                }
+            },
+        });
+        ProviderConnector.mockImplementationOnce(() => ({
+            fetchTransactionReceipt: jest.fn().mockRejectedValueOnce({ message: 'Rate limited' })
+        }));
 
-    //     receiptSync({ data : { transactionId: 1 }})
-    //         .then(res => {
-    //             expect(res).toEqual('Sync is disabled');
-    //             done();
-    //         });
-    // });
+        receiptSync({ opts: { priority: 1 }, data : { transactionId: 1, source: 'cli-light', rateLimited: true }})
+            .then(res => {
+                expect(enqueue).toHaveBeenCalledWith('receiptSync', 'receiptSync-1-0x123', {
+                    transactionId: 1,
+                    source: 'cli-light',
+                    rateLimited: true
+                }, 1, null, 5000);
+                expect(res).toEqual('Re-enqueuing: Rate limited');
+                done();
+            });
+    });
 
     it('Should return if RPC is unreachable', (done) => {
         jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({

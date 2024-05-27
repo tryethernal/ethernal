@@ -1,6 +1,8 @@
 const { ProviderConnector } = require('../lib/rpc');
 const { Workspace, Explorer, StripeSubscription, Transaction, TransactionReceipt, RpcHealthCheck } = require('../models');
 const db = require('../lib/firebase');
+const { enqueue } = require('../lib/queue');
+const RateLimiter = require('../lib/rateLimiter');
 const logger = require('../lib/logger');
 
 module.exports = async job => {
@@ -14,7 +16,7 @@ module.exports = async job => {
             {
                 model: Workspace,
                 as: 'workspace',
-                attributes: ['id', 'rpcServer'],
+                attributes: ['id', 'rpcServer', 'rateLimitInterval', 'rateLimitMaxInInterval'],
                 include: [
                     {
                         model: Explorer,
@@ -46,19 +48,38 @@ module.exports = async job => {
     if (!transaction.workspace)
         return 'Missing workspace';
 
-    if (!transaction.workspace.explorer)
+    const workspace = transaction.workspace;
+
+    if (!workspace.explorer)
         return 'Inactive explorer';
 
-    if (transaction.workspace.rpcHealthCheck && transaction.workspace.rpcHealthCheckEnabled && !transaction.workspace.rpcHealthCheck.isReachable)
+    if (workspace.rpcHealthCheck && workspace.rpcHealthCheckEnabled && !workspace.rpcHealthCheck.isReachable)
         return 'RPC is unreachable';
 
-    if (!transaction.workspace.explorer.stripeSubscription)
+    if (!workspace.explorer.stripeSubscription)
         return 'No active subscription';
 
-    const providerConnector = new ProviderConnector(transaction.workspace.rpcServer);
+    let limiter;
+    if (data.rateLimited && workspace.rateLimitInterval && workspace.rateLimitMaxInInterval)
+        limiter = new RateLimiter(workspace.id, workspace.rateLimitInterval, workspace.rateLimitMaxInInterval);
+
+    const providerConnector = new ProviderConnector(workspace.rpcServer, limiter);
 
     try {
-        const receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
+        let receipt;
+        try {
+            receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
+        } catch(error) {
+            if (error.message == 'Rate limited') {
+                const priority = job.opts.priority || data.source == 'cli-light' ? 1 : 10;
+                await enqueue('receiptSync', `receiptSync-${workspace.id}-${transaction.hash}`, {
+                    transactionId: transaction.id,
+                    source: data.source,
+                    rateLimited: data.rateLimited
+                }, priority, null, workspace.rateLimitInterval);
+                return `Re-enqueuing: ${error.message}`
+            }
+        }
 
         if (!receipt)
             throw new Error('Failed to fetch receipt');
@@ -66,7 +87,7 @@ module.exports = async job => {
         return db.storeTransactionReceipt(data.transactionId, receipt);
     } catch(error) {
         logger.error(error.message, { location: 'jobs.receiptSync', error, data });
-        await db.incrementFailedAttempts(transaction.workspace.id);
+        // await db.incrementFailedAttempts(transaction.workspace.id);
         throw error;
     } 
 };
