@@ -1605,7 +1605,9 @@ module.exports = (sequelize, DataTypes) => {
                 Math.max(this.getDataValue('integrityCheckStartBlockNumber'), 0) :
                 null;
         }
-    }
+    },
+    rateLimitInterval: DataTypes.INTEGER,
+    rateLimitMaxInInterval: DataTypes.INTEGER
   }, {
     hooks: {
         afterCreate(workspace, options) {

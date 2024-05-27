@@ -1,7 +1,7 @@
 const queues = require("../queues");
 const { sanitize } = require("./utils");
 
-const uniqueQueues = ["blockSync", "batchBlockSync"];
+const uniqueQueues = [];
 
 const MAX_BATCH_SIZE = 2000;
 

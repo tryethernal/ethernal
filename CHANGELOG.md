@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.35.0] - 2024-05-27
+### Added
+- Introduce Rate Limiter
+
+### Chnaged
+- Receipt processing is queued in the block processing job, not anymore in the Block mode afterCommit hook
+
+## [3.34.9] - 2024-05-22
+### Removed
+- Skipping some tests
+
 ## [3.34.8] - 2024-05-22
 ### Changed
 - Deactivate filtering on some columns where it wasn't useful and causing display issues on mobile
