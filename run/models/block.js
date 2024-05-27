@@ -7,7 +7,7 @@ const { trigger } = require('../lib/pusher');
 const { enqueue, bulkEnqueue } = require('../lib/queue');
 const { getNodeEnv } = require('../lib/env');
 const moment = require('moment');
-const STALLED_BLOCK_REMOVAL_DELAY = getNodeEnv() == 'production' ? 1 * 60 * 1000 : 15 * 60 * 1000;
+const STALLED_BLOCK_REMOVAL_DELAY = getNodeEnv() == 'production' ? 5 * 60 * 1000 : 15 * 60 * 1000;
 
 module.exports = (sequelize, DataTypes) => {
   class Block extends Model {

@@ -126,6 +126,8 @@ class ProviderConnector {
     }
 
     async fetchTransactionReceipt(transactionHash) {
+        await this.checkRateLimit();
+
         try {
             return await withTimeout(this.provider.getTransactionReceipt(transactionHash));
         } catch(error) {
