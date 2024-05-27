@@ -91,7 +91,7 @@ module.exports = async job => {
         }
 
         if (!block)
-            throw new Error("Couldn't fetch block from provider");
+            return "Couldn't fetch block from provider";
 
         if (await workspace.explorer.hasReachedTransactionQuota())
             return 'Transaction quota reached';
@@ -112,7 +112,8 @@ module.exports = async job => {
             jobs.push({
                 name: `receiptSync-${workspace.id}-${transaction.hash}`,
                 data: {
-                    transactionId: transaction.id,
+                    transactionHash: transaction.hash,
+                    workspaceId: workspace.id,
                     source: data.source,
                     rateLimited: data.rateLimited
                 }
