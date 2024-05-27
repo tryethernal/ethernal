@@ -118,7 +118,6 @@ module.exports = async job => {
 
         return 'Block synced';
     } catch(error) {
-        console.log(error)
         logger.error(error.message, { location: 'jobs.blockSync', error, data });
         // await db.incrementFailedAttempts(workspace.id);
         throw error;

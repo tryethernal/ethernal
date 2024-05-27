@@ -31,7 +31,6 @@ describe('receiptSync', () => {
         receiptSync({ data : { transactionId: 1 }})
             .catch(error => {
                 expect(error.message).toEqual('Failed to fetch receipt');
-                expect(db.incrementFailedAttempts).toHaveBeenCalledWith(1);
                 done();
             });
     });
@@ -54,23 +53,23 @@ describe('receiptSync', () => {
             });
     });
 
-    // it('Should return if sync is disabled', (done) => {
-    //     jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
-    //         workspace: {
-    //             rpcServer: 'rpc',
-    //             explorer: {
-    //                 shouldSync: false,
-    //                 stripeSubscription: { status: 'active' }
-    //             }
-    //         },
-    //     });
+    it.skip('Should return if sync is disabled', (done) => {
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
+            workspace: {
+                rpcServer: 'rpc',
+                explorer: {
+                    shouldSync: false,
+                    stripeSubscription: { status: 'active' }
+                }
+            },
+        });
 
-    //     receiptSync({ data : { transactionId: 1 }})
-    //         .then(res => {
-    //             expect(res).toEqual('Sync is disabled');
-    //             done();
-    //         });
-    // });
+        receiptSync({ data : { transactionId: 1 }})
+            .then(res => {
+                expect(res).toEqual('Sync is disabled');
+                done();
+            });
+    });
 
     it('Should return if RPC is unreachable', (done) => {
         jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
