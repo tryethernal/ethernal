@@ -1,20 +1,17 @@
 const { RedisRateLimiter } = require('rolling-rate-limiter');
 const Redis = require('ioredis');
+const config = require('../config/redis')[process.env.NODE_ENV || 'development']
 
-const redis = new Redis({
-    port: process.env.REDIS_PORT,
-    host: process.env.REDIS_HOST
-});
+const redis = new Redis(config);
 
 class RateLimiter {
 
-    constructor(id, interval) {
+    constructor(id, interval, maxInInterval) {
         this.id = id;
         this.limiter = new RedisRateLimiter({
             client: redis,
             namespace: 'rate-limiter',
-            interval: interval,
-            maxInInterval: 5
+            interval, maxInInterval
         });
     }
 

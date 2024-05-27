@@ -99,9 +99,10 @@ class ProviderConnector {
 
     async checkRateLimit() {
         if (this.limiter) {
-            const shouldLimit = await this.limiter.limit();
+            const { blocked: shouldLimit } = await this.limiter.wouldLimit();
             if (shouldLimit)
                 throw new Error('Rate limited');
+            await this.limiter.limit();
         }
     }
 

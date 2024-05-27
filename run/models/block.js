@@ -79,20 +79,10 @@ module.exports = (sequelize, DataTypes) => {
           if (workspace.public) {
             await enqueue('removeStalledBlock', `removeStalledBlock-${block.id}`, { blockId: block.id }, null, null, STALLED_BLOCK_REMOVAL_DELAY);
             const afterCreateFn = async () => {
-              const transactions = block.transactions;
-              const jobs = [];
-              for (let i = 0; i < transactions.length; i++) {
-                const transaction = transactions[i];
-                jobs.push({
-                  name: `receiptSync-${workspace.id}-${transaction.hash}`,
-                  data: { transactionId: transaction.id }
-                });
-              }
-              await bulkEnqueue('receiptSync', jobs);
               if (workspace.tracing == 'other') {
                 const jobs = [];
-                for (let i = 0; i < transactions.length; i++) {
-                  const transaction = transactions[i];
+                for (let i = 0; i < block.transactions.length; i++) {
+                  const transaction = block.transactions[i];
                   jobs.push({
                     name: `processTransactionTrace-${workspace.id}-${transaction.hash}`,
                     data: { transactionId: transaction.id }

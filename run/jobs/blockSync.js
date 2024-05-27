@@ -3,6 +3,7 @@ const { Workspace, Explorer, StripeSubscription, StripePlan, RpcHealthCheck, Blo
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 const { processRawRpcObject } = require('../lib/utils');
+const { enqueue, bulkEnqueue } = require('../lib/queue');
 const RateLimiter = require('../lib/rateLimiter');
 
 module.exports = async job => {
@@ -64,7 +65,9 @@ module.exports = async job => {
     else if (data.source != 'recovery' && workspace.integrityCheck && workspace.integrityCheck.isRecovering)
         await db.updateWorkspaceIntegrityCheck(workspace.id, { status: 'healthy' });
 
-    const limiter = new RateLimiter(workspace.id, 60000);
+    let limiter;
+    if (data.rateLimited && workspace.rateLimitInterval && workspace.rateLimitMaxInInterval)
+        limiter = new RateLimiter(workspace.id, workspace.rateLimitInterval, workspace.rateLimitMaxInInterval);
     const providerConnector = new ProviderConnector(workspace.rpcServer, limiter);
     let block;
 
@@ -72,7 +75,19 @@ module.exports = async job => {
         try {
             block = await providerConnector.fetchRawBlockWithTransactions(data.blockNumber);
         } catch(error) {
-            // enqueue but first get when we it's safe
+            if (error.message == 'Rate limited') {
+                const priority = data.source == 'cli-light' ? 1 : 10;
+                await enqueue('blockSync', `blockSync-${workspace.id}-${data.blockNumber}`, {
+                    userId: workspace.user.firebaseUserId,
+                    workspace: workspace.name,
+                    blockNumber: data.blockNumber,
+                    source: data.source,
+                    rateLimited: data.rateLimited
+                }, priority, null, workspace.rateLimitInterval);
+                return `Re-enqueuing: ${error.message}`
+            }
+            else
+                throw error;
         }
 
         if (!block)
@@ -90,10 +105,22 @@ module.exports = async job => {
         if (!syncedBlock)
             throw new Error("Couldn't store block");
 
+        const transactions = syncedBlock.transactions;
+        const jobs = [];
+        for (let i = 0; i < transactions.length; i++) {
+            const transaction = transactions[i];
+            jobs.push({
+                name: `receiptSync-${workspace.id}-${transaction.hash}`,
+                data: { transactionId: transaction.id }
+            });
+        }
+        await bulkEnqueue('receiptSync', jobs, job.opts.priority);
+
         return 'Block synced';
     } catch(error) {
+        console.log(error)
         logger.error(error.message, { location: 'jobs.blockSync', error, data });
-        await db.incrementFailedAttempts(workspace.id);
+        // await db.incrementFailedAttempts(workspace.id);
         throw error;
     }
 };
