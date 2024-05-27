@@ -71,7 +71,7 @@ module.exports = async job => {
             receipt = await providerConnector.fetchTransactionReceipt(transaction.hash);
         } catch(error) {
             if (error.message == 'Rate limited') {
-                const priority = job.opts.priority || data.source == 'cli-light' ? 1 : 10;
+                const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
                 await enqueue('receiptSync', `receiptSync-${workspace.id}-${transaction.hash}`, {
                     transactionId: transaction.id,
                     source: data.source,

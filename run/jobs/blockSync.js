@@ -76,7 +76,7 @@ module.exports = async job => {
             block = await providerConnector.fetchRawBlockWithTransactions(data.blockNumber);
         } catch(error) {
             if (error.message == 'Rate limited') {
-                const priority = job.opts.priority || data.source == 'cli-light' ? 1 : 10;
+                const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
                 await enqueue('blockSync', `blockSync-${workspace.id}-${data.blockNumber}`, {
                     userId: workspace.user.firebaseUserId,
                     workspace: workspace.name,
