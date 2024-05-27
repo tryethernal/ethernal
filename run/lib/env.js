@@ -29,5 +29,11 @@ module.exports = {
     getSoketiPort: () => process.env.SOKETI_PORT,
     getSoketiScheme: () => process.env.SOKETI_SCHEME,
     getSoketiUseTLS: () => process.env.SOKETI_USE_TLS,
-    getDiscordFeedbackChannelWebhook: () => process.env.DISCORD_FEEDBACK_CHANNEL_WEBHOOK
+    getDiscordFeedbackChannelWebhook: () => process.env.DISCORD_FEEDBACK_CHANNEL_WEBHOOK,
+    getRedisHost: () => process.env.REDIS_HOST,
+    getRedisPort: () => process.env.REDIS_PORT,
+    getRedisUsername: () => process.env.REDIS_USERNAME,
+    getRedisPassword: () => process.env.REDIS_PASSWORD,
+    getRedisTls: () => process.env.ENABLE_REDIS_TLS,
+    getRedisTlsSentinel: () => process.env.ENABLE_REDIS_TLS_SENTINEL
 };
