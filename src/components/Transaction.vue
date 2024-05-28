@@ -8,7 +8,7 @@
             </v-row>
             <v-row>
                 <v-col cols="4">
-                    <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
+                    <v-skeleton-loader class="transparent-skeleton" type="list-item-three-line"></v-skeleton-loader>
                 </v-col>
                 <v-col cols="4">
                     <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
@@ -196,7 +196,7 @@
             <h2 class="text-truncate mb-2">Tx {{ hash }}</h2>
             <v-row>
                 <v-col>
-                    Cannot find transaction. It might not have been picked up yet by our indexed.
+                    Cannot find transaction. It might not have been picked up yet by our indexer.
                 </v-col>
             </v-row>
         </template>
