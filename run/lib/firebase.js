@@ -1387,7 +1387,7 @@ const getWorkspaceTransaction = async (workspaceId, hash) => {
     const workspace = await Workspace.findByPk(workspaceId);
     const transaction = await workspace.findTransaction(hash);
 
-    return transaction.toJSON();
+    return transaction ? transaction.toJSON() : null;
 };
 
 const getBlockTransactions = async (workspaceId, blockNumber, page = 1, itemsPerPage = 10, order = 'DESC', orderBy = 'timestamp', withCount = 'true') => {

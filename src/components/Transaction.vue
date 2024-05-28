@@ -35,8 +35,8 @@
             <v-row>
                 <v-col>
                     <v-alert dense text type="warning" class="my-2" v-if="transaction.state == 'syncing'">
-                        Transaction has been picked up, and is currently still being processed.
-                        Once it's finished, additional data will be displayed here.
+                        Transaction has been picked up by the indexer, and is currently still being processed.
+                        Once it's finished, additional data will be displayed.
                     </v-alert>
                     <h2 class="text-truncate mb-2">Tx {{ transaction.hash }}</h2>
                 </v-col>
@@ -106,14 +106,14 @@
                 </v-col>
             </v-row>
             <v-row class="mb-4">
-                <v-col lg="2" md="6" sm="12">
+                <v-col lg="2" md="6" sm="12" v-if="transaction.receipt">
                     <div class="text-overline">Gas Used</div>
                     <span v-if="transaction.receipt">{{ parseInt(transaction.receipt.gasUsed).toLocaleString() }}</span>
                     <v-chip small class="grey white--text" v-else>
                         Not Available
                     </v-chip>
                 </v-col>
-                <v-col lg="2" md="6" sm="12">
+                <v-col lg="2" md="6" sm="12" v-if="transaction.receipt">
                     <div class="text-overline">Gas Price</div>
                     {{ getGasPriceFromTransaction(transaction) | fromWei('gwei', chain.token) }}
                 </v-col>
@@ -196,7 +196,7 @@
             <h2 class="text-truncate mb-2">Tx {{ hash }}</h2>
             <v-row>
                 <v-col>
-                    Cannot find transaction. If it just happened, it might still be in the mempool. Data will automatically appear when available.
+                    Cannot find transaction. It might not have been picked up yet by our indexed.
                 </v-col>
             </v-row>
         </template>
