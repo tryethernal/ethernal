@@ -75,7 +75,8 @@ describe('receiptSync', () => {
         receiptSync({ opts: { priority: 1 }, data : { transactionHash: '0x123', workspaceId: 1, source: 'cli-light', rateLimited: true }})
             .then(res => {
                 expect(enqueue).toHaveBeenCalledWith('receiptSync', 'receiptSync-1-0x123', {
-                    transactionId: 1,
+                    transactionHash: '0x123',
+                    workspaceId: 1,
                     source: 'cli-light',
                     rateLimited: true
                 }, 1, null, 5000);
