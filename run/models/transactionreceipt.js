@@ -134,8 +134,8 @@ module.exports = (sequelize, DataTypes) => {
             }
             await receipt.insertAnalyticEvent(options.transaction);
 
-            const transactionEvent = await fullTransaction.getEvent();
-            if (!transactionEvent)
+            const event = await fullTransaction.getEvent();
+            if (!event)
                 throw new Error('Could not create event');
 
             if (options.transaction) {
