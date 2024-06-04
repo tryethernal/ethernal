@@ -29,12 +29,17 @@ module.exports = {
             allowNull: false
           },
           amount: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.FLOAT,
             allowNull: false
           },
           interval: {
             type: Sequelize.INTEGER,
             allowNull: false
+          },
+          active: {
+            type: Sequelize.BOOLEAN,
+            allowNull: false,
+            defaultValue: true
           },
           createdAt: {
             allowNull: false,
@@ -63,27 +68,33 @@ module.exports = {
                 }
             },
           },
+          address: {
+            type: Sequelize.STRING,
+            allowNull: false,
+          },
           amount: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.FLOAT,
             allowNull: false,
           },
           transactionHash: {
             type: Sequelize.STRING,
-            allowNull: false,
+            allowNull: true
           },
-          timestamp: {
+          createdAt: {
             type: Sequelize.DATE,
             allowNull: false
           },
-          createdAt: {
-            allowNull: false,
-            type: Sequelize.DATE
-          },
           updatedAt: {
-            allowNull: false,
-            type: Sequelize.DATE
+            type: Sequelize.DATE,
+            allowNull: false
           }
         }, { transaction });
+
+        await queryInterface.sequelize.query(`
+          CREATE UNIQUE INDEX "faucet_drip_address_faucet_id_pending_state"
+          ON faucet_drips("explorerFaucetId", "address")
+          WHERE "transactionHash" IS NULL;
+      `, { transaction });
 
         await transaction.commit();
     } catch(error) {
@@ -95,8 +106,8 @@ module.exports = {
   async down(queryInterface, Sequelize) {
       const transaction = await queryInterface.sequelize.transaction();
       try {
-          await queryInterface.dropTable('explorer_faucets', { transaction });
           await queryInterface.dropTable('faucet_drips', { transaction });
+          await queryInterface.dropTable('explorer_faucets', { transaction });
 
           await transaction.commit();
       } catch(error) {

@@ -24,7 +24,7 @@ const { sanitize } = require('../lib/utils');
 
 export default {
     name: 'HashLink',
-    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName', 'xsHash', 'tokenId', 'unlink', 'contract'],
+    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName', 'xsHash', 'tokenId', 'unlink', 'contract', 'customLabel'],
     data: () => ({
         copied: false,
         token: null,
@@ -82,6 +82,8 @@ export default {
             }
         },
         name() {
+            if (this.customLabel)
+                return this.customLabel;
             if (this.withName) {
                 if (this.token && this.withTokenName) {
                     if (this.token.symbol && !this.withTokenName) return this.token.symbol;

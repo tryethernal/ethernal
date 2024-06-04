@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const ethers = require('ethers');
 const { sanitize } = require('../lib/utils');
 const { isStripeEnabled } = require('../lib/flags');
 const { getDemoUserId } = require('../lib/env');
@@ -42,9 +43,7 @@ module.exports = (sequelize, DataTypes) => {
 
     static findBySlug(slug) {
         return Explorer.findOne({
-            where: {
-                slug: slug
-            },
+            where: { slug },
             include: [
                 {
                     model: sequelize.models.ExplorerDomain,
@@ -101,6 +100,11 @@ module.exports = (sequelize, DataTypes) => {
                     model: sequelize.models.Workspace,
                     attributes: ['name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
                     as: 'workspace'
+                },
+                {
+                    model: sequelize.models.ExplorerFaucet,
+                    attributes: ['id', 'address', 'amount', 'interval'],
+                    where: { active: true }
                 }
             ]
         });
@@ -149,6 +153,18 @@ module.exports = (sequelize, DataTypes) => {
 
     stopSync() {
         return this.update({ shouldSync: false });
+    }
+
+    async safeCreateFaucet(amount, interval) {
+        if (!amount || !interval)
+            throw new Error('Missing parameter');
+
+        const faucet = await this.getFaucet();
+        if (faucet)
+            throw new Error('This explorer already has a faucet.');
+
+        const { address, privateKey } = ethers.Wallet.createRandom();
+        return this.createFaucet({ address, privateKey, amount, interval, active: true });
     }
 
     async isActive() {

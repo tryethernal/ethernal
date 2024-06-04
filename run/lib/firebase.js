@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 const { getDemoUserId, getMaxBlockForSyncReset } = require('./env');
 const models = require('../models');
 const { firebaseHash }  = require('./crypto');
+const explorer = require('../models/explorer');
 
 const Op = Sequelize.Op;
 const User = models.User;
@@ -17,6 +18,152 @@ const StripePlan = models.StripePlan;
 const ExplorerDomain = models.ExplorerDomain;
 const RpcHealthCheck = models.RpcHealthCheck;
 const StripeQuotaExtension = models.StripeQuotaExtension;
+const ExplorerFaucet = models.ExplorerFaucet;
+const FaucetDrip = models.FaucetDrip;
+
+const getExplorerFaucet = async (explorerId) => {
+    if (!explorerId)
+        throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findByPk(explorerId);
+    if (!explorer)
+        throw new Error('Could not find explorer');
+
+    return explorer.getFaucet();
+};
+
+const createFaucetDrip = async (faucetId, address, amount, transactionHash) => {
+    if (!faucetId || !address || !amount || !transactionHash)
+        throw new Error('Missing parameter');
+
+    const faucet = await ExplorerFaucet.findByPk(faucetId);
+    if (!faucet)
+        throw new Error(`Can't find faucet`);
+
+    return faucet.safeCreateDrip(address, amount, transactionHash);
+};
+
+const getFaucetPrivateKey = async (faucetId) => {
+    if (!faucetId)
+        throw new Error('Missing parameter');
+
+    const { privateKey } = await ExplorerFaucet.findByPk(faucetId);
+    return privateKey;
+};
+
+const canReceiveFaucetTokens = async (faucetId, address) => {
+    if (!faucetId || !address)
+        throw new Error('Missing parameters');
+
+    const faucet = await ExplorerFaucet.findByPk(faucetId);
+    if (!faucet)
+        throw new Error(`Can't find faucet`);
+
+    return faucet.canReceiveTokens(address);
+};
+
+const deactivateFaucet = async (firebaseUserId, faucetId) => {
+    if (!firebaseUserId || !faucetId)
+        throw new Error('Missing parameter');
+
+    const faucet = await ExplorerFaucet.findOne({
+        where: {
+            id: faucetId,
+            '$explorer.admin.firebaseUserId$': firebaseUserId
+        },
+        include: {
+            model: Explorer,
+            as: 'explorer',
+            include: 'admin'
+        }
+    });
+
+    if (!faucet)
+        throw new Error('Could not find faucet');
+
+    return faucet.deactivate();
+};
+
+const activateFaucet = async (firebaseUserId, faucetId) => {
+    if (!firebaseUserId || !faucetId)
+        throw new Error('Missing parameter');
+
+    const faucet = await ExplorerFaucet.findOne({
+        where: {
+            id: faucetId,
+            '$explorer.admin.firebaseUserId$': firebaseUserId
+        },
+        include: {
+            model: Explorer,
+            as: 'explorer',
+            include: 'admin'
+        }
+    });
+
+    if (!faucet)
+        throw new Error('Could not find faucet');
+
+    return faucet.activate();
+};
+
+const getFaucet = async (id) => {
+    if (!id)
+        throw new Error('Missing parameter');
+
+    return ExplorerFaucet.findByPk(id, {
+        attributes: ['id', 'address', 'amount', 'interval', 'active'],
+        include: {
+            model: Explorer,
+            as: 'explorer',
+            attributes: ['id'],
+            include: {
+                model: Workspace,
+                as: 'workspace',
+                attributes: ['rpcServer']
+            }
+        }
+    });
+};
+
+const updateFaucet = async (firebaseUserId, faucetId, amount, interval) => {
+    if (!firebaseUserId || !faucetId || !amount)
+        throw new Error('Missing parameter');
+
+    const faucet = await ExplorerFaucet.findOne({
+        where: {
+            id: faucetId,
+            '$explorer.admin.firebaseUserId$': firebaseUserId
+        },
+        include: {
+            model: Explorer,
+            as: 'explorer',
+            include: 'admin'
+        }
+    });
+
+    if (!faucet)
+        throw new Error('Could not find faucet');
+
+    return faucet.safeUpdate(amount, interval);
+};
+
+const createFaucet = async (fireaseUserId, explorerId, amount, interval) => {
+    if (!fireaseUserId || !explorerId || !amount || !interval)
+        throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            '$admin.firebaseUserId$': fireaseUserId
+        },
+        include: 'admin'
+    });
+
+    if (!explorer)
+        throw new Error('Could not find explorer');
+
+    return explorer.safeCreateFaucet(amount, interval);
+};
 
 const getStripeSubscription = async (explorerId) => {
     if (!explorerId)
@@ -661,6 +808,11 @@ const getExplorerById = (userId, id, withDemo = false) => {
                         attributes: ['failedAttempts', 'isReachable']
                     }
                 ]
+            },
+            {
+                model: ExplorerFaucet,
+                as: 'faucet',
+                attributes: ['id', 'address', 'amount', 'interval', 'active']
             }
         ]
     });
@@ -2020,5 +2172,14 @@ module.exports = {
     destroyStripeQuotaExtension: destroyStripeQuotaExtension,
     getQuotaExtensionPlan: getQuotaExtensionPlan,
     getStripeSubscription: getStripeSubscription,
+    createFaucet: createFaucet,
+    updateFaucet: updateFaucet,
+    getFaucet: getFaucet,
+    activateFaucet: activateFaucet,
+    deactivateFaucet: deactivateFaucet,
+    canReceiveFaucetTokens: canReceiveFaucetTokens,
+    getFaucetPrivateKey: getFaucetPrivateKey,
+    createFaucetDrip: createFaucetDrip,
+    getExplorerFaucet: getExplorerFaucet,
     Workspace: Workspace
 };

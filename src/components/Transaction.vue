@@ -196,7 +196,8 @@
             <h2 class="text-truncate mb-2">Tx {{ hash }}</h2>
             <v-row>
                 <v-col>
-                    Cannot find transaction. It might not have been picked up yet by our indexer.
+                    Cannot find transaction. If you just sent it, it might not have been picked up yet by our indexer.
+                    This page will refresh automatically as soon as we find it.
                 </v-col>
             </v-row>
         </template>
@@ -322,3 +323,7 @@ export default {
     }
 }
 </script>
+<style scoped lang="sass">
+.v-skeleton-loader > .v-skeleton-loader__bone
+    background: transparent !important
+</style>

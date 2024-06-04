@@ -90,11 +90,31 @@ const getProvider = function(url) {
     return new provider(authenticatedUrl);
 };
 
+class WalletConnector {
+    constructor(server, privateKey) {
+        if (!server || !privateKey)
+            throw new Error('Missing parameters');
+
+        this.wallet = new ethers.Wallet(privateKey, getProvider(server));
+    }
+
+    send(to, value) {
+        return this.wallet.sendTransaction({
+            to,
+            value: ethers.utils.parseUnits(value.toString(), 'ether')
+        });
+    }
+}
+
 class ProviderConnector {
     constructor(server, limiter) {
         if (!server) throw '[ProviderConnector] Missing server parameter';
         this.provider = getProvider(server);
         this.limiter = limiter;
+    }
+
+    getBalance(address) {
+        return this.provider.getBalance(address);
     }
 
     async checkRateLimit() {
@@ -394,5 +414,6 @@ module.exports = {
     ProviderConnector: ProviderConnector,
     getProvider: getProvider,
     ERC721Connector: ERC721Connector,
+    WalletConnector: WalletConnector,
     getBalanceChange: getBalanceChange
 };

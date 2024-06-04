@@ -14,6 +14,39 @@ const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const secretMiddleware = require('../middlewares/secret');
 
+router.get('/:id/faucet', authMiddleware, async (req, res) => {
+    const data = req.params;
+
+    try {
+        const faucet = await db.getExplorerFaucet(req.params.id);
+        if (!faucet)
+            throw new Error('Could not find faucet');
+        if (!faucet.active && !req.query.authenticated)
+            throw new Error('Could not find faucet');
+
+        res.status(200).json(faucet);
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.faucets.id', error, data });
+        res.status(400).send(error.message);
+    }
+});
+
+router.post('/:id/faucets', authMiddleware, async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        if (!data.amount || !data.interval)
+            throw new Error('Missing parameters');
+
+        const { id, address } = await db.createFaucet(data.uid, req.params.id, data.amount, data.interval);
+
+        res.status(200).json({ id, address });
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.explorers.id.faucets', error, data });
+        res.status(400).send(error.message);
+    }
+});
+
 router.get('/billing', [authMiddleware, stripeMiddleware], async (req, res) => {
     const data = req.body.data;
 
@@ -611,14 +644,32 @@ router.get('/search', async (req, res) => {
 
         const capabilities = explorer.stripeSubscription.stripePlan.capabilities;
 
-        if (!capabilities.nativeToken)
-            explorer.token = 'ether';
-        if (!capabilities.totalSupply)
-            delete explorer.totalSupply;
-        if (!capabilities.branding)
-            explorer.themes = { 'default': {}};
+        const fields = {
+            id: explorer.id,
+            chainId: explorer.chainId,
+            domain: explorer.domain,
+            domains: explorer.domains,
+            l1Explorer: explorer.l1Explorer,
+            name: explorer.name,
+            rpcServer: explorer.rpcServer,
+            slug: explorer.slug,
+            admin: explorer.admin,
+            workspace: explorer.workspace
+        };
 
-        res.status(200).json({ explorer });
+        fields['nativeToken'] = capabilities.nativeToken ? explorer.token : 'ether';
+        fields['themes'] = capabilities.branding ? explorer.themes : { 'default': {}};
+
+        const faucet = await db.getExplorerFaucet(explorer.id);
+        if (faucet && faucet.active)
+            fields['faucet'] = {
+                id: faucet.id,
+                address: faucet.address,
+                amount: faucet.amount,
+                interval: faucet.interval
+            }
+
+        res.status(200).json({ explorer: fields });
     } catch(error) {
         logger.error(error.message, { location: 'get.api.explorers.search', error: error, data: data, queryParams: req.params });
         res.status(400).send(error.message);

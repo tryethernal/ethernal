@@ -10,19 +10,25 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      FaucetDrip.belongsTo(models.ExplorerFaucet, { foreignKey: 'explorerFaucetId', as: 'faucet' });
     }
   }
   FaucetDrip.init({
     explorerFaucetId: DataTypes.INTEGER,
-    amount: DataTypes.INTEGER,
+    address: {
+      type: DataTypes.STRING,
+      set(value) {
+          this.setDataValue('address', value.toLowerCase());
+      }
+    },
+    amount: DataTypes.FLOAT,
     transactionHash: DataTypes.STRING,
-    timestamp: DataTypes.DATE,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'FaucetDrip',
+    tableName: 'faucet_drips'
   });
   return FaucetDrip;
 };
