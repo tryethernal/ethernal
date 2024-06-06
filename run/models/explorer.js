@@ -5,7 +5,7 @@ const {
 const ethers = require('ethers');
 const { sanitize } = require('../lib/utils');
 const { isStripeEnabled } = require('../lib/flags');
-const { getDemoUserId } = require('../lib/env');
+const { getDemoUserId, getAppDomain } = require('../lib/env');
 const { enqueue } = require('../lib/queue');
 const Analytics = require('../lib/analytics');
 const analytics = new Analytics();
@@ -402,7 +402,12 @@ module.exports = (sequelize, DataTypes) => {
     userId: DataTypes.INTEGER,
     workspaceId: DataTypes.INTEGER,
     chainId: DataTypes.INTEGER,
-    domain: DataTypes.STRING,
+    domain: {
+        type: DataTypes.STRING,
+        get() {
+            return `${this.getDataValue('slug')}.${getAppDomain()}`;
+        }
+    },
     name: DataTypes.STRING,
     rpcServer: DataTypes.STRING,
     slug: DataTypes.STRING,

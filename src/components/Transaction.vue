@@ -262,7 +262,8 @@ export default {
         }, this);
     },
     destroyed() {
-        this.pusherUnsubscribe();
+        if (this.pusherUnsubscribe)
+            this.pusherUnsubscribe();
     },
     watch: {
         hash: {

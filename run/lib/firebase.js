@@ -19,7 +19,80 @@ const ExplorerDomain = models.ExplorerDomain;
 const RpcHealthCheck = models.RpcHealthCheck;
 const StripeQuotaExtension = models.StripeQuotaExtension;
 const ExplorerFaucet = models.ExplorerFaucet;
-const FaucetDrip = models.FaucetDrip;
+
+const getFaucetTransactionHistory = async (faucetId, page, itemsPerPage, order, orderBy) => {
+    if (!faucetId)
+        throw new Error('Missing parameter');
+
+    const faucet = await ExplorerFaucet.findByPk(faucetId);
+    if (!faucet)
+        throw new Error('Could not find faucet');
+
+    return faucet.getTransactionHistory(page, itemsPerPage, order, orderBy);
+};
+
+const getFaucetTokenVolume = async (faucetId, from, to) => {
+    if (!faucetId)
+        throw new Error('Missing parameter');
+
+    const faucet = await ExplorerFaucet.findByPk(faucetId);
+    if (!faucet)
+        throw new Error('Could not find faucet');
+
+    return faucet.getTokenVolume(from, to);
+};
+
+const getFaucetRequestVolume = async (faucetId, from, to) => {
+    if (!faucetId)
+        throw new Error('Missing parameter');
+
+    const faucet = await ExplorerFaucet.findByPk(faucetId);
+    if (!faucet)
+        throw new Error('Could not find faucet');
+
+    return faucet.getRequestVolume(from, to);
+};
+
+const deleteFaucet = async (firebaseUserId, faucetId) => {
+    if (!firebaseUserId || !faucetId)
+        throw new Error('Missing parameter');
+
+    const faucet = await ExplorerFaucet.findOne({
+        where: {
+            id: faucetId,
+            '$explorer.admin.firebaseUserId$': firebaseUserId
+        },
+        include: {
+            model: Explorer,
+            as: 'explorer',
+            include: 'admin'
+        }
+    });
+
+    if (!faucet)
+        throw new Error('Could not find faucet');
+
+    return faucet.safeDestroy();
+};
+
+const ownFaucet = async (firebaseUserId, faucetId) => {
+    if (!firebaseUserId || !faucetId)
+        throw new Error('Missing parameter');
+
+    const faucet = await ExplorerFaucet.findOne({
+        where: {
+            id: faucetId,
+            '$explorer.admin.firebaseUserId$': firebaseUserId
+        },
+        include: {
+            model: Explorer,
+            as: 'explorer',
+            include: 'admin'
+        }
+    });
+
+    return !!faucet;
+};
 
 const getExplorerFaucet = async (explorerId) => {
     if (!explorerId)
@@ -2181,5 +2254,10 @@ module.exports = {
     getFaucetPrivateKey: getFaucetPrivateKey,
     createFaucetDrip: createFaucetDrip,
     getExplorerFaucet: getExplorerFaucet,
+    deleteFaucet: deleteFaucet,
+    ownFaucet: ownFaucet,
+    getFaucetRequestVolume: getFaucetRequestVolume,
+    getFaucetTokenVolume: getFaucetTokenVolume,
+    getFaucetTransactionHistory: getFaucetTransactionHistory,
     Workspace: Workspace
 };

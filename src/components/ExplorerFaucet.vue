@@ -26,12 +26,24 @@
                             </v-card-actions>
                         </v-form>
                         <small>
-                            Max Frequency: {{ publicExplorer.faucet.amount }} CAGA, per address, {{ formattedFrequency }}.<br>
-                            Faucet Balance: <template v-if="balance">{{ balance | fromWei('ether', publicExplorer.token) }}</template><i v-else>Fetching...</i><br>
+                            Max Frequency: {{ publicExplorer.faucet.amount }} {{ tokenSymbol }}, per address, {{ formattedFrequency }}.<br>
+                            Faucet Balance: <template v-if="balance">{{ balance | fromWei('ether', tokenSymbol) }}</template><i v-else>Fetching...</i><br>
                             Faucet Address: <Hash-Link :type="'address'" :hash="publicExplorer.faucet.address" />
                         </small>
                     </v-card-text>
                 </v-card>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <h4>Analytics</h4>
+                <Explorer-Faucet-Analytics :id="publicExplorer.faucet.id" />
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <h4>History</h4>
+                <Explorer-Faucet-Transaction-History :id="publicExplorer.faucet.id" />
             </v-col>
         </v-row>
     </v-container>
@@ -40,13 +52,17 @@
 <script>
 const moment = require('moment');
 import { mapGetters } from 'vuex';
+import ExplorerFaucetAnalytics from './ExplorerFaucetAnalytics';
+import ExplorerFaucetTransactionHistory from './ExplorerFaucetTransactionHistory';
 import HashLink from './HashLink';
 import FromWei from '../filters/FromWei.js';
 
 export default{
     name: 'ExplorerFaucet',
     components: {
-        HashLink
+        HashLink,
+        ExplorerFaucetAnalytics,
+        ExplorerFaucetTransactionHistory
     },
     filters: {
         FromWei
@@ -57,14 +73,26 @@ export default{
         errorMessage: null,
         address: null,
         balance: null,
-        transactionHash: null
+        transactionHash: null,
+        pusherUnsubscribe: null
     }),
     mounted() {
-        this.server.getFaucetBalance(this.publicExplorer.faucet.id)
-            .then(({ data }) => this.balance = data.balance)
-            .catch(console.log);
+        this.refreshFaucetBalance();
+        this.pusherUnsubscribe = this.pusher.onNewTransaction(data => {
+            if (data.from == this.publicExplorer.faucet.address)
+                this.refreshFaucetBalance();
+        }, this);
+    },
+    destroyed() {
+        if (this.pusherUnsubscribe)
+            this.pusherUnsubscribe();
     },
     methods: {
+        refreshFaucetBalance() {
+            this.server.getFaucetBalance(this.publicExplorer.faucet.id)
+                .then(({ data }) => this.balance = data.balance)
+                .catch(console.log);
+        },
         requestTokens() {
             this.loading = true;
             this.transactionHash = null;
@@ -88,8 +116,8 @@ export default{
             return moment.duration(this.publicExplorer.faucet.interval, 'hours').asHours();
         },
         formattedFrequency() {
-            const hours = this.publicExplorer.faucet.interval;
-            const roundedHours = Math.round(hours * 2) / 2;
+            const roundedHours = Math.round(this.publicExplorer.faucet.interval * 2) / 2;
+
             // Calculate the total minutes based on the rounded hours
             const totalMinutes = roundedHours * 60;
             const days = Math.floor(totalMinutes / (24 * 60));
@@ -101,12 +129,12 @@ export default{
 
             if (days > 0) {
                 result += `${days > 1 ? days : ''} day${days > 1 ? 's' : ''}`;
-                if (remainingMinutesAfterDays >= 720) { // 720 minutes is 12 hours, i.e., half a day
+                if (remainingMinutesAfterDays >= 720) {
                     result += " and a half";
                 }
             } else if (displayHours > 0) {
                 result += `${displayHours > 1 ? displayHours : ''} hour${displayHours > 1 ? 's' : ''}`;
-                if (minutes >= 30) { // 30 minutes is half an hour
+                if (minutes >= 30) {
                     result += " and a half";
                 }
             } else if (minutes > 0) {

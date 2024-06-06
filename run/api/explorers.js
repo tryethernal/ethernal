@@ -14,29 +14,16 @@ const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const secretMiddleware = require('../middlewares/secret');
 
-router.get('/:id/faucet', authMiddleware, async (req, res) => {
-    const data = req.params;
-
-    try {
-        const faucet = await db.getExplorerFaucet(req.params.id);
-        if (!faucet)
-            throw new Error('Could not find faucet');
-        if (!faucet.active && !req.query.authenticated)
-            throw new Error('Could not find faucet');
-
-        res.status(200).json(faucet);
-    } catch(error) {
-        logger.error(error.message, { location: 'get.api.faucets.id', error, data });
-        res.status(400).send(error.message);
-    }
-});
-
 router.post('/:id/faucets', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
     try {
         if (!data.amount || !data.interval)
             throw new Error('Missing parameters');
+        if (isNaN(parseFloat(data.amount)) || parseFloat(data.amount) <= 0)
+            throw new Error('Amount needs to be greater than 0.')
+        if (isNaN(parseFloat(data.interval)) || parseFloat(data.interval) <= 0)
+            throw new Error('Interval needs to be greater than 0.')
 
         const { id, address } = await db.createFaucet(data.uid, req.params.id, data.amount, data.interval);
 
@@ -657,7 +644,7 @@ router.get('/search', async (req, res) => {
             workspace: explorer.workspace
         };
 
-        fields['nativeToken'] = capabilities.nativeToken ? explorer.token : 'ether';
+        fields['token'] = capabilities.nativeToken ? explorer.token : 'ether';
         fields['themes'] = capabilities.branding ? explorer.themes : { 'default': {}};
 
         const faucet = await db.getExplorerFaucet(explorer.id);

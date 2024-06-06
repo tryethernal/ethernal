@@ -1,4 +1,5 @@
 const express = require('express');
+const moment = require('moment');
 const router = express.Router();
 const logger = require('../lib/logger');
 const db = require('../lib/firebase');
@@ -6,6 +7,94 @@ const Lock = require('../lib/lock');
 const { ProviderConnector, WalletConnector } = require('../lib/rpc');
 const authMiddleware = require('../middlewares/auth');
 const workspaceAuth = require('../middlewares/workspaceAuth');
+
+router.get('/:id/transactionHistory', workspaceAuth, async (req, res) => {
+    const data = req.query;
+
+    try {
+        const faucet = await db.getFaucet(req.params.id)
+        if (!faucet)
+            throw new Error('Could not find faucet');
+
+        const { rows: transactions, count } = await db.getFaucetTransactionHistory(faucet.id, data.page, data.itemsPerPage, data.order, data.orderBy);
+
+        res.status(200).json({ transactions, count });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.faucets.id.transactionHistory', error });
+        res.status(400).send(error.message);
+    }
+});
+
+router.get('/:id/tokenVolume', workspaceAuth, async (req, res) => {
+    const data = req.query;
+
+    try {
+        if (!data.from || !data.to)
+            throw new Error('Missing parameter');
+
+        const faucet = await db.getFaucet(req.params.id)
+        if (!faucet)
+            throw new Error('Could not find faucet');
+
+        const tokens = await db.getFaucetTokenVolume(faucet.id, data.from, data.to);
+
+        res.status(200).json(tokens);
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.faucets.id.tokenVolume', error });
+        res.status(400).send(error.message);
+    }
+});
+
+router.get('/:id/requestVolume', workspaceAuth, async (req, res) => {
+    const data = req.query;
+
+    try {
+        if (!data.from || !data.to)
+            throw new Error('Missing parameter');
+
+        const faucet = await db.getFaucet(req.params.id)
+        if (!faucet)
+            throw new Error('Could not find faucet');
+
+        const requests = await db.getFaucetRequestVolume(faucet.id, data.from, data.to);
+
+        res.status(200).json(requests);
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.faucets.id.requestVolume', error });
+        res.status(400).send(error.message);
+    }
+});
+
+router.delete('/:id', authMiddleware, async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        await db.deleteFaucet(data.uid, req.params.id);
+
+        res.sendStatus(200);
+    } catch(error) {
+        logger.error(error.message, { location: 'delete.api.faucets.id', error, data });
+        res.status(400).send(error.message);
+    }
+});
+
+router.get('/:id/privateKey', authMiddleware, async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        const isAllowed = await db.ownFaucet(data.uid, req.params.id);
+        if (!isAllowed)
+            throw new Error('Could not find faucet');
+        const privateKey = await db.getFaucetPrivateKey(req.params.id)
+        if (!privateKey)
+            throw new Error('Could not find faucet');
+
+        res.status(200).json({ privateKey });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.faucets.id.privateKey', error });
+        res.status(400).send(error.message);
+    }
+});
 
 router.post('/:id/drip', workspaceAuth, async (req, res) => {
     const data = req.body.data;
@@ -21,9 +110,10 @@ router.post('/:id/drip', workspaceAuth, async (req, res) => {
         if (!faucet.active && !req.query.authenticated)
             throw new Error('Could not find faucet');
 
-        const allowed = await db.canReceiveFaucetTokens(req.params.id, data.address);
+        const { allowed, cooldown } = await db.canReceiveFaucetTokens(req.params.id, data.address);
+        console.log(allowed, cooldown)
         if (!allowed)
-            throw new Error('Too soon to claim more tokens for this address. Try again in');
+            throw new Error(`Too soon to claim more tokens for this address. Try again in ${moment.duration(cooldown, 'minutes').humanize()}.`);
 
         lock = new Lock(`${faucet.id}-${data.address}`, 60000);
         isLockAcquired = await lock.acquire();
@@ -112,29 +202,16 @@ router.put('/:id', authMiddleware, async (req, res) => {
     try {
         if (!data.amount && !data.interval)
             throw new Error('Missing parameters');
+        if (isNaN(parseFloat(data.amount)) || parseFloat(data.amount) <= 0)
+            throw new Error('Amount needs to be greater than zero.')
+        if (isNaN(parseFloat(data.interval)) || parseFloat(data.interval) <= 0)
+            throw new Error('Interval needs to be greater than zero.')
 
         await db.updateFaucet(data.uid, req.params.id, data.amount, data.interval);
 
         res.sendStatus(200);
     } catch(error) {
         logger.error(error.message, { location: 'put.api.faucets.id', error, data });
-        res.status(400).send(error.message);
-    }
-});
-
-router.get('/:id', workspaceAuth, async (req, res) => {
-    const data = req.params;
-
-    try {
-        const faucet = await db.getExplorerFaucet(req.params.id);
-        if (!faucet)
-            throw new Error('Could not find faucet');
-        if (!faucet.active && !req.query.authenticated)
-            throw new Error('Could not find faucet');
-
-        res.status(200).json(faucet);
-    } catch(error) {
-        logger.error(error.message, { location: 'get.api.faucets.id', error, data });
         res.status(400).send(error.message);
     }
 });
