@@ -29,7 +29,7 @@ module.exports = {
             allowNull: false
           },
           amount: {
-            type: Sequelize.FLOAT,
+            type: Sequelize.STRING,
             allowNull: false
           },
           interval: {
@@ -94,7 +94,12 @@ module.exports = {
           CREATE UNIQUE INDEX "faucet_drip_address_faucet_id_pending_state"
           ON faucet_drips("explorerFaucetId", "address")
           WHERE "transactionHash" IS NULL;
-      `, { transaction });
+        `, { transaction });
+
+        await queryInterface.sequelize.query(`
+          ALTER TABLE explorer_faucets
+          ADD CONSTRAINT positive_interval CHECK (interval > 0);
+        `, { transaction });
 
         await transaction.commit();
     } catch(error) {

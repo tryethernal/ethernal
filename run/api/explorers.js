@@ -5,7 +5,7 @@ const router = express.Router();
 const { isStripeEnabled } = require('../lib/flags');
 const { ProviderConnector } = require('../lib/rpc');
 const { Explorer } = require('../models');
-const { withTimeout } = require('../lib/utils');
+const { withTimeout, validateBNString } = require('../lib/utils');
 const { bulkEnqueue } = require('../lib/queue');
 const logger = require('../lib/logger');
 const PM2 = require('../lib/pm2');
@@ -20,10 +20,10 @@ router.post('/:id/faucets', authMiddleware, async (req, res) => {
     try {
         if (!data.amount || !data.interval)
             throw new Error('Missing parameters');
-        if (isNaN(parseFloat(data.amount)) || parseFloat(data.amount) <= 0)
-            throw new Error('Amount needs to be greater than 0.')
+        if (!validateBNString(data.amount))
+            throw new Error('Invalid amount.');
         if (isNaN(parseFloat(data.interval)) || parseFloat(data.interval) <= 0)
-            throw new Error('Interval needs to be greater than 0.')
+            throw new Error('Interval must be greater than 0.')
 
         const { id, address } = await db.createFaucet(data.uid, req.params.id, data.amount, data.interval);
 

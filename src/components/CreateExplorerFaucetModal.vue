@@ -50,6 +50,7 @@
     </v-dialog>
     </template>
 <script>
+const ethers = require('ethers');
 
 export default {
     name: 'CreateExplorerFaucetModal',
@@ -75,7 +76,7 @@ export default {
         },
         create() {
             this.loading = true;
-            this.server.createExplorerFaucet(this.options.explorerId, this.amount, this.interval)
+            this.server.createExplorerFaucet(this.options.explorerId, this.formattedAmount, this.interval * 60)
                 .then(() => this.close(true))
                 .catch(error => {
                     this.loading = false;
@@ -95,6 +96,11 @@ export default {
             this.interval = null;
             this.resolve = null;
             this.reject = null;
+        }
+    },
+    computed: {
+        formattedAmount() {
+            return ethers.utils.parseUnits(this.amount, 'ether').toString();
         }
     }
 }

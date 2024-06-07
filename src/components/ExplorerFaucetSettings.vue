@@ -29,7 +29,7 @@
                                     type="number"
                                     hint="Amount to send for each request"
                                     persistent-hint
-                                    v-model="explorer.faucet.amount"
+                                    v-model="amount"
                                     :suffix="`${explorer.token || 'ETH'}`"
                                     label="Drip Amount"></v-text-field>
                                 <v-text-field
@@ -43,7 +43,7 @@
                                     ]"
                                     type="number"
                                     hint="Minimum time between requests for each address"
-                                    v-model="explorer.faucet.interval"
+                                    v-model="interval"
                                     persistent-hint
                                     suffix="hours"
                                     label="Interval Between Drips"></v-text-field>
@@ -100,6 +100,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+const ethers = require('ethers');
 import store from '../plugins/store';
 import CreateExplorerFaucetModal from './CreateExplorerFaucetModal';
 import ExplorerFaucetSettingsDangerZone from './ExplorerFaucetSettingsDangerZone';
@@ -197,6 +198,22 @@ export default {
             return this.explorer && this.explorer.domains.length ?
                 this.explorer.domains[0].domain :
                 this.explorer.domain;
+        },
+        amount: {
+            get() {
+                return ethers.utils.formatUnits(this.faucet.amount).toString();
+            },
+            set(val) {
+                this.faucet.amount = ethers.utils.parseUnits(val).toString();
+            }
+        },
+        interval: {
+            get() {
+                return parseFloat(this.faucet.interval) / 60;
+            },
+            set(val) {
+                this.faucet.interval = parseFloat(val) * 60;
+            }
         }
     },
     watch: {

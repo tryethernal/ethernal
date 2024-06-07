@@ -99,10 +99,7 @@ class WalletConnector {
     }
 
     send(to, value) {
-        return this.wallet.sendTransaction({
-            to,
-            value: ethers.utils.parseUnits(value.toString(), 'ether')
-        });
+        return this.wallet.sendTransaction({ to, value });
     }
 }
 

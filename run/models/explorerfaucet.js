@@ -187,16 +187,8 @@ module.exports = (sequelize, DataTypes) => {
         return decrypt(this.getDataValue('privateKey')).slice(0, 66);
       }
     },
-    amount: DataTypes.FLOAT,
-    interval: {
-      type: DataTypes.INTEGER,
-      set(value) {
-        this.setDataValue('interval', parseFloat(value) * 60);
-      },
-      get() {
-        return parseFloat(this.getDataValue('interval')) / 60;
-      }
-    },
+    amount: DataTypes.STRING,
+    interval: DataTypes.INTEGER,
     active: DataTypes.BOOLEAN,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE

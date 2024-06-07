@@ -27,7 +27,7 @@
                                 </v-card-actions>
                             </v-form>
                             <small>
-                                Max Frequency: {{ publicExplorer.faucet.amount }} {{ tokenSymbol }} per address {{ formattedFrequency }}.<br>
+                                Max Frequency: {{ formattedAmount }} {{ tokenSymbol }} per address {{ formattedFrequency }}.<br>
                                 Faucet Balance: <template v-if="balance">{{ balance | fromWei('ether', tokenSymbol) }}</template><i v-else>Fetching...</i><br>
                                 Faucet Address: <Hash-Link :type="'address'" :hash="publicExplorer.faucet.address" />
                             </small>
@@ -73,7 +73,7 @@
 </template>
 
 <script>
-const moment = require('moment');
+const ethers = require('ethers');
 import { mapGetters } from 'vuex';
 import ExplorerFaucetAnalytics from './ExplorerFaucetAnalytics';
 import ExplorerFaucetTransactionHistory from './ExplorerFaucetTransactionHistory';
@@ -135,33 +135,41 @@ export default{
         tokenSymbol() {
             return this.publicExplorer.token || 'ETH';
         },
-        formattedCooldown() {
-            return moment.duration(this.publicExplorer.faucet.interval, 'hours').asHours();
+        formattedAmount() {
+            return ethers.utils.formatUnits(this.publicExplorer.faucet.amount);
         },
         formattedFrequency() {
-            const roundedHours = Math.round(this.publicExplorer.faucet.interval * 2) / 2;
-
-            // Calculate the total minutes based on the rounded hours
-            const totalMinutes = roundedHours * 60;
-            const days = Math.floor(totalMinutes / (24 * 60));
-            const remainingMinutesAfterDays = totalMinutes % (24 * 60);
-            const displayHours = Math.floor(remainingMinutesAfterDays / 60);
-            const minutes = remainingMinutesAfterDays % 60;
+            const roundedMinutes = Math.round(this.publicExplorer.faucet.interval);
+            const totalHours = roundedMinutes / 60;
+            const totalDays = totalHours / 24;
 
             let result = "every ";
 
-            if (days > 0) {
-                result += `${days > 1 ? days : ''} day${days > 1 ? 's' : ''}`;
-                if (remainingMinutesAfterDays >= 720) {
+            if (totalDays >= 1) {
+                const roundedDays = Math.round(totalDays * 2) / 2;
+                const dayPart = Math.floor(roundedDays);
+                const halfDay = roundedDays % 1 === 0.5;
+
+                result += `${dayPart > 1 ? dayPart : dayPart === 1 ? "" : ""} day${dayPart > 1 || dayPart === 0 ? 's' : ''}`;
+                if (halfDay) {
                     result += " and a half";
                 }
-            } else if (displayHours > 0) {
-                result += `${displayHours > 1 ? displayHours : ''} hour${displayHours > 1 ? 's' : ''}`;
-                if (minutes >= 30) {
+            } else if (totalHours >= 1) {
+                const roundedHours = Math.round(totalHours * 2) / 2;
+                const hourPart = Math.floor(roundedHours);
+                const halfHour = roundedHours % 1 === 0.5;
+
+                result += `${hourPart > 1 ? hourPart : hourPart === 1 ? "" : ""} hour${hourPart > 1 || hourPart === 0 ? 's' : ''}`;
+                if (halfHour) {
                     result += " and a half";
+                } else {
+                    const remainingMinutes = roundedMinutes % 60;
+                    if (remainingMinutes > 0) {
+                        result += ` and ${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''}`;
+                    }
                 }
-            } else if (minutes > 0) {
-                result += `${minutes > 1 ? minutes : ''} minute${minutes > 1 ? 's' : ''}`;
+            } else {
+                result += `${roundedMinutes} minute${roundedMinutes > 1 ? 's' : ''}`;
             }
 
             return result;

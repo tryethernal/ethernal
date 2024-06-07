@@ -4,6 +4,7 @@ const router = express.Router();
 const logger = require('../lib/logger');
 const db = require('../lib/firebase');
 const Lock = require('../lib/lock');
+const { validateBNString } = require('../lib/utils')
 const { ProviderConnector, WalletConnector } = require('../lib/rpc');
 const authMiddleware = require('../middlewares/auth');
 const workspaceAuth = require('../middlewares/workspaceAuth');
@@ -202,10 +203,10 @@ router.put('/:id', authMiddleware, async (req, res) => {
     try {
         if (!data.amount && !data.interval)
             throw new Error('Missing parameters');
-        if (isNaN(parseFloat(data.amount)) || parseFloat(data.amount) <= 0)
-            throw new Error('Amount needs to be greater than zero.')
+        if (!validateBNString(data.amount))
+            throw new Error('Invalid amount.')
         if (isNaN(parseFloat(data.interval)) || parseFloat(data.interval) <= 0)
-            throw new Error('Interval needs to be greater than zero.')
+            throw new Error('Interval must be greater than zero.')
 
         await db.updateFaucet(data.uid, req.params.id, data.amount, data.interval);
 
