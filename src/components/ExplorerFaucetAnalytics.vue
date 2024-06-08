@@ -21,6 +21,7 @@
 
 <script>
 const moment = require('moment');
+const ethers = require('ethers');
 import { mapGetters } from 'vuex';
 import LineChart from './LineChart';
 
@@ -66,7 +67,7 @@ export default {
                 .then(({ data }) => {
                     this.charts['tokenVolume'] = {
                         xLabels: data.map(t => t.date),
-                        data: data.map(t => parseFloat(t.amount))
+                        data: data.map(t => parseFloat(ethers.utils.formatUnits(t.amount)))
                     };
                 })
                 .catch(console.log);

@@ -73,7 +73,7 @@ module.exports = {
             allowNull: false,
           },
           amount: {
-            type: Sequelize.FLOAT,
+            type: Sequelize.STRING,
             allowNull: false,
           },
           transactionHash: {

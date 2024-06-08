@@ -10,7 +10,7 @@
 
                             <v-switch @click.prevent="toggleFaucet()" :loading="switchLoading || active === null" class="mt-1" v-model="active" inset :label="`${faucet.active ? 'Active' : 'Inactive'}`"></v-switch>
                             <strong>URL:</strong> <a :href="`//${mainExplorerDomain}/faucet`" target="_blank">https://{{ mainExplorerDomain }}/faucet</a><br>
-                            <strong>Address:</strong> <Hash-Link :type="'address'" :hash="faucet.address" :fullHash="true" /><br>
+                            <strong>Address:</strong> <Hash-Link :type="'address'" :hash="faucet.address" :fullHash="true" :withName="false" /><br>
                             <strong>Balance:</strong>&nbsp;
                             <template v-if="balance">{{ balance | fromWei('ether', explorer.token) }}</template>
                             <template v-else><i>Fetching...</i></template>

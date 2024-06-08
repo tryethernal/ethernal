@@ -60,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
         )
         SELECT
           days.day::timestamptz AS date,
-          COALESCE(SUM(faucet_drips.amount), 0) AS amount
+          COALESCE(SUM(faucet_drips.amount::numeric), 0)::varchar(255) AS amount
         FROM days
         LEFT JOIN faucet_drips
           ON date_trunc('day', faucet_drips."createdAt") = days.day

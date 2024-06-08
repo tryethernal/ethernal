@@ -596,6 +596,11 @@ router.post('/', authMiddleware, async (req, res) => {
             await stripe.subscriptions.create(stripeParams);
         }
 
+        if (data.faucet && data.faucet.amount && data.faucet.interval) {
+            const { id, address } = await db.createFaucet(data.uid, req.params.id, data.faucet.amount, data.faucet.interval);
+            explorer['faucet'] = { id, address, amount: data.faucet.amount, interval: data.faucet.interval };
+        }
+
         res.status(200).send(explorer);
     } catch(error) {
         logger.error(error.message, { location: 'post.api.explorers', error: error, data: data, queryParams: req.params });

@@ -29,7 +29,7 @@
                             <small>
                                 Max Frequency: {{ formattedAmount }} {{ tokenSymbol }} per address {{ formattedFrequency }}.<br>
                                 Faucet Balance: <template v-if="balance">{{ balance | fromWei('ether', tokenSymbol) }}</template><i v-else>Fetching...</i><br>
-                                Faucet Address: <Hash-Link :type="'address'" :hash="publicExplorer.faucet.address" />
+                                Faucet Address: <Hash-Link :withName="false" :type="'address'" :hash="publicExplorer.faucet.address" :fullHash="true" />
                             </small>
                         </v-card-text>
                     </v-card>

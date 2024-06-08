@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
           this.setDataValue('address', value.toLowerCase());
       }
     },
-    amount: DataTypes.FLOAT,
+    amount: DataTypes.STRING,
     transactionHash: DataTypes.STRING,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE
