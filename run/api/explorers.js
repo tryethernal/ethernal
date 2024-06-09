@@ -558,8 +558,9 @@ router.post('/', authMiddleware, async (req, res) => {
         if (!explorer)
             throw new Error('Could not create explorer.');
 
+        let stripePlan;
         if (!isStripeEnabled() || user.canUseDemoPlan) {
-            const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
+            stripePlan = await db.getStripePlan(getDefaultPlanSlug());
             if (!stripePlan)
                 throw new Error(`Can't setup explorer. Make sure you've run npx sequelize-cli db:seed:all`);
 
@@ -569,7 +570,7 @@ router.post('/', authMiddleware, async (req, res) => {
             if (!data.plan)
                 throw new Error('Missing plan parameter.');
 
-            const stripePlan = await db.getStripePlan(data.plan);
+            stripePlan = await db.getStripePlan(data.plan);
             if (!stripePlan || !stripePlan.public)
                 throw new Error(`Can't find plan.`);
 
@@ -596,12 +597,31 @@ router.post('/', authMiddleware, async (req, res) => {
             await stripe.subscriptions.create(stripeParams);
         }
 
+        const fields = {
+            id: explorer.id,
+            chainId: explorer.chainId,
+            domain: explorer.domain,
+            domains: explorer.domains,
+            l1Explorer: explorer.l1Explorer,
+            name: explorer.name,
+            rpcServer: explorer.rpcServer,
+            slug: explorer.slug,
+            admin: explorer.admin,
+            workspace: explorer.workspace
+        };
+        fields['token'] = stripePlan && stripePlan.capabilities.nativeToken ? explorer.token : 'ether';
+        fields['themes'] = stripePlan && stripePlan.capabilities.branding ? explorer.themes : { 'default': {}};
+
         if (data.faucet && data.faucet.amount && data.faucet.interval) {
-            const { id, address } = await db.createFaucet(data.uid, req.params.id, data.faucet.amount, data.faucet.interval);
-            explorer['faucet'] = { id, address, amount: data.faucet.amount, interval: data.faucet.interval };
+            const { id, address } = await db.createFaucet(data.uid, explorer.id, data.faucet.amount, data.faucet.interval);
+            fields['faucet'] = {
+                id, address,
+                amount: data.faucet.amount,
+                interval: data.faucet.interval
+            }
         }
 
-        res.status(200).send(explorer);
+        res.status(200).send({ explorer: fields });
     } catch(error) {
         logger.error(error.message, { location: 'post.api.explorers', error: error, data: data, queryParams: req.params });
         res.status(400).send(error.message);

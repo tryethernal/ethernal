@@ -55,7 +55,7 @@
                         </v-card-text>
                     </v-card>
                     <h4 class="error--text">Danger Zone</h4>
-                    <Explorer-Faucet-Settings-Danger-Zone :explorerId="explorer.id" :faucetId="faucet.id" />
+                    <Explorer-Faucet-Settings-Danger-Zone @delete="loadExplorer" :explorerId="explorer.id" :faucetId="faucet.id" />
                 </v-col>
             </v-row>
         </template>

@@ -53,9 +53,8 @@ It won't be possible to restore the faucet afterwards. Do you still want to proc
                 return this.loading = false;
 
             this.server.deleteFaucet(this.faucetId)
-                .then(() => document.location.reload())
-                .catch(console.log)
-                .finally(() => this.loading = false);
+                .then(() => this.$emit('delete'))
+                .catch(console.log);
         }
     },
     computed: {

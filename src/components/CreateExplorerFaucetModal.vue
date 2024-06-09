@@ -60,8 +60,8 @@ export default {
         reject: null,
         valid: false,
         errorMessage: null,
-        amount: null,
-        interval: null,
+        amount: 1,
+        interval: 24,
         loading: false,
         options: {}
     }),
@@ -100,7 +100,7 @@ export default {
     },
     computed: {
         formattedAmount() {
-            return ethers.utils.parseUnits(this.amount, 'ether').toString();
+            return ethers.utils.parseUnits(this.amount.toString(), 'ether').toString();
         }
     }
 }

@@ -121,13 +121,17 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    safeDestroy() {
-      return sequelize.transaction(async transaction => {
+    safeDestroy(transaction) {
+      const fn = async transaction => {
         const drips = await this.getDrips();
         for (let i = 0; i < drips.length; i++)
           drips[i].destroy({ transaction });
         return this.destroy({ transaction });
-      });
+      };
+
+      return transaction ?
+        fn(transaction) :
+        sequelize.transaction(fn);
     }
 
     async safeCreateDrip(address, amount, transactionHash) {

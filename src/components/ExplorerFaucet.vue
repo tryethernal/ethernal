@@ -3,7 +3,7 @@
         <template v-if="publicExplorer.faucet">
             <v-row>
                 <v-col align="center">
-                    <v-icon style="opacity: 0.25;" size="180" color="primary lighten-1">mdi-faucet</v-icon>
+                    <v-icon style="opacity: 0.25;" size="150" color="primary lighten-1">mdi-faucet</v-icon>
                 </v-col>
             </v-row>
             <v-row justify="center" align="center" class="mb-10 my-0">

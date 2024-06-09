@@ -287,6 +287,10 @@ module.exports = (sequelize, DataTypes) => {
                 const workspace = await this.getWorkspace();
                 await workspace.update({ public: false, rpcHealthCheckEnabled: false, integrityCheckStartBlockNumber: null }, { transaction });
 
+                const faucet = await this.getFaucet();
+                if (faucet)
+                    await faucet.safeDestroy(transaction);
+
                 await this.destroy({ transaction });
 
                 await transaction.commit();
