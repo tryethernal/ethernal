@@ -1,7 +1,12 @@
 <template>
     <v-container fluid>
         <template v-if="publicExplorer.faucet">
-            <v-row justify="center" align="center" class="my-15">
+            <v-row>
+                <v-col align="center">
+                    <v-icon style="opacity: 0.25;" size="180" color="primary lighten-1">mdi-faucet</v-icon>
+                </v-col>
+            </v-row>
+            <v-row justify="center" align="center" class="mb-10 my-0">
                 <v-col md="6" sm="12">
                     <v-card outlined class="rounded-card rounded-xl pa-12" v-if="publicExplorer.faucet">
                         <v-card-title class="primary--text d-flex justify-center align-center">{{ publicExplorer.name }} Faucet - Get {{ tokenSymbol }} Tokens</v-card-title>
@@ -10,6 +15,7 @@
                             <v-alert text type="success" v-if="transactionHash">Tokens sent successfully! <Hash-Link :type="'transaction'" :hash="transactionHash" :customLabel="'See transaction'" /></v-alert>.
                             <v-form @submit.prevent="requestTokens()" v-model="valid">
                                 <v-text-field
+                                    prepend-inner-icon="mdi-wallet-outline"
                                     class="mt-1"
                                     dense
                                     name="address"
@@ -26,6 +32,23 @@
                                     <v-btn :loading="loading" color="primary" :disabled="!valid" type="submit">Request Tokens</v-btn>
                                 </v-card-actions>
                             </v-form>
+                            <template v-if="orderedRequests.length">
+                                Your Addresses:
+                                <ul>
+                                    <li v-for="(request, idx) in slicedRequests" :key="idx">
+                                        <Hash-Link :withName="false" :type="'address'" :hash="request.address" /> -
+                                        <span v-if="request.cooldown == 0" class="success--text">
+                                            <a class="underlined" @click.prevent="requestFor(request.address)">Request now</a>
+                                        </span>
+                                        <span v-else>Request in {{ humanizeDuration(request.cooldown) }}</span>
+                                    </li>
+                                </ul>
+                                <template v-if="orderedRequests.length > 5">
+                                    <small v-if="!showAllRequests"><a @click.prevent="showAllRequests = !showAllRequests">[+] See More</a></small>
+                                    <small v-else><a @click.prevent="showAllRequests = !showAllRequests">[-] See Less</a></small>
+                                </template>
+                                <v-divider class="my-4"></v-divider>
+                            </template>
                             <small>
                                 Max Frequency: {{ formattedAmount }} {{ tokenSymbol }} per address {{ formattedFrequency }}.<br>
                                 Faucet Balance: <template v-if="balance">{{ balance | fromWei('ether', tokenSymbol) }}</template><i v-else>Fetching...</i><br>
@@ -74,6 +97,7 @@
 
 <script>
 const ethers = require('ethers');
+const moment = require('moment');
 import { mapGetters } from 'vuex';
 import ExplorerFaucetAnalytics from './ExplorerFaucetAnalytics';
 import ExplorerFaucetTransactionHistory from './ExplorerFaucetTransactionHistory';
@@ -97,7 +121,9 @@ export default{
         address: null,
         balance: null,
         transactionHash: null,
-        pusherUnsubscribe: null
+        pusherUnsubscribe: null,
+        requests: [],
+        showAllRequests: false
     }),
     mounted() {
         this.refreshFaucetBalance();
@@ -105,33 +131,78 @@ export default{
             if (data.from == this.publicExplorer.faucet.address)
                 this.refreshFaucetBalance();
         }, this);
+        this.initializeRequests();
+        if (this.orderedRequests.length)
+            this.address = this.orderedRequests[this.orderedRequests.length - 1].address;
     },
     destroyed() {
         if (this.pusherUnsubscribe)
             this.pusherUnsubscribe();
     },
     methods: {
+        requestFor(address) {
+            this.address = address;
+            this.requestTokens();
+        },
         refreshFaucetBalance() {
             this.server.getFaucetBalance(this.publicExplorer.faucet.id)
                 .then(({ data }) => this.balance = data.balance)
                 .catch(console.log);
         },
-        requestTokens() {
+        requestTokens(address) {
             this.loading = true;
             this.transactionHash = null;
             this.errorMessage = false;
-            this.server.requestFaucetToken(this.publicExplorer.faucet.id, this.address)
-                .then(({ data }) => this.transactionHash = data.hash)
+            this.server.requestFaucetToken(this.publicExplorer.faucet.id, address || this.address)
+                .then(({ data }) => {
+                    this.transactionHash = data.hash;
+                    this.updateRequests({ address: this.address.toLowerCase(), cooldown: data.cooldown });
+                })
                 .catch(error => {
+                    console.log(error)
                     this.errorMessage = error.response && error.response.data || 'Error while requesting tokens. Please retry.';
                 })
                 .finally(() => this.loading = false);
+        },
+        updateRequests(newRequest) {
+            try {
+                const newRequests = [];
+                for (let i = 0; i < this.requests.length; i++) {
+                    const request = this.requests[i];
+                    if (request.address != this.address.toLowerCase())
+                        newRequests.push(request)
+                }
+                newRequests.push(newRequest);
+                this.requests = newRequests;
+                localStorage.setItem('requests', JSON.stringify(this.requests));
+            } catch(error) {
+                console.log(error)
+                return;
+            }
+        },
+        initializeRequests() {
+            try {
+                this.requests = JSON.parse(localStorage.getItem('requests')) || [];
+            } catch(error) {
+                console.log(error)
+                return [];
+            }
+        },
+        humanizeDuration(duration) {
+            return moment.duration(duration, 'minutes').humanize()
         }
     },
     computed: {
         ...mapGetters([
             'publicExplorer'
         ]),
+        slicedRequests() {
+            return this.showAllRequests ? this.orderedRequests : this.orderedRequests.slice(0, 5);
+        },
+        orderedRequests() {
+            const copy = this.requests;
+            return copy.sort((a, b) => a.cooldown - b.cooldown);
+        },
         tokenSymbol() {
             return this.publicExplorer.token || 'ETH';
         },

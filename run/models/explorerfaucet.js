@@ -144,7 +144,7 @@ module.exports = (sequelize, DataTypes) => {
         limit: 1
       });
 
-      const cooldown = latestDrip ? Math.max(this.interval * 60 - moment().diff(moment(latestDrip.createdAt), 'minutes'), 0) : 0;
+      const cooldown = latestDrip ? Math.max(this.interval - moment().diff(moment(latestDrip.createdAt), 'minutes'), 0) : 0;
       return { allowed: !latestDrip || !cooldown, cooldown };
     }
 

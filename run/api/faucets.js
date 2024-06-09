@@ -111,8 +111,7 @@ router.post('/:id/drip', workspaceAuth, async (req, res) => {
         if (!faucet.active && !req.query.authenticated)
             throw new Error('Could not find faucet');
 
-        const { allowed, cooldown } = await db.canReceiveFaucetTokens(req.params.id, data.address);
-        console.log(allowed, cooldown)
+        let { allowed, cooldown } = await db.canReceiveFaucetTokens(req.params.id, data.address);
         if (!allowed)
             throw new Error(`Too soon to claim more tokens for this address. Try again in ${moment.duration(cooldown, 'minutes').humanize()}.`);
 
@@ -140,10 +139,11 @@ router.post('/:id/drip', workspaceAuth, async (req, res) => {
             throw new Error("Couldn't create transaction. Please retry.")
 
         await db.createFaucetDrip(req.params.id, data.address, faucet.amount, tx.hash);
+        ({ cooldown } = await db.canReceiveFaucetTokens(req.params.id, data.address));
 
         await lock.release();
 
-        res.status(200).json({ hash: tx.hash });
+        res.status(200).json({ hash: tx.hash, cooldown });
     } catch(error) {
         if (lock && isLockAcquired)
             await lock.release();
