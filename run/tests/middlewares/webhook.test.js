@@ -1,4 +1,5 @@
 require('../mocks/lib/firebase');
+require('../mocks/models');
 require('../mocks/lib/crypto');
 const db = require('../../lib/firebase');
 const crypto = require('../../lib/crypto');

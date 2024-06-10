@@ -1,4 +1,5 @@
 jest.mock('axios');
+require('../mocks/models');
 require('../mocks/lib/utils');
 require('../mocks/lib/queue');
 require('../mocks/lib/firebase');
