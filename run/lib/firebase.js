@@ -199,7 +199,7 @@ const getFaucet = async (id) => {
 };
 
 const updateFaucet = async (firebaseUserId, faucetId, amount, interval) => {
-    if (!firebaseUserId || !faucetId || !amount)
+    if (!firebaseUserId || !faucetId || !amount || !interval)
         throw new Error('Missing parameter');
 
     const faucet = await ExplorerFaucet.findOne({
@@ -220,14 +220,14 @@ const updateFaucet = async (firebaseUserId, faucetId, amount, interval) => {
     return faucet.safeUpdate(amount, interval);
 };
 
-const createFaucet = async (fireaseUserId, explorerId, amount, interval) => {
-    if (!fireaseUserId || !explorerId || !amount || !interval)
+const createFaucet = async (firebaseUserId, explorerId, amount, interval) => {
+    if (!firebaseUserId || !explorerId || !amount || !interval)
         throw new Error('Missing parameter');
 
     const explorer = await Explorer.findOne({
         where: {
             id: explorerId,
-            '$admin.firebaseUserId$': fireaseUserId
+            '$admin.firebaseUserId$': firebaseUserId
         },
         include: 'admin'
     });
