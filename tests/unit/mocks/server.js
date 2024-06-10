@@ -42,7 +42,6 @@ jest.mock('@/plugins/server', () => ({
                 getAddressStats: jest.fn(),
                 getContractStats: jest.fn(),
                 getTokenTransferVolume: jest.fn(),
-                getTokenCumulativeSupply: jest.fn(),
                 getTokenHolderHistory: jest.fn(),
                 signIn: jest.fn(),
                 signUp: jest.fn(),
