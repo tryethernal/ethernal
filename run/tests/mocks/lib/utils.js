@@ -1,3 +1,4 @@
+require('./rateLimiter')
 jest.mock('../../../lib/utils', () => {
     const actual = jest.requireActual('../../../lib/utils');
     return {
@@ -5,6 +6,7 @@ jest.mock('../../../lib/utils', () => {
         getFunctionSignatureForTransaction: jest.fn(),
         sanitize: actual.sanitize,
         withTimeout: jest.fn(cb => new Promise(resolve => resolve(cb))),
-        processRawRpcObject: jest.fn(data => data)
+        processRawRpcObject: jest.fn(data => data),
+        validateBNString: jest.fn().mockReturnValue(true)
     }
 });

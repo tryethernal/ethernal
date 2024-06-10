@@ -141,15 +141,14 @@ module.exports = (sequelize, DataTypes) => {
       return this.createDrip({ address, amount, transactionHash });
     }
 
-    async canReceiveTokens(address) {
+    async getFaucetCooldown(address) {
       const [latestDrip] = await this.getDrips({
         where: { address: address.toLowerCase() },
         order: [['id', 'DESC']],
         limit: 1
       });
 
-      const cooldown = latestDrip ? Math.max(this.interval - moment().diff(moment(latestDrip.createdAt), 'minutes'), 0) : 0;
-      return { allowed: !latestDrip || !cooldown, cooldown };
+      return latestDrip ? Math.max(this.interval - moment().diff(moment(latestDrip.createdAt), 'minutes'), 0) : 0;
     }
 
     activate() {

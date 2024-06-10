@@ -124,7 +124,7 @@ const getFaucetPrivateKey = async (faucetId) => {
     return privateKey;
 };
 
-const canReceiveFaucetTokens = async (faucetId, address) => {
+const getFaucetCooldown = async (faucetId, address) => {
     if (!faucetId || !address)
         throw new Error('Missing parameters');
 
@@ -132,7 +132,7 @@ const canReceiveFaucetTokens = async (faucetId, address) => {
     if (!faucet)
         throw new Error(`Can't find faucet`);
 
-    return faucet.canReceiveTokens(address);
+    return faucet.getCooldown(address);
 };
 
 const deactivateFaucet = async (firebaseUserId, faucetId) => {
@@ -2250,7 +2250,7 @@ module.exports = {
     getFaucet: getFaucet,
     activateFaucet: activateFaucet,
     deactivateFaucet: deactivateFaucet,
-    canReceiveFaucetTokens: canReceiveFaucetTokens,
+    getFaucetCooldown: getFaucetCooldown,
     getFaucetPrivateKey: getFaucetPrivateKey,
     createFaucetDrip: createFaucetDrip,
     getExplorerFaucet: getExplorerFaucet,

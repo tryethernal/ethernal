@@ -621,7 +621,7 @@ router.post('/', authMiddleware, async (req, res) => {
             }
         }
 
-        res.status(200).send({ explorer: fields });
+        res.status(200).send(fields);
     } catch(error) {
         logger.error(error.message, { location: 'post.api.explorers', error: error, data: data, queryParams: req.params });
         res.status(400).send(error.message);

@@ -88,7 +88,7 @@ router.get('/:id/privateKey', authMiddleware, async (req, res) => {
             throw new Error('Could not find faucet');
         const privateKey = await db.getFaucetPrivateKey(req.params.id)
         if (!privateKey)
-            throw new Error('Could not find faucet');
+            throw new Error('Could not get private key. Please retry.');
 
         res.status(200).json({ privateKey });
     } catch(error) {
@@ -111,11 +111,12 @@ router.post('/:id/drip', workspaceAuth, async (req, res) => {
         if (!faucet.active && !req.query.authenticated)
             throw new Error('Could not find faucet');
 
-        let { allowed, cooldown } = await db.canReceiveFaucetTokens(req.params.id, data.address);
-        if (!allowed)
+        let cooldown = await db.getFaucetCooldown(req.params.id, data.address);
+        if (cooldown > 0)
             throw new Error(`Too soon to claim more tokens for this address. Try again in ${moment.duration(cooldown, 'minutes').humanize()}.`);
 
         lock = new Lock(`${faucet.id}-${data.address}`, 60000);
+
         isLockAcquired = await lock.acquire();
         if (!isLockAcquired)
             throw new Error('We are still processing a request for this address. Please try again in a few seconds.');
@@ -123,6 +124,9 @@ router.post('/:id/drip', workspaceAuth, async (req, res) => {
         await lock.acquire();
 
         const privateKey = await db.getFaucetPrivateKey(req.params.id);
+        if (!privateKey)
+            throw new Error('Could not obtain faucet private key. Please retry.');
+
         const walletConnector = new WalletConnector(req.query.workspace.rpcServer, privateKey);
 
         let tx;
@@ -139,7 +143,7 @@ router.post('/:id/drip', workspaceAuth, async (req, res) => {
             throw new Error("Couldn't create transaction. Please retry.")
 
         await db.createFaucetDrip(req.params.id, data.address, faucet.amount, tx.hash);
-        ({ cooldown } = await db.canReceiveFaucetTokens(req.params.id, data.address));
+        cooldown = await db.getFaucetCooldown(req.params.id, data.address);
 
         await lock.release();
 
