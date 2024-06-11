@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExplorerFaucetTransactionHistory.vue Should display transaction history 1`] = `
+<div class="v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card__text">
+    <div class="v-data-table v-data-table--has-bottom theme--light">
+      <div class="v-data-table__wrapper">
+        <table>
+          <colgroup>
+            <col class="">
+            <col class="">
+            <col class="">
+            <col class="">
+          </colgroup>
+          <thead class="v-data-table-header">
+            <tr>
+              <th role="columnheader" scope="col" aria-label="Transaction Hash" class="text-start"><span>Transaction Hash</span></th>
+              <th role="columnheader" scope="col" aria-label="Timestamp: Sorted descending. Activate to sort ascending." aria-sort="descending" class="text-start sortable active desc"><span>Timestamp</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+              <th role="columnheader" scope="col" aria-label="To" class="text-start"><span>To</span></th>
+              <th role="columnheader" scope="col" aria-label="Amount: Not sorted. Activate to sort ascending." aria-sort="none" class="text-start sortable"><span>Amount</span><i aria-hidden="true" class="v-icon notranslate v-data-table-header__icon mdi mdi-arrow-up theme--light" style="font-size: 18px;"></i></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="">
+              <td class="text-start">
+                <hash-link-stub hash="0x123" type="transaction"></hash-link-stub>
+              </td>
+              <td class="text-start">
+                <div class="my-2 text-left">
+                  08/07 2:33:37 PM<br> <small>a few seconds ago</small></div>
+              </td>
+              <td class="text-start">
+                <hash-link-stub withtokenname="true" withname="true" hash="0xabc" type="address"></hash-link-stub>
+              </td>
+              <td class="text-start">
+                0.01 ETL
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="v-data-footer">
+        <div class="v-data-footer__select">Rows per page:<div class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty theme--light v-text-field v-select">
+            <div class="v-input__control">
+              <div role="button" aria-haspopup="listbox" aria-expanded="false" aria-owns="list-12" class="v-input__slot">
+                <div class="v-select__slot">
+                  <div class="v-select__selections">
+                    <div class="v-select__selection v-select__selection--comma">10</div><input aria-label="Rows per page:" id="input-12" readonly="readonly" type="text" aria-readonly="false" autocomplete="off">
+                  </div>
+                  <div class="v-input__append-inner">
+                    <div class="v-input__icon v-input__icon--append"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu-down theme--light"></i></div>
+                  </div><input type="hidden" value="10">
+                </div>
+                <div class="v-menu">
+                  <!---->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="v-data-footer__pagination">1-1 of 1</div>
+        <div class="v-data-footer__icons-before"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Previous page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-left theme--light"></i></span></button></div>
+        <div class="v-data-footer__icons-after"><button type="button" disabled="disabled" class="v-btn v-btn--disabled v-btn--icon v-btn--round v-btn--text theme--light v-size--default" aria-label="Next page"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span></button></div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

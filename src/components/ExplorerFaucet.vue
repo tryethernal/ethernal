@@ -73,7 +73,6 @@
         </template>
         <template v-else>
             <v-card outlined>
-                <Create-Explorer-Faucet-Modal ref="createExplorerFaucetModal" />
                 <v-card-text>
                     <v-row>
                         <v-col align="center">
@@ -126,6 +125,9 @@ export default{
         showAllRequests: false
     }),
     mounted() {
+        if (!this.publicExplorer.faucet)
+            return;
+
         this.refreshFaucetBalance();
         this.pusherUnsubscribe = this.pusher.onNewTransaction(data => {
             if (data.from == this.publicExplorer.faucet.address)

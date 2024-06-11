@@ -82,6 +82,11 @@ jest.mock('@/plugins/server', () => ({
                 getErc721TokenById: jest.fn(),
                 getErc721TokenByIndex: jest.fn(),
                 getExplorerBilling: jest.fn(),
+                getFaucetBalance: jest.fn(),
+                getFaucetRequestVolume: jest.fn(),
+                getFaucetTokenVolume: jest.fn(),
+                getFaucetPrivateKey: jest.fn(),
+                getFaucetTransactionHistory: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))

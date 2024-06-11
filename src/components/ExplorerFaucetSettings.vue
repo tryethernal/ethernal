@@ -99,7 +99,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 const ethers = require('ethers');
 import store from '../plugins/store';
 import CreateExplorerFaucetModal from './CreateExplorerFaucetModal';
@@ -170,9 +169,10 @@ export default {
                 .then(({ data }) => {
                     this.explorer = data;
                     this.faucet = data.faucet;
-                    this.active = data.faucet.active;
-                    if (this.faucet)
+                    if (this.faucet) {
+                        this.active = data.faucet.active;
                         this.refreshFaucetBalance();
+                    }
                 })
                 .catch(console.log);
         },
@@ -190,12 +190,10 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-        ]),
         mainExplorerDomain() {
             if (!this.explorer)
                 return null;
-            return this.explorer && this.explorer.domains.length ?
+            return this.explorer && this.explorer.domains && this.explorer.domains.length ?
                 this.explorer.domains[0].domain :
                 this.explorer.domain;
         },

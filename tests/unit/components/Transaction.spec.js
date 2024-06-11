@@ -20,6 +20,20 @@ describe('Transaction.vue', () => {
         jest.spyOn(Date, 'now').mockImplementation(() => new Date('2022-08-07T12:33:37.000Z'));
     });
 
+    it('Should display waiting message', async () => {
+        jest.spyOn(helper.mocks.server, 'getTransaction').mockResolvedValueOnce({ data: {}});
+
+        const wrapper = helper.mountFn(Transaction, {
+            propsData: {
+                hash: '0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759'
+            },
+            stubs
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should display the transaction when the receipt is not synced yet', async () => {
         jest.spyOn(helper.mocks.server, 'getTransaction')
             .mockResolvedValue({ data: {

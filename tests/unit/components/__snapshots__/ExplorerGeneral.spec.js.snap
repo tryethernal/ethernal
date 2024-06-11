@@ -1,0 +1,165 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExplorerGeneral.vue Should display inactive subscription message 1`] = `
+<div class="container container--fluid">
+  <!---->
+  <div role="alert" class="v-alert v-sheet theme--dark v-alert--text error--text">
+    <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-alert theme--dark error--text"></i>
+      <div class="v-alert__content">This explorer is not active. To activate it, start a subscription.</div>
+    </div>
+  </div>
+  <h2>
+    <span class="text-caption">- (<a href="//test.tryethernal.com" target="_blank">test.tryethernal.com</a>)</span>
+  </h2>
+  <div class="row mt-2">
+    <div class="col col-6">
+      <h4>Settings</h4>
+      <explorer-settings-stub workspaces="[object Object]" explorer="[object Object]"></explorer-settings-stub>
+    </div>
+    <div class="col col-6">
+      <h4>Sync</h4>
+      <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
+      <h4 class="mt-2">Billing</h4>
+      <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
+      <h4 class="mt-2">Domain Aliases</h4>
+      <explorer-domains-list-stub disabled="true" explorer="[object Object]"></explorer-domains-list-stub>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h4>Branding</h4>
+      <explorer-branding-stub disabled="true" explorer="[object Object]"></explorer-branding-stub>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-6">
+      <h4 class="error--text">Danger Zone</h4>
+      <explorer-danger-zone-stub explorer="[object Object]"></explorer-danger-zone-stub>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ExplorerGeneral.vue Should display loading 1`] = `
+<div class="container container--fluid">
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__text">
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="v-progress-circular mr-2 v-progress-circular--visible v-progress-circular--indeterminate primary--text" style="height: 16px; width: 16px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="22.857142857142858 22.857142857142858 45.714285714285715 45.714285714285715" style="transform: rotate(0deg);">
+          <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
+        </svg>
+        <div class="v-progress-circular__info"></div>
+      </div>
+      Your subscripion is being activated. The explorer will be ready soon.
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ExplorerGeneral.vue Should display the explorer page 1`] = `
+<div class="container container--fluid">
+  <!---->
+  <!---->
+  <h2>
+    <span class="text-caption">- (<a href="//a.test.com" target="_blank">a.test.com</a>)</span>
+  </h2>
+  <div class="row mt-2">
+    <div class="col col-6">
+      <h4>Settings</h4>
+      <explorer-settings-stub workspaces="[object Object]" explorer="[object Object]"></explorer-settings-stub>
+    </div>
+    <div class="col col-6">
+      <h4>Sync</h4>
+      <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
+      <h4 class="mt-2">Billing</h4>
+      <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
+      <h4 class="mt-2">Domain Aliases</h4>
+      <explorer-domains-list-stub disabled="true" explorer="[object Object]"></explorer-domains-list-stub>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h4>Branding</h4>
+      <explorer-branding-stub disabled="true" explorer="[object Object]"></explorer-branding-stub>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-6">
+      <h4 class="error--text">Danger Zone</h4>
+      <explorer-danger-zone-stub explorer="[object Object]"></explorer-danger-zone-stub>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ExplorerGeneral.vue Should display trial message 1`] = `
+<div class="container container--fluid">
+  <div role="alert" class="v-alert v-sheet theme--dark v-alert--text warning--text">
+    <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-exclamation theme--dark warning--text"></i>
+      <div class="v-alert__content">
+        This explorer is on a free trial plan. To keep it running once it's over, add a payment method.
+      </div>
+    </div>
+  </div>
+  <!---->
+  <h2>
+    <span class="text-caption">- (<a href="//test.tryethernal.com" target="_blank">test.tryethernal.com</a>)</span>
+  </h2>
+  <div class="row mt-2">
+    <div class="col col-6">
+      <h4>Settings</h4>
+      <explorer-settings-stub workspaces="[object Object]" explorer="[object Object]"></explorer-settings-stub>
+    </div>
+    <div class="col col-6">
+      <h4>Sync</h4>
+      <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
+      <h4 class="mt-2">Billing</h4>
+      <explorer-billing-stub explorer="[object Object]"></explorer-billing-stub>
+      <h4 class="mt-2">Domain Aliases</h4>
+      <explorer-domains-list-stub disabled="true" explorer="[object Object]"></explorer-domains-list-stub>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h4>Branding</h4>
+      <explorer-branding-stub disabled="true" explorer="[object Object]"></explorer-branding-stub>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-6">
+      <h4 class="error--text">Danger Zone</h4>
+      <explorer-danger-zone-stub explorer="[object Object]"></explorer-danger-zone-stub>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ExplorerGeneral.vue Should not display danger zone if SSO 1`] = `
+<div class="container container--fluid">
+  <!---->
+  <!---->
+  <h2>
+    <span class="text-caption">- (<a href="//a.test.com" target="_blank">a.test.com</a>)</span>
+  </h2>
+  <div class="row mt-2">
+    <div class="col col-6">
+      <h4>Settings</h4>
+      <explorer-settings-stub workspaces="[object Object]" explorer="[object Object]"></explorer-settings-stub>
+    </div>
+    <div class="col col-6">
+      <h4>Sync</h4>
+      <explorer-sync-stub explorer="[object Object]"></explorer-sync-stub>
+      <h4 class="mt-2">Billing</h4>
+      <explorer-billing-stub sso="true" explorer="[object Object]"></explorer-billing-stub>
+      <h4 class="mt-2">Domain Aliases</h4>
+      <explorer-domains-list-stub disabled="true" explorer="[object Object]"></explorer-domains-list-stub>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <h4>Branding</h4>
+      <explorer-branding-stub disabled="true" explorer="[object Object]"></explorer-branding-stub>
+    </div>
+  </div>
+  <!---->
+</div>
+`;

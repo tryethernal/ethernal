@@ -12,6 +12,19 @@ exports[`HashLink.vue Should display a shortened link to the address 1`] = `
 <!----></span>
 `;
 
+exports[`HashLink.vue Should display custom label 1`] = `
+<span><!----> <a href="/address/0xed5af388653567af2f388e6224dc7c4b3241c544" class="">My Address</a> <!----> <span>
+        &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
+<!----></span>
+`;
+
+exports[`HashLink.vue Should display faucet name 1`] = `
+<span><i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate success--text mr-1 mdi mdi-check-circle theme--light" style="font-size: 16px;"></i><span class="v-tooltip v-tooltip--top"><!----></span> <a href="/address/0xed5af388653567af2f388e6224dc7c4b3241c544" class="">ETL faucet</a>
+<!----> <span>
+        &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
+<!----></span>
+`;
+
 exports[`HashLink.vue Should display link to token if tokenId is passed 1`] = `
 <span><!----> <a href="/address/0x123" class="">Ethernal</a> <span>
         &nbsp;(<a href="/address/0x123/1" class="">#1</a>)

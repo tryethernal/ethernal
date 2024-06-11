@@ -45,7 +45,6 @@ import HashLink from './HashLink.vue';
 
 export default {
     name: 'ExplorerFaucetTransactionHistory',
-    props: ['faucetId'],
     components: {
         HashLink
     },

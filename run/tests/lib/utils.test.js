@@ -2,8 +2,23 @@ const ethers = require('ethers');
 const {
     sanitize,
     stringifyBns,
-    isJson
+    isJson,
+    validateBNString
 } = require('../../lib/utils');
+
+describe('validateBNString', () => {
+    it('Should return true if valid', () => {
+        expect(validateBNString('1000000000000000000')).toEqual(true);
+    });
+
+    it('Should return false if not BN', () => {
+        expect(validateBNString(-5)).toEqual(false);
+    });
+
+    it('Should return false if not > 0', () => {
+        expect(validateBNString('0')).toEqual(false);
+    });
+});
 
 describe('sanitize', () => {
     it('Should numberize whitelisted fields', () => {

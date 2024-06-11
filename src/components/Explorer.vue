@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import ExplorerGeneral from './ExplorerGeneral';
 import ExplorerFaucetSettings from './ExplorerFaucetSettings';
 
@@ -29,13 +28,7 @@ export default {
         ExplorerGeneral,
         ExplorerFaucetSettings
     },
-    data: () => ({
-    }),
-    methods: {
-    },
     computed: {
-        ...mapGetters([
-        ]),
         tab: {
             set(tab) {
                 this.$router.replace({ query: { ...this.$route.query, tab } }).catch(()=>{});
@@ -44,8 +37,6 @@ export default {
                 return this.$route.query.tab;
             }
         }
-    },
-    watch: {
     }
 }
 </script>
