@@ -61,7 +61,6 @@ export default {
         },
         close() {
             this.reset();
-            this.resolve();
         },
         reset() {
             this.dialog = false;

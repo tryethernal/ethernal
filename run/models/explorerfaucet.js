@@ -141,7 +141,7 @@ module.exports = (sequelize, DataTypes) => {
       return this.createDrip({ address, amount, transactionHash });
     }
 
-    async getFaucetCooldown(address) {
+    async getCooldown(address) {
       const [latestDrip] = await this.getDrips({
         where: { address: address.toLowerCase() },
         order: [['id', 'DESC']],
