@@ -31,7 +31,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
         if (!domain)
             throw new Error('Could not find domain');
 
-        let apx_hit, is_resolving, last_monitored_humanized, status, status_message, has_ssl;
+        let dns_pointed_at, apx_hit, is_resolving, last_monitored_humanized, status, status_message, has_ssl;
         try {
             const { data: { data } } = await withTimeout(
                 axios.get(`https://cloud.approximated.app/api/vhosts/by/incoming/${domain.domain}`, {

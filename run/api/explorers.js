@@ -672,13 +672,12 @@ router.get('/search', async (req, res) => {
         fields['token'] = capabilities.nativeToken ? explorer.token : 'ether';
         fields['themes'] = capabilities.branding ? explorer.themes : { 'default': {}};
 
-        const faucet = await db.getExplorerFaucet(explorer.id);
-        if (faucet && faucet.active)
+        if (explorer.faucet && explorer.faucet.active)
             fields['faucet'] = {
-                id: faucet.id,
-                address: faucet.address,
-                amount: faucet.amount,
-                interval: faucet.interval
+                id: explorer.faucet.id,
+                address: explorer.faucet.address,
+                amount: explorer.faucet.amount,
+                interval: explorer.faucet.interval
             }
 
         res.status(200).json({ explorer: fields });
