@@ -338,6 +338,18 @@ exports[`Transaction.vue Should display the transaction when the receipt is not 
 </div>
 `;
 
+exports[`Transaction.vue Should display waiting message 1`] = `
+<div class="container container--fluid">
+  <h2 class="text-truncate mb-2">Tx 0x05d709954d59bfaa43bcf629b0a415d30e56ab1400d96dc7bd0ed1664a702759</h2>
+  <div class="row">
+    <div class="col">
+      Cannot find transaction. If you just sent it, it might not have been picked up yet by our indexer.
+      This page will refresh automatically as soon as we find it.
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Transaction.vue Should not display the menu if public explorer 1`] = `
 <div class="container container--fluid">
   <div class="row">

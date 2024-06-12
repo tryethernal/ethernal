@@ -59,11 +59,18 @@ module.exports = (sequelize, DataTypes) => {
                         model: sequelize.models.Explorer,
                         as: 'explorer',
                         attributes: currentExplorerAttributes,
-                        include: {
-                            model: sequelize.models.ExplorerDomain,
-                            as: 'domains',
-                            attributes: ['domain']
-                        }
+                        include: [
+                            {
+                                model: sequelize.models.ExplorerDomain,
+                                as: 'domains',
+                                attributes: ['domain']
+                            },
+                            {
+                                model: sequelize.models.ExplorerFaucet,
+                                as: 'faucet',
+                                attributes: ['id', 'address', 'interval', 'amount', 'active']
+                            }
+                        ]
                     }
                 },
             ]

@@ -9,6 +9,7 @@ jest.mock('axios', () => ({
         }
     })
 }));
+require('../mocks/models');
 require('../mocks/lib/ethers');
 require('../mocks/lib/utils');
 require('../mocks/lib/firebase');

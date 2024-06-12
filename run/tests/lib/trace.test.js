@@ -1,3 +1,4 @@
+require('../mocks/models');
 require('../mocks/lib/firebase');
 
 const { parseTrace,  processTrace } = require('../../lib/trace');

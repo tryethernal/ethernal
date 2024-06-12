@@ -2,9 +2,10 @@
 const {
   Model
 } = require('sequelize');
+const ethers = require('ethers');
 const { sanitize } = require('../lib/utils');
 const { isStripeEnabled } = require('../lib/flags');
-const { getDemoUserId } = require('../lib/env');
+const { getDemoUserId, getAppDomain } = require('../lib/env');
 const { enqueue } = require('../lib/queue');
 const Analytics = require('../lib/analytics');
 const analytics = new Analytics();
@@ -21,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       Explorer.belongsTo(models.User, { foreignKey: 'userId', as: 'admin' });
       Explorer.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       Explorer.hasOne(models.StripeSubscription, { foreignKey: 'explorerId', as: 'stripeSubscription' });
+      Explorer.hasOne(models.ExplorerFaucet, { foreignKey: 'explorerId', as: 'faucet' });
       Explorer.hasMany(models.ExplorerDomain, { foreignKey: 'explorerId', as: 'domains' });
     }
 
@@ -41,9 +43,7 @@ module.exports = (sequelize, DataTypes) => {
 
     static findBySlug(slug) {
         return Explorer.findOne({
-            where: {
-                slug: slug
-            },
+            where: { slug },
             include: [
                 {
                     model: sequelize.models.ExplorerDomain,
@@ -100,6 +100,11 @@ module.exports = (sequelize, DataTypes) => {
                     model: sequelize.models.Workspace,
                     attributes: ['name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
                     as: 'workspace'
+                },
+                {
+                    model: sequelize.models.ExplorerFaucet,
+                    attributes: ['id', 'address', 'amount', 'interval'],
+                    where: { active: true }
                 }
             ]
         });
@@ -148,6 +153,18 @@ module.exports = (sequelize, DataTypes) => {
 
     stopSync() {
         return this.update({ shouldSync: false });
+    }
+
+    async safeCreateFaucet(amount, interval) {
+        if (!amount || !interval)
+            throw new Error('Missing parameter');
+
+        const faucet = await this.getFaucet();
+        if (faucet)
+            throw new Error('This explorer already has a faucet.');
+
+        const { address, privateKey } = ethers.Wallet.createRandom();
+        return this.createFaucet({ address, privateKey, amount, interval, active: true });
     }
 
     async isActive() {
@@ -270,6 +287,10 @@ module.exports = (sequelize, DataTypes) => {
                 const workspace = await this.getWorkspace();
                 await workspace.update({ public: false, rpcHealthCheckEnabled: false, integrityCheckStartBlockNumber: null }, { transaction });
 
+                const faucet = await this.getFaucet();
+                if (faucet)
+                    await faucet.safeDestroy(transaction);
+
                 await this.destroy({ transaction });
 
                 await transaction.commit();
@@ -385,7 +406,12 @@ module.exports = (sequelize, DataTypes) => {
     userId: DataTypes.INTEGER,
     workspaceId: DataTypes.INTEGER,
     chainId: DataTypes.INTEGER,
-    domain: DataTypes.STRING,
+    domain: {
+        type: DataTypes.STRING,
+        get() {
+            return `${this.getDataValue('slug')}.${getAppDomain()}`;
+        }
+    },
     name: DataTypes.STRING,
     rpcServer: DataTypes.STRING,
     slug: DataTypes.STRING,

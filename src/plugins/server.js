@@ -358,6 +358,89 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            getFaucetTransactionHistory(id, options) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    ...options
+                };
+
+                const resource = `${store.getters.apiRoot}/api/faucets/${id}/transactionHistory`;
+                return axios.get(resource, { params });
+            },
+
+            getFaucetTokenVolume(id, from, to) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    from, to
+                };
+
+                const resource = `${store.getters.apiRoot}/api/faucets/${id}/tokenVolume`;
+                return axios.get(resource, { params });
+            },
+
+            getFaucetRequestVolume(id, from, to) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    from, to
+                };
+
+                const resource = `${store.getters.apiRoot}/api/faucets/${id}/requestVolume`;
+                return axios.get(resource, { params });
+            },
+
+            deleteFaucet(id) {
+                const resource = `${store.getters.apiRoot}/api/faucets/${id}`;
+                return axios.delete(resource);
+            },
+
+            getFaucetPrivateKey(id) {
+                const resource = `${store.getters.apiRoot}/api/faucets/${id}/privateKey`;
+                return axios.get(resource);
+            },
+
+            requestFaucetToken(id, address) {
+                const data = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    address
+                };
+
+                const resource = `${store.getters.apiRoot}/api/faucets/${id}/drip`;
+                return axios.post(resource, { data });
+            },
+
+            deactivateFaucet(id) {
+                const resource = `${store.getters.apiRoot}/api/faucets/${id}/deactivate`;
+                return axios.put(resource);
+            },
+
+            activateFaucet(id) {
+                const resource = `${store.getters.apiRoot}/api/faucets/${id}/activate`;
+                return axios.put(resource);
+            },
+
+            getFaucetBalance(id) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${store.getters.apiRoot}/api/faucets/${id}/balance`;
+                return axios.get(resource, { params });
+            },
+
+            updateFaucet(id, amount, interval) {
+                const resource = `${store.getters.apiRoot}/api/faucets/${id}`;
+                return axios.put(resource, { data: { amount, interval }});
+            },
+
+            createExplorerFaucet(explorerId, amount, interval) {
+                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/faucets`;
+                return axios.post(resource, { data: { amount, interval }});
+            },
+
             getExplorerBilling() {
                 const resource = `${store.getters.apiRoot}/api/explorers/billing`;
                 return axios.get(resource);

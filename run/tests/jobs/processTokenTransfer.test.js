@@ -1,4 +1,5 @@
 require('../mocks/lib/rpc');
+require('../mocks/models');
 require('../mocks/lib/queue');
 require('../mocks/lib/firebase');
 

@@ -2,6 +2,7 @@ const mockAxiosGet = jest.fn();
 jest.mock('axios', () => ({
     get: mockAxiosGet
 }));
+require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/middlewares/workspaceAuth');
 require('../mocks/lib/queue');
