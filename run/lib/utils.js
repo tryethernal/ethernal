@@ -2,6 +2,15 @@ const ethers = require('ethers');
 
 const DEFAULT_PROMISE_TIMEOUT = 10 * 1000;
 
+const validateBNString = (str) => {
+    try {
+        const bn = ethers.BigNumber.from(str)
+        return bn.gt(0) && !!ethers.utils.formatUnits(str, 'ether');
+    } catch(error) {
+        return false
+    }
+}
+
 const getEnv = () => process.env.NODE_ENV;
 
 const formatErc721Metadata = (metadata) => {
@@ -166,5 +175,6 @@ module.exports = {
     slugify,
     stringify,
     processRawRpcObject,
-    formatErc721Metadata
+    formatErc721Metadata,
+    validateBNString
 };

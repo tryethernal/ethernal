@@ -21,6 +21,8 @@ module.exports = {
     configureWebpack: {
         devServer: {
             host: '0.0.0.0',
+            port: 8080,
+            public: 'app.ethernal.local:8080',
             hot: true,
             disableHostCheck: true,
             allowedHosts: ['app.ethernal.local', '.ethernal.explorer']

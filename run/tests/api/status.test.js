@@ -1,4 +1,5 @@
 require('../mocks/lib/logger');
+require('../mocks/models');
 require('../mocks/lib/queue');
 require('../mocks/middlewares/workspaceAuth');
 
