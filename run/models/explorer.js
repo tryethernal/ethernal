@@ -67,6 +67,13 @@ module.exports = (sequelize, DataTypes) => {
                     model: sequelize.models.Workspace,
                     attributes: ['name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
                     as: 'workspace'
+                },
+                {
+                    model: sequelize.models.ExplorerFaucet,
+                    as: 'faucet',
+                    attributes: ['id', 'address', 'amount', 'interval', 'active'],
+                    where: { active: true },
+                    required: false
                 }
             ]
         });
@@ -103,8 +110,10 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.ExplorerFaucet,
-                    attributes: ['id', 'address', 'amount', 'interval'],
-                    where: { active: true }
+                    as: 'faucet',
+                    attributes: ['id', 'address', 'amount', 'interval', 'active'],
+                    where: { active: true },
+                    required: false
                 }
             ]
         });
@@ -140,6 +149,13 @@ module.exports = (sequelize, DataTypes) => {
                         model: sequelize.models.Workspace,
                         attributes: ['name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
                         as: 'workspace'
+                    },
+                    {
+                        model: sequelize.models.ExplorerFaucet,
+                        as: 'faucet',
+                        attributes: ['id', 'address', 'amount', 'interval', 'active'],
+                        where: { active: true },
+                        required: false
                     }
                 ]
             });
