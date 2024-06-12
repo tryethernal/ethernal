@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExplorerFaucetSettingsDangerZone.vue Should display danger zone 1`] = `
+<div class="v-sheet v-sheet--outlined theme--light rounded error">
+  <explorer-faucet-private-key-export-modal-stub></explorer-faucet-private-key-export-modal-stub>
+  <div class="elevation-0 v-card v-sheet theme--light">
+    <!---->
+    <div class="v-card__text font-weight-medium error--text">
+      <div class="row">
+        Export your key if you need to access your faucet wallet. Make sure to do it before deleting the faucet.
+        <div class="spacer"></div> <button type="button" class="mt-2 v-btn v-btn--has-bg theme--light v-size--small error"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-export theme--light"></i>Export Private Key</span></button>
+      </div>
+      <hr role="separator" aria-orientation="horizontal" class="my-5 v-divider theme--light">
+      <div class="row">
+        Deleting the faucet is irreversible, if you haven't exported the private key before, funds will be lost.
+        <div class="spacer"></div> <button type="button" class="mt-2 v-btn v-btn--has-bg theme--light v-size--small error"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-delete theme--light"></i>Delete Faucet</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

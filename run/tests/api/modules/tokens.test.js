@@ -1,3 +1,4 @@
+require('../../mocks/models');
 require('../../mocks/lib/firebase');
 const db = require('../../../lib/firebase');
 
@@ -66,7 +67,7 @@ describe('circulatingSupply', () => {
                 from: 'from',
             }
         };
-        jest.spyOn(db, 'getTokenCumulativeSupply').mockResolvedValue({ volume: 3, address: '0x123' });
+        jest.spyOn(db, 'getTokenCirculatingSupply').mockResolvedValue({ volume: 3, address: '0x123' });
 
         await holderHistory(req, res)
         expect(status).toHaveBeenCalledWith(400)

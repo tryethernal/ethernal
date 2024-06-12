@@ -38,7 +38,7 @@ const { bulkEnqueue } = require('../../lib/queue');
 const db = require('../../lib/firebase');
 const PM2 = require('../../lib/pm2');
 const { ProviderConnector } = require('../../lib/rpc');
-const { withTimeout } = require('../../lib/utils');
+const { withTimeout, validateBNString } = require('../../lib/utils');
 const flags = require('../../lib/flags');
 const authMiddleware = require('../../middlewares/auth');
 
@@ -56,6 +56,41 @@ beforeEach(() => {
         fetchNetworkId: jest.fn().mockResolvedValue(1)
     }));
     jest.spyOn(db, 'getWorkspaceById').mockResolvedValue({ id: 1 });
+});
+
+describe(`POST ${BASE_URL}/:id/faucets`, () => {
+    it('Should return faucet info', (done) => {
+
+        jest.spyOn(db, 'createFaucet').mockResolvedValueOnce({ id: 1, address: '0x123' });
+        request.post(`${BASE_URL}/1/faucets`)
+            .send({ data: { amount: String(1 ** 18), interval: 24 * 60 }})
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ id: 1, address: '0x123' });
+                done();
+            });
+    })
+
+    it('Should throw an error if invalid amount', (done) => {
+        validateBNString.mockReturnValueOnce(false);
+        request.post(`${BASE_URL}/1/faucets`)
+            .send({ data: { amount: '-1', interval: 24 * 60 }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Invalid amount.');
+                done();
+            });
+    });
+
+    it('Should throw an error if invalid interval', (done) => {
+        request.post(`${BASE_URL}/1/faucets`)
+            .send({ data: { amount: String(1 ** 18), interval: -1 }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Interval must be greater than 0.');
+                done();
+            });
+    });
 });
 
 describe(`GET ${BASE_URL}/billing`, () => {
@@ -836,7 +871,7 @@ describe(`POST ${BASE_URL}`, () => {
             .send({ data: { rpcServer: 'test.rpc', name: 'explorer' }})
             .expect(200)
             .then(({ body }) => {
-                expect(body).toEqual({ id: 1 });
+                expect(body).toEqual({ id: 1, token: 'ether', themes: { default: {}}});
                 done();
             });
     });
@@ -891,7 +926,7 @@ describe(`POST ${BASE_URL}`, () => {
 
     it('Should create a demo subscription if stripe user has demo flag', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, canUseDemoPlan: true, workspaces: [{ id: 1 }] });
-        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1 });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: {}});
         jest.spyOn(db, 'createExplorerFromWorkspace').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(flags, 'isStripeEnabled').mockReturnValueOnce(true);
 
@@ -901,14 +936,14 @@ describe(`POST ${BASE_URL}`, () => {
             .then(({ body }) => {
                 expect(db.getStripePlan).toHaveBeenCalledWith('selfhosted');
                 expect(db.createExplorerSubscription).toHaveBeenCalled();
-                expect(body).toEqual({ id: 1 });
+                expect(body).toEqual({ id: 1, token: 'ether', themes: { default: {}}});
                 done();
             });
     });
 
     it('Should create a self hosted subscription if stripe is not enabled', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 1 }] });
-        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1 });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: {}});
         jest.spyOn(db, 'createExplorerFromWorkspace').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(flags, 'isStripeEnabled').mockReturnValueOnce(false);
 
@@ -918,7 +953,7 @@ describe(`POST ${BASE_URL}`, () => {
             .then(({ body }) => {
                 expect(db.getStripePlan).toHaveBeenCalledWith('selfhosted');
                 expect(db.createExplorerSubscription).toHaveBeenCalled();
-                expect(body).toEqual({ id: 1 });
+                expect(body).toEqual({ id: 1, token: 'ether', themes: { default: {}}});
                 done();
             });
     });
@@ -970,7 +1005,7 @@ describe(`POST ${BASE_URL}`, () => {
     it('Should start a subscription if crypto payment not enabled & payment method available', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, stripeCustomerId: 'customerId', workspaces: [{ id: 1 }] });
         jest.spyOn(db, 'createExplorerFromWorkspace').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, stripePriceId: 'priceId' });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, stripePriceId: 'priceId', id: 1, capabilities: {}});
         mockCustomersRetrieve.mockResolvedValueOnce({ default_source: 'card' })
 
         request.post(`${BASE_URL}?startSubscription=true`)
@@ -982,7 +1017,7 @@ describe(`POST ${BASE_URL}`, () => {
                     items: [{ price: 'priceId' }],
                     metadata: { explorerId: 1 }
                 });
-                expect(body).toEqual({ id: 1 });
+                expect(body).toEqual({ id: 1, token: 'ether', themes: { default: {}}});
                 done();
             });
     });
@@ -990,7 +1025,7 @@ describe(`POST ${BASE_URL}`, () => {
     it('Should start a subscription if crypto payment enabled', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, cryptoPaymentEnabled: true, stripeCustomerId: 'customerId', workspaces: [{ id: 1 }] });
         jest.spyOn(db, 'createExplorerFromWorkspace').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, stripePriceId: 'priceId' });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, stripePriceId: 'priceId', capabilities: {}});
         mockCustomersRetrieve.mockResolvedValueOnce({ default_source: 'card' })
 
         request.post(`${BASE_URL}?startSubscription=true`)
@@ -1004,7 +1039,7 @@ describe(`POST ${BASE_URL}`, () => {
                     collection_method: 'send_invoice',
                     days_until_due: 7
                 });
-                expect(body).toEqual({ id: 1 });
+                expect(body).toEqual({ id: 1, token: 'ether', themes: { default: {}}});
                 done();
             });
     });
@@ -1027,7 +1062,6 @@ describe(`GET ${BASE_URL}/search`, () => {
             .then(({ body }) => {
                 expect(body).toEqual({
                     explorer: {
-                        stripeSubscription: { stripePlan: { capabilities: { nativeToken: true }}},
                         slug: 'ethernal', name: 'Ethernal Explorer', themes: { default: {}}
                     }
                 });
@@ -1045,7 +1079,6 @@ describe(`GET ${BASE_URL}/search`, () => {
             .then(({ body }) => {
                 expect(body).toEqual({
                     explorer: {
-                        stripeSubscription: { stripePlan: { capabilities: { nativeToken: true, totalSupply: '1' }}},
                         slug: 'ethernal', name: 'Ethernal Explorer', themes: { default: {}}
                     }
                 });

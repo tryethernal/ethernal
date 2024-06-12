@@ -1,4 +1,5 @@
 jest.mock('../../../lib/env', () => ({
+    getNodeEnv: jest.fn(() => 'test'),
     getAppDomain: jest.fn(() => 'ethernal.com'),
     getAppUrl: jest.fn(() => 'ethernal.com'),
     getDefaultPlanSlug: jest.fn(() => 'selfhosted'),

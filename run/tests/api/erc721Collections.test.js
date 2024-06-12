@@ -1,4 +1,5 @@
 require('../mocks/lib/queue');
+require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/lib/rpc');
 require('../mocks/middlewares/workspaceAuth');

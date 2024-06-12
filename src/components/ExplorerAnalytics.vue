@@ -22,7 +22,7 @@
                     </v-col>
 
                     <v-col cols="12" md="6">
-                        <Line-Chart :title="'Average Transaction Fee'" :xLabels="charts['averageTransactionFee'].xLabels" :data="charts['averageTransactionFee'].data" :tokenSymbol="chain.token || 'ether'" :floating="true" :index="3" />
+                        <Line-Chart :title="'Average Transaction Fee'" :xLabels="charts['averageTransactionFee'].xLabels" :data="charts['averageTransactionFee'].data" :tokenSymbol="chain.token || 'ETH'" :floating="true" :index="3" />
                     </v-col>
 
                     <v-col cols="12" md="6">

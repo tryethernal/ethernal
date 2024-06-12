@@ -1,4 +1,5 @@
 require('../../mocks/lib/firebase');
+require('../../mocks/models');
 require('../../mocks/lib/crypto');
 
 const { firebaseVerify } = require('../../../lib/crypto');
