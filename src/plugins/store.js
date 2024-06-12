@@ -78,6 +78,11 @@ export default new Vuex.Store({
                 ...state.currentWorkspace,
                 browserSyncEnabled: status
             }
+        },
+        SET_FAUCET_SETTINGS(state, faucet) {
+            if (!state.publicExplorer)
+                return;
+            state.publicExplorer.faucet = faucet;
         }
     },
     actions: {
@@ -151,6 +156,9 @@ export default new Vuex.Store({
         },
         updateFirebaseIdToken({ commit }, token) {
             commit('SET_FIREBASE_ID_TOKEN', token);
+        },
+        updateFaucetSettings({ commit }, faucet) {
+            commit('SET_FAUCET_SETTINGS', faucet);
         }
     },
     getters: {

@@ -10,6 +10,35 @@ describe('HashLink.vue', () => {
         helper = new MockHelper();
     });
 
+    it('Should display faucet name', async () => {
+        const wrapper = helper.mountFn(HashLink, {
+            propsData: {
+                type: 'address',
+                hash: '0xed5af388653567af2f388e6224dc7c4b3241c544',
+                withName: true
+            },
+            getters: {
+                publicExplorer: jest.fn(() => ({ token: 'ETL', faucet: { address: '0xed5af388653567af2f388e6224dc7c4b3241c544' }}))
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
+    it('Should display custom label', async () => {
+        const wrapper = helper.mountFn(HashLink, {
+            propsData: {
+                type: 'address',
+                hash: '0xed5af388653567af2f388e6224dc7c4b3241c544',
+                customLabel: 'My Address'
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should not create links', async () => {
         const wrapper = helper.mountFn(HashLink, {
             propsData: {

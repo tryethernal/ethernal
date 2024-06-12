@@ -42,7 +42,6 @@ jest.mock('@/plugins/server', () => ({
                 getAddressStats: jest.fn(),
                 getContractStats: jest.fn(),
                 getTokenTransferVolume: jest.fn(),
-                getTokenCumulativeSupply: jest.fn(),
                 getTokenHolderHistory: jest.fn(),
                 signIn: jest.fn(),
                 signUp: jest.fn(),
@@ -83,6 +82,11 @@ jest.mock('@/plugins/server', () => ({
                 getErc721TokenById: jest.fn(),
                 getErc721TokenByIndex: jest.fn(),
                 getExplorerBilling: jest.fn(),
+                getFaucetBalance: jest.fn(),
+                getFaucetRequestVolume: jest.fn(),
+                getFaucetTokenVolume: jest.fn(),
+                getFaucetPrivateKey: jest.fn(),
+                getFaucetTransactionHistory: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))

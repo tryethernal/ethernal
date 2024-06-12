@@ -1,4 +1,5 @@
 jest.mock('axios');
+require('../mocks/models');
 require('../mocks/lib/utils');
 require('../mocks/lib/queue');
 require('../mocks/lib/firebase');
@@ -27,12 +28,12 @@ describe(`DELETE ${BASE_URL}/:id`, () => {
 describe(`GET ${BASE_URL}/:id`, () => {
     it('Should domain data', (done) => {
         jest.spyOn(db, 'getExplorerDomainById').mockResolvedValueOnce({ domain: 'ethernal.com' });
-        jest.spyOn(axios, 'get').mockResolvedValue({ data: { data : { apx_hit: true, is_resolving: true, last_monitored_humanized: 'ok', status: 'ok', status_message: 'ok', has_ssl: true }}});
+        jest.spyOn(axios, 'get').mockResolvedValue({ data: { data : { dns_pointed_at: 'ip', apx_hit: true, is_resolving: true, last_monitored_humanized: 'ok', status: 'ok', status_message: 'ok', has_ssl: true }}});
 
         request.get(`${BASE_URL}/123`)
             .expect(200)
             .then(({ body }) => {
-                expect(body).toEqual({ apx_hit: true, is_resolving: true, last_monitored_humanized: 'ok', status: 'ok', status_message: 'ok', has_ssl: true });
+                expect(body).toEqual({ dns_pointed_at: 'ip', apx_hit: true, is_resolving: true, last_monitored_humanized: 'ok', status: 'ok', status_message: 'ok', has_ssl: true });
                 done();
             });
     });

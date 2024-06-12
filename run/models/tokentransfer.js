@@ -158,6 +158,9 @@ module.exports = (sequelize, DataTypes) => {
             });
 
             await tokenTransfer.insertAnalyticEvent(options.transaction);
+            const event = await tokenTransfer.getEvent();
+            if (!event)
+                throw new Error('Could not create event');
 
             if (transaction.workspace.public) {
                 options.transaction.afterCommit(() => {

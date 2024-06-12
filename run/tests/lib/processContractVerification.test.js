@@ -1,4 +1,5 @@
 require('../mocks/lib/firebase');
+require('../mocks/models');
 require('../mocks/lib/queue');
 const db = require('../../lib/firebase');
 

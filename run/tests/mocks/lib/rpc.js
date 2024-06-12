@@ -12,6 +12,13 @@ jest.mock('../../../lib/rpc', () => {
             getBytecode: jest.fn().mockResolvedValue('0x1234')
         })),
         Tracer: actual.Tracer,
+        RateLimiter: jest.fn().mockImplementation(() => ({
+            limit: jest.fn(),
+            wouldLimit: jest.fn()
+        })),
+        WalletConnector: jest.fn().mockImplementation(() => ({
+            send: jest.fn().mockResolvedValue({ hash: '0x123' })
+        })),
         ProviderConnector: jest.fn().mockImplementation(() => ({
             fetchRawBlockWithTransactions: jest.fn()
                 .mockResolvedValue({

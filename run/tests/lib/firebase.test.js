@@ -6,11 +6,255 @@ jest.mock('sequelize', () => ({
     }
 }));
 require('../mocks/lib/env');
-const { Workspace, Block, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction, StripeSubscription } = require('../mocks/models');
+require('../mocks/lib/queue');
+const { ExplorerFaucet, Workspace, Block, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction, StripeSubscription } = require('../mocks/models');
 const db = require('../../lib/firebase');
 const env = require('../../lib/env');
 
 beforeEach(() => jest.clearAllMocks());
+
+describe('getFaucetTransactionHistory', () => {
+    it('Should return transaction history', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findByPk').mockResolvedValueOnce({
+            getTransactionHistory: jest.fn().mockResolvedValue([{ amount: '1', date: '2024-06-10' }])
+        });
+        db.getFaucetTransactionHistory(1)
+            .then((res) => {
+                expect(res).toEqual([{ amount: '1', date: '2024-06-10' }]);
+                done();
+            });
+    });
+
+    it('Should throw an error if could not find faucet', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findByPk').mockResolvedValueOnce(null);
+        db.getFaucetTransactionHistory(1, '2024-06-01', '2024-06-10')
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find faucet'));
+                done();
+            });
+    });
+});
+
+describe('getFaucetTokenVolume', () => {
+    it('Should return token volume', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findByPk').mockResolvedValueOnce({
+            getTokenVolume: jest.fn().mockResolvedValue([{ amount: '1', date: '2024-06-10' }])
+        });
+        db.getFaucetTokenVolume(1, '2024-06-01', '2024-06-10')
+            .then((res) => {
+                expect(res).toEqual([{ amount: '1', date: '2024-06-10' }]);
+                done();
+            });
+    });
+
+    it('Should throw an error if could not find faucet', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findByPk').mockResolvedValueOnce(null);
+        db.getFaucetTokenVolume(1, '2024-06-01', '2024-06-10')
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find faucet'));
+                done();
+            });
+    });
+});
+
+describe('getFaucetRequestVolume', () => {
+    it('Should return request volume', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findByPk').mockResolvedValueOnce({
+            getRequestVolume: jest.fn().mockResolvedValue([{ count: 1, date: '2024-06-10' }])
+        });
+        db.getFaucetRequestVolume(1, '2024-06-01', '2024-06-10')
+            .then((res) => {
+                expect(res).toEqual([{ count: 1, date: '2024-06-10' }]);
+                done();
+            });
+    });
+
+    it('Should throw an error if could not find faucet', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findByPk').mockResolvedValueOnce(null);
+        db.getFaucetRequestVolume(1, '2024-06-01', '2024-06-10')
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find faucet'));
+                done();
+            });
+    });
+});
+
+describe('deleteFaucet', () => {
+    it('Should delete faucet', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findOne').mockResolvedValueOnce({
+            safeDestroy: jest.fn().mockResolvedValue(true)
+        });
+        db.deleteFaucet('1', 1)
+            .then((res) => {
+                expect(res).toEqual(true);
+                done();
+            });
+    });
+
+    it('Should throw an error if could not find faucet', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findOne').mockResolvedValueOnce(null);
+        db.deleteFaucet('1', 1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find faucet'));
+                done();
+            });
+    });
+});
+
+describe('getExplorerFaucet', () => {
+    it('Should return faucet', (done) => {
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({
+            getFaucet: jest.fn().mockResolvedValue({ amount: '123' })
+        });
+        db.getExplorerFaucet(1)
+            .then((res) => {
+                expect(res).toEqual({ amount: '123' });
+                done();
+            });
+    });
+
+    it('Should throw an error if could not find explorer', (done) => {
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce(null);
+        db.getExplorerFaucet(1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find explorer'));
+                done();
+            });
+    });
+});
+
+describe('createFaucetDrip', () => {
+    it('Should return created faucet drip', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findByPk').mockResolvedValueOnce({
+            safeCreateDrip: jest.fn().mockResolvedValue({ amount: '123' })
+        });
+        db.createFaucetDrip(1, '0x123', '123', '0xabc')
+            .then((res) => {
+                expect(res).toEqual({ amount: '123' });
+                done();
+            });
+    });
+
+    it('Should throw an error if could not find faucet', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findByPk').mockResolvedValueOnce(null);
+        db.createFaucetDrip(1, '0x123', '123', '0xabc')
+            .catch(error => {
+                expect(error).toEqual(new Error(`Can't find faucet`));
+                done();
+            });
+    });
+});
+
+describe('getFaucetCooldown', () => {
+    it('Should return faucet cooldown', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findByPk').mockResolvedValueOnce({
+            getCooldown: jest.fn().mockResolvedValue(120)
+        });
+        db.getFaucetCooldown('1', '0x123')
+            .then((res) => {
+                expect(res).toEqual(120);
+                done();
+            });
+    });
+
+    it('Should throw an error if could not find faucet', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findByPk').mockResolvedValueOnce(null);
+        db.getFaucetCooldown('1', '0x123')
+            .catch(error => {
+                expect(error).toEqual(new Error(`Can't find faucet`));
+                done();
+            });
+    });
+});
+
+describe('deactivateFaucet', () => {
+    it('Should return deactivated faucet', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findOne').mockResolvedValueOnce({
+            deactivate: jest.fn().mockResolvedValue({ amount: '123' })
+        });
+        db.deactivateFaucet('1', 1)
+            .then((res) => {
+                expect(res).toEqual({ amount: '123' });
+                done();
+            });
+    });
+
+    it('Should throw an error if could not find faucet', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findOne').mockResolvedValueOnce(null);
+        db.deactivateFaucet('1', 1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find faucet'));
+                done();
+            });
+    });
+});
+
+describe('activateFaucet', () => {
+    it('Should return activated faucet', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findOne').mockResolvedValueOnce({
+            activate: jest.fn().mockResolvedValue({ amount: '123' })
+        });
+        db.activateFaucet('1', 1)
+            .then((res) => {
+                expect(res).toEqual({ amount: '123' });
+                done();
+            });
+    });
+
+    it('Should throw an error if could not find faucet', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findOne').mockResolvedValueOnce(null);
+        db.activateFaucet('1', 1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find faucet'));
+                done();
+            });
+    });
+});
+
+
+describe('updateFaucet', () => {
+    it('Should return updated faucet', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findOne').mockResolvedValueOnce({
+            safeUpdate: jest.fn().mockResolvedValue({ amount: '123' })
+        });
+        db.updateFaucet('1', 1, '1000', 10)
+            .then((res) => {
+                expect(res).toEqual({ amount: '123' });
+                done();
+            });
+    });
+
+    it('Should throw an error if could not find faucet', (done) => {
+        jest.spyOn(ExplorerFaucet, 'findOne').mockResolvedValueOnce(null);
+        db.updateFaucet('1', 1, '1000', 10)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find faucet'));
+                done();
+            });
+    });
+});
+
+describe('createFaucet', () => {
+    it('Should return created faucet', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
+            safeCreateFaucet: jest.fn().mockResolvedValue({ address: '0x123' })
+        });
+        db.createFaucet('1', 1, '1000', 10)
+            .then((res) => {
+                expect(res).toEqual({ address: '0x123' });
+                done();
+            });
+    });
+
+    it('Should throw an error if could not find explorer', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
+        db.createFaucet('1', 1, '1000', 10)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find explorer'));
+                done();
+            });
+    });
+});
 
 describe('destroyStripeQuotaExtension', () => {
     it('Should throw an error if no subscription', (done) => {

@@ -77,7 +77,8 @@ module.exports = async job => {
             if (error.message == 'Rate limited') {
                 const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
                 await enqueue('receiptSync', `receiptSync-${workspace.id}-${transaction.hash}`, {
-                    transactionId: transaction.id,
+                    transactionHash: transaction.hash,
+                    workspaceId: workspace.id,
                     source: data.source,
                     rateLimited: data.rateLimited
                 }, priority, null, workspace.rateLimitInterval);

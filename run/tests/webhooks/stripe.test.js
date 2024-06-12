@@ -1,4 +1,5 @@
 require('../mocks/lib/queue');
+require('../mocks/models');
 require('../mocks/lib/stripe');
 require('../mocks/lib/env');
 require('../mocks/lib/flags');

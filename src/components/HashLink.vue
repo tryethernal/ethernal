@@ -20,11 +20,12 @@
     </span>
 </template>
 <script>
+import { mapGetters } from 'vuex';
 const { sanitize } = require('../lib/utils');
 
 export default {
     name: 'HashLink',
-    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName', 'xsHash', 'tokenId', 'unlink', 'contract'],
+    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName', 'xsHash', 'tokenId', 'unlink', 'contract', 'customLabel'],
     data: () => ({
         copied: false,
         token: null,
@@ -41,6 +42,9 @@ export default {
                 if (this.withName)
                     if (hash == '0x0000000000000000000000000000000000000000')
                         return this.contractName = 'Black Hole';
+
+                if (this.withName != false && this.publicExplorer && this.publicExplorer.faucet && this.hash == this.publicExplorer.faucet.address)
+                    return this.verified = true;
 
                 if (this.contract) {
                     if (this.contract.tokenName || this.contract.tokenSymbol)
@@ -69,6 +73,9 @@ export default {
         }
     },
     computed: {
+        ...mapGetters([
+            'publicExplorer'
+        ]),
         formattedHash() {
             if (!this.hash) return;
             if (this.fullHash) {
@@ -82,6 +89,10 @@ export default {
             }
         },
         name() {
+            if (this.customLabel)
+                return this.customLabel;
+            if (this.withName != false && this.publicExplorer && this.publicExplorer.faucet && this.hash == this.publicExplorer.faucet.address)
+                return `${this.publicExplorer.token || 'ETH'} faucet`;
             if (this.withName) {
                 if (this.token && this.withTokenName) {
                     if (this.token.symbol && !this.withTokenName) return this.token.symbol;
