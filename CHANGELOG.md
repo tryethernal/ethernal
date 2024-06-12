@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.36.1] - 2024-06-12
+### Fixed
+- Bug preventing explorer from loading when using a custom domain
+- Bug with custom domains status request
+
 ## [3.36.0] - 2024-06-12
 ### Added
 - Faucet: explorers can integrate a faucet for their users. Enter the request interval & the drip amount, fill your assigned address with your tokens, and your faucet is ready! It comes with analytics, transaction history, address history.
