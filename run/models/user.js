@@ -192,6 +192,8 @@ module.exports = (sequelize, DataTypes) => {
                 browserSyncEnabled: false,
                 storageEnabled: false,
                 erc721LoadingEnabled: false,
+                rateLimitInterval: 5000,
+                rateLimitMaxInInterval: 25,
                 qnEndpointId: data.qnEndpointId
             }), { transaction });
 

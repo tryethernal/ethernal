@@ -89,7 +89,7 @@ module.exports = (sequelize, DataTypes) => {
         }
 
         return sequelize.transaction(async (transaction) => {
-            await this.createTokenBalanceChange(sanitize({
+            const tokenBalanceChange = await this.createTokenBalanceChange(sanitize({
                 transactionId: this.transactionId,
                 workspaceId: this.workspaceId,
                 token: this.token,
@@ -98,7 +98,7 @@ module.exports = (sequelize, DataTypes) => {
                 previousBalance: balanceChange.previousBalance,
                 diff: balanceChange.diff
             }), { transaction });
-
+            await tokenBalanceChange.insertAnalyticEvent(transaction);
             await this.update({ processed: true }, { transaction });
         });
     }
@@ -156,11 +156,6 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 ]
             });
-
-            await tokenTransfer.insertAnalyticEvent(options.transaction);
-            const event = await tokenTransfer.getEvent();
-            if (!event)
-                throw new Error('Could not create event');
 
             if (transaction.workspace.public) {
                 options.transaction.afterCommit(() => {
