@@ -85,14 +85,6 @@ module.exports = (sequelize, DataTypes) => {
     previousBalance: DataTypes.STRING,
     diff: DataTypes.STRING
   }, {
-    hooks: {
-      async afterCreate(tokenBalanceChange, options) {
-        await tokenBalanceChange.insertAnalyticEvent(options.transaction);
-        const event = await tokenBalanceChange.getEvent();
-        if (!event)
-            throw new Error('Could not create event');
-      }
-    },
     sequelize,
     modelName: 'TokenBalanceChange',
     tableName: 'token_balance_changes'

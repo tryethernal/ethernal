@@ -104,6 +104,8 @@ module.exports = (sequelize, DataTypes) => {
                 }
             }
 
+            await storedReceipt.insertAnalyticEvent(transaction);
+
             return storedReceipt;
         });
     }

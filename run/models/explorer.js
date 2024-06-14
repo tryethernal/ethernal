@@ -65,7 +65,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Workspace,
-                    attributes: ['name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
+                    attributes: ['id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
                     as: 'workspace'
                 },
                 {
@@ -105,7 +105,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Workspace,
-                    attributes: ['name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
+                    attributes: ['id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
                     as: 'workspace'
                 },
                 {
@@ -147,7 +147,7 @@ module.exports = (sequelize, DataTypes) => {
                     },
                     {
                         model: sequelize.models.Workspace,
-                        attributes: ['name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
+                        attributes: ['id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
                         as: 'workspace'
                     },
                     {
