@@ -90,8 +90,10 @@ module.exports = (sequelize, DataTypes) => {
                 }
                 await bulkEnqueue('processTransactionTrace', jobs);
               }
-              if (workspace.integrityCheckStartBlockNumber === null && workspace.explorer)
-                await workspace.update({ integrityCheckStartBlockNumber: block.number });
+              if (workspace.integrityCheckStartBlockNumber === null && workspace.explorer) {
+                const integrityCheckStartBlockNumber = block.number < 1000 ? 0 : block.number;
+                await workspace.update({ integrityCheckStartBlockNumber });
+              }
             }
             if (options.transaction)
               return options.transaction.afterCommit(afterCreateFn);
