@@ -1552,7 +1552,14 @@ module.exports = (sequelize, DataTypes) => {
 
     async safeCreateExplorer(transaction) {
         const creationFn = async transaction => {
-            await this.update({ storageEnabled: false, public: true, browserSyncEnabled: false, rpcHealthCheckEnabled: true }, { transaction });
+            await this.update({
+                storageEnabled: false,
+                public: true,
+                browserSyncEnabled: false,
+                rpcHealthCheckEnabled: true,
+                rateLimitInterval: 5000,
+                rateLimitMaxInInterval: 25
+            }, { transaction });
 
             const existingExplorer = await sequelize.models.Explorer.findOne({ where: { slug: slugify(this.name) }});
             const slug = existingExplorer ?
