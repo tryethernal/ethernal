@@ -50,7 +50,8 @@ module.exports = (sequelize, DataTypes) => {
             transactionId: transactionReceipt.transactionId,
             workspaceId: this.workspaceId
         });
-        return this.createTokenTransfer(sanitizedTokenTransfer, { transaction: transaction });
+        const insertedTokenTransfer = await this.createTokenTransfer(sanitizedTokenTransfer, { transaction: transaction });
+        return insertedTokenTransfer.insertAnalyticEvent(transaction);
     }
 
     async safeDestroy(transaction) {

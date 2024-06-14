@@ -428,7 +428,7 @@ export default {
                 storageEnabled: data.workspace.storageEnabled,
                 erc721LoadingEnabled: data.workspace.erc721LoadingEnabled,
                 statusPageEnabled: data.workspace.statusPageEnabled,
-                id: data.workspaceId,
+                id: data.workspace.id,
                 defaultAccount: data.workspace.defaultAccount,
                 gasPrice: data.workspace.gasPrice,
                 gasLimit: data.workspace.gasLimit
