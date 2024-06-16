@@ -37,23 +37,23 @@ exports[`ExplorerFaucet.vue Should display an active faucet 1`] = `
           <ul>
             <li>
               <hash-link-stub hash="0x4150e51980114468aa8309bb72f027d8bff41353" type="address"></hash-link-stub> -
-              <span>Request in 2 hours</span>
+              <span class="success--text"><a class="underlined">Request now</a></span>
             </li>
             <li>
               <hash-link-stub hash="0x4150e51980114468aa8309bb72f027d8bff41353" type="address"></hash-link-stub> -
-              <span>Request in 2 hours</span>
+              <span class="success--text"><a class="underlined">Request now</a></span>
             </li>
             <li>
               <hash-link-stub hash="0x4150e51980114468aa8309bb72f027d8bff41353" type="address"></hash-link-stub> -
-              <span>Request in 2 hours</span>
+              <span class="success--text"><a class="underlined">Request now</a></span>
             </li>
             <li>
               <hash-link-stub hash="0x4150e51980114468aa8309bb72f027d8bff41353" type="address"></hash-link-stub> -
-              <span>Request in 2 hours</span>
+              <span>Request in a day</span>
             </li>
             <li>
               <hash-link-stub hash="0x4150e51980114468aa8309bb72f027d8bff41353" type="address"></hash-link-stub> -
-              <span>Request in 2 hours</span>
+              <span>Request in a day</span>
             </li>
           </ul> <small><a>[+] See More</a></small>
           <hr role="separator" aria-orientation="horizontal" class="my-4 v-divider theme--light"> <small>

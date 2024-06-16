@@ -37,7 +37,7 @@
                                 <ul>
                                     <li v-for="(request, idx) in slicedRequests" :key="idx">
                                         <Hash-Link :withName="false" :type="'address'" :hash="request.address" /> -
-                                        <span v-if="humanizeDuration(request.availableAt) <= 0" class="success--text">
+                                        <span v-if="durationUntilNextRequest(request.availableAt) <= 0" class="success--text">
                                             <a class="underlined" @click.prevent="requestFor(request.address)">Request now</a>
                                         </span>
                                         <span v-else>Request in {{ humanizeDuration(request.availableAt) }}</span>
@@ -176,7 +176,7 @@ export default{
                 }
                 newRequests.push(newRequest);
                 this.requests = newRequests;
-                localStorage.setItem('requxests', JSON.stringify(this.requests));
+                localStorage.setItem('requests', JSON.stringify(this.requests));
             } catch(error) {
                 console.log(error)
                 return;
@@ -190,8 +190,11 @@ export default{
                 return [];
             }
         },
+        durationUntilNextRequest(until) {
+            return moment.duration(moment(until).diff(moment()), 'milliseconds');
+        },
         humanizeDuration(until) {
-            return moment.duration(moment(until).diff(moment()), 'milliseconds').humanize()
+            return this.durationUntilNextRequest(until).humanize();
         }
     },
     computed: {
