@@ -37,10 +37,10 @@
                                 <ul>
                                     <li v-for="(request, idx) in slicedRequests" :key="idx">
                                         <Hash-Link :withName="false" :type="'address'" :hash="request.address" /> -
-                                        <span v-if="request.cooldown == 0" class="success--text">
+                                        <span v-if="humanizeDuration(request.availableAt) <= 0" class="success--text">
                                             <a class="underlined" @click.prevent="requestFor(request.address)">Request now</a>
                                         </span>
-                                        <span v-else>Request in {{ humanizeDuration(request.cooldown) }}</span>
+                                        <span v-else>Request in {{ humanizeDuration(request.availableAt) }}</span>
                                     </li>
                                 </ul>
                                 <template v-if="orderedRequests.length > 5">
@@ -158,7 +158,7 @@ export default{
             this.server.requestFaucetToken(this.publicExplorer.faucet.id, address || this.address)
                 .then(({ data }) => {
                     this.transactionHash = data.hash;
-                    this.updateRequests({ address: this.address.toLowerCase(), cooldown: data.cooldown });
+                    this.updateRequests({ address: this.address.toLowerCase(), availableAt: moment().add(data.cooldown, 'minutes').toDate() });
                 })
                 .catch(error => {
                     console.log(error)
@@ -176,7 +176,7 @@ export default{
                 }
                 newRequests.push(newRequest);
                 this.requests = newRequests;
-                localStorage.setItem('requests', JSON.stringify(this.requests));
+                localStorage.setItem('requxests', JSON.stringify(this.requests));
             } catch(error) {
                 console.log(error)
                 return;
@@ -190,8 +190,8 @@ export default{
                 return [];
             }
         },
-        humanizeDuration(duration) {
-            return moment.duration(duration, 'minutes').humanize()
+        humanizeDuration(until) {
+            return moment.duration(moment(until).diff(moment()), 'milliseconds').humanize()
         }
     },
     computed: {

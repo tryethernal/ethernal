@@ -100,6 +100,7 @@
 
 <script>
 const ethers = require('ethers');
+import { mapGetters } from 'vuex';
 import store from '../plugins/store';
 import CreateExplorerFaucetModal from './CreateExplorerFaucetModal';
 import ExplorerFaucetSettingsDangerZone from './ExplorerFaucetSettingsDangerZone';
@@ -190,6 +191,9 @@ export default {
         }
     },
     computed: {
+        ...mapGetters([
+            'currentWorkspace'
+        ]),
         mainExplorerDomain() {
             if (!this.explorer)
                 return null;
@@ -216,7 +220,8 @@ export default {
     },
     watch: {
         faucet() {
-            store.dispatch('updateFaucetSettings', this.faucet);
+            if (this.explorer && this.explorer.workspaceId == this.currentWorkspace.id)
+                store.dispatch('updateFaucetSettings', this.faucet);
         }
     },
 }
