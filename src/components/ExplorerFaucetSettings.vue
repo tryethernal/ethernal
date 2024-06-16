@@ -133,7 +133,7 @@ export default {
     mounted() {
         this.loadExplorer();
         this.pusherUnsubscribe = this.pusher.onNewTransaction(data => {
-            if (data.from == this.faucet.address)
+            if (this.faucet && (data.from == this.faucet.address || data.to == this.faucet.address))
                 this.refreshFaucetBalance();
         }, this);
     },

@@ -130,7 +130,7 @@ export default{
 
         this.refreshFaucetBalance();
         this.pusherUnsubscribe = this.pusher.onNewTransaction(data => {
-            if (data.from == this.publicExplorer.faucet.address)
+            if (data.from == this.publicExplorer.faucet.address || data.to == this.publicExplorer.faucet.address)
                 this.refreshFaucetBalance();
         }, this);
         this.initializeRequests();
