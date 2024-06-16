@@ -11,6 +11,7 @@ describe('ExplorerFaucet.vue', () => {
 
     beforeEach(() => {
         helper = new MockHelper();
+        jest.spyOn(Date, 'now').mockImplementation(() => new Date('2024-06-16T19:04:34.769Z'));
     });
 
     it('Should display faucet intro', async () => {
@@ -28,12 +29,12 @@ describe('ExplorerFaucet.vue', () => {
     it('Should display an active faucet', async () => {
         jest.spyOn(helper.mocks.server, 'getFaucetBalance').mockResolvedValueOnce({ data: { balance: '2000000000000000000' }});
         jest.spyOn(Storage.prototype, 'getItem').mockReturnValueOnce(JSON.stringify([
-            { address: '0x4150e51980114468aa8309bb72f027d8bff41353', cooldown: 120 },
-            { address: '0x4150e51980114468aa8309bb72f027d8bff41353', cooldown: 120 },
-            { address: '0x4150e51980114468aa8309bb72f027d8bff41353', cooldown: 120 },
-            { address: '0x4150e51980114468aa8309bb72f027d8bff41353', cooldown: 120 },
-            { address: '0x4150e51980114468aa8309bb72f027d8bff41353', cooldown: 120 },
-            { address: '0x4150e51980114468aa8309bb72f027d8bff41353', cooldown: 120 }
+            { address: '0x4150e51980114468aa8309bb72f027d8bff41353', availableAt: '2024-06-16T19:04:34.769Z' },
+            { address: '0x4150e51980114468aa8309bb72f027d8bff41353', availableAt: '2024-06-16T19:04:34.769Z' },
+            { address: '0x4150e51980114468aa8309bb72f027d8bff41353', availableAt: '2024-06-16T19:04:34.769Z' },
+            { address: '0x4150e51980114468aa8309bb72f027d8bff41353', availableAt: '2024-06-17T19:04:34.769Z' },
+            { address: '0x4150e51980114468aa8309bb72f027d8bff41353', availableAt: '2024-06-17T19:04:34.769Z' },
+            { address: '0x4150e51980114468aa8309bb72f027d8bff41353', availableAt: '2024-06-17T19:04:34.769Z' }
         ]));
         const wrapper = helper.mountFn(ExplorerFaucet, {
             stubs,
