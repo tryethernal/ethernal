@@ -7,6 +7,9 @@ const abiChecker = require('../lib/contract');
 
 const ERC721_ABI = require('./abis/erc721.json');
 const ERC20_ABI = require('./abis/erc20.json');
+const IUniswapV2Router02 = require('./abis/IUniswapV2Router02.json');
+const IUniswapV2Factory = require('./abis/IUniswapV2Factory.json');
+const IUniswapV2Pair = require('./abis/IUniswapV2Pair.json');
 const ERC1155_ABI = require('./abis/erc1155.json');
 const ERC721_ENUMERABLE_ABI = require('./abis/erc721Enumerable.json');
 const ERC721_METADATA_ABI = require('./abis/erc721Metadata.json');
@@ -89,6 +92,54 @@ const getProvider = function(url) {
 
     return new provider(authenticatedUrl);
 };
+
+class DexPairConnector {
+    constructor(server, address) {
+        if (!server || !address)
+            throw new Error('Missing parameters');
+
+        this.contract = new ethers.Contract(address, IUniswapV2Pair, getProvider(server));
+    }
+
+    token0() {
+        return this.contract.token0();
+    }
+
+    token1() {
+        return this.contract.token1();
+    }
+}
+
+class DexFactoryConnector {
+    constructor(server, address) {
+        if (!server || !address)
+            throw new Error('Missing parameters');
+
+        this.contract = new ethers.Contract(address, IUniswapV2Factory, getProvider(server));
+    }
+
+    allPairs(index) {
+        return this.contract.allPairs(index);
+    }
+
+    allPairsLength() {
+        return this.contract.allPairsLength();
+    }
+}
+
+class DexConnector {
+    constructor(server, address) {
+        if (!server || !address)
+            throw new Error('Missing parameters');
+
+        this.contract = new ethers.Contract(address, IUniswapV2Router02, getProvider(server));
+    }
+
+    getFactory() {
+        return this.contract.factory();
+    }
+}
+
 
 class WalletConnector {
     constructor(server, privateKey) {
@@ -412,5 +463,8 @@ module.exports = {
     getProvider: getProvider,
     ERC721Connector: ERC721Connector,
     WalletConnector: WalletConnector,
+    DexConnector: DexConnector,
+    DexFactoryConnector: DexFactoryConnector,
+    DexPairConnector: DexPairConnector,
     getBalanceChange: getBalanceChange
 };

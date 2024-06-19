@@ -19,6 +19,70 @@ const ExplorerDomain = models.ExplorerDomain;
 const RpcHealthCheck = models.RpcHealthCheck;
 const StripeQuotaExtension = models.StripeQuotaExtension;
 const ExplorerFaucet = models.ExplorerFaucet;
+const ExplorerV2Dex = models.ExplorerV2Dex;
+const V2DexPair = models.V2DexPair;
+
+const getExplorerV2Dex = (v2DexId) => {
+    if (!v2DexId)
+        throw new Error('Missing parameter');
+
+    return ExplorerV2Dex.findByPk(v2DexId, {
+        attributes: ['id', 'routerAddress', 'factoryAddress'],
+        include: [
+            {
+                model: V2DexPair,
+                as: 'pairs',
+                attributes: ['id'],
+                include: [
+                    {
+                        model: Contract,
+                        as: 'token0',
+                        attributes: ['address', 'tokenName', 'tokenSymbol']
+                    },
+                    {
+                        model: Contract,
+                        as: 'token1',
+                        attributes: ['address', 'tokenName', 'tokenSymbol']
+                    },
+                    {
+                        model: Contract,
+                        as: 'pair',
+                        attributes: ['address']
+                    }
+                ]
+            }
+        ]
+    });
+};
+
+const createV2DexPair = async (dexId, token0, token1, pair) => {
+    if (!dexId || !token0 || !token1 ||!pair)
+        throw new Error('Missing parameter');
+    
+    const dex = await ExplorerV2Dex.findByPk(dexId);
+    if (!dex)
+        throw new Error('Could not find dex');
+
+    return dex.safeCreatePair(token0, token1, pair);
+};
+
+const createExplorerV2Dex = async (firebaseUserId, explorerId, routerAddress, routerFactoryAddress) => {
+    if (!firebaseUserId || !explorerId || !routerAddress || !routerFactoryAddress)
+        throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            '$admin.firebaseUserId$': firebaseUserId
+        },
+        include: 'admin'
+    });
+
+    if (!explorer)
+        throw new Error('Could not find explorer');
+
+    return explorer.safeCreateV2Dex(routerAddress, routerFactoryAddress);
+};
 
 const getFaucetTransactionHistory = async (faucetId, page, itemsPerPage, order, orderBy) => {
     if (!faucetId)
@@ -886,6 +950,34 @@ const getExplorerById = (userId, id, withDemo = false) => {
                 model: ExplorerFaucet,
                 as: 'faucet',
                 attributes: ['id', 'address', 'amount', 'interval', 'active']
+            },
+            {
+                model: ExplorerV2Dex,
+                as: 'v2Dex',
+                attributes: ['id', 'routerAddress', 'factoryAddress'],
+                include: [
+                    {
+                        model: V2DexPair,
+                        as: 'pairs',
+                        include: [
+                            {
+                                model: Contract,
+                                as: 'token0',
+                                attributes: ['address', 'tokenName', 'tokenSymbol']
+                            },
+                            {
+                                model: Contract,
+                                as: 'token1',
+                                attributes: ['address', 'tokenName', 'tokenSymbol']
+                            },
+                            {
+                                model: Contract,
+                                as: 'pair',
+                                attributes: ['address']
+                            }
+                        ]
+                    }
+                ]
             }
         ]
     });
@@ -2259,5 +2351,8 @@ module.exports = {
     getFaucetRequestVolume: getFaucetRequestVolume,
     getFaucetTokenVolume: getFaucetTokenVolume,
     getFaucetTransactionHistory: getFaucetTransactionHistory,
+    createExplorerV2Dex: createExplorerV2Dex,
+    createV2DexPair: createV2DexPair,
+    getExplorerV2Dex: getExplorerV2Dex,
     Workspace: Workspace
 };
