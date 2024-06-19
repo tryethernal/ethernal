@@ -69,6 +69,16 @@
                                 </v-text-field>
                             </v-col>
                         </v-row>
+                        <v-row class="mt-0">
+                            <v-col cols="2">
+                                <v-checkbox
+                                    dense
+                                    label="Via IR"
+                                    v-model="parameters.viaIR"
+                                    hide-details>
+                                </v-checkbox>
+                            </v-col>
+                        </v-row>
                     </v-card-text>
                 </v-card>
 
@@ -187,6 +197,7 @@ export default {
         verificationSuccess: false,
         verificationErrorMessage: null,
         parameters: {
+            viaIr: false,
             sources: {},
             imports: {},
             libraries: {},
@@ -274,7 +285,8 @@ export default {
                 constructorArguments: this.parameters.constructorArguments,
                 evmVersion: this.parameters.evmVersion,
                 optimizer: this.parameters.optimizer,
-                runs: this.parameters.runs
+                runs: this.parameters.runs,
+                viaIR: this.parameters.viaIR
             });
 
             this.server.verifyContract(this.address, data)

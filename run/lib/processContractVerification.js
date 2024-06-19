@@ -37,6 +37,7 @@ module.exports = async function(db, payload) {
     const optimizer = payload.optimizer || false;
     const runs = payload.runs;
     const evmVersion = payload.evmVersion;
+    const viaIR = payload.viaIR || null;
 
     // Only supports verifying one contract at a time at the moment
     const contractFile = Object.keys(code.sources)[0];
@@ -74,6 +75,10 @@ module.exports = async function(db, payload) {
             evmVersion: evmVersion
         }
     };
+
+    // If it's false, we don't want to set it at all
+    if (viaIR === true)
+        inputs['settings']['viaIR'] = true;
 
     const missingImports = [];
     const compiledCode = compiler.compile(JSON.stringify(inputs), { import : function(path) {
@@ -120,7 +125,7 @@ module.exports = async function(db, payload) {
         }
     }
 
-    let compiledRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(bytecode, includedBytecodes) + constructorArguments).toLowerCase();
+    let compiledRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(bytecode, includedBytecodes)).toLowerCase();
     while (compiledRuntimeBytecodeWithoutMetadata.endsWith('0033'))
         compiledRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(compiledRuntimeBytecodeWithoutMetadata, includedBytecodes) + constructorArguments).toLowerCase();
 
@@ -128,9 +133,9 @@ module.exports = async function(db, payload) {
     if (!deploymentTx)
         throw new Error("This contract cannot be verified at the moment because the deployment transaction hasn't been indexed.");
 
-    let deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length), includedBytecodes) + constructorArguments).toLowerCase();
+    let deployedRuntimeBytecodeWithoutMetadata = stripBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length), includedBytecodes);
     while (deployedRuntimeBytecodeWithoutMetadata.endsWith('0033'))
-    deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deployedRuntimeBytecodeWithoutMetadata, includedBytecodes) + constructorArguments).toLowerCase();
+        deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deployedRuntimeBytecodeWithoutMetadata, includedBytecodes) + constructorArguments).toLowerCase();
 
     if (!deployedRuntimeBytecodeWithoutMetadata.startsWith('0x'))
         deployedRuntimeBytecodeWithoutMetadata = '0x' + deployedRuntimeBytecodeWithoutMetadata;
