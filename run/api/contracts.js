@@ -189,7 +189,8 @@ router.post('/:address/verify', async (req, res) => {
             contractName: data.contractName,
             optimizer: data.optimizer,
             runs: data.runs,
-            evmVersion: data.evmVersion
+            evmVersion: data.evmVersion,
+            viaIR: data.viaIR
         });
 
         const result = await processContractVerification(db, payload);
