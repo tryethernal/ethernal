@@ -358,6 +358,21 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            getV2DexTokens(id) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name
+                };
+
+                const resource = `${store.getters.apiRoot}/api/v2_dexes/${id}/tokens`;
+                return axios.get(resource, { params });
+            },
+
+            createExplorerV2Dex(id, routerAddress) {
+                const resource = `${store.getters.apiRoot}/api/explorers/${id}/v2_dexes`;
+                return axios.post(resource, { data: { routerAddress }});
+            },
+
             getFaucetTransactionHistory(id, options) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,

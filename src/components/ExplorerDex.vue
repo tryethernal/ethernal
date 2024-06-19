@@ -5,7 +5,8 @@
                 <v-card outlined class="rounded-card rounded-xl pa-12">
                     <v-card-title class="primary--text d-flex justify-center align-center">DEX</v-card-title>
                     <v-card-text class="pb-0">
-                        Dex
+                        <Metamask />
+                        <v-btn primary @click="trade()">Trade</v-btn>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -15,15 +16,19 @@
 
 <script>
 const ethers = require('ethers');
+import Metamask from './Metamask';
 import { abi as UniswapV2PairABI } from '@/abis/IUniswapV2Pair';
+import { abi as IUniswapV2Router02ABI } from '@/abis/IUniswapV2Router02';
 import { Token, CurrencyAmount, TradeType, Percent } from '@uniswap/sdk-core';
-import { AlphaRouter, SwapType, UniswapMulticallProvider, V3PoolProvider } from '@tryethernal/smart-order-router';
-import { Pair } from '@uniswap/v2-sdk';
+import { Pair, Route, Trade } from '@uniswap/v2-sdk';
 import { mapGetters } from 'vuex';
 import { getProvider } from '@/lib/rpc';
 
 export default{
     name: 'ExplorerDex',
+    components: {
+        Metamask
+    },
     data: () => ({
         loading: false,
         errorMessage: null,
@@ -36,47 +41,58 @@ export default{
         this.wCAGA = new Token(this.chainId, '0xf22d0f6ed0c214e9e4a14eeb1fbabbbb3567d7af', 18),
         this.USDT = new Token(this.chainId, '0x99d46f7e4eff4b322bd3f0387aeb82e66bf03db0', 18)
         this.CTT = new Token(this.chainId, '0x47e405b514068e1963fbf84006009bea4edd26b2', 18);
-        this.multicall = new UniswapMulticallProvider(this.chainId, this.provider, 1000000, '0xdd7e5a61a425d1cc72e4912c75dec6d5fc42a755');
-        const v3PoolProvider = new V3PoolProvider(this.chainId, this.multicall);
-        this.router = new AlphaRouter({
-            chainId: this.chainId,
-            provider: this.provider,
-            multicall2Provider: this.multicall,
-            v3PoolProvider
-        })
-        const options = {
-            recipient: '0x2b9df63290c4d7e4a945610054c61f26ffed3905',
-            slippageTolerance: new Percent(50, 10000),
-            deadline: Math.floor(Date.now() / 1000 + 1800),
-            type: SwapType.SWAP_ROUTER_02,
-        };
-        this.router.route(
-            CurrencyAmount.fromRawAmount(this.USDT, '1000000000000000000'),
-            this.CTT,
-            TradeType.EXACT_INPUT,
-            options
-        ).then(route => {
-            console.log(route);
-        });
-        // this.createPair()
-        //     .then(pair => {
-        //         const route = new Route([pair], this.USDT, this.wCAGA);
-        //         const trade = new Trade(route, CurrencyAmount.fromRawAmount(this.USDT, '1000000000000000000'), TradeType.EXACT_INPUT);
-        //         console.log(trade.executionPrice.toSignificant(8));
-        //         console.log(trade.executionPrice.invert().toSignificant(8));
-        //     })
-        //     .catch(console.log);
+        this.USDC = new Token(this.chainId, '0xc9e8634d0ec6e3cb049b7d043a910d4830315ef3', 18);
     },
     methods: {
+        trade() {
+            this.createPair()
+            .then(pair => {
+                const route = new Route([pair], this.wCAGA, this.USDC);
+                const trade = new Trade(route, CurrencyAmount.fromRawAmount(this.wCAGA, '10000000000000000'), TradeType.EXACT_INPUT);
+                console.log(trade.executionPrice.toSignificant(8));
+
+                const slippageTolerance = new Percent('50', '10000');
+                const amountIn = ethers.utils.parseUnits(trade.inputAmount.toExact(), 18);
+                const amountOutMin = ethers.utils.parseUnits(trade.minimumAmountOut(slippageTolerance).toExact(), 18);
+                const path = [this.wCAGA.address, this.USDC.address];
+                const to = '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA';
+                const deadline = Math.floor(Date.now() / 1000) + 60 * 20;
+                console.log(amountIn, amountOutMin, path, to, deadline)
+
+                const signer = this.provider.getSigner(to);
+                const routerContract = new ethers.Contract('0xf91d509a2b53bdec334be59d7050bdd2e0264fca', IUniswapV2Router02ABI, signer);
+
+                const options = {
+                    from: to,
+                    value: amountIn.toHexString()
+                };
+                routerContract.populateTransaction.swapExactETHForTokens(amountOutMin, path, to, deadline, options)
+                    .then(transaction => {
+                        const params = {
+                            ...transaction,
+                            gasPrice: '0xa',
+                            value: amountIn.toHexString()
+                        }
+                        window.ethereum.request({
+                            method: 'eth_sendTransaction',
+                            params: [params]
+                        })
+                        .then(console.log)
+                        .catch(console.log())
+                    })
+                    .catch(console.log)
+            })
+            .catch(console.log);
+        },
         async createPair() {
             // const pairAddress = Pair.getAddress(this.USDT, this.CTT);
             // console.log(pairAddress)
-            const pairAddress = '0xd7c2246DF3872ecE4F4eFc230Ee3477F2664955d'.toLowerCase();
+            const pairAddress = '0x52F1c57251B0CbEfac229bc139d6F47Cf610D406'.toLowerCase();
             const pairContract = new ethers.Contract(pairAddress, UniswapV2PairABI, this.provider);
             const reserves = await pairContract["getReserves"]();
             const [reserve0, reserve1] = reserves;
             console.log(reserves)
-            const tokens = [this.USDT, this.wCAGA];
+            const tokens = [this.USDC, this.wCAGA];
             const [token0, token1] = tokens[0].sortsBefore(tokens[1]) ? tokens : [tokens[1], tokens[0]];
 
             const pair = new Pair(CurrencyAmount.fromRawAmount(token0, reserve0), CurrencyAmount.fromRawAmount(token1, reserve1));

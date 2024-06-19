@@ -2,7 +2,7 @@
     <v-container fluid>
         <template v-if="explorer && explorer.faucet">
             <v-row>
-                <v-col cols="6" class="fill-height">
+                <v-col cols="6">
                     <v-card outlined class="my-6">
                         <v-card-text>
                             <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
