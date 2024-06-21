@@ -69,6 +69,11 @@ module.exports = (sequelize, DataTypes) => {
                                 model: sequelize.models.ExplorerFaucet,
                                 as: 'faucet',
                                 attributes: ['id', 'address', 'interval', 'amount', 'active']
+                            },
+                            {
+                                model: sequelize.models.ExplorerV2Dex,
+                                as: 'v2Dex',
+                                attributes: ['id', 'routerAddress']
                             }
                         ]
                     }

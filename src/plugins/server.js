@@ -358,7 +358,8 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
-            getV2DexTokens(id) {
+            getV2DexTokens() {
+                const id = store.getters.publicExplorer.v2Dex.id;
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
                     workspace: store.getters.currentWorkspace.name

@@ -18,6 +18,49 @@ module.exports = (sequelize, DataTypes) => {
       ExplorerV2Dex.hasMany(models.V2DexPair, { foreignKey: 'explorerV2DexId', as: 'pairs' });
     }
 
+    async getAllTokens() {
+      const pairs = await this.getPairs();
+      const allTokens = pairs
+        .map(pair => [pair.token0, pair.token1])
+        .flat();
+        
+      return [...new Map(allTokens.map(obj => [JSON.stringify(obj), obj])).values()];
+    }
+
+    async findRoutesBetween(token0, token1) {
+      const pairs = await this.getPairs();
+      const graph = {};
+      pairs.forEach(pair => {
+        const [token1, token2] = pair;
+        if (!graph[token1]) graph[token1] = [];
+        if (!graph[token2]) graph[token2] = [];
+        graph[token1].push(token2);
+        graph[token2].push(token1);
+      });
+
+      const dfsAllPaths = async (graph, start, end, visited = new Set(), path = [], allPaths = []) => {
+        visited.add(start);
+        path.push(start);
+
+        if (start === end)
+            allPaths.push([...path]);
+        else {
+            for (const neighbor of graph[start]) {
+                if (!visited.has(neighbor)) {
+                    dfsAllPaths(graph, neighbor, end, visited, path, allPaths);
+                }
+            }
+        }
+
+        path.pop();
+        visited.delete(start);
+
+        return allPaths;
+      }
+
+      return dfsAllPaths(graph, token0, token1);
+    }
+
     async safeCreatePair(token0, token1, pair) {
       if (!token0 || !token1 || !pair)
         throw new Error('Missing parameter');

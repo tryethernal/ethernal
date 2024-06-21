@@ -77,6 +77,12 @@ module.exports = (sequelize, DataTypes) => {
                     attributes: ['id', 'address', 'amount', 'interval', 'active'],
                     where: { active: true },
                     required: false
+                },
+                {
+                    model: sequelize.models.ExplorerV2Dex,
+                    as: 'v2Dex',
+                    attributes: ['id', 'routerAddress'],
+                    required: false
                 }
             ]
         });
@@ -116,6 +122,12 @@ module.exports = (sequelize, DataTypes) => {
                     as: 'faucet',
                     attributes: ['id', 'address', 'amount', 'interval', 'active'],
                     where: { active: true },
+                    required: false
+                },
+                {
+                    model: sequelize.models.ExplorerV2Dex,
+                    as: 'v2Dex',
+                    attributes: ['id', 'routerAddress'],
                     required: false
                 }
             ]
@@ -158,6 +170,12 @@ module.exports = (sequelize, DataTypes) => {
                         as: 'faucet',
                         attributes: ['id', 'address', 'amount', 'interval', 'active'],
                         where: { active: true },
+                        required: false
+                    },
+                    {
+                        model: sequelize.models.ExplorerV2Dex,
+                        as: 'v2Dex',
+                        attributes: ['id', 'routerAddress'],
                         required: false
                     }
                 ]

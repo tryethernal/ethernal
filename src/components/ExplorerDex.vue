@@ -1,12 +1,56 @@
 <template>
     <v-container fluid>
+        <Metamask />
         <v-row justify="center" align="center" class="mb-10 my-0">
             <v-col md="6" sm="12">
                 <v-card outlined class="rounded-card rounded-xl pa-12">
                     <v-card-title class="primary--text d-flex justify-center align-center">DEX</v-card-title>
                     <v-card-text class="pb-0">
-                        <Metamask />
-                        <v-btn primary @click="trade()">Trade</v-btn>
+                        <v-text-field
+                            dense
+                            class="rounded-xl"
+                            placeholder="0.0"
+                            persistent-placeholder
+                            outlined
+                            v-model="sell.amount"
+                            label="Sell">
+                            <template v-slot:append>
+                                <v-select
+                                    class="mb-6 mt-5"
+                                    outlined
+                                    dense
+                                    label="Token"
+                                    v-model="sell.token"
+                                    item-text="tokenSymbol"
+                                    hide-details="auto"
+                                    :items="tokens"
+                                    return-object>
+                                </v-select>
+                            </template>
+                        </v-text-field>
+                        <v-text-field
+                            dense
+                            class="rounded-xl"
+                            placeholder="0.0"
+                            persistent-placeholder
+                            outlined
+                            v-model="buy.amount"
+                            label="Buy">
+                            <template v-slot:append>
+                                <v-select
+                                    class="mb-6 mt-5"
+                                    width="50px"
+                                    outlined
+                                    dense
+                                    label="Token"
+                                    v-model="buy.token"
+                                    item-text="tokenSymbol"
+                                    hide-details="auto"
+                                    :items="tokens"
+                                    return-object>
+                                </v-select>
+                            </template>
+                        </v-text-field>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -35,15 +79,34 @@ export default{
         wCAGA: null,
         USDT: null,
         CTT: null,
-        router: null
+        router: null,
+        tokens: [],
+        sell: {
+            amount: null,
+            token: {}
+        },
+        buy: {
+            amount: null,
+            token: {}
+        }
     }),
     mounted() {
+        this.loadTokens();
         this.wCAGA = new Token(this.chainId, '0xf22d0f6ed0c214e9e4a14eeb1fbabbbb3567d7af', 18),
         this.USDT = new Token(this.chainId, '0x99d46f7e4eff4b322bd3f0387aeb82e66bf03db0', 18)
         this.CTT = new Token(this.chainId, '0x47e405b514068e1963fbf84006009bea4edd26b2', 18);
         this.USDC = new Token(this.chainId, '0xc9e8634d0ec6e3cb049b7d043a910d4830315ef3', 18);
     },
     methods: {
+        selectionChanged() {
+            if (!this.sell.amount || !this.sell.token.address || !this.buy.amount || !this.buy.token.address)
+                return;
+        },
+        loadTokens() {
+            this.server.getV2DexTokens()
+                .then(({ data: { tokens }}) => this.tokens = tokens)
+                .catch(console.log);
+        },
         trade() {
             this.createPair()
             .then(pair => {
@@ -112,3 +175,8 @@ export default{
     }
 }
 </script>
+<style>
+  .v-text-field input {
+    font-size: 1.75em;
+  }
+</style>
