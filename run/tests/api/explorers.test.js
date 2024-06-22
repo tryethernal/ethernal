@@ -775,12 +775,15 @@ describe(`POST ${BASE_URL}/:id/domains`, () => {
 
     it('Should return 200', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'createExplorerDomain').mockResolvedValueOnce();
+        jest.spyOn(db, 'createExplorerDomain').mockResolvedValueOnce({ id: 1 });
 
         request.post(`${BASE_URL}/123/domains`)
             .send({ data: { domain: 'test' }})
             .expect(200)
-            .then(() => done());
+            .then(({ body }) => {
+                expect(body).toEqual({ id: 1 });
+                done()
+            });
     });
 });
 
