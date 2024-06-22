@@ -454,9 +454,9 @@ router.post('/:id/domains', authMiddleware, async (req, res) => {
         if (!explorer)
             throw new Error('Could not find explorer.');
 
-        await db.createExplorerDomain(explorer.id, data.domain);
+        const explorerDomain = await db.createExplorerDomain(explorer.id, data.domain);
 
-        res.sendStatus(200);
+        res.status(200).send({ id: explorerDomain.id });
     } catch(error) {
         logger.error(error.message, { location: 'post.api.explorers.id.domains', error: error, data: data, queryParams: req.params });
         res.status(400).send(error.message);

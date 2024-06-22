@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 const ethers = require('ethers');
-const { sanitize } = require('../lib/utils');
+const { sanitize, slugify } = require('../lib/utils');
 const { isStripeEnabled } = require('../lib/flags');
 const { getDemoUserId, getAppDomain } = require('../lib/env');
 const { enqueue } = require('../lib/queue');
@@ -380,6 +380,7 @@ module.exports = (sequelize, DataTypes) => {
                 const existingExplorer = await sequelize.models.Explorer.findOne({ where: { slug: filteredSettings['slug'] }});
                 if (existingExplorer)
                     throw new Error('This domain is not available');
+                filteredSettings['slug'] = slugify(filteredSettings['slug']);
             }
 
             if (filteredSettings['l1Explorer']) {
@@ -395,7 +396,7 @@ module.exports = (sequelize, DataTypes) => {
     async safeUpdateBranding(branding) {
         const canUpdateBranding = await this.canUseCapability('branding');
         if (!canUpdateBranding)
-        throw new Error('Upgrade your plan to activate branding customization.');
+            throw new Error('Upgrade your plan to activate branding customization.');
 
         const ALLOWED_OPTIONS = ['light', 'logo', 'favicon', 'font', 'links', 'banner'];
         const ALLOWED_COLORS = ['primary', 'secondary', 'accent', 'error', 'info', 'success', 'warning', 'background'];
