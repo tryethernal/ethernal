@@ -171,7 +171,7 @@ module.exports = (sequelize, DataTypes) => {
         return this.update({ shouldSync: false });
     }
 
-    async safeCreateFaucet(amount, interval) {
+    async safeCreateFaucet(amount, interval, transaction) {
         if (!amount || !interval)
             throw new Error('Missing parameter');
 
@@ -180,7 +180,7 @@ module.exports = (sequelize, DataTypes) => {
             throw new Error('This explorer already has a faucet.');
 
         const { address, privateKey } = ethers.Wallet.createRandom();
-        return this.createFaucet({ address, privateKey, amount, interval, active: true });
+        return this.createFaucet({ address, privateKey, amount, interval, active: true }, { transaction });
     }
 
     async isActive() {
@@ -223,21 +223,17 @@ module.exports = (sequelize, DataTypes) => {
         return false;
     }
 
-    async safeCreateDomain(domain) {
+    async safeCreateDomain(domain, transaction) {
         if (!domain) throw new Error('Missing parameter');
-
-        const canAddDomain = await this.canUseCapability('customDomain');
-        if (!canAddDomain)
-            throw new Error('Upgrade your plan to add custom domains.');
 
         const existingDomain = await sequelize.models.ExplorerDomain.findOne({
             where: { domain }
         });
 
         if (existingDomain)
-            throw new Error('This domain is already in use.');
+            throw new Error('This domain is already used.');
 
-        return this.createDomain({ domain });
+        return this.createDomain({ domain }, { transaction });
     }
 
     safeCreateSubscription(stripePlanId, stripeId, cycleEndsAt, status) {
@@ -393,11 +389,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
 
-    async safeUpdateBranding(branding) {
-        const canUpdateBranding = await this.canUseCapability('branding');
-        if (!canUpdateBranding)
-            throw new Error('Upgrade your plan to activate branding customization.');
-
+    async safeUpdateBranding(branding, transaction) {
         const ALLOWED_OPTIONS = ['light', 'logo', 'favicon', 'font', 'links', 'banner'];
         const ALLOWED_COLORS = ['primary', 'secondary', 'accent', 'error', 'info', 'success', 'warning', 'background'];
 
@@ -416,7 +408,19 @@ module.exports = (sequelize, DataTypes) => {
             filteredOptions['light'] = filteredColors;
         }
 
-        return this.update({ themes: { ...this.themes, ...filteredOptions }});
+        if (filteredOptions['links'] && filteredOptions['links'].length) {
+            const links = [];
+            for (let i = 0; i < filteredOptions['links'].length; i++) {
+                const link = filteredOptions['links'][i];
+                if (link.uid)
+                    links.push(link);
+                else
+                    links.push({ ...link, uid: Math.floor(Math.random() * 10000 )});
+            }
+            filteredOptions['links'] = links;
+        }
+
+        return this.update({ themes: { ...this.themes, ...filteredOptions }}, { transaction });
     }
   }
   Explorer.init({

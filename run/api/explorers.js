@@ -5,7 +5,7 @@ const router = express.Router();
 const { isStripeEnabled } = require('../lib/flags');
 const { ProviderConnector } = require('../lib/rpc');
 const { Explorer } = require('../models');
-const { withTimeout, validateBNString } = require('../lib/utils');
+const { withTimeout, validateBNString, sanitize } = require('../lib/utils');
 const { bulkEnqueue } = require('../lib/queue');
 const logger = require('../lib/logger');
 const PM2 = require('../lib/pm2');
@@ -514,63 +514,61 @@ router.post('/', authMiddleware, async (req, res) => {
 
         const user = await db.getUser(data.uid, ['stripeCustomerId', 'canUseDemoPlan']);
 
-        let explorer;
+        let rpcServer;
         if (data.workspaceId) {
-            const workspace = await db.getWorkspaceById(data.workspaceId);
+            const workspace = user.workspaces.find(w => w.id == data.workspaceId);
             if (!workspace)
-                throw new Error('Invalid workspace.');
-
-            if (workspace.explorer)
-                throw new Error('This workspace already has an explorer.');
-
-            const provider = new ProviderConnector(workspace.rpcServer);
-            try {
-                await withTimeout(provider.fetchNetworkId());
-            } catch(error) {
-                throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
-            }
-
-            explorer = await db.createExplorerFromWorkspace(user.id, workspace.id);
+                throw new Error('Could not find workspace');
+            rpcServer = workspace.rpcServer;
         }
-        else {
-            const provider = new ProviderConnector(data.rpcServer);
-            let networkId;
-            try {
-                networkId = await withTimeout(provider.fetchNetworkId());
-            } catch(error) {
-                networkId = null;
-            }
-
+        else
+            rpcServer = data.rpcServer;
+        
+        let networkId;
+        const provider = new ProviderConnector(rpcServer);
+        try {
+            networkId = await withTimeout(provider.fetchNetworkId());
             if (!networkId)
-                throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
+                throw 'Error';
+        } catch(error) {
+            throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
+        }
 
-            const workspaceData = {
-                name: data.name,
-                networkId,
-                rpcServer: data.rpcServer,
-                tracing: data.tracing,
-                dataRetentionLimit: user.defaultDataRetentionLimit
+        let options = data.workspaceId ?
+        { workspaceId: data.workspaceId } :
+        {
+            name: data.name,
+            rpcServer: data.rpcServer,
+            networkId,
+            tracing: data.tracing === 'true' ? 'other' : null,
+        };
+
+        if (data.faucet && data.faucet.amount && data.faucet.interval)
+            options['faucet'] = { amount: data.faucet.amount, interval: data.faucet.interval };
+
+        if (data.domains && Array.isArray(data.domains))
+            options['domains'] = data.domains;
+
+        options['token'] = data.token;
+        options['slug'] = data.slug;
+        options['totalSupply'] = data.totalSupply;
+        options['l1Explorer'] = data.l1Explorer;
+        options['branding'] = data.branding;
+
+        const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
+
+        if (req.query.startSubscription) {
+            let stripePlan;
+
+            if (!isStripeEnabled() || user.canUseDemoPlan)
+                stripePlan = await db.getStripePlan(getDefaultPlanSlug());
+            else {
+                if (!data.plan)
+                    throw new Error('Missing plan parameter.');
+
+                stripePlan = await db.getStripePlan(data.plan);
             }
 
-            explorer = await db.createExplorerWithWorkspace(user.id, workspaceData);
-        }
-
-        if (!explorer)
-            throw new Error('Could not create explorer.');
-
-        let stripePlan;
-        if (!isStripeEnabled() || user.canUseDemoPlan) {
-            stripePlan = await db.getStripePlan(getDefaultPlanSlug());
-            if (!stripePlan)
-                throw new Error(`Can't setup explorer. Make sure you've run npx sequelize-cli db:seed:all`);
-
-            await db.createExplorerSubscription(user.id, explorer.id, stripePlan.id);
-        }
-        else if (req.query.startSubscription) {
-            if (!data.plan)
-                throw new Error('Missing plan parameter.');
-
-            stripePlan = await db.getStripePlan(data.plan);
             if (!stripePlan || !stripePlan.public)
                 throw new Error(`Can't find plan.`);
 
@@ -609,15 +607,15 @@ router.post('/', authMiddleware, async (req, res) => {
             admin: explorer.admin,
             workspace: explorer.workspace
         };
-        fields['token'] = stripePlan && stripePlan.capabilities.nativeToken ? explorer.token : 'ether';
-        fields['themes'] = stripePlan && stripePlan.capabilities.branding ? explorer.themes : { 'default': {}};
+        fields['token'] = explorer.token || 'ether';
+        fields['themes'] = explorer.themes || { 'default': {}};
 
-        if (data.faucet && data.faucet.amount && data.faucet.interval) {
-            const { id, address } = await db.createFaucet(data.uid, explorer.id, data.faucet.amount, data.faucet.interval);
+        if (explorer.faucet) {
             fields['faucet'] = {
-                id, address,
-                amount: data.faucet.amount,
-                interval: data.faucet.interval
+                id: explorer.faucet.id,
+                address: explorer.faucet.address,
+                amount: explorer.faucet.amount,
+                interval: explorer.faucet.interval
             }
         }
 

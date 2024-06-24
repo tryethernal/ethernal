@@ -2,12 +2,14 @@
 const {
   Model, Sequelize
 } = require('sequelize');
-const { sanitize } = require('../lib/utils');
+const { sanitize, slugify, validateBNString } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
 const { trigger } = require('../lib/pusher');
 const { encode, decrypt } = require('../lib/crypto');
 
 const Op = Sequelize.Op;
+const SYNC_RATE_LIMIT_INTERVAL = 25000
+const SYNC_RATE_LIMIT_MAX_IN_INTERVAL = 25;
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -158,6 +160,81 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
+    createExplorerFromOptions({ workspaceId, rpcServer, name, networkId, tracing, faucet, token, slug, totalSupply, l1Explorer, branding, qnEndpointId, domains = [] }) {
+        if (!workspaceId && (!rpcServer || !name || !networkId))
+            throw new Error('Missing parameters');
+
+        return sequelize.transaction(async transaction => {
+            let workspace;
+            if (workspaceId) {
+                workspace = await sequelize.models.Workspace.findOne({ where: { id: workspaceId, userId: this.id }, include: 'explorer' });
+                if (!workspace)
+                    throw new Error('Could not find workspace');
+                if (workspace.explorer)
+                    throw new Error('There is already an explorer associated to this workspace');
+            }
+            else if (rpcServer && name && networkId) {
+                const existingWorkspace = await sequelize.models.Workspace.findOne({ where: { name, userId: this.id }});
+                if (existingWorkspace)
+                    throw new Error('You already have a workspace with this name');
+
+                workspace = await this.createWorkspace(sanitize({
+                    name: name,
+                    public: true,
+                    chain: 'ethereum',
+                    networkId: networkId,
+                    rpcServer: rpcServer,
+                    tracing: tracing,
+                    dataRetentionLimit: this.defaultDataRetentionLimit,
+                    browserSyncEnabled: false,
+                    storageEnabled: false,
+                    erc721LoadingEnabled: false,
+                    rpcHealthCheckEnabled: true,
+                    rateLimitInterval: SYNC_RATE_LIMIT_INTERVAL,
+                    rateLimitMaxInInterval: SYNC_RATE_LIMIT_MAX_IN_INTERVAL,
+                    qnEndpointId
+                }), { transaction });
+            }
+            else
+                throw new Error('You need to either pass a workspaceId parameter or a name & rpcServer parameters to create an explorer');
+
+            const tentativeSlug = slug || slugify(workspace.name);
+            const existingExplorer = await sequelize.models.Explorer.findOne({ where: { slug: tentativeSlug }});
+            const explorerSlug = existingExplorer ?
+                `${tentativeSlug}-${Math.floor(Math.random() * 100)}` :
+                tentativeSlug;
+
+            if (totalSupply && !validateBNString(totalSupply))
+                throw new Error('Invalid total supply. It needs to be a string representing a positive wei amount.');
+
+            const explorer = await workspace.createExplorer(sanitize({
+                userId: this.id,
+                chainId: workspace.networkId,
+                slug: explorerSlug,
+                name: workspace.name,
+                rpcServer: workspace.rpcServer,
+                token, totalSupply, l1Explorer,
+                themes: { 'default': {}},
+                domain: `${explorerSlug}.${process.env.APP_DOMAIN}`
+            }), { transaction });
+
+            if (branding)
+                await explorer.safeUpdateBranding(branding, transaction);
+
+            if (faucet)
+                await explorer.safeCreateFaucet(faucet.amount, faucet.interval, transaction);
+
+            if (domains && domains.length) {
+                if (domains.length > 10)
+                    throw new Error(`Can't set more than 10 domains on creation. Use the domain creation endpoint to add more.`);
+                for (let i = 0; i < domains.length; i++)
+                    await explorer.safeCreateDomain(domains[i], transaction);
+            }
+
+            return explorer;
+        });
+    }
+
     getApiToken() {
         return encode({
             apiKey: decrypt(this.apiKey),
@@ -192,8 +269,8 @@ module.exports = (sequelize, DataTypes) => {
                 browserSyncEnabled: false,
                 storageEnabled: false,
                 erc721LoadingEnabled: false,
-                rateLimitInterval: 5000,
-                rateLimitMaxInInterval: 25,
+                rateLimitInterval: SYNC_RATE_LIMIT_INTERVAL,
+                rateLimitMaxInInterval: SYNC_RATE_LIMIT_MAX_IN_INTERVAL,
                 qnEndpointId: data.qnEndpointId
             }), { transaction });
 
