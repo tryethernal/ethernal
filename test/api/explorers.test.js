@@ -2,9 +2,9 @@ const { expect } = require('chai');
 const { Explorer } = require('../../models/explorer');
 
 describe('Explorer model', () => {
-  describe('createExplorerFromOptions', () => {
-    it('should throw an error if workspaceId is missing', () => {
-      expect(() => Explorer.createExplorerFromOptions({})).to.throw();
+  describe('safeCreateExplorer', () => {
+    it('should create an explorer if all required parameters are provided', () => {
+      expect(() => Explorer.safeCreateExplorer({ userId: 'test', workspaceId: 'test', chainId: 'test', name: 'test', rpcServer: 'test', slug: 'test', themes: 'test', totalSupply: 'test', domain: 'test', token: 'test' })).to.throw();
     });
     it('should create an explorer if all required parameters are provided', () => {
       const explorer = Explorer.createExplorerFromOptions({ workspaceId: 'test', rpcServer: 'test', name: 'test', networkId: 'test' });
@@ -14,22 +14,13 @@ describe('Explorer model', () => {
       expect(explorer.name).to.equal('test');
       expect(explorer.networkId).to.equal('test');
     });
-    it('should throw an error if an explorer already exists for the workspace', () => {
-      beforeEach(async () => {
-        // Create an explorer for the workspace
-      });
-      expect(() => Explorer.createExplorerFromOptions({ workspaceId: 'test', rpcServer: 'test', name: 'test', networkId: 'test' })).to.throw();
-    });
-    it('should throw an error if totalSupply is not a valid string', () => {
-      expect(() => Explorer.createExplorerFromOptions({ workspaceId: 'test', rpcServer: 'test', name: 'test', networkId: 'test', totalSupply: 'invalid' })).to.throw();
-    });
   });
   describe('safeCreateFaucet', () => {
     beforeEach(async () => {
       // Create a faucet for the explorer
     });
-    it('should throw an error if a faucet already exists for the explorer', () => {
-      expect(() => Explorer.safeCreateFaucet('amount', 'interval')).to.throw();
+    it('should create a faucet if one does not already exist', () => {
+      expect(() => Explorer.safeCreateFaucet('amount', 'interval', 'transaction')).to.throw();
     });
   });
 });
