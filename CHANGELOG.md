@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.36.9] - 2024-06-25
+### Changed
+- Creating an explorer is now fully transactional, it either creates the workspace, the explorer and all optional services at the same time, or everything fails
+- It's possible to create an explorer with all options, allowing one API call only to setup branding, domains, etc...
+
 ## [3.36.8] - 2024-06-22
 ### Changed
 - Return domain id on domain creation
