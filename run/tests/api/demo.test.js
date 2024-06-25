@@ -214,7 +214,8 @@ describe(`POST ${BASE_URL}/explorers`, () => {
 
     it('Should return an error if creation fails', (done) => {
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
-        jest.spyOn(db, 'createExplorerWithWorkspace').mockResolvedValueOnce(null);
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce(null);
 
         request.post(`${BASE_URL}/explorers`)
             .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
@@ -227,8 +228,6 @@ describe(`POST ${BASE_URL}/explorers`, () => {
 
     it('Should return an error if the plan is invalid', (done) => {
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
-        jest.spyOn(db, 'createExplorerWithWorkspace').mockResolvedValueOnce({ id: 1, slug: 'slug' });
-        jest.spyOn(db, 'makeExplorerDemo').mockResolvedValueOnce();
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce(null);
 
         request.post(`${BASE_URL}/explorers`)
@@ -242,12 +241,8 @@ describe(`POST ${BASE_URL}/explorers`, () => {
 
     it('Should create the demo explorer', (done) => {
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
-        jest.spyOn(db, 'createExplorerWithWorkspace').mockResolvedValueOnce({ id: 1, slug: 'slug' });
-        jest.spyOn(db, 'makeExplorerDemo').mockResolvedValueOnce();
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'createExplorerSubscription').mockResolvedValueOnce();
-        jest.spyOn(db, 'updateExplorerSettings').mockResolvedValueOnce();
-        jest.spyOn(db, 'updateExplorerBranding').mockResolvedValueOnce();
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1, slug: 'slug' });
 
         request.post(`${BASE_URL}/explorers`)
             .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
