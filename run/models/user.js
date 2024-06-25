@@ -2,6 +2,7 @@
 const {
   Model, Sequelize
 } = require('sequelize');
+const { getAppDomain } = require('../lib/env');
 const { sanitize, slugify, validateBNString } = require('../lib/utils');
 const { enqueue } = require('../lib/queue');
 const { trigger } = require('../lib/pusher');
@@ -160,7 +161,7 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
-    createExplorerFromOptions({ workspaceId, rpcServer, name, networkId, tracing, faucet, token, slug, totalSupply, l1Explorer, branding, qnEndpointId, domains = [] }) {
+    createExplorerFromOptions({ workspaceId, rpcServer, name, networkId, tracing, faucet, token, slug, totalSupply, l1Explorer, branding, qnEndpointId, domains = [], isDemo = false, subscription }) {
         if (!workspaceId && (!rpcServer || !name || !networkId))
             throw new Error('Missing parameters');
 
@@ -208,15 +209,22 @@ module.exports = (sequelize, DataTypes) => {
                 throw new Error('Invalid total supply. It needs to be a string representing a positive wei amount.');
 
             const explorer = await workspace.createExplorer(sanitize({
+                token, totalSupply, l1Explorer, isDemo,
                 userId: this.id,
                 chainId: workspace.networkId,
                 slug: explorerSlug,
                 name: workspace.name,
                 rpcServer: workspace.rpcServer,
-                token, totalSupply, l1Explorer,
                 themes: { 'default': {}},
                 domain: `${explorerSlug}.${process.env.APP_DOMAIN}`
             }), { transaction });
+
+            if (isDemo) {
+                const jwtToken = encode({ explorerId: explorer.id });
+                branding = {
+                    banner: `This is a demo explorer that will expire after 24 hours and is limited to 5,000 txs. To remove the limit & set it up permanently,&nbsp;<a id="migrate-explorer-link" href="//app.${getAppDomain()}/transactions?explorerToken=${jwtToken}" target="_blank">click here</a>.`
+                };
+            }
 
             if (branding)
                 await explorer.safeUpdateBranding(branding, transaction);
@@ -230,6 +238,9 @@ module.exports = (sequelize, DataTypes) => {
                 for (let i = 0; i < domains.length; i++)
                     await explorer.safeCreateDomain(domains[i], transaction);
             }
+
+            if (subscription)
+                await explorer.safeCreateSubscription(subscription.stripePlanId, subscription.stripeId, subscription.cycleEndsAt, subscription.status);
 
             return explorer;
         });
