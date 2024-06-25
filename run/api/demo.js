@@ -113,33 +113,27 @@ router.post('/explorers', async (req, res) => {
 
         const user = await db.getUserById(getDemoUserId());
 
-        const workspaceData = {
-            name: slugGenerated ? name : generateSlug(),
-            networkId,
-            rpcServer: data.rpcServer,
-            dataRetentionLimit: 1
-        };
-
-        const explorer = await db.createExplorerWithWorkspace(user.id, workspaceData, true);
-        if (!explorer)
-            throw new Error('Could not create explorer. Please retry.');
-
-        await db.makeExplorerDemo(explorer.id);
-
         const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
         if (!stripePlan)
             throw new Error('Error setting up the explorer. Please retry.');
 
-        await db.createExplorerSubscription(user.id, explorer.id, stripePlan.id);
-
-        await db.updateExplorerSettings(explorer.id, sanitize({
-            name: data.name,
+        const options = {
+            name, networkId,
+            rpcServer: data.rpcServer,
+            dataRetentionLimit: 1,
             token: data.nativeToken,
-        }));
+            isDemo: true,
+            subscription: {
+                stripePlanId: stripePlan.id,
+                stripeId: null,
+                cycleEndsAt: new Date(0),
+                status: 'active'
+            }
+        };
 
-        const jwtToken = encode({ explorerId: explorer.id });
-        const banner = `This is a demo explorer that will expire after 24 hours and is limited to 5,000 txs. To remove the limit & set it up permanently,&nbsp;<a id="migrate-explorer-link" href="//app.${getAppDomain()}/transactions?explorerToken=${jwtToken}" target="_blank">click here</a>.`;
-        await db.updateExplorerBranding(explorer.id, { banner });
+        const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
+        if (!explorer)
+            throw new Error('Could not create explorer. Please retry.');
 
         res.status(200).send({ domain: `${explorer.slug}.${getAppDomain()}` });
     } catch(error) {

@@ -20,6 +20,17 @@ const RpcHealthCheck = models.RpcHealthCheck;
 const StripeQuotaExtension = models.StripeQuotaExtension;
 const ExplorerFaucet = models.ExplorerFaucet;
 
+const createExplorerFromOptions = async (userId, options) => {
+    if (!userId || !options)
+        throw new Error('Missing parameter');
+
+    const user = await User.findByPk(userId);
+    if (!user)
+        throw new Error('Could not find user');
+
+    return user.createExplorerFromOptions(options);
+};
+
 const getFaucetTransactionHistory = async (faucetId, page, itemsPerPage, order, orderBy) => {
     if (!faucetId)
         throw new Error('Missing parameter');
@@ -2259,5 +2270,5 @@ module.exports = {
     getFaucetRequestVolume: getFaucetRequestVolume,
     getFaucetTokenVolume: getFaucetTokenVolume,
     getFaucetTransactionHistory: getFaucetTransactionHistory,
-    Workspace: Workspace
+    createExplorerFromOptions: createExplorerFromOptions
 };

@@ -4,10 +4,10 @@ const DEFAULT_PROMISE_TIMEOUT = 10 * 1000;
 
 const validateBNString = (str) => {
     try {
-        const bn = ethers.BigNumber.from(str)
+        const bn = ethers.BigNumber.from(str);
         return bn.gt(0) && !!ethers.utils.formatUnits(str, 'ether');
     } catch(error) {
-        return false
+        return false;
     }
 }
 
