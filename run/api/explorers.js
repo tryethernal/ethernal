@@ -519,11 +519,13 @@ router.post('/', authMiddleware, async (req, res) => {
             const workspace = user.workspaces.find(w => w.id == data.workspaceId);
             if (!workspace)
                 throw new Error('Could not find workspace');
+            if (workspace.explorer)
+                throw new Error('This workspace already has an explorer.');
             rpcServer = workspace.rpcServer;
         }
         else
             rpcServer = data.rpcServer;
-        
+
         let networkId;
         const provider = new ProviderConnector(rpcServer);
         try {
@@ -535,13 +537,13 @@ router.post('/', authMiddleware, async (req, res) => {
         }
 
         let options = data.workspaceId ?
-        { workspaceId: data.workspaceId } :
-        {
-            name: data.name,
-            rpcServer: data.rpcServer,
-            networkId,
-            tracing: data.tracing === 'true' ? 'other' : null,
-        };
+            { workspaceId: data.workspaceId } :
+            {
+                name: data.name,
+                rpcServer: data.rpcServer,
+                networkId,
+                tracing: data.tracing === 'true' ? 'other' : null,
+            };
 
         if (data.faucet && data.faucet.amount && data.faucet.interval)
             options['faucet'] = { amount: data.faucet.amount, interval: data.faucet.interval };
@@ -555,19 +557,25 @@ router.post('/', authMiddleware, async (req, res) => {
         options['l1Explorer'] = data.l1Explorer;
         options['branding'] = data.branding;
 
-        const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
-
-        if (req.query.startSubscription) {
-            let stripePlan;
-
-            if (!isStripeEnabled() || user.canUseDemoPlan)
-                stripePlan = await db.getStripePlan(getDefaultPlanSlug());
-            else {
-                if (!data.plan)
-                    throw new Error('Missing plan parameter.');
-
-                stripePlan = await db.getStripePlan(data.plan);
+        if (!isStripeEnabled() || user.canUseDemoPlan) {
+            const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
+            options['subscription'] = {
+                stripePlanId: stripePlan.id,
+                stripeId: null,
+                cycleEndsAt: new Date(0),
+                status: 'active'
             }
+        }
+
+        const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
+        if (!explorer)
+            throw new Error('Could not create explorer.')
+
+        if (!options['subscription'] && req.query.startSubscription) {
+            if (!data.plan)
+                throw new Error('Missing plan parameter.');
+
+            const stripePlan = await db.getStripePlan(data.plan);
 
             if (!stripePlan || !stripePlan.public)
                 throw new Error(`Can't find plan.`);
@@ -604,8 +612,6 @@ router.post('/', authMiddleware, async (req, res) => {
             name: explorer.name,
             rpcServer: explorer.rpcServer,
             slug: explorer.slug,
-            admin: explorer.admin,
-            workspace: explorer.workspace
         };
         fields['token'] = explorer.token || 'ether';
         fields['themes'] = explorer.themes || { 'default': {}};
