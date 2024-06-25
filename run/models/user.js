@@ -9,7 +9,7 @@ const { trigger } = require('../lib/pusher');
 const { encode, decrypt } = require('../lib/crypto');
 
 const Op = Sequelize.Op;
-const SYNC_RATE_LIMIT_INTERVAL = 25000
+const SYNC_RATE_LIMIT_INTERVAL = 5000
 const SYNC_RATE_LIMIT_MAX_IN_INTERVAL = 25;
 
 module.exports = (sequelize, DataTypes) => {
