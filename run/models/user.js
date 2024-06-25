@@ -219,15 +219,16 @@ module.exports = (sequelize, DataTypes) => {
                 domain: `${explorerSlug}.${process.env.APP_DOMAIN}`
             }), { transaction });
 
+            let updatedBranding = branding;
             if (isDemo) {
                 const jwtToken = encode({ explorerId: explorer.id });
-                branding = {
+                updatedBranding = {
                     banner: `This is a demo explorer that will expire after 24 hours and is limited to 5,000 txs. To remove the limit & set it up permanently,&nbsp;<a id="migrate-explorer-link" href="//app.${getAppDomain()}/transactions?explorerToken=${jwtToken}" target="_blank">click here</a>.`
                 };
             }
 
-            if (branding)
-                await explorer.safeUpdateBranding(branding, transaction);
+            if (updatedBranding)
+                await explorer.safeUpdateBranding(updatedBranding, transaction);
 
             if (faucet)
                 await explorer.safeCreateFaucet(faucet.amount, faucet.interval, transaction);
