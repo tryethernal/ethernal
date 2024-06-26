@@ -605,16 +605,11 @@ router.post('/', authMiddleware, async (req, res) => {
 
         const fields = {
             id: explorer.id,
-            chainId: explorer.chainId,
             domain: explorer.domain,
             domains: explorer.domains,
-            l1Explorer: explorer.l1Explorer,
             name: explorer.name,
-            rpcServer: explorer.rpcServer,
             slug: explorer.slug,
         };
-        fields['token'] = explorer.token || 'ether';
-        fields['themes'] = explorer.themes || { 'default': {}};
 
         if (explorer.faucet) {
             fields['faucet'] = {
