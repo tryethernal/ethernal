@@ -84,6 +84,17 @@ const createExplorerV2Dex = async (firebaseUserId, explorerId, routerAddress, ro
     return explorer.safeCreateV2Dex(routerAddress, routerFactoryAddress);
 };
 
+const createExplorerFromOptions = async (userId, options) => {
+    if (!userId || !options)
+        throw new Error('Missing parameter');
+
+    const user = await User.findByPk(userId);
+    if (!user)
+        throw new Error('Could not find user');
+
+    return user.createExplorerFromOptions(options);
+};
+
 const getFaucetTransactionHistory = async (faucetId, page, itemsPerPage, order, orderBy) => {
     if (!faucetId)
         throw new Error('Missing parameter');
@@ -2354,5 +2365,5 @@ module.exports = {
     createExplorerV2Dex: createExplorerV2Dex,
     createV2DexPair: createV2DexPair,
     getExplorerV2Dex: getExplorerV2Dex,
-    Workspace: Workspace
+    createExplorerFromOptions: createExplorerFromOptions
 };

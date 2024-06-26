@@ -775,12 +775,15 @@ describe(`POST ${BASE_URL}/:id/domains`, () => {
 
     it('Should return 200', (done) => {
         jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'createExplorerDomain').mockResolvedValueOnce();
+        jest.spyOn(db, 'createExplorerDomain').mockResolvedValueOnce({ id: 1 });
 
         request.post(`${BASE_URL}/123/domains`)
             .send({ data: { domain: 'test' }})
             .expect(200)
-            .then(() => done());
+            .then(({ body }) => {
+                expect(body).toEqual({ id: 1 });
+                done()
+            });
     });
 });
 
@@ -861,11 +864,8 @@ describe(`POST ${BASE_URL}/:id/settings`, () => {
 
 describe(`POST ${BASE_URL}`, () => {
     it('Should create both the explorer and workspace', (done) => {
-        ProviderConnector.mockImplementationOnce(() => ({
-            fetchNetworkId: jest.fn().mockResolvedValue(1)
-        }));
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
-        jest.spyOn(db, 'createExplorerWithWorkspace').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
 
         request.post(BASE_URL)
             .send({ data: { rpcServer: 'test.rpc', name: 'explorer' }})
@@ -877,8 +877,7 @@ describe(`POST ${BASE_URL}`, () => {
     });
 
     it('Should fail if there is already an explorer for this workspace', (done) => {
-        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
-        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce({ explorer: {}});
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 1, explorer: {} }] });
 
         request.post(BASE_URL)
             .send({ data: { workspaceId: 1 }})
@@ -901,10 +900,10 @@ describe(`POST ${BASE_URL}`, () => {
 
     it('Should return an error if explorer cannot be created', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
-        jest.spyOn(db, 'createExplorerFromWorkspace').mockResolvedValueOnce(null);
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce(null);
 
         request.post(BASE_URL)
-            .send({ data: { domain: 'test', slug: 'test', workspaceId: 1, chainId: 1, rpcServer: 'test', theme: 'test' }})
+            .send({ data: { rpcServer: 'test', name: 'test' }})
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual('Could not create explorer.');
@@ -913,13 +912,13 @@ describe(`POST ${BASE_URL}`, () => {
     });
 
     it('Should return an error if workspace id is invalid', (done) => {
-        jest.spyOn(db, 'getWorkspaceById').mockResolvedValueOnce(null);
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ workspaces: [{ id:2 }]});
 
         request.post(BASE_URL)
-            .send({ data: { domain: 'test', slug: 'test', workspaceId: 1, chainId: 1, rpcServer: 'test', theme: 'test' }})
+            .send({ data: { workspaceId: 1 }})
             .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual('Invalid workspace.');
+                expect(text).toEqual('Could not find workspace');
                 done();
             });
     });
@@ -927,15 +926,14 @@ describe(`POST ${BASE_URL}`, () => {
     it('Should create a demo subscription if stripe user has demo flag', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, canUseDemoPlan: true, workspaces: [{ id: 1 }] });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: {}});
-        jest.spyOn(db, 'createExplorerFromWorkspace').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(flags, 'isStripeEnabled').mockReturnValueOnce(true);
 
         request.post(BASE_URL)
-            .send({ data: { domain: 'test', slug: 'test', workspaceId: 1, chainId: 1, rpcServer: 'test', theme: 'test' }})
+            .send({ data: { rpcServer: 'test', name: 'test' }})
             .expect(200)
             .then(({ body }) => {
                 expect(db.getStripePlan).toHaveBeenCalledWith('selfhosted');
-                expect(db.createExplorerSubscription).toHaveBeenCalled();
                 expect(body).toEqual({ id: 1, token: 'ether', themes: { default: {}}});
                 done();
             });
@@ -944,15 +942,14 @@ describe(`POST ${BASE_URL}`, () => {
     it('Should create a self hosted subscription if stripe is not enabled', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 1 }] });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: {}});
-        jest.spyOn(db, 'createExplorerFromWorkspace').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(flags, 'isStripeEnabled').mockReturnValueOnce(false);
 
         request.post(BASE_URL)
-            .send({ data: { domain: 'test', slug: 'test', workspaceId: 1, chainId: 1, rpcServer: 'test', theme: 'test' }})
+            .send({ data: { rpcServer: 'test', name: 'test' }})
             .expect(200)
             .then(({ body }) => {
                 expect(db.getStripePlan).toHaveBeenCalledWith('selfhosted');
-                expect(db.createExplorerSubscription).toHaveBeenCalled();
                 expect(body).toEqual({ id: 1, token: 'ether', themes: { default: {}}});
                 done();
             });
@@ -960,11 +957,11 @@ describe(`POST ${BASE_URL}`, () => {
 
     it('Should not start a subscription if stripe plan does not exist', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 1 }] });
-        jest.spyOn(db, 'createExplorerFromWorkspace').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce(null);
 
         request.post(`${BASE_URL}?startSubscription=true`)
-            .send({ data: { plan: 'slug', domain: 'test', slug: 'test', workspaceId: 1, chainId: 1, rpcServer: 'test', theme: 'test' }})
+            .send({ data: { plan: 'slug', rpcServer: 'test', name: 'test' }})
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual(`Can't find plan.`);
@@ -979,7 +976,7 @@ describe(`POST ${BASE_URL}`, () => {
         }));
 
         request.post(BASE_URL)
-            .send({ data: { plan: 'slug', domain: 'test', slug: 'test', workspaceId: 1, chainId: 1, rpcServer: 'test', theme: 'test' }})
+            .send({ data: { rpcServer: 'test', name: 'test' }})
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
@@ -988,13 +985,13 @@ describe(`POST ${BASE_URL}`, () => {
     });
 
     it('Should not start a subscription if crypto payment not enabled & no payment method', (done) => {
-        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, stripeCustomerId: 'customerId', workspaces: [{ id: 1 }] });
-        jest.spyOn(db, 'createExplorerFromWorkspace').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, stripeCustomerId: 'customerId', workspaces: [{ id: 1, rpcServer: 'test' }] });
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, stripePriceId: 'priceId' });
         mockCustomersRetrieve.mockResolvedValueOnce({ default_source: null })
 
         request.post(`${BASE_URL}?startSubscription=true`)
-            .send({ data: { plan: 'slug', domain: 'test', slug: 'test', workspaceId: 1, chainId: 1, rpcServer: 'test', theme: 'test' }})
+            .send({ data: { rpcServer: 'test', name: 'test', plan: 'slug' }})
             .expect(400)
             .then(({ text }) => {
                 expect(text).toEqual(`There doesn't seem to be a payment method associated to your account. If you never subscribed to an explorer plan, please start your first one using the dashboard. You can also reach out to support on Discord or at contact@tryethernal.com.`);
@@ -1004,12 +1001,12 @@ describe(`POST ${BASE_URL}`, () => {
 
     it('Should start a subscription if crypto payment not enabled & payment method available', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, stripeCustomerId: 'customerId', workspaces: [{ id: 1 }] });
-        jest.spyOn(db, 'createExplorerFromWorkspace').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, stripePriceId: 'priceId', id: 1, capabilities: {}});
         mockCustomersRetrieve.mockResolvedValueOnce({ default_source: 'card' })
 
         request.post(`${BASE_URL}?startSubscription=true`)
-            .send({ data: { plan: 'slug', domain: 'test', slug: 'test', workspaceId: 1, chainId: 1, rpcServer: 'test', theme: 'test' }})
+            .send({ data: { rpcServer: 'test', name: 'test', plan: 'slug' }})
             .expect(200)
             .then(({ body }) => {
                 expect(mockSubscriptionCreate).toHaveBeenCalledWith({
@@ -1024,12 +1021,12 @@ describe(`POST ${BASE_URL}`, () => {
 
     it('Should start a subscription if crypto payment enabled', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, cryptoPaymentEnabled: true, stripeCustomerId: 'customerId', workspaces: [{ id: 1 }] });
-        jest.spyOn(db, 'createExplorerFromWorkspace').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, stripePriceId: 'priceId', capabilities: {}});
         mockCustomersRetrieve.mockResolvedValueOnce({ default_source: 'card' })
 
         request.post(`${BASE_URL}?startSubscription=true`)
-            .send({ data: { plan: 'slug', domain: 'test', slug: 'test', workspaceId: 1, chainId: 1, rpcServer: 'test', theme: 'test' }})
+        .send({ data: { rpcServer: 'test', name: 'test', plan: 'slug' }})
             .expect(200)
             .then(({ body }) => {
                 expect(mockSubscriptionCreate).toHaveBeenCalledWith({
