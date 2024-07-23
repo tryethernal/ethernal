@@ -1,4 +1,6 @@
 const ethers = require('ethers');
+const { Token, CurrencyAmount, TradeType, Percent } = require('@uniswap/sdk-core');
+const { Pair, Trade, Route } = require('@uniswap/v2-sdk');
 const { parseTrace, processTrace } = require('./trace');
 const { bulkEnqueue } = require('./queue');
 const logger = require('./logger');
@@ -93,20 +95,71 @@ const getProvider = function(url) {
     return new provider(authenticatedUrl);
 };
 
-class DexPairConnector {
-    constructor(server, address) {
-        if (!server || !address)
+class DexRouteConnector {
+    constructor({ chainId, pairs, fromContract, toContract, amount }) {
+        if (!chainId || !pairs || !fromContract || !toContract || !amount)
             throw new Error('Missing parameters');
 
-        this.contract = new ethers.Contract(address, IUniswapV2Pair, getProvider(server));
+        this.chainId = parseInt(chainId);
+        this.amount = amount;
+        this.from = new Token(this.chainId, fromContract.address, fromContract.tokenDecimals);
+        this.to = new Token(this.chainId, toContract.address, toContract.tokenDecimals);
+        this.route = new Route(pairs, this.from, this.to);
+        console.log(this.route)
+        this.trade = new Trade(this.route, CurrencyAmount.fromRawAmount(this.from, this.amount), TradeType.EXACT_INPUT);
+    }
+
+    executionPrice(slippageToleranceBips) {
+        const slippageTolerance = new Percent(slippageToleranceBips, '10000');
+        console.log(this.trade.minimumAmountOut(slippageTolerance).toSignificant(8))
+        console.log(this.trade.priceImpact.toSignificant(8))
+        console.log(this.trade.worstExecutionPrice(slippageTolerance).toSignificant(8))
+        return this.trade.executionPrice.toSignificant(8)
+    }
+
+    getQuote(routerAddress, slippageToleranceBips, deadline) {
+        const slippageTolerance = new Percent(slippageToleranceBips, '10000');
+        const amountIn = ethers.utils.parseUnits(this.trade.inputAmount.toExact(), fromContract.tokenDecimals);
+        const amountOutMin = ethers.utils.parseUnits(trade.minimumAmountOut(slippageTolerance).toExact(), fromContract.tokenDecimals);
+        const path = this.route.path.map(t => t.address);
+        const contract = new ethers.Contract(routerAddress, IUniswapV2Router02, provider);
+
+    }
+}
+
+class DexPairConnector {
+    constructor({ rpcServer, chainId, address, token0Contract, token1Contract }) {
+        if (!rpcServer || !chainId || !address)
+            throw new Error('Missing parameters');
+
+        this.provider = getProvider(rpcServer);
+        this.contract = new ethers.Contract(address, IUniswapV2Pair, this.provider);
+        this.chainId = parseInt(chainId);
+        this.token0Contract = token0Contract;
+        this.token1Contract = token1Contract;
     }
 
     token0() {
-        return this.contract.token0();
+        if (this._token0) 
+            return this._token0;
+        this._token0 = new Token(this.chainId, this.token0Contract.address, this.token0Contract.tokenDecimals);
+        return this._token0;
     }
 
     token1() {
-        return this.contract.token1();
+        if (this._token1) 
+            return this._token1;
+        this._token1 = new Token(this.chainId, this.token1Contract.address, this.token1Contract.tokenDecimals);
+        return this._token1;
+    }
+
+    getReserves() {
+        return this.contract.getReserves();
+    }
+
+    async getPair() {
+        const [reserve0, reserve1] = await this.getReserves();
+        return new Pair(CurrencyAmount.fromRawAmount(this.token0(), reserve0), CurrencyAmount.fromRawAmount(this.token1(), reserve1));
     }
 }
 
@@ -115,7 +168,8 @@ class DexFactoryConnector {
         if (!server || !address)
             throw new Error('Missing parameters');
 
-        this.contract = new ethers.Contract(address, IUniswapV2Factory, getProvider(server));
+        this.provider = getProvider(server);
+        this.contract = new ethers.Contract(address, IUniswapV2Factory, this.provider);
     }
 
     allPairs(index) {
@@ -124,6 +178,16 @@ class DexFactoryConnector {
 
     allPairsLength() {
         return this.contract.allPairsLength();
+    }
+
+    token0Of(pairAddress) {
+        const contract = new ethers.Contract(pairAddress, IUniswapV2Pair, this.provider);
+        return contract.token0();
+    }
+
+    token1Of(pairAddress) {
+        const contract = new ethers.Contract(pairAddress, IUniswapV2Pair, this.provider);
+        return contract.token1();
     }
 }
 
@@ -466,5 +530,6 @@ module.exports = {
     DexConnector: DexConnector,
     DexFactoryConnector: DexFactoryConnector,
     DexPairConnector: DexPairConnector,
+    DexRouteConnector: DexRouteConnector,
     getBalanceChange: getBalanceChange
 };

@@ -76,7 +76,7 @@ module.exports = (sequelize, DataTypes) => {
                             {
                                 model: sequelize.models.ExplorerV2Dex,
                                 as: 'v2Dex',
-                                attributes: ['id', 'routerAddress']
+                                attributes: ['id', 'routerAddress', 'active']
                             }
                         ]
                     }

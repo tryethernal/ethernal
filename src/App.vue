@@ -111,7 +111,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link :to="'/dex'">
+                <v-list-item link :to="'/dex'" v-if="isPublicExplorer && publicExplorer.v2Dex">
                     <v-list-item-icon>
                         <v-icon>mdi-swap-horizontal</v-icon>
                     </v-list-item-icon>

@@ -1,3 +1,4 @@
+
 module.exports = {
     // High priority
     blockSync: require('./blockSync'),
@@ -18,6 +19,8 @@ module.exports = {
     reprocessWorkspaceTransactionTraces: require('./reprocessWorkspaceTransactionTraces'),
     reprocessWorkspaceTransactionErrors: require('./reprocessWorkspaceTransactionErrors'),
     processExplorerV2Dex: require('./processExplorerV2Dex'),
+    processExplorerV2DexPair: require('./processExplorerV2DexPair'),
+    setupV2DexPoolReserves: require('./setupV2DexPoolReserves'),
 
     // Low Priority
     processUser: require('./processUser'),

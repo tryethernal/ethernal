@@ -1,6 +1,7 @@
-const db = require('../lib/firebase');
 const { ExplorerV2Dex, Explorer } = require('../models');
-const { DexFactoryConnector, DexPairConnector } = require('../lib/rpc');
+const { getMaxV2DexPairsForTrial } = require('../lib/env');
+const { bulkEnqueue } = require('../lib/queue');
+const { DexFactoryConnector } = require('../lib/rpc');
 
 module.exports = async job => {
     const data = job.data;
@@ -13,29 +14,39 @@ module.exports = async job => {
             {
                 model: Explorer,
                 as: 'explorer',
-                include: 'workspace'
+                include: ['workspace', 'stripeSubscription']
             }
         ]
     });
+    const subscription = dex.explorer.stripeSubscription;
 
     if (!dex)
         return 'Could not find dex';
 
     const rpcServer = dex.explorer.workspace.rpcServer;
+    const dexFactoryConnector = new DexFactoryConnector(rpcServer, dex.factoryAddress);
+    const pairLength = await dexFactoryConnector.allPairsLength();
 
-    // try {
-        const dexFactoryConnector = new DexFactoryConnector(rpcServer, dex.factoryAddress);
-        const pairLength = await dexFactoryConnector.allPairsLength();
-        for (let i = 0; i < pairLength; i++) {
-            const pair = await dexFactoryConnector.allPairs(i);
-            const dexPairConnector = new DexPairConnector(rpcServer, pair);
-            const token0 = await dexPairConnector.token0();
-            const token1 = await dexPairConnector.token1();
-            await db.createV2DexPair(dex.id, token0, token1, pair);
-        }
-    // } catch(error) {
-    //     console.log(error);
-    // }
+    const pairsToProcess = subscription ? 
+        (subscription.isTrialing || dex.explorer.isDemo ? getMaxV2DexPairsForTrial() : pairLength) :
+        0;
+    const currentPairCount = await dex.countPairs();
+
+    if (currentPairCount >= pairsToProcess)
+        return `All pairs processed ${currentPairCount} / ${pairLength}`;
+
+    const jobs = [];
+    for (let i = 0; i < pairsToProcess; i++) {
+        jobs.push({
+            name: `processExplorerV2DexPair-${dex.id}-${i}`,
+            data: {
+                explorerDexId: dex.id,
+                pairIndex: i
+            }
+        });
+    }
+
+    await bulkEnqueue('processExplorerV2DexPair', jobs);
 
     return true;
 };

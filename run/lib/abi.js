@@ -1,10 +1,23 @@
 const ethers = require('ethers');
-const { stringifyBns, sanitize } = require('./utils');
+const { stringifyBns } = require('./utils');
 
 const SELECTORS = require('./abis/selectors.json');
 const abis = {
     erc20: require('./abis/erc20.json'),
     erc721: require('./abis/erc721.json')
+};
+const IUniswapV2Pair = require('./abis/IUniswapV2Pair.json')
+
+const getV2PoolReserves = (log) => {
+    if (log.topics[0] == '0x1c411e9a96e071241c2f21f7726b17ae89e3cab4c78be50e062b03a9fffbbad1') {
+        const decoded = decodeLog(log, IUniswapV2Pair);
+        return stringifyBns({
+            reserve0: decoded.args.reserve0,
+            reserve1: decoded.args.reserve1
+        });
+    }
+
+    return null;
 };
 
 const findAbiForFunction = (signature) => {
@@ -47,7 +60,7 @@ const decodeLog = (log, abi) => {
     return decodedLog;
 };
 
-const getTokenTransfer = (transactionLog) => {
+const getTokenTransfer = (transactionLog) => {
     try {
         if (transactionLog.topics[0] == '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef') {
             let decodedLog;
@@ -120,5 +133,6 @@ module.exports = {
     decodeLog: decodeLog,
     getTokenTransfer: getTokenTransfer,
     getTransactionMethodDetails: getTransactionMethodDetails,
-    findAbiForFunction: findAbiForFunction
+    findAbiForFunction: findAbiForFunction,
+    getV2PoolReserves: getV2PoolReserves
 };

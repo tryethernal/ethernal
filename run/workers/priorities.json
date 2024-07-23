@@ -17,7 +17,9 @@
         "processTokenTransfer",
         "reprocessWorkspaceTransactionTraces",
         "reprocessWorkspaceTransactionErrors",
-        "processExplorerV2Dex"
+        "processExplorerV2Dex",
+        "processExplorerV2DexPair",
+        "setupV2DexPoolReserves"
     ],
     "low": [
         "processUser",

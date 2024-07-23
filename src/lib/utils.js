@@ -2,6 +2,24 @@ const Web3 = require('web3');
 const ethers = require('ethers');
 const BigNumber = ethers.BigNumber;
 
+export const debounce = (func, wait) => {
+    let debounceTimeout;
+    return (...args) => {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => func.apply(this, args), wait);
+    };
+};
+
+export const isValidEthAddress = (val) => {
+    return val.match(/(\b0x[A-Fa-f0-9]{40}\b)/g);
+};
+
+export const BNtoSignificantDigits = (num, digits = 4) => {
+    if (!num) return num;
+
+    return parseFloat((+ethers.utils.formatEther(num)).toPrecision(digits));
+};
+
 /******************************************************************
  * Converts e-Notation Numbers to Plain Numbers
  ******************************************************************
@@ -134,7 +152,7 @@ export const formatNumber = (number, options = {}) => {
     if (number === undefined || number === null) return;
     const formatUnits = ethers.utils.formatUnits;
     const BigNumber = ethers.BigNumber;
-    const formatter = Intl.NumberFormat('en-US', { style: 'decimal', notation: 'compact', maximumFractionDigits: 4 });
+    const formatter = Intl.NumberFormat('en-US', { style: 'decimal', notation: 'compact', maximumFractionDigits: options.maximumFractionDigits || 4 });
     const decimals = options.decimals === 0 ? 0 : (options.decimals || 18);
 
     if (options.short) {

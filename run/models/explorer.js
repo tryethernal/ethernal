@@ -81,7 +81,7 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.ExplorerV2Dex,
                     as: 'v2Dex',
-                    attributes: ['id', 'routerAddress'],
+                    attributes: ['id', 'routerAddress', 'active'],
                     required: false
                 }
             ]
@@ -127,7 +127,7 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.ExplorerV2Dex,
                     as: 'v2Dex',
-                    attributes: ['id', 'routerAddress'],
+                    attributes: ['id', 'routerAddress', 'active'],
                     required: false
                 }
             ]
@@ -175,7 +175,7 @@ module.exports = (sequelize, DataTypes) => {
                     {
                         model: sequelize.models.ExplorerV2Dex,
                         as: 'v2Dex',
-                        attributes: ['id', 'routerAddress'],
+                        attributes: ['id', 'routerAddress', 'active'],
                         required: false
                     }
                 ]
@@ -192,8 +192,8 @@ module.exports = (sequelize, DataTypes) => {
         return this.update({ shouldSync: false });
     }
 
-    async safeCreateV2Dex(routerAddress, factoryAddress) {
-        if (!routerAddress || !factoryAddress)
+    async safeCreateV2Dex(routerAddress, factoryAddress, wrappedNativeTokenAddress) {
+        if (!routerAddress || !factoryAddress || !wrappedNativeTokenAddress)
             throw new Error('Missing parameter');
 
         const dex = await this.getV2Dex();
@@ -222,9 +222,20 @@ module.exports = (sequelize, DataTypes) => {
             abi: factoryContract.abi ? factoryContract.abi : IUniswapV2Factory,
             name: factoryContract.name ? factoryContract.name : 'UniswapV2Factory'
         });
-        await factoryContract.update(factoryContractProperties)
+        await factoryContract.update(factoryContractProperties);
 
-        return this.createV2Dex({ routerAddress, factoryAddress, explorerId: this.id });
+        const [wrappedNativeTokenContract] = await sequelize.models.Contract.findOrCreate({
+            where: {
+                workspaceId: this.workspaceId,
+                address: wrappedNativeTokenAddress.toLowerCase()
+            }
+        });
+
+        return this.createV2Dex({
+            routerAddress, factoryAddress,
+            explorerId: this.id,
+            wrappedNativeTokenContractId: wrappedNativeTokenContract.id
+        });
     }
 
     async safeCreateFaucet(amount, interval, transaction) {

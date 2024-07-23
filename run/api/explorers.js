@@ -18,7 +18,7 @@ router.post('/:id/v2_dexes', authMiddleware, async (req, res) => {
     const data = req.body.data;
 
     try {
-        if (!data.routerAddress)
+        if (!data.routerAddress || !data.wrappedNativeTokenAddress)
             throw new Error('Missing parameters');
 
         const explorer = await db.getExplorerById(data.user.id, req.params.id);
@@ -37,7 +37,7 @@ router.post('/:id/v2_dexes', authMiddleware, async (req, res) => {
         if (!routerFactoryAddress || typeof routerFactoryAddress != 'string' || routerFactoryAddress.length != 42 || !routerFactoryAddress.startsWith('0x'))
             throw new Error(`Couldn't get factory address for router at ${data.address}. Check that the factory method is present and returns an address.`);
 
-        const { id, routerAddress, factoryAddress } = await db.createExplorerV2Dex(data.uid, req.params.id, data.routerAddress, routerFactoryAddress);
+        const { id, routerAddress, factoryAddress } = await db.createExplorerV2Dex(data.uid, req.params.id, data.routerAddress, routerFactoryAddress, data.wrappedNativeTokenAddress);
 
         res.status(200).json({ id, routerAddress, factoryAddress });
     } catch(error) {
@@ -709,7 +709,13 @@ router.get('/search', async (req, res) => {
                 address: explorer.faucet.address,
                 amount: explorer.faucet.amount,
                 interval: explorer.faucet.interval
-            }
+            };
+
+        if (explorer.v2Dex && explorer.v2Dex.active)
+            fields['v2Dex'] = {
+                id: explorer.v2Dex.id,
+                routerAddress: explorer.v2Dex.routerAddress
+            };
 
         res.status(200).json({ explorer: fields });
     } catch(error) {

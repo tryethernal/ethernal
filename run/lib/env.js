@@ -35,5 +35,6 @@ module.exports = {
     getRedisUsername: () => process.env.REDIS_USERNAME,
     getRedisPassword: () => process.env.REDIS_PASSWORD,
     getRedisTls: () => process.env.ENABLE_REDIS_TLS,
-    getRedisTlsSentinel: () => process.env.ENABLE_REDIS_TLS_SENTINEL
+    getRedisTlsSentinel: () => process.env.ENABLE_REDIS_TLS_SENTINEL,
+    getMaxV2DexPairsForTrial: () => process.env.MAX_V2_DEX_PAIRS_FOR_TRIAL || 20,
 };

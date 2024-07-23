@@ -35,6 +35,12 @@ export default {
 
             this.ethereum = provider;
 
+            window.ethereum.request({ 'method': 'wallet_getPermissions', 'params': [] })
+                .then(permissions => {
+                    if (permissions.length)
+                        this.connectMetamask();
+                });
+
             this.ethereum.on('accountsChanged', (accounts) => this.connectedAccount = accounts[0]);
             this.ethereum.on('connect', (data) => this.chainId = data.chainId);
             this.ethereum.on('chainChanged', (chainId) => this.chainId = chainId);

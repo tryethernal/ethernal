@@ -358,6 +358,54 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            getV2DexStatus(id) {
+                const resource = `${store.getters.apiRoot}/api/v2_dexes/${id}/status`;
+                return axios.get(resource);
+            },
+
+            getNativeTokenBalance(address) {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+
+                const resource = `${store.getters.apiRoot}/api/addresses/${address}/nativeTokenBalance`;
+                return axios.get(resource, { params });
+            },
+
+            deleteV2Dex(id) {
+                const resource = `${store.getters.apiRoot}/api/v2_dexes/${id}`;
+                return axios.delete(resource);
+            },
+
+            activateV2Dex(id) {
+                const resource = `${store.getters.apiRoot}/api/v2_dexes/${id}/activate`;
+                return axios.put(resource);
+            },
+
+            deactivateV2Dex(id) {
+                const resource = `${store.getters.apiRoot}/api/v2_dexes/${id}/deactivate`;
+                return axios.put(resource);
+            },
+
+            getLatestPairsWithReserve(options) {
+                const id = store.getters.publicExplorer.v2Dex.id;
+                const resource = `${store.getters.apiRoot}/api/v2_dexes/${id}/pairs`;
+                return axios.get(resource, { params: options });
+            },
+
+            getV2DexQuote(from, to, amount, direction, slippageTolerance) {
+                const id = store.getters.publicExplorer.v2Dex.id;
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                    from, to, amount, direction, slippageTolerance
+                };
+
+                const resource = `${store.getters.apiRoot}/api/v2_dexes/${id}/quote`;
+                return axios.get(resource, { params });
+            },
+
             getV2DexTokens() {
                 const id = store.getters.publicExplorer.v2Dex.id;
                 const params = {
@@ -369,9 +417,9 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            createExplorerV2Dex(id, routerAddress) {
+            createExplorerV2Dex(id, routerAddress, wrappedNativeTokenAddress) {
                 const resource = `${store.getters.apiRoot}/api/explorers/${id}/v2_dexes`;
-                return axios.post(resource, { data: { routerAddress }});
+                return axios.post(resource, { data: { routerAddress, wrappedNativeTokenAddress }});
             },
 
             getFaucetTransactionHistory(id, options) {

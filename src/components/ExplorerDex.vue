@@ -1,173 +1,522 @@
 <template>
     <v-container fluid>
-        <Metamask />
+        <Dex-Token-Selection-Modal ref="dexTokenSelectionModal" />
+        <Explorer-Dex-Parameters-Modal @parametersChanged="dexParametersChanged" ref="explorerDexParametersModal" />
+        <v-row>
+            <v-col align="center">
+                <v-icon style="opacity: 0.25;" size="150" color="primary lighten-1">mdi-swap-horizontal</v-icon>
+            </v-col>
+        </v-row>
         <v-row justify="center" align="center" class="mb-10 my-0">
             <v-col md="6" sm="12">
-                <v-card outlined class="rounded-card rounded-xl pa-12">
-                    <v-card-title class="primary--text d-flex justify-center align-center">DEX</v-card-title>
-                    <v-card-text class="pb-0">
-                        <v-text-field
-                            dense
-                            class="rounded-xl"
-                            placeholder="0.0"
-                            persistent-placeholder
-                            outlined
-                            v-model="sell.amount"
-                            label="Sell">
-                            <template v-slot:append>
-                                <v-select
-                                    class="mb-6 mt-5"
-                                    outlined
+                <v-card outlined class="rounded-card rounded-xl">
+                    <div class="my-5 mx-5 d-flex justify-space-between">
+                        <template v-if="connectedAccount">
+                            <small>Connected Account: <Hash-Link :withName="false" :type="'address'" :hash="connectedAccount" /></small>
+                        </template>
+                        <v-btn icon @click="openExplorerDexParametersModal()">
+                            <v-icon>mdi-cog</v-icon>
+                        </v-btn>
+                    </div>
+                    <div class="pa-12 pt-0">
+                        <v-card-title class="primary--text d-flex justify-center align-center">{{ publicExplorer.name }} DEX</v-card-title>
+                        <v-card-text class="pb-0">
+                            <v-alert text type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
+                            <div align="center">
+                                <v-text-field
                                     dense
-                                    label="Token"
-                                    v-model="sell.token"
-                                    item-text="tokenSymbol"
-                                    hide-details="auto"
-                                    :items="tokens"
-                                    return-object>
-                                </v-select>
-                            </template>
-                        </v-text-field>
-                        <v-text-field
-                            dense
-                            class="rounded-xl"
-                            placeholder="0.0"
-                            persistent-placeholder
-                            outlined
-                            v-model="buy.amount"
-                            label="Buy">
-                            <template v-slot:append>
-                                <v-select
-                                    class="mb-6 mt-5"
-                                    width="50px"
+                                    class="rounded-xl large-text"
+                                    @input="quoteDirection = 'exactIn'"
+                                    placeholder="0.0"
+                                    persistent-placeholder
                                     outlined
-                                    dense
-                                    label="Token"
-                                    v-model="buy.token"
-                                    item-text="tokenSymbol"
+                                    type="number"
+                                    label="Sell"
                                     hide-details="auto"
-                                    :items="tokens"
-                                    return-object>
-                                </v-select>
-                            </template>
-                        </v-text-field>
-                    </v-card-text>
+                                    v-model="sellAmount">
+                                    <template v-slot:append>
+                                        <div class="pl-4 py-1 mt-1 mb-3 text-right">
+                                            <small class="pr-1 balance">
+                                                Balance:
+                                                <a v-if="BNtoSignificantDigits(balanceOf(sellToken.address)) > 0" @click="sellAmount = formatEther(balanceOf(sellToken.address))">{{ sellToken && sellToken.address ? BNtoSignificantDigits(balanceOf(sellToken.address)) : '-' }}</a>
+                                                <template v-else>{{ sellToken && sellToken.address ? BNtoSignificantDigits(balanceOf(sellToken.address)) || 0 : '-' }}</template>
+                                            </small>
+                                            <v-btn v-if="tokens.length > 1 && Object.keys(balances).length > 1" outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill" @click="openSellTokenSelectionModal()">
+                                                {{ sellToken.tokenSymbol || 'Select a token' }}
+                                                <v-icon class="primary--text">mdi-chevron-down</v-icon>
+                                            </v-btn>
+                                            <v-btn v-else outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill">
+                                                <v-progress-circular :size="20" :width="2" indeterminate color="primary"></v-progress-circular>
+                                            </v-btn>
+                                        </div>
+                                    </template>
+                                </v-text-field>
+                                <v-btn icon @click="invert()" class="my-3" outlined color="primary">
+                                    <v-icon color="primary">mdi-swap-vertical</v-icon>
+                                </v-btn>
+                                <v-text-field
+                                    dense
+                                    type="number"
+                                    class="rounded-xl large-text"
+                                    @input="quoteDirection = 'exactOut'"
+                                    placeholder="0.0"
+                                    persistent-placeholder
+                                    hide-details="auto"
+                                    outlined
+                                    v-model="buyAmount"
+                                    label="Buy">
+                                    <template v-slot:append>
+                                        <div class="pl-4 py-1 mt-1 mb-3 text-right">
+                                            <small class="pr-1 balance">Balance: {{ buyToken && buyToken.address ? BNtoSignificantDigits(balanceOf(buyToken.address)) : '-' }}</small>
+                                            <v-btn v-if="tokens.length > 1 && Object.keys(balances).length > 1" outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill" @click="openBuyTokenSelectionModal()">
+                                                {{ buyToken.tokenSymbol || 'Select a token' }}
+                                                <v-icon class="primary--text">mdi-chevron-down</v-icon>
+                                            </v-btn>
+                                            <v-btn v-else outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill">
+                                                <v-progress-circular :size="20" :width="2" indeterminate color="primary"></v-progress-circular>
+                                            </v-btn>
+                                        </div>
+                                    </template>
+                                </v-text-field>
+                                <Metamask align="center" v-if="!connectedAccount" @rpcConnectionStatusChanged="onRpcConnectionStatusChanged"/>
+                                <div v-else class="mt-3 mb-4">
+                                    <template v-if="executionInfo.executionPrice">
+                                        <div class="d-flex justify-space-between mx-2">
+                                            <span>Price:</span>
+                                            <span>
+                                                {{ displayInvertedPrice ? priceText : invertedPriceText }}
+                                                <v-icon class="pb-1" @click="displayInvertedPrice = !displayInvertedPrice" color="primary">mdi-swap-horizontal</v-icon>
+                                            </span>
+                                        </div>
+                                        <div class="d-flex justify-space-between mx-2 mb-3">
+                                            <span>Slippage Tolerance:</span>
+                                            <span>{{ dexParameters.slippageToleranceInBps / 100 }}%</span>
+                                        </div>
+                                    </template>
+                                    <div class="d-flex">
+                                        <template v-if="needsApproval && quotable && validCombination">
+                                            <v-btn :disabled="transaction.loading" class="swap flex-grow-1" large color="primary" @click="approve()">Approve {{ sellToken.tokenSymbol }}</v-btn>
+                                            <v-icon>mdi-chevron-right</v-icon>
+                                        </template>
+                                        <v-btn class="swap flex-grow-1" large :disabled="swapButtonDisabled" color="primary" @click="swap()">{{ swapButtonText }}</v-btn>
+                                    </div>
+                                </div>
+                            </div>
+                            <v-skeleton-loader v-if="loadingQuote" type="paragraph"></v-skeleton-loader>
+                            <div v-else-if="executionInfo.minimumAmountOut" class="mt-4 mb-4">
+                                <div v-if="quoteDirection == 'exactIn'" class="d-flex justify-space-between">
+                                    <span>Minimum Received:</span>
+                                    <span class="swap-extra-info">{{ executionInfo.minimumAmountOut }} {{ buyToken.tokenSymbol }}</span>
+                                </div>
+                                <div v-else class="d-flex justify-space-between">
+                                    <span>Maximum Sold:</span>
+                                    <span class="swap-extra-info">{{ executionInfo.maximumAmountIn }} {{ sellToken.tokenSymbol }}</span>
+                                </div>
+                                <div class="d-flex justify-space-between">
+                                    <span>Price Impact:</span>
+                                    <span :class="`swap-extra-info ${priceImpactSeverityClass}`">{{ formattedPriceImpact }}%</span>
+                                </div>
+                                <div class="d-flex justify-space-between">
+                                    <span>Liquidity Provider Fee:</span>
+                                    <span class="swap-extra-info">{{ executionInfo.lpFee }} {{ sellToken.tokenSymbol }}</span>
+                                </div>
+                                <div v-if="executionInfo.path.length > 2" class="d-flex justify-space-between">
+                                    <span>Route:</span>
+                                    <span>
+                                        <span v-for="(step, idx) in executionInfo.path" :key="idx" class="swap-extra-info">
+                                            {{ step.symbol }} <v-icon v-if="idx < executionInfo.path.length - 1">mdi-chevron-right</v-icon>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div v-if="transaction.status" class="mt-8" align="middle">
+                                <template v-if="transaction.status == 'loading'">
+                                    <span class="primary--text font-weight-bold">{{ transaction.text }}</span>
+                                    <v-progress-linear height="5" rounded indeterminate color="primary"></v-progress-linear>
+                                </template>
+                                <template v-else-if="transaction.status == 'success'">
+                                    <v-icon style="vertical-align: text-bottom" small class="mr-1" color="success">mdi-check-circle</v-icon>
+                                    <span class="success--text font-weight-bold">{{ transaction.text }} <Hash-Link :type="'transaction'" :hash="transaction.hash" :notCopiable="true" :customLabel="'See transaction'" /></span>
+                                </template>
+                                <template v-if="transaction.status == 'failed'">
+                                    <v-icon style="vertical-align: text-bottom" small class="mr-1" color="error">mdi-alert-circle</v-icon>
+                                    <span class="error--text font-weight-bold">{{ transaction.text }} <Hash-Link :type="'transaction'" :hash="transaction.hash" :notCopiable="true" :customLabel="'See transaction'" /></span>
+                                </template>
+                            </div>
+                        </v-card-text>
+                    </div>
                 </v-card>
             </v-col>
         </v-row>
+        <!-- <v-row>
+            <v-col>
+                <Explorer-Dex-Pools />
+            </v-col>
+        </v-row> -->
     </v-container>
 </template>
 
 <script>
 const ethers = require('ethers');
 import Metamask from './Metamask';
-import { abi as UniswapV2PairABI } from '@/abis/IUniswapV2Pair';
-import { abi as IUniswapV2Router02ABI } from '@/abis/IUniswapV2Router02';
-import { Token, CurrencyAmount, TradeType, Percent } from '@uniswap/sdk-core';
-import { Pair, Route, Trade } from '@uniswap/v2-sdk';
+import HashLink from './HashLink.vue';
+import DexTokenSelectionModal from './DexTokenSelectionModal';
+import ExplorerDexParametersModal from './ExplorerDexParametersModal';
+// import ExplorerDexPools from './ExplorerDexPools';
+import FromWei from '../filters/FromWei';
 import { mapGetters } from 'vuex';
-import { getProvider } from '@/lib/rpc';
+const { BNtoSignificantDigits, debounce } = require('@/lib/utils');
+import { ERC20Connector, V2DexRouterConnector } from '@/lib/rpc';
+
+const DEFAULT_DEX_PARAMETERS = {
+    transactionTimeout: 60 * 20,
+    slippageToleranceInBps: 50
+};
+
+const PRICE_IMPACT_SEVERITIES = {
+    LOW: 1,
+    MEDIUM: 3,
+    HIGH: 5
+};
 
 export default{
     name: 'ExplorerDex',
     components: {
-        Metamask
+        DexTokenSelectionModal,
+        ExplorerDexParametersModal,
+        Metamask,
+        HashLink,
+        // ExplorerDexPools
+    },
+    filters: {
+        FromWei
     },
     data: () => ({
         loading: false,
         errorMessage: null,
-        wCAGA: null,
-        USDT: null,
-        CTT: null,
         router: null,
         tokens: [],
-        sell: {
-            amount: null,
-            token: {}
+        sellAmount: null,
+        sellToken: {},
+        buyAmount: null,
+        buyToken: {},
+        dexParameters: {
+            slippageToleranceInBps: 50,
+            transactionTimeout: 60 * 20,
         },
-        buy: {
-            amount: null,
-            token: {}
-        }
+        executionInfo: {
+            minimumAmountOut: null,
+            priceImpact: null,
+            executionPrice: null,
+            path: []
+        },
+        connectedAccount: null,
+        provider: null,
+        allowance: null,
+        balances: {},
+        refreshSellBalance: 0,
+        displayInvertedPrice: false,
+        transaction: {},
+        loadingQuote: false,
+        quoteDirection: 'exactIn',
+        debouncedGetQuote: null
     }),
     mounted() {
         this.loadTokens();
-        this.wCAGA = new Token(this.chainId, '0xf22d0f6ed0c214e9e4a14eeb1fbabbbb3567d7af', 18),
-        this.USDT = new Token(this.chainId, '0x99d46f7e4eff4b322bd3f0387aeb82e66bf03db0', 18)
-        this.CTT = new Token(this.chainId, '0x47e405b514068e1963fbf84006009bea4edd26b2', 18);
-        this.USDC = new Token(this.chainId, '0xc9e8634d0ec6e3cb049b7d043a910d4830315ef3', 18);
+        this.provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+        this.initializeDexParameters();
     },
     methods: {
-        selectionChanged() {
-            if (!this.sell.amount || !this.sell.token.address || !this.buy.amount || !this.buy.token.address)
-                return;
+        formatEther: ethers.utils.formatEther,
+        BNtoSignificantDigits,
+        invert() {
+            const amount = this.sellAmount;
+            const token = this.sellToken;
+            this.sellToken = this.buyToken;
+            this.sellAmount = this.sellToken.address ? this.buyAmount : null;
+            this.buyToken = token;
+            this.buyAmount = this.buyToken.address ? amount : null;
         },
-        loadTokens() {
-            this.server.getV2DexTokens()
-                .then(({ data: { tokens }}) => this.tokens = tokens)
+        selectionChanged() {
+            if (!this.quotable)
+                return this.executionInfo = {};
+
+            const amount = this.quoteDirection == 'exactIn' ? this.amountIn : this.amountOut;
+            if (!amount)
+                return this.executionInfo = {};
+
+            this.loadingQuote = true;
+
+            if (!this.debouncedGetQuote)
+                this.debouncedGetQuote = debounce(amount => {
+                    this.server.getV2DexQuote(this.sellToken.address, this.buyToken.address, amount, this.quoteDirection, this.dexParameters.slippageToleranceInBps)
+                        .then(({ data: { quote }}) => {
+                            if (this.quoteDirection == 'exactIn' && this.amountIn != amount || this.quoteDirection == 'exactOut' && this.amountOut != amount)
+                                return this.executionInfo = {};
+                            const quoteEntries = Object.entries(quote);
+                            if (!quoteEntries.length)
+                                return this.executionInfo = quote;
+                            quoteEntries.forEach(([k, v]) => this.$set(this.executionInfo, k, v));
+                            if (this.quoteDirection == 'exactIn')
+                                this.buyAmount = this.executionInfo.outputAmount;
+                            else
+                                this.sellAmount = this.executionInfo.inputAmount;
+                        })
+                        .catch(console.log)
+                        .finally(() => this.loadingQuote = false);
+                }, 300);
+
+            this.debouncedGetQuote(amount);
+        },
+        checkAllowance() {
+            const erc20Connector = new ERC20Connector({ provider: this.provider, address: this.sellToken.address, from: this.connectedAccount });
+            return erc20Connector
+                .allowance(this.publicExplorer.v2Dex.routerAddress)
+                .then(data => this.allowance = ethers.BigNumber.from(data))
                 .catch(console.log);
         },
-        trade() {
-            this.createPair()
-            .then(pair => {
-                const route = new Route([pair], this.wCAGA, this.USDC);
-                const trade = new Trade(route, CurrencyAmount.fromRawAmount(this.wCAGA, '10000000000000000'), TradeType.EXACT_INPUT);
-                console.log(trade.executionPrice.toSignificant(8));
-
-                const slippageTolerance = new Percent('50', '10000');
-                const amountIn = ethers.utils.parseUnits(trade.inputAmount.toExact(), 18);
-                const amountOutMin = ethers.utils.parseUnits(trade.minimumAmountOut(slippageTolerance).toExact(), 18);
-                const path = [this.wCAGA.address, this.USDC.address];
-                const to = '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA';
-                const deadline = Math.floor(Date.now() / 1000) + 60 * 20;
-                console.log(amountIn, amountOutMin, path, to, deadline)
-
-                const signer = this.provider.getSigner(to);
-                const routerContract = new ethers.Contract('0xf91d509a2b53bdec334be59d7050bdd2e0264fca', IUniswapV2Router02ABI, signer);
-
-                const options = {
-                    from: to,
-                    value: amountIn.toHexString()
-                };
-                routerContract.populateTransaction.swapExactETHForTokens(amountOutMin, path, to, deadline, options)
-                    .then(transaction => {
-                        const params = {
-                            ...transaction,
-                            gasPrice: '0xa',
-                            value: amountIn.toHexString()
-                        }
-                        window.ethereum.request({
-                            method: 'eth_sendTransaction',
-                            params: [params]
-                        })
-                        .then(console.log)
-                        .catch(console.log())
-                    })
-                    .catch(console.log)
-            })
-            .catch(console.log);
+        approve() {
+            this.transaction = {
+                status: 'loading',
+                text: 'Sending transaction...'
+            };
+            this.errorMessage = null;
+            const erc20Connector = new ERC20Connector({ provider: this.provider, address: this.sellToken.address, from: this.connectedAccount });
+            erc20Connector
+                .approve(this.publicExplorer.v2Dex.routerAddress, ethers.utils.parseUnits(this.sellAmount, 'ether'))
+                .then(transaction => this.waitForTransaction(transaction, 'Approval successful. You can now swap your token.', 'Approval failed.'))
+                .catch(error => {
+                    this.errorMessage = `Error: ${error.reason}`;
+                    this.transaction = {};
+                });
         },
-        async createPair() {
-            // const pairAddress = Pair.getAddress(this.USDT, this.CTT);
-            // console.log(pairAddress)
-            const pairAddress = '0x52F1c57251B0CbEfac229bc139d6F47Cf610D406'.toLowerCase();
-            const pairContract = new ethers.Contract(pairAddress, UniswapV2PairABI, this.provider);
-            const reserves = await pairContract["getReserves"]();
-            const [reserve0, reserve1] = reserves;
-            console.log(reserves)
-            const tokens = [this.USDC, this.wCAGA];
-            const [token0, token1] = tokens[0].sortsBefore(tokens[1]) ? tokens : [tokens[1], tokens[0]];
+        async waitForTransaction(transaction, successMessage, errorMessage) {
+            this.transaction = {
+                status: 'loading',
+                text: 'Waiting for receipt...'
+            }
 
-            const pair = new Pair(CurrencyAmount.fromRawAmount(token0, reserve0), CurrencyAmount.fromRawAmount(token1, reserve1));
-            return pair;
+            const receipt = await transaction.wait();
+            if (receipt.status == 1) {
+                await this.checkAllowance()
+                this.transaction = { status: 'success', text: successMessage, hash: receipt.transactionHash };
+            }
+            else {
+                this.transaction = { status: 'failed', text: errorMessage, hash: receipt.transactionHash };
+            }
+        },
+        swap() {
+            this.errorMessage = null;
+            if (this.executionInfo.priceImpact >= PRICE_IMPACT_SEVERITIES.HIGH)
+                if (!confirm(`This swap will have a high price impact on the traded assets (${this.executionInfo.priceImpact}%). Are you sure you want to proceed?`))
+                    return;
+
+            const path = this.executionInfo.path.map(t => t.address);
+            const amountIn = ethers.utils.parseEther(this.sellAmount);
+            const amountInMax = ethers.utils.parseEther(this.executionInfo.maximumAmountIn);
+            const amountOut = ethers.utils.parseEther(this.executionInfo.outputAmount);
+            const amountOutMin = ethers.utils.parseEther(this.executionInfo.minimumAmountOut);
+            const deadline = Math.floor(new Date() / 1000) + this.dexParameters.transactionTimeout;
+
+            const routerConnector = new V2DexRouterConnector({ provider: this.provider, address: this.publicExplorer.v2Dex.routerAddress, from: this.connectedAccount });
+            let swapFn;
+
+            if (this.sellToken.address.toLowerCase() == this.nativeTokenAddress.toLowerCase())
+                if (this.quoteDirection == 'exactIn')
+                    swapFn = routerConnector.swapExactETHForTokens(amountIn, amountOutMin, path, this.connectedAccount, deadline);
+                else
+                    swapFn = routerConnector.swapETHForExactTokens(amountInMax, amountOut, path, this.connectedAccount, deadline);
+            else
+                if (this.quoteDirection == 'exactIn')
+                    swapFn = routerConnector.swapExactTokensForTokens(amountIn, amountOutMin, path, this.connectedAccount, deadline);
+                else
+                    swapFn = routerConnector.swapTokensForExactTokens(amountOut, amountInMax, path, this.connectedAccount, deadline);
+
+            swapFn.then(transaction => this.waitForTransaction(transaction, 'Swap successful.', 'Swap failed.'))
+                .catch(error => {
+                    console.log(JSON.parse(JSON.stringify(error)));
+                    this.errorMessage = `Error: ${error.reason}`;
+                    this.transaction = {}
+                });
+        },
+        loadTokens() {
+            const nativeToken = {
+                address: this.nativeTokenAddress,
+                tokenSymbol: this.nativeTokenSymbol,
+                tokenName: this.nativeTokenSymbol
+            };
+            this.tokens = [nativeToken];
+            this.server.getV2DexTokens()
+                .then(({ data: { tokens }}) => {
+                    this.tokens = [nativeToken, ...tokens];
+
+                    if (this.tokens.length)
+                        this.sellToken = this.tokens[0];
+                })
+                .catch(console.log);
+        },
+        loadBalances() {
+            this.server.getTokenBalances(this.connectedAccount, ['erc20'])
+                .then(({ data: balances }) => {
+                    balances.forEach(b => this.balances[b.tokenContract.address] = b.currentBalance || '0');
+                });
+            this.server.getNativeTokenBalance(this.connectedAccount)
+                .then(({ data: { balance } }) => this.$set(this.balances, this.nativeTokenAddress, balance));
+        },
+        onRpcConnectionStatusChanged(data) {
+            this.connectedAccount = data.account;
+            if (this.connectedAccount)
+                this.loadBalances();
+        },
+        openSellTokenSelectionModal() {
+            this.$refs.dexTokenSelectionModal.open({
+                oppositeTokenAddress: this.buyToken.address,
+                tokens: this.tokens,
+                balances: this.balances
+            })
+            .then(token => {
+                this.sellToken = token;
+                if (this.buyToken.address == this.sellToken.address)
+                    this.buyToken = {};
+            });
+        },
+        openBuyTokenSelectionModal() {
+            this.$refs.dexTokenSelectionModal.open({
+                oppositeTokenAddress: this.sellToken.address,
+                tokens: this.tokens,
+                balances: this.balances
+            })
+            .then(token => {
+                this.buyToken = token;
+                if (this.sellToken.address == this.buyToken.address)
+                    this.sellToken = {};
+            });
+        },
+        openExplorerDexParametersModal() {
+            this.$refs.explorerDexParametersModal.open(this.dexParameters);
+        },
+        balanceOf(address) {
+            return this.balances[address] || '0';
+        },
+        initializeDexParameters() {
+            try {
+                this.dexParameters = JSON.parse(localStorage.getItem('dexParameters')) || DEFAULT_DEX_PARAMETERS;
+            } catch(error) {
+                console.log(error);
+                this.dexParameters = DEFAULT_DEX_PARAMETERS;
+            }
+        },
+        dexParametersChanged(newParameters) {
+            localStorage.setItem('dexParameters', JSON.stringify(newParameters));
+            if (newParameters.slippageToleranceInBps != this.dexParameters.slippageToleranceInBps) {
+                this.dexParameters = newParameters;
+                this.selectionChanged();
+            }
+            else
+                this.dexParameters = newParameters;
+        },
+        isValidAmount(amount) {
+            if (ethers.BigNumber.isBigNumber(amount))
+                return amount.gt(0);
+            return amount && parseFloat(amount) > 0;
+        }
+    },
+    watch: {
+        buyAmount() {
+            if (this.quoteDirection == 'exactOut')
+                this.selectionChanged()
+        },
+        sellAmount() {
+            if (this.quoteDirection == 'exactIn')
+                this.selectionChanged()
+        },
+        buyToken() { this.selectionChanged() },
+        sellToken() {
+            this.checkAllowance();
+            this.selectionChanged();
         }
     },
     computed: {
         ...mapGetters([
             'publicExplorer',
+            'nativeTokenAddress',
+            'nativeTokenSymbol'
         ]),
-        provider() {
-            return getProvider(this.publicExplorer.rpcServer);
+        priceImpactSeverityClass() {
+            const parsedImpact = parseFloat(this.executionInfo.priceImpact);
+            if (parsedImpact <= PRICE_IMPACT_SEVERITIES.LOW) return 'success--text';
+            else if (parsedImpact <= PRICE_IMPACT_SEVERITIES.MEDIUM) return 'warning--text';
+            else return 'error--text';
+        },
+        formattedPriceImpact() {
+            if (!this.executionInfo.priceImpact)
+                return null;
+            if (parseFloat(this.executionInfo.priceImpact) < 0.01)
+                return '<0.01';
+            return this.executionInfo.priceImpact;
+        },
+        invertedPriceText() {
+            if (!this.validCombination)
+                return null;
+
+            return `${this.executionInfo.invertedExecutionPrice} ${this.buyToken.tokenSymbol} per ${this.sellToken.tokenSymbol}`;
+        },
+        priceText() {
+            if (!this.validCombination)
+                return null;
+
+            return `${this.executionInfo.executionPrice} ${this.sellToken.tokenSymbol} per ${this.buyToken.tokenSymbol}`;
+        },
+        validCombination() {
+            return !!this.executionInfo.executionPrice;
+        },
+        swapButtonDisabled() {
+            return !this.quotable || this.needsApproval || !this.validCombination || this.loadingQuote || !this.sufficientBalance;
+        },
+        sufficientBalance() {
+            return ethers.utils.parseEther(this.sellAmount).lte(this.balanceOf(this.sellToken.address));
+        },
+        validExactIn() {
+            return this.quoteDirection == 'exactIn' && this.sellAmount && this.sellToken.address;
+        },
+        validExactOut() {
+            return this.quoteDirection == 'exactOut' && this.buyAmount && this.buyToken.address;
+        },
+        swapButtonText() {
+            if (!this.validExactIn && !this.validExactOut)
+                return 'Enter an amount';
+            else if (!this.isValidAmount(this.amountIn) && !this.isValidAmount(this.amountOut))
+                return 'Invalid amount';
+            else if (!this.sufficientBalance)
+                return 'Insufficient balance';
+            else if (!this.buyToken.address || !this.sellToken.address)
+                return 'Select a token';
+            else if (this.loadingQuote)
+                return 'Getting quote...';
+            else if (!this.validCombination)
+                return 'Swap not supported';
+
+            return 'Swap';
+        },
+        quotable() {
+            return (this.validExactIn || this.validExactOut) && this.sellToken.address && this.buyToken.address;
+        },
+        needsApproval() {
+            if (!this.sellAmount || !this.allowance || !this.sufficientBalance)
+                return false;
+            if (this.sellToken.address.toLowerCase() == this.nativeTokenAddress.toLowerCase())
+                return false;
+            return this.quotable && this.allowance && ethers.utils.parseUnits(this.sellAmount, 'ether').gt(this.allowance);
+        },
+        amountIn() {
+            if (!this.sellAmount)
+                return null;
+            return ethers.utils.parseUnits(this.sellAmount, 'ether').toString();
+        },
+        amountOut() {
+            if (!this.buyAmount)
+                return null;
+            return ethers.utils.parseUnits(this.buyAmount, 'ether').toString();
         },
         chainId() {
             return parseInt(this.publicExplorer.chainId);
@@ -175,8 +524,27 @@ export default{
     }
 }
 </script>
-<style>
-  .v-text-field input {
+<style scoped>
+.swap {
+    font-size: 1.2em;
+}
+.large-text {
     font-size: 1.75em;
-  }
+}
+.balance {
+    font-size: 50%;
+    display: block;
+    color: black;
+    font-weight: 600;
+}
+.swap-extra-info {
+    font-weight: 500;
+}
+.tokenSelector {
+  border: 1px solid var(--v-primary-base);
+  text-transform: initial;
+}
+.tokenSelectorModal {
+    border-radius: 1.5rem;
+}
 </style>

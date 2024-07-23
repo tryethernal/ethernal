@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const { enqueue } = require('../lib/queue');
 module.exports = (sequelize, DataTypes) => {
   class V2DexPair extends Model {
     /**
@@ -14,6 +15,24 @@ module.exports = (sequelize, DataTypes) => {
       V2DexPair.belongsTo(models.Contract, { foreignKey: 'token0ContractId', as: 'token0' });
       V2DexPair.belongsTo(models.Contract, { foreignKey: 'token1ContractId', as: 'token1' });
       V2DexPair.belongsTo(models.Contract, { foreignKey: 'pairContractId', as: 'pair' });
+      V2DexPair.hasMany(models.V2DexPoolReserve, { foreignKey: 'v2DexPairId', as: 'poolReserves' });
+    }
+
+    async getLatestReserves() {
+      const [latestReserve] = await this.getPoolReserves({
+        order: [['timestamp', 'DESC']],
+        limit: 1
+      });
+
+      return latestReserve;
+    }
+
+    async safeDestroy(transaction) {
+      const reserves = await this.getPoolReserves();
+      for (const reserve of reserves) {
+        await reserve.destroy({ transaction });
+      }
+      return this.destroy({ transaction });
     }
   }
   V2DexPair.init({
@@ -24,6 +43,11 @@ module.exports = (sequelize, DataTypes) => {
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE
   }, {
+    hooks: {
+      afterCreate(pair) {
+        return enqueue('setupV2DexPoolReserves', `setupV2DexPoolReserves-${pair.id}`, { v2DexPairId: pair.id });
+      }
+    },
     sequelize,
     modelName: 'V2DexPair',
     tableName: 'v2_dex_pairs'

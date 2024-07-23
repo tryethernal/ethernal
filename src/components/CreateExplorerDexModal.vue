@@ -26,6 +26,21 @@
                                 type="text"
                                 v-model="routerAddress"
                                 label="Router Address"></v-text-field>
+                            <v-text-field
+                                class="mt-1"
+                                dense
+                                name="wrappedNativeTokenAddress"
+                                outlined
+                                required
+                                :rules="[
+                                    v => !!v || 'A valid address is required',
+                                    v => !!v && v.match(/(\b0x[A-Fa-f0-9]{40}\b)/g) ? true : 'Invalid address'
+                                ]"
+                                type="text"
+                                v-model="wrappedNativeTokenAddress"
+                                persistent-hint
+                                hint="We need this address to be able to route native token swaps"
+                                :label="`Wrapped ${this.nativeTokenSymbol} Address`"></v-text-field>
                         </v-col>
                     </v-row>
                     <v-card-actions class="pr-0 pb-0">
@@ -38,6 +53,7 @@
     </v-dialog>
     </template>
 <script>
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'CreateExplorerDexModal',
@@ -48,6 +64,7 @@ export default {
         valid: false,
         errorMessage: null,
         routerAddress: null,
+        wrappedNativeTokenAddress: null,
         loading: false,
         options: {}
     }),
@@ -62,7 +79,7 @@ export default {
         },
         create() {
             this.loading = true;
-            this.server.createExplorerV2Dex(this.options.explorerId, this.routerAddress)
+            this.server.createExplorerV2Dex(this.options.explorerId, this.routerAddress, this.wrappedNativeTokenAddress)
                 .then(() => this.close(true))
                 .catch(error => {
                     this.loading = false;
@@ -83,6 +100,11 @@ export default {
             this.resolve = null;
             this.reject = null;
         }
+    },
+    computed: {
+        ...mapGetters([
+            'nativeTokenSymbol'
+        ])
     }
 }
 </script>

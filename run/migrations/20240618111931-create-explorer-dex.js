@@ -19,6 +19,16 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false,
         },
+        wrappedNativeTokenContractId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: {
+            key: 'id',
+            model: {
+              tableName: 'contracts'
+            }
+          }
+        },
         explorerId: {
           type: Sequelize.INTEGER,
           allowNull: false,
@@ -28,6 +38,11 @@ module.exports = {
               tableName: 'explorers'
             }
           }
+        },
+        active: {
+          type: Sequelize.BOOLEAN,
+          allowNull: false,
+          defaultValue: true
         },
         createdAt: {
           type: Sequelize.DATE

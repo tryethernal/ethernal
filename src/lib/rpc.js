@@ -1,10 +1,15 @@
 const ethers = require('ethers');
 const axios = require('axios');
+const { Token, CurrencyAmount } = require('@uniswap/sdk-core');
+const { Pair } = require('@uniswap/v2-sdk');
 const { sanitize } = require('./utils');
 
+const ERC20_ABI = require('../abis/erc20.json');
 const ERC721_ABI = require('../abis/erc721.json');
 const ERC721_ENUMERABLE_ABI = require('../abis/erc721Enumerable.json');
 const ERC721_METADATA_ABI = require('../abis/erc721Metadata.json');
+const IUniswapV2Pair = require('../abis/IUniswapV2Pair.json');
+const IUniswapV2Router02 = require('../abis/IUniswapV2Router02');
 
 const getProvider = function(url) {
     const rpcServer = new URL(url);
@@ -27,6 +32,87 @@ const getProvider = function(url) {
 
     return new provider(authenticatedUrl);
 };
+
+class DexPairConnector {
+    constructor({ rpcServer, chainId, address, token0Contract, token1Contract }) {
+        if (!rpcServer || !chainId || !address)
+            throw new Error('Missing parameters');
+
+        this.provider = getProvider(rpcServer);
+        this.contract = new ethers.Contract(address, IUniswapV2Pair, this.provider);
+        this.chainId = parseInt(chainId);
+        this.token0Contract = token0Contract;
+        this.token1Contract = token1Contract;
+    }
+
+    token0() {
+        if (this._token0)
+            return this._token0;
+        this._token0 = new Token(this.chainId, this.token0Contract.address, this.token0Contract.tokenDecimals, this.token0Contract.tokenSymbol, this.token0Contract.tokenName);
+        return this._token0;
+    }
+
+    token1() {
+        if (this._token1)
+            return this._token1;
+        this._token1 = new Token(this.chainId, this.token1Contract.address, this.token1Contract.tokenDecimals, this.token1Contract.tokenSymbol, this.token1Contract.tokenName);
+        return this._token1;
+    }
+
+    getReserves() {
+        return this.contract.getReserves();
+    }
+
+    async getPair() {
+        const [reserve0, reserve1] = await this.getReserves();
+        return new Pair(CurrencyAmount.fromRawAmount(this.token0(), reserve0), CurrencyAmount.fromRawAmount(this.token1(), reserve1));
+    }
+}
+
+class V2DexRouterConnector {
+    constructor({ provider, address, from }) {
+        this.from = from;
+        this.provider = provider.getSigner(this.from);
+        this.contract = new ethers.Contract(address, IUniswapV2Router02, this.provider);
+    }
+
+    async swapExactTokensForTokens(amountIn, amountOutMin, path, to, deadline) {
+        const rawTransaction = await this.contract.populateTransaction.swapExactTokensForTokens(amountIn, amountOutMin, path, to, deadline, { from: this.from, value: '0x0' });
+        return this.provider.sendTransaction(rawTransaction);
+    }
+
+    async swapTokensForExactTokens(amountOut, amountInMax, path, to, deadline) {
+        const rawTransaction = await this.contract.populateTransaction.swapTokensForExactTokens(amountOut, amountInMax, path, to, deadline, { from: this.from, value: '0x0' });
+        return this.provider.sendTransaction(rawTransaction);
+    }
+
+    async swapExactETHForTokens(amountIn, amountOutMin, path, to, deadline) {
+        const rawTransaction = await this.contract.populateTransaction.swapExactETHForTokens(amountOutMin, path, to, deadline, { from: this.from, value: amountIn });
+        return this.provider.sendTransaction(rawTransaction);
+    }
+
+    async swapETHForExactTokens(amountInMax, amountOut, path, to, deadline) {
+        const rawTransaction = await this.contract.populateTransaction.swapETHForExactTokens(amountOut, path, to, deadline, { from: this.from, value: amountInMax });
+        return this.provider.sendTransaction(rawTransaction);
+    }
+}
+
+class ERC20Connector {
+    constructor({ provider, address, from }) {
+        this.from = from;
+        this.provider = provider.getSigner(this.from);
+        this.contract = new ethers.Contract(address, ERC20_ABI, this.provider);
+    }
+
+    allowance(spender) {
+        return this.contract.allowance(this.from, spender);
+    }
+
+    async approve(spender, value) {
+        const rawTransaction = await this.contract.populateTransaction.approve(spender, value, { from: this.from, value: '0x0' });
+        return this.provider.sendTransaction(rawTransaction);
+    }
+}
 
 class ContractConnector {
 
@@ -247,5 +333,8 @@ class ERC721Connector {
 module.exports = {
     ContractConnector: ContractConnector,
     ERC721Connector: ERC721Connector,
+    ERC20Connector: ERC20Connector,
+    DexPairConnector: DexPairConnector,
+    V2DexRouterConnector: V2DexRouterConnector,
     getProvider: getProvider
 };
