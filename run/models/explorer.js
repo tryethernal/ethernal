@@ -370,6 +370,10 @@ module.exports = (sequelize, DataTypes) => {
                 if (faucet)
                     await faucet.safeDestroy(transaction);
 
+                const dex = await this.getV2Dex();
+                if (dex)
+                    await dex.safeDestroy(transaction);
+
                 await this.destroy({ transaction });
 
                 await transaction.commit();

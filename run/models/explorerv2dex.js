@@ -22,14 +22,18 @@ module.exports = (sequelize, DataTypes) => {
       ExplorerV2Dex.belongsTo(models.Contract, { foreignKey: 'wrappedNativeTokenContractId', as: 'wrappedNativeTokenContract' });
     }
 
-    async safeDestroy() {
-      return sequelize.transaction(async transaction => {
+    async safeDestroy(transaction) {
+      const fn = async transaction => {
         const pairs = await this.getPairs();
         for (const pair of pairs) {
           await pair.safeDestroy(transaction);
         }
         return this.destroy({ transaction });
-      });
+      }
+
+      return transaction ?
+        fn(transaction) :
+        sequelize.transaction(fn);
     }
 
     async getAllTokens() {

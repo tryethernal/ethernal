@@ -2862,37 +2862,6 @@
     strip-ansi "^4.0.0"
     strip-indent "^2.0.0"
 
-"@tryethernal/smart-order-router@^3.35.8":
-  version "3.35.8"
-  resolved "https://registry.yarnpkg.com/@tryethernal/smart-order-router/-/smart-order-router-3.35.8.tgz#dc199863fc73c72218564b14ec013a6d38a00dc8"
-  integrity sha512-ejLoPPjWqaInxMmJYDXA81BO0F5hVEfxVthdr3sQhsaEmspcBO7op8Fy9HWFSzkXpC0yKu/I7XMyg1tZdU8QRA==
-  dependencies:
-    "@eth-optimism/sdk" "^3.2.2"
-    "@types/brotli" "^1.3.4"
-    "@uniswap/default-token-list" "^11.13.0"
-    "@uniswap/permit2-sdk" "^1.3.0"
-    "@uniswap/router-sdk" "^1.9.2"
-    "@uniswap/sdk-core" "^5.3.0"
-    "@uniswap/swap-router-contracts" "^1.3.1"
-    "@uniswap/token-lists" "^1.0.0-beta.31"
-    "@uniswap/universal-router" "^1.6.0"
-    "@uniswap/universal-router-sdk" "^2.2.0"
-    "@uniswap/v2-sdk" "^4.3.2"
-    "@uniswap/v3-sdk" "^3.13.0"
-    async-retry "^1.3.1"
-    await-timeout "^1.1.1"
-    axios "^0.21.1"
-    brotli "^1.3.3"
-    bunyan "^1.8.15"
-    bunyan-blackhole "^1.1.1"
-    ethers "^5.7.2"
-    graphql "^15.5.0"
-    graphql-request "^3.4.0"
-    lodash "^4.17.21"
-    mnemonist "^0.38.3"
-    node-cache "^5.1.2"
-    stats-lite "^2.2.0"
-
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.14":
   version "7.20.3"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.20.3.tgz#d5625a50b6f18244425a1359a858c73d70340778"
@@ -3286,33 +3255,18 @@
     ethers "^5.7.0"
     tiny-invariant "^1.1.0"
 
-"@uniswap/router-sdk@^1.9.2":
-  version "1.9.2"
-  resolved "https://registry.yarnpkg.com/@uniswap/router-sdk/-/router-sdk-1.9.2.tgz#cc2411f0849467c2bd71ce34cdca9db2a584367d"
-  integrity sha512-J63Of3HRpV0s3ZtEnhGlyvbBuZFfjK7NtnMwflzFMKzfdm+75APHYqnvHAnVARKuL/hMYHF4hni0o84bHem2Ng==
+"@uniswap/router-sdk@^1.9.2", "@uniswap/router-sdk@^1.9.3":
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/@uniswap/router-sdk/-/router-sdk-1.9.3.tgz#0721d1d5eadf220632b062ec34044eadababdd6c"
+  integrity sha512-vKhYDN+Ne8XLFay97pW3FyMJbmbS4eiQfiTVpv7EblDKUYG2Co0OSaH+kPAuXcvHvcflbyBpp94NCyePjlVltw==
   dependencies:
     "@ethersproject/abi" "^5.5.0"
-    "@uniswap/sdk-core" "^5.0.0"
+    "@uniswap/sdk-core" "^5.3.1"
     "@uniswap/swap-router-contracts" "^1.3.0"
     "@uniswap/v2-sdk" "^4.3.2"
     "@uniswap/v3-sdk" "^3.11.2"
 
-"@uniswap/sdk-core@^5.0.0", "@uniswap/sdk-core@^5.3.0":
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/@uniswap/sdk-core/-/sdk-core-5.3.0.tgz#4af6d7d794ce65c5303b2d4c58c87a917bbeb986"
-  integrity sha512-wbMzSY3wbByOkoirZXyeomof4a7goueT4bOa4YqoXDWqIftqrT70UuCgjk98nIBu3UqPxRNMptXusppxZVvwWA==
-  dependencies:
-    "@ethersproject/address" "^5.0.2"
-    "@ethersproject/bytes" "^5.7.0"
-    "@ethersproject/keccak256" "5.7.0"
-    "@ethersproject/strings" "5.7.0"
-    big.js "^5.2.2"
-    decimal.js-light "^2.5.0"
-    jsbi "^3.1.4"
-    tiny-invariant "^1.1.0"
-    toformat "^2.0.0"
-
-"@uniswap/sdk-core@^5.3.1":
+"@uniswap/sdk-core@^5.3.0", "@uniswap/sdk-core@^5.3.1":
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/@uniswap/sdk-core/-/sdk-core-5.3.1.tgz#22d753e9ef8666c2f3b4d9a89b9658d169be4ce8"
   integrity sha512-XLJY8PcMZnKYBGLABJnLXcr3EgWql3mmnmpHyV1/MmEh9pLJLHYz4HLwVHb8pGDCqpOFX0e+Ei44/qhC7Q5Dsg==
@@ -3327,9 +3281,10 @@
     tiny-invariant "^1.1.0"
     toformat "^2.0.0"
 
-"@uniswap/smart-order-router@tryethernal/smart-order-router":
-  version "3.35.6"
-  resolved "https://codeload.github.com/tryethernal/smart-order-router/tar.gz/2b677e4042796889d9cbbe625a68df6b58e9e80e"
+"@uniswap/smart-order-router@^3.36.0":
+  version "3.36.0"
+  resolved "https://registry.yarnpkg.com/@uniswap/smart-order-router/-/smart-order-router-3.36.0.tgz#218d8ac140b403f682d7e9a318d59ba96b163594"
+  integrity sha512-HkFuhW4N495jVvVTTPFpEpZ7yh0dmFYol0cQlb7sR/7Ichd1CqqhR+CLjjOBTC1UNJooMkS2E4gi7jE2IN/Acg==
   dependencies:
     "@eth-optimism/sdk" "^3.2.2"
     "@types/brotli" "^1.3.4"
@@ -3375,16 +3330,16 @@
   integrity sha512-Hc3TfrFaupg0M84e/Zv7BoF+fmMWDV15mZ5s8ZQt2qZxUcNw2GQW+L6L/2k74who31G+p1m3GRYbJpAo7d1pqA==
 
 "@uniswap/universal-router-sdk@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@uniswap/universal-router-sdk/-/universal-router-sdk-2.2.0.tgz#fa3d99ae707526d2a250f3b23aa5408311f1e4a6"
-  integrity sha512-8ys8eVLLMBMuTya9d4LjqBQrlunkdTm9HNgcE6IXG/Ro3Lekxe1e0mak0MaIQEFfrE44JvaJu6M/BenxBYWqaw==
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@uniswap/universal-router-sdk/-/universal-router-sdk-2.2.2.tgz#1199b9bf492f496a17175c7aaadbb92c67845790"
+  integrity sha512-RYW2d+NlAjZJ1ZpJTPTXGgGlyBHnXShNbRkz5ueP3m0CzRAS+1P9Czub1SO8ZgcbZ/y4Po/SW9JXT/j3gnI/XA==
   dependencies:
     "@uniswap/permit2-sdk" "^1.3.0"
-    "@uniswap/router-sdk" "^1.9.2"
-    "@uniswap/sdk-core" "^5.3.0"
+    "@uniswap/router-sdk" "^1.9.3"
+    "@uniswap/sdk-core" "^5.3.1"
     "@uniswap/universal-router" "1.6.0"
-    "@uniswap/v2-sdk" "^4.3.2"
-    "@uniswap/v3-sdk" "^3.13.0"
+    "@uniswap/v2-sdk" "^4.4.1"
+    "@uniswap/v3-sdk" "^3.13.1"
     bignumber.js "^9.0.2"
     ethers "^5.7.0"
 
@@ -3402,18 +3357,7 @@
   resolved "https://registry.yarnpkg.com/@uniswap/v2-core/-/v2-core-1.0.1.tgz#af8f508bf183204779938969e2e54043e147d425"
   integrity sha512-MtybtkUPSyysqLY2U210NBDeCHX+ltHt3oADGdjqoThZaFRDKwM6k1Nb3F0A3hk5hwuQvytFWhrWHOEq6nVJ8Q==
 
-"@uniswap/v2-sdk@^4.3.2":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@uniswap/v2-sdk/-/v2-sdk-4.4.0.tgz#5ba21dd6d573fc1e8445a0a5e9a8dabfb702bb52"
-  integrity sha512-k+rV4moLOf9L+mP+VQ6T532Hmfdmt9m6deja22aaioeSRWSecVm3nasHZtK7KkeLfFZCg57VoYoHkbfvPSmWoQ==
-  dependencies:
-    "@ethersproject/address" "^5.0.2"
-    "@ethersproject/solidity" "^5.0.9"
-    "@uniswap/sdk-core" "^5.0.0"
-    tiny-invariant "^1.1.0"
-    tiny-warning "^1.0.3"
-
-"@uniswap/v2-sdk@^4.4.1":
+"@uniswap/v2-sdk@^4.3.2", "@uniswap/v2-sdk@^4.4.1":
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/@uniswap/v2-sdk/-/v2-sdk-4.4.1.tgz#d0859a2d943cfcf66ec3cd48c2019e393af256a1"
   integrity sha512-mU0YNgpm7Nmh3RSlcltluYVECdBcfQQIIQIDCM49Rog8ZnW4wp5QqEYkVjgAuqdu1mwLkMDMQUhzhtC0Z2Df6g==
@@ -3445,14 +3389,14 @@
     "@uniswap/v3-core" "^1.0.0"
     base64-sol "1.0.1"
 
-"@uniswap/v3-sdk@^3.11.2", "@uniswap/v3-sdk@^3.13.0":
-  version "3.13.0"
-  resolved "https://registry.yarnpkg.com/@uniswap/v3-sdk/-/v3-sdk-3.13.0.tgz#e9f1bc8711b734e36fc58ba4017089d7b79c437e"
-  integrity sha512-Jz8aEU7RrDK4LfFNLClXFr2hkBE08QANLEBTofmu+ueCCKoNoRd/OTR4q04HhIeMyXtzsSOzi32a5yS7OY9glg==
+"@uniswap/v3-sdk@^3.11.2", "@uniswap/v3-sdk@^3.13.0", "@uniswap/v3-sdk@^3.13.1":
+  version "3.13.1"
+  resolved "https://registry.yarnpkg.com/@uniswap/v3-sdk/-/v3-sdk-3.13.1.tgz#67421727b18bb9c449bdf3c92cf3d01530ff3f8f"
+  integrity sha512-MCc96HrUZy17DINwrGnMtCvr+yXQlWUJJVaIiRRKe1DQzSuv97/G4lzM+zAaSymrxbR2qnHHWL5vMFjmwzCN9Q==
   dependencies:
     "@ethersproject/abi" "^5.5.0"
     "@ethersproject/solidity" "^5.0.9"
-    "@uniswap/sdk-core" "^5.3.0"
+    "@uniswap/sdk-core" "^5.3.1"
     "@uniswap/swap-router-contracts" "^1.3.0"
     "@uniswap/v3-periphery" "^1.1.1"
     "@uniswap/v3-staker" "1.0.0"
@@ -5239,9 +5183,9 @@ cbor@^5.2.0:
     nofilter "^1.0.4"
 
 chai@^4.3.10, chai@^4.3.4:
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/chai/-/chai-4.4.1.tgz#3603fa6eba35425b0f2ac91a009fe924106e50d1"
-  integrity sha512-13sOfMv2+DWduEU+/xbun3LScLoqN17nBeTLUsmDfKdoiC1fr0n9PU4guu4AhRcOVFk/sW8LyZWHuhWtQZiF+g==
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/chai/-/chai-4.5.0.tgz#707e49923afdd9b13a8b0b47d33d732d13812fd8"
+  integrity sha512-RITGBfijLkBddZvnn8jdqoTypxvqbOLYQkGGxXzeFjVHvudaPw0HNFD9x928/eUwYWd2dPCugVqspGALTZZQKw==
   dependencies:
     assertion-error "^1.1.0"
     check-error "^1.0.3"
@@ -5249,7 +5193,7 @@ chai@^4.3.10, chai@^4.3.4:
     get-func-name "^2.0.2"
     loupe "^2.3.6"
     pathval "^1.1.1"
-    type-detect "^4.0.8"
+    type-detect "^4.1.0"
 
 chalk@^2.0.1, chalk@^2.1.0, chalk@^2.3.2, chalk@^2.4.1, chalk@^2.4.2:
   version "2.4.2"
@@ -8392,9 +8336,9 @@ graphql-request@^3.4.0:
     form-data "^3.0.0"
 
 graphql@^15.5.0:
-  version "15.8.0"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.8.0.tgz#33410e96b012fa3bdb1091cc99a94769db212b38"
-  integrity sha512-5gghUc24tP9HRznNpV2+FIoq3xKkj5dTQqf4v0CpdPbFVwFkWoxOM+o+2OC9ZSvjEMTjfmG9QT+gcvggTwW1zw==
+  version "15.9.0"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.9.0.tgz#4e8ca830cfd30b03d44d3edd9cac2b0690304b53"
+  integrity sha512-GCOQdvm7XxV1S4U4CGrsdlEN37245eC8P9zaYCMr6K1BG0IPGy5lUwmJsEOGyl1GD6HXjOtl2keCP9asRBwNvA==
 
 gtoken@^5.0.4:
   version "5.3.2"
@@ -13383,9 +13327,9 @@ semver@^7.1.2, semver@^7.3.2, semver@^7.3.4, semver@^7.3.5, semver@^7.5.3, semve
     lru-cache "^6.0.0"
 
 semver@^7.6.0:
-  version "7.6.2"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-7.6.2.tgz#1e3b34759f896e8f14d6134732ce798aeb0c6e13"
-  integrity sha512-FNAIBWCx9qcRhoHcgcJ0gvU7SN1lYU2ZXuSfl04bSC5OpvDHFyJCjdNHomPXxjQlCBU67YW64PzY7/VIEH7F2w==
+  version "7.6.3"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.6.3.tgz#980f7b5550bc175fb4dc09403085627f9eb33143"
+  integrity sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==
 
 send@0.18.0:
   version "0.18.0"
@@ -14594,10 +14538,15 @@ type-check@~0.3.2:
   dependencies:
     prelude-ls "~1.1.2"
 
-type-detect@4.0.8, type-detect@^4.0.0, type-detect@^4.0.8:
+type-detect@4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-4.0.8.tgz#7646fb5f18871cfbb7749e69bd39a6388eb7450c"
   integrity sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==
+
+type-detect@^4.0.0, type-detect@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-4.1.0.tgz#deb2453e8f08dcae7ae98c626b13dddb0155906c"
+  integrity sha512-Acylog8/luQ8L7il+geoSxhEkazvkslg7PSNKOX59mbB9cOveP5aq9h74Y7YU8yDpJwetzQQrfIwtf4Wp4LKcw==
 
 type-fest@^0.21.3:
   version "0.21.3"
