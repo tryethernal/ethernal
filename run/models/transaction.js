@@ -80,7 +80,6 @@ module.exports = (sequelize, DataTypes) => {
                 raw: receipt
             })), { transaction });
 
-            console.log(receipt.logs);
             for (let i = 0; i < receipt.logs.length; i++) {
                 const log = receipt.logs[i];
                 try {
