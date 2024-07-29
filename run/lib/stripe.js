@@ -93,7 +93,8 @@ const updateExplorerSubscription = async (stripeSubscription) => {
             await db.revertExplorerSubscriptionCancelation(user.id, explorerId);
         else
             await db.updateExplorerSubscription(user.id, explorerId, stripePlan.id, { ...stripeSubscription, customer: stripeCustomer });
-    } else
+    }
+    else
         await db.createExplorerSubscription(user.id, explorerId, stripePlan.id, { ...stripeSubscription, customer: stripeCustomer });
 
     if (explorer.v2Dex)
