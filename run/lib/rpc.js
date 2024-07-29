@@ -461,7 +461,5 @@ module.exports = {
     WalletConnector: WalletConnector,
     DexConnector: DexConnector,
     DexFactoryConnector: DexFactoryConnector,
-    DexPairConnector: DexPairConnector,
-    DexRouteConnector: DexRouteConnector,
     getBalanceChange: getBalanceChange
 };
