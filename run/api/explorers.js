@@ -26,16 +26,15 @@ router.post('/:id/v2_dexes', authMiddleware, async (req, res) => {
             throw new Error('Could not find explorer.');
 
         let routerFactoryAddress;
-
         try {
             const dexConnector = new DexConnector(explorer.workspace.rpcServer, data.routerAddress);
             routerFactoryAddress = await dexConnector.getFactory();
         } catch(error) {
-            throw new Error(`Couldn't get factory address for router at ${data.routerAddress}. Check that the factory method is present and returns an address.`);
+            throw new Error(`Couldn't get factory address for router. Check that the factory method is present and returns an address.`);
         }
 
         if (!routerFactoryAddress || typeof routerFactoryAddress != 'string' || routerFactoryAddress.length != 42 || !routerFactoryAddress.startsWith('0x'))
-            throw new Error(`Couldn't get factory address for router at ${data.address}. Check that the factory method is present and returns an address.`);
+            throw new Error(`Invalid factory address.`);
 
         const { id, routerAddress, factoryAddress } = await db.createExplorerV2Dex(data.uid, req.params.id, data.routerAddress, routerFactoryAddress, data.wrappedNativeTokenAddress);
 

@@ -110,6 +110,8 @@ const getV2DexQuote = async (v2DexId, from, to, amount, direction, slippageToler
         throw new Error('Missing parameter');
 
     const dex = await ExplorerV2Dex.findByPk(v2DexId);
+    if (!dex)
+        throw new Error('Could not find dex');
 
     return dex.getQuote(from, to, amount, direction, slippageTolerance);
 };
@@ -2301,7 +2303,7 @@ const fetchPairsWithLatestReserves = async (explorerV2DexId, page = 1, itemsPerP
 
     const explorerV2Dex = await ExplorerV2Dex.findByPk(explorerV2DexId);
     if (!explorerV2Dex)
-        throw new Error('ExplorerV2Dex not found');
+        throw new Error('Could not find dex');
 
     return explorerV2Dex.getPairsWithLatestReserves(page, itemsPerPage, order);
 };

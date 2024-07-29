@@ -18,10 +18,11 @@ module.exports = async job => {
             }
         ]
     });
-    const subscription = dex.explorer.stripeSubscription;
 
     if (!dex)
         return 'Could not find dex';
+
+    const subscription = dex.explorer.stripeSubscription;
 
     const rpcServer = dex.explorer.workspace.rpcServer;
     const dexFactoryConnector = new DexFactoryConnector(rpcServer, dex.factoryAddress);
@@ -30,6 +31,7 @@ module.exports = async job => {
     const pairsToProcess = subscription ? 
         (subscription.isTrialing || dex.explorer.isDemo ? getMaxV2DexPairsForTrial() : pairLength) :
         0;
+
     const currentPairCount = await dex.countPairs();
 
     if (currentPairCount >= pairsToProcess)

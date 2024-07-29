@@ -9,8 +9,11 @@ router.get('/:id/status', authMiddleware, async (req, res) => {
     const data = { ...req.body.data, ...req.query };
 
     try {
-        const pairCount = await db.getV2DexPairCount(data.user.id, req.params.id);
         const dex = await db.getExplorerV2Dex(req.params.id);
+        if (!dex)
+            throw new Error('Could not find dex');
+
+        const pairCount = await db.getV2DexPairCount(data.user.id, req.params.id);
         const dexFactoryConnector = new DexFactoryConnector(dex.explorer.workspace.rpcServer, dex.factoryAddress);
         const totalPairs = await dexFactoryConnector.allPairsLength();
 

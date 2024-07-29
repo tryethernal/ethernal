@@ -19,6 +19,9 @@ module.exports = async job => {
         ]
     });
 
+    if (!pair)
+        return 'Could not find pair';
+
     const workspaceId = pair.dex.explorer.workspaceId;
 
     const logs = await TransactionLog.findAll({
