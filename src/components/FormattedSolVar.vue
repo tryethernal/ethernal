@@ -36,6 +36,9 @@
                         </span>
                     <span :class="`ml-${4 * displayDepth}`">]</span>
                 </span>
+                <span v-else-if="input.type == 'uint256'">
+                    {{ decrypt(value) }}
+                </span>
                 <span v-else>
                     {{ value }}
                 </span>
@@ -48,6 +51,10 @@
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 import HashLink from './HashLink';
+import { ConfidentialAccount } from "@coti-io/coti-sdk-typescript/"
+import { decryptUint, generateAesKey } from '@coti-io/coti-sdk-typescript';
+const { getProvider } = require('@/lib/rpc');
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'FormattedSolVar',
@@ -57,13 +64,26 @@ export default {
         VueJsonPretty
     },
     data: () => ({
-        formatted: true
+        formatted: true,
+        aesKey: null,
+        wallet: null,
+        account: null
     }),
     mounted() {
-        if (this.input.type == 'uint256')
-            this.formatted = false;
+        // if (this.input.type == 'uint256')
+        //     this.formatted = false;
     },
     methods: {
+        decrypt(value) {
+            const provider = getProvider(this.publicExplorer.rpcServer);
+            const signer = provider.getSigner();
+            console.log(signer)
+            ConfidentialAccount.onboard(window.ethereum.getSigner()).then(console.log)
+            console.log(decryptUint(window.BigInt(value), generateAesKey()));
+            return decryptUint(window.BigInt(value), generateAesKey());
+            // return decryptUint(window.BigInt(value), 'f62e5c1cde04e82c7e235bbd3d3debd8');
+            // return value
+        },
         JSONPrettyCustomFormatter: function(data, _key, _path, defaultFormatResult) {
             return typeof data === 'string' ? `"${this.formatString(data)}"` : defaultFormatResult;
         },
@@ -86,6 +106,9 @@ export default {
         }
     },
     computed: {
+        ...mapGetters([
+            'publicExplorer'
+        ]),
         displayDepth: function() {
             return this.depth !== undefined && this.depth !== null ? this.depth : 1;
         },

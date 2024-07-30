@@ -4,7 +4,7 @@ process.env.VUE_APP_VERSION = process.env.COMMIT_REF ? process.env.COMMIT_REF.sl
 
 module.exports = {
     "transpileDependencies": [
-        "vuetify"
+        "vuetify", "@coti-io/coti-sdk-typescript"
     ],
     chainWebpack: config => {
         config
