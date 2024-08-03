@@ -28,10 +28,10 @@ describe('Metamask.vue', () => {
     it('Should show a "Connect with Metamask" button if no account connected', async () => {
         window.ethereum = ethereum;
         detectEthereumProvider.mockResolvedValueOnce(window.ethereum);
-        
+
         const wrapper = helper.mountFn(Metamask);
         await flushPromises();
-        
+
         expect(wrapper.html()).toMatchSnapshot();
     });
 
@@ -76,7 +76,7 @@ describe('Metamask.vue', () => {
 
         const wrapper = helper.mountFn(Metamask);
         await flushPromises();
-        
+
         await wrapper.find('#connectMetamask').trigger('click');
         await flushPromises();
 

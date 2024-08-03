@@ -14,6 +14,7 @@
                         <template v-if="connectedAccount">
                             <small>Connected Account: <Hash-Link :withName="false" :type="'address'" :hash="connectedAccount" /></small>
                         </template>
+                        <v-spacer></v-spacer>
                         <v-btn icon @click="openExplorerDexParametersModal()">
                             <v-icon>mdi-cog</v-icon>
                         </v-btn>
@@ -39,9 +40,9 @@
                                             <small class="pr-1 balance">
                                                 Balance:
                                                 <a v-if="BNtoSignificantDigits(balanceOf(sellToken.address)) > 0" @click="sellAmount = formatEther(balanceOf(sellToken.address))">{{ sellToken && sellToken.address ? BNtoSignificantDigits(balanceOf(sellToken.address)) : '-' }}</a>
-                                                <template v-else>{{ sellToken && sellToken.address ? BNtoSignificantDigits(balanceOf(sellToken.address)) || 0 : '-' }}</template>
+                                                <template v-else>{{ connectedAccount && sellToken && sellToken.address ? BNtoSignificantDigits(balanceOf(sellToken.address)) || 0 : '-' }}</template>
                                             </small>
-                                            <v-btn v-if="tokens.length > 1 && Object.keys(balances).length > 1" outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill" @click="openSellTokenSelectionModal()">
+                                            <v-btn v-if="!connectedAccount || tokens.length > 1 && Object.keys(balances).length > 1" outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill" @click="openSellTokenSelectionModal()">
                                                 {{ sellToken.tokenSymbol || 'Select a token' }}
                                                 <v-icon class="primary--text">mdi-chevron-down</v-icon>
                                             </v-btn>
@@ -67,8 +68,8 @@
                                     label="Buy">
                                     <template v-slot:append>
                                         <div class="pl-4 py-1 mt-1 mb-3 text-right">
-                                            <small class="pr-1 balance">Balance: {{ buyToken && buyToken.address ? BNtoSignificantDigits(balanceOf(buyToken.address)) : '-' }}</small>
-                                            <v-btn v-if="tokens.length > 1 && Object.keys(balances).length > 1" outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill" @click="openBuyTokenSelectionModal()">
+                                            <small class="pr-1 balance">Balance: {{ connectedAccount && buyToken && buyToken.address ? BNtoSignificantDigits(balanceOf(buyToken.address)) : '-' }}</small>
+                                            <v-btn v-if="!connectedAccount || tokens.length > 1 && Object.keys(balances).length > 1" outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill" @click="openBuyTokenSelectionModal()">
                                                 {{ buyToken.tokenSymbol || 'Select a token' }}
                                                 <v-icon class="primary--text">mdi-chevron-down</v-icon>
                                             </v-btn>
@@ -78,7 +79,7 @@
                                         </div>
                                     </template>
                                 </v-text-field>
-                                <Metamask align="center" v-if="!connectedAccount" @rpcConnectionStatusChanged="onRpcConnectionStatusChanged"/>
+                                <Metamask class="mt-3"  v-if="!connectedAccount" @rpcConnectionStatusChanged="onRpcConnectionStatusChanged"/>
                                 <div v-else class="mt-3 mb-4">
                                     <template v-if="executionInfo.executionPrice">
                                         <div class="d-flex justify-space-between mx-2">
@@ -334,7 +335,6 @@ export default{
 
             swapFn.then(transaction => this.waitForTransaction(transaction, 'Swap successful.', 'Swap failed.'))
                 .catch(error => {
-                    console.log(JSON.parse(JSON.stringify(error)));
                     this.errorMessage = `Error: ${error.reason}`;
                     this.transaction = {}
                 });
@@ -432,7 +432,8 @@ export default{
         },
         buyToken() { this.selectionChanged() },
         sellToken() {
-            this.checkAllowance();
+            if (this.connectedAccount)
+                this.checkAllowance();
             this.selectionChanged();
         }
     },

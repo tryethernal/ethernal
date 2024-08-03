@@ -80,6 +80,8 @@ class MockHelper {
     initMockStore(initialState, overrideGetters) {
         this.localVue.use(Vuex);
         this.getters = {
+            nativeTokenAddress: jest.fn().mockReturnValue('0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'),
+            nativeTokenSymbol: jest.fn().mockReturnValue('ETH'),
             mainDomain: jest.fn().mockReturnValue('tryethernal.com'),
             isBillingEnabled: jest.fn().mockReturnValue(true),
             canUseDemoPlan: jest.fn().mockReturnValue(false),
