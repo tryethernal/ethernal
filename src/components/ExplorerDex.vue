@@ -149,11 +149,6 @@
                 </v-card>
             </v-col>
         </v-row>
-        <!-- <v-row>
-            <v-col>
-                <Explorer-Dex-Pools />
-            </v-col>
-        </v-row> -->
     </v-container>
 </template>
 
@@ -163,7 +158,6 @@ import Metamask from './Metamask';
 import HashLink from './HashLink.vue';
 import DexTokenSelectionModal from './DexTokenSelectionModal';
 import ExplorerDexParametersModal from './ExplorerDexParametersModal';
-// import ExplorerDexPools from './ExplorerDexPools';
 import FromWei from '../filters/FromWei';
 import { mapGetters } from 'vuex';
 const { BNtoSignificantDigits, debounce } = require('@/lib/utils');
@@ -186,8 +180,7 @@ export default{
         DexTokenSelectionModal,
         ExplorerDexParametersModal,
         Metamask,
-        HashLink,
-        // ExplorerDexPools
+        HashLink
     },
     filters: {
         FromWei
