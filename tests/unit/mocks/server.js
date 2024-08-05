@@ -90,6 +90,7 @@ jest.mock('@/plugins/server', () => ({
                 getV2DexTokens: jest.fn(),
                 getNativeTokenBalance: jest.fn(),
                 getV2DexQuote: jest.fn(),
+                getV2DexStatus: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))
@@ -107,7 +108,7 @@ jest.mock('@/plugins/server', () => ({
                     return new Promise((resolve) => resolve(true));
                 },
 
-                searchForLocalChains: () => {
+                searchForLocalChains: () => {
                     return new Promise((resolve) => resolve(['http://127.0.0.1:8545']));
                 },
 

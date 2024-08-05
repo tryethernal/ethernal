@@ -23,7 +23,7 @@
                         </v-card-text>
                     </v-card>
                     <h4 class="error--text">Danger Zone</h4>
-                    <ExplorerDexSettingsDangerZone @delete="deletedExplorer" :v2DexId="v2Dex.id" />
+                    <Explorer-Dex-Settings-Danger-Zone @delete="deletedExplorer" :v2DexId="v2Dex.id" />
                 </v-col>
             </v-row>
         </template>
@@ -92,7 +92,6 @@ export default {
         this.loadExplorer();
     },
     destroyed() {
-        console.log('destroyed')
         if (this.statusLoadingInterval)
             clearTimeout(this.statusLoadingInterval);
     },
