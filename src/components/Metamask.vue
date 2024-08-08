@@ -29,6 +29,7 @@ export default {
     }),
     mounted: function() {
         detectEthereumProvider().then((provider) => {
+            console.log(provider)
             if (!provider || provider !== window.ethereum) return;
 
             this.ethereum = provider;

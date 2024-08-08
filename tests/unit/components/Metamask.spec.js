@@ -1,9 +1,12 @@
+import '../mocks/ethers';
 import MockHelper from '../MockHelper';
 import flushPromises from 'flush-promises';
 
-import ethereum from '../mocks/ethereum';
 import detectEthereumProvider from '@metamask/detect-provider';
-jest.mock('@metamask/detect-provider');
+jest.mock('@metamask/detect-provider', () => {
+    const ethereum = require('../mocks/ethereum');
+    return { detectEthereumProvider: jest.fn().mockResolvedValue(ethereum) }
+});
 
 import Metamask from '@/components/Metamask.vue';
 
