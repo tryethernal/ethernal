@@ -33,42 +33,6 @@ const getProvider = function(url) {
     return new provider(authenticatedUrl);
 };
 
-class DexPairConnector {
-    constructor({ rpcServer, chainId, address, token0Contract, token1Contract }) {
-        if (!rpcServer || !chainId || !address)
-            throw new Error('Missing parameters');
-
-        this.provider = getProvider(rpcServer);
-        this.contract = new ethers.Contract(address, IUniswapV2Pair, this.provider);
-        this.chainId = parseInt(chainId);
-        this.token0Contract = token0Contract;
-        this.token1Contract = token1Contract;
-    }
-
-    token0() {
-        if (this._token0)
-            return this._token0;
-        this._token0 = new Token(this.chainId, this.token0Contract.address, this.token0Contract.tokenDecimals, this.token0Contract.tokenSymbol, this.token0Contract.tokenName);
-        return this._token0;
-    }
-
-    token1() {
-        if (this._token1)
-            return this._token1;
-        this._token1 = new Token(this.chainId, this.token1Contract.address, this.token1Contract.tokenDecimals, this.token1Contract.tokenSymbol, this.token1Contract.tokenName);
-        return this._token1;
-    }
-
-    getReserves() {
-        return this.contract.getReserves();
-    }
-
-    async getPair() {
-        const [reserve0, reserve1] = await this.getReserves();
-        return new Pair(CurrencyAmount.fromRawAmount(this.token0(), reserve0), CurrencyAmount.fromRawAmount(this.token1(), reserve1));
-    }
-}
-
 class V2DexRouterConnector {
     constructor({ provider, address, from }) {
         this.from = from;
@@ -334,7 +298,6 @@ module.exports = {
     ContractConnector: ContractConnector,
     ERC721Connector: ERC721Connector,
     ERC20Connector: ERC20Connector,
-    DexPairConnector: DexPairConnector,
     V2DexRouterConnector: V2DexRouterConnector,
     getProvider: getProvider
 };
