@@ -29,12 +29,10 @@ export default {
     }),
     mounted: function() {
         detectEthereumProvider().then((provider) => {
-            console.log(provider)
             if (!provider || provider !== window.ethereum) return;
-
             this.ethereum = provider;
 
-            window.ethereum.request({ 'method': 'wallet_getPermissions', 'params': [] })
+            this.ethereum.request({ 'method': 'wallet_getPermissions', 'params': [] })
                 .then(permissions => {
                     if (permissions.length)
                         this.connectMetamask();
