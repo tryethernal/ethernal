@@ -1,14 +1,11 @@
 const ethers = require('ethers');
 const axios = require('axios');
-const { Token, CurrencyAmount } = require('@uniswap/sdk-core');
-const { Pair } = require('@uniswap/v2-sdk');
 const { sanitize } = require('./utils');
 
 const ERC20_ABI = require('../abis/erc20.json');
 const ERC721_ABI = require('../abis/erc721.json');
 const ERC721_ENUMERABLE_ABI = require('../abis/erc721Enumerable.json');
 const ERC721_METADATA_ABI = require('../abis/erc721Metadata.json');
-const IUniswapV2Pair = require('../abis/IUniswapV2Pair.json');
 const IUniswapV2Router02 = require('../abis/IUniswapV2Router02');
 
 const getProvider = function(url) {

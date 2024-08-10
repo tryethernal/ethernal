@@ -118,6 +118,19 @@ describe('ExplorerDex.vue', () => {
         helper = new MockHelper();
     });
 
+    it('Should display no dex message', async () => {
+        const wrapper = helper.mountFn(ExplorerDex, {
+            stubs,
+            getters: {
+                publicExplorer: jest.fn(() => ({ v2Dex: null }))
+            }
+        });
+
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should display initial state with no wallet connected', async () => {
         jest.spyOn(helper.mocks.server, 'getV2DexTokens').mockResolvedValueOnce({ data: { tokens }});
         const wrapper = helper.mountFn(ExplorerDex, {

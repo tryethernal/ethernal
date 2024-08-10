@@ -1,154 +1,176 @@
 <template>
     <v-container fluid>
-        <Dex-Token-Selection-Modal ref="dexTokenSelectionModal" />
-        <Explorer-Dex-Parameters-Modal @parametersChanged="dexParametersChanged" ref="explorerDexParametersModal" />
-        <v-row>
-            <v-col align="center">
-                <v-icon style="opacity: 0.25;" size="150" color="primary lighten-1">mdi-swap-horizontal</v-icon>
-            </v-col>
-        </v-row>
-        <v-row justify="center" align="center" class="mb-10 my-0">
-            <v-col md="6" sm="12">
-                <v-card outlined class="rounded-card rounded-xl">
-                    <div class="my-5 mx-5 d-flex justify-space-between">
-                        <template v-if="connectedAccount">
-                            <small>Connected Account: <Hash-Link :withName="false" :type="'address'" :hash="connectedAccount" /></small>
-                        </template>
-                        <v-spacer></v-spacer>
-                        <v-btn icon @click="openExplorerDexParametersModal()">
-                            <v-icon>mdi-cog</v-icon>
-                        </v-btn>
-                    </div>
-                    <div class="pa-12 pt-0">
-                        <v-card-title class="primary--text d-flex justify-center align-center">{{ publicExplorer.name }} DEX</v-card-title>
-                        <v-card-text class="pb-0">
-                            <v-alert text type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
-                            <div align="center">
-                                <v-text-field
-                                    dense
-                                    class="rounded-xl large-text"
-                                    @input="quoteDirection = 'exactIn'"
-                                    placeholder="0.0"
-                                    persistent-placeholder
-                                    outlined
-                                    type="number"
-                                    label="Sell"
-                                    hide-details="auto"
-                                    v-model="sellAmount">
-                                    <template v-slot:append>
-                                        <div class="pl-4 py-1 mt-1 mb-3 text-right">
-                                            <small class="pr-1 balance">
-                                                Balance:
-                                                <a v-if="BNtoSignificantDigits(balanceOf(sellToken.address)) > 0" @click="sellAmount = formatEther(balanceOf(sellToken.address))">{{ sellToken && sellToken.address ? BNtoSignificantDigits(balanceOf(sellToken.address)) : '-' }}</a>
-                                                <template v-else>{{ connectedAccount && sellToken && sellToken.address ? BNtoSignificantDigits(balanceOf(sellToken.address)) || 0 : '-' }}</template>
-                                            </small>
-                                            <v-btn v-if="!connectedAccount || tokens.length > 1 && Object.keys(balances).length > 1" outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill" @click="openSellTokenSelectionModal()">
-                                                {{ sellToken.tokenSymbol || 'Select a token' }}
-                                                <v-icon class="primary--text">mdi-chevron-down</v-icon>
-                                            </v-btn>
-                                            <v-btn v-else outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill">
-                                                <v-progress-circular :size="20" :width="2" indeterminate color="primary"></v-progress-circular>
-                                            </v-btn>
-                                        </div>
-                                    </template>
-                                </v-text-field>
-                                <v-btn icon @click="invert()" class="my-3" outlined color="primary">
-                                    <v-icon color="primary">mdi-swap-vertical</v-icon>
-                                </v-btn>
-                                <v-text-field
-                                    dense
-                                    type="number"
-                                    class="rounded-xl large-text"
-                                    @input="quoteDirection = 'exactOut'"
-                                    placeholder="0.0"
-                                    persistent-placeholder
-                                    hide-details="auto"
-                                    outlined
-                                    v-model="buyAmount"
-                                    label="Buy">
-                                    <template v-slot:append>
-                                        <div class="pl-4 py-1 mt-1 mb-3 text-right">
-                                            <small class="pr-1 balance">Balance: {{ connectedAccount && buyToken && buyToken.address ? BNtoSignificantDigits(balanceOf(buyToken.address)) : '-' }}</small>
-                                            <v-btn v-if="!connectedAccount || tokens.length > 1 && Object.keys(balances).length > 1" outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill" @click="openBuyTokenSelectionModal()">
-                                                {{ buyToken.tokenSymbol || 'Select a token' }}
-                                                <v-icon class="primary--text">mdi-chevron-down</v-icon>
-                                            </v-btn>
-                                            <v-btn v-else outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill">
-                                                <v-progress-circular :size="20" :width="2" indeterminate color="primary"></v-progress-circular>
-                                            </v-btn>
-                                        </div>
-                                    </template>
-                                </v-text-field>
-                                <Metamask class="mt-3"  v-if="!connectedAccount" @rpcConnectionStatusChanged="onRpcConnectionStatusChanged"/>
-                                <div v-else class="mt-3 mb-4">
-                                    <template v-if="executionInfo.executionPrice">
-                                        <div class="d-flex justify-space-between mx-2">
-                                            <span>Price:</span>
-                                            <span>
-                                                {{ displayInvertedPrice ? priceText : invertedPriceText }}
-                                                <v-icon class="pb-1" @click="displayInvertedPrice = !displayInvertedPrice" color="primary">mdi-swap-horizontal</v-icon>
-                                            </span>
-                                        </div>
-                                        <div class="d-flex justify-space-between mx-2 mb-3">
-                                            <span>Slippage Tolerance:</span>
-                                            <span>{{ dexParameters.slippageToleranceInBps / 100 }}%</span>
-                                        </div>
-                                    </template>
-                                    <div class="d-flex">
-                                        <template v-if="needsApproval && quotable && validCombination">
-                                            <v-btn :disabled="transaction.loading" class="swap flex-grow-1" large color="primary" @click="approve()">Approve {{ sellToken.tokenSymbol }}</v-btn>
-                                            <v-icon>mdi-chevron-right</v-icon>
+        <template v-if="publicExplorer.v2Dex">
+            <Dex-Token-Selection-Modal ref="dexTokenSelectionModal" />
+            <Explorer-Dex-Parameters-Modal @parametersChanged="dexParametersChanged" ref="explorerDexParametersModal" />
+            <v-row>
+                <v-col align="center">
+                    <v-icon style="opacity: 0.25;" size="150" color="primary lighten-1">mdi-swap-horizontal</v-icon>
+                </v-col>
+            </v-row>
+            <v-row justify="center" align="center" class="mb-10 my-0">
+                <v-col md="6" sm="12">
+                    <v-card outlined class="rounded-card rounded-xl">
+                        <div class="my-5 mx-5 d-flex justify-space-between">
+                            <template v-if="connectedAccount">
+                                <small>Connected Account: <Hash-Link :withName="false" :type="'address'" :hash="connectedAccount" /></small>
+                            </template>
+                            <v-spacer></v-spacer>
+                            <v-btn icon @click="openExplorerDexParametersModal()">
+                                <v-icon>mdi-cog</v-icon>
+                            </v-btn>
+                        </div>
+                        <div class="pa-12 pt-0">
+                            <v-card-title class="primary--text d-flex justify-center align-center">{{ publicExplorer.name }} DEX</v-card-title>
+                            <v-card-text class="pb-0">
+                                <v-alert text type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
+                                <div align="center">
+                                    <v-text-field
+                                        dense
+                                        class="rounded-xl large-text"
+                                        @input="quoteDirection = 'exactIn'"
+                                        placeholder="0.0"
+                                        persistent-placeholder
+                                        outlined
+                                        type="number"
+                                        label="Sell"
+                                        hide-details="auto"
+                                        v-model="sellAmount">
+                                        <template v-slot:append>
+                                            <div class="pl-4 py-1 mt-1 mb-3 text-right">
+                                                <small class="pr-1 balance">
+                                                    Balance:
+                                                    <a v-if="BNtoSignificantDigits(balanceOf(sellToken.address)) > 0" @click="sellAmount = formatEther(balanceOf(sellToken.address))">{{ sellToken && sellToken.address ? BNtoSignificantDigits(balanceOf(sellToken.address)) : '-' }}</a>
+                                                    <template v-else>{{ connectedAccount && sellToken && sellToken.address ? BNtoSignificantDigits(balanceOf(sellToken.address)) || 0 : '-' }}</template>
+                                                </small>
+                                                <v-btn v-if="!connectedAccount || tokens.length > 1 && Object.keys(balances).length > 1" outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill" @click="openSellTokenSelectionModal()">
+                                                    {{ sellToken.tokenSymbol || 'Select a token' }}
+                                                    <v-icon class="primary--text">mdi-chevron-down</v-icon>
+                                                </v-btn>
+                                                <v-btn v-else outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill">
+                                                    <v-progress-circular :size="20" :width="2" indeterminate color="primary"></v-progress-circular>
+                                                </v-btn>
+                                            </div>
                                         </template>
-                                        <v-btn class="swap flex-grow-1" large :disabled="swapButtonDisabled" color="primary" @click="swap()">{{ swapButtonText }}</v-btn>
+                                    </v-text-field>
+                                    <v-btn icon @click="invert()" class="my-3" outlined color="primary">
+                                        <v-icon color="primary">mdi-swap-vertical</v-icon>
+                                    </v-btn>
+                                    <v-text-field
+                                        dense
+                                        type="number"
+                                        class="rounded-xl large-text"
+                                        @input="quoteDirection = 'exactOut'"
+                                        placeholder="0.0"
+                                        persistent-placeholder
+                                        hide-details="auto"
+                                        outlined
+                                        v-model="buyAmount"
+                                        label="Buy">
+                                        <template v-slot:append>
+                                            <div class="pl-4 py-1 mt-1 mb-3 text-right">
+                                                <small class="pr-1 balance">Balance: {{ connectedAccount && buyToken && buyToken.address ? BNtoSignificantDigits(balanceOf(buyToken.address)) : '-' }}</small>
+                                                <v-btn v-if="!connectedAccount || tokens.length > 1 && Object.keys(balances).length > 1" outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill" @click="openBuyTokenSelectionModal()">
+                                                    {{ buyToken.tokenSymbol || 'Select a token' }}
+                                                    <v-icon class="primary--text">mdi-chevron-down</v-icon>
+                                                </v-btn>
+                                                <v-btn v-else outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill">
+                                                    <v-progress-circular :size="20" :width="2" indeterminate color="primary"></v-progress-circular>
+                                                </v-btn>
+                                            </div>
+                                        </template>
+                                    </v-text-field>
+                                    <Metamask class="mt-3"  v-if="!connectedAccount" @rpcConnectionStatusChanged="onRpcConnectionStatusChanged"/>
+                                    <div v-else class="mt-3 mb-4">
+                                        <template v-if="executionInfo.executionPrice">
+                                            <div class="d-flex justify-space-between mx-2">
+                                                <span>Price:</span>
+                                                <span>
+                                                    {{ displayInvertedPrice ? priceText : invertedPriceText }}
+                                                    <v-icon class="pb-1" @click="displayInvertedPrice = !displayInvertedPrice" color="primary">mdi-swap-horizontal</v-icon>
+                                                </span>
+                                            </div>
+                                            <div class="d-flex justify-space-between mx-2 mb-3">
+                                                <span>Slippage Tolerance:</span>
+                                                <span>{{ dexParameters.slippageToleranceInBps / 100 }}%</span>
+                                            </div>
+                                        </template>
+                                        <div class="d-flex">
+                                            <template v-if="needsApproval && quotable && validCombination">
+                                                <v-btn :disabled="transaction.loading" class="swap flex-grow-1" large color="primary" @click="approve()">Approve {{ sellToken.tokenSymbol }}</v-btn>
+                                                <v-icon>mdi-chevron-right</v-icon>
+                                            </template>
+                                            <v-btn class="swap flex-grow-1" large :disabled="swapButtonDisabled" color="primary" @click="swap()">{{ swapButtonText }}</v-btn>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <v-skeleton-loader v-if="loadingQuote" type="paragraph"></v-skeleton-loader>
-                            <div v-else-if="executionInfo.minimumAmountOut" class="mt-4 mb-4">
-                                <div v-if="quoteDirection == 'exactIn'" class="d-flex justify-space-between">
-                                    <span>Minimum Received:</span>
-                                    <span class="swap-extra-info">{{ executionInfo.minimumAmountOut }} {{ buyToken.tokenSymbol }}</span>
-                                </div>
-                                <div v-else class="d-flex justify-space-between">
-                                    <span>Maximum Sold:</span>
-                                    <span class="swap-extra-info">{{ executionInfo.maximumAmountIn }} {{ sellToken.tokenSymbol }}</span>
-                                </div>
-                                <div class="d-flex justify-space-between">
-                                    <span>Price Impact:</span>
-                                    <span :class="`swap-extra-info ${priceImpactSeverityClass}`">{{ formattedPriceImpact }}%</span>
-                                </div>
-                                <div class="d-flex justify-space-between">
-                                    <span>Liquidity Provider Fee:</span>
-                                    <span class="swap-extra-info">{{ executionInfo.lpFee }} {{ sellToken.tokenSymbol }}</span>
-                                </div>
-                                <div v-if="executionInfo.path.length > 2" class="d-flex justify-space-between">
-                                    <span>Route:</span>
-                                    <span>
-                                        <span v-for="(step, idx) in executionInfo.path" :key="idx" class="swap-extra-info">
-                                            {{ step.symbol }} <v-icon v-if="idx < executionInfo.path.length - 1">mdi-chevron-right</v-icon>
+                                <v-skeleton-loader v-if="loadingQuote" type="paragraph"></v-skeleton-loader>
+                                <div v-else-if="executionInfo.minimumAmountOut" class="mt-4 mb-4">
+                                    <div v-if="quoteDirection == 'exactIn'" class="d-flex justify-space-between">
+                                        <span>Minimum Received:</span>
+                                        <span class="swap-extra-info">{{ executionInfo.minimumAmountOut }} {{ buyToken.tokenSymbol }}</span>
+                                    </div>
+                                    <div v-else class="d-flex justify-space-between">
+                                        <span>Maximum Sold:</span>
+                                        <span class="swap-extra-info">{{ executionInfo.maximumAmountIn }} {{ sellToken.tokenSymbol }}</span>
+                                    </div>
+                                    <div class="d-flex justify-space-between">
+                                        <span>Price Impact:</span>
+                                        <span :class="`swap-extra-info ${priceImpactSeverityClass}`">{{ formattedPriceImpact }}%</span>
+                                    </div>
+                                    <div class="d-flex justify-space-between">
+                                        <span>Liquidity Provider Fee:</span>
+                                        <span class="swap-extra-info">{{ executionInfo.lpFee }} {{ sellToken.tokenSymbol }}</span>
+                                    </div>
+                                    <div v-if="executionInfo.path.length > 2" class="d-flex justify-space-between">
+                                        <span>Route:</span>
+                                        <span>
+                                            <span v-for="(step, idx) in executionInfo.path" :key="idx" class="swap-extra-info">
+                                                {{ step.symbol }} <v-icon v-if="idx < executionInfo.path.length - 1">mdi-chevron-right</v-icon>
+                                            </span>
                                         </span>
-                                    </span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div v-if="transaction.status" class="mt-8" align="middle">
-                                <template v-if="transaction.status == 'loading'">
-                                    <span class="primary--text font-weight-bold">{{ transaction.text }}</span>
-                                    <v-progress-linear height="5" rounded indeterminate color="primary"></v-progress-linear>
-                                </template>
-                                <template v-else-if="transaction.status == 'success'">
-                                    <v-icon style="vertical-align: text-bottom" small class="mr-1" color="success">mdi-check-circle</v-icon>
-                                    <span class="success--text font-weight-bold">{{ transaction.text }} <Hash-Link :type="'transaction'" :hash="transaction.hash" :notCopiable="true" :customLabel="'See transaction'" /></span>
-                                </template>
-                                <template v-if="transaction.status == 'failed'">
-                                    <v-icon style="vertical-align: text-bottom" small class="mr-1" color="error">mdi-alert-circle</v-icon>
-                                    <span class="error--text font-weight-bold">{{ transaction.text }} <Hash-Link :type="'transaction'" :hash="transaction.hash" :notCopiable="true" :customLabel="'See transaction'" /></span>
-                                </template>
-                            </div>
-                        </v-card-text>
-                    </div>
-                </v-card>
-            </v-col>
-        </v-row>
+                                <div v-if="transaction.status" class="mt-8" align="middle">
+                                    <template v-if="transaction.status == 'loading'">
+                                        <span class="primary--text font-weight-bold">{{ transaction.text }}</span>
+                                        <v-progress-linear height="5" rounded indeterminate color="primary"></v-progress-linear>
+                                    </template>
+                                    <template v-else-if="transaction.status == 'success'">
+                                        <v-icon style="vertical-align: text-bottom" small class="mr-1" color="success">mdi-check-circle</v-icon>
+                                        <span class="success--text font-weight-bold">{{ transaction.text }} <Hash-Link :type="'transaction'" :hash="transaction.hash" :notCopiable="true" :customLabel="'See transaction'" /></span>
+                                    </template>
+                                    <template v-if="transaction.status == 'failed'">
+                                        <v-icon style="vertical-align: text-bottom" small class="mr-1" color="error">mdi-alert-circle</v-icon>
+                                        <span class="error--text font-weight-bold">{{ transaction.text }} <Hash-Link :type="'transaction'" :hash="transaction.hash" :notCopiable="true" :customLabel="'See transaction'" /></span>
+                                    </template>
+                                </div>
+                            </v-card-text>
+                        </div>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </template>
+        <template v-else>
+            <v-card outlined>
+                <v-card-text>
+                    <v-row>
+                        <v-col align="center">
+                            <v-icon style="opacity: 0.25;" size="200" color="primary lighten-1">mdi-swap-horizontal</v-icon>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-spacer></v-spacer>
+                        <v-col cols="6" class="text-body-1">
+                            No dex has been setup here, but it's possible to!<br>
+                            Reach out to the organization or individual that gave you access to this
+                            explorer and ask them to setup the dex on Ethernal.
+                        </v-col>
+                        <v-spacer></v-spacer>
+                    </v-row>
+                </v-card-text>
+            </v-card>
+        </template>
     </v-container>
 </template>
 
@@ -216,6 +238,8 @@ export default{
         debouncedGetQuote: null
     }),
     mounted() {
+        if (!this.publicExplorer.v2Dex)
+            return;
         this.loadTokens();
         this.provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
         this.initializeDexParameters();
