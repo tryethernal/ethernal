@@ -290,7 +290,7 @@ module.exports = (sequelize, DataTypes) => {
 
     async getTransactionCount(since) {
         let query = `
-            SELECT COALESCE(SUM(count), 0) AS count
+            SELECT SUM(count) AS count
             FROM transaction_volume_daily
             WHERE "workspaceId" = :workspaceId
                 AND timestamp >= DATE_TRUNC('day', timestamp :since)::timestamp
@@ -697,8 +697,8 @@ module.exports = (sequelize, DataTypes) => {
         const since = earliestBlock ? new Date(earliestBlock.timestamp) : new Date(0);
 
         const [{ count },] = await sequelize.query(`
-            SELECT SUM(count) AS COUNT
-            FROM active_wallets_daily
+            SELECT COUNT(DISTINCT "from")
+            FROM transaction_events
             WHERE "workspaceId" = :workspaceId
                 AND timestamp >= DATE_TRUNC('day', :since::timestamp)
         `, {

@@ -30,6 +30,10 @@ module.exports = {
     `, { transaction });
 
     await queryInterface.sequelize.query(`
+      CREATE INDEX "transaction_events_workspaceId_from_idx" ON transaction_events ("workspaceId", "from");
+    `, { transaction })
+
+    await queryInterface.sequelize.query(`
       ALTER MATERIALIZED VIEW transaction_volume_daily set (timescaledb.materialized_only = false);
     `, { transaction });
 
@@ -42,14 +46,14 @@ module.exports = {
       await queryInterface.sequelize.query(`
         CALL refresh_continuous_aggregate('transaction_volume_daily',
           NULL,
-          localtimestamp - INTERVAL '1 week'
+          localtimestamp - INTERVAL '1 DAY'
         );
       `);
 
       await queryInterface.sequelize.query(`
         CALL refresh_continuous_aggregate('active_wallets_daily',
           NULL,
-          localtimestamp - INTERVAL '1 week'
+          localtimestamp - INTERVAL '1 DAY'
         );
       `);
 
@@ -78,6 +82,9 @@ module.exports = {
     try {
       await queryInterface.sequelize.query('DROP MATERIALIZED VIEW transaction_volume_daily', { transaction });
       await queryInterface.sequelize.query('DROP MATERIALIZED VIEW active_wallets_daily', { transaction });
+      await queryInterface.sequelize.query(`
+        DROP INDEX "transaction_events_workspaceId_from_idx"
+      `, { transaction })
       await transaction.commit();
     } catch(error) {
         console.log(error);
