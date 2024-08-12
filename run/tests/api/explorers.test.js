@@ -871,7 +871,7 @@ describe(`POST ${BASE_URL}`, () => {
             .send({ data: { rpcServer: 'test.rpc', name: 'explorer' }})
             .expect(200)
             .then(({ body }) => {
-                expect(body).toEqual({ id: 1, token: 'ether', themes: { default: {}}});
+                expect(body).toEqual({ id: 1 });
                 done();
             });
     });
@@ -934,7 +934,7 @@ describe(`POST ${BASE_URL}`, () => {
             .expect(200)
             .then(({ body }) => {
                 expect(db.getStripePlan).toHaveBeenCalledWith('selfhosted');
-                expect(body).toEqual({ id: 1, token: 'ether', themes: { default: {}}});
+                expect(body).toEqual({ id: 1 });
                 done();
             });
     });
@@ -950,7 +950,7 @@ describe(`POST ${BASE_URL}`, () => {
             .expect(200)
             .then(({ body }) => {
                 expect(db.getStripePlan).toHaveBeenCalledWith('selfhosted');
-                expect(body).toEqual({ id: 1, token: 'ether', themes: { default: {}}});
+                expect(body).toEqual({ id: 1 });
                 done();
             });
     });
@@ -1014,7 +1014,7 @@ describe(`POST ${BASE_URL}`, () => {
                     items: [{ price: 'priceId' }],
                     metadata: { explorerId: 1 }
                 });
-                expect(body).toEqual({ id: 1, token: 'ether', themes: { default: {}}});
+                expect(body).toEqual({ id: 1 });
                 done();
             });
     });
@@ -1036,7 +1036,7 @@ describe(`POST ${BASE_URL}`, () => {
                     collection_method: 'send_invoice',
                     days_until_due: 7
                 });
-                expect(body).toEqual({ id: 1, token: 'ether', themes: { default: {}}});
+                expect(body).toEqual({ id: 1 });
                 done();
             });
     });
