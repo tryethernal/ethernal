@@ -8,7 +8,7 @@
 
         <v-row>
             <v-col cols="12" sm="6" lg="3">
-                <Stat-Number :type="'link'" :title="'Latest Block'" :value="currentBlock.number" :loading="globalStatsLoading" :href="`/block/${currentBlock.number}`" />
+                <Stat-Number :type="'link'" :title="'Latest Block'" :value="currentBlock.number" :loading="!currentBlock.number" :href="`/block/${currentBlock.number}`" />
             </v-col>
             <v-col cols="12" sm="6" lg="3">
                 <Stat-Number :title="'24h Tx Count'" :value="txCount24h" :loading="globalStatsLoading" />
