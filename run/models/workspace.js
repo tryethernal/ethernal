@@ -290,10 +290,10 @@ module.exports = (sequelize, DataTypes) => {
 
     async getTransactionCount(since) {
         let query = `
-            SELECT COUNT(*)
-            FROM transaction_events
+            SELECT COALESCE(SUM(count), 0) AS count
+            FROM transaction_volume_daily
             WHERE "workspaceId" = :workspaceId
-                AND timestamp >= :since::timestamp
+                AND timestamp >= DATE_TRUNC('day', timestamp :since)::timestamp
         `;
 
         if (!since) {
@@ -337,15 +337,24 @@ module.exports = (sequelize, DataTypes) => {
         const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
 
         const [transactions,] = await sequelize.query(`
+            WITH date_series AS (
+                SELECT generate_series(
+                    DATE_TRUNC('day', :from::timestamp),
+                    DATE_TRUNC('day', :to::timestamp),
+                    INTERVAL '1 day'
+                ) AS date
+            )
             SELECT
-                time_bucket_gapfill('1 day', timestamp) AS date,
-                coalesce(count(1), 0) AS count
-            FROM transaction_events
-            WHERE timestamp >= timestamp :from
-                AND timestamp < timestamp :to
-                AND "workspaceId" = :workspaceId
-            GROUP BY date
-            ORDER BY date ASC;
+                ds.date,
+                coalesce(tvd.count, 0) AS count
+            FROM
+                date_series ds
+            LEFT JOIN
+                transaction_volume_daily tvd ON ds.date = tvd.timestamp
+            AND
+                tvd."workspaceId" = :workspaceId
+            ORDER BY
+                ds.date ASC;
         `, {
             replacements: {
                 from: new Date(earliestTimestamp),
@@ -521,15 +530,24 @@ module.exports = (sequelize, DataTypes) => {
         const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
 
         const [uniqueWalletCount,] = await sequelize.query(`
+            WITH date_series AS (
+                SELECT generate_series(
+                    DATE_TRUNC('day', :from::timestamp),
+                    DATE_TRUNC('day', :to::timestamp),
+                    INTERVAL '1 day'
+                ) AS date
+            )
             SELECT
-                time_bucket_gapfill('1 day', timestamp) AS date,
-                coalesce(count(distinct "from"), 0) AS count
-            FROM transaction_events
-            WHERE timestamp >= timestamp :from
-                AND timestamp < timestamp :to
-                AND "workspaceId" = :workspaceId
-            GROUP BY date
-            ORDER BY date ASC;
+                ds.date,
+                coalesce(awd.count, 0) AS count
+            FROM
+                date_series ds
+            LEFT JOIN
+                active_wallets_daily awd ON ds.date = awd.timestamp
+            AND
+                awd."workspaceId" = :workspaceId
+            ORDER BY
+                ds.date ASC;
         `, {
             replacements: {
                 from: new Date(earliestTimestamp),
@@ -679,10 +697,10 @@ module.exports = (sequelize, DataTypes) => {
         const since = earliestBlock ? new Date(earliestBlock.timestamp) : new Date(0);
 
         const [{ count },] = await sequelize.query(`
-            SELECT COUNT(DISTINCT "from")
-            FROM transaction_events
+            SELECT SUM(count) AS COUNT
+            FROM active_wallets_daily
             WHERE "workspaceId" = :workspaceId
-                AND timestamp >= :since::timestamp
+                AND timestamp >= DATE_TRUNC('day', :since::timestamp)
         `, {
             type: QueryTypes.SELECT,
             replacements: {
