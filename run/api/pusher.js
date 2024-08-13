@@ -12,7 +12,7 @@ const presenceMiddleware = async (req, res, next) => {
         else
             res.sendStatus(404);
     } catch(error) {
-        logger.error(error.message, { location: 'middleware.presenceMiddleware', error: error, data: data });
+        logger.error(error.message, { location: 'middleware.presenceMiddleware', error });
         res.status(401).send(error);
     }
 };

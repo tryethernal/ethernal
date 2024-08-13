@@ -23,7 +23,7 @@ router.get('/:address/stats', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.address.stats', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.address.stats', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -39,7 +39,7 @@ router.get('/:address/logs', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(logs);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.logs', error: error, data: { ...data, ...req.params }});
+        logger.error(error.message, { location: 'get.api.contracts.logs', error, querParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -55,7 +55,7 @@ router.get('/processable', authMiddleware, async (req, res) => {
 
         res.status(200).json(contracts);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.processable', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.contracts.processable', error });
         res.status(400).send(error.message);
     }
 });
@@ -75,7 +75,7 @@ router.post('/:address/watchedPaths', workspaceAuthMiddleware, async (req, res) 
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.contracts.address.watchedPaths', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.contracts.address.watchedPaths', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -104,7 +104,7 @@ router.post('/:address', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.contracts.address', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.contracts.address', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -143,7 +143,7 @@ router.post('/:address/tokenProperties', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.contracts.address.tokenProperties', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.contracts.address.tokenProperties', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -155,7 +155,7 @@ router.post('/:address/remove', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.contracts.address.remove', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.contracts.address.remove', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -200,7 +200,7 @@ router.post('/:address/verify', async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.contracts.address.verify', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.contracts.address.verify', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -213,7 +213,7 @@ router.get('/:address', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(contract);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.address', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.contracts.address', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -226,7 +226,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(contracts);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.contracts', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });

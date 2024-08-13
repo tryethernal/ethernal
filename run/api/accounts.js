@@ -13,7 +13,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.accounts', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.accounts', error });
         res.status(400).send(error);
     }
 });
@@ -28,7 +28,7 @@ router.post('/:address/syncBalance', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.accounts.address.syncBalance', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.accounts.address.syncBalance', error });
         res.status(400).send(error);
     }
 })
@@ -44,7 +44,7 @@ router.post('/:address/privateKey', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.accounts.address.privateKey', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.accounts.address.privateKey', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });

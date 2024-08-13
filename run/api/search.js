@@ -23,7 +23,7 @@ router.get('/icons', authMiddleware, async (req, res) => {
 
         res.status(200).json(icons)
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.search', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.search', error });
         res.status(400).send(error.message);
     }
 });
@@ -44,7 +44,7 @@ router.get('/fonts', authMiddleware, async (req, res) => {
 
         res.status(200).json(fonts)
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.search', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.search', error });
         res.status(400).send(error.message);
     }
 });
@@ -79,7 +79,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(results);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.search', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.search', error });
         res.status(400).send(error.message);
     }
 });
