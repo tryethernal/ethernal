@@ -51,3 +51,6 @@ get-pip.py
 output.js
 
 run/helm_chart_values/pgbouncer-values.yaml
+
+# Sentry Config File
+.env.sentry-build-plugin
