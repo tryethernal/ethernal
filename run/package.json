@@ -20,6 +20,8 @@
     "@google-cloud/logging": "^9.8.3",
     "@newrelic/winston-enricher": "^4.0.1",
     "@sendgrid/mail": "^7.7.0",
+    "@sentry/node": "^8.25.0",
+    "@sentry/profiling-node": "^8.25.0",
     "@tryghost/admin-api": "^1.13.1",
     "axios": "^0.27.2",
     "basic-auth": "^2.0.1",
