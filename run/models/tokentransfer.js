@@ -170,8 +170,7 @@ module.exports = (sequelize, DataTypes) => {
                 if (!contract)
                     await transaction.workspace.safeCreateOrUpdateContract({
                         address: tokenTransfer.token,
-                        timestamp: moment(transaction.timestamp).unix(),
-                        transactionCreationHash: transaction.hash
+                        timestamp: moment(transaction.timestamp).unix()
                     }, options.transaction);
 
                 if (tokenTransfer.tokenId)
