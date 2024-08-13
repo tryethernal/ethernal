@@ -17,6 +17,7 @@ module.exports = {
     reloadErc721Token: require('./reloadErc721Token'),
     reprocessWorkspaceTransactionTraces: require('./reprocessWorkspaceTransactionTraces'),
     reprocessWorkspaceTransactionErrors: require('./reprocessWorkspaceTransactionErrors'),
+    insertContractTransactionCreation: require('./insertContractTransactionCreation'),
 
     // Low Priority
     processUser: require('./processUser'),
