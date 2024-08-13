@@ -686,7 +686,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     async countActiveWallets() {
-        const [earliestBlock] = await workspace.getBlocks({
+        const [earliestBlock] = await this.getBlocks({
             attributes: ['timestamp'],
             where: {
                 timestamp: { [Op.gt]: new Date(0) }
