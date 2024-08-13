@@ -16,7 +16,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'delete.domains.id', error, data });
+        logger.error(error.message, { location: 'delete.domains.id', error });
         res.status(400).send(error);
     }
 });
@@ -43,7 +43,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
 
         res.status(200).json({ dns_pointed_at, apx_hit, is_resolving, last_monitored_humanized, status, status_message, has_ssl });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.domains.id', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.domains.id', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });

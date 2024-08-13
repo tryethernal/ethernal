@@ -14,7 +14,7 @@ router.get('/transactions', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(transactions);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.transactions', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.stats.transactions', error });
         res.status(400).send(error.message);
     }
 });
@@ -29,7 +29,7 @@ router.get('/tokenTransferVolume', workspaceAuthMiddleware, async (req, res) => 
 
         res.status(200).json(transfers);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.tokenTransferVolume', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.stats.tokenTransferVolume', error });
         res.status(400).send(error.message);
     }
 });
@@ -44,7 +44,7 @@ router.get('/uniqueWalletCount', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(uniqueWalletCount);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.uniqueWalletCount', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.stats.uniqueWalletCount', error });
         res.status(400).send(error.message);
     }
 });
@@ -59,7 +59,7 @@ router.get('/cumulativeWalletCount', workspaceAuthMiddleware, async (req, res) =
 
         res.status(200).json(cumulativeWalletCount);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.cumulativeWalletCount', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.stats.cumulativeWalletCount', error });
         res.status(400).send(error.message);
     }
 });
@@ -74,7 +74,7 @@ router.get('/deployedContractCount', workspaceAuthMiddleware, async (req, res) =
 
         res.status(200).json(deployedContractCount);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.deployedContractCount', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.stats.deployedContractCount', error });
         res.status(400).send(error.message);
     }
 });
@@ -89,7 +89,7 @@ router.get('/cumulativeDeployedContractCount', workspaceAuthMiddleware, async (r
 
         res.status(200).json(cumulativeDeployedContractCount);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.getCumulativeDeployedContractCount', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.stats.getCumulativeDeployedContractCount', error });
         res.status(400).send(error.message);
     }
 });
@@ -104,7 +104,7 @@ router.get('/averageGasPrice', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(avgGasPrice);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.averageGasPrice', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.stats.averageGasPrice', error });
         res.status(400).send(error.message);
     }
 });
