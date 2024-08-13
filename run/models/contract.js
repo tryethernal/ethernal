@@ -541,7 +541,8 @@ module.exports = (sequelize, DataTypes) => {
     tokenTotalSupply: DataTypes.STRING,
     ast: DataTypes.JSON,
     bytecode: DataTypes.TEXT,
-    asm: DataTypes.TEXT
+    asm: DataTypes.TEXT,
+    creationTransactionHash: DataTypes.STRING
   }, {
     hooks: {
         afterDestroy(contract) {

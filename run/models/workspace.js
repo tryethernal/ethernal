@@ -1144,7 +1144,8 @@ module.exports = (sequelize, DataTypes) => {
             has721Enumerable: contract.has721Enumerable,
             ast: contract.ast,
             bytecode: contract.bytecode,
-            asm: contract.asm
+            asm: contract.asm,
+            transactionCreationHash: contract.transactionCreationHash
         });
 
         if (existingContract)
@@ -1347,11 +1348,6 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 },
                 {
-                    model: sequelize.models.TransactionReceipt,
-                    attributes: ['blockNumber', ['transactionHash', 'hash']],
-                    as: 'creationTransaction',
-                },
-                {
                     model: sequelize.models.ContractVerification,
                     as: 'verification',
                     include: [
@@ -1363,6 +1359,7 @@ module.exports = (sequelize, DataTypes) => {
                 }
             ]
         });
+
         return contracts[0];
     }
 

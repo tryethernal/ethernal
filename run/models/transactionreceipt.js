@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
         TransactionReceipt.hasMany(models.TransactionLog, { foreignKey: 'transactionReceiptId', as: 'logs' });
         TransactionReceipt.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'transaction' });
+        TransactionReceipt.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
     }
 
     async insertAnalyticEvent(sequelizeTransaction) {
@@ -73,6 +74,7 @@ module.exports = (sequelize, DataTypes) => {
     transactionIndex: DataTypes.INTEGER,
     type: DataTypes.INTEGER,
     transactionId: DataTypes.INTEGER,
+    workspaceId: DataTypes.INTEGER,
     raw: DataTypes.JSON
   }, {
     hooks: {
@@ -129,7 +131,8 @@ module.exports = (sequelize, DataTypes) => {
                 if (canCreateContract)
                     await workspace.safeCreateOrUpdateContract({
                         address: receipt.contractAddress,
-                        timestamp: moment(fullTransaction.timestamp).unix()
+                        timestamp: moment(fullTransaction.timestamp).unix(),
+                        transactionCreationHash: receipt.transactionHash
                     }, options.transaction);
             }
 

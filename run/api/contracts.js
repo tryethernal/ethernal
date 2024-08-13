@@ -115,7 +115,7 @@ router.post('/:address/tokenProperties', authMiddleware, async (req, res) => {
         if (!data.uid || !data.workspace)
             throw new Error(`Missing parameters`);
 
-        const contract = await db.getWorkspaceContract(data.uid, data.workspace, req.params.address);
+        const contract = await db.getWorkspaceContract(data.workspace.id, req.params.address);
         
         if (!contract)
             return res.status(200).send(`Couldn't find contract at address ${req.params.address}.`);
@@ -209,7 +209,7 @@ router.get('/:address', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
 
     try {
-        const contract = await db.getWorkspaceContract(data.firebaseUserId, data.workspace.name, req.params.address)
+        const contract = await db.getWorkspaceContract(data.workspace.id, req.params.address)
 
         res.status(200).json(contract);
     } catch(error) {
@@ -222,7 +222,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
 
     try {
-        const contracts = await db.getWorkspaceContracts(data.firebaseUserId, data.workspace.name, data.page, data.itemsPerPage, data.orderBy, data.order, data.pattern);
+        const contracts = await db.getWorkspaceContracts(data.workspace.id, data.page, data.itemsPerPage, data.orderBy, data.order, data.pattern);
 
         res.status(200).json(contracts);
     } catch(error) {
