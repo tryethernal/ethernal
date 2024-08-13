@@ -34,7 +34,7 @@ router.get('/explorers', authMiddleware, async (req, res) => {
 
         res.status(200).send({ id: explorer.id, name: explorer.name, rpcServer: explorer.rpcServer, canTrial: user.canTrial });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.demo.explorers', error: error });
+        logger.error(error.message, { location: 'get.api.demo.explorers', error });
         res.status(400).send(error.message);
     }
 });
@@ -82,7 +82,7 @@ router.post('/migrateExplorer', authMiddleware, async (req, res) => {
 
         res.status(200).send({ explorerId: explorer.id });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.demo.migrateExplorer', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.demo.migrateExplorer', error });
         res.status(400).send(error.message);
     }
 });
@@ -137,7 +137,7 @@ router.post('/explorers', async (req, res) => {
 
         res.status(200).send({ domain: `${explorer.slug}.${getAppDomain()}` });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.demo.explorers', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.demo.explorers', error });
         res.status(400).send(error.message);
     }
 });

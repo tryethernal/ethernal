@@ -21,7 +21,7 @@ ${data.message}
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.marketing.feedback', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.marketing.feedback', error });
         res.status(400).send(error.message);
     }
 });
@@ -47,7 +47,7 @@ router.get('/productRoadToken', authMiddleware, async (req, res) => {
 
         res.status(200).json({ token: token });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.marketing.productRoadToken', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.marketing.productRoadToken', error });
         res.status(400).send(error.message);
     }
 });
@@ -62,7 +62,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
         res.status(200).json({ isRemote: workspace.isRemote });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.marketing', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.marketing', error });
         res.status(400).send(error.message);
     }
 });
