@@ -222,7 +222,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
 
     try {
-        const contracts = await db.getWorkspaceContracts(data.firebaseUserId, data.workspace.name, data.page, data.itemsPerPage, data.orderBy, data.order, data.pattern);
+        const contracts = await db.getWorkspaceContracts(data.workspace.id, data.page, data.itemsPerPage, data.orderBy, data.order, data.pattern);
 
         res.status(200).json(contracts);
     } catch(error) {
