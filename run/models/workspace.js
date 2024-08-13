@@ -697,10 +697,14 @@ module.exports = (sequelize, DataTypes) => {
         const since = earliestBlock ? new Date(earliestBlock.timestamp) : new Date(0);
 
         const [{ count },] = await sequelize.query(`
-            SELECT COUNT(DISTINCT "from")
-            FROM transaction_events
-            WHERE "workspaceId" = :workspaceId
+            SELECT COUNT(*)
+            FROM (
+                SELECT "from"
+                FROM transaction_events
+                WHERE "workspaceId" = :workspaceId
                 AND timestamp >= DATE_TRUNC('day', :since::timestamp)
+                GROUP BY "from"
+            ) wallets
         `, {
             type: QueryTypes.SELECT,
             replacements: {
