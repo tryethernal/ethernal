@@ -1,4 +1,4 @@
-require('./instrument');
+require('./instrument.js');
 const path = require('path');
 const { initializeApp } = require('firebase-admin/app');
 const express = require('express');
