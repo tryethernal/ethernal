@@ -12,11 +12,9 @@ describe('Overview.vue', () => {
     });
 
     it('Should load the overview page', async () => {
-        jest.spyOn(helper.mocks.server, 'getGlobalStats').mockResolvedValue({ data: {
-            txCount24h: 10,
-            txCountTotal: 100,
-            activeWalletCount: 5
-        }});
+        jest.spyOn(helper.mocks.server, 'getActiveWalletCount').mockResolvedValue({ data: { count: 5, }});
+        jest.spyOn(helper.mocks.server, 'getTxCountTotal').mockResolvedValue({ data: { count: 100, }});
+        jest.spyOn(helper.mocks.server, 'getTxCount24h').mockResolvedValue({ data: { count: 10, }});
         jest.spyOn(helper.mocks.server, 'getTransactions').mockResolvedValue({ data: { items: [{ date: 1, count: 1 }]}});
         jest.spyOn(helper.mocks.server, 'getTransactionVolume').mockResolvedValue({ data: [{ date: 1, count: 1 }]});
         jest.spyOn(helper.mocks.server, 'getUniqueWalletCount').mockResolvedValue({ data: [{ date: 1, count: 1 }] });

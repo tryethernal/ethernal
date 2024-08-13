@@ -124,26 +124,48 @@ router.get('/averageTransactionFee', workspaceAuthMiddleware, async (req, res) =
     }
 });
 
-router.get('/global', workspaceAuthMiddleware, async (req, res) => {
+router.get('/txCount24h', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
     try {
         if (!data.workspace)
             throw new Error('Missing parameters.');
 
         const ts24hago = new Date(new Date().getTime() - (24 * 3600 *1000));
-        const txCount24h = await db.getTotalTxCount(data.workspace.id, ts24hago);
-        const txCountTotal = await db.getTotalTxCount(data.workspace.id);
-        const activeWalletCount = await db.getActiveWalletCount(data.workspace.id);
+        const count = await db.getTotalTxCount(data.workspace.id, ts24hago);
 
-        const results = {
-            txCount24h: txCount24h,
-            txCountTotal: txCountTotal,
-            activeWalletCount: activeWalletCount
-        };
-
-        res.status(200).json(results);
+        res.status(200).json({ count });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.global', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.stats.txCount24h', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
+router.get('/txCountTotal', workspaceAuthMiddleware, async (req, res) => {
+    const data = req.query;
+    try {
+        if (!data.workspace)
+            throw new Error('Missing parameters.');
+
+        const count = await db.getTotalTxCount(data.workspace.id);
+
+        res.status(200).json({ count });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.stats.txCountTotal', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
+router.get('/activeWalletCount', workspaceAuthMiddleware, async (req, res) => {
+    const data = req.query;
+    try {
+        if (!data.workspace)
+            throw new Error('Missing parameters.');
+
+        const count = await db.getActiveWalletCount(data.workspace.id);
+
+        res.status(200).json({ count });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.stats.activeWalletCount', error: error, data: data });
         res.status(400).send(error.message);
     }
 });
