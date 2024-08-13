@@ -87,6 +87,9 @@ jest.mock('@/plugins/server', () => ({
                 getFaucetTokenVolume: jest.fn(),
                 getFaucetPrivateKey: jest.fn(),
                 getFaucetTransactionHistory: jest.fn(),
+                getActiveWalletCount: jest.fn(),
+                getTxCountTotal: jest.fn(),
+                getTxCount24h: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))
