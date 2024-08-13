@@ -358,6 +358,33 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            getTxCount24h() {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${store.getters.apiRoot}/api/stats/txCount24h`;
+                return axios.get(resource, { params });
+            },
+
+            getTxCountTotal() {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${store.getters.apiRoot}/api/stats/txCountTotal`;
+                return axios.get(resource, { params });
+            },
+
+            getActiveWalletCount() {
+                const params = {
+                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
+                    workspace: store.getters.currentWorkspace.name,
+                };
+                const resource = `${store.getters.apiRoot}/api/stats/activeWalletCount`;
+                return axios.get(resource, { params });
+            },
+
             getFaucetTransactionHistory(id, options) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
@@ -991,15 +1018,6 @@ export const serverPlugin = {
                     from, to
                 };
                 const resource = `${store.getters.apiRoot}/api/stats/averageTransactionFee`;
-                return axios.get(resource, { params });
-            },
-
-            getGlobalStats() {
-                const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
-                };
-                const resource = `${store.getters.apiRoot}/api/stats/global`;
                 return axios.get(resource, { params });
             },
 
