@@ -98,7 +98,6 @@ export default Vue.extend({
         page: null,
     }),
     created() {
-        this.getAccounts();
         this.page = this.$route.path;
 
         this.server.getBlocks({ page: 1, itemsPerPage: 1 }, false).then(({ data: { items }}) => {
@@ -108,6 +107,7 @@ export default Vue.extend({
         });
 
         if (!this.currentWorkspace.public) {
+            this.getAccounts();
             this.processContracts();
             this.processTransactions();
             this.processFailedTransactions();
