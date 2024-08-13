@@ -1021,15 +1021,6 @@ export const serverPlugin = {
                 return axios.get(resource, { params });
             },
 
-            getGlobalStats() {
-                const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
-                };
-                const resource = `${store.getters.apiRoot}/api/stats/global`;
-                return axios.get(resource, { params });
-            },
-
             getTokenBalances(address, patterns) {
                 const params = {
                     firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
