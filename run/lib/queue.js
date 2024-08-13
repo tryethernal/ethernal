@@ -23,7 +23,7 @@ const bulkEnqueue = (queueName, jobData, priority = 10, maxBatchSize = MAX_BATCH
             return sanitize({
                 name: job.name,
                 data: job.data,
-                opts: sanitize({ priority, jobId: uniqueQueues.indexOf(queueName) > -1 ? job.name : null })
+                opts: sanitize({ priority, jobId: job.name })
             })
         });
         promises.push(queues[queueName].addBulk(jobs));
