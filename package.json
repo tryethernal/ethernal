@@ -20,6 +20,7 @@
     "@metamask/detect-provider": "^1.2.0",
     "@popperjs/core": "^2.11.5",
     "@replit/codemirror-lang-solidity": "^6.0.1",
+    "@sentry/vue": "^8.25.0",
     "@truffle/artifactor": "^4.0.93",
     "@truffle/contract": "^4.3.5",
     "@truffle/contract-sources": "^0.1.10",
