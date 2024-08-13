@@ -1,3 +1,4 @@
+jest.mock('ioredis');
 require('../mocks/models');
 require('../mocks/lib/queue');
 require('../mocks/lib/firebase');
@@ -291,7 +292,7 @@ describe(`GET ${BASE_URL}/:address`, () => {
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual({ address: '0x123' });
-                expect(db.getWorkspaceContract).toHaveBeenCalledWith('123', 'My Workspace', '0x123');
+                expect(db.getWorkspaceContract).toHaveBeenCalledWith(1, '0x123');
                 done();
             });
     });
@@ -304,7 +305,7 @@ describe(`GET ${BASE_URL}`, () => {
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual({ items: [{ address: '0x123' }], total: 10 });
-                expect(db.getWorkspaceContracts).toHaveBeenCalledWith('123', 'My Workspace', undefined, undefined, undefined, undefined, undefined);
+                expect(db.getWorkspaceContracts).toHaveBeenCalledWith(1, undefined, undefined, undefined, undefined, undefined);
                 done();
             });
     });

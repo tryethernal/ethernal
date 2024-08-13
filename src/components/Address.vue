@@ -30,8 +30,8 @@
 
                             <v-col cols="6">
                                 <small>Contract Creation</small><br>
-                                <span v-if="contract.creationTransaction && contract.creationTransaction.hash" class="ml-2">
-                                    <Hash-Link :type="'transaction'" :hash="contract.creationTransaction.hash" />
+                                <span v-if="contract.creationTransactionHash" class="ml-2">
+                                    <Hash-Link :type="'transaction'" :hash="contract.creationTransactionHash" />
                                 </span>
                                 <span v-else class="ml-2">N/A</span>
                             </v-col>
