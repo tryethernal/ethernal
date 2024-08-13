@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import axios from 'axios';
+import * as Sentry from "@sentry/vue";
 
 import vuetify from './plugins/vuetify';
 import router from './plugins/router';
@@ -22,6 +23,16 @@ Vue.use(firestorePlugin);
 Vue.use(require('vue-moment'));
 Vue.use(serverPlugin, { store });
 Vue.use(posthogPlugin, { store });
+
+Sentry.init({
+    Vue,
+    dsn: store.getters.sentryDSN,
+    integrations: [
+      Sentry.browserTracingIntegration({ router }),
+    ],
+    tracesSampleRate: 1.0,
+    tracePropagationTargets: [/.*/]
+  });
 
 if (store.getters.hasDemoEnabled && window.location.pathname.startsWith('/demo')) {
     new Vue({

@@ -162,6 +162,7 @@ export default new Vuex.Store({
         }
     },
     getters: {
+        sentryDSN: () => process.env.VUE_APP_SENTRY_DSN,
         soketiHost: () => process.env.VUE_APP_SOKETI_HOST,
         soketiPort: () => process.env.VUE_APP_SOKETI_PORT && parseInt(process.env.VUE_APP_SOKETI_PORT),
         soketiForceTLS: () => !!process.env.VUE_APP_SOKETI_FORCE_TLS,
