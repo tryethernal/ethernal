@@ -832,7 +832,7 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Contract,
-                    attributes: ['abi'],
+                    attributes: ['abi', 'name', 'tokenName', 'tokenSymbol'],
                     as: 'contract'
                 }
             ]
