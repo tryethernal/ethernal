@@ -32,6 +32,40 @@ describe('Contract.vue', () => {
             }});
     });
 
+    it('Should not display storage option if disabled', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValueOnce({ data: {
+                name: 'ERC20 Contract',
+                patterns: ['erc20'],
+                tokenName: 'ERC20 Token',
+                tokenSymbol: 'ERC',
+                tokenDecimals: 18,
+                address: '0x123',
+                creationTransaction: '0xabc'
+            }});
+
+        const wrapper = helper.mountFn(Contract, {
+            propsData: {
+                hash: '0x123'
+            },
+            stubs: stubs,
+            getters: {
+                currentWorkspace: jest.fn().mockReturnValue({
+                    storageEnabled: false,
+                    isAdmin: true,
+                    chain: 'ethereum',
+                    networkId: null,
+                    rpcServer: null,
+                    name: 'Hardhat',
+                    settings: {}
+                })
+            }
+        });
+
+        await flushPromises();
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should display a warning if not a contract', async () => {
         jest.spyOn(helper.mocks.server, 'getContract')
             .mockResolvedValueOnce({ data: null });

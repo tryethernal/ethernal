@@ -123,7 +123,7 @@
             <v-tab id="interactionsTab" href="#interactions">Read / Write</v-tab>
             <v-tab id="logsTab" href="#logs">Logs</v-tab>
             <v-tab id="codeTab" href="#code">Code</v-tab>
-            <v-tab id="storageTab" href="#storage">Storage</v-tab>
+            <v-tab v-if="currentWorkspace.storageEnabled" id="storageTab" href="#storage">Storage</v-tab>
         </v-tabs>
 
         <v-tabs-items :value="tab">
@@ -139,7 +139,7 @@
                 <Contract-Logs :address="address" />
             </v-tab-item>
 
-            <v-tab-item value="storage">
+            <v-tab-item v-if="currentWorkspace.storageEnabled" value="storage">
                 <Contract-Storage :address="address" />
             </v-tab-item>
 
