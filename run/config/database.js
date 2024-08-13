@@ -7,9 +7,8 @@ module.exports = {
         "password": process.env.DB_PASSWORD,
         "port": process.env.DB_PORT,
         "dialect": "postgres",
-        "logging": function(sql, sequelizeObject) {
-            logger.debug(sql, { instance: sequelizeObject.instance });
-        }
+        "logging": console.log,
+        benchmark: true
     },
     production: {
         "username": process.env.DB_USER,

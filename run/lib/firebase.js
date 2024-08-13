@@ -1709,9 +1709,9 @@ const getWorkspaceContracts = async (userId, workspaceName, page, itemsPerPage, 
     }
 };
 
-const getWorkspaceContract = async (userId, workspaceName, address) => {
-    const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
-    const contract = await user.workspaces[0].findContractByAddress(address);
+const getWorkspaceContract = async (workspaceId, address) => {
+    const workspace = await Workspace.findByPk(workspaceId);
+    const contract = await workspace.findContractByAddress(address);
 
     return contract ? contract.toJSON() : null;
 };
