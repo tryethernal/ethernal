@@ -29,9 +29,9 @@
                         <Line-Chart :title="'Active Wallets Count'" :xLabels="charts['uniqueWalletCount'].xLabels" :data="charts['uniqueWalletCount'].data" :tooltipUnit="'wallet'" :index="4" />
                     </v-col>
 
-                    <v-col cols="12" md="6">
+                    <!-- <v-col cols="12" md="6">
                         <Line-Chart :title="'Cumulative Wallets Count'" :xLabels="charts['cumulativeWalletCount'].xLabels" :data="charts['cumulativeWalletCount'].data" :tooltipUnit="'wallet'" :index="5" />
-                    </v-col>
+                    </v-col> -->
 
                     <v-col cols="12" md="6">
                         <Line-Chart :title="'Deployed Contracts Count'" :xLabels="charts['deployedContractCount'].xLabels" :data="charts['deployedContractCount'].data" :tooltipUnit="'contract'" :index="6" />
@@ -86,7 +86,7 @@ export default {
             this.getAverageGasPrice();
             this.getAverageTransactionFee();
             this.getUniqueWalletCount();
-            this.getCumulativeWalletCount();
+            // this.getCumulativeWalletCount();
             this.getDeployedContractCount();
             this.getCumulativeDeployedContractCount();
         },
