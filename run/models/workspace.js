@@ -792,11 +792,18 @@ module.exports = (sequelize, DataTypes) => {
             limit: itemsPerPage,
             order: [[orderBy, order]],
             attributes: ['address', 'name', 'timestamp', 'patterns', 'workspaceId', 'tokenName', 'tokenSymbol', 'tokenTotalSupply'],
-            include: {
-                model: sequelize.models.ContractVerification,
-                as: 'verification',
-                attributes: ['createdAt']
-            }
+            include: [
+                {
+                    model: sequelize.models.ContractVerification,
+                    as: 'verification',
+                    attributes: ['createdAt']
+                },
+                {
+                    model: sequelize.models.Transaction,
+                    as: 'creationTransaction',
+                    attributes: ['hash', 'timestamp']
+                }
+            ]
         });
     }
 
@@ -1356,6 +1363,11 @@ module.exports = (sequelize, DataTypes) => {
                             as: 'sources'
                         }
                     ]
+                },
+                {
+                    model: sequelize.models.Transaction,
+                    as: 'creationTransaction',
+                    attributes: ['hash', 'timestamp']
                 }
             ]
         });
