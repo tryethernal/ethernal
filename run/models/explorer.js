@@ -43,6 +43,7 @@ module.exports = (sequelize, DataTypes) => {
 
     static findBySlug(slug) {
         return Explorer.findOne({
+            attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId'],
             where: { slug },
             include: [
                 {
@@ -52,10 +53,12 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.StripeSubscription,
+                    attributes: ['id', 'stripePlanId'],
                     as: 'stripeSubscription',
                     include: {
                         model: sequelize.models.StripePlan,
-                        as: 'stripePlan'
+                        attributes: ['capabilities'],
+                        as: 'stripePlan',
                     }
                 },
                 {
@@ -80,60 +83,55 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async findByDomain(domain) {
-        let explorer = await Explorer.findOne({
-            attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId'],
+        const explorerDomain = await sequelize.models.ExplorerDomain.findOne({
+            where: { domain },
+            attributes: ['domain'],
             include: [
                 {
-                    model: sequelize.models.ExplorerDomain,
-                    as: 'domains',
-                    where: { domain },
-                    attributes: ['domain'],
-                    required: true
-                },
-                {
-                    model: sequelize.models.StripeSubscription,
-                    attributes: ['id', 'stripePlanId'],
-                    as: 'stripeSubscription',
-                    include: {
-                        model: sequelize.models.StripePlan,
-                        attributes: ['capabilities'],
-                        as: 'stripePlan',
-                        where: {
-                            'capabilities.customDomain': true
+                    model: Explorer,
+                    as: 'explorer',
+                    attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId'],
+                    include: [
+                        {
+                            model: sequelize.models.StripeSubscription,
+                            attributes: ['id', 'stripePlanId'],
+                            as: 'stripeSubscription',
+                            include: {
+                                model: sequelize.models.StripePlan,
+                                attributes: ['capabilities'],
+                                as: 'stripePlan',
+                            }
                         },
-                        required: true
-                    }
-                },
-                {
-                    model: sequelize.models.User,
-                    attributes: ['firebaseUserId'],
-                    as: 'admin'
-                },
-                {
-                    model: sequelize.models.Workspace,
-                    attributes: ['id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
-                    as: 'workspace'
-                },
-                {
-                    model: sequelize.models.ExplorerFaucet,
-                    as: 'faucet',
-                    attributes: ['id', 'address', 'amount', 'interval', 'active'],
-                    where: { active: true },
-                    required: false
+                        {
+                            model: sequelize.models.User,
+                            attributes: ['firebaseUserId'],
+                            as: 'admin'
+                        },
+                        {
+                            model: sequelize.models.Workspace,
+                            attributes: ['id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
+                            as: 'workspace'
+                        },
+                        {
+                            model: sequelize.models.ExplorerFaucet,
+                            as: 'faucet',
+                            attributes: ['id', 'address', 'amount', 'interval', 'active'],
+                            where: { active: true },
+                            required: false
+                        }
+                    ]
                 }
             ]
         });
+        const explorer = explorerDomain.explorer;
 
-        if (!explorer)
-            explorer = await Explorer.findOne({
+        if (explorer)
+            return explorer.stripeSubscription && explorer.stripeSubscription.stripePlan.capabilities.customDomain ? explorer : null;
+        else
+            return Explorer.findOne({
                 attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes'],
                 where: { domain: domain },
                 include: [
-                    {
-                        model: sequelize.models.ExplorerDomain,
-                        as: 'domains',
-                        attrbutes: ['domain']
-                    },
                     {
                         model: sequelize.models.StripeSubscription,
                         attributes: ['id', 'stripePlanId'],
@@ -142,7 +140,6 @@ module.exports = (sequelize, DataTypes) => {
                             model: sequelize.models.StripePlan,
                             attributes: ['capabilities'],
                             as: 'stripePlan',
-                            required: true
                         }
                     },
                     {
@@ -164,8 +161,6 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 ]
             });
-
-        return explorer;
     }
 
     startSync() {
