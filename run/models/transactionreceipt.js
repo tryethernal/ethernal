@@ -132,7 +132,7 @@ module.exports = (sequelize, DataTypes) => {
                     await workspace.safeCreateOrUpdateContract({
                         address: receipt.contractAddress,
                         timestamp: moment(fullTransaction.timestamp).unix(),
-                        creationTransactionHash: receipt.transactionHash
+                        transactionId: fullTransaction.id
                     }, options.transaction);
             }
 

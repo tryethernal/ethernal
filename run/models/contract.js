@@ -31,17 +31,7 @@ module.exports = (sequelize, DataTypes) => {
           as: 'proxyContract'
       });
       Contract.hasMany(models.Erc721Token, { foreignKey: 'contractId', as: 'erc721Tokens' });
-      Contract.hasOne(models.TransactionReceipt, {
-          sourceKey: 'address',
-          foreignKey: 'contractAddress',
-          as: 'creationTransaction',
-          scope: {
-              [Op.and]: sequelize.where(sequelize.col("Contract.workspaceId"),
-                  Op.eq,
-                  sequelize.col("creationTransaction.workspaceId")
-              )
-          },
-      });
+      Contract.belongsTo(models.Transaction, { foreignKey: 'transactionId', as: 'creationTransaction' });
       Contract.hasMany(models.TransactionLog, {
           sourceKey: 'address',
           foreignKey: 'address',
@@ -542,7 +532,7 @@ module.exports = (sequelize, DataTypes) => {
     ast: DataTypes.JSON,
     bytecode: DataTypes.TEXT,
     asm: DataTypes.TEXT,
-    creationTransactionHash: DataTypes.STRING
+    transactionId: DataTypes.INTEGER
   }, {
     hooks: {
         afterDestroy(contract) {

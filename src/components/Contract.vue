@@ -67,8 +67,8 @@
                             <v-col cols="6">
                                 <small>Contract Creation</small><br>
                                 <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
-                                <span v-else-if="contract.creationTransactionHash" class="ml-2">
-                                    <Hash-Link :type="'transaction'" :hash="contract.creationTransactionHash" />
+                                <span v-else-if="contract.creationTransaction" class="ml-2">
+                                    <Hash-Link :type="'transaction'" :hash="contract.creationTransaction.hash" />
                                 </span>
                                 <span v-else class="ml-2">N/A</span>
                             </v-col>
