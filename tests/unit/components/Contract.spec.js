@@ -41,7 +41,7 @@ describe('Contract.vue', () => {
                 tokenSymbol: 'ERC',
                 tokenDecimals: 18,
                 address: '0x123',
-                creationTransaction: '0xabc'
+                creationTransaction: { hash: '0xabc' }
             }});
 
         const wrapper = helper.mountFn(Contract, {
@@ -86,7 +86,7 @@ describe('Contract.vue', () => {
                 name: 'Contract',
                 patterns: [],
                 address: '0x123',
-                creationTransaction: '0xabc'
+                creationTransaction: { hash: '0xabc' }
             }});
         const wrapper = helper.mountFn(Contract, {
             propsData: {
@@ -110,7 +110,7 @@ describe('Contract.vue', () => {
                 tokenSymbol: 'ERC',
                 tokenDecimals: 18,
                 address: '0x123',
-                creationTransaction: '0xabc'
+                creationTransaction: { hash: '0xabc' }
             }});
 
         const wrapper = helper.mountFn(Contract, {
@@ -133,7 +133,7 @@ describe('Contract.vue', () => {
                 tokenSymbol: 'ERC',
                 tokenDecimals: 18,
                 address: '0x123',
-                creationTransaction: '0xabc'
+                creationTransaction: { hash: '0xabc' }
             }});
 
         const wrapper = helper.mountFn(Contract, {

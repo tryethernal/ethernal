@@ -41,11 +41,11 @@
                         <Hash-Link :type="'contract'" :hash="item.address" :contract="item" />
                     </template>
                     <template v-slot:item.timestamp="{ item }">
-                        <template v-if="item.timestamp">
+                        <template v-if="item.creationTransaction">
                             <v-tooltip top :open-delay="150" color="grey darken-3">
                                 <template v-slot:activator="{ on, attrs }">
                                     <span v-bind="attrs" v-on="on">
-                                        {{ moment(item.timestamp) | moment('MM/DD h:mm:ss A') }}
+                                        {{ moment(item.creationTransaction.timestamp) | moment('MM/DD h:mm:ss A') }}
                                     </span>
                                 </template>
                                 {{ moment(item.timestamp).fromNow() }}

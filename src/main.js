@@ -25,6 +25,7 @@ Vue.use(serverPlugin, { store });
 Vue.use(posthogPlugin, { store });
 
 Sentry.init({
+    environment: process.env.NODE_ENV,
     Vue,
     dsn: store.getters.sentryDSN,
     integrations: [
