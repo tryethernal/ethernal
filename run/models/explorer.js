@@ -80,21 +80,27 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async findByDomain(domain) {
-        let explorer;
-        explorer = await Explorer.findOne({
-            where: { domain: domain },
+        let explorer = await Explorer.findOne({
+            attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId'],
             include: [
                 {
                     model: sequelize.models.ExplorerDomain,
                     as: 'domains',
-                    attrbutes: ['domain']
+                    where: { domain },
+                    attributes: ['domain'],
+                    required: true
                 },
                 {
                     model: sequelize.models.StripeSubscription,
+                    attributes: ['id', 'stripePlanId'],
                     as: 'stripeSubscription',
                     include: {
                         model: sequelize.models.StripePlan,
+                        attributes: ['capabilities'],
                         as: 'stripePlan',
+                        where: {
+                            'capabilities.customDomain': true
+                        },
                         required: true
                     }
                 },
@@ -120,23 +126,22 @@ module.exports = (sequelize, DataTypes) => {
 
         if (!explorer)
             explorer = await Explorer.findOne({
+                attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes'],
+                where: { domain: domain },
                 include: [
                     {
                         model: sequelize.models.ExplorerDomain,
                         as: 'domains',
-                        where: { domain },
-                        attributes: ['domain'],
-                        required: true
+                        attrbutes: ['domain']
                     },
                     {
                         model: sequelize.models.StripeSubscription,
+                        attributes: ['id', 'stripePlanId'],
                         as: 'stripeSubscription',
                         include: {
                             model: sequelize.models.StripePlan,
+                            attributes: ['capabilities'],
                             as: 'stripePlan',
-                            where: {
-                                'capabilities.customDomain': true
-                            },
                             required: true
                         }
                     },
