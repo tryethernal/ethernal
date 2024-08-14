@@ -1152,7 +1152,7 @@ module.exports = (sequelize, DataTypes) => {
             ast: contract.ast,
             bytecode: contract.bytecode,
             asm: contract.asm,
-            transactionCreationHash: contract.transactionCreationHash
+            transactionId: contract.transactionId
         });
 
         if (existingContract)
