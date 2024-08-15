@@ -1,3 +1,4 @@
+
 const express = require('express');
 const { isStripeEnabled, isMarketingEnabled, isDemoEnabled } = require('../lib/flags');
 const router = express.Router();
@@ -19,7 +20,9 @@ const status = require('./status');
 const external = require('./external');
 const domains = require('./domains');
 const faucets = require('./faucets');
+const contractVerification = require('./contractVerification');
 
+router.use('/contractVerification', contractVerification);
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
 router.use('/transactions', transactions);
