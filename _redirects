@@ -1,2 +1,3 @@
 /ingest/*   https://app.posthog.com/:splat  200!
+/api/* https://api.tryethernal.com/:splat 200!
 /*   /index.html   200
