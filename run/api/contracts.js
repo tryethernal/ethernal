@@ -23,6 +23,17 @@ router.post('/verify', async (req, res) => {
     res.status(200).send(data);
 });
 
+router.get('/verificationStatus', async (req, res) => {
+    const data = {
+        headers: req.headers,
+        body: req.body,
+        query: req.query
+    };
+
+    res.status(200).send(data);
+});
+
+
 router.get('/:address/stats', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
     try {
