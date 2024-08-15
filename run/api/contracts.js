@@ -13,6 +13,16 @@ router.get('/:address/circulatingSupply', workspaceAuthMiddleware, circulatingSu
 router.get('/:address/holders', workspaceAuthMiddleware, holders);
 router.get('/:address/transfers', workspaceAuthMiddleware, transfers);
 
+router.post('/verify', async (req, res) => {
+    const data = {
+        headers: req.headers,
+        body: req.body,
+        query: req.query
+    };
+
+    res.status(200).send(data);
+});
+
 router.get('/:address/stats', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
     try {
