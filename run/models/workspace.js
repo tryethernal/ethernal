@@ -804,7 +804,6 @@ module.exports = (sequelize, DataTypes) => {
                 break;
         }
 
-        console.log([[...sanitizedOrderBy, sanitizedOrder]])
         return this.getContracts({
             where: where,
             offset: (page - 1) * itemsPerPage,
