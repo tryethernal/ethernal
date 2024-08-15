@@ -15,6 +15,7 @@ router.get('/:address/transfers', workspaceAuthMiddleware, transfers);
 
 router.post('/verify', async (req, res) => {
     const data = {
+        hostname: req.hostname,
         headers: req.headers,
         body: req.body,
         query: req.query
@@ -25,6 +26,7 @@ router.post('/verify', async (req, res) => {
 
 router.get('/verificationStatus', async (req, res) => {
     const data = {
+        hostname: req.hostname,
         headers: req.headers,
         body: req.body,
         query: req.query
