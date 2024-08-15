@@ -782,15 +782,34 @@ module.exports = (sequelize, DataTypes) => {
             });
     }
 
-    getFilteredContracts(page = 1, itemsPerPage = 10, orderBy = 'timestamp', order = 'DESC NULLS LAST', pattern = null) {
-        const allowedPattern = ['erc20', 'erc721'].indexOf(pattern) > -1 ? pattern : null;
+    getFilteredContracts(page = 1, itemsPerPage = 10, orderBy = 'timestamp', order = 'DESC', pattern = null) {
+        const allowedPattern = pattern && ['erc20', 'erc721'].indexOf(pattern.toLowerCase()) > -1 ? pattern : null;
         const where = allowedPattern ? { patterns: { [Op.contains]: [allowedPattern] } } : {};
+        const sanitizedOrder = `${['ASC', 'DESC'].indexOf(order.toUpperCase()) > - 1 ? order : 'DESC'} NULLS LAST`;
 
+        let sanitizedOrderBy;
+        switch(orderBy) {
+            case 'name':
+            case 'address':
+            case 'tokenName':
+            case 'tokenSymbol':
+                sanitizedOrderBy = [orderBy];
+                break;
+            case 'tokenTotalSupply':
+                sanitizedOrderBy = [sequelize.cast(sequelize.col('"Contract"."tokenTotalSupply'), 'numeric')];
+                break
+            case 'timestamp':
+            default:
+                sanitizedOrderBy = ['creationTransaction', 'timestamp'];
+                break;
+        }
+
+        console.log([[...sanitizedOrderBy, sanitizedOrder]])
         return this.getContracts({
             where: where,
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
-            order: [[orderBy, order]],
+            order: [[...sanitizedOrderBy, sanitizedOrder]],
             attributes: ['address', 'name', 'timestamp', 'patterns', 'workspaceId', 'tokenName', 'tokenSymbol', 'tokenTotalSupply'],
             include: [
                 {
