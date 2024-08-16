@@ -1504,13 +1504,13 @@ module.exports = (sequelize, DataTypes) => {
             await this.safeDestroyIntegrityCheck(transaction);
             await this.safeDestroyRpcHealthCheck(transaction);
 
-            const blocks = await sequelize.models.Block.findAll(filter);
-            for (let i = 0; i < blocks.length; i++)
-                await blocks[i].safeDestroy(transaction);
-
             const contracts = await sequelize.models.Contract.findAll(filter);
             for (let i = 0; i < contracts.length; i++)
                 await contracts[i].safeDestroy(transaction);
+
+            const blocks = await sequelize.models.Block.findAll(filter);
+            for (let i = 0; i < blocks.length; i++)
+                await blocks[i].safeDestroy(transaction);
 
             const accounts = await sequelize.models.Account.findAll(filter);
             for (let i = 0; i < accounts.length; i++)
