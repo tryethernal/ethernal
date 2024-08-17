@@ -20,7 +20,7 @@ const BASE_URL = '/api/contracts';
 
 beforeEach(() => jest.clearAllMocks());
 
-describe.only(`POST ${BASE_URL}/:verify`, () => {
+describe(`POST ${BASE_URL}/:verify`, () => {
     it('Should throw an error if no explorer', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce(null);
 
