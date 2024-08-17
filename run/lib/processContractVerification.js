@@ -39,8 +39,6 @@ module.exports = async function(db, payload) {
     const evmVersion = payload.evmVersion;
     const viaIR = payload.viaIR || null;
 
-    // Only supports verifying one contract at a time at the moment
-    const contractFile = Object.keys(code.sources)[0];
     const user = await db.getUserById(publicExplorerParams.userId);
     const workspace = await db.getWorkspaceById(publicExplorerParams.workspaceId);
 
@@ -81,6 +79,7 @@ module.exports = async function(db, payload) {
         inputs['settings']['viaIR'] = true;
 
     const missingImports = [];
+
     const compiledCode = compiler.compile(JSON.stringify(inputs), { import : function(path) {
         if (!imports[path]) {
             missingImports.push(path);
@@ -101,13 +100,24 @@ module.exports = async function(db, payload) {
                 throw error;
     }
 
-    if (!parsedCompiledCode.contracts[contractFile][contractName])
+    let contractFile;
+    if (payload.contractFile)
+        contractFile = payload.contractFile;
+    else {
+        const files = Object.keys(code.sources);
+        files.forEach(f => {
+            if (parsedCompiledCode.contracts[f][payload.contractName]) {
+                contractFile = f;
+                return;
+            }
+        })
+    }
+    if (!contractFile || !parsedCompiledCode.contracts[contractFile][contractName])
         throw new Error(`Couldn't find contract "${contractName}" in the uploaded files.`);
 
     const abi = parsedCompiledCode.contracts[contractFile][contractName].abi;
 
     let bytecode = parsedCompiledCode.contracts[contractFile][contractName].evm.bytecode.object;
-
     if (typeof code.libraries == 'object' && Object.keys(code.libraries).length > 0) {
         const linkedBytecode = linker.linkBytecode(bytecode, code.libraries);
         bytecode = linkedBytecode;

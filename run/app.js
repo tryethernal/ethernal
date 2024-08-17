@@ -46,9 +46,21 @@ app.use(express.json({
         }
     }
 }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ limit: '25mb', extended: true }));
 
 app.use(cors({ origin: '*', methods: ['GET', 'POST', 'OPTIONS', 'DELETE', 'PUT'] }));
+
+app.use((req, res, next) => {
+    if (req.path != '/api')
+        return next();
+
+    if (req.body.module == 'contract' && req.body.action == 'verifysourcecode')
+        req.url = '/api/contracts/verify';
+    else if (req.query.module == 'contract' && req.query.action == 'checkverifystatus' && req.query.apikey && req.query.guid)
+        req.url = '/api/contracts/verificationStatus';
+
+    next();
+});
 
 const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath('/bull');
