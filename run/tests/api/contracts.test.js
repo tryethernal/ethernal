@@ -130,7 +130,7 @@ describe(`POST ${BASE_URL}/:verify`, () => {
                 apikey: 'ethernal',
                 compilerversion: '0.8.0',
                 constructorArguements: '',
-                contractname: 'Ethernal'
+                contractname: 'Ethernal.sol:Ethernal'
             })
             .expect(200)
             .then(({ body }) => {
