@@ -116,7 +116,7 @@ module.exports = async function(db, payload) {
         throw new Error(`Couldn't find contract "${contractName}" in the uploaded files.`);
 
     const abi = parsedCompiledCode.contracts[contractFile][contractName].abi;
-    console.log(code.libraries)
+
     let bytecode = parsedCompiledCode.contracts[contractFile][contractName].evm.bytecode.object;
     if (typeof code.libraries == 'object' && Object.keys(code.libraries).length > 0) {
         const linkedBytecode = linker.linkBytecode(bytecode, code.libraries);
