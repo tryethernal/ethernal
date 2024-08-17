@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const logger = require('../lib/logger');
+const Lock = require('../lib/lock');
 const db = require('../lib/firebase');
 const { sanitize } = require('../lib/utils');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
@@ -15,10 +16,13 @@ router.get('/:address/transfers', workspaceAuthMiddleware, transfers);
 
 router.post('/verify', async (req, res) => {
     const data = req.body;
+    let lock, isLockAcquired;
 
     try {
         if (!data.sourceCode || !data.contractaddress || !data.compilerversion || !data.contractname || data.constructorArguements === undefined)
             throw new Error('Missing parameters.')
+
+        const contractAddress = data.contractaddress.toLowerCase();
 
         let explorer;
         if (req.headers['apx-incoming-host']) {
@@ -31,8 +35,27 @@ router.post('/verify', async (req, res) => {
         if (!explorer)
             throw new Error('Could not find explorer. If you are using the apiKey param, make sure it is correct.');
 
+        const contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
+        if (!contract)
+            throw new Error('Unable to locate contract. Please try running the verification command again.');
+
+        lock = new Lock(`contractVerification-${explorer.id}-${contract.id}`, 60000);
+
+        isLockAcquired = await lock.acquire();
+        if (!isLockAcquired)
+            throw new Error('There is already an ongoing verification for this contract.');
+
+        await lock.acquire();
+
+        if (contract.verification)
+            return res.status(200).json({
+                status: "1",
+                message: "OK",
+                result: "Already Verified"
+            });
+
         if (data.contractname.split(':').length != 2)
-            throw new Error('Invalid contract name format')
+            throw new Error('Invalid contract name format.')
 
         const contractFile = data.contractname.split(':')[0];
         const contractName = data.contractname.split(':')[1];
@@ -41,7 +64,7 @@ router.post('/verify', async (req, res) => {
 
         const payload = {
             publicExplorerParams: explorer,
-            contractAddress: data.contractaddress.toLowerCase(),
+            contractAddress: contractAddress,
             compilerVersion: data.compilerversion,
             constructorArguments: data.constructorArguements,
             code: { sources: source.sources, libraries: source.settings.libraries },
@@ -53,12 +76,16 @@ router.post('/verify', async (req, res) => {
 
         await processContractVerification(db, payload);
 
+        await lock.release();
+
         res.status(200).json({
             status: "1",
             message: "OK",
-            result: "Pass - Verified"
+            result: "1234"
         });
     } catch(error) {
+        if (lock && isLockAcquired)
+            await lock.release();
         logger.error(error.message, { location: 'post.api.contracts.verify', error, queryParams: req.query });
         res.status(200).json({
             status: "0",
@@ -69,13 +96,6 @@ router.post('/verify', async (req, res) => {
 });
 
 router.get('/verificationStatus', async (req, res) => {
-    const data = {
-        hostname: req.hostname,
-        headers: req.headers,
-        body: req.body,
-        query: req.query
-    };
-
     res.status(200).json({
         status: "1",
         message: "OK",
