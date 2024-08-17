@@ -39,14 +39,6 @@ router.post('/verify', async (req, res) => {
         if (!contract)
             throw new Error('Unable to locate contract. Please try running the verification command again.');
 
-        lock = new Lock(`contractVerification-${explorer.id}-${contract.id}`, 60000);
-
-        isLockAcquired = await lock.acquire();
-        if (!isLockAcquired)
-            throw new Error('There is already an ongoing verification for this contract.');
-
-        await lock.acquire();
-
         if (contract.verification)
             return res.status(200).json({
                 status: "1",
@@ -55,7 +47,15 @@ router.post('/verify', async (req, res) => {
             });
 
         if (data.contractname.split(':').length != 2)
-            throw new Error('Invalid contract name format.')
+            throw new Error('Invalid contract name format.');
+
+        lock = new Lock(`contractVerification-${explorer.id}-${contract.id}`, 60000);
+
+        isLockAcquired = await lock.acquire();
+        if (!isLockAcquired)
+            throw new Error('There is already an ongoing verification for this contract.');
+
+        await lock.acquire();
 
         const contractFile = data.contractname.split(':')[0];
         const contractName = data.contractname.split(':')[1];
