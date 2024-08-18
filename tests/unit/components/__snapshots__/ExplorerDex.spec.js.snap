@@ -26,7 +26,7 @@ exports[`ExplorerDex.vue Should display approval & swap button if not enough app
                     <fieldset aria-hidden="true">
                       <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-115" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-115" placeholder="0.0" type="number"></div>
+                    <div class="v-text-field__slot"><label for="input-119" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-119" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
                       <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
                           Balance:
@@ -43,7 +43,7 @@ exports[`ExplorerDex.vue Should display approval & swap button if not enough app
                     <fieldset aria-hidden="true">
                       <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-120" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-120" placeholder="0.0" type="number"></div>
+                    <div class="v-text-field__slot"><label for="input-124" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-124" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
                       <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: 0</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
                                                 BTC
@@ -104,7 +104,7 @@ exports[`ExplorerDex.vue Should display error message 1`] = `
                     <fieldset aria-hidden="true">
                       <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-245" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-245" placeholder="0.0" type="number"></div>
+                    <div class="v-text-field__slot"><label for="input-249" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-249" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
                       <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
                           Balance:
@@ -121,7 +121,7 @@ exports[`ExplorerDex.vue Should display error message 1`] = `
                     <fieldset aria-hidden="true">
                       <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-250" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-250" placeholder="0.0" type="number"></div>
+                    <div class="v-text-field__slot"><label for="input-254" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-254" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
                       <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: 0</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
                                                 BTC
@@ -184,7 +184,7 @@ exports[`ExplorerDex.vue Should display failed transaction message 1`] = `
                     <fieldset aria-hidden="true">
                       <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-211" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-211" placeholder="0.0" type="number"></div>
+                    <div class="v-text-field__slot"><label for="input-215" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-215" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
                       <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
                           Balance:
@@ -201,7 +201,7 @@ exports[`ExplorerDex.vue Should display failed transaction message 1`] = `
                     <fieldset aria-hidden="true">
                       <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-216" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-216" placeholder="0.0" type="number"></div>
+                    <div class="v-text-field__slot"><label for="input-220" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-220" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
                       <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: 0</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
                                                 BTC
@@ -331,7 +331,7 @@ exports[`ExplorerDex.vue Should display initial state with wallet connected 1`] 
                     <fieldset aria-hidden="true">
                       <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-37" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-37" placeholder="0.0" type="number"></div>
+                    <div class="v-text-field__slot"><label for="input-41" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-41" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
                       <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
                           Balance:
@@ -348,7 +348,7 @@ exports[`ExplorerDex.vue Should display initial state with wallet connected 1`] 
                     <fieldset aria-hidden="true">
                       <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-42" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-42" placeholder="0.0" type="number"></div>
+                    <div class="v-text-field__slot"><label for="input-46" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-46" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
                       <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: -</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
                                                 Select a token
@@ -400,7 +400,7 @@ exports[`ExplorerDex.vue Should display insufficient balance warning 1`] = `
                     <fieldset aria-hidden="true">
                       <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-63" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-63" placeholder="0.0" type="number"></div>
+                    <div class="v-text-field__slot"><label for="input-67" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-67" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
                       <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
                           Balance:
@@ -417,7 +417,7 @@ exports[`ExplorerDex.vue Should display insufficient balance warning 1`] = `
                     <fieldset aria-hidden="true">
                       <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-68" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-68" placeholder="0.0" type="number"></div>
+                    <div class="v-text-field__slot"><label for="input-72" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-72" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
                       <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: -</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
                                                 Select a token
@@ -490,7 +490,7 @@ exports[`ExplorerDex.vue Should display successful transaction message 1`] = `
                     <fieldset aria-hidden="true">
                       <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-177" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-177" placeholder="0.0" type="number"></div>
+                    <div class="v-text-field__slot"><label for="input-181" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-181" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
                       <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
                           Balance:
@@ -507,7 +507,7 @@ exports[`ExplorerDex.vue Should display successful transaction message 1`] = `
                     <fieldset aria-hidden="true">
                       <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-182" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-182" placeholder="0.0" type="number"></div>
+                    <div class="v-text-field__slot"><label for="input-186" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-186" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
                       <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: 0</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
                                                 BTC
@@ -572,7 +572,7 @@ exports[`ExplorerDex.vue Should display swap button and quote 1`] = `
                     <fieldset aria-hidden="true">
                       <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-147" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-147" placeholder="0.0" type="number"></div>
+                    <div class="v-text-field__slot"><label for="input-151" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-151" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
                       <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
                           Balance:
@@ -589,7 +589,7 @@ exports[`ExplorerDex.vue Should display swap button and quote 1`] = `
                     <fieldset aria-hidden="true">
                       <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-152" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-152" placeholder="0.0" type="number"></div>
+                    <div class="v-text-field__slot"><label for="input-156" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-156" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
                       <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: 0</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
                                                 BTC
@@ -652,7 +652,7 @@ exports[`ExplorerDex.vue Should display token selection message 1`] = `
                     <fieldset aria-hidden="true">
                       <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-89" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-89" placeholder="0.0" type="number"></div>
+                    <div class="v-text-field__slot"><label for="input-93" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-93" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
                       <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
                           Balance:
@@ -669,7 +669,7 @@ exports[`ExplorerDex.vue Should display token selection message 1`] = `
                     <fieldset aria-hidden="true">
                       <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-94" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-94" placeholder="0.0" type="number"></div>
+                    <div class="v-text-field__slot"><label for="input-98" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-98" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
                       <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: -</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
                                                 Select a token
