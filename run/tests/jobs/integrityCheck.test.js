@@ -137,7 +137,8 @@ describe('integrityCheck', () => {
         expect(db.updateWorkspaceIntegrityCheck).toHaveBeenCalledWith(1, { blockId: 1 });
     });
 
-    it('Should return if no lower block', async () => {
+    it('Should reenqueue lower block & return if no lower block', async () => {
+        const safeDeleteIntegrityCheck = jest.fn();
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             explorer: { hasReachedTransactionQuota, shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
@@ -150,10 +151,19 @@ describe('integrityCheck', () => {
             id: 1,
             public: true,
             name: 'hardhat',
-            user: { firebaseUserId: '123', name: 'hardhat' }
+            user: { firebaseUserId: '123', name: 'hardhat' },
+            safeDeleteIntegrityCheck
         });
 
-        expect(await integrityCheck(job)).toEqual('Missing lower block or upper block');
+        await integrityCheck(job);
+
+        expect(safeDeleteIntegrityCheck).toHaveBeenCalled();
+        expect(enqueue).toHaveBeenCalledWith('blockSync', 'blockSync-1-5', {
+            userId: '123',
+            workspace: 'hardhat',
+            blockNumber: 5,
+            source: 'integrityCheck'
+        }, 1);
     });
 
     it('Should return if no upper block', async () => {
@@ -174,7 +184,7 @@ describe('integrityCheck', () => {
             findBlockGaps: jest.fn().mockResolvedValueOnce([])
         });
 
-        expect(await integrityCheck(job)).toEqual('Missing lower block or upper block');
+        expect(await integrityCheck(job)).toEqual('Missing upper block');
     });
 
     it('Should start recovery', async () => {
