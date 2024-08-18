@@ -339,6 +339,9 @@ describe('ExplorerDex.vue', () => {
         };
         await wrapper.vm.waitForTransaction(transaction, 'Swap successful.', 'Swap failed');
 
+        await flushPromises();
+        await new Promise((r) => setTimeout(r, 1500));
+
         expect(wrapper.html()).toMatchSnapshot();
     });
 
