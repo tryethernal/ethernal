@@ -87,7 +87,7 @@ module.exports = (sequelize, DataTypes) => {
                         workspaceId: this.workspaceId,
                         address: log.address,
                         blockHash: log.blockHash,
-                        blockNumber: log.blockNumber,
+                        blockNumber: log.blockNumber || receipt.blockNumber,
                         data: log.data,
                         logIndex: log.logIndex,
                         topics: log.topics,

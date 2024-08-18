@@ -1,5 +1,5 @@
 <template>
-    <span :class="`ml-${4 * displayDepth}`">
+    <span :class="`ml-${4 * displayDepth} pl-${4 * titanicLevelDepth}`">
         <span v-if="!isArrayEl">{{ inputLabel }}</span>
         <span>
             <template v-if="isFormattable && !notInteractive && (input.type == 'address' || isValueJSON || formatString(value) != value)">
@@ -13,9 +13,9 @@
                 <span v-else-if="input.type == 'tuple'">
                     { {{ '\n' }}
                     <span v-for="(el, idx) in value" :key="idx">
-                        <Formatted-Sol-Var :input="input.components[idx]" :value="el" :depth="displayDepth + 1" />{{ '\n' }}
+                        <Formatted-Sol-Var :input="input.components[idx]" :value="el" :depth="displayDepth + titanicLevelDepth + 1" />{{ '\n' }}
                     </span>
-                     <span :class="`ml-${4 * displayDepth}`"> }</span>
+                     <span :class="`ml-${4 * displayDepth} pl-${4 * titanicLevelDepth}`">}</span>
                 </span>
                 <span v-else-if="input.type == 'string'">
                     <span v-if="isValueJSON" style="white-space: normal;">
@@ -30,11 +30,11 @@
                 <span v-else-if="isInputArray">
                     [{{ '\n' }}
                         <span v-for="(el, idx) in value" :key="idx">
-                            <Formatted-Sol-Var v-if="input.arrayChildren" :input="input.arrayChildren" :value="el" :depth="displayDepth + 1" :isArrayEl="true" />
-                            <Formatted-Sol-Var v-else :input="{type: 'string'}" :value="el" :depth="displayDepth + 1" :isArrayEl="true" />
+                            <Formatted-Sol-Var v-if="input.arrayChildren" :input="input.arrayChildren" :value="el" :depth="displayDepth + titanicLevelDepth + 1" :isArrayEl="true" />
+                            <Formatted-Sol-Var v-else :input="{type: 'string'}" :value="el" :depth="displayDepth + titanicLevelDepth + 1" :isArrayEl="true" />
                             {{ '\n' }}
                         </span>
-                    <span :class="`ml-${4 * displayDepth}`">]</span>
+                    <span :class="`ml-${4 * displayDepth} pl-${4 * titanicLevelDepth}`">]</span>
                 </span>
                 <span v-else>
                     {{ value }}
@@ -86,8 +86,11 @@ export default {
         }
     },
     computed: {
+        titanicLevelDepth() {
+            return this.depth !== undefined && this.depth !== null ? Math.abs(Math.min(0, 4 - this.depth)) : 0;
+        },
         displayDepth: function() {
-            return this.depth !== undefined && this.depth !== null ? this.depth : 1;
+            return this.depth !== undefined && this.depth !== null ? Math.min(this.depth, 4) : 1;
         },
         isInputArray: function() {
             return !!this.input.arrayChildren || this.input.type.endsWith('[]');
