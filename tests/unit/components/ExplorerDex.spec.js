@@ -236,7 +236,6 @@ describe('ExplorerDex.vue', () => {
             }
         });
         await flushPromises();
-        await wrapper.vm.$nextTick();
 
         wrapper.vm.onRpcConnectionStatusChanged({ account: '0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA' })
 
@@ -254,6 +253,7 @@ describe('ExplorerDex.vue', () => {
             }
         });
         await flushPromises();
+        await wrapper.vm.$nextTick();
 
         expect(wrapper.html()).toMatchSnapshot();
     });
