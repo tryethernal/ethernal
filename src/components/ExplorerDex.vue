@@ -43,7 +43,7 @@
                                                     <a v-if="BNtoSignificantDigits(balanceOf(sellToken.address)) > 0" @click="sellAmount = formatEther(balanceOf(sellToken.address))">{{ sellToken && sellToken.address ? BNtoSignificantDigits(balanceOf(sellToken.address)) : '-' }}</a>
                                                     <template v-else>{{ connectedAccount && sellToken && sellToken.address ? BNtoSignificantDigits(balanceOf(sellToken.address)) || 0 : '-' }}</template>
                                                 </small>
-                                                <v-btn v-if="!connectedAccount || tokens.length > 1 && Object.keys(balances).length > 1" outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill" @click="openSellTokenSelectionModal()">
+                                                <v-btn v-if="!loadingTokens" outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill" @click="openSellTokenSelectionModal()">
                                                     {{ sellToken.tokenSymbol || 'Select a token' }}
                                                     <v-icon class="primary--text">mdi-chevron-down</v-icon>
                                                 </v-btn>
@@ -70,7 +70,7 @@
                                         <template v-slot:append>
                                             <div class="pl-4 py-1 mt-1 mb-3 text-right">
                                                 <small class="pr-1 balance">Balance: {{ connectedAccount && buyToken && buyToken.address ? BNtoSignificantDigits(balanceOf(buyToken.address)) : '-' }}</small>
-                                                <v-btn v-if="!connectedAccount || tokens.length > 1 && Object.keys(balances).length > 1" outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill" @click="openBuyTokenSelectionModal()">
+                                                <v-btn v-if="!loadingTokens" outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill" @click="openBuyTokenSelectionModal()">
                                                     {{ buyToken.tokenSymbol || 'Select a token' }}
                                                     <v-icon class="primary--text">mdi-chevron-down</v-icon>
                                                 </v-btn>
@@ -235,7 +235,8 @@ export default{
         transaction: {},
         loadingQuote: false,
         quoteDirection: 'exactIn',
-        debouncedGetQuote: null
+        debouncedGetQuote: null,
+        loadingTokens: false
     }),
     mounted() {
         if (!this.publicExplorer.v2Dex)
@@ -362,6 +363,7 @@ export default{
                 tokenSymbol: this.nativeTokenSymbol,
                 tokenName: this.nativeTokenSymbol
             };
+            this.loadingTokens = true;
             this.tokens = [nativeToken];
             this.server.getV2DexTokens()
                 .then(({ data: { tokens }}) => {
@@ -370,7 +372,8 @@ export default{
                     if (this.tokens.length)
                         this.sellToken = this.tokens[0];
                 })
-                .catch(console.log);
+                .catch(console.log)
+                .finally(() => this.loadingTokens = false);
         },
         loadBalances() {
             this.server.getTokenBalances(this.connectedAccount, ['erc20'])
