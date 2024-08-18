@@ -386,6 +386,7 @@ describe('ExplorerDex.vue', () => {
             wait: jest.fn().mockResolvedValueOnce({ hash: '0xcff8dfb02341df3e011e58ebbe0b09742a6dbbbee208a7e4253adeea05f75174', status: 0 })
         };
         await wrapper.vm.waitForTransaction(transaction, 'Swap successful.', 'Swap failed.');
+        await new Promise((r) => setTimeout(r, 1500));
 
         expect(wrapper.html()).toMatchSnapshot();
     });
@@ -432,6 +433,7 @@ describe('ExplorerDex.vue', () => {
 
         await wrapper.vm.swap();
         await flushPromises();
+        await new Promise((r) => setTimeout(r, 1500));
 
         expect(wrapper.html()).toMatchSnapshot();
     });

@@ -178,11 +178,11 @@ exports[`ExplorerDex.vue Should display failed transaction message 1`] = `
           <div class="v-card__text pb-0">
             <!---->
             <div align="center">
-              <div class="v-input rounded-xl large-text v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <fieldset aria-hidden="true">
-                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
                     <div class="v-text-field__slot"><label for="input-211" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-211" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
@@ -195,11 +195,11 @@ exports[`ExplorerDex.vue Should display failed transaction message 1`] = `
                   </div>
                 </div>
               </div> <button type="button" class="my-3 v-btn v-btn--icon v-btn--outlined v-btn--round theme--light v-size--default primary--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-vertical theme--light primary--text"></i></span></button>
-              <div class="v-input rounded-xl large-text v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <fieldset aria-hidden="true">
-                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
                     </fieldset>
                     <div class="v-text-field__slot"><label for="input-216" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-216" placeholder="0.0" type="number"></div>
                     <div class="v-input__append-inner">
