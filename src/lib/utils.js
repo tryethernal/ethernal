@@ -2,6 +2,16 @@ const Web3 = require('web3');
 const ethers = require('ethers');
 const BigNumber = ethers.BigNumber;
 
+// https://stackoverflow.com/a/22885197/1373409
+export const getSignificantDigitCount = (n) => {
+    const log10 = Math.log(10);
+    n = Math.abs(String(n).replace(".", "")); //remove decimal and make positive
+    if (n == 0) return 0;
+    while (n != 0 && n % 10 == 0) n /= 10; //kill the 0s at the end of n
+
+    return Math.floor(Math.log(n) / log10) + 1; //get number of digits
+}
+
 export const debounce = (func, wait) => {
     let debounceTimeout;
     return (...args) => {

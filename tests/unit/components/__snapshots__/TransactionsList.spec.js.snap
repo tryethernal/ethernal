@@ -95,7 +95,7 @@ exports[`TransactionsList.vue Should display the list 1`] = `
               </svg>
               <div class="v-progress-circular__info"></div>
             </div> <i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px; display: none;"></i>
-            <hash-link-stub hash="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" type="transaction"></hash-link-stub>
+            <hash-link-stub xshash="true" hash="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" type="transaction"></hash-link-stub>
           </td>
           <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1"><span class="v-chip__content">0xa9059cbb</span></span></span></td>
           <td class="text-start"><a href="/block/1" class="" style="text-decoration: none;">1</a></td>
@@ -123,7 +123,7 @@ exports[`TransactionsList.vue Should display the list 1`] = `
               </svg>
               <div class="v-progress-circular__info"></div>
             </div> <i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px; display: none;"></i>
-            <hash-link-stub hash="0x1234" type="transaction"></hash-link-stub>
+            <hash-link-stub xshash="true" hash="0x1234" type="transaction"></hash-link-stub>
           </td>
           <td class="text-start"><span><span class="v-chip v-chip--label theme--light v-size--small color--text primary lighten-1" style="display: none;"><span class="v-chip__content"></span></span></span></td>
           <td class="text-start"><a href="/block/1" class="" style="text-decoration: none;">1</a></td>
@@ -206,7 +206,7 @@ exports[`TransactionsList.vue Should not display transactions count 1`] = `
                 <circle fill="transparent" cx="45.714285714285715" cy="45.714285714285715" r="20" stroke-width="5.714285714285714" stroke-dasharray="125.664" stroke-dashoffset="125.66370614359172px" class="v-progress-circular__overlay"></circle>
               </svg>
               <div class="v-progress-circular__info"></div>
-            </div> <i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px; display: none;"></i> <span><!----> <a href="/transaction/0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" class="">0x060034...4ef0</a> <!----> <span>
+            </div> <i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-help-circle theme--light grey--text text--lighten-1" style="font-size: 16px; display: none;"></i> <i aria-hidden="true" aria-haspopup="true" aria-expanded="false" class="v-icon notranslate mr-2 mdi mdi-alert-circle theme--light error--text text--lighten-1" style="font-size: 16px; display: none;"></i> <span><!----> <a href="/transaction/0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" class="">0x060...4ef0</a> <!----> <span>
         &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0" value="0x060034486a819816df57d01eefccbe161d7019f9f3c235e18af07468fb194ef0"></span>
             <!----></span>
           </td>

@@ -1,11 +1,11 @@
 const ethers = require('ethers');
-const { eToNumber } = require('../lib/utils');
+const { eToNumber, getSignificantDigitCount } = require('../lib/utils');
 
 const BigNumber = ethers.BigNumber;
 const formatUnits = ethers.utils.formatUnits;
 const commify = ethers.utils.commify;
 
-export default function (amount = 0, to, symbol = 'ether', unformatted = false) {
+export default function (amount = 0, to, symbol = 'ether', unformatted = false, significantDigits) {
     if (unformatted || !to) return amount;
 
     let amountInt;
@@ -30,9 +30,15 @@ export default function (amount = 0, to, symbol = 'ether', unformatted = false) 
     } catch(error) {
         ethAmount = BigNumber.from(eToNumber(stringedAmount));
     }
-    const roundedAmount = formatUnits(ethAmount, to)
+    const roundedAmount = formatUnits(ethAmount, to);
     const commified = commify(roundedAmount);
-    const formatted = commified.endsWith('.0') ? commified.split('.')[0] : commified;
+    let formatted = commified.endsWith('.0') ? commified.split('.')[0] : commified;
+
+    if (significantDigits) {
+        const parsed = parseFloat(+formatted);
+        const sigDigitsCount = Math.max(1, getSignificantDigitCount(eToNumber(parsed)));
+        formatted = eToNumber(parsed.toPrecision(sigDigitsCount <= significantDigits ? sigDigitsCount : significantDigits));
+    }
 
     return `${formatted} ${symbol || 'ether'}`;
 }
