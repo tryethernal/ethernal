@@ -75,7 +75,7 @@ describe('blockSync', () => {
                     blockNumber: 1,
                     source: 'cli-light',
                     rateLimited: true
-                }, 1, null, 5000);
+                }, 1, null, 5000, true);
                 expect(res).toEqual('Re-enqueuing: Rate limited');
                 done();
             });
