@@ -33,7 +33,7 @@
                 <span v-show="txStatus(item) == 'unknown'">Unkown Transaction Status</span>
                 <span v-show="txStatus(item) == 'syncing'">Indexing Transaction...</span>
             </v-tooltip>
-            <Hash-Link :type="'transaction'" :hash="item.hash" />
+            <Hash-Link :type="'transaction'" :hash="item.hash" :xsHash="true" />
         </template>
         <template v-slot:item.method="{ item }">
             <v-tooltip v-if="item.methodDetails && Object.keys(item.methodDetails).length" top :open-delay="150" color="grey darken-1" content-class="tooltip">
@@ -75,10 +75,10 @@
             <Hash-Link :type="'address'" :hash="item.to" :withTokenName="true" :withName="true" :contract="item.contract" />
         </template>
         <template v-slot:item.value="{ item }">
-            {{ item.value | fromWei('ether', chain.token) }}
+            {{ item.value | fromWei('ether', chain.token, false, 4) }}
         </template>
         <template v-slot:item.fee="{ item }">
-            <span v-if="item.receipt">{{ getGasPriceFromTransaction(item) * (item.gas || item.receipt.gasUsed)  | fromWei('ether', chain.token) }}</span>
+            <span v-if="item.receipt">{{ getGasPriceFromTransaction(item) * (item.gas || item.receipt.gasUsed)  | fromWei('ether', chain.token, false, 4) }}</span>
         </template>
     </v-data-table>
 </template>
