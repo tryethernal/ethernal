@@ -7,11 +7,184 @@ jest.mock('sequelize', () => ({
 }));
 require('../mocks/lib/env');
 require('../mocks/lib/queue');
-const { ExplorerFaucet, Workspace, Block, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction, StripeSubscription } = require('../mocks/models');
+const { ExplorerV2Dex, ExplorerFaucet, Workspace, Block, User, workspace, Explorer, ExplorerDomain, StripePlan, Transaction, StripeSubscription } = require('../mocks/models');
 const db = require('../../lib/firebase');
 const env = require('../../lib/env');
 
 beforeEach(() => jest.clearAllMocks());
+
+describe('getV2DexPairCount', () => {
+    it('Should throw an error if no dex', (done) => {
+        jest.spyOn(ExplorerV2Dex, 'findOne').mockResolvedValueOnce(null);
+        db.getV2DexPairCount('123', 1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find dex'));
+                done();
+            });
+    });
+
+    it('Should return pair count', (done) => {
+        const countPairs = jest.fn().mockResolvedValue(10);
+        jest.spyOn(ExplorerV2Dex, 'findOne').mockResolvedValueOnce({ countPairs });
+        db.getV2DexPairCount('123', 1)
+            .then((res) => {
+                expect(countPairs).toHaveBeenCalled();
+                expect(res).toEqual(10);
+                done();
+            });
+    });
+});
+
+describe('deleteV2Dex', () => {
+    it('Should throw an error if no dex', (done) => {
+        jest.spyOn(ExplorerV2Dex, 'findOne').mockResolvedValueOnce(null);
+        db.deleteV2Dex('123', 1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find dex'));
+                done();
+            });
+    });
+
+    it('Should call destroy function', (done) => {
+        const safeDestroy = jest.fn().mockResolvedValue();
+        jest.spyOn(ExplorerV2Dex, 'findOne').mockResolvedValueOnce({ safeDestroy });
+        db.deleteV2Dex('123', 1)
+            .then(() => {
+                expect(safeDestroy).toHaveBeenCalled();
+                done();
+            });
+    });
+});
+
+describe('deactivateV2Dex', () => {
+    it('Should throw an error if no dex', (done) => {
+        jest.spyOn(ExplorerV2Dex, 'findOne').mockResolvedValueOnce(null);
+        db.deactivateV2Dex('123', 1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find dex'));
+                done();
+            });
+    });
+
+    it('Should update dex state', (done) => {
+        const update = jest.fn().mockResolvedValue();
+        jest.spyOn(ExplorerV2Dex, 'findOne').mockResolvedValueOnce({ update });
+        db.deactivateV2Dex('123', 1)
+            .then(() => {
+                expect(update).toHaveBeenCalledWith({ active: false });
+                done();
+            });
+    });
+});
+
+describe('activateV2Dex', () => {
+    it('Should throw an error if no dex', (done) => {
+        jest.spyOn(ExplorerV2Dex, 'findOne').mockResolvedValueOnce(null);
+        db.activateV2Dex('123', 1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find dex'));
+                done();
+            });
+    });
+
+    it('Should update dex state', (done) => {
+        const update = jest.fn().mockResolvedValue();
+        jest.spyOn(ExplorerV2Dex, 'findOne').mockResolvedValueOnce({ update });
+        db.activateV2Dex('123', 1)
+            .then(() => {
+                expect(update).toHaveBeenCalledWith({ active: true });
+                done();
+            });
+    });
+});
+
+describe('getV2DexQuote', () => {
+    it('Should throw an error if no dex', (done) => {
+        jest.spyOn(ExplorerV2Dex, 'findByPk').mockResolvedValueOnce(null);
+        db.getV2DexQuote(1, '0x123', '0xabc', '1000')
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find dex'));
+                done();
+            });
+    });
+
+    it('Should return a quote', (done) => {
+        const getQuote = jest.fn().mockResolvedValue({ amount: '1000' });
+        jest.spyOn(ExplorerV2Dex, 'findByPk').mockResolvedValueOnce({ getQuote });
+        db.getV2DexQuote(1, '0x123', '0xabc', '1000')
+            .then((res) => {
+                expect(getQuote).toHaveBeenCalledWith('0x123', '0xabc', '1000', undefined, undefined);
+                expect(res).toEqual({ amount: '1000' });
+                done();
+            });
+    });
+});
+
+describe('createV2DexPair', () => {
+    it('Should throw an error if no dex', (done) => {
+        jest.spyOn(ExplorerV2Dex, 'findByPk').mockResolvedValueOnce(null);
+        db.createV2DexPair(1, 1, '0x123', '0xabc', '0x456')
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find dex'));
+                done();
+            });
+    });
+
+    it('Should create the dex pair', (done) => {
+        jest.spyOn(ExplorerV2Dex, 'findByPk').mockResolvedValueOnce({
+            safeCreatePair: jest.fn().mockResolvedValue({ id: 1 })
+        });
+        db.createV2DexPair(1, 1, '0x123', '0xabc', '0x456')
+            .then((res) => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            });
+    });
+});
+
+describe('createExplorerV2Dex', () => {
+    it('Should throw an error if no explorer', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce(null);
+        db.createExplorerV2Dex(1, 1, '0x123', '0xabc', '0x456')
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find explorer'));
+                done();
+            });
+    });
+
+    it('Should create explorer v2 dex', (done) => {
+        jest.spyOn(Explorer, 'findOne').mockResolvedValueOnce({
+            safeCreateV2Dex: jest.fn().mockResolvedValue({ id: 1 })
+        });
+        db.createExplorerV2Dex(1, 1, '0x123', '0xabc', '0x456')
+            .then((res) => {
+                expect(res).toEqual({ id: 1 });
+                done();
+            });
+    });
+});
+
+describe('fetchPairsWithLatestReserves', () => {
+    it('Should throw an error if could not find dex', (done) => {
+        jest.spyOn(ExplorerV2Dex, 'findByPk').mockResolvedValueOnce(null);
+        db.fetchPairsWithLatestReserves(1)
+            .catch(error => {
+                expect(error).toEqual(new Error('Could not find dex'));
+                done();
+            });
+    });
+
+    it('Should return latest reserves', (done) => {
+        jest.spyOn(ExplorerV2Dex, 'findByPk').mockResolvedValueOnce({
+            getPairsWithLatestReserves: jest.fn().mockResolvedValue([{ reserve0: '10000', reserve1: '20000' }])
+        });
+        db.fetchPairsWithLatestReserves(1)
+            .then((res) => {
+                expect(res).toEqual([{ reserve0: '10000', reserve1: '20000' }]);
+                done();
+            });
+    });
+});
 
 describe('getFaucetTransactionHistory', () => {
     it('Should return transaction history', (done) => {

@@ -12,7 +12,7 @@ describe('UnlockAccountModal.vue', () => {
     let helper;
 
     beforeEach(async () => {
-        helper = new MockHelper();        
+        helper = new MockHelper();
     });
 
     it('Should let you unlock with a private key', async () => {

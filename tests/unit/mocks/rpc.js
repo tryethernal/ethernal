@@ -1,4 +1,4 @@
-jest.mock('../../../src/lib/rpc', () => {
+jest.mock('`../../../src/lib/rpc', () => {
     const ethers = require('ethers');
     const actual = jest.requireActual('../../../src/lib/rpc');
     return {
@@ -36,6 +36,10 @@ jest.mock('../../../src/lib/rpc', () => {
             tokenByIndex: jest.fn().mockResolvedValue('0'),
             ownerOf: jest.fn().mockResolvedValue('0xabc'),
             tokenURI: jest.fn().mockResolvedValue('http://metadata')
-        }))
+        })),
+        ERC20Connector: jest.fn().mockImplementation(() => ({
+            allowance: jest.fn().mockResolvedValue(true)
+        })),
+        V2DexRouterConnector: jest.fn()
     }
 });

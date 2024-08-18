@@ -11,7 +11,7 @@ exports[`Explorer.vue Should display explorer sections 1`] = `
         <div class="v-slide-group__content v-tabs-bar__content">
           <div class="v-tabs-slider-wrapper" style="transition: none;">
             <div class="v-tabs-slider"></div>
-          </div><a tabindex="0" href="#general" aria-selected="true" role="tab" class="v-tab v-tab--active" id="generalTab">General</a> <a tabindex="0" href="#faucet" aria-selected="false" role="tab" class="v-tab" id="faucetTab">Faucet</a>
+          </div><a tabindex="0" href="#general" aria-selected="true" role="tab" class="v-tab v-tab--active" id="generalTab">General</a> <a tabindex="0" href="#faucet" aria-selected="false" role="tab" class="v-tab" id="faucetTab">Faucet</a> <a tabindex="0" href="#dex" aria-selected="false" role="tab" class="v-tab" id="dexTab">Dex</a>
         </div>
       </div>
       <div class="v-slide-group__next v-slide-group__next--disabled">
@@ -25,6 +25,9 @@ exports[`Explorer.vue Should display explorer sections 1`] = `
         <div class="v-window-item v-window-item--active" id="general">
           <explorer-general-stub id="1"></explorer-general-stub>
         </div>
+      </transition-stub>
+      <transition-stub name="">
+        <!---->
       </transition-stub>
       <transition-stub name="">
         <!---->

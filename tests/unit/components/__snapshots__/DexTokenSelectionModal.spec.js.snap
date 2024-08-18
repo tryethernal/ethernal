@@ -1,0 +1,430 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DexTokenSelectionModal.vue Should show token selection modal 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog roundedModal v-dialog--active" style="transform-origin: center center; max-width: 400px;">
+        <div class="v-card v-sheet v-sheet--outlined theme--light">
+          <div class="v-card__title mb-4">
+            Select a token
+          </div>
+          <div class="v-card__text px-0">
+            <div class="v-input rounded-xl px-6 v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot"><input id="input-9" placeholder="Search name or paste address" type="text"></div>
+                  <div class="v-input__append-inner">
+                    <div class="py-6"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr role="separator" aria-orientation="horizontal" class="my-6 mx-1 v-divider theme--light">
+            <div class="d-flex justify-space-between px-6"><span>Token Name</span></div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  USDC
+                  <span class="float-right">
+                                224
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0xc9e863...5ef3 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  USDT
+                  <span class="float-right">
+                                104.4
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x99d46f...3db0 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light oppositeToken">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  CAGA
+                  <span class="float-right">
+                                0.1133
+                            </span>
+                </div>
+                <!---->
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  CTT
+                  <span class="float-right">
+                                0.004
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x47e405...26b2 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  wCAGA
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0xf22d0f...d7af <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  Testt
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x857091...fb54 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  test_1_wcaga
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0xefbb39...5962 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  Dadang1
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x19295b...3416 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  WBTC
+                  <span class="float-right">
+                                0
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x7a8587...0d90 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  CNT
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0xf939ba...81e2 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  catcat2
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x238676...b74f <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  instant_king1
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x059ee6...638e <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  tate
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0xc60327...e5b7 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  dontbuy
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x71f33e...8145 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  wCAGA
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x1f4682...df59 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  UniToken
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x2b53f0...8dcf <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  Dadada
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x683699...08e4 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  calc
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x1102d3...3045 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  hawktuah
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x060d05...4c26 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  DOGBEE 3
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x3b7a4b...51f0 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  CTT
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x4bb796...8a21 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  Yyhh
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0xa56c95...3a70 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  VV Balance
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0xc98edd...6861 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  Dadada2
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0xdef504...3012 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  testing2
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x26b4ad...51b1 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  Dadada
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0xda271b...0bb8 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  test2
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0xa85ab9...425d <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  DOGE
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x564102...b75e <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  TTT
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x5a861d...b025 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  SPD6
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0xe3411e...dc63 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  DOGBEE
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x10b5c3...0920 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  test4
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0x4cbd9d...9f4b <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+            <div tabindex="0" class="px-6 v-list-item v-list-item--link theme--light">
+              <div class="v-list-item__icon mr-3"><i aria-hidden="true" class="v-icon notranslate mdi mdi-alpha-t-circle theme--light"></i></div>
+              <div class="v-list-item__content">
+                <div class="v-list-item__title">
+                  testcat
+                  <span class="float-right">
+
+                            </span>
+                </div>
+                <div class="v-list-item__subtitle"><span><!----> 0xe9b31e...6054 <!----> <!----> <!----></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;

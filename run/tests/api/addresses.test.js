@@ -2,7 +2,9 @@ require('../mocks/lib/queue');
 require('../mocks/models');
 require('../mocks/lib/firebase');
 require('../mocks/middlewares/workspaceAuth');
+require('../mocks/lib/rpc');
 const db = require('../../lib/firebase');
+const { ProviderConnector } = require('../../lib/rpc');
 
 const supertest = require('supertest');
 const app = require('../../app');
@@ -11,6 +13,20 @@ const request = supertest(app);
 const BASE_URL = '/api/addresses';
 
 beforeEach(() => jest.clearAllMocks());
+
+describe(`GET ${BASE_URL}/:address/nativeTokenBalance`, () => {
+    it('Should return the native token balance', (done) => {
+        ProviderConnector.mockImplementationOnce(() => ({
+            getBalance: jest.fn().mockResolvedValue('1000000000000000000')
+        }));
+        request.get(`${BASE_URL}/0x123/nativeTokenBalance`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ balance: '1000000000000000000' });
+                done();
+            });
+    });
+});
 
 describe(`GET ${BASE_URL}/:address/tokenTransfers`, () => {
     it('Should return address token transfers', (done) => {

@@ -16,6 +16,12 @@ jest.mock('../../../lib/rpc', () => {
             limit: jest.fn(),
             wouldLimit: jest.fn()
         })),
+        DexFactoryConnector: jest.fn().mockImplementation(() => ({
+            allPairsLength: jest.fn().mockResolvedValue('10')
+        })),
+        DexConnector: jest.fn().mockImplementation(() => ({
+            getFactory: jest.fn().mockResolvedValue('0x123')
+        })),
         WalletConnector: jest.fn().mockImplementation(() => ({
             send: jest.fn().mockResolvedValue({ hash: '0x123' })
         })),

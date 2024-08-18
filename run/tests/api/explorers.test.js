@@ -37,7 +37,7 @@ const { Explorer } = require('../mocks/models');
 const { bulkEnqueue } = require('../../lib/queue');
 const db = require('../../lib/firebase');
 const PM2 = require('../../lib/pm2');
-const { ProviderConnector } = require('../../lib/rpc');
+const { ProviderConnector, DexConnector } = require('../../lib/rpc');
 const { withTimeout, validateBNString } = require('../../lib/utils');
 const flags = require('../../lib/flags');
 const authMiddleware = require('../../middlewares/auth');
@@ -58,9 +58,77 @@ beforeEach(() => {
     jest.spyOn(db, 'getWorkspaceById').mockResolvedValue({ id: 1 });
 });
 
+describe(`POST ${BASE_URL}/:id/v2_dexes`, () => {
+    it('Should throw an error if no explorer', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce(null);
+
+        request.post(`${BASE_URL}/1/v2_dexes`)
+            .send({ data: { routerAddress: '0x123', wrappedNativeTokenAddress: '0x456' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual('Could not find explorer.');
+                done();
+            });
+    });
+
+    it('Should throw an error if cannot get factory address', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({
+            id: 1,
+            workspace: { rpcServer: 'rpc' }
+        });
+        DexConnector.mockImplementation(() => ({
+            getFactory: jest.fn().mockRejectedValueOnce('Error')
+        }));
+
+        request.post(`${BASE_URL}/1/v2_dexes`)
+            .send({ data: { routerAddress: '0x123', wrappedNativeTokenAddress: '0x456' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Couldn't get factory address for router. Check that the factory method is present and returns an address.`);
+                done();
+            });
+    });
+
+    it('Should throw an error if invalid factory address', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({
+            id: 1,
+            workspace: { rpcServer: 'rpc' }
+        });
+        DexConnector.mockImplementation(() => ({
+            getFactory: jest.fn().mockResolvedValueOnce('0x123')
+        }));
+
+        request.post(`${BASE_URL}/1/v2_dexes`)
+            .send({ data: { routerAddress: '0x123', wrappedNativeTokenAddress: '0x456' }})
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`Invalid factory address.`);
+                done();
+            });
+    });
+
+    it('Should return the router address & the factory address', (done) => {
+        jest.spyOn(db, 'getExplorerById').mockResolvedValueOnce({
+            id: 1,
+            workspace: { rpcServer: 'rpc' }
+        });
+        DexConnector.mockImplementation(() => ({
+            getFactory: jest.fn().mockResolvedValueOnce('0x4150e51980114468aa8309bb72f027d8bff41353')
+        }));
+        jest.spyOn(db, 'createExplorerV2Dex').mockResolvedValueOnce({ id: 1, routerAddress: '0x123', factoryAddress: '0x456' });
+
+        request.post(`${BASE_URL}/1/v2_dexes`)
+            .send({ data: { routerAddress: '0x123', wrappedNativeTokenAddress: '0x456' }})
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ id: 1, routerAddress: '0x123', factoryAddress: '0x456' });
+                done();
+            });
+    });
+})
+
 describe(`POST ${BASE_URL}/:id/faucets`, () => {
     it('Should return faucet info', (done) => {
-
         jest.spyOn(db, 'createFaucet').mockResolvedValueOnce({ id: 1, address: '0x123' });
         request.post(`${BASE_URL}/1/faucets`)
             .send({ data: { amount: String(1 ** 18), interval: 24 * 60 }})

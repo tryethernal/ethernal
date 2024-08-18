@@ -7,18 +7,26 @@ jest.mock('../../../models/index.js', () => ({
     Explorer: require('./Explorer').Explorer,
     Transaction: require('./Transaction').Transaction,
     Block: require('./Block').Block,
-    ExplorerFaucet: require('./ExplorerFaucet').ExplorerFaucet
+    ExplorerFaucet: require('./ExplorerFaucet').ExplorerFaucet,
+    ExplorerV2Dex: require('./ExplorerV2Dex').ExplorerV2Dex,
+    V2DexPair: require('./V2DexPair').V2DexPair,
+    TransactionLog: require('./TransactionLog').TransactionLog,
+    V2DexPoolReserve: require('./V2DexPoolReserve').V2DexPoolReserve
 }));
 
 const { User, user } = require('./User');
 const { Workspace, workspace } = require('./Workspace');
 const { Explorer, explorer } = require('./Explorer');
+const { ExplorerV2Dex } = require('./ExplorerV2Dex');
 const { StripeSubscription } = require('./StripeSubscription');
 const { ExplorerDomain } = require('./ExplorerDomain');
 const { StripePlan } = require('./StripePlan');
 const { Transaction } = require('./Transaction');
 const { Block } = require('./Block');
 const { ExplorerFaucet } = require('./ExplorerFaucet');
+const { V2DexPair } = require('./V2DexPair');
+const { TransactionLog } = require('./TransactionLog');
+const { V2DexPoolReserve } = require('./V2DexPoolReserve');
 
 module.exports = {
     Transaction,
@@ -28,9 +36,13 @@ module.exports = {
     workspace,
     user,
     explorer,
+    ExplorerV2Dex,
     StripeSubscription,
     ExplorerDomain,
     StripePlan,
     Block,
-    ExplorerFaucet
+    ExplorerFaucet,
+    V2DexPair,
+    TransactionLog,
+    V2DexPoolReserve
 };

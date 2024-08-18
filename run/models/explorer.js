@@ -9,6 +9,8 @@ const { getDemoUserId, getAppDomain } = require('../lib/env');
 const { enqueue } = require('../lib/queue');
 const Analytics = require('../lib/analytics');
 const analytics = new Analytics();
+const IUniswapV2Router02 = require('../lib/abis/IUniswapV2Router02.json');
+const IUniswapV2Factory = require('../lib/abis/IUniswapV2Factory.json');
 const MAX_RPC_ATTEMPTS = 3;
 
 module.exports = (sequelize, DataTypes) => {
@@ -23,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       Explorer.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       Explorer.hasOne(models.StripeSubscription, { foreignKey: 'explorerId', as: 'stripeSubscription' });
       Explorer.hasOne(models.ExplorerFaucet, { foreignKey: 'explorerId', as: 'faucet' });
+      Explorer.hasOne(models.ExplorerV2Dex, { foreignKey: 'explorerId', as: 'v2Dex' });
       Explorer.hasMany(models.ExplorerDomain, { foreignKey: 'explorerId', as: 'domains' });
     }
 
@@ -77,6 +80,12 @@ module.exports = (sequelize, DataTypes) => {
                     attributes: ['id', 'address', 'amount', 'interval', 'active'],
                     where: { active: true },
                     required: false
+                },
+                {
+                    model: sequelize.models.ExplorerV2Dex,
+                    as: 'v2Dex',
+                    attributes: ['id', 'routerAddress', 'active'],
+                    required: false
                 }
             ]
         });
@@ -118,6 +127,12 @@ module.exports = (sequelize, DataTypes) => {
                             attributes: ['id', 'address', 'amount', 'interval', 'active'],
                             where: { active: true },
                             required: false
+                        },
+                        {
+                            model: sequelize.models.ExplorerV2Dex,
+                            as: 'v2Dex',
+                            attributes: ['id', 'routerAddress', 'active'],
+                            required: false
                         }
                     ]
                 }
@@ -158,6 +173,12 @@ module.exports = (sequelize, DataTypes) => {
                         attributes: ['id', 'address', 'amount', 'interval', 'active'],
                         where: { active: true },
                         required: false
+                    },
+                    {
+                        model: sequelize.models.ExplorerV2Dex,
+                        as: 'v2Dex',
+                        attributes: ['id', 'routerAddress', 'active'],
+                        required: false
                     }
                 ]
             });
@@ -169,6 +190,52 @@ module.exports = (sequelize, DataTypes) => {
 
     stopSync() {
         return this.update({ shouldSync: false });
+    }
+
+    async safeCreateV2Dex(routerAddress, factoryAddress, wrappedNativeTokenAddress) {
+        if (!routerAddress || !factoryAddress || !wrappedNativeTokenAddress)
+            throw new Error('Missing parameter');
+
+        const dex = await this.getV2Dex();
+        if (dex)
+            throw new Error('This explorer already has a dex.');
+
+        let [routerContract] = await sequelize.models.Contract.findOrCreate({
+            where: {
+                workspaceId: this.workspaceId,
+                address: routerAddress.toLowerCase()
+            }
+        });
+        const routerContractProperties = sanitize({
+            abi: routerContract.abi ? routerContract.abi : IUniswapV2Router02,
+            name: routerContract.name ? routerContract.name : 'UniswapV2Router'
+        });
+        await routerContract.update(routerContractProperties);
+
+        let [factoryContract] = await sequelize.models.Contract.findOrCreate({
+            where: {
+                workspaceId: this.workspaceId,
+                address: factoryAddress.toLowerCase()
+            }
+        });
+        const factoryContractProperties = sanitize({
+            abi: factoryContract.abi ? factoryContract.abi : IUniswapV2Factory,
+            name: factoryContract.name ? factoryContract.name : 'UniswapV2Factory'
+        });
+        await factoryContract.update(factoryContractProperties);
+
+        const [wrappedNativeTokenContract] = await sequelize.models.Contract.findOrCreate({
+            where: {
+                workspaceId: this.workspaceId,
+                address: wrappedNativeTokenAddress.toLowerCase()
+            }
+        });
+
+        return this.createV2Dex({
+            routerAddress, factoryAddress,
+            explorerId: this.id,
+            wrappedNativeTokenContractId: wrappedNativeTokenContract.id
+        });
     }
 
     async safeCreateFaucet(amount, interval, transaction) {
@@ -302,6 +369,10 @@ module.exports = (sequelize, DataTypes) => {
                 const faucet = await this.getFaucet();
                 if (faucet)
                     await faucet.safeDestroy(transaction);
+
+                const dex = await this.getV2Dex();
+                if (dex)
+                    await dex.safeDestroy(transaction);
 
                 await this.destroy({ transaction });
 

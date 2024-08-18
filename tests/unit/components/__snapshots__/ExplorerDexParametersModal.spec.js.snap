@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExplorerDexParametersModal.vue Should display dex parameters 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 350px;">
+        <div class="v-card v-sheet v-sheet--outlined theme--light">
+          <div class="v-card__title">
+            Transaction Settings
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button>
+          </div>
+          <div class="v-card__text">
+            Slippage tolerance
+            <div class="d-flex">
+              <div class="v-item-group theme--light v-slide-group v-chip-group">
+                <div class="v-slide-group__prev v-slide-group__prev--disabled">
+                  <transition-stub name="fade-transition"></transition-stub>
+                </div>
+                <div class="v-slide-group__wrapper">
+                  <div class="v-slide-group__content"><span tabindex="0" class="mr-2 v-chip v-chip--clickable v-chip--no-color theme--light v-size--small"><span class="v-chip__content">0.1%</span></span> <span tabindex="0" class="mr-2 v-chip primary--text text--accent-4 v-chip--active v-chip--clickable v-chip--no-color theme--light v-size--small"><span class="v-chip__content">0.5%</span></span> <span tabindex="0" class="mr-2 v-chip v-chip--clickable v-chip--no-color theme--light v-size--small"><span class="v-chip__content">1%</span></span></div>
+                </div>
+                <div class="v-slide-group__next v-slide-group__next--disabled">
+                  <transition-stub name="fade-transition"></transition-stub>
+                </div>
+              </div>
+              <div class="v-input rounded-xl ml-5 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--enclosed v-text-field--reverse v-text-field--outlined">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot">
+                      <div class="v-text-field__prefix">%</div><input id="input-16" type="number">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr role="separator" aria-orientation="horizontal" class="my-3 v-divider theme--light">
+            Transaction deadline
+            <div class="v-input rounded-xl mt-1 v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--prefix v-text-field--enclosed v-text-field--reverse v-text-field--outlined" style="max-width: 140px;">
+              <div class="v-input__control">
+                <div class="v-input__slot">
+                  <fieldset aria-hidden="true">
+                    <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                  </fieldset>
+                  <div class="v-text-field__slot">
+                    <div class="v-text-field__prefix">minutes</div><input id="input-18" type="number">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;
