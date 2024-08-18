@@ -3,7 +3,7 @@ const stripe = require('stripe')(getStripeSecretKey());
 const express = require('express');
 const router = express.Router();
 const { isStripeEnabled } = require('../lib/flags');
-const { ProviderConnector } = require('../lib/rpc');
+const { ProviderConnector, DexConnector } = require('../lib/rpc');
 const { Explorer } = require('../models');
 const { withTimeout, validateBNString, sanitize } = require('../lib/utils');
 const { bulkEnqueue } = require('../lib/queue');
@@ -13,6 +13,37 @@ const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const secretMiddleware = require('../middlewares/secret');
+
+router.post('/:id/v2_dexes', authMiddleware, async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        if (!data.routerAddress || !data.wrappedNativeTokenAddress)
+            throw new Error('Missing parameters');
+
+        const explorer = await db.getExplorerById(data.user.id, req.params.id);
+        if (!explorer || !explorer.workspace)
+            throw new Error('Could not find explorer.');
+
+        let routerFactoryAddress;
+        try {
+            const dexConnector = new DexConnector(explorer.workspace.rpcServer, data.routerAddress);
+            routerFactoryAddress = await dexConnector.getFactory();
+        } catch(error) {
+            throw new Error(`Couldn't get factory address for router. Check that the factory method is present and returns an address.`);
+        }
+
+        if (!routerFactoryAddress || typeof routerFactoryAddress != 'string' || routerFactoryAddress.length != 42 || !routerFactoryAddress.startsWith('0x'))
+            throw new Error(`Invalid factory address.`);
+
+        const { id, routerAddress, factoryAddress } = await db.createExplorerV2Dex(data.uid, req.params.id, data.routerAddress, routerFactoryAddress, data.wrappedNativeTokenAddress);
+
+        res.status(200).json({ id, routerAddress, factoryAddress });
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.explorers.id.dexes', error, data });
+        res.status(400).send(error.message);
+    }
+});
 
 router.post('/:id/faucets', authMiddleware, async (req, res) => {
     const data = req.body.data;
@@ -677,7 +708,13 @@ router.get('/search', async (req, res) => {
                 address: explorer.faucet.address,
                 amount: explorer.faucet.amount,
                 interval: explorer.faucet.interval
-            }
+            };
+
+        if (explorer.v2Dex && explorer.v2Dex.active)
+            fields['v2Dex'] = {
+                id: explorer.v2Dex.id,
+                routerAddress: explorer.v2Dex.routerAddress
+            };
 
         res.status(200).json({ explorer: fields });
     } catch(error) {

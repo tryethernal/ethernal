@@ -1,4 +1,4 @@
-const { decodeLog, getTokenTransfer, getTransactionMethodDetails, findAbiForFunction } = require('../../lib/abi.js');
+const { getV2PoolReserves, decodeLog, getTokenTransfer, getTransactionMethodDetails, findAbiForFunction } = require('../../lib/abi.js');
 const ERC_20_ABI = require('../../lib/abis/erc20.json');
 const ERC_721_ABI = require('../../lib/abis/erc721.json');
 const ABIProp = require('../fixtures/ABIProp.json');
@@ -10,6 +10,13 @@ const TransactionReceipt = require('../fixtures/TransactionReceipt.json');
 const AmalfiDepositTransaction = require('../fixtures/AmalfiDepositTransaction.json');
 const AmalfiContract = require('../fixtures/AmalfiContract.json');
 const TransactionTransfer = require('../fixtures/TransactionTransfer.json');
+const SyncEvent = require('../fixtures/SyncEvent.json');
+
+describe('getV2PoolReserves', () => {
+    it('Should return the reserves', () => {
+        expect(getV2PoolReserves(SyncEvent)).toEqual({ reserve0: '999671367819237062401644', reserve1: '20247201855330962943989954' });
+    });
+});
 
 describe('findAbiForFunction', () => {
     it('Should return erc721 abi if the signature matches one of its function', () => {

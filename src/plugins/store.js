@@ -83,6 +83,11 @@ export default new Vuex.Store({
             if (!state.publicExplorer)
                 return;
             state.publicExplorer.faucet = faucet;
+        },
+        SET_V2_DEX_SETTINGS(state, v2Dex) {
+            if (!state.publicExplorer)
+                return;
+            state.publicExplorer.v2Dex = v2Dex;
         }
     },
     actions: {
@@ -159,6 +164,9 @@ export default new Vuex.Store({
         },
         updateFaucetSettings({ commit }, faucet) {
             commit('SET_FAUCET_SETTINGS', faucet);
+        },
+        updateV2DexSettings({ commit }, v2Dex) {
+            commit('SET_V2_DEX_SETTINGS', v2Dex);
         }
     },
     getters: {
@@ -185,12 +193,15 @@ export default new Vuex.Store({
         isUserAdmin: state => state.currentWorkspace && state.user.id == state.currentWorkspace.userId,
         isPublicExplorer: state => state.publicExplorer && (!!state.publicExplorer.slug || !!state.publicExplorer.domain || (state.currentWorkspace.public && state.user.uid == state.currentWorkspace.firebaseUserId)),
         publicExplorer: state => state.publicExplorer,
+        maxV2DexPairsForTrial: () => 20,
         user: state => {
             return { ...state.user, plan: state.user.plan || 'free' };
         },
         currentBlock: state => state.currentBlock,
         currentWorkspace: state => state.currentWorkspace,
         connected: state => state.connected,
+        nativeTokenSymbol: state => state.publicExplorer && state.publicExplorer.token || 'ETH',
+        nativeTokenAddress: () => '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
         chains: () => ({
             ethereum: {
                 slug: 'ethereum',

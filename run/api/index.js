@@ -20,6 +20,7 @@ const status = require('./status');
 const external = require('./external');
 const domains = require('./domains');
 const faucets = require('./faucets');
+const v2Dexes = require('./v2Dexes');
 
 router.use('/blocks', blocks);
 router.use('/contracts', contracts);
@@ -39,6 +40,7 @@ router.use('/status', status);
 router.use('/external', external);
 router.use('/domains', domains);
 router.use('/faucets', faucets);
+router.use('/v2_dexes', v2Dexes);
 
 if (isDemoEnabled()) {
     const demo = require('./demo');

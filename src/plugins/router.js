@@ -20,6 +20,7 @@ import Explorers from '../components/Explorers.vue';
 import Explorer from '../components/Explorer.vue';
 import ExplorerAnalytics from '../components/ExplorerAnalytics.vue';
 import ExplorerFaucet from '../components/ExplorerFaucet.vue';
+import ExplorerDex from '../components/ExplorerDex.vue';
 
 const auth = () => {
     return { currentUser: router.app.$store.getters.user };
@@ -63,6 +64,7 @@ const routes = [
     { path: '/explorers/:id', component: Explorer, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/status', component: ExplorerStatus, beforeEnter: redirectIfLoggedOut },
     { path: '/faucet', component: ExplorerFaucet, beforeEnter: redirectIfLoggedOut },
+    { path: '/dex', component: ExplorerDex, beforeEnter: redirectIfLoggedOut },
     { path: '*', redirect: '/overview' }
 ];
 

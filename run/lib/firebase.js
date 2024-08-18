@@ -2,7 +2,6 @@ const Sequelize = require('sequelize');
 const { getDemoUserId, getMaxBlockForSyncReset } = require('./env');
 const models = require('../models');
 const { firebaseHash }  = require('./crypto');
-const explorer = require('../models/explorer');
 
 const Op = Sequelize.Op;
 const User = models.User;
@@ -19,6 +18,175 @@ const ExplorerDomain = models.ExplorerDomain;
 const RpcHealthCheck = models.RpcHealthCheck;
 const StripeQuotaExtension = models.StripeQuotaExtension;
 const ExplorerFaucet = models.ExplorerFaucet;
+const ExplorerV2Dex = models.ExplorerV2Dex;
+const V2DexPair = models.V2DexPair;
+
+const getV2DexPairCount = async (userId, v2DexId) => {
+    if (!userId || !v2DexId)
+        throw new Error('Missing parameter');
+
+    const dex = await ExplorerV2Dex.findOne({
+        where: {
+            id: v2DexId,
+            '$explorer.admin.id$': userId
+        },
+        include: {
+            model: Explorer,
+            as: 'explorer',
+            include: 'admin'
+        }
+    });
+    if (!dex)
+        throw new Error('Could not find dex');
+
+    return dex.countPairs();
+};
+
+const deleteV2Dex = async (firebaseUserId, v2DexId) => {
+    if (!firebaseUserId || !v2DexId)
+        throw new Error('Missing parameter');
+
+    const dex = await ExplorerV2Dex.findOne({
+        where: {
+            id: v2DexId,
+            '$explorer.admin.firebaseUserId$': firebaseUserId
+        },
+        include: {
+            model: Explorer,
+            as: 'explorer',
+            include: 'admin'
+        }
+    });
+    if (!dex)
+        throw new Error('Could not find dex');
+
+    return dex.safeDestroy();
+};
+
+const deactivateV2Dex = async (firebaseUserId, v2DexId) => {
+    if (!firebaseUserId || !v2DexId)
+        throw new Error('Missing parameter');
+
+    const dex = await ExplorerV2Dex.findOne({
+        where: {
+            id: v2DexId,
+            '$explorer.admin.firebaseUserId$': firebaseUserId
+        },
+        include: {
+            model: Explorer,
+            as: 'explorer',
+            include: 'admin'
+        }
+    });
+    if (!dex)
+        throw new Error('Could not find dex');
+
+    return dex.update({ active: false });
+};
+
+const activateV2Dex = async (firebaseUserId, v2DexId) => {
+    if (!firebaseUserId || !v2DexId)
+        throw new Error('Missing parameter');
+
+    const dex = await ExplorerV2Dex.findOne({
+        where: {
+            id: v2DexId,
+            '$explorer.admin.firebaseUserId$': firebaseUserId
+        },
+        include: {
+            model: Explorer,
+            as: 'explorer',
+            include: 'admin'
+        }
+    });
+    if (!dex)
+        throw new Error('Could not find dex');
+
+    return dex.update({ active: true });
+};
+
+const getV2DexQuote = async (v2DexId, from, to, amount, direction, slippageTolerance) => {
+    if (!v2DexId || !from || !to || !amount)
+        throw new Error('Missing parameter');
+
+    const dex = await ExplorerV2Dex.findByPk(v2DexId);
+    if (!dex)
+        throw new Error('Could not find dex');
+
+    return dex.getQuote(from, to, amount, direction, slippageTolerance);
+};
+
+const getExplorerV2Dex = (v2DexId) => {
+    if (!v2DexId)
+        throw new Error('Missing parameter');
+
+    return ExplorerV2Dex.findByPk(v2DexId, {
+        attributes: ['id', 'routerAddress', 'factoryAddress', 'active'],
+        include: [
+            {
+                model: V2DexPair,
+                as: 'pairs',
+                attributes: ['id'],
+                include: [
+                    {
+                        model: Contract,
+                        as: 'token0',
+                        attributes: ['address', 'tokenName', 'tokenSymbol']
+                    },
+                    {
+                        model: Contract,
+                        as: 'token1',
+                        attributes: ['address', 'tokenName', 'tokenSymbol']
+                    },
+                    {
+                        model: Contract,
+                        as: 'pair',
+                        attributes: ['address']
+                    }
+                ]
+            },
+            {
+                model: Explorer,
+                as: 'explorer',
+                attrbutes: ['id'],
+                include: {
+                    model: Workspace,
+                    as: 'workspace',
+                    attributes: ['rpcServer', 'networkId']
+                }
+            }
+        ]
+    });
+};
+
+const createV2DexPair = async (dexId, token0, token1, pair) => {
+    if (!dexId || !token0 || !token1 ||!pair)
+        throw new Error('Missing parameter');
+    
+    const dex = await ExplorerV2Dex.findByPk(dexId);
+    if (!dex)
+        throw new Error('Could not find dex');
+
+    return dex.safeCreatePair(token0, token1, pair);
+};
+
+const createExplorerV2Dex = async (firebaseUserId, explorerId, routerAddress, routerFactoryAddress, wrappedNativeTokenAddress) => {
+    if (!firebaseUserId || !explorerId || !routerAddress || !routerFactoryAddress || !wrappedNativeTokenAddress)
+        throw new Error('Missing parameter');
+
+    const explorer = await Explorer.findOne({
+        where: {
+            id: explorerId,
+            '$admin.firebaseUserId$': firebaseUserId
+        },
+        include: 'admin'
+    });
+
+    if (!explorer)
+        throw new Error('Could not find explorer');
+
+    return explorer.safeCreateV2Dex(routerAddress, routerFactoryAddress, wrappedNativeTokenAddress);
+};
 
 const createExplorerFromOptions = async (userId, options) => {
     if (!userId || !options)
@@ -897,6 +1065,18 @@ const getExplorerById = (userId, id, withDemo = false) => {
                 model: ExplorerFaucet,
                 as: 'faucet',
                 attributes: ['id', 'address', 'amount', 'interval', 'active']
+            },
+            {
+                model: ExplorerV2Dex,
+                as: 'v2Dex',
+                attributes: ['id', 'routerAddress', 'factoryAddress', 'active'],
+                include: [
+                    {
+                        model: Contract,
+                        as: 'wrappedNativeTokenContract',
+                        attributes: ['address', 'tokenSymbol', 'tokenName']
+                    }
+                ]
             }
         ]
     });
@@ -2116,6 +2296,17 @@ const getContractTransactions = async (userId, workspace, address) => {
     return transactions.map(t => t.toJSON());
 }
 
+const fetchPairsWithLatestReserves = async (explorerV2DexId, page = 1, itemsPerPage = 10, order = 'DESC') => {
+    if (!explorerV2DexId)
+        throw new Error('Missing parameter.');
+
+    const explorerV2Dex = await ExplorerV2Dex.findByPk(explorerV2DexId);
+    if (!explorerV2Dex)
+        throw new Error('Could not find dex');
+
+    return explorerV2Dex.getPairsWithLatestReserves(page, itemsPerPage, order);
+};
+
 module.exports = {
     storeBlock: storeBlock,
     storeTransaction: storeTransaction,
@@ -2269,5 +2460,14 @@ module.exports = {
     getFaucetRequestVolume: getFaucetRequestVolume,
     getFaucetTokenVolume: getFaucetTokenVolume,
     getFaucetTransactionHistory: getFaucetTransactionHistory,
-    createExplorerFromOptions: createExplorerFromOptions
+    createExplorerV2Dex: createExplorerV2Dex,
+    createV2DexPair: createV2DexPair,
+    getExplorerV2Dex: getExplorerV2Dex,
+    createExplorerFromOptions: createExplorerFromOptions,
+    getV2DexQuote: getV2DexQuote,
+    fetchPairsWithLatestReserves: fetchPairsWithLatestReserves,
+    deactivateV2Dex: deactivateV2Dex,
+    activateV2Dex: activateV2Dex,
+    deleteV2Dex: deleteV2Dex,
+    getV2DexPairCount: getV2DexPairCount
 };

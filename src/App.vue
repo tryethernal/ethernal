@@ -111,6 +111,15 @@
                     </v-list-item-content>
                 </v-list-item>
 
+                <v-list-item link :to="'/dex'" v-if="isPublicExplorer && publicExplorer.v2Dex">
+                    <v-list-item-icon>
+                        <v-icon>mdi-swap-horizontal</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>Dex</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
                 <v-list-item link :to="'/status'" v-if="(isUserAdmin && currentWorkspace.public) || currentWorkspace.statusPageEnabled">
                     <v-list-item-icon>
                         <v-icon>mdi-heart-circle</v-icon>

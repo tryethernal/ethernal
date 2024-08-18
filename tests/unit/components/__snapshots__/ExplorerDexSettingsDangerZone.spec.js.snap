@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExplorerDexSettingsDangerZone.vue Should display danger zone 1`] = `
+<div class="v-sheet v-sheet--outlined theme--light rounded error">
+  <div class="elevation-0 v-card v-sheet theme--light">
+    <!---->
+    <div class="v-card__text font-weight-medium error--text">
+      <div class="row">
+        Deleting this dex is irreversible.
+        <div class="spacer"></div> <button type="button" class="mt-2 v-btn v-btn--has-bg theme--light v-size--small error"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-delete theme--light"></i>Delete Dex</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

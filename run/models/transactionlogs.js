@@ -3,7 +3,7 @@ const {
   Model,
   Sequelize
 } = require('sequelize');
-const { getTokenTransfer } = require('../lib/abi');
+const { getTokenTransfer, getV2PoolReserves } = require('../lib/abi');
 const { sanitize } = require('../lib/utils');
 const { trigger } = require('../lib/pusher');
 const Op = Sequelize.Op;
@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
           constraints: false
       });
       TransactionLog.hasOne(models.TokenTransfer, { foreignKey: 'transactionLogId', as: 'tokenTransfer' });
+      TransactionLog.hasOne(models.V2DexPoolReserve, { foreignKey: 'transactionLogId', as: 'v2DexPoolReserve' });
     }
 
     async safeCreateTokenTransfer(tokenTransfer, transaction) {
@@ -60,6 +61,46 @@ module.exports = (sequelize, DataTypes) => {
         await tokenTransfer.safeDestroy(transaction);
       return this.destroy({ transaction });
     }
+
+    async insertV2PoolReserve(reserves, transaction) {
+      if (!reserves.reserve0 || !reserves.reserve1)
+        return 'Missing reserves';
+
+      const existingReserve = await sequelize.models.V2DexPoolReserve.findOne({
+        where: { transactionLogId: this.id }
+      });
+
+      if (existingReserve)
+        return;
+
+      const receipt = await this.getReceipt({ include: 'transaction' });
+      const pairContract = await sequelize.models.Contract.findOne({
+        where: {
+          workspaceId: this.workspaceId,
+          address: this.address
+        }
+      });
+      const v2DexPair = await sequelize.models.V2DexPair.findOne({
+        where: { pairContractId: pairContract.id },
+        include: [
+          { model: sequelize.models.Contract, as: 'token0', attributes: ['id'] },
+          { model: sequelize.models.Contract, as: 'token1', attributes: ['id'] }
+        ],
+      });
+
+      if (!v2DexPair)
+        return console.log('Could not find dex pair for contract id', pairContract.id)
+
+      return sequelize.models.V2DexPoolReserve.create({
+        v2DexPairId: v2DexPair.id,
+        transactionLogId: this.id,
+        timestamp: receipt.transaction.timestamp,
+        reserve0: reserves.reserve0,
+        reserve1: reserves.reserve1,
+        token0ContractId: v2DexPair.token0.id,
+        token1ContractId: v2DexPair.token1.id
+      }, { transaction });
+    }
   }
   TransactionLog.init({
     workspaceId: DataTypes.INTEGER,
@@ -84,6 +125,10 @@ module.exports = (sequelize, DataTypes) => {
             const tokenTransfer = getTokenTransfer(log.raw);
             if (tokenTransfer)
                 await log.safeCreateTokenTransfer(tokenTransfer, options.transaction);
+
+            const reserves = getV2PoolReserves(log.raw)
+            if (reserves)
+                await log.insertV2PoolReserve(reserves, options.transcation);
 
             return trigger(`private-contractLog;workspace=${log.workspaceId};contract=${log.address}`, 'new', null);
         }

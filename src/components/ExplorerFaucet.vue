@@ -22,7 +22,7 @@
                                     outlined
                                     required
                                     :rules="[
-                                        v => !!v || 'An address is required',
+                                        v => !!v || 'A valid address is required',
                                         v => !!v && v.match(/(\b0x[A-Fa-f0-9]{40}\b)/g) ? true : 'Invalid address'
                                     ]"
                                     type="text"
