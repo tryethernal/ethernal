@@ -293,6 +293,7 @@ describe('ExplorerDex.vue', () => {
             }
         });
         await flushPromises();
+        await new Promise((r) => setTimeout(r, 1500));
 
         expect(wrapper.html()).toMatchSnapshot();
     });
