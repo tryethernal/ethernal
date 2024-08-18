@@ -128,6 +128,10 @@ router.post('/explorers', async (req, res) => {
                 stripeId: null,
                 cycleEndsAt: new Date(0),
                 status: 'active'
+            },
+            faucet: {
+                amount: 10000000000000000,
+                interval: 10
             }
         };
 
