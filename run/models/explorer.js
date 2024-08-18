@@ -129,7 +129,7 @@ module.exports = (sequelize, DataTypes) => {
                             required: false
                         },
                         {
-                            model: sequelize.models.ExplorerDex,
+                            model: sequelize.models.ExplorerV2Dex,
                             as: 'v2Dex',
                             attributes: ['id', 'routerAddress', 'active'],
                             required: false
