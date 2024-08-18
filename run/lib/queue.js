@@ -5,9 +5,9 @@ const uniqueQueues = [];
 
 const MAX_BATCH_SIZE = 2000;
 
-const enqueue = (queueName, jobName, data, priority = 1, repeat, delay) => {
-    const jobId = uniqueQueues.indexOf(queueName) > -1 ? jobName : null;
-    return queues[queueName].add(jobName || jobName, data, sanitize({ priority, repeat, jobId: jobId, delay }));
+const enqueue = (queueName, jobName, data, priority = 1, repeat, delay, unique) => {
+    const jobId = unique ? jobName : null;
+    return queues[queueName].add(jobName, data, sanitize({ priority, repeat, jobId, delay }));
 };
 
 const bulkEnqueue = (queueName, jobData, priority = 10, maxBatchSize = MAX_BATCH_SIZE) => {
