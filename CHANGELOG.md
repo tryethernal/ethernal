@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.37.1] - 2024-08-18
+### Fixed
+- Dex tokens loading
+
 ## [3.37.0] - 2024-08-18
 ### Added
 - Dex for public explorers. In the explorer's settings, you can create a Dex UI
