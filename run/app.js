@@ -1,3 +1,22 @@
+// Import with `import * as Sentry from "@sentry/node"` if you are using ESM
+const Sentry = require('@sentry/node');
+const { getNodeEnv, getSentryDsn } = require('./lib/env');
+const { nodeProfilingIntegration } = require('@sentry/profiling-node');
+
+Sentry.init({
+  dsn: getSentryDsn(),
+  environment: getNodeEnv() || 'development',
+  integrations: [
+    nodeProfilingIntegration(),
+    Sentry.postgresIntegration
+  ],
+  // Performance Monitoring
+  tracesSampleRate: 1.0, //  Capture 100% of the transactions
+
+  // Set sampling rate for profiling - this is relative to tracesSampleRate
+  profilesSampleRate: 1.0,
+});
+
 const path = require('path');
 const { initializeApp } = require('firebase-admin/app');
 const express = require('express');
@@ -27,9 +46,21 @@ app.use(express.json({
         }
     }
 }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ limit: '25mb', extended: true }));
 
 app.use(cors({ origin: '*', methods: ['GET', 'POST', 'OPTIONS', 'DELETE', 'PUT'] }));
+
+app.use((req, res, next) => {
+    if (req.path != '/api')
+        return next();
+
+    if (req.body.module == 'contract' && req.body.action == 'verifysourcecode')
+        req.url = '/api/contracts/verify';
+    else if (req.query.module == 'contract' && req.query.action == 'checkverifystatus' && req.query.apikey && req.query.guid)
+        req.url = '/api/contracts/verificationStatus';
+
+    next();
+});
 
 const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath('/bull');

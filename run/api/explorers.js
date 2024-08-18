@@ -60,7 +60,7 @@ router.post('/:id/faucets', authMiddleware, async (req, res) => {
 
         res.status(200).json({ id, address });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.faucets', error, data });
+        logger.error(error.message, { location: 'post.api.explorers.id.faucets', error });
         res.status(400).send(error.message);
     }
 });
@@ -325,7 +325,7 @@ router.put('/:id/quotaExtension', [authMiddleware, stripeMiddleware], async (req
 
         res.status(200).json({ stripeSubscription: explorer.stripeSubscription });
     } catch(error) {
-        logger.error(error.message, { location: 'put.api.explorers.id.quotaExtension', error: error, data: data });
+        logger.error(error.message, { location: 'put.api.explorers.id.quotaExtension', error });
         res.status(400).send(error.message);
     }
 });
@@ -369,7 +369,7 @@ router.put('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, 
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.updateSubscription', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.explorers.id.updateSubscription', error });
         res.status(400).send(error.message);
     }
 });
@@ -394,7 +394,7 @@ router.delete('/:id/subscription', [authMiddleware, stripeMiddleware], async (re
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.cancelSubscription', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.explorers.id.cancelSubscription', error });
         res.status(400).send(error.message);
     }
 });
@@ -431,7 +431,7 @@ router.post('/:id/cryptoSubscription', [authMiddleware, stripeMiddleware], async
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.startCryptoSubscription', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.explorers.id.startCryptoSubscription', error });
         res.status(400).send(error.message);
     }
 });
@@ -444,7 +444,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'delete.api.explorers.id', error, data });
+        logger.error(error.message, { location: 'delete.api.explorers.id', error });
         res.status(400).send(error.message);
     }
 });
@@ -455,7 +455,7 @@ router.get('/plans', [authMiddleware, stripeMiddleware], async (req, res) => {
 
         res.status(200).json(plans);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers.plans', error: error });
+        logger.error(error.message, { location: 'get.api.explorers.plans', error });
         res.status(400).send(error.message);
     }
 });
@@ -466,7 +466,7 @@ router.get('/quotaExtensionPlan', [authMiddleware, stripeMiddleware], async (req
 
         res.status(200).json(plan);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers.quotaExtensionPlan', error: error });
+        logger.error(error.message, { location: 'get.api.explorers.quotaExtensionPlan', error });
         res.status(400).send(error.message);
     }
 });
@@ -489,7 +489,7 @@ router.post('/:id/domains', authMiddleware, async (req, res) => {
 
         res.status(200).send({ id: explorerDomain.id });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.domains', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.explorers.id.domains', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -506,7 +506,7 @@ router.post('/:id/branding', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.branding', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.explorers.id.branding', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -531,7 +531,7 @@ router.post('/:id/settings', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.settings', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.explorers.settings', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -653,7 +653,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
         res.status(200).send(fields);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.explorers', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -718,7 +718,7 @@ router.get('/search', async (req, res) => {
 
         res.status(200).json({ explorer: fields });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers.search', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.explorers.search', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -737,7 +737,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
 
         res.status(200).json(explorer.toJSON());
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers.id', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.explorers.id', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -750,7 +750,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
         res.status(200).json(explorers)
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.explorers', error });
         res.status(400).send(error.message);
     }
 });

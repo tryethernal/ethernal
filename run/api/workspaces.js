@@ -21,7 +21,7 @@ router.post('/reprocessTransactionErrors', [secretMiddleware], async (req, res) 
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.workspaces.reprocessWorkspaceTransactionErrors', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.workspaces.reprocessWorkspaceTransactionErrors', error });
         res.status(400).send(error.message);
     }
 });
@@ -37,7 +37,7 @@ router.post('/reprocessTransactionTraces', [secretMiddleware], async (req, res) 
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.workspaces.reprocessTransactions', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.workspaces.reprocessTransactions', error });
         res.status(400).send(error.message);
     }
 });
@@ -49,7 +49,7 @@ router.delete('/:id', [authMiddleware], async (req, res) => {
         await db.deleteWorkspace(data.user.id, req.params.id);
         res.sendStatus(200);
     } catch(error) { 
-        logger.error(error.message, { location: 'delete.api.workspaces', error: error, data: data });
+        logger.error(error.message, { location: 'delete.api.workspaces', error });
         res.status(400).send(error.message);
     }
 });
@@ -62,7 +62,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
         res.status(200).json(workspaces);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.workspaces', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.workspaces', error });
         res.status(400).send(error.message);
     }
 });
@@ -73,7 +73,7 @@ router.get('/:id', secretMiddleware, async (req, res) => {
 
         res.status(200).json(workspace);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.workspaces.id', error: error, data: req.params });
+        logger.error(error.message, { location: 'get.api.workspaces.id', error, params: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -126,7 +126,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
         res.status(200).json(workspace);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.workspaces', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.workspaces', error });
         res.status(400).send(error.message);
     }
 });
@@ -161,7 +161,7 @@ router.post('/settings', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.workspaces.settings', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.workspaces.settings', error });
         res.status(400).send(error.message);
     }
 });
@@ -177,7 +177,7 @@ router.post('/setCurrent', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.workspaces.setCurrent', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.workspaces.setCurrent', error });
         res.status(400).send(error);
     }
 });
@@ -203,7 +203,7 @@ router.post('/reset', authMiddleware, async (req, res) => {
 
         res.status(200).json({ needsBatchReset });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.workspaces.reset', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.workspaces.reset', error });
         res.status(400).send(error);
     }
 });

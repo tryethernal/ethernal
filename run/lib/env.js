@@ -37,4 +37,5 @@ module.exports = {
     getRedisTls: () => process.env.ENABLE_REDIS_TLS,
     getRedisTlsSentinel: () => process.env.ENABLE_REDIS_TLS_SENTINEL,
     getMaxV2DexPairsForTrial: () => process.env.MAX_V2_DEX_PAIRS_FOR_TRIAL || 20,
+    getSentryDsn: () => process.env.SENTRY_DSN
 };

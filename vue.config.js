@@ -1,5 +1,6 @@
 const CopyPlugin = require("copy-webpack-plugin");
 const WorkerPlugin = require('worker-plugin');
+const { sentryWebpackPlugin } = require("@sentry/webpack-plugin");
 process.env.VUE_APP_VERSION = process.env.COMMIT_REF ? process.env.COMMIT_REF.slice(-5) : '/';
 
 module.exports = {
@@ -19,6 +20,7 @@ module.exports = {
             })
     },
     configureWebpack: {
+        devtool: "source-map",
         devServer: {
             host: '0.0.0.0',
             port: 8080,
@@ -33,7 +35,12 @@ module.exports = {
                     { from: './_redirects', to: './' }
                 ]
             }),
-            new WorkerPlugin()
+            new WorkerPlugin(),
+            sentryWebpackPlugin({
+                authToken: process.env.SENTRY_AUTH_TOKEN,
+                org: process.env.SENTRY_ORG,
+                project: process.env.SENTRY_PROJECT,
+            })
         ],
         externals: {
             fsevents: "require('fsevents')",

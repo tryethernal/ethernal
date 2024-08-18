@@ -269,8 +269,10 @@ export default {
 
             const libraries = {};
             this.rawLibraries.forEach(l => {
-                if (!!l.name && l.name.length && !!l.address && l.address.length)
-                    libraries[l.name] = l.address;
+                if (l.name && l.name.split(':').length == 2 && l.address)
+                    libraries[l.name.split(':')[0]] = {
+                        [l.name.split(':')[1]]: l.address
+                    };
             });
 
             const data = sanitize({

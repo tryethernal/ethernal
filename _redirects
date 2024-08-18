@@ -1,2 +1,5 @@
 /ingest/*   https://app.posthog.com/:splat  200!
+/api module=contract action=checkverifystatus apikey=:apikey https://api.tryethernal.com/api/contracts/verificationStatus 200!
+/api https://api.tryethernal.com/api/contracts/verify 200!
+/api/* https://api.tryethernal.com/api/:splat 200!
 /*   /index.html   200

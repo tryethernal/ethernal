@@ -8,17 +8,17 @@
 
         <v-row>
             <v-col cols="12" sm="6" lg="3">
-                <Stat-Number :type="'link'" :title="'Latest Block'" :value="currentBlock.number" :loading="globalStatsLoading" :href="`/block/${currentBlock.number}`" />
+                <Stat-Number :type="'link'" :title="'Latest Block'" :value="currentBlock.number" :loading="!currentBlock.number" :href="`/block/${currentBlock.number}`" />
             </v-col>
             <v-col cols="12" sm="6" lg="3">
-                <Stat-Number :title="'24h Tx Count'" :value="txCount24h" :loading="globalStatsLoading" />
+                <Stat-Number :title="'24h Tx Count'" :value="txCount24h" :loading="txCount24hLoading" />
             </v-col>
             <v-col cols="12" sm="6" lg="3">
-                <Stat-Number :title="'Total Tx Count'" :value="txCountTotal" :loading="globalStatsLoading" />
+                <Stat-Number :title="'Total Tx Count'" :value="txCountTotal" :loading="txCountTotalLoading" />
             </v-col>
 
             <v-col cols="12" sm="6" lg="3">
-                <Stat-Number :title="'Total Active Wallets Count'" :value="activeWalletCount" :loading="globalStatsLoading" :infoTooltip="'An active wallet is an address that has sent at least one transaction.'" />
+                <Stat-Number :title="'Total Active Wallets Count'" :value="activeWalletCount" :loading="activeWalletCountLoading" :infoTooltip="'An active wallet is an address that has sent at least one transaction.'" />
             </v-col>
         </v-row>
 
@@ -75,7 +75,9 @@ export default {
         StatNumber
     },
     data: () => ({
-        globalStatsLoading: false,
+        activeWalletCountLoading: false,
+        txCountTotalLoading: false,
+        txCount24hLoading: false,
         transactionListLoading: false,
         txCount24h: 0,
         txCountTotal: 0,
@@ -89,23 +91,35 @@ export default {
         to: new Date()
     }),
     mounted() {
-        this.getGlobalStats();
+        this.getActiveWalletCount();
+        this.getTxCountTotal();
+        this.getTxCount24h();
         this.getTransactionVolume();
         this.getWalletVolume();
         this.chart = this.$refs.chart;
     },
     methods: {
         moment: moment,
-        getGlobalStats() {
-            this.globalStatsLoading = true;
-            this.server.getGlobalStats()
-                .then(({ data: { txCount24h, txCountTotal, activeWalletCount }}) => {
-                    this.txCount24h = txCount24h;
-                    this.txCountTotal = txCountTotal;
-                    this.activeWalletCount = activeWalletCount;
-                })
+        getActiveWalletCount() {
+            this.activeWalletCountLoading = true;
+            this.server.getActiveWalletCount()
+                .then(({ data: { count }}) => this.activeWalletCount = count)
                 .catch(console.log)
-                .finally(() => this.globalStatsLoading = false);
+                .finally(() => this.activeWalletCountLoading = false);
+        },
+        getTxCountTotal() {
+            this.txCountTotalLoading = true;
+            this.server.getTxCountTotal()
+                .then(({ data: { count }}) => this.txCountTotal = count)
+                .catch(console.log)
+                .finally(() => this.txCountTotalLoading = false);
+        },
+        getTxCount24h() {
+            this.txCount24hLoading = true;
+            this.server.getTxCount24h()
+                .then(({ data: { count }}) => this.txCount24h = count)
+                .catch(console.log)
+                .finally(() => this.txCount24hLoading = false);
         },
         getTransactionVolume() {
             this.server.getTransactionVolume(this.from, this.to)

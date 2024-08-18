@@ -16,7 +16,7 @@ router.get('/:address/:tokenId/transfers', workspaceAuthMiddleware, async (req, 
 
         res.status(200).json(transfers);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.tokens.address.tokenId.transfers', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.tokens.address.tokenId.transfers', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -38,7 +38,7 @@ router.post('/:address/:tokenId/reload', workspaceAuthMiddleware, async (req, re
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.tokens.address.tokenId.reload', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.tokens.address.tokenId.reload', error, queryParams: req.params });
         res.status(400).send(error.messagae);
     }
 });
@@ -86,7 +86,7 @@ router.get('/:address/tokenIndex/:tokenIndex', workspaceAuthMiddleware, async (r
 
         res.status(200).json(token);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.tokens.address.tokenIndex', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.tokens.address.tokenIndex', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -129,7 +129,7 @@ router.get('/:address/:tokenId', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(token);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.tokens.address.tokenId', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.tokens.address.tokenId', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });

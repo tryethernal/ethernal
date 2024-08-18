@@ -1,3 +1,4 @@
+jest.mock('ioredis');
 require('../mocks/lib/queue');
 require('../mocks/models');
 require('../mocks/lib/firebase');
@@ -10,6 +11,66 @@ const app = require('../../app');
 const request = supertest(app);
 
 const BASE_URL = '/api/stats';
+
+describe(`GET /activeWalletCount`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('Should return active wallet count', (done) => {
+        workspaceAuthMiddleware.mockImplementationOnce((req, res, next) => {
+            req.query.firebaseUserId = '123';
+            req.query.workspace = { id: 1, name: 'My Workspace', public: true }
+            next();
+        });
+        jest.spyOn(db, 'getActiveWalletCount').mockResolvedValueOnce(10);
+
+        request.get(`${BASE_URL}/activeWalletCount`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ count: 10 });
+                done();
+            });
+    });
+});
+
+describe(`GET /txCountTotal`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('Should return total tx count', (done) => {
+        workspaceAuthMiddleware.mockImplementationOnce((req, res, next) => {
+            req.query.firebaseUserId = '123';
+            req.query.workspace = { id: 1, name: 'My Workspace', public: true }
+            next();
+        });
+        jest.spyOn(db, 'getTotalTxCount').mockResolvedValueOnce(10);
+
+        request.get(`${BASE_URL}/txCountTotal`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ count: 10 });
+                done();
+            });
+    });
+});
+
+describe(`GET /txCount24h`, () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('Should return 24h tx count', (done) => {
+        workspaceAuthMiddleware.mockImplementationOnce((req, res, next) => {
+            req.query.firebaseUserId = '123';
+            req.query.workspace = { id: 1, name: 'My Workspace', public: true }
+            next();
+        });
+        jest.spyOn(db, 'getTotalTxCount').mockResolvedValueOnce(10);
+
+        request.get(`${BASE_URL}/txCount24h`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ count: 10 });
+                done();
+            });
+    });
+});
 
 describe(`GET /transactions`, () => {
     beforeEach(() => jest.clearAllMocks());
@@ -106,33 +167,6 @@ describe(`GET /averageTransactionFee`, () => {
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual([{ timestamp: '2022-04-05', amount: 1 }]);
-                done();
-            });
-    });
-});
-
-describe(`GET /global`, () => {
-    beforeEach(() => jest.clearAllMocks());
-
-    it('Should return global stats', (done) => {
-        workspaceAuthMiddleware.mockImplementationOnce((req, res, next) => {
-            req.query.firebaseUserId = '123';
-            req.query.workspace = { id: 1, name: 'My Workspace', public: true }
-            next();
-        });
-        jest.spyOn(db, 'getTotalTxCount')
-            .mockResolvedValueOnce(10)
-            .mockResolvedValueOnce(100);
-        jest.spyOn(db, 'getActiveWalletCount').mockResolvedValueOnce(15);
-
-        request.get(`${BASE_URL}/global`)
-            .expect(200)
-            .then(({ body }) => {
-                expect(body).toEqual({
-                    txCount24h: 10,
-                    txCountTotal: 100,
-                    activeWalletCount: 15
-                });
                 done();
             });
     });

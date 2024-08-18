@@ -25,7 +25,7 @@ const { sanitize } = require('../lib/utils');
 
 export default {
     name: 'HashLink',
-    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName', 'xsHash', 'tokenId', 'unlink', 'contract', 'customLabel'],
+    props: ['type', 'hash', 'fullHash', 'withName', 'notCopiable', 'withTokenName', 'xsHash', 'tokenId', 'unlink', 'contract', 'customLabel', 'loadContract'],
     data: () => ({
         copied: false,
         token: null,
@@ -55,7 +55,7 @@ export default {
                     this.verified = !!this.contract.verification;
                     this.contractName = this.contract.name;
                 }
-                else {
+                else if (this.loadContract) {
                     this.server.getContract(hash)
                         .then(({ data }) => {
                             if (data) {

@@ -4,6 +4,157 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.36.46] - 2024-08-17
+### Fixed
+- Bug locking indefinitely contract verification when trying to reverify a contract
+
+## [3.36.45] - 2024-08-17
+### Fixed
+- Netlify redirect file (again)
+
+## [3.36.44] - 2024-08-17
+### Fixed
+- Netlify redirect file
+
+## [3.36.43] - 2024-08-17
+### Added
+- Etherscan API compatibility for contract verification - now works with Hardhat
+- Multi-file contract verification through the UI
+
+## [3.36.42] - 2024-08-16
+### Fixed
+- Bug preventing workspace reset
+
+## [3.36.41] - 2024-08-15
+### Added
+- Small helper
+
+## [3.36.40] - 2024-08-15
+### Fixed
+- Query params for Netlify rewriting
+
+### Added
+- Support for etherscan style contract verification status endpoint
+
+## [3.36.39] - 2024-08-15
+### Changed
+- Better handling of etherscan endpoint rewrite
+
+## [3.36.38] - 2024-08-15
+### Added
+- Etherscan like contract verification api preparation
+
+## [3.36.37] - 2024-08-15
+### Fixed
+- Various contract sorting bugs
+
+### Changed
+- Reduced mpworker concurrency
+
+## [3.36.35] - 2024-08-15
+### Fixed
+- Tests
+
+## [3.36.34] - 2024-08-14
+### Removed
+- Cumulative wallet count for now, as it's taking too long to load
+
+## [3.36.33] - 2024-08-14
+### Changed
+- Contract transaction creation backfilled process
+
+## [3.36.32] - 2024-08-14
+### Fixed
+- Bug preventing proper insertion of contract transaction creation id
+
+## [3.36.31] - 2024-08-14
+### Changed
+- Use fk for contract transaction creation handling
+
+## [3.36.30] - 2024-^08-14
+### Fixed
+- Typo causing contract creation transaction hash not registering properly
+
+## [3.36.29] - 2024-08-14
+### Changed
+- Faster explorer load
+
+## [3.36.28] - 2024-08-14
+### Changed
+- Improve performances for explorer search
+
+## [3.36.27] - 2024-08-14
+### Added
+- Job to insert hashes
+
+## [3.36.26] - 2024-08-13
+### Added
+- Contract creation transaction hash on contract table
+
+## [3.36.25] - 2024-08-13
+### Changed
+- Make jobs unique when batch enqueued
+
+## [3.36.24] - 2024-08-13
+### Changed
+- Split stat loading on overview
+
+## [3.36.23] - 2024-08-13
+### Changed
+- Updated tests
+
+## [3.36.22] - 2024-08-13
+### Changed
+- Reduce sent requests
+
+## [3.36.21] - 2024-08-13
+### Fixed
+- Typo
+
+## [3.36.20] - 2024-08-13
+### Changed
+- Instrument Sentry differently
+
+## [3.36.19] - 2024-08-13
+### Fixed
+- Tests
+
+## [3.36.18] - 2024-08-13
+### Changed
+- Fix instrument.js
+
+## [3.36.17] - 2024-08-13
+### Changed
+- Update deploy workflow
+
+## [3.36.16] - 2024-08-13
+### Added
+- Sentry
+
+## [3.36.15] - 2024-08-13
+### Changed
+- Reduce amount of data logged when there is an error
+
+## [3.36.14] - 2024-08-13
+### Changed
+- Do not display contract storage if not available
+
+## [3.36.13] - 2024-08-13
+### Changed
+- Optimizing unique wallet count query
+
+## [3.36.12] - 2024-08-13
+### Fixed
+- Tests
+
+## [3.36.11] - 2024-08-13
+### Changed
+- Improve homepage analytics (more to follow)
+
+## [3.36.10] - 2024-08-08
+### Changed
+- Do not throw when missing parameter in removeStalledBlock job
+
 ## [3.36.9] - 2024-06-25
 ### Changed
 - Creating an explorer is now fully transactional, it either creates the workspace, the explorer and all optional services at the same time, or everything fails

@@ -29,7 +29,6 @@ jest.mock('@/plugins/server', () => ({
                 getTransaction: jest.fn().mockResolvedValue(),
                 getTransactions: jest.fn(),
                 getTokenBalances: jest.fn(),
-                getGlobalStats: jest.fn(),
                 getTransactions: jest.fn(),
                 getTransactionVolume: jest.fn(),
                 getErc721Tokens: jest.fn(),
@@ -91,6 +90,9 @@ jest.mock('@/plugins/server', () => ({
                 getNativeTokenBalance: jest.fn(),
                 getV2DexQuote: jest.fn(),
                 getV2DexStatus: jest.fn(),
+                getActiveWalletCount: jest.fn(),
+                getTxCountTotal: jest.fn(),
+                getTxCount24h: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))

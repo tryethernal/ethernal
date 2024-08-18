@@ -5,7 +5,7 @@ module.exports = async (job) => {
     const data = job.data;
 
     if (!data.blockId)
-        throw new Error('Missing parameter');
+        return 'Missing parameter';
 
     const block = await Block.findByPk(data.blockId, {
         include: ['transactions']

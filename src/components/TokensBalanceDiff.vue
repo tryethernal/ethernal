@@ -8,7 +8,7 @@
                 <template v-slot:top>
                     <v-toolbar dense flat>
                         <v-toolbar-title>
-                            <small><Hash-Link :type="'address'" :hash="token" :withTokenName="true" :withName="true" /></small>
+                            <small><Hash-Link :type="'address'" :hash="token" :withTokenName="true" :withName="true" :loadContract="true" /></small>
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-switch v-model="unformatted" label="Unformatted Amounts"></v-switch>

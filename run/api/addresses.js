@@ -16,7 +16,7 @@ router.get('/:address/tokenTransfers', workspaceAuthMiddleware, async (req, res)
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'api.addresses.address.stats', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'api.addresses.address.stats', error, queryParams: req.params });
         res.status(400).send(error);
     }
 });
@@ -32,7 +32,7 @@ router.get('/:address/stats', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(stats);
     } catch(error) {
-        logger.error(error.message, { location: 'api.addresses.address.stats', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'api.addresses.address.stats', error, queryParams: req.params });
         res.status(400).send(error);
     }
 });
@@ -62,7 +62,7 @@ router.get('/:address/balances', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'api.addresses.address.balances', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'api.addresses.address.balances', error, queryParams: req.params });
         res.status(400).send(error);
     }
 });
@@ -75,7 +75,7 @@ router.get('/:address/transactions', workspaceAuthMiddleware, async (req, res) =
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'api.addresses.address.transaction', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'api.addresses.address.transaction', error, queryParams: req.params });
         res.status(400).send(error);
     }
 })
