@@ -56,6 +56,8 @@ app.use((req, res, next) => {
 
     if (req.body.module == 'contract' && req.body.action == 'verifysourcecode')
         req.url = '/api/contracts/verify';
+    else if (req.query.module == 'contract' && req.query.action == 'getsourcecode' && req.query.apikey)
+        req.url = '/api/contracts/sourceCode';
     else if (req.query.module == 'contract' && req.query.action == 'checkverifystatus' && req.query.apikey && req.query.guid)
         req.url = '/api/contracts/verificationStatus';
 

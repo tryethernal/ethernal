@@ -14,6 +14,61 @@ router.get('/:address/circulatingSupply', workspaceAuthMiddleware, circulatingSu
 router.get('/:address/holders', workspaceAuthMiddleware, holders);
 router.get('/:address/transfers', workspaceAuthMiddleware, transfers);
 
+router.get('/sourceCode', async (req, res) => {
+    const data = req.query;
+
+    try {
+        if (!data.address)
+            throw new Error('Missing parameters.')
+
+        const contractAddress = data.address.toLowerCase();
+
+        let explorer;
+        if (req.headers['apx-incoming-host']) {
+            explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
+        }
+        else if (data['apikey']) {
+            explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
+        }
+
+        if (!explorer)
+            throw new Error('Could not find explorer. If you are using the apiKey param, make sure it is correct.');
+
+        const contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
+
+        if (!contract.verification || !contract.verification.sources.length)
+            return res.status(200).json({
+                status: "0",
+                message: "KO"
+            });
+
+        const response = {
+            SourceCode: contract.verification.sources[0].content,
+            ABI: contract.abi,
+            ContractName: contract.name,
+            CompilerVersion: contract.verification.compilerVersion,
+            OptimizationUsed: contract.verification.runs ? "1" : "0",
+            Runs: contract.verification.runs,
+            ConstructorArguments: contract.verification.constructorArguments,
+            EVMVersion: contract.verification.evmVersion,
+            Library: contract.verification.libraries
+        }
+
+        res.status(200).json({
+            status: "1",
+            message: "OK",
+            result: [response]
+        });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.contracts.sourceCode', error, queryParams: req.query });
+        res.status(200).json({
+            status: "0",
+            message: "OK",
+            result: `Request failed: ${error.message}`
+        });
+    }
+});
+
 router.post('/verify', async (req, res) => {
     const data = req.body;
     let lock, isLockAcquired;
