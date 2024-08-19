@@ -1,7 +1,7 @@
 const { createLogger, format, transports } = require('winston');
 
 const logger = createLogger({
-    level: 'debug',
+    level: process.env.LOG_LEVEL || 'info',
     exitOnError: false,
     format: format.json(),
     transports: []
