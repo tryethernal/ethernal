@@ -20,7 +20,77 @@ const BASE_URL = '/api/contracts';
 
 beforeEach(() => jest.clearAllMocks());
 
-describe(`POST ${BASE_URL}/:verify`, () => {
+describe(`GET ${BASE_URL}/sourceCode`, () => {
+    it('Should throw an error if no explorer', (done) => {
+        jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce(null);
+
+        request.get(`${BASE_URL}/sourceCode?address=0xabc&apikey=1`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({
+                    status: "0",
+                    message: "OK",
+                    result: `Request failed: Could not find explorer. If you are using the apiKey param, make sure it is correct.`
+                });
+                done();
+            });
+    });
+
+    it('Should return if contract is not verified', (done) => {
+        jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ workspaceId: 1 });
+        jest.spyOn(db, 'getContractByWorkspaceId').mockResolvedValueOnce({ id: 1 });
+
+        request.get(`${BASE_URL}/sourceCode?address=0xabc&apikey=1`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({
+                    status: "0",
+                    message: "KO"
+                });
+                done();
+            });
+    });
+
+    it('Should return verification info', (done) => {
+        jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ workspaceId: 1 });
+        jest.spyOn(db, 'getContractByWorkspaceId').mockResolvedValueOnce({
+            id: 1,
+            abi: 'abi',
+            name: 'name',
+            verification: {
+                sources: [{ content: 'code' }],
+                compilerVersion: 'version',
+                runs: 1,
+                constructorArguments: '1234',
+                evmVersion: '1234'
+            }
+        });
+
+        request.get(`${BASE_URL}/sourceCode?address=0xabc&apikey=1`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({
+                    status: "1",
+                    message: "OK",
+                    result: [
+                        {
+                            SourceCode: 'code',
+                            ABI: 'abi',
+                            ContractName: 'name',
+                            CompilerVersion: 'version',
+                            OptimizationUsed: "1",
+                            Runs: 1,
+                            ConstructorArguments: '1234',
+                            EVMVersion: '1234'
+                        }
+                    ]
+                });
+                done();
+            });
+    });
+});
+
+describe(`POST ${BASE_URL}/verify`, () => {
     it('Should throw an error if no explorer', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce(null);
 
