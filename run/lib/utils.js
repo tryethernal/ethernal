@@ -2,6 +2,10 @@ const ethers = require('ethers');
 
 const DEFAULT_PROMISE_TIMEOUT = 10 * 1000;
 
+const sleep = (ms) => {
+    return new Promise((r) => setTimeout(r, ms))
+};
+
 const validateBNString = (str) => {
     try {
         const bn = ethers.BigNumber.from(str);
@@ -176,5 +180,6 @@ module.exports = {
     stringify,
     processRawRpcObject,
     formatErc721Metadata,
-    validateBNString
+    validateBNString,
+    sleep
 };
