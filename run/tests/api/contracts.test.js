@@ -6,6 +6,7 @@ require('../mocks/lib/lock');
 require('../mocks/lib/firebase');
 require('../mocks/lib/crypto');
 require('../mocks/lib/processContractVerification');
+require('../mocks/lib/utils');
 require('../mocks/middlewares/workspaceAuth');
 require('../mocks/middlewares/auth');
 const db = require('../../lib/firebase');
@@ -21,6 +22,44 @@ const BASE_URL = '/api/contracts';
 beforeEach(() => jest.clearAllMocks());
 
 describe(`GET ${BASE_URL}/sourceCode`, () => {
+    it('Should return if cannot find contract', (done) => {
+        jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ id: 1, workspaceId: 1 });
+        jest.spyOn(db, 'getContractByWorkspaceId')
+            .mockResolvedValueOnce(null)
+            .mockResolvedValueOnce(null)
+            .mockResolvedValueOnce(null)
+            .mockResolvedValueOnce(null);
+
+        request.get(`${BASE_URL}/sourceCode?address=0xabc&apikey=1`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({
+                    status: "0",
+                    message: "KO",
+                });
+                done();
+            });
+    });
+
+    it('Should retry if cannot find contract immediately', (done) => {
+        jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ id: 1, workspaceId: 1 });
+        jest.spyOn(db, 'getContractByWorkspaceId')
+            .mockResolvedValueOnce(null)
+            .mockResolvedValueOnce(null)
+            .mockResolvedValueOnce(null)
+            .mockResolvedValueOnce({ id: 1, verification: { sources: [] }});
+
+        request.get(`${BASE_URL}/sourceCode?address=0xabc&apikey=1`)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({
+                    status: "0",
+                    message: "KO",
+                });
+                done();
+            });
+    });
+
     it('Should throw an error if no explorer', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce(null);
 
@@ -116,7 +155,11 @@ describe(`POST ${BASE_URL}/verify`, () => {
 
     it('Should throw an error if no contract', (done) => {
         jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ id: 1, workspaceId: 1 });
-        jest.spyOn(db, 'getContractByWorkspaceId').mockResolvedValueOnce(null);
+        jest.spyOn(db, 'getContractByWorkspaceId')
+            .mockResolvedValueOnce(null)
+            .mockResolvedValueOnce(null)
+            .mockResolvedValueOnce(null)
+            .mockResolvedValueOnce(null);
 
         request.post(`${BASE_URL}/verify`)
             .send({
@@ -133,6 +176,34 @@ describe(`POST ${BASE_URL}/verify`, () => {
                     status: "0",
                     message: "OK",
                     result: `Contract verification failed: Unable to locate contract. Please try running the verification command again.`
+                });
+                done();
+            });
+    });
+
+    it('Should re check if no contract immediately', (done) => {
+        jest.spyOn(db, 'getPublicExplorerParamsBySlug').mockResolvedValueOnce({ id: 1, workspaceId: 1 });
+        jest.spyOn(db, 'getContractByWorkspaceId')
+            .mockResolvedValueOnce(null)
+            .mockResolvedValueOnce(null)
+            .mockResolvedValueOnce(null)
+            .mockResolvedValueOnce({ id: 1, verification: {} });
+
+        request.post(`${BASE_URL}/verify`)
+            .send({
+                sourceCode: 'a',
+                contractaddress: '0xabc',
+                apikey: 'ethernal',
+                compilerversion: '0.8.0',
+                constructorArguements: '',
+                contractname: 'Ethernal.sol:Ethernal'
+            })
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({
+                    status: "1",
+                    message: "OK",
+                    result: "Already Verified"
                 });
                 done();
             });

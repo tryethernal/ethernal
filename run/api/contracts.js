@@ -3,7 +3,7 @@ const router = express.Router();
 const logger = require('../lib/logger');
 const Lock = require('../lib/lock');
 const db = require('../lib/firebase');
-const { sanitize } = require('../lib/utils');
+const { sanitize, sleep } = require('../lib/utils');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
 const processContractVerification = require('../lib/processContractVerification');
@@ -34,9 +34,17 @@ router.get('/sourceCode', async (req, res) => {
         if (!explorer)
             throw new Error('Could not find explorer. If you are using the apiKey param, make sure it is correct.');
 
-        const contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
+        let contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
+        if (!contract) {
+            for (let i = 0; i < 3; i++) {
+                await sleep(2000);
+                contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
+                if (contract)
+                    break;
+            }
+        }
 
-        if (!contract.verification || !contract.verification.sources.length)
+        if (!contract || !contract.verification || !contract.verification.sources.length)
             return res.status(200).json({
                 status: "0",
                 message: "KO"
@@ -90,7 +98,16 @@ router.post('/verify', async (req, res) => {
         if (!explorer)
             throw new Error('Could not find explorer. If you are using the apiKey param, make sure it is correct.');
 
-        const contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
+        let contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
+        if (!contract) {
+            for (let i = 0; i < 3; i++) {
+                await sleep(2000);
+                contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
+                if (contract)
+                    break;
+            }
+        }
+
         if (!contract)
             throw new Error('Unable to locate contract. Please try running the verification command again.');
 
