@@ -38,7 +38,7 @@
                         </v-chip>
                     </template>
                     <template v-slot:item.address="{ item }">
-                        <Hash-Link :type="'contract'" :hash="item.address" :contract="item" />
+                        <Hash-Link :type="'address'" :hash="item.address" :contract="item" />
                     </template>
                     <template v-slot:item.timestamp="{ item }">
                         <template v-if="item.creationTransaction">
