@@ -105,9 +105,10 @@
             <div v-if="!loadingContract">
                 <v-tabs v-model="tab">
                     <v-tab id="transactionsTab" href="#transactions">Transactions</v-tab>
-                    <v-tab id="interactionsTab" href="#interactions">Read / Write</v-tab>
-                    <v-tab id="holdersTab" href="#holders">Holders</v-tab>
                     <v-tab id="transfersTab" href="#transfers">Transfers</v-tab>
+                    <v-tab id="holdersTab" href="#holders">Holders</v-tab>
+                    <v-tab id="interactionsTab" href="#interactions">Read / Write</v-tab>
+                    <v-tab id="codeTab" href="#code">Code</v-tab>
                     <v-tab id="analyticsTab" href="#analytics">Analytics</v-tab>
                 </v-tabs>
 
@@ -120,8 +121,12 @@
                         </v-card>
                     </v-tab-item>
 
-                    <v-tab-item value="interactions">
-                        <Contract-Interaction :address="address" />
+                    <v-tab-item value="transfers">
+                        <v-card outlined class="mt-3">
+                            <v-card-text>
+                                <ERC-20-Token-Transfers :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
+                            </v-card-text>
+                        </v-card>
                     </v-tab-item>
 
                     <v-tab-item value="holders">
@@ -132,12 +137,12 @@
                         </v-card>
                     </v-tab-item>
 
-                    <v-tab-item value="transfers">
-                        <v-card outlined class="mt-3">
-                            <v-card-text>
-                                <ERC-20-Token-Transfers :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
-                            </v-card-text>
-                        </v-card>
+                    <v-tab-item value="interactions">
+                        <Contract-Interaction :address="address" />
+                    </v-tab-item>
+
+                    <v-tab-item value="code">
+                        <Contract-Code v-if="contract" :contract="contract" />
                     </v-tab-item>
 
                     <v-tab-item value="analytics">
@@ -165,6 +170,7 @@ import ContractInteraction from './ContractInteraction';
 import ERC20TokenHolders from './ERC20TokenHolders';
 import ERC20ContractAnalytics from './ERC20ContractAnalytics';
 import ERC20TokenTransfers from './ERC20TokenTransfers';
+import ContractCode from './ContractCode';
 import StatNumber from './StatNumber';
 import HashLink from './HashLink';
 import Metamask from './Metamask';
@@ -180,7 +186,8 @@ export default {
         ContractInteraction,
         ERC20TokenHolders,
         ERC20ContractAnalytics,
-        ERC20TokenTransfers
+        ERC20TokenTransfers,
+        ContractCode
     },
     data: () => ({
         loadingContract: true,
