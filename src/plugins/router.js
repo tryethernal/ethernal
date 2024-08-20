@@ -33,6 +33,9 @@ const redirectIfLoggedIn = function (to, from, next) {
 };
 
 const redirectIfLoggedOut = function (to, from, next) {
+    if (to.hash && to.hash.startsWith('#'))
+        to.query.tab = to.hash.split('#')[1];
+
     if (!auth().currentUser.id && !router.app.$store.getters.publicExplorerMode) {
         next({ path: '/auth', query: { next: document.location.pathname, ...to.query }});
     }
