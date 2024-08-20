@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey, getDefaultExplorerTrialDays } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const { generateSlug } = require('random-word-slugs');
@@ -107,6 +108,10 @@ router.post('/explorers', async (req, res) => {
         } catch(error) {
             networkId = null;
         }
+
+        const forbiddenChains = (await axios.get('https://raw.githubusercontent.com/DefiLlama/chainlist/main/constants/chainIds.json')).data;
+        if (forbiddenChains[networkId])
+            throw new Error(`You can't create a demo with this network id (${networkId} - ${forbiddenChains[networkId]}). If you'd still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we'll set one up for you.`);
 
         if (!networkId)
             throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
