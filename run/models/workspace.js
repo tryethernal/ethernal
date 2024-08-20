@@ -858,7 +858,12 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.Contract,
                     attributes: ['abi', 'name', 'tokenName', 'tokenSymbol'],
-                    as: 'contract'
+                    as: 'contract',
+                    include: {
+                        model: sequelize.models.ContractVerification,
+                        attributes: ['createdAt'],
+                        as: 'verification'
+                    }
                 }
             ]
         });
