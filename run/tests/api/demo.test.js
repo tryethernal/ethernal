@@ -1,3 +1,4 @@
+jest.mock('@sentry/node');
 const mockSubscriptionCreate = jest.fn().mockResolvedValue({ id: 'id' });
 jest.mock('random-word-slugs', () => ({
     generateSlug: jest.fn()
@@ -11,6 +12,10 @@ jest.mock('stripe', () => {
         }
     });
 });
+const mockAxiosGet = jest.fn().mockResolvedValue({ data: {}});
+jest.mock('axios', () => ({
+    get: mockAxiosGet
+}));
 require('../mocks/models');
 require('../mocks/lib/queue');
 require('../mocks/lib/flags');
@@ -198,6 +203,21 @@ describe(`POST ${BASE_URL}/migrateExplorer`, () => {
 });
 
 describe(`POST ${BASE_URL}/explorers`, () => {
+    mockAxiosGet.mockResolvedValueOnce({ data: { "1": "ethereum" }});
+    ProviderConnector.mockImplementationOnce(() => ({
+        fetchNetworkId: jest.fn().mockResolvedValueOnce(1)
+    }));
+
+    it('Should return an error if trying to create an explorer for a forbidden network id', (done) => {
+        request.post(`${BASE_URL}/explorers`)
+            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`You can't create a demo with this network id (1 - ethereum). If you'd still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we'll set one up for you.`);
+                done();
+            });
+    });
+
     it('Should return an error if rpc is not reachable', (done) => {
         ProviderConnector.mockImplementationOnce(() => ({
             fetchNetworkId: jest.fn().mockRejectedValue()
