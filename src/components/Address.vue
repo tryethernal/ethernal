@@ -1,115 +1,167 @@
 <template>
     <v-container fluid>
-        <v-row class="mb-1">
-            <v-col cols="12" lg="5" v-if="contract">
-                <v-card outlined style="height: 100%">
-                    <v-card-title v-if="contract.name">{{ contract.name }}</v-card-title>
-                    <v-card-subtitle v-if="contract.patterns.length > 0">
-                        <v-chip v-for="(pattern, idx) in contract.patterns" :key="idx" x-small class="success mr-2">
-                            {{ formatContractPattern(pattern) }}
-                        </v-chip>
-                    </v-card-subtitle>
-                    <v-card-text>
-                        <v-row>
-                            <v-col v-if="isErc20 || isErc721" cols="6">
-                                <small>Token Name</small><br>
-                                <span class="ml-2">
-                                    <Hash-Link :type="'token'" :hash="contract.address" :withName="true" :withTokenName="true" />
-                                </span>
-                            </v-col>
-
-                            <v-col v-if="isErc20 || isErc721" cols="6">
-                                <small>Token Symbol</small><br>
-                                <span class="text-h6 ml-2">{{ contract.tokenSymbol || 'N/A' }}</span>
-                            </v-col>
-
-                            <v-col cols="6">
-                                <small>Contract</small><br>
-                                <Hash-Link class="ml-2" :type="'contract'" :hash="contract.address" :withName="true" />
-                            </v-col>
-
-                            <v-col cols="6">
-                                <small>Contract Creation</small><br>
-                                <span v-if="contract.creationTransaction" class="ml-2">
-                                    <Hash-Link :type="'transaction'" :hash="contract.creationTransaction.hash" />
-                                </span>
-                                <span v-else class="ml-2">N/A</span>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-
-            <v-col cols="12" lg="7">
+        <v-card v-if="loadingContract" outlined>
+            <v-card-text>
                 <v-row>
-                    <v-col cols="12">
-                        <v-card outlined>
-                            <v-card-subtitle>Balance</v-card-subtitle>
-                            <v-skeleton-loader v-if="loading" type="list-item"></v-skeleton-loader>
-                            <v-card-text v-else class="text-h4" align="center">
-                                {{ balance | fromWei('ether', chain.token) }}
-                            </v-card-text>
-                        </v-card>
+                    <v-col cols="4">
+                        <v-skeleton-loader type="card"></v-skeleton-loader>
                     </v-col>
                 </v-row>
-
                 <v-row>
-                    <v-col cols="12" lg="6">
-                        <v-card outlined style="height: 100%;">
-                            <v-card-subtitle>Transactions</v-card-subtitle>
-                            <v-skeleton-loader v-if="loading" type="list-item"></v-skeleton-loader>
-                            <v-card-text v-else class="text-h4" align="center">
-                                <template v-if="!contract">
-                                    {{ sentTransactionCount }}<v-icon>mdi-arrow-up-thin</v-icon>
-                                    <v-divider vertical class="mx-4"></v-divider>
-                                </template>
-                                {{ receivedTransactionCount }}<v-icon v-if="!contract">mdi-arrow-down-thin</v-icon>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
-
-                    <v-col cols="12" lg="6">
-                        <v-card outlined style="height: 100%;">
-                            <v-card-subtitle>ERC-20 Transfers</v-card-subtitle>
-                            <v-skeleton-loader v-if="loading" type="list-item"></v-skeleton-loader>
-                            <v-card-text v-else class="text-h4" align="center">
-                                {{ sentErc20TokenTransferCount }}<v-icon>mdi-arrow-up-thin</v-icon><v-divider vertical class="mx-4"></v-divider> {{ receivedErc20TokenTransferCount }}<v-icon>mdi-arrow-down-thin</v-icon>
-                            </v-card-text>
-                        </v-card>
+                    <v-col>
+                        <v-skeleton-loader max-height="40vh" type="table"></v-skeleton-loader>
                     </v-col>
                 </v-row>
-            </v-col>
-        </v-row>
+            </v-card-text>
+        </v-card>
+        <template v-else>
+            <v-row class="mb-1">
+                <v-col cols="12" lg="5" v-if="contract">
+                    <v-card outlined style="height: 100%">
+                        <v-card-title v-if="contract.name">{{ contract.name }}</v-card-title>
+                        <v-card-subtitle v-if="contract.patterns.length > 0">
+                            <v-chip v-for="(pattern, idx) in contract.patterns" :key="idx" x-small class="success mr-2">
+                                {{ formatContractPattern(pattern) }}
+                            </v-chip>
+                        </v-card-subtitle>
+                        <v-card-text>
+                            <v-row>
+                                <v-col v-if="isErc20 || isErc721" cols="6">
+                                    <small>Token Name</small><br>
+                                    <span class="ml-2">
+                                        <Hash-Link :type="'token'" :contract="contract" :hash="contract.address" :withName="true" :withTokenName="true" />
+                                    </span>
+                                </v-col>
 
-        <v-tabs v-model="tab">
-            <v-tab id="transactionsTab" href="#transactions">Transactions</v-tab>
-            <v-tab id="transfersTab" href="#transfers">Transfers</v-tab>
-            <v-tab id="erc20BalancesTab" href="#erc20Balances">ERC-20 Tokens</v-tab>
-            <v-tab id="erc721BalancesTab" href="#erc721Balances">ERC-721 Tokens</v-tab>
-        </v-tabs>
+                                <v-col v-if="isErc20 || isErc721" cols="6">
+                                    <small>Token Symbol</small><br>
+                                    <span class="text-h6 ml-2">{{ contract.tokenSymbol || 'N/A' }}</span>
+                                </v-col>
 
-        <v-tabs-items :value="tab">
-            <v-tab-item value="transactions">
-                <Address-Transactions-List :address="address" />
-            </v-tab-item>
+                                <v-col cols="6">
+                                    <small>Deployment Transaction</small><br>
+                                    <span v-if="contract.creationTransaction" class="ml-2">
+                                        <Hash-Link :type="'transaction'" :hash="contract.creationTransaction.hash" />
+                                    </span>
+                                    <span v-else class="ml-2">N/A</span>
+                                </v-col>
 
-            <v-tab-item value="transfers">
-                <Address-Token-Transfers :address="address" />
-            </v-tab-item>
+                                <v-col cols="6">
+                                    <small>Deployed By</small><br>
+                                    <span v-if="contract.creationTransaction" class="ml-2">
+                                        <Hash-Link :type="'address'" :hash="contract.creationTransaction.from" />
+                                    </span>
+                                    <span v-else class="ml-2">N/A</span>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
 
-            <v-tab-item value="erc20Balances">
-                <Token-Balances :address="address" :patterns="['erc20']" />
-            </v-tab-item>
+                <v-col cols="12" lg="7">
+                    <v-row>
+                        <v-col cols="12">
+                            <v-card outlined>
+                                <v-card-subtitle>Balance</v-card-subtitle>
+                                <v-skeleton-loader v-if="loadingStats" type="list-item"></v-skeleton-loader>
+                                <v-card-text v-else class="text-h4" align="center">
+                                    {{ balance | fromWei('ether', chain.token) }}
+                                </v-card-text>
+                            </v-card>
+                        </v-col>
+                    </v-row>
 
-            <v-tab-item value="erc721Balances">
-                <Token-Balances :address="address" :patterns="['erc721']" :dense="true" />
-            </v-tab-item>
-        </v-tabs-items>
+                    <v-row>
+                        <v-col cols="12" lg="6">
+                            <v-card outlined style="height: 100%;">
+                                <v-card-subtitle>Transactions</v-card-subtitle>
+                                <v-skeleton-loader v-if="loadingStats" type="list-item"></v-skeleton-loader>
+                                <v-card-text v-else class="text-h4" align="center">
+                                    <template v-if="!contract">
+                                        {{ sentTransactionCount }}<v-icon>mdi-arrow-up-thin</v-icon>
+                                        <v-divider vertical class="mx-4"></v-divider>
+                                    </template>
+                                    {{ receivedTransactionCount }}<v-icon v-if="!contract">mdi-arrow-down-thin</v-icon>
+                                </v-card-text>
+                            </v-card>
+                        </v-col>
+
+                        <v-col cols="12" lg="6">
+                            <v-card outlined style="height: 100%;">
+                                <v-card-subtitle>ERC-20 Transfers</v-card-subtitle>
+                                <v-skeleton-loader v-if="loadingStats" type="list-item"></v-skeleton-loader>
+                                <v-card-text v-else class="text-h4" align="center">
+                                    {{ sentErc20TokenTransferCount }}<v-icon>mdi-arrow-up-thin</v-icon><v-divider vertical class="mx-4"></v-divider> {{ receivedErc20TokenTransferCount }}<v-icon>mdi-arrow-down-thin</v-icon>
+                                </v-card-text>
+                            </v-card>
+                        </v-col>
+                    </v-row>
+                </v-col>
+            </v-row>
+
+            <v-tabs v-model="tab">
+                <v-tab id="transactionsTab" href="#transactions">Transactions</v-tab>
+                <v-tab id="transfersTab" href="#transfers">Transfers</v-tab>
+                <v-tab id="erc20BalancesTab" href="#erc20Balances">ERC-20 Tokens</v-tab>
+                <v-tab id="erc721BalancesTab" href="#erc721Balances">ERC-721 Tokens</v-tab>
+                <v-tab v-if="contract" id="interactionsTab" href="#interactions">Read / Write</v-tab>
+                <v-tab v-if="contract" id="codeTab" href="#code">Code</v-tab>
+                <v-tab v-if="contract" id="logsTab" href="#logs">Logs</v-tab>
+                <v-tab v-if="contract && currentWorkspace.storageEnabled" id="storageTab" href="#storage">Storage</v-tab>
+            </v-tabs>
+
+            <v-tabs-items :value="tab">
+                <v-tab-item value="transactions">
+                    <v-card outlined class="mt-3">
+                        <v-card-text>
+                            <Address-Transactions-List :address="address" />
+                        </v-card-text>
+                    </v-card>
+                </v-tab-item>
+
+                <v-tab-item value="transfers">
+                    <v-card outlined class="mt-3">
+                        <v-card-text>
+                            <Address-Token-Transfers :address="address" />
+                        </v-card-text>
+                    </v-card>
+                </v-tab-item>
+
+                <v-tab-item value="erc20Balances">
+                    <Token-Balances :address="address" :patterns="['erc20']" />
+                </v-tab-item>
+
+                <v-tab-item value="erc721Balances">
+                    <Token-Balances :address="address" :patterns="['erc721']" :dense="true" />
+                </v-tab-item>
+
+                <template v-if="contract">
+                    <v-tab-item value="interactions">
+                        <Contract-Interaction :address="address" />
+                    </v-tab-item>
+
+                    <v-tab-item value="code">
+                        <Contract-Code v-if="contract" :contract="contract" />
+                    </v-tab-item>
+
+                    <v-tab-item value="logs">
+                        <v-card outlined class="mt-3">
+                            <v-card-text>
+                                <Contract-Logs :address="address" />
+                            </v-card-text>
+                        </v-card>
+                    </v-tab-item>
+
+                    <v-tab-item v-if="currentWorkspace.storageEnabled" value="storage">
+                        <Contract-Storage :address="address" />
+                    </v-tab-item>
+                </template>
+            </v-tabs-items>
+        </template>
     </v-container>
 </template>
 
 <script>
-const ethers = require('ethers');
 const { formatContractPattern } = require('../lib/utils');
 
 import { mapGetters } from 'vuex';
@@ -117,6 +169,10 @@ import { mapGetters } from 'vuex';
 import AddressTransactionsList from './AddressTransactionsList';
 import AddressTokenTransfers from './AddressTokenTransfers';
 import TokenBalances from './TokenBalances';
+import ContractInteraction from './ContractInteraction';
+import ContractCode from './ContractCode';
+import ContractLogs from './ContractLogs';
+import ContractStorage from './ContractStorage';
 import FromWei from '../filters/FromWei';
 import HashLink from './HashLink';
 
@@ -127,6 +183,10 @@ export default {
         AddressTransactionsList,
         AddressTokenTransfers,
         TokenBalances,
+        ContractInteraction,
+        ContractCode,
+        ContractLogs,
+        ContractStorage,
         HashLink
     },
     filters: {
@@ -134,7 +194,8 @@ export default {
     },
     data: () => ({
         balance: 0,
-        loading: true,
+        loadingContract: true,
+        loadingStats: true,
         contract: null,
         sentTransactionCount: null,
         receivedTransactionCount: null,
@@ -142,10 +203,10 @@ export default {
         receivedErc20TransferCount: null
     }),
     mounted() {
-        this.server.getAccountBalance(this.address).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
+        this.server.getNativeTokenBalance(this.address).then(({ data: { balance }}) => this.balance = balance);
     },
     methods: {
-        formatContractPattern: formatContractPattern
+        formatContractPattern
     },
     watch: {
         address: {
@@ -153,7 +214,8 @@ export default {
             handler(address) {
                 this.server.getContract(address)
                     .then(({ data }) => this.contract = data)
-                    .catch(console.log);
+                    .catch(console.log)
+                    .finally(() => this.loadingContract = false);
 
                 this.server.getAddressStats(address)
                     .then(({ data }) => {
@@ -162,7 +224,8 @@ export default {
                         this.sentErc20TokenTransferCount = data.sentErc20TokenTransferCount;
                         this.receivedErc20TokenTransferCount = data.receivedErc20TokenTransferCount;
                     })
-                    .finally(() => this.loading = false);
+                    .catch(console.log)
+                    .finally(() => this.loadingStats = false);
             }
         }
     },
