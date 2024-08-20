@@ -99,36 +99,57 @@
 
             <v-tabs v-model="tab">
                 <v-tab id="transactionsTab" href="#transactions">Transactions</v-tab>
-                <v-tab id="interactionsTab" href="#interactions">Read / Write</v-tab>
+                <v-tab id="transfersTab" href="#transfers">Transfers</v-tab>
                 <v-tab id="holdersTab" href="#holders">Holders</v-tab>
                 <v-tab id="galleryTab" href="#gallery">Gallery</v-tab>
-                <v-tab id="transfersTab" href="#transfers">Transfers</v-tab>
-                <v-tab style="display: none;" id="analyticsTab" href="#analytics">Analytics</v-tab>
+                <v-tab id="interactionsTab" href="#interactions">Read / Write</v-tab>
+                <v-tab id="codeTab" href="#code">Code</v-tab>
+                <v-tab id="analyticsTab" href="#analytics">Analytics</v-tab>
             </v-tabs>
 
             <v-tabs-items :value="tab">
                 <v-tab-item value="transactions">
-                    <Address-Transactions-List :address="address" />
+                    <v-card outlined class="mt-3">
+                        <v-card-text>
+                            <Address-Transactions-List :address="address" />
+                        </v-card-text>
+                    </v-card>
                 </v-tab-item>
 
-                <v-tab-item value="interactions">
-                    <Contract-Interaction :address="address" />
+                <v-tab-item value="transfers">
+                    <v-card outlined class="mt-3">
+                        <v-card-text>
+                            <ERC-721-Token-Transfers :address="address" />
+                        </v-card-text>
+                    </v-card>
                 </v-tab-item>
 
                 <v-tab-item value="holders">
-                    <ERC-20-Token-Holders :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
+                    <v-card outlined class="mt-3">
+                        <v-card-text>
+                            <ERC-20-Token-Holders :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
+                        </v-card-text>
+                    </v-card>
                 </v-tab-item>
 
                 <v-tab-item value="gallery">
                     <ERC-721-Gallery :address="address" :totalSupply="Math.max(contract.tokenTotalSupply, contractStats.tokenCirculatingSupply || 0)" :has721Enumerable="contract.has721Enumerable" />
                 </v-tab-item>
 
-                <v-tab-item value="analytics">
-                    <ERC-20-Contract-Analytics :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
+                <v-tab-item value="interactions">
+                    <Contract-Interaction :address="address" />
                 </v-tab-item>
 
-                <v-tab-item value="transfers">
-                    <ERC-721-Token-Transfers :address="address" />
+                <v-tab-item value="code">
+                    <Contract-Code v-if="contract" :contract="contract" />
+                </v-tab-item>
+
+                <v-tab-item value="analytics">
+                    <v-card outlined class="mt-3">
+                        <v-card-text>
+                            <ERC-20-Contract-Analytics :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
+                        </v-card-text>
+                    </v-card>
                 </v-tab-item>
             </v-tabs-items>
         </template>
@@ -148,6 +169,7 @@ import ERC20TokenHolders from './ERC20TokenHolders';
 import ERC20ContractAnalytics from './ERC20ContractAnalytics';
 import ERC721TokenTransfers from './ERC721TokenTransfers';
 import ERC721Gallery from './ERC721Gallery';
+import ContractCode from './ContractCode';
 import StatNumber from './StatNumber';
 import HashLink from './HashLink';
 import Metamask from './Metamask';
@@ -164,7 +186,8 @@ export default {
         ERC20TokenHolders,
         ERC20ContractAnalytics,
         ERC721TokenTransfers,
-        ERC721Gallery
+        ERC721Gallery,
+        ContractCode
     },
     data: () => ({
         loadingContract: true,

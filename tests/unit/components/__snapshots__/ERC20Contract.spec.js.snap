@@ -58,7 +58,7 @@ exports[`ERC20Contract.vue Should display contract info 1`] = `
           <div class="v-slide-group__content v-tabs-bar__content">
             <div class="v-tabs-slider-wrapper" style="transition: none;">
               <div class="v-tabs-slider"></div>
-            </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active" id="transactionsTab">Transactions</a> <a tabindex="0" href="#interactions" aria-selected="false" role="tab" class="v-tab" id="interactionsTab">Read / Write</a> <a tabindex="0" href="#holders" aria-selected="false" role="tab" class="v-tab" id="holdersTab">Holders</a> <a tabindex="0" href="#transfers" aria-selected="false" role="tab" class="v-tab" id="transfersTab">Transfers</a> <a tabindex="0" href="#analytics" aria-selected="false" role="tab" class="v-tab" id="analyticsTab">Analytics</a>
+            </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active" id="transactionsTab">Transactions</a> <a tabindex="0" href="#transfers" aria-selected="false" role="tab" class="v-tab" id="transfersTab">Transfers</a> <a tabindex="0" href="#holders" aria-selected="false" role="tab" class="v-tab" id="holdersTab">Holders</a> <a tabindex="0" href="#interactions" aria-selected="false" role="tab" class="v-tab" id="interactionsTab">Read / Write</a> <a tabindex="0" href="#code" aria-selected="false" role="tab" class="v-tab" id="codeTab">Code</a> <a tabindex="0" href="#analytics" aria-selected="false" role="tab" class="v-tab" id="analyticsTab">Analytics</a>
           </div>
         </div>
         <div class="v-slide-group__next v-slide-group__next--disabled">
@@ -78,6 +78,9 @@ exports[`ERC20Contract.vue Should display contract info 1`] = `
               </div>
             </div>
           </div>
+        </transition-stub>
+        <transition-stub name="">
+          <!---->
         </transition-stub>
         <transition-stub name="">
           <!---->
@@ -153,7 +156,7 @@ exports[`ERC20Contract.vue Should display placeholders 1`] = `
           <div class="v-slide-group__content v-tabs-bar__content">
             <div class="v-tabs-slider-wrapper" style="height: 2px; left: 0px; width: 0px;">
               <div class="v-tabs-slider"></div>
-            </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active" id="transactionsTab">Transactions</a> <a tabindex="0" href="#interactions" aria-selected="false" role="tab" class="v-tab" id="interactionsTab">Read / Write</a> <a tabindex="0" href="#holders" aria-selected="false" role="tab" class="v-tab" id="holdersTab">Holders</a> <a tabindex="0" href="#transfers" aria-selected="false" role="tab" class="v-tab" id="transfersTab">Transfers</a> <a tabindex="0" href="#analytics" aria-selected="false" role="tab" class="v-tab" id="analyticsTab">Analytics</a>
+            </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active" id="transactionsTab">Transactions</a> <a tabindex="0" href="#transfers" aria-selected="false" role="tab" class="v-tab" id="transfersTab">Transfers</a> <a tabindex="0" href="#holders" aria-selected="false" role="tab" class="v-tab" id="holdersTab">Holders</a> <a tabindex="0" href="#interactions" aria-selected="false" role="tab" class="v-tab" id="interactionsTab">Read / Write</a> <a tabindex="0" href="#code" aria-selected="false" role="tab" class="v-tab" id="codeTab">Code</a> <a tabindex="0" href="#analytics" aria-selected="false" role="tab" class="v-tab" id="analyticsTab">Analytics</a>
           </div>
         </div>
         <div class="v-slide-group__next v-slide-group__next--disabled">
@@ -173,6 +176,9 @@ exports[`ERC20Contract.vue Should display placeholders 1`] = `
               </div>
             </div>
           </div>
+        </transition-stub>
+        <transition-stub name="v-window-x-transition">
+          <!---->
         </transition-stub>
         <transition-stub name="v-window-x-transition">
           <!---->
