@@ -819,7 +819,7 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.Transaction,
                     as: 'creationTransaction',
-                    attributes: ['hash', 'timestamp']
+                    attributes: ['hash', 'timestamp', 'from']
                 }
             ]
         });
@@ -1385,7 +1385,7 @@ module.exports = (sequelize, DataTypes) => {
                 {
                     model: sequelize.models.Transaction,
                     as: 'creationTransaction',
-                    attributes: ['hash', 'timestamp']
+                    attributes: ['hash', 'timestamp', 'from']
                 }
             ]
         });
