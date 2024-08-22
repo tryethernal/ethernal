@@ -225,7 +225,6 @@
 
 <script>
 import { Icon } from '@iconify/vue2';
-import LogRocket from 'logrocket';
 import WebFont from 'webfontloader';
 import Vue from 'vue';
 import detectEthereumProvider from '@metamask/detect-provider';
@@ -359,10 +358,6 @@ export default {
             document.title = name;
         },
         authStateChanged(user) {
-            if (user && this.hasAnalyticsEnabled && window.location.host == 'app.tryethernal.com') {
-                LogRocket.init(this.logRocketId);
-            }
-
             const currentPath = this.$router.currentRoute.path;
             const publicExplorerMode = store.getters.publicExplorerMode;
 
@@ -464,7 +459,6 @@ export default {
         ...mapGetters([
             'hasAnalyticsEnabled',
             'isMarketingEnabled',
-            'logRocketId',
             'accounts',
             'isPublicExplorer',
             'publicExplorer',
