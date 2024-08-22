@@ -258,12 +258,12 @@ jobs:
       - name: Release Soketi server
         run: flyctl deploy -c fly.soketi.toml
 
-      - name: Create New Relic deployment marker
-        uses: newrelic/deployment-marker-action@v1
-        with:
-          apiKey: ${{ secrets.NEW_RELIC_API_KEY }}
-          accountId: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
-          applicationId: ${{ secrets.NEW_RELIC_BACKEND_APPLICATION_ID }}
-          revision: "${{ needs.create_release.outputs.current_version }}"
-          changelog: "${{ needs.create_release.outputs.changes }}"
-          description: "Deployed commit ${{ github.sha }}"
+      - name: Create Sentry release
+          uses: getsentry/action-release@v1
+          env:
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_RELEASE_AUTH_TOKEN }}
+            SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+            SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+            SENTRY_URL: ${{ secrets.SENTRY_URL }}
+          with:
+            environment: production
