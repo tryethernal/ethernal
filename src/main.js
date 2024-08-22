@@ -24,18 +24,17 @@ Vue.use(require('vue-moment'));
 Vue.use(serverPlugin, { store });
 Vue.use(posthogPlugin, { store });
 
-if (process.env.NODE_ENV == 'production') {
-    Sentry.init({
-        environment: process.env.NODE_ENV,
-        Vue,
-        dsn: store.getters.sentryDSN,
-        integrations: [
+Sentry.init({
+    environment: process.env.NODE_ENV,
+    Vue,
+    dsn: store.getters.sentryDSN,
+    integrations: [
         Sentry.browserTracingIntegration({ router }),
-        ],
-        tracesSampleRate: 1.0,
-        tracePropagationTargets: [/.*/]
-    });
-}
+        Sentry.browserProfilingIntegration(),
+    ],
+    tracesSampleRate: 1.0,
+    tracePropagationTargets: [/.*/]
+});
 
 if (store.getters.hasDemoEnabled && window.location.pathname.startsWith('/demo')) {
     new Vue({

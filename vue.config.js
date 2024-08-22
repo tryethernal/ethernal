@@ -27,7 +27,10 @@ module.exports = {
             public: 'app.ethernal.local:8080',
             hot: true,
             disableHostCheck: true,
-            allowedHosts: ['app.ethernal.local', '.ethernal.explorer']
+            allowedHosts: ['app.ethernal.local', '.ethernal.explorer'],
+            headers: {
+                'Document-Policy': 'js-profiling'
+            }
         },
         plugins: [
             new CopyPlugin({
