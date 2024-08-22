@@ -19,6 +19,7 @@ describe('receiptSync', () => {
         jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             workspace: {
                 id: 1,
+                public: true,
                 rpcServer: 'rpc',
                 explorer: {
                     shouldSync: true,
@@ -41,6 +42,7 @@ describe('receiptSync', () => {
         jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             workspace: {
                 rpcServer: 'rpc',
+                public: true,
                 explorer: {
                     stripeSubscription: { status: 'active' }
                 }
@@ -61,10 +63,12 @@ describe('receiptSync', () => {
             hash: '0x123',
             workspace: {
                 id: 1,
+                public: true,
                 rpcServer: 'rpc',
                 rateLimitInterval: 5000,
                 explorer: {
-                    stripeSubscription: { status: 'active' }
+                    stripeSubscription: { status: 'active' },
+                    shouldSync: true
                 }
             },
         });
@@ -89,6 +93,7 @@ describe('receiptSync', () => {
         jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             workspace: {
                 rpcServer: 'rpc',
+                public: true,
                 rpcHealthCheckEnabled: true,
                 rpcHealthCheck: {
                     isReachable: false
@@ -121,6 +126,7 @@ describe('receiptSync', () => {
         jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             workspace: {
                 rpcServer: 'rpc',
+                public: true,
                 explorer: {
                     shouldSync: true
                 }
@@ -137,11 +143,48 @@ describe('receiptSync', () => {
             });
     });
 
+    it('Should return if private workspace', (done) => {
+        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
+            workspace: {
+                public: false,
+                rpcServer: 'rpc',
+                explorer: {
+                    shouldSync: true
+                }
+            }
+        });
+
+        receiptSync({ data : { transactionHash: '0x123', workspaceId: 1 }})
+            .then(res => {
+                expect(res).toEqual('Cannot sync on private workspace');
+                done();
+            });
+    });
+
+    it('Should return if disabled sync', (done) => {
+        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
+            workspace: {
+                public: true,
+                rpcServer: 'rpc',
+                explorer: {
+                    shouldSync: false
+                }
+            }
+        });
+
+        receiptSync({ data : { transactionHash: '0x123', workspaceId: 1 }})
+            .then(res => {
+                expect(res).toEqual('Disabled sync');
+                done();
+            });
+    });
+
     it('Should store the receipt', (done) => {
         jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
             id: 1,
             workspace: {
                 rpcServer: 'rpc',
+                public: true,
                 explorer: {
                     shouldSync: true,
                     stripeSubscription: { status: 'active' }
