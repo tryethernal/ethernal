@@ -179,6 +179,10 @@ jobs:
           VUE_APP_SOKETI_FORCE_TLS: ${{ secrets.SOKETI_FORCE_TLS }}
           VUE_APP_FEEDBACK_FIN_ENDPOINT: ${{ secrets.FEEDBACK_FIN_ENDPOINT }}
           COMMIT_REF: ${{ github.sha }}
+          SENTRY_URL: ${{ secrets.SENTRY_URL }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
 
       - uses: nwtgck/actions-netlify@v2.0.0
         id: netlify_deploy
