@@ -1,4 +1,3 @@
-import LogRocket from 'logrocket';
 import * as Sentry from "@sentry/vue";
 import Vue from 'vue';
 import Vuex from 'vuex';
@@ -127,7 +126,6 @@ export default new Vuex.Store({
 
                 if (getters.hasAnalyticsEnabled) {
                     window.feedbackfin.config.user = { email: user.email };
-                    LogRocket.identify(user.firebaseUserId, { email: user.email });
                     this._vm.$posthog.identify(user.id, { email: user.email });
                     Sentry.setUser({ email: user.email });
                     if (window.smartsupp) {
@@ -152,10 +150,8 @@ export default new Vuex.Store({
         updateConnected({ commit }, connected) {
             commit('SET_CONNECTED', connected);
         },
-        updateUserPlan({ commit, getters }, data) {
+        updateUserPlan({ commit }, data) {
             commit('SET_USER_PLAN', data.plan);
-            if (getters.hasAnalyticsEnabled && data.uid && data.plan && data.plan != 'free')
-                LogRocket.identify(data.uid, { email: data.email, plan: data.plan });
         },
         updateOnboardedStatus({ commit }, status) {
             commit('SET_ONBOARDED_STATUS', status);
@@ -183,7 +179,6 @@ export default new Vuex.Store({
         pusherKey: () => process.env.VUE_APP_PUSHER_KEY,
         postHogApiKey: () => process.env.VUE_APP_POSTHOG_API_KEY,
         postHogApiHost: () => process.env.VUE_APP_POSTHOG_API_HOST,
-        logRocketId: () => process.env.VUE_APP_LOGROCKET_ID,
         hasAnalyticsEnabled: () => !!process.env.VUE_APP_ENABLE_ANALYTICS,
         hasDemoEnabled: () => !!process.env.VUE_APP_ENABLE_DEMO,
         mainDomain: () => process.env.VUE_APP_MAIN_DOMAIN,

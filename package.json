@@ -50,7 +50,6 @@
     "highlight.js": "^10.7.2",
     "highlightjs-line-numbers.js": "^2.8.0",
     "ipaddr.js": "^2.0.0",
-    "logrocket": "^1.0.14",
     "momentjs": "^2.0.0",
     "posthog-js": "^1.88.1",
     "pusher-js": "^7.6.0",
