@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.38.4] - 2024-08-22
+### Changed
+- Switched to self-hosted Sentry
+- Integrate sourcemap upload
+
 ## [3.38.3] - 2024-08-20
 ### Added
 - List of forbidden demo networks. Main reason is that most of the time, people are using public rpc that can't support the load of all the request, it can result in backend issues and/or malfunctioning explorers.
