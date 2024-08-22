@@ -54,8 +54,14 @@ module.exports = async job => {
 
     const workspace = transaction.workspace;
 
+    if (!workspace.public)
+        return 'Cannot sync on private workspace';
+
     if (!workspace.explorer)
         return 'Inactive explorer';
+
+    if (!workspace.explorer.shouldSync)
+        return 'Disabled sync';
 
     if (workspace.rpcHealthCheck && workspace.rpcHealthCheckEnabled && !workspace.rpcHealthCheck.isReachable)
         return 'RPC is unreachable';
