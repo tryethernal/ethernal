@@ -1,25 +1,30 @@
-const { getNodeEnv, getSentryDsn } = require('./lib/env');
+const { getNodeEnv, getSentryDsn, getVersion } = require('./lib/env');
+
+const Sentry = require('@sentry/node');
 
 if (getSentryDsn()) {
     const { nodeProfilingIntegration } = require('@sentry/profiling-node');
-    const Sentry = require('@sentry/node');
+
     Sentry.init({
         dsn: getSentryDsn(),
         environment: getNodeEnv() || 'development',
+        release: `ethernal@${getVersion()}`,
         skipOpenTelemetrySetup: true,
         integrations: [
             nodeProfilingIntegration(),
             Sentry.postgresIntegration
         ],
         tracesSampleRate: 1.0,
-        profilesSampleRate: 1.0,
-        release: process.env.npm_package_version
+        profilesSampleRate: 1.0
     });
 }
 
+const express = require('express');
+const app = express();
+
 const path = require('path');
 const { initializeApp } = require('firebase-admin/app');
-const express = require('express');
+
 const cors = require('cors');
 
 const { ExpressAdapter } = require('@bull-board/express');
@@ -35,7 +40,6 @@ const webhooks = require('./webhooks');
 require('./scheduler');
 
 initializeApp();
-const app = express();
 
 app.use(express.json({
     limit: '25mb',
@@ -84,5 +88,7 @@ if (process.env.SERVE_FRONTEND) {
         res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
     });
 }
+
+Sentry.setupExpressErrorHandler(app);
 
 module.exports = app;
