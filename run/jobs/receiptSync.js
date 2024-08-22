@@ -20,7 +20,7 @@ module.exports = async job => {
             {
                 model: Workspace,
                 as: 'workspace',
-                attributes: ['id', 'rpcServer', 'rateLimitInterval', 'rateLimitMaxInInterval'],
+                attributes: ['id', 'rpcServer', 'rateLimitInterval', 'rateLimitMaxInInterval', 'public'],
                 include: [
                     {
                         model: Explorer,
