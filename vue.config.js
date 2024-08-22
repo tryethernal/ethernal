@@ -42,7 +42,7 @@ module.exports = {
             new WorkerPlugin(),
             sentryWebpackPlugin({
                 debug: true,
-                url: process.env.SENTRY_URL,
+                sentryUrl: process.env.SENTRY_URL,
                 authToken: process.env.SENTRY_AUTH_TOKEN,
                 org: process.env.SENTRY_ORG,
                 project: process.env.SENTRY_PROJECT,
