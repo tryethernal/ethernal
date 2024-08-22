@@ -1,4 +1,5 @@
 import LogRocket from 'logrocket';
+import * as Sentry from "@sentry/vue";
 import Vue from 'vue';
 import Vuex from 'vuex';
 const { sanitize } = require('../lib/utils');
@@ -128,14 +129,17 @@ export default new Vuex.Store({
                     window.feedbackfin.config.user = { email: user.email };
                     LogRocket.identify(user.firebaseUserId, { email: user.email });
                     this._vm.$posthog.identify(user.id, { email: user.email });
+                    Sentry.setUser({ email: user.email });
                     if (window.smartsupp) {
                         window.smartsupp('name', user.email);
                         window.smartsupp('email', user.email);
                     }
                 }
             }
-            else
+            else {
                 commit('SET_USER', null);
+                Sentry.setUser(null);
+            }
         },
         updateCurrentBlock({ commit }, newBlock) {
             commit('SET_CURRENT_BLOCK', newBlock);
