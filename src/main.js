@@ -33,7 +33,8 @@ Sentry.init({
         Sentry.browserProfilingIntegration(),
     ],
     tracesSampleRate: 1.0,
-    tracePropagationTargets: [/.*/]
+    tracePropagationTargets: [/.*/],
+    release: process.env.VUE_COMMIT_REF
 });
 
 if (store.getters.hasDemoEnabled && window.location.pathname.startsWith('/demo')) {

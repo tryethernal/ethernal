@@ -13,6 +13,7 @@ if (getSentryDsn()) {
         ],
         tracesSampleRate: 1.0,
         profilesSampleRate: 1.0,
+        release: process.env.npm_package_version
     });
 }
 

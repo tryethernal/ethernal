@@ -17,7 +17,7 @@ const job = { data: { workspaceId: 1 }};
 const hasReachedTransactionQuota = jest.fn().mockResolvedValue(false);
 
 describe('integrityCheck', () => {
-    it('Should return message saying there is no explorer', async () => {
+    it('Should return message saying sync is disabled', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({ explorer: { shouldSync: false }, integrityCheckStartBlockNumber: 0, public: true });
 
         expect(await integrityCheck(job)).toEqual('Sync is disabled');
@@ -34,6 +34,13 @@ describe('integrityCheck', () => {
 
         expect(await integrityCheck(job)).toEqual('Integrity checks not enabled');
     });
+
+    it('Should return a message saying no check on demo', async () => {
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({ integrityCheckStartBlockNumber: null, explorer: { shouldSync: true, isDemo: true }, public: true });
+
+        expect(await integrityCheck(job)).toEqual('No check on demo explorers');
+    });
+
 
     it('Should return a message saying blocks have not been synced', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({

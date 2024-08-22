@@ -51,6 +51,9 @@ module.exports = async job => {
     if (!workspace.explorer)
         return 'Should have an explorer associated';
 
+    if (workspace.explorer.isDemo)
+        return 'No check on demo explorers';
+
     if (!workspace.explorer.shouldSync)
         return 'Sync is disabled';
 
