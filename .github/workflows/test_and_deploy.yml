@@ -178,6 +178,7 @@ jobs:
           VUE_APP_SOKETI_PORT: ${{ secrets.SOKETI_PORT }}
           VUE_APP_SOKETI_FORCE_TLS: ${{ secrets.SOKETI_FORCE_TLS }}
           VUE_APP_FEEDBACK_FIN_ENDPOINT: ${{ secrets.FEEDBACK_FIN_ENDPOINT }}
+          VUE_APP_VERSION: ${{ needs.create_release.outputs.current_version }}
           COMMIT_REF: ${{ github.sha }}
           SENTRY_URL: ${{ secrets.SENTRY_URL }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -248,6 +249,11 @@ jobs:
       - uses: actions/checkout@v3
 
       - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Update version
+        run: |
+          flyctl secrets set VERSION=${{ needs.create_release.outputs.current_version }} -a ethernal
+          flyctl secrets set VERSION=${{ needs.create_release.outputs.current_version }} -a ethernal-pm2
 
       - name: Release backend
         run: flyctl deploy -c fly.toml -i registry.fly.io/ethernal:${{ github.sha }}
