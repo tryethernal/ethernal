@@ -267,4 +267,4 @@ jobs:
           SENTRY_URL: ${{ secrets.SENTRY_URL }}
         with:
           environment: production
-          version: ${{ steps.get_changelog.outputs.version }}
+          version: ${{ needs.create_release.outputs.current_version }}
