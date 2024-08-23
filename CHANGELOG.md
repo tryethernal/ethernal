@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.38.24] - 2024-08-23
+### Changed
+- Better release name setup
+
 ## [3.38.23] - 2024-08-23
 ### Added
 - _headers file for Netli
