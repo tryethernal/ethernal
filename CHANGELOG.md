@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.38.25] - 2024-08-23
 ### Fixed
 - Typo in deploy file
+- Github Actions decided to not pass around a variable anymore (???), so here is a tentative to fix that
 
 ## [3.38.24] - 2024-08-23
 ### Changed
