@@ -224,6 +224,7 @@
 </template>
 
 <script>
+const axios = require('axios');
 import { Icon } from '@iconify/vue2';
 import WebFont from 'webfontloader';
 import Vue from 'vue';
@@ -272,7 +273,17 @@ export default {
         this.isOverlayActive = true;
         if (localStorage.getItem('ssoApiToken'))
             localStorage.removeItem('ssoApiToken');
-        this.publicExplorer ? this.setupPublicExplorer() : this.setupPrivateExplorer();
+
+        axios.get(`${store.getters.apiRoot}/api/explorers/search?domain=${window.location.host}`)
+            .then(({ data }) => {
+                if (data.explorer) {
+                    store.dispatch('setPublicExplorerData', data.explorer);
+                    this.setupPublicExplorer();
+                }
+                else
+                    this.setupPrivateExplorer();
+            })
+            .catch(() => document.location.href = `//app.${store.getters.mainDomain}`);
     },
     methods: {
         setupPrivateExplorer() {
