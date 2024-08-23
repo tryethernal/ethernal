@@ -243,7 +243,8 @@ jobs:
     environment: production
     steps:
       - name: Release deploy
-        run: curl -v -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ needs.deploy_front.outputs.netlify_deploy_id }}/deploys/$ID/restore
+        run: |
+          curl -v -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/${{ needs.deploy_front.outputs.netlify_deploy_id }}/restore
 
   release_back:
     if: startsWith(github.ref, 'refs/tags/v')
