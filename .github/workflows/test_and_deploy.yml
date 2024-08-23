@@ -91,7 +91,7 @@ jobs:
 
       - name: Get release name
         id: get_release
-        run: echo "relase_name=ethernal@${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: echo "release_name=ethernal@${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Get Changelog Entry
