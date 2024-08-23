@@ -156,7 +156,6 @@ jobs:
       - name: Install deps & build
         run: yarn && yarn build
         env:
-          VUE_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           VUE_APP_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           VUE_APP_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
           VUE_APP_FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
@@ -178,6 +177,8 @@ jobs:
           VUE_APP_SOKETI_FORCE_TLS: ${{ secrets.SOKETI_FORCE_TLS }}
           VUE_APP_FEEDBACK_FIN_ENDPOINT: ${{ secrets.FEEDBACK_FIN_ENDPOINT }}
           VUE_APP_VERSION: ${{ needs.create_release.outputs.current_version }}
+          VUE_APP_SENTRY_DSN_SECRET: ${{ secrets.SENTRY_DSN_SECRET }}
+          VUE_APP_SENTRY_DSN_PROJECT_ID: ${{ secrets.SENTRY_DSN_PROJECT_ID }}
           COMMIT_REF: ${{ github.sha }}
           SENTRY_URL: ${{ secrets.SENTRY_URL }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
