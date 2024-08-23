@@ -33,7 +33,7 @@
                 <span v-show="txStatus(item) == 'unknown'">Unkown Transaction Status</span>
                 <span v-show="txStatus(item) == 'syncing'">Indexing Transaction...</span>
             </v-tooltip>
-            <Hash-Link :type="'transaction'" :hash="item.hash" />
+            <Hash-Link :type="'transaction'" :hash="item.hash" :xsHash="true" />
         </template>
         <template v-slot:item.method="{ item }">
             <v-tooltip v-if="item.methodDetails && Object.keys(item.methodDetails).length" top :open-delay="150" color="grey darken-1" content-class="tooltip">
@@ -58,7 +58,7 @@
             <template v-if="dense">
                 <div class="my-2 text-left">
                     From: <Hash-Link :type="'address'" :hash="item.from" /><br>
-                    <span v-if="item.to">To: <Hash-Link :type="'address'" :hash="item.to" :withTokenName="true" :withName="true" /></span>
+                    <span v-if="item.to">To: <Hash-Link :type="'address'" :hash="item.to" :withTokenName="true" :withName="true" :contract="item.contract" /></span>
                     <span v-else-if="item.receipt && item.receipt.contractAddress">Created: <Hash-Link :type="'address'" :hash="item.receipt.contractAddress" :withTokenName="true" :withName="true" /></span>
                 </div>
             </template>
@@ -72,13 +72,13 @@
         </template>
         <template v-slot:item.to="{ item }">
             <v-chip x-small class="mr-2" v-if="item.to && item.to === currentAddress">self</v-chip>
-            <Hash-Link :type="'address'" :hash="item.to" :withTokenName="true" :withName="true" />
+            <Hash-Link :type="'address'" :hash="item.to" :withTokenName="true" :withName="true" :contract="item.contract" />
         </template>
         <template v-slot:item.value="{ item }">
-            {{ item.value | fromWei('ether', chain.token) }}
+            {{ item.value | fromWei('ether', chain.token, false, 4) }}
         </template>
         <template v-slot:item.fee="{ item }">
-            <span v-if="item.receipt">{{ getGasPriceFromTransaction(item) * (item.gas || item.receipt.gasUsed)  | fromWei('ether', chain.token) }}</span>
+            <span v-if="item.receipt">{{ getGasPriceFromTransaction(item) * (item.gas || item.receipt.gasUsed)  | fromWei('ether', chain.token, false, 4) }}</span>
         </template>
     </v-data-table>
 </template>
@@ -108,7 +108,7 @@ export default {
         loading: false
     }),
     mounted() {
-        this.currentOptions = { page: 1, itemsPerPage: 10, sortBy: [this.blockNumber ? 'timestamp' : 'blockNumber'], sortDesc: [true] };
+        this.currentOptions.sortBy = [this.blockNumber ? 'timestamp' : 'blockNumber'];
 
         this.pusherUnsubscribe = this.pusher.onNewTransaction(transaction => {
             if (this.blockNumber) {

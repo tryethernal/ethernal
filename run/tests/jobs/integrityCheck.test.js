@@ -17,7 +17,7 @@ const job = { data: { workspaceId: 1 }};
 const hasReachedTransactionQuota = jest.fn().mockResolvedValue(false);
 
 describe('integrityCheck', () => {
-    it('Should return message saying there is no explorer', async () => {
+    it('Should return message saying sync is disabled', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({ explorer: { shouldSync: false }, integrityCheckStartBlockNumber: 0, public: true });
 
         expect(await integrityCheck(job)).toEqual('Sync is disabled');
@@ -34,6 +34,13 @@ describe('integrityCheck', () => {
 
         expect(await integrityCheck(job)).toEqual('Integrity checks not enabled');
     });
+
+    it('Should return a message saying no check on demo', async () => {
+        jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({ integrityCheckStartBlockNumber: null, explorer: { shouldSync: true, isDemo: true }, public: true });
+
+        expect(await integrityCheck(job)).toEqual('No check on demo explorers');
+    });
+
 
     it('Should return a message saying blocks have not been synced', async () => {
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
@@ -137,7 +144,8 @@ describe('integrityCheck', () => {
         expect(db.updateWorkspaceIntegrityCheck).toHaveBeenCalledWith(1, { blockId: 1 });
     });
 
-    it('Should return if no lower block', async () => {
+    it('Should reenqueue lower block & return if no lower block', async () => {
+        const safeDeleteIntegrityCheck = jest.fn();
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             explorer: { hasReachedTransactionQuota, shouldSync: true },
             countBlocks: jest.fn().mockResolvedValueOnce(1),
@@ -150,10 +158,19 @@ describe('integrityCheck', () => {
             id: 1,
             public: true,
             name: 'hardhat',
-            user: { firebaseUserId: '123', name: 'hardhat' }
+            user: { firebaseUserId: '123', name: 'hardhat' },
+            safeDeleteIntegrityCheck
         });
 
-        expect(await integrityCheck(job)).toEqual('Missing lower block or upper block');
+        await integrityCheck(job);
+
+        expect(safeDeleteIntegrityCheck).toHaveBeenCalled();
+        expect(enqueue).toHaveBeenCalledWith('blockSync', 'blockSync-1-5', {
+            userId: '123',
+            workspace: 'hardhat',
+            blockNumber: 5,
+            source: 'integrityCheck'
+        }, 1);
     });
 
     it('Should return if no upper block', async () => {
@@ -174,7 +191,7 @@ describe('integrityCheck', () => {
             findBlockGaps: jest.fn().mockResolvedValueOnce([])
         });
 
-        expect(await integrityCheck(job)).toEqual('Missing lower block or upper block');
+        expect(await integrityCheck(job)).toEqual('Missing upper block');
     });
 
     it('Should start recovery', async () => {

@@ -4,6 +4,338 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.38.22] - 2024-08-23
+### Added
+- _headers file for Netlify
+
+## [3.38.21] - 2024-08-23
+### Fixed
+- Deploy file. Setup Sentry DSN properly
+
+## [3.38.20] - 2024-08-23
+### Added
+- Shadow proxying Sentry requests
+
+### Changed
+- Global app loader to avoid white screen
+
+## [3.38.19] - 2024-08-22
+### Removed
+- Logrocket
+
+## [3.38.18] - 2024-08-22
+### Removed
+- Logrocket
+
+## [3.38.17] - 2024-08-22
+### Fixed
+- Sourcemap release
+
+## [3.38.16] - 2024-08-22
+### Fixed
+- Remove duplicate key
+
+## [3.38.15] - 2024-08-22
+### Fixed
+- Tests
+
+## [3.38.14] - 2024-08-22
+### Fixed
+- Bug with version tagging in Sentry
+
+### Added
+- Sentry init is now tag with release on frontend/backend
+
+## [3.38.13] - 2024-08-22
+### Changed
+- Tag Sentry releases with semver
+
+## [3.38.12] - 2024-08-22
+### Fixed
+- Github action deploy file syntax
+
+## [3.38.11] - 2024-08-22
+### Added
+- Sentry release integration
+
+### Removed
+- Newrelic integration
+
+## [3.38.10] - 2024-08-22
+### Fixed
+- Sentry sourcemap upload
+
+## [3.38.9] - 2024-08-22
+### Fixed
+- Deploy file (env variables)
+
+## [3.38.8] - 2024-08-22
+### Fixed
+- Sourcemap setup
+
+## [3.38.7] - 2024-08-22
+### Fixed
+- Bug preventing receipt sync
+
+## [3.38.6] - 2024-08-22
+### Changed
+- Stricter rules for receipt sync
+
+## [3.38.5] - 2024-08-22
+### Changed
+- No integrity checks for demo explorers
+- Start setting up releases on sentry
+
+## [3.38.4] - 2024-08-22
+### Changed
+- Switched to self-hosted Sentry
+- Integrate sourcemap upload
+
+## [3.38.3] - 2024-08-20
+### Added
+- List of forbidden demo networks. Main reason is that most of the time, people are using public rpc that can't support the load of all the request, it can result in backend issues and/or malfunctioning explorers.
+
+## [3.38.2] - 2024-08-20
+### Fixed
+- Bug preventing verified contract tick to appear in transaction lists
+
+## [3.38.1] - 2024-08-20
+### Added
+- Convert # to 'tab' query parameter equivalent (Etherscan API compatibility)
+
+## [3.38.0] - 2024-08-20
+### Changed
+- /contract/:address => /address/:address
+- Better tabs for Address, ERC20Contract, ERC721Collection components
+
+## [3.37.10] - 2024-08-19
+### Added
+- Small delay if indexing is late for contract verification
+
+## [3.37.9] - 2024-08-19
+### Fixed
+- Etherscan API redirect
+
+## [3.37.8] - 2024-08-19
+### Added
+- Added Etherscan compatible endpoint for compatibility with hardhat verify standalone plugin
+
+## [3.37.7] - 2024-08-18
+### Changed
+- Re-enqueuned blocks for rate limiting uses job uniqueness to avoid overloading worker
+
+## [3.37.6] - 2024-08-18
+### Fixed
+- Integrity check bug
+
+## [3.37.5] - 2024-08-18
+### Changed
+- Allow for deeper nesting in FormattedSolVar component
+
+## [3.37.4] - 2024-08-18
+### Changed
+- Fixed small UI bug
+
+## [3.37.3] - 2024-08-18
+### Changed
+- Improved transaction lists UI
+
+## [3.37.2] - 2024-08-18
+### Changed
+- Demos now comes with a faucet 
+
+## [3.37.1] - 2024-08-18
+### Fixed
+- Dex tokens loading
+
+## [3.37.0] - 2024-08-18
+### Added
+- Dex for public explorers. In the explorer's settings, you can create a Dex UI
+from just a UniswapV2Router & wrapped native token address. Users will have access to
+a fully featured DEX UI, with all the pools automatically setup, right from their browsers.
+
+## [3.36.46] - 2024-08-17
+### Fixed
+- Bug locking indefinitely contract verification when trying to reverify a contract
+
+## [3.36.45] - 2024-08-17
+### Fixed
+- Netlify redirect file (again)
+
+## [3.36.44] - 2024-08-17
+### Fixed
+- Netlify redirect file
+
+## [3.36.43] - 2024-08-17
+### Added
+- Etherscan API compatibility for contract verification - now works with Hardhat
+- Multi-file contract verification through the UI
+
+## [3.36.42] - 2024-08-16
+### Fixed
+- Bug preventing workspace reset
+
+## [3.36.41] - 2024-08-15
+### Added
+- Small helper
+
+## [3.36.40] - 2024-08-15
+### Fixed
+- Query params for Netlify rewriting
+
+### Added
+- Support for etherscan style contract verification status endpoint
+
+## [3.36.39] - 2024-08-15
+### Changed
+- Better handling of etherscan endpoint rewrite
+
+## [3.36.38] - 2024-08-15
+### Added
+- Etherscan like contract verification api preparation
+
+## [3.36.37] - 2024-08-15
+### Fixed
+- Various contract sorting bugs
+
+### Changed
+- Reduced mpworker concurrency
+
+## [3.36.35] - 2024-08-15
+### Fixed
+- Tests
+
+## [3.36.34] - 2024-08-14
+### Removed
+- Cumulative wallet count for now, as it's taking too long to load
+
+## [3.36.33] - 2024-08-14
+### Changed
+- Contract transaction creation backfilled process
+
+## [3.36.32] - 2024-08-14
+### Fixed
+- Bug preventing proper insertion of contract transaction creation id
+
+## [3.36.31] - 2024-08-14
+### Changed
+- Use fk for contract transaction creation handling
+
+## [3.36.30] - 2024-^08-14
+### Fixed
+- Typo causing contract creation transaction hash not registering properly
+
+## [3.36.29] - 2024-08-14
+### Changed
+- Faster explorer load
+
+## [3.36.28] - 2024-08-14
+### Changed
+- Improve performances for explorer search
+
+## [3.36.27] - 2024-08-14
+### Added
+- Job to insert hashes
+
+## [3.36.26] - 2024-08-13
+### Added
+- Contract creation transaction hash on contract table
+
+## [3.36.25] - 2024-08-13
+### Changed
+- Make jobs unique when batch enqueued
+
+## [3.36.24] - 2024-08-13
+### Changed
+- Split stat loading on overview
+
+## [3.36.23] - 2024-08-13
+### Changed
+- Updated tests
+
+## [3.36.22] - 2024-08-13
+### Changed
+- Reduce sent requests
+
+## [3.36.21] - 2024-08-13
+### Fixed
+- Typo
+
+## [3.36.20] - 2024-08-13
+### Changed
+- Instrument Sentry differently
+
+## [3.36.19] - 2024-08-13
+### Fixed
+- Tests
+
+## [3.36.18] - 2024-08-13
+### Changed
+- Fix instrument.js
+
+## [3.36.17] - 2024-08-13
+### Changed
+- Update deploy workflow
+
+## [3.36.16] - 2024-08-13
+### Added
+- Sentry
+
+## [3.36.15] - 2024-08-13
+### Changed
+- Reduce amount of data logged when there is an error
+
+## [3.36.14] - 2024-08-13
+### Changed
+- Do not display contract storage if not available
+
+## [3.36.13] - 2024-08-13
+### Changed
+- Optimizing unique wallet count query
+
+## [3.36.12] - 2024-08-13
+### Fixed
+- Tests
+
+## [3.36.11] - 2024-08-13
+### Changed
+- Improve homepage analytics (more to follow)
+
+## [3.36.10] - 2024-08-08
+### Changed
+- Do not throw when missing parameter in removeStalledBlock job
+
+## [3.36.9] - 2024-06-25
+### Changed
+- Creating an explorer is now fully transactional, it either creates the workspace, the explorer and all optional services at the same time, or everything fails
+- It's possible to create an explorer with all options, allowing one API call only to setup branding, domains, etc...
+
+## [3.36.8] - 2024-06-22
+### Changed
+- Return domain id on domain creation
+- Slugify new explorer slug on update
+
+## [3.36.7] - 2024-06-19
+### Added
+- Compilation with viaIR option in contract verification
+
+### Fixed
+- Bug with constructors in contract verification
+
+## [3.36.6] - 2024-06-16
+### Fixed
+- More faucet cooldown frontend issues
+- Related tests
+
+## [3.36.5] - 2024-06-16
+### Fixed
+- Bug preventing faucet balance to be updated in real-time in some cases
+
+## [3.36.4] - 2024-06-16
+### Fixed
+- Bug when editing/deleting a faucet from a different workspace
+- Bug preventing faucet cooldown to be properly displayed
+
 ## [3.36.3] - 2024-06-14
 ### Changed
 - Default rate limiting for new explorer

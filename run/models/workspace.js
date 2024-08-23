@@ -290,10 +290,10 @@ module.exports = (sequelize, DataTypes) => {
 
     async getTransactionCount(since) {
         let query = `
-            SELECT COUNT(*)
-            FROM transaction_events
+            SELECT SUM(count) AS count
+            FROM transaction_volume_daily
             WHERE "workspaceId" = :workspaceId
-                AND timestamp >= :since::timestamp
+                AND timestamp >= DATE_TRUNC('day', timestamp :since)::timestamp
         `;
 
         if (!since) {
@@ -337,15 +337,24 @@ module.exports = (sequelize, DataTypes) => {
         const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
 
         const [transactions,] = await sequelize.query(`
+            WITH date_series AS (
+                SELECT generate_series(
+                    DATE_TRUNC('day', :from::timestamp),
+                    DATE_TRUNC('day', :to::timestamp),
+                    INTERVAL '1 day'
+                ) AS date
+            )
             SELECT
-                time_bucket_gapfill('1 day', timestamp) AS date,
-                coalesce(count(1), 0) AS count
-            FROM transaction_events
-            WHERE timestamp >= timestamp :from
-                AND timestamp < timestamp :to
-                AND "workspaceId" = :workspaceId
-            GROUP BY date
-            ORDER BY date ASC;
+                ds.date,
+                coalesce(tvd.count, 0) AS count
+            FROM
+                date_series ds
+            LEFT JOIN
+                transaction_volume_daily tvd ON ds.date = tvd.timestamp
+            AND
+                tvd."workspaceId" = :workspaceId
+            ORDER BY
+                ds.date ASC;
         `, {
             replacements: {
                 from: new Date(earliestTimestamp),
@@ -521,15 +530,24 @@ module.exports = (sequelize, DataTypes) => {
         const earliestTimestamp = +new Date(from) == 0 ? earliestBlock.timestamp : new Date(from);
 
         const [uniqueWalletCount,] = await sequelize.query(`
+            WITH date_series AS (
+                SELECT generate_series(
+                    DATE_TRUNC('day', :from::timestamp),
+                    DATE_TRUNC('day', :to::timestamp),
+                    INTERVAL '1 day'
+                ) AS date
+            )
             SELECT
-                time_bucket_gapfill('1 day', timestamp) AS date,
-                coalesce(count(distinct "from"), 0) AS count
-            FROM transaction_events
-            WHERE timestamp >= timestamp :from
-                AND timestamp < timestamp :to
-                AND "workspaceId" = :workspaceId
-            GROUP BY date
-            ORDER BY date ASC;
+                ds.date,
+                coalesce(awd.count, 0) AS count
+            FROM
+                date_series ds
+            LEFT JOIN
+                active_wallets_daily awd ON ds.date = awd.timestamp
+            AND
+                awd."workspaceId" = :workspaceId
+            ORDER BY
+                ds.date ASC;
         `, {
             replacements: {
                 from: new Date(earliestTimestamp),
@@ -679,10 +697,14 @@ module.exports = (sequelize, DataTypes) => {
         const since = earliestBlock ? new Date(earliestBlock.timestamp) : new Date(0);
 
         const [{ count },] = await sequelize.query(`
-            SELECT COUNT(DISTINCT "from")
-            FROM transaction_events
-            WHERE "workspaceId" = :workspaceId
-                AND timestamp >= :since::timestamp
+            SELECT COUNT(*)
+            FROM (
+                SELECT "from"
+                FROM transaction_events
+                WHERE "workspaceId" = :workspaceId
+                AND timestamp >= DATE_TRUNC('day', :since::timestamp)
+                GROUP BY "from"
+            ) wallets
         `, {
             type: QueryTypes.SELECT,
             replacements: {
@@ -760,21 +782,46 @@ module.exports = (sequelize, DataTypes) => {
             });
     }
 
-    getFilteredContracts(page = 1, itemsPerPage = 10, orderBy = 'timestamp', order = 'DESC NULLS LAST', pattern = null) {
-        const allowedPattern = ['erc20', 'erc721'].indexOf(pattern) > -1 ? pattern : null;
+    getFilteredContracts(page = 1, itemsPerPage = 10, orderBy = 'timestamp', order = 'DESC', pattern = null) {
+        const allowedPattern = pattern && ['erc20', 'erc721'].indexOf(pattern.toLowerCase()) > -1 ? pattern : null;
         const where = allowedPattern ? { patterns: { [Op.contains]: [allowedPattern] } } : {};
+        const sanitizedOrder = `${['ASC', 'DESC'].indexOf(order.toUpperCase()) > - 1 ? order : 'DESC'} NULLS LAST`;
+
+        let sanitizedOrderBy;
+        switch(orderBy) {
+            case 'name':
+            case 'address':
+            case 'tokenName':
+            case 'tokenSymbol':
+                sanitizedOrderBy = [orderBy];
+                break;
+            case 'tokenTotalSupply':
+                sanitizedOrderBy = [sequelize.cast(sequelize.col('"Contract"."tokenTotalSupply'), 'numeric')];
+                break
+            case 'timestamp':
+            default:
+                sanitizedOrderBy = ['creationTransaction', 'timestamp'];
+                break;
+        }
 
         return this.getContracts({
             where: where,
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage,
-            order: [[orderBy, order]],
+            order: [[...sanitizedOrderBy, sanitizedOrder]],
             attributes: ['address', 'name', 'timestamp', 'patterns', 'workspaceId', 'tokenName', 'tokenSymbol', 'tokenTotalSupply'],
-            include: {
-                model: sequelize.models.ContractVerification,
-                as: 'verification',
-                attributes: ['createdAt']
-            }
+            include: [
+                {
+                    model: sequelize.models.ContractVerification,
+                    as: 'verification',
+                    attributes: ['createdAt']
+                },
+                {
+                    model: sequelize.models.Transaction,
+                    as: 'creationTransaction',
+                    attributes: ['hash', 'timestamp', 'from']
+                }
+            ]
         });
     }
 
@@ -810,8 +857,13 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.Contract,
-                    attributes: ['abi'],
-                    as: 'contract'
+                    attributes: ['abi', 'name', 'tokenName', 'tokenSymbol'],
+                    as: 'contract',
+                    include: {
+                        model: sequelize.models.ContractVerification,
+                        attributes: ['createdAt'],
+                        as: 'verification'
+                    }
                 }
             ]
         });
@@ -1122,7 +1174,8 @@ module.exports = (sequelize, DataTypes) => {
             has721Enumerable: contract.has721Enumerable,
             ast: contract.ast,
             bytecode: contract.bytecode,
-            asm: contract.asm
+            asm: contract.asm,
+            transactionId: contract.transactionId
         });
 
         if (existingContract)
@@ -1325,11 +1378,6 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 },
                 {
-                    model: sequelize.models.TransactionReceipt,
-                    attributes: ['blockNumber', ['transactionHash', 'hash']],
-                    as: 'creationTransaction',
-                },
-                {
                     model: sequelize.models.ContractVerification,
                     as: 'verification',
                     include: [
@@ -1338,9 +1386,15 @@ module.exports = (sequelize, DataTypes) => {
                             as: 'sources'
                         }
                     ]
+                },
+                {
+                    model: sequelize.models.Transaction,
+                    as: 'creationTransaction',
+                    attributes: ['hash', 'timestamp', 'from']
                 }
             ]
         });
+
         return contracts[0];
     }
 
@@ -1455,13 +1509,13 @@ module.exports = (sequelize, DataTypes) => {
             await this.safeDestroyIntegrityCheck(transaction);
             await this.safeDestroyRpcHealthCheck(transaction);
 
-            const blocks = await sequelize.models.Block.findAll(filter);
-            for (let i = 0; i < blocks.length; i++)
-                await blocks[i].safeDestroy(transaction);
-
             const contracts = await sequelize.models.Contract.findAll(filter);
             for (let i = 0; i < contracts.length; i++)
                 await contracts[i].safeDestroy(transaction);
+
+            const blocks = await sequelize.models.Block.findAll(filter);
+            for (let i = 0; i < blocks.length; i++)
+                await blocks[i].safeDestroy(transaction);
 
             const accounts = await sequelize.models.Account.findAll(filter);
             for (let i = 0; i < accounts.length; i++)

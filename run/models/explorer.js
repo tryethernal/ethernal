@@ -3,12 +3,14 @@ const {
   Model
 } = require('sequelize');
 const ethers = require('ethers');
-const { sanitize } = require('../lib/utils');
+const { sanitize, slugify } = require('../lib/utils');
 const { isStripeEnabled } = require('../lib/flags');
 const { getDemoUserId, getAppDomain } = require('../lib/env');
 const { enqueue } = require('../lib/queue');
 const Analytics = require('../lib/analytics');
 const analytics = new Analytics();
+const IUniswapV2Router02 = require('../lib/abis/IUniswapV2Router02.json');
+const IUniswapV2Factory = require('../lib/abis/IUniswapV2Factory.json');
 const MAX_RPC_ATTEMPTS = 3;
 
 module.exports = (sequelize, DataTypes) => {
@@ -23,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       Explorer.belongsTo(models.Workspace, { foreignKey: 'workspaceId', as: 'workspace' });
       Explorer.hasOne(models.StripeSubscription, { foreignKey: 'explorerId', as: 'stripeSubscription' });
       Explorer.hasOne(models.ExplorerFaucet, { foreignKey: 'explorerId', as: 'faucet' });
+      Explorer.hasOne(models.ExplorerV2Dex, { foreignKey: 'explorerId', as: 'v2Dex' });
       Explorer.hasMany(models.ExplorerDomain, { foreignKey: 'explorerId', as: 'domains' });
     }
 
@@ -43,6 +46,7 @@ module.exports = (sequelize, DataTypes) => {
 
     static findBySlug(slug) {
         return Explorer.findOne({
+            attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId'],
             where: { slug },
             include: [
                 {
@@ -52,10 +56,12 @@ module.exports = (sequelize, DataTypes) => {
                 },
                 {
                     model: sequelize.models.StripeSubscription,
+                    attributes: ['id', 'stripePlanId'],
                     as: 'stripeSubscription',
                     include: {
                         model: sequelize.models.StripePlan,
-                        as: 'stripePlan'
+                        attributes: ['capabilities'],
+                        as: 'stripePlan',
                     }
                 },
                 {
@@ -73,6 +79,12 @@ module.exports = (sequelize, DataTypes) => {
                     as: 'faucet',
                     attributes: ['id', 'address', 'amount', 'interval', 'active'],
                     where: { active: true },
+                    required: false
+                },
+                {
+                    model: sequelize.models.ExplorerV2Dex,
+                    as: 'v2Dex',
+                    attributes: ['id', 'routerAddress', 'active'],
                     required: false
                 }
             ]
@@ -80,64 +92,69 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async findByDomain(domain) {
-        let explorer;
-        explorer = await Explorer.findOne({
-            where: { domain: domain },
+        const explorerDomain = await sequelize.models.ExplorerDomain.findOne({
+            where: { domain },
+            attributes: ['domain'],
             include: [
                 {
-                    model: sequelize.models.ExplorerDomain,
-                    as: 'domains',
-                    attrbutes: ['domain']
-                },
-                {
-                    model: sequelize.models.StripeSubscription,
-                    as: 'stripeSubscription',
-                    include: {
-                        model: sequelize.models.StripePlan,
-                        as: 'stripePlan',
-                        required: true
-                    }
-                },
-                {
-                    model: sequelize.models.User,
-                    attributes: ['firebaseUserId'],
-                    as: 'admin'
-                },
-                {
-                    model: sequelize.models.Workspace,
-                    attributes: ['id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
-                    as: 'workspace'
-                },
-                {
-                    model: sequelize.models.ExplorerFaucet,
-                    as: 'faucet',
-                    attributes: ['id', 'address', 'amount', 'interval', 'active'],
-                    where: { active: true },
-                    required: false
+                    model: Explorer,
+                    as: 'explorer',
+                    attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes', 'userId', 'workspaceId'],
+                    include: [
+                        {
+                            model: sequelize.models.StripeSubscription,
+                            attributes: ['id', 'stripePlanId'],
+                            as: 'stripeSubscription',
+                            include: {
+                                model: sequelize.models.StripePlan,
+                                attributes: ['capabilities'],
+                                as: 'stripePlan',
+                            }
+                        },
+                        {
+                            model: sequelize.models.User,
+                            attributes: ['firebaseUserId'],
+                            as: 'admin'
+                        },
+                        {
+                            model: sequelize.models.Workspace,
+                            attributes: ['id', 'name', 'storageEnabled', 'defaultAccount', 'gasPrice', 'gasLimit', 'erc721LoadingEnabled', 'statusPageEnabled', 'public'],
+                            as: 'workspace'
+                        },
+                        {
+                            model: sequelize.models.ExplorerFaucet,
+                            as: 'faucet',
+                            attributes: ['id', 'address', 'amount', 'interval', 'active'],
+                            where: { active: true },
+                            required: false
+                        },
+                        {
+                            model: sequelize.models.ExplorerV2Dex,
+                            as: 'v2Dex',
+                            attributes: ['id', 'routerAddress', 'active'],
+                            required: false
+                        }
+                    ]
                 }
             ]
         });
+        const explorer = explorerDomain.explorer;
 
-        if (!explorer)
-            explorer = await Explorer.findOne({
+        if (explorer)
+            return explorer.stripeSubscription && explorer.stripeSubscription.stripePlan.capabilities.customDomain ? explorer : null;
+        else
+            return Explorer.findOne({
+                attributes: ['id', 'chainId', 'domain', 'l1Explorer', 'name', 'rpcServer', 'slug', 'token', 'themes'],
+                where: { domain: domain },
                 include: [
                     {
-                        model: sequelize.models.ExplorerDomain,
-                        as: 'domains',
-                        where: { domain },
-                        attributes: ['domain'],
-                        required: true
-                    },
-                    {
                         model: sequelize.models.StripeSubscription,
+                        attributes: ['id', 'stripePlanId'],
                         as: 'stripeSubscription',
                         include: {
                             model: sequelize.models.StripePlan,
+                            attributes: ['capabilities'],
                             as: 'stripePlan',
-                            where: {
-                                'capabilities.customDomain': true
-                            },
-                            required: true
                         }
                     },
                     {
@@ -156,11 +173,15 @@ module.exports = (sequelize, DataTypes) => {
                         attributes: ['id', 'address', 'amount', 'interval', 'active'],
                         where: { active: true },
                         required: false
+                    },
+                    {
+                        model: sequelize.models.ExplorerV2Dex,
+                        as: 'v2Dex',
+                        attributes: ['id', 'routerAddress', 'active'],
+                        required: false
                     }
                 ]
             });
-
-        return explorer;
     }
 
     startSync() {
@@ -171,7 +192,53 @@ module.exports = (sequelize, DataTypes) => {
         return this.update({ shouldSync: false });
     }
 
-    async safeCreateFaucet(amount, interval) {
+    async safeCreateV2Dex(routerAddress, factoryAddress, wrappedNativeTokenAddress) {
+        if (!routerAddress || !factoryAddress || !wrappedNativeTokenAddress)
+            throw new Error('Missing parameter');
+
+        const dex = await this.getV2Dex();
+        if (dex)
+            throw new Error('This explorer already has a dex.');
+
+        let [routerContract] = await sequelize.models.Contract.findOrCreate({
+            where: {
+                workspaceId: this.workspaceId,
+                address: routerAddress.toLowerCase()
+            }
+        });
+        const routerContractProperties = sanitize({
+            abi: routerContract.abi ? routerContract.abi : IUniswapV2Router02,
+            name: routerContract.name ? routerContract.name : 'UniswapV2Router'
+        });
+        await routerContract.update(routerContractProperties);
+
+        let [factoryContract] = await sequelize.models.Contract.findOrCreate({
+            where: {
+                workspaceId: this.workspaceId,
+                address: factoryAddress.toLowerCase()
+            }
+        });
+        const factoryContractProperties = sanitize({
+            abi: factoryContract.abi ? factoryContract.abi : IUniswapV2Factory,
+            name: factoryContract.name ? factoryContract.name : 'UniswapV2Factory'
+        });
+        await factoryContract.update(factoryContractProperties);
+
+        const [wrappedNativeTokenContract] = await sequelize.models.Contract.findOrCreate({
+            where: {
+                workspaceId: this.workspaceId,
+                address: wrappedNativeTokenAddress.toLowerCase()
+            }
+        });
+
+        return this.createV2Dex({
+            routerAddress, factoryAddress,
+            explorerId: this.id,
+            wrappedNativeTokenContractId: wrappedNativeTokenContract.id
+        });
+    }
+
+    async safeCreateFaucet(amount, interval, transaction) {
         if (!amount || !interval)
             throw new Error('Missing parameter');
 
@@ -180,7 +247,7 @@ module.exports = (sequelize, DataTypes) => {
             throw new Error('This explorer already has a faucet.');
 
         const { address, privateKey } = ethers.Wallet.createRandom();
-        return this.createFaucet({ address, privateKey, amount, interval, active: true });
+        return this.createFaucet({ address, privateKey, amount, interval, active: true }, { transaction });
     }
 
     async isActive() {
@@ -223,21 +290,17 @@ module.exports = (sequelize, DataTypes) => {
         return false;
     }
 
-    async safeCreateDomain(domain) {
+    async safeCreateDomain(domain, transaction) {
         if (!domain) throw new Error('Missing parameter');
-
-        const canAddDomain = await this.canUseCapability('customDomain');
-        if (!canAddDomain)
-            throw new Error('Upgrade your plan to add custom domains.');
 
         const existingDomain = await sequelize.models.ExplorerDomain.findOne({
             where: { domain }
         });
 
         if (existingDomain)
-            throw new Error('This domain is already in use.');
+            throw new Error('This domain is already used.');
 
-        return this.createDomain({ domain });
+        return this.createDomain({ domain }, { transaction });
     }
 
     safeCreateSubscription(stripePlanId, stripeId, cycleEndsAt, status) {
@@ -306,6 +369,10 @@ module.exports = (sequelize, DataTypes) => {
                 const faucet = await this.getFaucet();
                 if (faucet)
                     await faucet.safeDestroy(transaction);
+
+                const dex = await this.getV2Dex();
+                if (dex)
+                    await dex.safeDestroy(transaction);
 
                 await this.destroy({ transaction });
 
@@ -380,6 +447,7 @@ module.exports = (sequelize, DataTypes) => {
                 const existingExplorer = await sequelize.models.Explorer.findOne({ where: { slug: filteredSettings['slug'] }});
                 if (existingExplorer)
                     throw new Error('This domain is not available');
+                filteredSettings['slug'] = slugify(filteredSettings['slug']);
             }
 
             if (filteredSettings['l1Explorer']) {
@@ -392,11 +460,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
 
-    async safeUpdateBranding(branding) {
-        const canUpdateBranding = await this.canUseCapability('branding');
-        if (!canUpdateBranding)
-        throw new Error('Upgrade your plan to activate branding customization.');
-
+    async safeUpdateBranding(branding, transaction) {
         const ALLOWED_OPTIONS = ['light', 'logo', 'favicon', 'font', 'links', 'banner'];
         const ALLOWED_COLORS = ['primary', 'secondary', 'accent', 'error', 'info', 'success', 'warning', 'background'];
 
@@ -415,7 +479,19 @@ module.exports = (sequelize, DataTypes) => {
             filteredOptions['light'] = filteredColors;
         }
 
-        return this.update({ themes: { ...this.themes, ...filteredOptions }});
+        if (filteredOptions['links'] && filteredOptions['links'].length) {
+            const links = [];
+            for (let i = 0; i < filteredOptions['links'].length; i++) {
+                const link = filteredOptions['links'][i];
+                if (link.uid)
+                    links.push(link);
+                else
+                    links.push({ ...link, uid: Math.floor(Math.random() * 10000 )});
+            }
+            filteredOptions['links'] = links;
+        }
+
+        return this.update({ themes: { ...this.themes, ...filteredOptions }}, { transaction });
     }
   }
   Explorer.init({

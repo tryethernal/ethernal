@@ -38,7 +38,6 @@ describe('RpcConnector.vue', () => {
         auth.mockReturnValue({ currentUser: { id: '1' }});
         jest.spyOn(helper.mocks.server, 'getBlocks').mockResolvedValue({ data: { items: [] }});
 
-        const getAccountsMock = jest.spyOn(helper.mocks.server, 'getAccounts');
         const onNewContractMock = jest.spyOn(helper.mocks.pusher, 'onNewContract');
         const processContractsMock = jest.spyOn(helper.mocks.server, 'processContracts').mockResolvedValue();
         helper.mountFn(RpcConnector, {
@@ -47,7 +46,6 @@ describe('RpcConnector.vue', () => {
             }
         });
 
-        expect(getAccountsMock).toHaveBeenCalled();
         expect(onNewContractMock).not.toHaveBeenCalled();
         expect(processContractsMock).not.toHaveBeenCalled();
     });

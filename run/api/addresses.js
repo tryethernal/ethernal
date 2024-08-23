@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
 const logger = require('../lib//logger');
+const { ProviderConnector } = require('../lib/rpc');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 
 router.get('/:address/tokenTransfers', workspaceAuthMiddleware, async (req, res) => {
@@ -15,7 +16,7 @@ router.get('/:address/tokenTransfers', workspaceAuthMiddleware, async (req, res)
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'api.addresses.address.stats', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'api.addresses.address.stats', error, queryParams: req.params });
         res.status(400).send(error);
     }
 });
@@ -31,7 +32,21 @@ router.get('/:address/stats', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(stats);
     } catch(error) {
-        logger.error(error.message, { location: 'api.addresses.address.stats', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'api.addresses.address.stats', error, queryParams: req.params });
+        res.status(400).send(error);
+    }
+});
+
+router.get('/:address/nativeTokenBalance', workspaceAuthMiddleware, async (req, res) => {
+    const data = req.query;
+
+    try {
+        const provider = new ProviderConnector(data.workspace.rpcServer);
+        const balance = await provider.getBalance(req.params.address);
+
+        res.status(200).json({ balance: balance.toString() });
+    } catch(error) {
+        logger.error(error.message, { location: 'api.addresses.address.nativeTokenBalance', error: error, data: data, queryParams: req.params });
         res.status(400).send(error);
     }
 });
@@ -47,7 +62,7 @@ router.get('/:address/balances', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'api.addresses.address.balances', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'api.addresses.address.balances', error, queryParams: req.params });
         res.status(400).send(error);
     }
 });
@@ -60,7 +75,7 @@ router.get('/:address/transactions', workspaceAuthMiddleware, async (req, res) =
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'api.addresses.address.transaction', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'api.addresses.address.transaction', error, queryParams: req.params });
         res.status(400).send(error);
     }
 })

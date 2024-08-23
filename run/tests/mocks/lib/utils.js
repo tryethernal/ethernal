@@ -7,6 +7,7 @@ jest.mock('../../../lib/utils', () => {
         sanitize: actual.sanitize,
         withTimeout: jest.fn(cb => new Promise(resolve => resolve(cb))),
         processRawRpcObject: jest.fn(data => data),
-        validateBNString: jest.fn().mockReturnValue(true)
+        validateBNString: jest.fn().mockReturnValue(true),
+        sleep: jest.fn().mockResolvedValue()
     }
 });

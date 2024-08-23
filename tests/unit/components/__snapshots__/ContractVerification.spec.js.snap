@@ -104,6 +104,19 @@ exports[`ContractVerification.vue Should load the UI & the Solidity releases 1`]
               </div>
             </div>
           </div>
+          <div class="row mt-0">
+            <div class="col col-2">
+              <div class="v-input v-input--hide-details v-input--dense theme--light v-input--selection-controls v-input--checkbox">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <div class="v-input--selection-controls__input"><i aria-hidden="true" class="v-icon notranslate v-icon--dense mdi mdi-checkbox-blank-outline theme--light"></i><input aria-checked="false" id="input-19" role="checkbox" type="checkbox" value="">
+                      <div class="v-input--selection-controls__ripple"></div>
+                    </div><label for="input-19" class="v-label theme--light" style="left: 0px; position: relative;">Via IR</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <h4>Contract</h4>
@@ -117,7 +130,7 @@ exports[`ContractVerification.vue Should load the UI & the Solidity releases 1`]
                     <fieldset aria-hidden="true">
                       <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-20" class="v-label theme--light" style="left: 0px; position: absolute;">Contract Name *</label><input small="" id="input-20" type="text"></div>
+                    <div class="v-text-field__slot"><label for="input-22" class="v-label theme--light" style="left: 0px; position: absolute;">Contract Name *</label><input small="" id="input-22" type="text"></div>
                   </div>
                   <div class="v-text-field__details">
                     <div class="v-messages theme--light">
@@ -139,8 +152,8 @@ exports[`ContractVerification.vue Should load the UI & the Solidity releases 1`]
                     <fieldset aria-hidden="true">
                       <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                     </fieldset>
-                    <div class="v-text-field__slot"><label for="input-23" class="v-label theme--light" style="left: 0px; position: absolute;">Contract Files *</label>
-                      <div class="v-file-input__text v-file-input__text--chips"></div><input accept=".sol" id="input-23" type="file" multiple="multiple">
+                    <div class="v-text-field__slot"><label for="input-25" class="v-label theme--light" style="left: 0px; position: absolute;">Contract Files *</label>
+                      <div class="v-file-input__text v-file-input__text--chips"></div><input accept=".sol" id="input-25" type="file" multiple="multiple">
                     </div>
                     <div class="v-input__append-inner">
                       <div></div>
@@ -177,7 +190,7 @@ exports[`ContractVerification.vue Should load the UI & the Solidity releases 1`]
                 <fieldset aria-hidden="true">
                   <legend style="width: 0px;"><span class="notranslate">​</span></legend>
                 </fieldset>
-                <div class="v-text-field__slot"><label for="input-30" class="v-label theme--light" style="left: 0px; position: absolute;">Constructor Arguments (ABI Encoded)</label><textarea primary="" id="input-30" rows="3"></textarea></div>
+                <div class="v-text-field__slot"><label for="input-32" class="v-label theme--light" style="left: 0px; position: absolute;">Constructor Arguments (ABI Encoded)</label><textarea primary="" id="input-32" rows="3"></textarea></div>
               </div>
             </div>
           </div>

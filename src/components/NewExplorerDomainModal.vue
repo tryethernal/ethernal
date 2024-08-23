@@ -4,7 +4,7 @@
             <v-card-title>
                 <template>Add Domain Alias</template>
                 <v-spacer></v-spacer>
-                <v-btn icon @click="close()" ><v-icon>mdi-close</v-icon></v-btn>
+                <v-btn icon @click="close()"><v-icon>mdi-close</v-icon></v-btn>
             </v-card-title>
             <v-card-text>
                 <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>

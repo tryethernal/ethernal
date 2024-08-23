@@ -83,7 +83,7 @@ module.exports = async job => {
                     blockNumber: data.blockNumber,
                     source: data.source,
                     rateLimited: data.rateLimited
-                }, priority, null, workspace.rateLimitInterval);
+                }, priority, null, workspace.rateLimitInterval, data.rateLimited);
                 return `Re-enqueuing: ${error.message}`
             }
             else

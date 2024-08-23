@@ -51,6 +51,9 @@ module.exports = async job => {
     if (!workspace.explorer)
         return 'Should have an explorer associated';
 
+    if (workspace.explorer.isDemo)
+        return 'No check on demo explorers';
+
     if (!workspace.explorer.shouldSync)
         return 'Sync is disabled';
 
@@ -115,14 +118,24 @@ module.exports = async job => {
         lowerBlock = workspace.integrityCheck.block;
     }
 
+    if (!lowerBlock) {
+        await workspace.safeDeleteIntegrityCheck();
+        return await enqueue(`blockSync`, `blockSync-${workspace.id}-${workspace.integrityCheckStartBlockNumber}`, {
+            userId: workspace.user.firebaseUserId,
+            workspace: workspace.name,
+            blockNumber: workspace.integrityCheckStartBlockNumber,
+            source: 'integrityCheck'
+        }, 1);
+    }
+
     const [upperBlock] = await workspace.getBlocks({
         where: { state: 'ready' },
         order: [['number', 'DESC']],
         limit: 1
     });
 
-    if (!lowerBlock || !upperBlock)
-        return 'Missing lower block or upper block';
+    if (!upperBlock)
+        return 'Missing upper block';
 
     if (lowerBlock.number == upperBlock.number) {
         const provider = workspace.getProvider();

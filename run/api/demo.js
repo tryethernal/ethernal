@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 const { getDemoUserId, getDefaultPlanSlug, getAppDomain, getDemoTrialSlug, getStripeSecretKey, getDefaultExplorerTrialDays } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const { generateSlug } = require('random-word-slugs');
@@ -34,7 +35,7 @@ router.get('/explorers', authMiddleware, async (req, res) => {
 
         res.status(200).send({ id: explorer.id, name: explorer.name, rpcServer: explorer.rpcServer, canTrial: user.canTrial });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.demo.explorers', error: error });
+        logger.error(error.message, { location: 'get.api.demo.explorers', error });
         res.status(400).send(error.message);
     }
 });
@@ -82,7 +83,7 @@ router.post('/migrateExplorer', authMiddleware, async (req, res) => {
 
         res.status(200).send({ explorerId: explorer.id });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.demo.migrateExplorer', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.demo.migrateExplorer', error });
         res.status(400).send(error.message);
     }
 });
@@ -108,42 +109,44 @@ router.post('/explorers', async (req, res) => {
             networkId = null;
         }
 
+        const forbiddenChains = (await axios.get('https://raw.githubusercontent.com/DefiLlama/chainlist/main/constants/chainIds.json')).data;
+        if (forbiddenChains[networkId])
+            throw new Error(`You can't create a demo with this network id (${networkId} - ${forbiddenChains[networkId]}). If you'd still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we'll set one up for you.`);
+
         if (!networkId)
             throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
 
         const user = await db.getUserById(getDemoUserId());
 
-        const workspaceData = {
-            name: slugGenerated ? name : generateSlug(),
-            networkId,
-            rpcServer: data.rpcServer,
-            dataRetentionLimit: 1
-        };
-
-        const explorer = await db.createExplorerWithWorkspace(user.id, workspaceData, true);
-        if (!explorer)
-            throw new Error('Could not create explorer. Please retry.');
-
-        await db.makeExplorerDemo(explorer.id);
-
         const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
         if (!stripePlan)
             throw new Error('Error setting up the explorer. Please retry.');
 
-        await db.createExplorerSubscription(user.id, explorer.id, stripePlan.id);
-
-        await db.updateExplorerSettings(explorer.id, sanitize({
-            name: data.name,
+        const options = {
+            name, networkId,
+            rpcServer: data.rpcServer,
+            dataRetentionLimit: 1,
             token: data.nativeToken,
-        }));
+            isDemo: true,
+            subscription: {
+                stripePlanId: stripePlan.id,
+                stripeId: null,
+                cycleEndsAt: new Date(0),
+                status: 'active'
+            },
+            faucet: {
+                amount: 10000000000000000,
+                interval: 10
+            }
+        };
 
-        const jwtToken = encode({ explorerId: explorer.id });
-        const banner = `This is a demo explorer that will expire after 24 hours and is limited to 5,000 txs. To remove the limit & set it up permanently,&nbsp;<a id="migrate-explorer-link" href="//app.${getAppDomain()}/transactions?explorerToken=${jwtToken}" target="_blank">click here</a>.`;
-        await db.updateExplorerBranding(explorer.id, { banner });
+        const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
+        if (!explorer)
+            throw new Error('Could not create explorer. Please retry.');
 
         res.status(200).send({ domain: `${explorer.slug}.${getAppDomain()}` });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.demo.explorers', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.demo.explorers', error });
         res.status(400).send(error.message);
     }
 });

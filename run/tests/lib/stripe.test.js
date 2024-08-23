@@ -18,8 +18,10 @@ jest.mock('stripe', () => {
     });
 });
 require('../mocks/lib/firebase');
+require('../mocks/lib/queue');
 const { StripePlan, Explorer } = require('../mocks/models');
 const db = require('../../lib/firebase');
+const { enqueue } = require('../../lib/queue');
 const { handleStripePaymentSucceeded, handleStripeSubscriptionUpdate, handleStripeSubscriptionDeletion } = require('../../lib/stripe');
 const StripePaymentSucceededWebhookBody = require('../fixtures/StripePaymentSucceededWebhookBody');
 
@@ -294,6 +296,30 @@ describe('handleStripeSubscriptionUpdate', () => {
         handleStripeSubscriptionUpdate(data)
             .then(() => {
                 expect(db.disableUserTrial).toHaveBeenCalledWith(1);
+                done();
+            });
+    });
+
+    it('Should enqueue dex processing', (done) => {
+        jest.spyOn(db, 'getUserbyStripeCustomerId').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(Explorer, 'findByPk').mockResolvedValueOnce({ id: 1, v2Dex: { id: 1 }, stripeSubscription: {} });
+        jest.spyOn(StripePlan, 'findOne').mockResolvedValueOnce({ id: 1 });
+        mockCustomerRetrieve.mockResolvedValueOnce({ id: 1 });
+
+        const data = {
+            current_period_end: 1,
+            id: 1,
+            metadata: { explorerId: 1 },
+            status: 'active',
+            cancel_at_period_end: false,
+            items: {
+                data: [{ price: { id: '1234' }}]
+            }
+        };
+
+        handleStripeSubscriptionUpdate(data)
+            .then(() => {
+                expect(enqueue).toHaveBeenCalledWith('processExplorerV2Dex', 'processExplorerV2Dex-1', { explorerDexId: 1 });
                 done();
             });
     });

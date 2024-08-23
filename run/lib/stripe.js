@@ -60,7 +60,7 @@ const updateExplorerSubscription = async (stripeSubscription) => {
     if (!user)
         return 'Cannot find user';
 
-    const explorer = await models.Explorer.findByPk(explorerId, { include: ['stripeSubscription', 'workspace']});
+    const explorer = await models.Explorer.findByPk(explorerId, { include: ['stripeSubscription', 'workspace', 'v2Dex']});
     if (!explorer)
         return 'Cannot find explorer';
 
@@ -93,8 +93,12 @@ const updateExplorerSubscription = async (stripeSubscription) => {
             await db.revertExplorerSubscriptionCancelation(user.id, explorerId);
         else
             await db.updateExplorerSubscription(user.id, explorerId, stripePlan.id, { ...stripeSubscription, customer: stripeCustomer });
-    } else
+    }
+    else
         await db.createExplorerSubscription(user.id, explorerId, stripePlan.id, { ...stripeSubscription, customer: stripeCustomer });
+
+    if (explorer.v2Dex)
+        await enqueue('processExplorerV2Dex', `processExplorerV2Dex-${explorer.v2Dex.id}`, { explorerDexId: explorer.v2Dex.id });
 
     if (stripeSubscription.status == 'trialing')
         await db.disableUserTrial(user.id);

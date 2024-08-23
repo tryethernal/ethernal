@@ -1,5 +1,17 @@
-import { sanitize, getProvider, processMethodCallParam, shortRpcUrl } from '@/lib/utils.js';
+import { sanitize, getProvider, processMethodCallParam, shortRpcUrl, BNtoSignificantDigits } from '@/lib/utils.js';
 const Web3 = require('web3');
+const ethers = require('ethers');
+const BigNumber = ethers.BigNumber;
+
+describe('BNtoSignificantDigits', () => {
+    it('Should return null if null', () => {
+        expect(BNtoSignificantDigits(null)).toEqual(null);
+    });
+
+    it('Should return formatted BN', () => {
+        expect(BNtoSignificantDigits(BigNumber.from('1004000000000000000'))).toEqual(1.004);
+    });
+});
 
 describe('shortRpcUrl', () => {
     it('Should return origin if valid', () => {

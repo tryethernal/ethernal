@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import axios from 'axios';
+import * as Sentry from "@sentry/vue";
 
 import vuetify from './plugins/vuetify';
 import router from './plugins/router';
@@ -23,6 +23,19 @@ Vue.use(require('vue-moment'));
 Vue.use(serverPlugin, { store });
 Vue.use(posthogPlugin, { store });
 
+Sentry.init({
+    Vue,
+    environment: store.getters.environment,
+    release: `ethernal@${store.getters.version}`,
+    dsn: store.getters.sentryDSN,
+    integrations: [
+        Sentry.browserTracingIntegration({ router }),
+        Sentry.browserProfilingIntegration(),
+    ],
+    tracesSampleRate: 1.0,
+    tracePropagationTargets: [/.*/]
+});
+
 if (store.getters.hasDemoEnabled && window.location.pathname.startsWith('/demo')) {
     new Vue({
         vuetify,
@@ -40,16 +53,10 @@ else if (window.location.pathname.endsWith('/sso')) {
     }).$mount('#app');
 }
 else {
-    axios.get(`${store.getters.apiRoot}/api/explorers/search?domain=${window.location.host}`)
-        .then(({ data }) => {
-            if (data.explorer)
-                store.dispatch('setPublicExplorerData', data.explorer);
-            new Vue({
-                vuetify,
-                store: store,
-                router,
-                render: h => h(App)
-            }).$mount('#app');
-        })
-        .catch(() => document.location.href = `//app.${store.getters.mainDomain}`);
+    new Vue({
+        vuetify,
+        store: store,
+        router,
+        render: h => h(App)
+    }).$mount('#app');
 }

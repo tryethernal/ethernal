@@ -9,7 +9,8 @@ module.exports = {
         "dialect": "postgres",
         "logging": function(sql, sequelizeObject) {
             logger.debug(sql, { instance: sequelizeObject.instance });
-        }
+        },
+        benchmark: true
     },
     production: {
         "username": process.env.DB_USER,

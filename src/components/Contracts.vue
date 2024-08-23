@@ -38,14 +38,14 @@
                         </v-chip>
                     </template>
                     <template v-slot:item.address="{ item }">
-                        <Hash-Link :type="'contract'" :hash="item.address" :contract="item" />
+                        <Hash-Link :type="'address'" :hash="item.address" :contract="item" />
                     </template>
                     <template v-slot:item.timestamp="{ item }">
-                        <template v-if="item.timestamp">
+                        <template v-if="item.creationTransaction">
                             <v-tooltip top :open-delay="150" color="grey darken-3">
                                 <template v-slot:activator="{ on, attrs }">
                                     <span v-bind="attrs" v-on="on">
-                                        {{ moment(item.timestamp) | moment('MM/DD h:mm:ss A') }}
+                                        {{ moment(item.creationTransaction.timestamp) | moment('MM/DD h:mm:ss A') }}
                                     </span>
                                 </template>
                                 {{ moment(item.timestamp).fromNow() }}
@@ -133,8 +133,8 @@ export default {
             const options = {
                 page: this.currentOptions.page,
                 itemsPerPage: this.currentOptions.itemsPerPage,
-                sortBy: this.currentOptions.sortBy[0],
-                order: this.currentOptions.sortDesc[0] === false ? 'asc nulls last' : 'desc nulls last'
+                orderBy: this.currentOptions.sortBy[0],
+                order: this.currentOptions.sortDesc[0] === false ? 'ASC' : 'DESC'
             };
 
             this.server.getContracts(options)

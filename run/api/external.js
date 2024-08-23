@@ -9,7 +9,7 @@ router.get('/compilers', async (req, res) => {
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.external.compilers', error: error });
+        logger.error(error.message, { location: 'get.api.external.compilers', error });
         res.status(400).send(error.message);
     }
 });

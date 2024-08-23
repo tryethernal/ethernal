@@ -22,7 +22,7 @@
                                     outlined
                                     required
                                     :rules="[
-                                        v => !!v || 'An address is required',
+                                        v => !!v || 'A valid address is required',
                                         v => !!v && v.match(/(\b0x[A-Fa-f0-9]{40}\b)/g) ? true : 'Invalid address'
                                     ]"
                                     type="text"
@@ -37,10 +37,10 @@
                                 <ul>
                                     <li v-for="(request, idx) in slicedRequests" :key="idx">
                                         <Hash-Link :withName="false" :type="'address'" :hash="request.address" /> -
-                                        <span v-if="request.cooldown == 0" class="success--text">
+                                        <span v-if="durationUntilNextRequest(request.availableAt) <= 0" class="success--text">
                                             <a class="underlined" @click.prevent="requestFor(request.address)">Request now</a>
                                         </span>
-                                        <span v-else>Request in {{ humanizeDuration(request.cooldown) }}</span>
+                                        <span v-else>Request in {{ humanizeDuration(request.availableAt) }}</span>
                                     </li>
                                 </ul>
                                 <template v-if="orderedRequests.length > 5">
@@ -130,7 +130,7 @@ export default{
 
         this.refreshFaucetBalance();
         this.pusherUnsubscribe = this.pusher.onNewTransaction(data => {
-            if (data.from == this.publicExplorer.faucet.address)
+            if (data.from == this.publicExplorer.faucet.address || data.to == this.publicExplorer.faucet.address)
                 this.refreshFaucetBalance();
         }, this);
         this.initializeRequests();
@@ -158,7 +158,7 @@ export default{
             this.server.requestFaucetToken(this.publicExplorer.faucet.id, address || this.address)
                 .then(({ data }) => {
                     this.transactionHash = data.hash;
-                    this.updateRequests({ address: this.address.toLowerCase(), cooldown: data.cooldown });
+                    this.updateRequests({ address: this.address.toLowerCase(), availableAt: moment().add(data.cooldown, 'minutes').toDate() });
                 })
                 .catch(error => {
                     console.log(error)
@@ -190,8 +190,11 @@ export default{
                 return [];
             }
         },
-        humanizeDuration(duration) {
-            return moment.duration(duration, 'minutes').humanize()
+        durationUntilNextRequest(until) {
+            return moment.duration(moment(until).diff(moment()), 'milliseconds');
+        },
+        humanizeDuration(until) {
+            return this.durationUntilNextRequest(until).humanize();
         }
     },
     computed: {

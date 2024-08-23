@@ -1,129 +1,160 @@
 <template>
     <v-container fluid>
-        <v-row class="mb-1">
-            <v-col cols="12" lg="5">
-                <v-card outlined style="height: 100%">
-                    <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
-                    <v-card-title v-else>
-                        <v-tooltip top v-if="contract.verification">
-                            <template v-slot:activator="{on, attrs}">
-                                <v-icon v-bind="attrs" v-on="on" class="success--text mr-1" small v-if="contract.verification">mdi-check-circle</v-icon>
-                            </template>
-                            Verified contract.
-                        </v-tooltip>
-                        {{ contract.tokenName }}
-                    </v-card-title>
-                    <v-card-subtitle>
-                        <v-skeleton-loader v-if="loadingContract" type="chip"></v-skeleton-loader>
-                        <v-chip v-else v-for="(pattern, idx) in contract.patterns" :key="idx" x-small class="success mr-2">
-                            {{ formatContractPattern(pattern) }}
-                        </v-chip>
-                    </v-card-subtitle>
-                    <v-card-text>
-                        <v-row>
-                            <v-col cols="6">
-                                <small>Total Supply</small><br>
-                                <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
-                                <span class="text-h6 ml-2" v-else-if="contract.tokenTotalSupply">{{ formatNumber(contract.tokenTotalSupply, { decimals: contract.tokenDecimals }) }} {{ contract.tokenSymbol }}</span>
-                                <span class="text-h6 ml-2" v-else>N/A</span>
-                            </v-col>
-
-                            <v-col cols="6">
-                                <small>Decimals</small><br>
-                                <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
-                                <span v-else class="text-h6 ml-2">{{ contract.tokenDecimals || 'N/A' }}</span>
-                            </v-col>
-                        </v-row>
-
-                        <v-row>
-                            <v-col cols="6">
-                                <small>Contract</small><br>
-                                <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
-                                <Hash-Link class="ml-2" :type="'contract'" :hash="contract.address" :withName="true" />
-                            </v-col>
-
-                            <v-col cols="6">
-                                <small>Contract Creation</small><br>
-                                <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
-                                <span v-else-if="contract.creationTransaction && contract.creationTransaction.hash" class="ml-2">
-                                    <Hash-Link :type="'transaction'" :hash="contract.creationTransaction.hash" />
-                                </span>
-                                <span v-else class="text-h6 ml-2">N/A</span>
-                            </v-col>
-
-                        </v-row>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-
-            <v-col cols="12" lg="7">
+        <v-card v-if="loadingContract" outlined>
+            <v-card-text>
                 <v-row>
-                    <v-col cols="12" sm="6" lg="6">
-                        <Stat-Number :loading="loadingStats" :title="'Holders'" :value="contractStats.tokenHolderCount" />
-                    </v-col>
-
-                    <v-col cols="12" sm="6" lg="6">
-                        <Stat-Number :loading="loadingStats" :title="'Transfers'" :value="contractStats.tokenTransferCount" />
-                    </v-col>
-
-                    <v-col cols="12" sm="6" lg="6">
-                        <Stat-Number :loading="loadingStats" :title="'Circulating Supply'" :value="contractStats.tokenCirculatingSupply" :decimals="contract.tokenDecimals" :infoTooltip="'Number of tokens currently in circulation'" :tokenType="tokenType" :key="contract.id" />
-                    </v-col>
-
-                    <v-col cols="12" sm="6" lg="6">
-                        <v-card outlined style="height: 100%">
-                            <v-card-subtitle v-if="metamaskData.account && metamaskData.isReady">
-                                <div style="position: absolute;">Your Balance</div>
-                                <div class="text-right" v-if="metamaskData.account">
-                                    <Hash-Link :type="'address'" :hash="metamaskData.account" />
-                                </div>
-                            </v-card-subtitle>
-                            <v-card-subtitle v-else>Your Balance</v-card-subtitle>
-                            <v-card-text class="text-h3" align="center" v-if="metamaskData.account && metamaskData.isReady">
-                                <v-skeleton-loader v-if="loadingBalance" type="list-item"></v-skeleton-loader>
-                                <template v-else-if="connectedAccountBalance">{{ formatNumber(connectedAccountBalance, { short: true }) }} {{ contract.tokenSymbol }}</template>
-                                <template v-else>N/A</template>
-                            </v-card-text>
-                            <v-card-text v-else>
-                                <Metamask class="mt-1" @rpcConnectionStatusChanged="onRpcConnectionStatusChanged"></Metamask>
-                            </v-card-text>
-                        </v-card>
+                    <v-col cols="4">
+                        <v-skeleton-loader type="card"></v-skeleton-loader>
                     </v-col>
                 </v-row>
-            </v-col>
-        </v-row>
-
-        <v-card outlined>
-            <v-tabs v-model="tab">
-                <v-tab id="transactionsTab" href="#transactions">Transactions</v-tab>
-                <v-tab id="interactionsTab" href="#interactions">Read / Write</v-tab>
-                <v-tab id="holdersTab" href="#holders">Holders</v-tab>
-                <v-tab id="transfersTab" href="#transfers">Transfers</v-tab>
-                <v-tab id="analyticsTab" href="#analytics">Analytics</v-tab>
-            </v-tabs>
-
-            <v-tabs-items :value="tab">
-                <v-tab-item value="transactions">
-                    <Address-Transactions-List :address="address" />
-                </v-tab-item>
-
-                <v-tab-item value="interactions">
-                    <Contract-Interaction :address="address" />
-                </v-tab-item>
-
-                <v-tab-item value="holders">
-                    <ERC-20-Token-Holders :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
-                </v-tab-item>
-
-                <v-tab-item value="analytics">
-                    <ERC-20-Contract-Analytics :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" :tokenType="tokenType" :key="contract.id" />
-                </v-tab-item>
-
-                <v-tab-item value="transfers">
-                    <ERC-20-Token-Transfers :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
-                </v-tab-item>
-            </v-tabs-items>
+                <v-row>
+                    <v-col>
+                        <v-skeleton-loader max-height="40vh" type="table"></v-skeleton-loader>
+                    </v-col>
+                </v-row>
+            </v-card-text>
         </v-card>
+        <template v-else>
+            <v-row class="mb-1">
+                <v-col cols="12" lg="5">
+                    <v-card outlined style="height: 100%">
+                        <v-card-title>
+                            <v-tooltip top v-if="contract.verification">
+                                <template v-slot:activator="{on, attrs}">
+                                    <v-icon v-bind="attrs" v-on="on" class="success--text mr-1" small v-if="contract.verification">mdi-check-circle</v-icon>
+                                </template>
+                                Verified contract.
+                            </v-tooltip>
+                            {{ contract.tokenName }}
+                        </v-card-title>
+                        <v-card-subtitle>
+                            <v-chip v-for="(pattern, idx) in contract.patterns" :key="idx" x-small class="success mr-2">
+                                {{ formatContractPattern(pattern) }}
+                            </v-chip>
+                        </v-card-subtitle>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="6">
+                                    <small>Total Supply</small><br>
+                                    <span class="text-h6 ml-2" v-if="contract.tokenTotalSupply">{{ formatNumber(contract.tokenTotalSupply, { decimals: contract.tokenDecimals }) }} {{ contract.tokenSymbol }}</span>
+                                    <span class="text-h6 ml-2" v-else>N/A</span>
+                                </v-col>
+
+                                <v-col cols="6">
+                                    <small>Decimals</small><br>
+                                    <span class="text-h6 ml-2">{{ contract.tokenDecimals || 'N/A' }}</span>
+                                </v-col>
+                            </v-row>
+
+                            <v-row>
+                                <v-col cols="6">
+                                    <small>Address</small><br>
+                                    <Hash-Link class="ml-2" :type="'address'" :hash="contract.address" />
+                                </v-col>
+
+                                <v-col cols="6">
+                                    <small>Contract Creation</small><br>
+                                    <span v-if="contract.creationTransaction && contract.creationTransaction.hash" class="ml-2">
+                                        <Hash-Link :type="'transaction'" :hash="contract.creationTransaction.hash" />
+                                    </span>
+                                    <span v-else class="text-h6 ml-2">N/A</span>
+                                </v-col>
+
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+
+                <v-col cols="12" lg="7">
+                    <v-row>
+                        <v-col cols="12" sm="6" lg="6">
+                            <Stat-Number :loading="loadingStats" :title="'Holders'" :value="contractStats.tokenHolderCount" />
+                        </v-col>
+
+                        <v-col cols="12" sm="6" lg="6">
+                            <Stat-Number :loading="loadingStats" :title="'Transfers'" :value="contractStats.tokenTransferCount" />
+                        </v-col>
+
+                        <v-col cols="12" sm="6" lg="6">
+                            <Stat-Number :loading="loadingStats" :title="'Circulating Supply'" :value="contractStats.tokenCirculatingSupply" :decimals="contract.tokenDecimals" :infoTooltip="'Number of tokens currently in circulation'" :tokenType="tokenType" :key="contract.id" />
+                        </v-col>
+
+                        <v-col cols="12" sm="6" lg="6">
+                            <v-card outlined style="height: 100%">
+                                <v-card-subtitle v-if="metamaskData.account && metamaskData.isReady">
+                                    <div style="position: absolute;">Your Balance</div>
+                                    <div class="text-right" v-if="metamaskData.account">
+                                        <Hash-Link :type="'address'" :hash="metamaskData.account" />
+                                    </div>
+                                </v-card-subtitle>
+                                <v-card-subtitle v-else>Your Balance</v-card-subtitle>
+                                <v-card-text class="text-h3" align="center" v-if="metamaskData.account && metamaskData.isReady">
+                                    <v-skeleton-loader v-if="loadingBalance" type="list-item"></v-skeleton-loader>
+                                    <template v-else-if="connectedAccountBalance">{{ formatNumber(connectedAccountBalance, { short: true }) }} {{ contract.tokenSymbol }}</template>
+                                    <template v-else>N/A</template>
+                                </v-card-text>
+                                <v-card-text v-else>
+                                    <Metamask class="mt-1" @rpcConnectionStatusChanged="onRpcConnectionStatusChanged"></Metamask>
+                                </v-card-text>
+                            </v-card>
+                        </v-col>
+                    </v-row>
+                </v-col>
+            </v-row>
+
+            <div v-if="!loadingContract">
+                <v-tabs v-model="tab">
+                    <v-tab id="transactionsTab" href="#transactions">Transactions</v-tab>
+                    <v-tab id="transfersTab" href="#transfers">Transfers</v-tab>
+                    <v-tab id="holdersTab" href="#holders">Holders</v-tab>
+                    <v-tab id="interactionsTab" href="#interactions">Read / Write</v-tab>
+                    <v-tab id="codeTab" href="#code">Code</v-tab>
+                    <v-tab id="analyticsTab" href="#analytics">Analytics</v-tab>
+                </v-tabs>
+
+                <v-tabs-items :value="tab">
+                    <v-tab-item value="transactions">
+                        <v-card outlined class="mt-3">
+                            <v-card-text>
+                                <Address-Transactions-List :address="address" />
+                            </v-card-text>
+                        </v-card>
+                    </v-tab-item>
+
+                    <v-tab-item value="transfers">
+                        <v-card outlined class="mt-3">
+                            <v-card-text>
+                                <ERC-20-Token-Transfers :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
+                            </v-card-text>
+                        </v-card>
+                    </v-tab-item>
+
+                    <v-tab-item value="holders">
+                        <v-card outlined class="mt-3">
+                            <v-card-text>
+                                <ERC-20-Token-Holders :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
+                            </v-card-text>
+                        </v-card>
+                    </v-tab-item>
+
+                    <v-tab-item value="interactions">
+                        <Contract-Interaction :address="address" />
+                    </v-tab-item>
+
+                    <v-tab-item value="code">
+                        <Contract-Code v-if="contract" :contract="contract" />
+                    </v-tab-item>
+
+                    <v-tab-item value="analytics">
+                        <v-card outlined class="mt-3">
+                            <v-card-text>
+                                <ERC-20-Contract-Analytics :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" :tokenType="tokenType" :key="contract.id" />
+                            </v-card-text>
+                        </v-card>
+                    </v-tab-item>
+                </v-tabs-items>
+            </div>
+        </template>
     </v-container>
 </template>
 
@@ -139,6 +170,7 @@ import ContractInteraction from './ContractInteraction';
 import ERC20TokenHolders from './ERC20TokenHolders';
 import ERC20ContractAnalytics from './ERC20ContractAnalytics';
 import ERC20TokenTransfers from './ERC20TokenTransfers';
+import ContractCode from './ContractCode';
 import StatNumber from './StatNumber';
 import HashLink from './HashLink';
 import Metamask from './Metamask';
@@ -154,7 +186,8 @@ export default {
         ContractInteraction,
         ERC20TokenHolders,
         ERC20ContractAnalytics,
-        ERC20TokenTransfers
+        ERC20TokenTransfers,
+        ContractCode
     },
     data: () => ({
         loadingContract: true,

@@ -16,7 +16,7 @@ router.get('/:address/totalSupply', workspaceAuthMiddleware, async (req, res) =>
 
         res.status(200).json({ totalSupply });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.collections.address.totalSupply', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.collections.address.totalSupply', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -28,7 +28,7 @@ router.get('/:address/tokens', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.collections.address.tokens', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.collections.address.tokens', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });

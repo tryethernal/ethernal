@@ -29,7 +29,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'api.status', error: error });
+        logger.error(error.message, { location: 'api.status', error });
         res.status(400).send(error.message);
     }
 });

@@ -2,9 +2,11 @@ const ethers = require('ethers');
 const axios = require('axios');
 const { sanitize } = require('./utils');
 
+const ERC20_ABI = require('../abis/erc20.json');
 const ERC721_ABI = require('../abis/erc721.json');
 const ERC721_ENUMERABLE_ABI = require('../abis/erc721Enumerable.json');
 const ERC721_METADATA_ABI = require('../abis/erc721Metadata.json');
+const IUniswapV2Router02 = require('../abis/IUniswapV2Router02');
 
 const getProvider = function(url) {
     const rpcServer = new URL(url);
@@ -27,6 +29,51 @@ const getProvider = function(url) {
 
     return new provider(authenticatedUrl);
 };
+
+class V2DexRouterConnector {
+    constructor({ provider, address, from }) {
+        this.from = from;
+        this.provider = provider.getSigner(this.from);
+        this.contract = new ethers.Contract(address, IUniswapV2Router02, this.provider);
+    }
+
+    async swapExactTokensForTokens(amountIn, amountOutMin, path, to, deadline) {
+        const rawTransaction = await this.contract.populateTransaction.swapExactTokensForTokens(amountIn, amountOutMin, path, to, deadline, { from: this.from, value: '0x0' });
+        return this.provider.sendTransaction(rawTransaction);
+    }
+
+    async swapTokensForExactTokens(amountOut, amountInMax, path, to, deadline) {
+        const rawTransaction = await this.contract.populateTransaction.swapTokensForExactTokens(amountOut, amountInMax, path, to, deadline, { from: this.from, value: '0x0' });
+        return this.provider.sendTransaction(rawTransaction);
+    }
+
+    async swapExactETHForTokens(amountIn, amountOutMin, path, to, deadline) {
+        const rawTransaction = await this.contract.populateTransaction.swapExactETHForTokens(amountOutMin, path, to, deadline, { from: this.from, value: amountIn });
+        return this.provider.sendTransaction(rawTransaction);
+    }
+
+    async swapETHForExactTokens(amountInMax, amountOut, path, to, deadline) {
+        const rawTransaction = await this.contract.populateTransaction.swapETHForExactTokens(amountOut, path, to, deadline, { from: this.from, value: amountInMax });
+        return this.provider.sendTransaction(rawTransaction);
+    }
+}
+
+class ERC20Connector {
+    constructor({ provider, address, from }) {
+        this.from = from;
+        this.provider = provider.getSigner(this.from);
+        this.contract = new ethers.Contract(address, ERC20_ABI, this.provider);
+    }
+
+    allowance(spender) {
+        return this.contract.allowance(this.from, spender);
+    }
+
+    async approve(spender, value) {
+        const rawTransaction = await this.contract.populateTransaction.approve(spender, value, { from: this.from, value: '0x0' });
+        return this.provider.sendTransaction(rawTransaction);
+    }
+}
 
 class ContractConnector {
 
@@ -247,5 +294,7 @@ class ERC721Connector {
 module.exports = {
     ContractConnector: ContractConnector,
     ERC721Connector: ERC721Connector,
+    ERC20Connector: ERC20Connector,
+    V2DexRouterConnector: V2DexRouterConnector,
     getProvider: getProvider
 };
