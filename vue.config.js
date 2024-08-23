@@ -39,7 +39,8 @@ module.exports = {
         plugins: [
             new CopyPlugin({
                 patterns: [
-                    { from: './_redirects', to: './' }
+                    { from: './_redirects', to: './' },
+                    { from: './_headers', to: './' }
                 ]
             }),
             new WorkerPlugin(),

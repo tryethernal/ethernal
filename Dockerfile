@@ -6,7 +6,7 @@ ENV VUE_APP_MAIN_DOMAIN=VUE_APP_MAIN_DOMAIN_PLACEHOLDER
 ENV VUE_APP_PUSHER_KEY=VUE_APP_PUSHER_KEY_PLACEHOLDER
 COPY public/ ./public/
 COPY src/ ./src/
-COPY babel.config.js .firebaserc package.json yarn.lock vue.config.js _redirects ./
+COPY babel.config.js .firebaserc package.json yarn.lock vue.config.js _redirects _headers ./
 RUN yarn install --network-timeout 100000
 RUN yarn build
 
