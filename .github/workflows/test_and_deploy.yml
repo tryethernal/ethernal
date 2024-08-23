@@ -144,6 +144,8 @@ jobs:
   deploy_front:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [create_release]
+    outputs:
+      netlify_deploy_id: ${{ steps.store_deploy_id.outputs.deploy_id }}
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -179,7 +181,7 @@ jobs:
           VUE_APP_SOKETI_PORT: ${{ secrets.SOKETI_PORT }}
           VUE_APP_SOKETI_FORCE_TLS: ${{ secrets.SOKETI_FORCE_TLS }}
           VUE_APP_FEEDBACK_FIN_ENDPOINT: ${{ secrets.FEEDBACK_FIN_ENDPOINT }}
-          VUE_APP_VERSION: ${{ needs.create_release.outputs.current_version }}
+          VUE_APP_VERSION: ${{ needs.create_release.outputs.release_name }}
           VUE_APP_SENTRY_DSN_SECRET: ${{ secrets.SENTRY_DSN_SECRET }}
           VUE_APP_SENTRY_DSN_PROJECT_ID: ${{ secrets.SENTRY_DSN_PROJECT_ID }}
           COMMIT_REF: ${{ github.sha }}
@@ -198,8 +200,12 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
-      - name: Setup deploy url variable
-        run: echo "DEPLOY_URL=${{ steps.netlify_deploy.outputs.deploy-url }}" >> $GITHUB_ENV
+      - name: Store deploy id
+        id: store_deploy_id
+        run: |
+          ID=$(echo ${{ steps.netlify_deploy.outputs.deploy-url }} | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
+          echo "$ID"
+          echo "deploy_id=$ID" >> $GITHUB_OUTPUT
 
   deploy_back:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -237,12 +243,7 @@ jobs:
     environment: production
     steps:
       - name: Release deploy
-        run: |
-          echo "$DEPLOY_URL"
-          echo ${{ env.DEPLOY_URL }}
-          ID=$(echo ${{ env.DEPLOY_URL }} | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
-          echo "$ID"
-          curl -v -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/$ID/restore
+        run: curl -v -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ needs.deploy_front.outputs.netlify_deploy_id }}/deploys/$ID/restore
 
   release_back:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -256,8 +257,8 @@ jobs:
 
       - name: Update version
         run: |
-          flyctl secrets set VERSION=${{ needs.create_release.outputs.current_version }} --stage -a ethernal
-          flyctl secrets set VERSION=${{ needs.create_release.outputs.current_version }} --stage -a ethernal-pm2
+          flyctl secrets set VERSION=${{ needs.create_release.outputs.release_name }} --stage -a ethernal
+          flyctl secrets set VERSION=${{ needs.create_release.outputs.release_name }} --stage -a ethernal-pm2
 
       - name: Release backend
         run: flyctl deploy -c fly.toml -i registry.fly.io/ethernal:${{ github.sha }}

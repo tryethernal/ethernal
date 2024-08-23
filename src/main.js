@@ -26,7 +26,7 @@ Vue.use(posthogPlugin, { store });
 Sentry.init({
     Vue,
     environment: store.getters.environment,
-    release: `ethernal@${store.getters.version}`,
+    release: store.getters.version,
     dsn: store.getters.sentryDSN,
     integrations: [
         Sentry.browserTracingIntegration({ router }),
