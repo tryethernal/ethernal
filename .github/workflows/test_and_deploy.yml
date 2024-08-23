@@ -77,7 +77,7 @@ jobs:
     outputs:
       current_version: ${{ steps.get_changelog.outputs.version }}
       changes: ${{ steps.get_changelog.outputs.changes }}
-      relase_name: ${{ steps.get_tag.outputs.release_name }}
+      release_name: ethernal@${{ steps.get_release.outputs.release_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -86,9 +86,12 @@ jobs:
 
       - name: Get tag
         id: get_tag
-        run: |
-          echo "current_version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-          echo "relase_name=ethernal@${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: echo "current_version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Get release name
+        id: get_release
+        run: echo "relase_name=ethernal@${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Get Changelog Entry
@@ -196,7 +199,7 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
       - name: Setup deploy url variable
-        run: echo "deploy-url=${{ steps.netlify_deploy.outputs.deploy-url }}" >> $GITHUB_ENV
+        run: echo "DEPLOY_URL=${{ steps.netlify_deploy.outputs.deploy-url }}" >> $GITHUB_ENV
 
   deploy_back:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -235,7 +238,7 @@ jobs:
     steps:
       - name: Release deploy
         run: |
-          ID=$(echo "$deploy-url" | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
+          ID=$(echo "$DEPLOY_URL" | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
           curl -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/$ID/restore
 
   release_back:
