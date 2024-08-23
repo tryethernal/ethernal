@@ -253,7 +253,7 @@ jobs:
       - name: Release deploy
         run: |
           deploy_id=$(cat deploy_id.txt)
-          curl -v -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/$deploy_id/restore
+          curl -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/$deploy_id/restore
 
   release_back:
     if: startsWith(github.ref, 'refs/tags/v')
