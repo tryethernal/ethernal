@@ -274,4 +274,4 @@ jobs:
           SENTRY_URL: ${{ secrets.SENTRY_URL }}
         with:
           environment: production
-          version: ${{ needs.create_release.outputs.current_version }}
+          version: ethernal@${{ needs.create_release.outputs.current_version }}
