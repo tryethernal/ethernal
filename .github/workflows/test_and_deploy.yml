@@ -238,7 +238,9 @@ jobs:
     steps:
       - name: Release deploy
         run: |
-          ID=$(echo "$DEPLOY_URL" | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
+          echo "$DEPLOY_URL"
+          echo ${{ env.DEPLOY_URL }}
+          ID=$(echo ${{ env.DEPLOY_URL }} | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
           echo "$ID"
           curl -v -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/$ID/restore
 
