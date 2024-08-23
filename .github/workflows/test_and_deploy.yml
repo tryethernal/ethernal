@@ -87,6 +87,7 @@ jobs:
         id: get_tag
         run: |
           echo "current_version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          echo "relase_name"=ethernal@${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Get Changelog Entry
@@ -184,7 +185,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-          SENTRY_RELEASE: ${{ needs.create_release.outputs.current_version }}
+          SENTRY_RELEASE: ${{ needs.create_release.outputs.relase_name }}
 
       - uses: nwtgck/actions-netlify@v2.0.0
         id: netlify_deploy
@@ -274,4 +275,4 @@ jobs:
           SENTRY_URL: ${{ secrets.SENTRY_URL }}
         with:
           environment: production
-          version: ethernal@${{ needs.create_release.outputs.current_version }}
+          version: ${{ needs.create_release.outputs.relase_name }}
