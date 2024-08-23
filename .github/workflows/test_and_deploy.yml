@@ -187,7 +187,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-          SENTRY_RELEASE: ${{ needs.create_release.outputs.relase_name }}
+          SENTRY_RELEASE: ${{ needs.create_release.outputs.release_name }}
 
       - uses: nwtgck/actions-netlify@v2.0.0
         id: netlify_deploy
@@ -274,4 +274,4 @@ jobs:
           SENTRY_URL: ${{ secrets.SENTRY_URL }}
         with:
           environment: production
-          version: ${{ needs.create_release.outputs.relase_name }}
+          version: ${{ needs.create_release.outputs.release_name }}
