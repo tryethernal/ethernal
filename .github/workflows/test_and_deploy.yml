@@ -231,16 +231,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - name: Extract Netlify deploy id
-        id: extract_deploy_id
-        run: |
-          ID=$(echo "${{ needs.deploy_front.outputs.deploy-url }}" | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
-          echo "DEPLOY_ID=$ID" >> $GITHUB_OUTPUT
-        shell: bash
-
       - name: Release deploy
         run: |
-          curl -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/${{ steps.extract_deploy_id.outputs.deploy_id }}/restore
+          ID=$(echo "${{ needs.deploy_front.outputs.deploy-url }}" | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
+          curl -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/$ID/restore
 
   release_back:
     if: startsWith(github.ref, 'refs/tags/v')
