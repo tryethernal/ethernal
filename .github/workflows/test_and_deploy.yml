@@ -87,7 +87,7 @@ jobs:
         id: get_tag
         run: |
           echo "current_version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-          echo "relase_name"=ethernal@${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          echo "relase_name=ethernal@${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Get Changelog Entry
