@@ -16,7 +16,10 @@
         "reloadErc721Token",
         "processTokenTransfer",
         "reprocessWorkspaceTransactionTraces",
-        "reprocessWorkspaceTransactionErrors"
+        "reprocessWorkspaceTransactionErrors",
+        "processExplorerV2Dex",
+        "processExplorerV2DexPair",
+        "setupV2DexPoolReserves"
     ],
     "low": [
         "processUser",

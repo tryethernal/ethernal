@@ -35,7 +35,7 @@ router.post('/createUserCheckoutSession', [authMiddleware, stripeMiddleware], as
 
         res.status(200).json({ url: session.url });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.stripe.createUserCheckoutSession', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.stripe.createUserCheckoutSession', error });
         res.status(400).send(error.message);
     }
 });
@@ -86,7 +86,7 @@ router.post('/createExplorerCheckoutSession', [authMiddleware, stripeMiddleware]
 
         res.status(200).json({ url: session.url });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.stripe.createExplorerCheckoutSession', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.stripe.createExplorerCheckoutSession', error });
         res.status(400).send(error.message);
     }
 });
@@ -106,7 +106,7 @@ router.post('/createPortalSession', [authMiddleware, stripeMiddleware], async (r
 
         res.status(200).json({ url: session.url });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.stripe.createPortalSession', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.stripe.createPortalSession', error });
         res.status(400).send(error.message);
     }
 });

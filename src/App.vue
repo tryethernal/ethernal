@@ -111,6 +111,15 @@
                     </v-list-item-content>
                 </v-list-item>
 
+                <v-list-item link :to="'/dex'" v-if="isPublicExplorer && publicExplorer.v2Dex">
+                    <v-list-item-icon>
+                        <v-icon>mdi-swap-horizontal</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>Dex</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
                 <v-list-item link :to="'/status'" v-if="(isUserAdmin && currentWorkspace.public) || currentWorkspace.statusPageEnabled">
                     <v-list-item-icon>
                         <v-icon>mdi-heart-circle</v-icon>
@@ -215,8 +224,8 @@
 </template>
 
 <script>
+const axios = require('axios');
 import { Icon } from '@iconify/vue2';
-import LogRocket from 'logrocket';
 import WebFont from 'webfontloader';
 import Vue from 'vue';
 import detectEthereumProvider from '@metamask/detect-provider';
@@ -264,7 +273,17 @@ export default {
         this.isOverlayActive = true;
         if (localStorage.getItem('ssoApiToken'))
             localStorage.removeItem('ssoApiToken');
-        this.publicExplorer ? this.setupPublicExplorer() : this.setupPrivateExplorer();
+
+        axios.get(`${store.getters.apiRoot}/api/explorers/search?domain=${window.location.host}`)
+            .then(({ data }) => {
+                if (data.explorer) {
+                    store.dispatch('setPublicExplorerData', data.explorer);
+                    this.setupPublicExplorer();
+                }
+                else
+                    this.setupPrivateExplorer();
+            })
+            .catch(() => document.location.href = `//app.${store.getters.mainDomain}`);
     },
     methods: {
         setupPrivateExplorer() {
@@ -350,10 +369,6 @@ export default {
             document.title = name;
         },
         authStateChanged(user) {
-            if (user && this.hasAnalyticsEnabled && window.location.host == 'app.tryethernal.com') {
-                LogRocket.init(this.logRocketId);
-            }
-
             const currentPath = this.$router.currentRoute.path;
             const publicExplorerMode = store.getters.publicExplorerMode;
 
@@ -455,7 +470,6 @@ export default {
         ...mapGetters([
             'hasAnalyticsEnabled',
             'isMarketingEnabled',
-            'logRocketId',
             'accounts',
             'isPublicExplorer',
             'publicExplorer',

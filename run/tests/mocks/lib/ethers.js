@@ -3,7 +3,7 @@ jest.mock('ethers', () => {
 
     const provider = {
         send: (command) => {
-            return new Promise((resolve) => {
+            return new Promise((resolve) => {
                 switch(command) {
                     case 'debug_traceTransaction':
                         resolve([{ trace: 'step' }])

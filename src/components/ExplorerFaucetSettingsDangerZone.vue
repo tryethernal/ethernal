@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import ExplorerFaucetPrivateKeyExportModal from './ExplorerFaucetPrivateKeyExportModal';
 
 export default {
@@ -56,11 +55,6 @@ It won't be possible to restore the faucet afterwards. Do you still want to proc
                 .then(() => this.$emit('delete'))
                 .catch(console.log);
         }
-    },
-    computed: {
-        ...mapGetters([
-            'isBillingEnabled'
-        ]),
     }
 }
 </script>

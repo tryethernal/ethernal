@@ -88,6 +88,7 @@ export default {
             const options = {
                 page: this.currentOptions.page,
                 itemsPerPage: this.currentOptions.itemsPerPage,
+                orderBy: this.currentOptions.sortBy[0],
                 order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc',
                 pattern: 'erc20'
             };

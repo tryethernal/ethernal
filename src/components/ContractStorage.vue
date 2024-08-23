@@ -44,7 +44,7 @@
             </v-row>
         </template>
         <template v-else>
-            <v-card outlined class="mt-4">
+            <v-card outlined>
                 <v-card-text v-if="isUserAdmin">
                     Storage is not available on this contract. This is because the AST is not available. It can be for the following reasons:
                     <ul>

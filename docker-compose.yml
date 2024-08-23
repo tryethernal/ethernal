@@ -24,7 +24,7 @@ services:
       - POSTGRES_PASSWORD=postgres
 
   pgbouncer:
-    image: edoburu/pgbouncer@
+    image: edoburu/pgbouncer
     container_name: pgbouncer
     environment:
       - DB_HOST=postgres

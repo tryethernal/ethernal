@@ -1,4 +1,4 @@
-import LogRocket from 'logrocket';
+import * as Sentry from "@sentry/vue";
 import Vue from 'vue';
 import Vuex from 'vuex';
 const { sanitize } = require('../lib/utils');
@@ -83,6 +83,11 @@ export default new Vuex.Store({
             if (!state.publicExplorer)
                 return;
             state.publicExplorer.faucet = faucet;
+        },
+        SET_V2_DEX_SETTINGS(state, v2Dex) {
+            if (!state.publicExplorer)
+                return;
+            state.publicExplorer.v2Dex = v2Dex;
         }
     },
     actions: {
@@ -121,16 +126,18 @@ export default new Vuex.Store({
 
                 if (getters.hasAnalyticsEnabled) {
                     window.feedbackfin.config.user = { email: user.email };
-                    LogRocket.identify(user.firebaseUserId, { email: user.email });
                     this._vm.$posthog.identify(user.id, { email: user.email });
+                    Sentry.setUser({ email: user.email });
                     if (window.smartsupp) {
                         window.smartsupp('name', user.email);
                         window.smartsupp('email', user.email);
                     }
                 }
             }
-            else
+            else {
                 commit('SET_USER', null);
+                Sentry.setUser(null);
+            }
         },
         updateCurrentBlock({ commit }, newBlock) {
             commit('SET_CURRENT_BLOCK', newBlock);
@@ -143,10 +150,8 @@ export default new Vuex.Store({
         updateConnected({ commit }, connected) {
             commit('SET_CONNECTED', connected);
         },
-        updateUserPlan({ commit, getters }, data) {
+        updateUserPlan({ commit }, data) {
             commit('SET_USER_PLAN', data.plan);
-            if (getters.hasAnalyticsEnabled && data.uid && data.plan && data.plan != 'free')
-                LogRocket.identify(data.uid, { email: data.email, plan: data.plan });
         },
         updateOnboardedStatus({ commit }, status) {
             commit('SET_ONBOARDED_STATUS', status);
@@ -159,16 +164,21 @@ export default new Vuex.Store({
         },
         updateFaucetSettings({ commit }, faucet) {
             commit('SET_FAUCET_SETTINGS', faucet);
+        },
+        updateV2DexSettings({ commit }, v2Dex) {
+            commit('SET_V2_DEX_SETTINGS', v2Dex);
         }
     },
     getters: {
+        version: () => process.env.VERSION,
+        environment: () => process.env.NODE_ENV,
+        sentryDSN: () => `${window.location.protocol}//${process.env.VUE_APP_SENTRY_DSN_SECRET}@${window.location.host}/${process.env.VUE_APP_SENTRY_DSN_PROJECT_ID}`,
         soketiHost: () => process.env.VUE_APP_SOKETI_HOST,
         soketiPort: () => process.env.VUE_APP_SOKETI_PORT && parseInt(process.env.VUE_APP_SOKETI_PORT),
         soketiForceTLS: () => !!process.env.VUE_APP_SOKETI_FORCE_TLS,
         pusherKey: () => process.env.VUE_APP_PUSHER_KEY,
         postHogApiKey: () => process.env.VUE_APP_POSTHOG_API_KEY,
         postHogApiHost: () => process.env.VUE_APP_POSTHOG_API_HOST,
-        logRocketId: () => process.env.VUE_APP_LOGROCKET_ID,
         hasAnalyticsEnabled: () => !!process.env.VUE_APP_ENABLE_ANALYTICS,
         hasDemoEnabled: () => !!process.env.VUE_APP_ENABLE_DEMO,
         mainDomain: () => process.env.VUE_APP_MAIN_DOMAIN,
@@ -184,12 +194,15 @@ export default new Vuex.Store({
         isUserAdmin: state => state.currentWorkspace && state.user.id == state.currentWorkspace.userId,
         isPublicExplorer: state => state.publicExplorer && (!!state.publicExplorer.slug || !!state.publicExplorer.domain || (state.currentWorkspace.public && state.user.uid == state.currentWorkspace.firebaseUserId)),
         publicExplorer: state => state.publicExplorer,
+        maxV2DexPairsForTrial: () => 20,
         user: state => {
             return { ...state.user, plan: state.user.plan || 'free' };
         },
         currentBlock: state => state.currentBlock,
         currentWorkspace: state => state.currentWorkspace,
         connected: state => state.connected,
+        nativeTokenSymbol: state => state.publicExplorer && state.publicExplorer.token || 'ETH',
+        nativeTokenAddress: () => '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
         chains: () => ({
             ethereum: {
                 slug: 'ethereum',

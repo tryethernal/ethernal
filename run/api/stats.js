@@ -14,7 +14,7 @@ router.get('/transactions', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(transactions);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.transactions', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.stats.transactions', error });
         res.status(400).send(error.message);
     }
 });
@@ -29,7 +29,7 @@ router.get('/tokenTransferVolume', workspaceAuthMiddleware, async (req, res) => 
 
         res.status(200).json(transfers);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.tokenTransferVolume', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.stats.tokenTransferVolume', error });
         res.status(400).send(error.message);
     }
 });
@@ -44,7 +44,7 @@ router.get('/uniqueWalletCount', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(uniqueWalletCount);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.uniqueWalletCount', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.stats.uniqueWalletCount', error });
         res.status(400).send(error.message);
     }
 });
@@ -59,7 +59,7 @@ router.get('/cumulativeWalletCount', workspaceAuthMiddleware, async (req, res) =
 
         res.status(200).json(cumulativeWalletCount);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.cumulativeWalletCount', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.stats.cumulativeWalletCount', error });
         res.status(400).send(error.message);
     }
 });
@@ -74,7 +74,7 @@ router.get('/deployedContractCount', workspaceAuthMiddleware, async (req, res) =
 
         res.status(200).json(deployedContractCount);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.deployedContractCount', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.stats.deployedContractCount', error });
         res.status(400).send(error.message);
     }
 });
@@ -89,7 +89,7 @@ router.get('/cumulativeDeployedContractCount', workspaceAuthMiddleware, async (r
 
         res.status(200).json(cumulativeDeployedContractCount);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.getCumulativeDeployedContractCount', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.stats.getCumulativeDeployedContractCount', error });
         res.status(400).send(error.message);
     }
 });
@@ -104,7 +104,7 @@ router.get('/averageGasPrice', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(avgGasPrice);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.averageGasPrice', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.stats.averageGasPrice', error });
         res.status(400).send(error.message);
     }
 });
@@ -124,26 +124,48 @@ router.get('/averageTransactionFee', workspaceAuthMiddleware, async (req, res) =
     }
 });
 
-router.get('/global', workspaceAuthMiddleware, async (req, res) => {
+router.get('/txCount24h', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
     try {
         if (!data.workspace)
             throw new Error('Missing parameters.');
 
         const ts24hago = new Date(new Date().getTime() - (24 * 3600 *1000));
-        const txCount24h = await db.getTotalTxCount(data.workspace.id, ts24hago);
-        const txCountTotal = await db.getTotalTxCount(data.workspace.id);
-        const activeWalletCount = await db.getActiveWalletCount(data.workspace.id);
+        const count = await db.getTotalTxCount(data.workspace.id, ts24hago);
 
-        const results = {
-            txCount24h: txCount24h,
-            txCountTotal: txCountTotal,
-            activeWalletCount: activeWalletCount
-        };
-
-        res.status(200).json(results);
+        res.status(200).json({ count });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.stats.global', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.stats.txCount24h', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
+router.get('/txCountTotal', workspaceAuthMiddleware, async (req, res) => {
+    const data = req.query;
+    try {
+        if (!data.workspace)
+            throw new Error('Missing parameters.');
+
+        const count = await db.getTotalTxCount(data.workspace.id);
+
+        res.status(200).json({ count });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.stats.txCountTotal', error: error, data: data });
+        res.status(400).send(error.message);
+    }
+});
+
+router.get('/activeWalletCount', workspaceAuthMiddleware, async (req, res) => {
+    const data = req.query;
+    try {
+        if (!data.workspace)
+            throw new Error('Missing parameters.');
+
+        const count = await db.getActiveWalletCount(data.workspace.id);
+
+        res.status(200).json({ count });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.stats.activeWalletCount', error: error, data: data });
         res.status(400).send(error.message);
     }
 });

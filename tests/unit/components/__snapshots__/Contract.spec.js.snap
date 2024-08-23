@@ -61,7 +61,7 @@ exports[`Contract.vue Should display a warning if not a contract 1`] = `
     </div>
   </div>
   <div class="v-tabs theme--light">
-    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
+    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text" data-booted="true">
       <div class="v-slide-group__prev v-slide-group__prev--disabled">
         <transition-stub name="fade-transition"></transition-stub>
       </div>
@@ -79,21 +79,21 @@ exports[`Contract.vue Should display a warning if not a contract 1`] = `
   </div>
   <div class="v-window v-item-group theme--light v-tabs-items">
     <div class="v-window__container">
-      <transition-stub name="">
+      <transition-stub name="v-window-x-transition">
         <div class="v-window-item v-window-item--active" id="transactions">
           <address-transactions-list-stub></address-transactions-list-stub>
         </div>
       </transition-stub>
-      <transition-stub name="">
+      <transition-stub name="v-window-x-transition">
         <!---->
       </transition-stub>
-      <transition-stub name="">
+      <transition-stub name="v-window-x-transition">
         <!---->
       </transition-stub>
-      <transition-stub name="">
+      <transition-stub name="v-window-x-transition">
         <!---->
       </transition-stub>
-      <transition-stub name="">
+      <transition-stub name="v-window-x-transition">
         <!---->
       </transition-stub>
     </div>
@@ -122,7 +122,7 @@ exports[`Contract.vue Should display only address & creation if not a token 1`] 
             <!---->
             <!---->
             <div class="col col-6"><small>Address</small><br> <span class="ml-2"><hash-link-stub type="address"></hash-link-stub></span></div>
-            <div class="col col-6"><small>Contract Creation</small><br> <span class="ml-2">N/A</span></div>
+            <div class="col col-6"><small>Contract Creation</small><br> <span class="ml-2"><hash-link-stub hash="0xabc" type="transaction"></hash-link-stub></span></div>
           </div>
         </div>
       </div>
@@ -225,7 +225,7 @@ exports[`Contract.vue Should display token info if available 1`] = `
             <div class="col col-6"><small>Token Name</small><br> <span class="ml-2"><hash-link-stub withtokenname="true" withname="true" hash="0x123" type="token"></hash-link-stub></span></div>
             <div class="col col-6"><small>Token Symbol</small><br> <span class="text-h6 ml-2">ERC</span></div>
             <div class="col col-6"><small>Address</small><br> <span class="ml-2"><hash-link-stub type="address"></hash-link-stub></span></div>
-            <div class="col col-6"><small>Contract Creation</small><br> <span class="ml-2">N/A</span></div>
+            <div class="col col-6"><small>Contract Creation</small><br> <span class="ml-2"><hash-link-stub hash="0xabc" type="transaction"></hash-link-stub></span></div>
           </div>
         </div>
       </div>
@@ -327,7 +327,7 @@ exports[`Contract.vue Should not display delete option if not admin 1`] = `
             <div class="col col-6"><small>Token Name</small><br> <span class="ml-2"><hash-link-stub withtokenname="true" withname="true" hash="0x123" type="nft"></hash-link-stub></span></div>
             <div class="col col-6"><small>Token Symbol</small><br> <span class="text-h6 ml-2">ERC</span></div>
             <div class="col col-6"><small>Address</small><br> <span class="ml-2"><hash-link-stub type="address"></hash-link-stub></span></div>
-            <div class="col col-6"><small>Contract Creation</small><br> <span class="ml-2">N/A</span></div>
+            <div class="col col-6"><small>Contract Creation</small><br> <span class="ml-2"><hash-link-stub hash="0xabc" type="transaction"></hash-link-stub></span></div>
           </div>
         </div>
       </div>
@@ -400,6 +400,108 @@ exports[`Contract.vue Should not display delete option if not admin 1`] = `
         <!---->
       </transition-stub>
       <transition-stub name="v-window-x-transition">
+        <!---->
+      </transition-stub>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Contract.vue Should not display storage option if disabled 1`] = `
+<div class="container container--fluid" hash="0x123">
+  <!---->
+  <div class="row mb-1">
+    <div class="col-lg-5 col-12">
+      <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+        <!---->
+        <div class="v-card__title">
+          <!---->
+          ERC20 Contract
+          <div class="spacer"></div>
+          <remove-contract-confirmation-modal-stub></remove-contract-confirmation-modal-stub> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--x-small"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-delete theme--light red--text"></i></span></button>
+        </div>
+        <div class="v-card__subtitle justify-space-between" style="display: flex;"><span class="success mr-2 v-chip v-chip--no-color theme--light v-size--x-small"><span class="v-chip__content">
+                        ERC 20
+                    </span></span>
+          <!---->
+        </div>
+        <div class="v-card__text">
+          <div class="row">
+            <div class="col col-6"><small>Token Name</small><br> <span class="ml-2"><hash-link-stub withtokenname="true" withname="true" hash="0x123" type="token"></hash-link-stub></span></div>
+            <div class="col col-6"><small>Token Symbol</small><br> <span class="text-h6 ml-2">ERC</span></div>
+            <div class="col col-6"><small>Address</small><br> <span class="ml-2"><hash-link-stub type="address"></hash-link-stub></span></div>
+            <div class="col col-6"><small>Contract Creation</small><br> <span class="ml-2"><hash-link-stub hash="0xabc" type="transaction"></hash-link-stub></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-7 col-12">
+      <div class="row">
+        <div class="col col-12">
+          <div class="v-card v-sheet v-sheet--outlined theme--light">
+            <div class="v-card__subtitle">Balance</div>
+            <div align="center" class="v-card__text text-h4">
+              0.00000000000001 Ether
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-6 col-12">
+          <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+            <div class="v-card__subtitle">Transactions</div>
+            <div align="center" class="v-card__text text-h4">
+              <!---->
+              2
+              <!---->
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-12">
+          <div class="v-card v-sheet v-sheet--outlined theme--light" style="height: 100%;">
+            <div class="v-card__subtitle">ERC-20 Transfers</div>
+            <div align="center" class="v-card__text text-h4">
+              3<i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-up-thin theme--light"></i>
+              <hr role="separator" aria-orientation="vertical" class="mx-4 v-divider v-divider--vertical theme--light"> 4<i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-down-thin theme--light"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="v-tabs theme--light">
+    <div role="tablist" class="v-item-group theme--light v-slide-group v-tabs-bar v-tabs-bar--is-mobile primary--text">
+      <div class="v-slide-group__prev v-slide-group__prev--disabled">
+        <transition-stub name="fade-transition"></transition-stub>
+      </div>
+      <div class="v-slide-group__wrapper">
+        <div class="v-slide-group__content v-tabs-bar__content">
+          <div class="v-tabs-slider-wrapper" style="transition: none;">
+            <div class="v-tabs-slider"></div>
+          </div><a tabindex="0" href="#transactions" aria-selected="true" role="tab" class="v-tab v-tab--active" id="transactionsTab">Transactions</a> <a tabindex="0" href="#interactions" aria-selected="false" role="tab" class="v-tab" id="interactionsTab">Read / Write</a> <a tabindex="0" href="#logs" aria-selected="false" role="tab" class="v-tab" id="logsTab">Logs</a> <a tabindex="0" href="#code" aria-selected="false" role="tab" class="v-tab" id="codeTab">Code</a>
+          <!---->
+        </div>
+      </div>
+      <div class="v-slide-group__next v-slide-group__next--disabled">
+        <transition-stub name="fade-transition"></transition-stub>
+      </div>
+    </div>
+  </div>
+  <div class="v-window v-item-group theme--light v-tabs-items">
+    <div class="v-window__container">
+      <transition-stub name="">
+        <div class="v-window-item v-window-item--active" id="transactions">
+          <address-transactions-list-stub></address-transactions-list-stub>
+        </div>
+      </transition-stub>
+      <transition-stub name="">
+        <!---->
+      </transition-stub>
+      <transition-stub name="">
+        <!---->
+      </transition-stub>
+      <!---->
+      <transition-stub name="">
         <!---->
       </transition-stub>
     </div>

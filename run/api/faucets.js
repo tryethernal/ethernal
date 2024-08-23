@@ -74,7 +74,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'delete.api.faucets.id', error, data });
+        logger.error(error.message, { location: 'delete.api.faucets.id', error });
         res.status(400).send(error.message);
     }
 });
@@ -151,7 +151,7 @@ router.post('/:id/drip', workspaceAuth, async (req, res) => {
     } catch(error) {
         if (lock && isLockAcquired)
             await lock.release();
-        logger.error(error.message, { location: 'post.api.faucets.id.drip', error, data });
+        logger.error(error.message, { location: 'post.api.faucets.id.drip', error });
         res.status(400).send(error.message);
     }
 });
@@ -165,7 +165,7 @@ router.put('/:id/deactivate', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'put.api.faucets.id.activate', error, data });
+        logger.error(error.message, { location: 'put.api.faucets.id.activate', error });
         res.status(400).send(error.message);
     }
 });
@@ -178,7 +178,7 @@ router.put('/:id/activate', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'put.api.faucets.id.activate', error, data });
+        logger.error(error.message, { location: 'put.api.faucets.id.activate', error });
         res.status(400).send(error.message);
     }
 });
@@ -216,7 +216,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'put.api.faucets.id', error, data });
+        logger.error(error.message, { location: 'put.api.faucets.id', error });
         res.status(400).send(error.message);
     }
 });

@@ -12,7 +12,8 @@ exports[`ContractVerificationInfo.vue Should display code / constructor argument
         <div class="col col-6"><b>Compiler Version:</b> compiler</div>
         <div class="col col-6"><b>EVM Version:</b> london</div>
       </div>
-      <hr role="separator" aria-orientation="horizontal" class="my-6 v-divider theme--light">
+      <hr role="separator" aria-orientation="horizontal" class="my-4 v-divider theme--light">
+      <!---->
       <div class="row">
         <div class="col">
           <h5>File 1 of 1: File.sol</h5>

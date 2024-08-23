@@ -67,7 +67,7 @@
                             <v-col cols="6">
                                 <small>Contract Creation</small><br>
                                 <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
-                                <span v-else-if="contract.creationTransaction && contract.creationTransaction.hash" class="ml-2">
+                                <span v-else-if="contract.creationTransaction" class="ml-2">
                                     <Hash-Link :type="'transaction'" :hash="contract.creationTransaction.hash" />
                                 </span>
                                 <span v-else class="ml-2">N/A</span>
@@ -123,7 +123,7 @@
             <v-tab id="interactionsTab" href="#interactions">Read / Write</v-tab>
             <v-tab id="logsTab" href="#logs">Logs</v-tab>
             <v-tab id="codeTab" href="#code">Code</v-tab>
-            <v-tab id="storageTab" href="#storage">Storage</v-tab>
+            <v-tab v-if="currentWorkspace.storageEnabled" id="storageTab" href="#storage">Storage</v-tab>
         </v-tabs>
 
         <v-tabs-items :value="tab">
@@ -139,7 +139,7 @@
                 <Contract-Logs :address="address" />
             </v-tab-item>
 
-            <v-tab-item value="storage">
+            <v-tab-item v-if="currentWorkspace.storageEnabled" value="storage">
                 <Contract-Storage :address="address" />
             </v-tab-item>
 

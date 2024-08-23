@@ -21,7 +21,7 @@ router.get('/:number/transactions', workspaceAuthMiddleware, async (req, res) =>
 
         res.status(200).json({ items, total });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.blocks.number', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.blocks.number', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -46,7 +46,7 @@ router.post('/syncRange', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.blocks.syncRange', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.blocks.syncRange', error });
         res.status(400).send(error.message);
     }
 });
@@ -59,7 +59,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(blocks);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.blocks', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.blocks', error });
         res.status(400).send(error.messagae);
     }
 });
@@ -75,7 +75,7 @@ router.get('/:number', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(block);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.blocks.number', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.blocks.number', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -121,7 +121,7 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.blocks', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.blocks', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });

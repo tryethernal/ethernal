@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CreateExplorerDexModal.vue Should show dex creation modal 1`] = `
+<div class="v-dialog__container">
+  <div role="dialog" aria-modal="true" class="v-dialog__content v-dialog__content--active" style="z-index: 202;">
+    <transition-stub name="dialog-transition" appear="true">
+      <div tabindex="0" class="v-dialog v-dialog--active" style="transform-origin: center center; max-width: 600px;">
+        <div class="v-card v-sheet theme--light">
+          <div class="v-card__title headline">
+            Create Dex
+            <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-close theme--light"></i></span></button>
+          </div>
+          <div class="v-card__text">
+            <!---->
+            Enter your router address. From there, we'll be able to fetch the factory, and all created token pairs, in order to generate your dex UI.
+            <form novalidate="novalidate" class="v-form mt-3">
+              <div class="row">
+                <div class="col col-12">
+                  <div class="v-input mt-1 v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                    <div class="v-input__control">
+                      <div class="v-input__slot">
+                        <div class="v-input__prepend-inner">
+                          <div class="v-input__icon v-input__icon--prepend-inner"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-horizontal theme--light"></i></div>
+                        </div>
+                        <fieldset aria-hidden="true">
+                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                        </fieldset>
+                        <div class="v-text-field__slot"><label for="input-12" class="v-label theme--light" style="left: 0px; position: absolute;">Router Address</label><input name="routerAddress" required="required" id="input-12" type="text"></div>
+                      </div>
+                      <div class="v-text-field__details">
+                        <div class="v-messages theme--light">
+                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper"></transition-group-stub>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="v-input mt-1 v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined">
+                    <div class="v-input__control">
+                      <div class="v-input__slot">
+                        <fieldset aria-hidden="true">
+                          <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                        </fieldset>
+                        <div class="v-text-field__slot"><label for="input-16" class="v-label theme--light" style="left: 0px; position: absolute;">Wrapped ETH Address</label><input name="wrappedNativeTokenAddress" required="required" id="input-16" type="text"></div>
+                      </div>
+                      <div class="v-text-field__details">
+                        <div class="v-messages theme--light">
+                          <transition-group-stub tag="div" name="message-transition" class="v-messages__wrapper">
+                            <div class="v-messages__message">We need this address to be able to route native token swaps</div>
+                          </transition-group-stub>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="v-card__actions pr-0 pb-0">
+                <div class="spacer"></div> <button type="submit" disabled="disabled" class="v-btn v-btn--disabled v-btn--has-bg theme--light v-size--default"><span class="v-btn__content">Create</span></button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </transition-stub>
+  </div>
+</div>
+`;

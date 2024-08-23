@@ -37,9 +37,8 @@ module.exports = async function(db, payload) {
     const optimizer = payload.optimizer || false;
     const runs = payload.runs;
     const evmVersion = payload.evmVersion;
+    const viaIR = payload.viaIR || null;
 
-    // Only supports verifying one contract at a time at the moment
-    const contractFile = Object.keys(code.sources)[0];
     const user = await db.getUserById(publicExplorerParams.userId);
     const workspace = await db.getWorkspaceById(publicExplorerParams.workspaceId);
 
@@ -75,7 +74,12 @@ module.exports = async function(db, payload) {
         }
     };
 
+    // If it's false, we don't want to set it at all
+    if (viaIR === true)
+        inputs['settings']['viaIR'] = true;
+
     const missingImports = [];
+
     const compiledCode = compiler.compile(JSON.stringify(inputs), { import : function(path) {
         if (!imports[path]) {
             missingImports.push(path);
@@ -96,13 +100,24 @@ module.exports = async function(db, payload) {
                 throw error;
     }
 
-    if (!parsedCompiledCode.contracts[contractFile][contractName])
+    let contractFile;
+    if (payload.contractFile)
+        contractFile = payload.contractFile;
+    else {
+        const files = Object.keys(code.sources);
+        files.forEach(f => {
+            if (parsedCompiledCode.contracts[f][payload.contractName]) {
+                contractFile = f;
+                return;
+            }
+        })
+    }
+    if (!contractFile || !parsedCompiledCode.contracts[contractFile][contractName])
         throw new Error(`Couldn't find contract "${contractName}" in the uploaded files.`);
 
     const abi = parsedCompiledCode.contracts[contractFile][contractName].abi;
 
     let bytecode = parsedCompiledCode.contracts[contractFile][contractName].evm.bytecode.object;
-
     if (typeof code.libraries == 'object' && Object.keys(code.libraries).length > 0) {
         const linkedBytecode = linker.linkBytecode(bytecode, code.libraries);
         bytecode = linkedBytecode;
@@ -120,7 +135,7 @@ module.exports = async function(db, payload) {
         }
     }
 
-    let compiledRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(bytecode, includedBytecodes) + constructorArguments).toLowerCase();
+    let compiledRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(bytecode, includedBytecodes)).toLowerCase();
     while (compiledRuntimeBytecodeWithoutMetadata.endsWith('0033'))
         compiledRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(compiledRuntimeBytecodeWithoutMetadata, includedBytecodes) + constructorArguments).toLowerCase();
 
@@ -128,9 +143,9 @@ module.exports = async function(db, payload) {
     if (!deploymentTx)
         throw new Error("This contract cannot be verified at the moment because the deployment transaction hasn't been indexed.");
 
-    let deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length), includedBytecodes) + constructorArguments).toLowerCase();
+    let deployedRuntimeBytecodeWithoutMetadata = stripBytecodeMetadata(deploymentTx.data.slice(0, deploymentTx.data.length - constructorArguments.length), includedBytecodes);
     while (deployedRuntimeBytecodeWithoutMetadata.endsWith('0033'))
-    deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deployedRuntimeBytecodeWithoutMetadata, includedBytecodes) + constructorArguments).toLowerCase();
+        deployedRuntimeBytecodeWithoutMetadata = (stripBytecodeMetadata(deployedRuntimeBytecodeWithoutMetadata, includedBytecodes) + constructorArguments).toLowerCase();
 
     if (!deployedRuntimeBytecodeWithoutMetadata.startsWith('0x'))
         deployedRuntimeBytecodeWithoutMetadata = '0x' + deployedRuntimeBytecodeWithoutMetadata;

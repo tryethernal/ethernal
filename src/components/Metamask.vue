@@ -3,17 +3,15 @@
         <div v-show="!ethereum">
             You need Metamask in order to interact with this contract
         </div>
-        <v-row v-show="ethereum">
-            <v-col>
-                <v-alert outlined dense type="error" v-if="chainId && !isChainValid">
-                    Invalid chain id <b>{{ chainId }}</b> ({{ parseInt(chainId, 16) }}), expecting <b>{{ formattedExpectedChainId }}</b> ({{ currentWorkspace.networkId }}). Click <a @click.stop="switchMetamaskChain()">here</a> to switch network in Metamask.
-                </v-alert>
-                <div v-if="connectedAccount">
-                    <b>Connected Metamask account:</b> {{ connectedAccount }}
-                </div>
-                <v-btn :loading="loading" id="connectMetamask" v-else :color="theme == 'dark' ? '' : 'primary'" @click="connectMetamask()">Connect With Metamask</v-btn>
-            </v-col>
-        </v-row>
+        <div v-show="ethereum">
+            <v-alert outlined dense type="error" v-if="chainId && !isChainValid">
+                Invalid chain id <b>{{ chainId }}</b> ({{ parseInt(chainId, 16) }}), expecting <b>{{ formattedExpectedChainId }}</b> ({{ currentWorkspace.networkId }}). Click <a @click.stop="switchMetamaskChain()">here</a> to switch network in Metamask.
+            </v-alert>
+            <div v-if="connectedAccount">
+                <b>Connected Metamask account:</b> {{ connectedAccount }}
+            </div>
+            <v-btn style="width: 100%" :loading="loading" id="connectMetamask" v-else :color="theme == 'dark' ? '' : 'primary'" @click="connectMetamask()">Connect With Metamask</v-btn>
+        </div>
     </div>
 </template>
 
@@ -32,8 +30,13 @@ export default {
     mounted: function() {
         detectEthereumProvider().then((provider) => {
             if (!provider || provider !== window.ethereum) return;
-
             this.ethereum = provider;
+
+            this.ethereum.request({ 'method': 'wallet_getPermissions', 'params': [] })
+                .then(permissions => {
+                    if (permissions.length)
+                        this.connectMetamask();
+                });
 
             this.ethereum.on('accountsChanged', (accounts) => this.connectedAccount = accounts[0]);
             this.ethereum.on('connect', (data) => this.chainId = data.chainId);

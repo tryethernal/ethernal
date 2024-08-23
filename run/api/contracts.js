@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const logger = require('../lib/logger');
+const Lock = require('../lib/lock');
 const db = require('../lib/firebase');
-const { sanitize } = require('../lib/utils');
+const { sanitize, sleep } = require('../lib/utils');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
 const processContractVerification = require('../lib/processContractVerification');
@@ -12,6 +13,167 @@ router.get('/:address/holderHistory', workspaceAuthMiddleware, holderHistory);
 router.get('/:address/circulatingSupply', workspaceAuthMiddleware, circulatingSupply);
 router.get('/:address/holders', workspaceAuthMiddleware, holders);
 router.get('/:address/transfers', workspaceAuthMiddleware, transfers);
+
+router.get('/sourceCode', async (req, res) => {
+    const data = req.query;
+
+    try {
+        if (!data.address)
+            throw new Error('Missing parameters.')
+
+        const contractAddress = data.address.toLowerCase();
+
+        let explorer;
+        if (req.headers['apx-incoming-host']) {
+            explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
+        }
+        else if (data['apikey']) {
+            explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
+        }
+
+        if (!explorer)
+            throw new Error('Could not find explorer. If you are using the apiKey param, make sure it is correct.');
+
+        let contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
+        if (!contract) {
+            for (let i = 0; i < 3; i++) {
+                await sleep(2000);
+                contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
+                if (contract)
+                    break;
+            }
+        }
+
+        if (!contract || !contract.verification || !contract.verification.sources.length)
+            return res.status(200).json({
+                status: "0",
+                message: "KO"
+            });
+
+        const response = {
+            SourceCode: contract.verification.sources[0].content,
+            ABI: contract.abi,
+            ContractName: contract.name,
+            CompilerVersion: contract.verification.compilerVersion,
+            OptimizationUsed: contract.verification.runs ? "1" : "0",
+            Runs: contract.verification.runs,
+            ConstructorArguments: contract.verification.constructorArguments,
+            EVMVersion: contract.verification.evmVersion,
+            Library: contract.verification.libraries
+        }
+
+        res.status(200).json({
+            status: "1",
+            message: "OK",
+            result: [response]
+        });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.contracts.sourceCode', error, queryParams: req.query });
+        res.status(200).json({
+            status: "0",
+            message: "OK",
+            result: `Request failed: ${error.message}`
+        });
+    }
+});
+
+router.post('/verify', async (req, res) => {
+    const data = req.body;
+    let lock, isLockAcquired;
+
+    try {
+        if (!data.sourceCode || !data.contractaddress || !data.compilerversion || !data.contractname || data.constructorArguements === undefined)
+            throw new Error('Missing parameters.')
+
+        const contractAddress = data.contractaddress.toLowerCase();
+
+        let explorer;
+        if (req.headers['apx-incoming-host']) {
+            explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
+        }
+        else if (data['apikey']) {
+            explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
+        }
+
+        if (!explorer)
+            throw new Error('Could not find explorer. If you are using the apiKey param, make sure it is correct.');
+
+        let contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
+        if (!contract) {
+            for (let i = 0; i < 3; i++) {
+                await sleep(2000);
+                contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
+                if (contract)
+                    break;
+            }
+        }
+
+        if (!contract)
+            throw new Error('Unable to locate contract. Please try running the verification command again.');
+
+        if (contract.verification)
+            return res.status(200).json({
+                status: "1",
+                message: "OK",
+                result: "Already Verified"
+            });
+
+        if (data.contractname.split(':').length != 2)
+            throw new Error('Invalid contract name format.');
+
+        lock = new Lock(`contractVerification-${explorer.id}-${contract.id}`, 60000);
+
+        isLockAcquired = await lock.acquire();
+        if (!isLockAcquired)
+            throw new Error('There is already an ongoing verification for this contract.');
+
+        await lock.acquire();
+
+        const contractFile = data.contractname.split(':')[0];
+        const contractName = data.contractname.split(':')[1];
+
+        const source = JSON.parse(data.sourceCode);
+
+        const payload = {
+            publicExplorerParams: explorer,
+            contractAddress: contractAddress,
+            compilerVersion: data.compilerversion,
+            constructorArguments: data.constructorArguements,
+            code: { sources: source.sources, libraries: source.settings.libraries },
+            contractName, contractFile,
+            optimizer: source.settings.optimizer ? source.settings.optimizer.enabled : false,
+            runs: source.settings.optimizer ? source.settings.optimizer.runs : 0,
+            evmVersion: source.settings.evmVersion
+        }
+
+        await processContractVerification(db, payload);
+
+        await lock.release();
+
+        res.status(200).json({
+            status: "1",
+            message: "OK",
+            result: "1234"
+        });
+    } catch(error) {
+        if (lock && isLockAcquired)
+            await lock.release();
+        logger.error(error.message, { location: 'post.api.contracts.verify', error, queryParams: req.query });
+        res.status(200).json({
+            status: "0",
+            message: "OK",
+            result: `Contract verification failed: ${error.message}`
+        });
+    }
+});
+
+router.get('/verificationStatus', async (req, res) => {
+    res.status(200).json({
+        status: "1",
+        message: "OK",
+        result: "Pass - Verified"
+    });
+});
 
 router.get('/:address/stats', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
@@ -23,7 +185,7 @@ router.get('/:address/stats', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.address.stats', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.address.stats', error, queryParams: req.query });
         res.status(400).send(error.message);
     }
 });
@@ -39,7 +201,7 @@ router.get('/:address/logs', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(logs);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.logs', error: error, data: { ...data, ...req.params }});
+        logger.error(error.message, { location: 'get.api.contracts.logs', error, querParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -55,7 +217,7 @@ router.get('/processable', authMiddleware, async (req, res) => {
 
         res.status(200).json(contracts);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.processable', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.contracts.processable', error });
         res.status(400).send(error.message);
     }
 });
@@ -75,7 +237,7 @@ router.post('/:address/watchedPaths', workspaceAuthMiddleware, async (req, res) 
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.contracts.address.watchedPaths', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.contracts.address.watchedPaths', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -104,7 +266,7 @@ router.post('/:address', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.contracts.address', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.contracts.address', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -115,7 +277,7 @@ router.post('/:address/tokenProperties', authMiddleware, async (req, res) => {
         if (!data.uid || !data.workspace)
             throw new Error(`Missing parameters`);
 
-        const contract = await db.getWorkspaceContract(data.uid, data.workspace, req.params.address);
+        const contract = await db.getWorkspaceContract(data.workspace.id, req.params.address);
         
         if (!contract)
             return res.status(200).send(`Couldn't find contract at address ${req.params.address}.`);
@@ -143,7 +305,7 @@ router.post('/:address/tokenProperties', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.contracts.address.tokenProperties', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.contracts.address.tokenProperties', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -155,7 +317,7 @@ router.post('/:address/remove', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.contracts.address.remove', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.contracts.address.remove', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -189,7 +351,8 @@ router.post('/:address/verify', async (req, res) => {
             contractName: data.contractName,
             optimizer: data.optimizer,
             runs: data.runs,
-            evmVersion: data.evmVersion
+            evmVersion: data.evmVersion,
+            viaIR: data.viaIR
         });
 
         const result = await processContractVerification(db, payload);
@@ -199,7 +362,7 @@ router.post('/:address/verify', async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.contracts.address.verify', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.contracts.address.verify', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -208,11 +371,11 @@ router.get('/:address', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
 
     try {
-        const contract = await db.getWorkspaceContract(data.firebaseUserId, data.workspace.name, req.params.address)
+        const contract = await db.getWorkspaceContract(data.workspace.id, req.params.address)
 
         res.status(200).json(contract);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.address', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.contracts.address', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -221,11 +384,11 @@ router.get('/', workspaceAuthMiddleware, async (req, res) => {
     const data = req.query;
 
     try {
-        const contracts = await db.getWorkspaceContracts(data.firebaseUserId, data.workspace.name, data.page, data.itemsPerPage, data.orderBy, data.order, data.pattern);
+        const contracts = await db.getWorkspaceContracts(data.workspace.id, data.page, data.itemsPerPage, data.orderBy, data.order, data.pattern);
 
         res.status(200).json(contracts);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.contracts', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });

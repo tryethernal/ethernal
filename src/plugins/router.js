@@ -14,12 +14,12 @@ import ERC721Token from '../components/ERC721Token.vue';
 import ERC721Collections from '../components/ERC721Collections.vue';
 import ERC721Collection from '../components/ERC721Collection.vue';
 import ERC20Contract from '../components/ERC20Contract.vue';
-import Contract from '../components/Contract.vue';
 import ExplorerStatus from '../components/ExplorerStatus.vue';
 import Explorers from '../components/Explorers.vue';
 import Explorer from '../components/Explorer.vue';
 import ExplorerAnalytics from '../components/ExplorerAnalytics.vue';
 import ExplorerFaucet from '../components/ExplorerFaucet.vue';
+import ExplorerDex from '../components/ExplorerDex.vue';
 
 const auth = () => {
     return { currentUser: router.app.$store.getters.user };
@@ -33,10 +33,10 @@ const redirectIfLoggedIn = function (to, from, next) {
 };
 
 const redirectIfLoggedOut = function (to, from, next) {
-    if (!auth().currentUser.id && !router.app.$store.getters.publicExplorerMode) {
-        next({ path: '/auth', query: { next: document.location.pathname, ...to.query }});
-    }
-    else next();
+    if (to.hash && to.hash.startsWith('#'))
+        to.query.tab = to.hash.split('#')[1];
+
+    next();
 };
 
 const routes = [
@@ -52,7 +52,7 @@ const routes = [
     { path: '/address/:hash/:tokenId', component: ERC721Token, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/token/:hash/:tokenId', component: ERC721Token, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/token/:address', component: ERC20Contract, props: true, beforeEnter: redirectIfLoggedOut },
-    { path: '/contract/:address', component: Contract, props: true, beforeEnter: redirectIfLoggedOut },
+    { path: '/contract/:address', redirect: '/address/:address' },
     { path: '/contracts', component: Contracts, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/tokens', component: Tokens, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/nfts', component: ERC721Collections, props: true, beforeEnter: redirectIfLoggedOut },
@@ -63,6 +63,7 @@ const routes = [
     { path: '/explorers/:id', component: Explorer, props: true, beforeEnter: redirectIfLoggedOut },
     { path: '/status', component: ExplorerStatus, beforeEnter: redirectIfLoggedOut },
     { path: '/faucet', component: ExplorerFaucet, beforeEnter: redirectIfLoggedOut },
+    { path: '/dex', component: ExplorerDex, beforeEnter: redirectIfLoggedOut },
     { path: '*', redirect: '/overview' }
 ];
 

@@ -19,7 +19,7 @@ router.get('/failedProcessable', authMiddleware, async (req, res) => {
 
         res.status(200).json(transactions);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.transactions.failedProcessable', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.transactions.failedProcessable', error });
         res.status(400).send(error.message);
     }
 });
@@ -32,7 +32,7 @@ router.get('/processable', authMiddleware, async (req, res) => {
 
         res.status(200).json(transactions)
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.transactions.processable', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.transactions.processable', error });
         res.status(400).send(error.message);
     }
 });
@@ -64,7 +64,7 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res) => {
 
        res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.transactions', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.transactions', error });
         res.status(400).send(error.message);
     }
 });
@@ -80,7 +80,7 @@ router.post('/:hash/error', authMiddleware, async (req, res) => {
 
        res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.transactions.hash.error', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.transactions.hash.error', error });
         res.status(400).send(error.message);
     }
 });
@@ -97,7 +97,7 @@ router.post('/:hash/process', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.transactions.hash.process', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.transactions.hash.process', error });
         res.status(400).send(error.message);
     }
 });
@@ -113,7 +113,7 @@ router.post('/:hash/tokenBalanceChanges', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.transactions.hash.tokenBalanceChanges', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.transactions.hash.tokenBalanceChanges', error });
         res.status(400).send(error.message);
     }
 });
@@ -153,7 +153,7 @@ router.post('/:hash/trace', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.transactions.hash.trace', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.transactions.hash.trace', error });
         res.status(400).send(error.message);
     }
 });
@@ -169,7 +169,7 @@ router.post('/:hash/storage', workspaceAuthMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.transactions.hash.storage', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.transactions.hash.storage', error });
         res.status(400).send(error.message);
     }
 });
@@ -182,7 +182,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(transactions);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.transactions', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.transactions', error });
         res.status(400).send(error.message);
     }
 });
@@ -203,7 +203,7 @@ router.get('/:hash', workspaceAuthMiddleware, async (req, res) => {
         res.status(200).json({ ...transaction, ...customFields.overrides, extraFields: customFields.extraFields });
     } catch(error) {
         console.log(error)
-        logger.error(error.message, { location: 'get.api.transactions.hash', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.transactions.hash', error });
         res.status(400).send(error.message);
     }
 });
@@ -219,7 +219,7 @@ router.get('/:hash/tokenTransfers', workspaceAuthMiddleware, async (req, res) =>
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.transactions.hash.tokenTransfers', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.transactions.hash.tokenTransfers', error });
         res.status(400).send(error.message);
     }
 });
@@ -235,7 +235,7 @@ router.get('/:hash/logs', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.transactions.hash.logs', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.transactions.hash.logs', error });
         res.status(400).send(error.message);
     }
 });

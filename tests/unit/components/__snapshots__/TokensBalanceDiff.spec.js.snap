@@ -7,7 +7,7 @@ exports[`TokensBalanceDiff.vue Should display formatted token balances differenc
       <header class="v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px;">
         <div class="v-toolbar__content" style="height: 48px;">
           <div class="v-toolbar__title"><small>
-              <hash-link-stub withtokenname="true" withname="true" hash="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" type="address"></hash-link-stub>
+              <hash-link-stub loadcontract="true" withtokenname="true" withname="true" hash="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" type="address"></hash-link-stub>
             </small></div>
           <div class="spacer"></div>
           <div class="v-input theme--light v-input--selection-controls v-input--switch">
@@ -94,7 +94,7 @@ exports[`TokensBalanceDiff.vue Should display token balances difference 1`] = `
       <header class="v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px;">
         <div class="v-toolbar__content" style="height: 48px;">
           <div class="v-toolbar__title"><small>
-              <hash-link-stub withtokenname="true" withname="true" hash="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" type="address"></hash-link-stub>
+              <hash-link-stub loadcontract="true" withtokenname="true" withname="true" hash="0xdc64a140aa3e981100a9beca4e685f962f0cf6c9" type="address"></hash-link-stub>
             </small></div>
           <div class="spacer"></div>
           <div class="v-input theme--light v-input--selection-controls v-input--switch">

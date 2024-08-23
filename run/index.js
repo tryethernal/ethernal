@@ -1,5 +1,3 @@
-if (process.env.NEW_RELIC_APP_NAME)
-    require('newrelic');
 const logger = require('./lib/logger');
 const app = require('./app');
 

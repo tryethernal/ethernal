@@ -1,0 +1,696 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExplorerDex.vue Should display approval & swap button if not enough approval 1`] = `
+<div class="container container--fluid">
+  <dex-token-selection-modal-stub></dex-token-selection-modal-stub>
+  <div class="v-dialog__container">
+    <!---->
+  </div>
+  <div class="row">
+    <div align="center" class="col"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-horizontal theme--light primary--text text--lighten-1" style="font-size: 150px; opacity: 0.25;"></i></div>
+  </div>
+  <div class="row mb-10 my-0 align-center justify-center">
+    <div class="col-sm-12 col-md-6 col">
+      <div class="rounded-card rounded-xl v-card v-sheet v-sheet--outlined theme--light">
+        <div class="my-5 mx-5 d-flex justify-space-between"><small>Connected Account: <hash-link-stub hash="0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA" type="address"></hash-link-stub></small>
+          <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-cog theme--light"></i></span></button>
+        </div>
+        <div class="pa-12 pt-0">
+          <div class="v-card__title primary--text d-flex justify-center align-center"> DEX</div>
+          <div class="v-card__text pb-0">
+            <!---->
+            <div align="center">
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-119" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-119" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
+                          Balance:
+                          <a>0.004</a></small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                ETL
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div> <button type="button" class="my-3 v-btn v-btn--icon v-btn--outlined v-btn--round theme--light v-size--default primary--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-vertical theme--light primary--text"></i></span></button>
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-124" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-124" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: 0</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                BTC
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3 mb-4">
+                <div class="d-flex justify-space-between mx-2"><span>Price:</span> <span>
+                                                308110 BTC per ETL
+                                                <button type="button" class="v-icon notranslate pb-1 v-icon--link mdi mdi-swap-horizontal theme--light primary--text"></button></span></div>
+                <div class="d-flex justify-space-between mx-2 mb-3"><span>Slippage Tolerance:</span> <span>0.5%</span></div>
+                <div class="d-flex"><button type="button" class="swap flex-grow-1 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--large primary"><span class="v-btn__content">Approve ETL</span></button> <i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i> <button type="button" disabled="disabled" class="swap flex-grow-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--large"><span class="v-btn__content">Swap</span></button></div>
+              </div>
+            </div>
+            <div class="mt-4 mb-4">
+              <div class="d-flex justify-space-between"><span>Minimum Received:</span> <span class="swap-extra-info">0.00003229 BTC</span></div>
+              <div class="d-flex justify-space-between"><span>Price Impact:</span> <span class="swap-extra-info success--text">&lt;0.01%</span></div>
+              <div class="d-flex justify-space-between"><span>Liquidity Provider Fee:</span> <span class="swap-extra-info">0.059 ETL</span></div>
+              <div class="d-flex justify-space-between"><span>Route:</span> <span><span class="swap-extra-info">
+                                            minion <i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span><span class="swap-extra-info">
+                                            wCAGA <i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span><span class="swap-extra-info">
+                                            USDT <!----></span></span></div>
+            </div>
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ExplorerDex.vue Should display error message 1`] = `
+<div class="container container--fluid">
+  <dex-token-selection-modal-stub></dex-token-selection-modal-stub>
+  <div class="v-dialog__container">
+    <!---->
+  </div>
+  <div class="row">
+    <div align="center" class="col"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-horizontal theme--light primary--text text--lighten-1" style="font-size: 150px; opacity: 0.25;"></i></div>
+  </div>
+  <div class="row mb-10 my-0 align-center justify-center">
+    <div class="col-sm-12 col-md-6 col">
+      <div class="rounded-card rounded-xl v-card v-sheet v-sheet--outlined theme--light">
+        <div class="my-5 mx-5 d-flex justify-space-between"><small>Connected Account: <hash-link-stub hash="0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA" type="address"></hash-link-stub></small>
+          <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-cog theme--light"></i></span></button>
+        </div>
+        <div class="pa-12 pt-0">
+          <div class="v-card__title primary--text d-flex justify-center align-center"> DEX</div>
+          <div class="v-card__text pb-0">
+            <div role="alert" class="v-alert v-sheet theme--dark v-alert--text error--text">Error: Failed</div>
+            <div align="center">
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-249" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-249" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
+                          Balance:
+                          <a>0.004</a></small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                ETL
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div> <button type="button" class="my-3 v-btn v-btn--icon v-btn--outlined v-btn--round theme--light v-size--default primary--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-vertical theme--light primary--text"></i></span></button>
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-254" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-254" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: 0</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                BTC
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3 mb-4">
+                <div class="d-flex justify-space-between mx-2"><span>Price:</span> <span>
+                                                308110 BTC per ETL
+                                                <button type="button" class="v-icon notranslate pb-1 v-icon--link mdi mdi-swap-horizontal theme--light primary--text"></button></span></div>
+                <div class="d-flex justify-space-between mx-2 mb-3"><span>Slippage Tolerance:</span> <span>0.5%</span></div>
+                <div class="d-flex">
+                  <!----> <button type="button" class="swap flex-grow-1 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--large primary"><span class="v-btn__content">Swap</span></button>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 mb-4">
+              <div class="d-flex justify-space-between"><span>Minimum Received:</span> <span class="swap-extra-info">0.00003229 BTC</span></div>
+              <div class="d-flex justify-space-between"><span>Price Impact:</span> <span class="swap-extra-info success--text">&lt;0.01%</span></div>
+              <div class="d-flex justify-space-between"><span>Liquidity Provider Fee:</span> <span class="swap-extra-info">0.059 ETL</span></div>
+              <div class="d-flex justify-space-between"><span>Route:</span> <span><span class="swap-extra-info">
+                                            minion <i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span><span class="swap-extra-info">
+                                            wCAGA <i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span><span class="swap-extra-info">
+                                            USDT <!----></span></span></div>
+            </div>
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ExplorerDex.vue Should display failed transaction message 1`] = `
+<div class="container container--fluid">
+  <dex-token-selection-modal-stub></dex-token-selection-modal-stub>
+  <div class="v-dialog__container">
+    <!---->
+  </div>
+  <div class="row">
+    <div align="center" class="col"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-horizontal theme--light primary--text text--lighten-1" style="font-size: 150px; opacity: 0.25;"></i></div>
+  </div>
+  <div class="row mb-10 my-0 align-center justify-center">
+    <div class="col-sm-12 col-md-6 col">
+      <div class="rounded-card rounded-xl v-card v-sheet v-sheet--outlined theme--light">
+        <div class="my-5 mx-5 d-flex justify-space-between"><small>Connected Account: <hash-link-stub hash="0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA" type="address"></hash-link-stub></small>
+          <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-cog theme--light"></i></span></button>
+        </div>
+        <div class="pa-12 pt-0">
+          <div class="v-card__title primary--text d-flex justify-center align-center"> DEX</div>
+          <div class="v-card__text pb-0">
+            <!---->
+            <div align="center">
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-215" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-215" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
+                          Balance:
+                          <a>0.004</a></small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                ETL
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div> <button type="button" class="my-3 v-btn v-btn--icon v-btn--outlined v-btn--round theme--light v-size--default primary--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-vertical theme--light primary--text"></i></span></button>
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-220" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-220" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: 0</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                BTC
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3 mb-4">
+                <div class="d-flex justify-space-between mx-2"><span>Price:</span> <span>
+                                                308110 BTC per ETL
+                                                <button type="button" class="v-icon notranslate pb-1 v-icon--link mdi mdi-swap-horizontal theme--light primary--text"></button></span></div>
+                <div class="d-flex justify-space-between mx-2 mb-3"><span>Slippage Tolerance:</span> <span>0.5%</span></div>
+                <div class="d-flex">
+                  <!----> <button type="button" class="swap flex-grow-1 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--large primary"><span class="v-btn__content">Swap</span></button>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 mb-4">
+              <div class="d-flex justify-space-between"><span>Minimum Received:</span> <span class="swap-extra-info">0.00003229 BTC</span></div>
+              <div class="d-flex justify-space-between"><span>Price Impact:</span> <span class="swap-extra-info success--text">&lt;0.01%</span></div>
+              <div class="d-flex justify-space-between"><span>Liquidity Provider Fee:</span> <span class="swap-extra-info">0.059 ETL</span></div>
+              <div class="d-flex justify-space-between"><span>Route:</span> <span><span class="swap-extra-info">
+                                            minion <i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span><span class="swap-extra-info">
+                                            wCAGA <i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span><span class="swap-extra-info">
+                                            USDT <!----></span></span></div>
+            </div>
+            <div align="middle" class="mt-8">
+              <!----> <i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-alert-circle theme--light error--text" style="font-size: 16px; vertical-align: text-bottom;"></i> <span class="error--text font-weight-bold">Swap failed. <hash-link-stub customlabel="See transaction" notcopiable="true" type="transaction"></hash-link-stub></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ExplorerDex.vue Should display initial state with no wallet connected 1`] = `
+<div class="container container--fluid">
+  <dex-token-selection-modal-stub></dex-token-selection-modal-stub>
+  <div class="v-dialog__container">
+    <!---->
+  </div>
+  <div class="row">
+    <div align="center" class="col"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-horizontal theme--light primary--text text--lighten-1" style="font-size: 150px; opacity: 0.25;"></i></div>
+  </div>
+  <div class="row mb-10 my-0 align-center justify-center">
+    <div class="col-sm-12 col-md-6 col">
+      <div class="rounded-card rounded-xl v-card v-sheet v-sheet--outlined theme--light">
+        <div class="my-5 mx-5 d-flex justify-space-between">
+          <!---->
+          <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-cog theme--light"></i></span></button>
+        </div>
+        <div class="pa-12 pt-0">
+          <div class="v-card__title primary--text d-flex justify-center align-center"> DEX</div>
+          <div class="v-card__text pb-0">
+            <!---->
+            <div align="center">
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-17" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-17" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
+                          Balance:
+                          -</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                ETH
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div> <button type="button" class="my-3 v-btn v-btn--icon v-btn--outlined v-btn--round theme--light v-size--default primary--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-vertical theme--light primary--text"></i></span></button>
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--dense theme--light v-text-field v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-22" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-22" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: -</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                Select a token
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <metamask-stub class="mt-3"></metamask-stub>
+            </div>
+            <!---->
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ExplorerDex.vue Should display initial state with wallet connected 1`] = `
+<div class="container container--fluid">
+  <dex-token-selection-modal-stub></dex-token-selection-modal-stub>
+  <div class="v-dialog__container">
+    <!---->
+  </div>
+  <div class="row">
+    <div align="center" class="col"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-horizontal theme--light primary--text text--lighten-1" style="font-size: 150px; opacity: 0.25;"></i></div>
+  </div>
+  <div class="row mb-10 my-0 align-center justify-center">
+    <div class="col-sm-12 col-md-6 col">
+      <div class="rounded-card rounded-xl v-card v-sheet v-sheet--outlined theme--light">
+        <div class="my-5 mx-5 d-flex justify-space-between"><small>Connected Account: <hash-link-stub hash="0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA" type="address"></hash-link-stub></small>
+          <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-cog theme--light"></i></span></button>
+        </div>
+        <div class="pa-12 pt-0">
+          <div class="v-card__title primary--text d-flex justify-center align-center"> DEX</div>
+          <div class="v-card__text pb-0">
+            <!---->
+            <div align="center">
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-41" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-41" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
+                          Balance:
+                          <a>10</a></small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                ETH
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div> <button type="button" class="my-3 v-btn v-btn--icon v-btn--outlined v-btn--round theme--light v-size--default primary--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-vertical theme--light primary--text"></i></span></button>
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-46" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-46" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: -</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                Select a token
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3 mb-4">
+                <!---->
+                <div class="d-flex">
+                  <!----> <button type="button" disabled="disabled" class="swap flex-grow-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--large"><span class="v-btn__content">Enter an amount</span></button>
+                </div>
+              </div>
+            </div>
+            <!---->
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ExplorerDex.vue Should display insufficient balance warning 1`] = `
+<div class="container container--fluid">
+  <dex-token-selection-modal-stub></dex-token-selection-modal-stub>
+  <div class="v-dialog__container">
+    <!---->
+  </div>
+  <div class="row">
+    <div align="center" class="col"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-horizontal theme--light primary--text text--lighten-1" style="font-size: 150px; opacity: 0.25;"></i></div>
+  </div>
+  <div class="row mb-10 my-0 align-center justify-center">
+    <div class="col-sm-12 col-md-6 col">
+      <div class="rounded-card rounded-xl v-card v-sheet v-sheet--outlined theme--light">
+        <div class="my-5 mx-5 d-flex justify-space-between"><small>Connected Account: <hash-link-stub hash="0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA" type="address"></hash-link-stub></small>
+          <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-cog theme--light"></i></span></button>
+        </div>
+        <div class="pa-12 pt-0">
+          <div class="v-card__title primary--text d-flex justify-center align-center"> DEX</div>
+          <div class="v-card__text pb-0">
+            <!---->
+            <div align="center">
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-67" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-67" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
+                          Balance:
+                          <a>10</a></small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                ETH
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div> <button type="button" class="my-3 v-btn v-btn--icon v-btn--outlined v-btn--round theme--light v-size--default primary--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-vertical theme--light primary--text"></i></span></button>
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-72" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-72" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: -</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                Select a token
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3 mb-4">
+                <!---->
+                <div class="d-flex">
+                  <!----> <button type="button" disabled="disabled" class="swap flex-grow-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--large"><span class="v-btn__content">Insufficient balance</span></button>
+                </div>
+              </div>
+            </div>
+            <!---->
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ExplorerDex.vue Should display no dex message 1`] = `
+<div class="container container--fluid">
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__text">
+      <div class="row">
+        <div align="center" class="col"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-horizontal theme--light primary--text text--lighten-1" style="font-size: 200px; opacity: 0.25;"></i></div>
+      </div>
+      <div class="row">
+        <div class="spacer"></div>
+        <div class="text-body-1 col col-6">
+          No dex has been setup here, but it's possible to!<br>
+          Reach out to the organization or individual that gave you access to this
+          explorer and ask them to setup the dex on Ethernal.
+        </div>
+        <div class="spacer"></div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ExplorerDex.vue Should display successful transaction message 1`] = `
+<div class="container container--fluid">
+  <dex-token-selection-modal-stub></dex-token-selection-modal-stub>
+  <div class="v-dialog__container">
+    <!---->
+  </div>
+  <div class="row">
+    <div align="center" class="col"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-horizontal theme--light primary--text text--lighten-1" style="font-size: 150px; opacity: 0.25;"></i></div>
+  </div>
+  <div class="row mb-10 my-0 align-center justify-center">
+    <div class="col-sm-12 col-md-6 col">
+      <div class="rounded-card rounded-xl v-card v-sheet v-sheet--outlined theme--light">
+        <div class="my-5 mx-5 d-flex justify-space-between"><small>Connected Account: <hash-link-stub hash="0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA" type="address"></hash-link-stub></small>
+          <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-cog theme--light"></i></span></button>
+        </div>
+        <div class="pa-12 pt-0">
+          <div class="v-card__title primary--text d-flex justify-center align-center"> DEX</div>
+          <div class="v-card__text pb-0">
+            <!---->
+            <div align="center">
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-181" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-181" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
+                          Balance:
+                          <a>0.004</a></small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                ETL
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div> <button type="button" class="my-3 v-btn v-btn--icon v-btn--outlined v-btn--round theme--light v-size--default primary--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-vertical theme--light primary--text"></i></span></button>
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-186" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-186" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: 0</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                BTC
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3 mb-4">
+                <div class="d-flex justify-space-between mx-2"><span>Price:</span> <span>
+                                                308110 BTC per ETL
+                                                <button type="button" class="v-icon notranslate pb-1 v-icon--link mdi mdi-swap-horizontal theme--light primary--text"></button></span></div>
+                <div class="d-flex justify-space-between mx-2 mb-3"><span>Slippage Tolerance:</span> <span>0.5%</span></div>
+                <div class="d-flex">
+                  <!----> <button type="button" class="swap flex-grow-1 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--large primary"><span class="v-btn__content">Swap</span></button>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 mb-4">
+              <div class="d-flex justify-space-between"><span>Minimum Received:</span> <span class="swap-extra-info">0.00003229 BTC</span></div>
+              <div class="d-flex justify-space-between"><span>Price Impact:</span> <span class="swap-extra-info success--text">&lt;0.01%</span></div>
+              <div class="d-flex justify-space-between"><span>Liquidity Provider Fee:</span> <span class="swap-extra-info">0.059 ETL</span></div>
+              <div class="d-flex justify-space-between"><span>Route:</span> <span><span class="swap-extra-info">
+                                            minion <i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span><span class="swap-extra-info">
+                                            wCAGA <i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span><span class="swap-extra-info">
+                                            USDT <!----></span></span></div>
+            </div>
+            <div align="middle" class="mt-8"><i aria-hidden="true" class="v-icon notranslate mr-1 mdi mdi-check-circle theme--light success--text" style="font-size: 16px; vertical-align: text-bottom;"></i> <span class="success--text font-weight-bold">Swap successful. <hash-link-stub customlabel="See transaction" notcopiable="true" type="transaction"></hash-link-stub></span>
+              <!---->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ExplorerDex.vue Should display swap button and quote 1`] = `
+<div class="container container--fluid">
+  <dex-token-selection-modal-stub></dex-token-selection-modal-stub>
+  <div class="v-dialog__container">
+    <!---->
+  </div>
+  <div class="row">
+    <div align="center" class="col"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-horizontal theme--light primary--text text--lighten-1" style="font-size: 150px; opacity: 0.25;"></i></div>
+  </div>
+  <div class="row mb-10 my-0 align-center justify-center">
+    <div class="col-sm-12 col-md-6 col">
+      <div class="rounded-card rounded-xl v-card v-sheet v-sheet--outlined theme--light">
+        <div class="my-5 mx-5 d-flex justify-space-between"><small>Connected Account: <hash-link-stub hash="0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA" type="address"></hash-link-stub></small>
+          <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-cog theme--light"></i></span></button>
+        </div>
+        <div class="pa-12 pt-0">
+          <div class="v-card__title primary--text d-flex justify-center align-center"> DEX</div>
+          <div class="v-card__text pb-0">
+            <!---->
+            <div align="center">
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-151" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-151" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
+                          Balance:
+                          <a>0.004</a></small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                ETL
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div> <button type="button" class="my-3 v-btn v-btn--icon v-btn--outlined v-btn--round theme--light v-size--default primary--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-vertical theme--light primary--text"></i></span></button>
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: -24px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-156" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-156" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: 0</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                BTC
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3 mb-4">
+                <div class="d-flex justify-space-between mx-2"><span>Price:</span> <span>
+                                                308110 BTC per ETL
+                                                <button type="button" class="v-icon notranslate pb-1 v-icon--link mdi mdi-swap-horizontal theme--light primary--text"></button></span></div>
+                <div class="d-flex justify-space-between mx-2 mb-3"><span>Slippage Tolerance:</span> <span>0.5%</span></div>
+                <div class="d-flex">
+                  <!----> <button type="button" class="swap flex-grow-1 v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--large primary"><span class="v-btn__content">Swap</span></button>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 mb-4">
+              <div class="d-flex justify-space-between"><span>Minimum Received:</span> <span class="swap-extra-info">0.00003229 BTC</span></div>
+              <div class="d-flex justify-space-between"><span>Price Impact:</span> <span class="swap-extra-info success--text">&lt;0.01%</span></div>
+              <div class="d-flex justify-space-between"><span>Liquidity Provider Fee:</span> <span class="swap-extra-info">0.059 ETL</span></div>
+              <div class="d-flex justify-space-between"><span>Route:</span> <span><span class="swap-extra-info">
+                                            minion <i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span><span class="swap-extra-info">
+                                            wCAGA <i aria-hidden="true" class="v-icon notranslate mdi mdi-chevron-right theme--light"></i></span><span class="swap-extra-info">
+                                            USDT <!----></span></span></div>
+            </div>
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ExplorerDex.vue Should display token selection message 1`] = `
+<div class="container container--fluid">
+  <dex-token-selection-modal-stub></dex-token-selection-modal-stub>
+  <div class="v-dialog__container">
+    <!---->
+  </div>
+  <div class="row">
+    <div align="center" class="col"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-horizontal theme--light primary--text text--lighten-1" style="font-size: 150px; opacity: 0.25;"></i></div>
+  </div>
+  <div class="row mb-10 my-0 align-center justify-center">
+    <div class="col-sm-12 col-md-6 col">
+      <div class="rounded-card rounded-xl v-card v-sheet v-sheet--outlined theme--light">
+        <div class="my-5 mx-5 d-flex justify-space-between"><small>Connected Account: <hash-link-stub hash="0x1bF85ED48fcda98e2c7d08E4F2A8083fb18792AA" type="address"></hash-link-stub></small>
+          <div class="spacer"></div> <button type="button" class="v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-cog theme--light"></i></span></button>
+        </div>
+        <div class="pa-12 pt-0">
+          <div class="v-card__title primary--text d-flex justify-center align-center"> DEX</div>
+          <div class="v-card__text pb-0">
+            <!---->
+            <div align="center">
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-93" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Sell</label><input id="input-93" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">
+                          Balance:
+                          <a>10</a></small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                ETH
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div> <button type="button" class="my-3 v-btn v-btn--icon v-btn--outlined v-btn--round theme--light v-size--default primary--text"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-swap-vertical theme--light primary--text"></i></span></button>
+              <div class="v-input rounded-xl large-text v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--enclosed v-text-field--outlined v-text-field--placeholder">
+                <div class="v-input__control">
+                  <div class="v-input__slot">
+                    <fieldset aria-hidden="true">
+                      <legend style="width: 0px;"><span class="notranslate">​</span></legend>
+                    </fieldset>
+                    <div class="v-text-field__slot"><label for="input-98" class="v-label v-label--active theme--light" style="left: 0px; position: absolute;">Buy</label><input id="input-98" placeholder="0.0" type="number"></div>
+                    <div class="v-input__append-inner">
+                      <div class="pl-4 py-1 mt-1 mb-3 text-right"><small class="pr-1 balance">Balance: -</small> <button type="button" class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill v-btn v-btn--outlined theme--light v-size--default"><span class="v-btn__content">
+                                                Select a token
+                                                <i aria-hidden="true" class="v-icon notranslate primary--text mdi mdi-chevron-down theme--light"></i></span></button></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3 mb-4">
+                <!---->
+                <div class="d-flex">
+                  <!----> <button type="button" disabled="disabled" class="swap flex-grow-1 v-btn v-btn--disabled v-btn--has-bg theme--light v-size--large"><span class="v-btn__content">Select a token</span></button>
+                </div>
+              </div>
+            </div>
+            <!---->
+            <!---->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

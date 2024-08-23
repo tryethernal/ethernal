@@ -95,7 +95,7 @@
                 </v-col>
                 <v-col cols="5" class="text-truncate" v-if="transaction.to">
                     <div class="text-overline">To</div>
-                    <Hash-Link :type="'address'" :hash="transaction.to" :fullHash="true" :withName="true" />
+                    <Hash-Link :type="'address'" :hash="transaction.to" :fullHash="true" :withName="true" :contract="transaction.contract" />
                 </v-col>
                 <v-col cols="5" class="text-truncate" v-else>
                     <div class="text-overline">Contract Created</div>

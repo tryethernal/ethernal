@@ -2,7 +2,7 @@
 
 exports[`ContractStorage.vue Should display admin error message 1`] = `
 <div class="container container--fluid">
-  <div class="mt-4 v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
     <div class="v-card__text">
       Storage is not available on this contract. This is because the AST is not available. It can be for the following reasons:
       <ul>
@@ -17,7 +17,7 @@ exports[`ContractStorage.vue Should display admin error message 1`] = `
 
 exports[`ContractStorage.vue Should display non admin error message 1`] = `
 <div class="container container--fluid">
-  <div class="mt-4 v-card v-sheet v-sheet--outlined theme--light">
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
     <div class="v-card__text">
       Storage is not available on this contract.
     </div>

@@ -1,3 +1,4 @@
+jest.mock('@sentry/node');
 const mockSubscriptionCreate = jest.fn().mockResolvedValue({ id: 'id' });
 jest.mock('random-word-slugs', () => ({
     generateSlug: jest.fn()
@@ -11,6 +12,10 @@ jest.mock('stripe', () => {
         }
     });
 });
+const mockAxiosGet = jest.fn().mockResolvedValue({ data: {}});
+jest.mock('axios', () => ({
+    get: mockAxiosGet
+}));
 require('../mocks/models');
 require('../mocks/lib/queue');
 require('../mocks/lib/flags');
@@ -198,6 +203,21 @@ describe(`POST ${BASE_URL}/migrateExplorer`, () => {
 });
 
 describe(`POST ${BASE_URL}/explorers`, () => {
+    mockAxiosGet.mockResolvedValueOnce({ data: { "1": "ethereum" }});
+    ProviderConnector.mockImplementationOnce(() => ({
+        fetchNetworkId: jest.fn().mockResolvedValueOnce(1)
+    }));
+
+    it('Should return an error if trying to create an explorer for a forbidden network id', (done) => {
+        request.post(`${BASE_URL}/explorers`)
+            .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
+            .expect(400)
+            .then(({ text }) => {
+                expect(text).toEqual(`You can't create a demo with this network id (1 - ethereum). If you'd still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we'll set one up for you.`);
+                done();
+            });
+    });
+
     it('Should return an error if rpc is not reachable', (done) => {
         ProviderConnector.mockImplementationOnce(() => ({
             fetchNetworkId: jest.fn().mockRejectedValue()
@@ -214,7 +234,8 @@ describe(`POST ${BASE_URL}/explorers`, () => {
 
     it('Should return an error if creation fails', (done) => {
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
-        jest.spyOn(db, 'createExplorerWithWorkspace').mockResolvedValueOnce(null);
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1 });
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce(null);
 
         request.post(`${BASE_URL}/explorers`)
             .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })
@@ -227,8 +248,6 @@ describe(`POST ${BASE_URL}/explorers`, () => {
 
     it('Should return an error if the plan is invalid', (done) => {
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
-        jest.spyOn(db, 'createExplorerWithWorkspace').mockResolvedValueOnce({ id: 1, slug: 'slug' });
-        jest.spyOn(db, 'makeExplorerDemo').mockResolvedValueOnce();
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce(null);
 
         request.post(`${BASE_URL}/explorers`)
@@ -242,12 +261,8 @@ describe(`POST ${BASE_URL}/explorers`, () => {
 
     it('Should create the demo explorer', (done) => {
         jest.spyOn(db, 'getUserById').mockResolvedValueOnce({ id: 123 });
-        jest.spyOn(db, 'createExplorerWithWorkspace').mockResolvedValueOnce({ id: 1, slug: 'slug' });
-        jest.spyOn(db, 'makeExplorerDemo').mockResolvedValueOnce();
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'createExplorerSubscription').mockResolvedValueOnce();
-        jest.spyOn(db, 'updateExplorerSettings').mockResolvedValueOnce();
-        jest.spyOn(db, 'updateExplorerBranding').mockResolvedValueOnce();
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1, slug: 'slug' });
 
         request.post(`${BASE_URL}/explorers`)
             .send({ name: 'demo', rpcServer: 'rpc.demo', nativeToken: 'token' })

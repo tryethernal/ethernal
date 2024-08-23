@@ -29,7 +29,6 @@ jest.mock('@/plugins/server', () => ({
                 getTransaction: jest.fn().mockResolvedValue(),
                 getTransactions: jest.fn(),
                 getTokenBalances: jest.fn(),
-                getGlobalStats: jest.fn(),
                 getTransactions: jest.fn(),
                 getTransactionVolume: jest.fn(),
                 getErc721Tokens: jest.fn(),
@@ -87,6 +86,13 @@ jest.mock('@/plugins/server', () => ({
                 getFaucetTokenVolume: jest.fn(),
                 getFaucetPrivateKey: jest.fn(),
                 getFaucetTransactionHistory: jest.fn(),
+                getV2DexTokens: jest.fn(),
+                getNativeTokenBalance: jest.fn(),
+                getV2DexQuote: jest.fn(),
+                getV2DexStatus: jest.fn(),
+                getActiveWalletCount: jest.fn(),
+                getTxCountTotal: jest.fn(),
+                getTxCount24h: jest.fn(),
 
                 syncTransactionData: function() {
                     return new Promise((resolve) => resolve(true))
@@ -104,7 +110,7 @@ jest.mock('@/plugins/server', () => ({
                     return new Promise((resolve) => resolve(true));
                 },
 
-                searchForLocalChains: () => {
+                searchForLocalChains: () => {
                     return new Promise((resolve) => resolve(['http://127.0.0.1:8545']));
                 },
 

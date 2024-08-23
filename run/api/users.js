@@ -58,7 +58,7 @@ router.post('/resetPassword', async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.users.resetPassword', error: error, data: data});
+        logger.error(error.message, { location: 'post.api.users.resetPassword', error });
         res.status(400).send(error.message);
     }
 });
@@ -77,7 +77,7 @@ router.post('/sendResetPasswordEmail', async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.users.sendResetPasswordEmail', error: error, data: data});
+        logger.error(error.message, { location: 'post.api.users.sendResetPasswordEmail', error });
         res.status(400).send(error.message);
     }
 });
@@ -92,7 +92,7 @@ router.post('/getFirebaseHashes', async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.logs', error: error, data: { ...data, ...req.params }});
+        logger.error(error.message, { location: 'get.api.contracts.logs', error, params: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -104,7 +104,7 @@ router.post('/signin', localAuth, async (req, res) => {
 
         res.status(200).json({ user: req.user });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.users.me.signin', error: error, user: req.user });
+        logger.error(error.message, { location: 'get.api.users.me.signin', error });
         res.status(400).send(error.message);
     }
 });
@@ -147,7 +147,7 @@ router.post('/signup', async (req, res) => {
 
         res.status(200).json({ user });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.users', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.users', error });
         res.status(400).send(error.message);
     }
 });
@@ -160,7 +160,7 @@ router.get('/me/apiToken', authMiddleware, async (req, res) => {
 
         res.status(200).json({ apiToken: user.apiToken });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.users.me.apiToken', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.users.me.apiToken', error });
         res.status(400).send(error.message);
     }
 });
@@ -173,7 +173,7 @@ router.post('/me/setCurrentWorkspace', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.users.me.setCurrentWorkspace', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.users.me.setCurrentWorkspace', error });
         res.status(400).send(error.message);
     }
 });
@@ -185,7 +185,7 @@ router.get('/me', authMiddleware, async (req, res) => {
 
         res.status(200).json(user);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.users.me', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.users.me', error });
         res.status(400).send(error.message);
     }
 });
@@ -223,7 +223,7 @@ router.post('/', async (req, res) => {
 
         res.status(200).json(user);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.users', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.users', error });
         res.status(400).send(error.message);
     }
 });

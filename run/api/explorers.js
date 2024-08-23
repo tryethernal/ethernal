@@ -3,9 +3,9 @@ const stripe = require('stripe')(getStripeSecretKey());
 const express = require('express');
 const router = express.Router();
 const { isStripeEnabled } = require('../lib/flags');
-const { ProviderConnector } = require('../lib/rpc');
+const { ProviderConnector, DexConnector } = require('../lib/rpc');
 const { Explorer } = require('../models');
-const { withTimeout, validateBNString } = require('../lib/utils');
+const { withTimeout, validateBNString, sanitize } = require('../lib/utils');
 const { bulkEnqueue } = require('../lib/queue');
 const logger = require('../lib/logger');
 const PM2 = require('../lib/pm2');
@@ -13,6 +13,37 @@ const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const secretMiddleware = require('../middlewares/secret');
+
+router.post('/:id/v2_dexes', authMiddleware, async (req, res) => {
+    const data = req.body.data;
+
+    try {
+        if (!data.routerAddress || !data.wrappedNativeTokenAddress)
+            throw new Error('Missing parameters');
+
+        const explorer = await db.getExplorerById(data.user.id, req.params.id);
+        if (!explorer || !explorer.workspace)
+            throw new Error('Could not find explorer.');
+
+        let routerFactoryAddress;
+        try {
+            const dexConnector = new DexConnector(explorer.workspace.rpcServer, data.routerAddress);
+            routerFactoryAddress = await dexConnector.getFactory();
+        } catch(error) {
+            throw new Error(`Couldn't get factory address for router. Check that the factory method is present and returns an address.`);
+        }
+
+        if (!routerFactoryAddress || typeof routerFactoryAddress != 'string' || routerFactoryAddress.length != 42 || !routerFactoryAddress.startsWith('0x'))
+            throw new Error(`Invalid factory address.`);
+
+        const { id, routerAddress, factoryAddress } = await db.createExplorerV2Dex(data.uid, req.params.id, data.routerAddress, routerFactoryAddress, data.wrappedNativeTokenAddress);
+
+        res.status(200).json({ id, routerAddress, factoryAddress });
+    } catch(error) {
+        logger.error(error.message, { location: 'post.api.explorers.id.dexes', error, data });
+        res.status(400).send(error.message);
+    }
+});
 
 router.post('/:id/faucets', authMiddleware, async (req, res) => {
     const data = req.body.data;
@@ -29,7 +60,7 @@ router.post('/:id/faucets', authMiddleware, async (req, res) => {
 
         res.status(200).json({ id, address });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.faucets', error, data });
+        logger.error(error.message, { location: 'post.api.explorers.id.faucets', error });
         res.status(400).send(error.message);
     }
 });
@@ -294,7 +325,7 @@ router.put('/:id/quotaExtension', [authMiddleware, stripeMiddleware], async (req
 
         res.status(200).json({ stripeSubscription: explorer.stripeSubscription });
     } catch(error) {
-        logger.error(error.message, { location: 'put.api.explorers.id.quotaExtension', error: error, data: data });
+        logger.error(error.message, { location: 'put.api.explorers.id.quotaExtension', error });
         res.status(400).send(error.message);
     }
 });
@@ -338,7 +369,7 @@ router.put('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, 
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.updateSubscription', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.explorers.id.updateSubscription', error });
         res.status(400).send(error.message);
     }
 });
@@ -363,7 +394,7 @@ router.delete('/:id/subscription', [authMiddleware, stripeMiddleware], async (re
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.cancelSubscription', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.explorers.id.cancelSubscription', error });
         res.status(400).send(error.message);
     }
 });
@@ -400,7 +431,7 @@ router.post('/:id/cryptoSubscription', [authMiddleware, stripeMiddleware], async
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.startCryptoSubscription', error: error, data: data });
+        logger.error(error.message, { location: 'post.api.explorers.id.startCryptoSubscription', error });
         res.status(400).send(error.message);
     }
 });
@@ -413,7 +444,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'delete.api.explorers.id', error, data });
+        logger.error(error.message, { location: 'delete.api.explorers.id', error });
         res.status(400).send(error.message);
     }
 });
@@ -424,7 +455,7 @@ router.get('/plans', [authMiddleware, stripeMiddleware], async (req, res) => {
 
         res.status(200).json(plans);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers.plans', error: error });
+        logger.error(error.message, { location: 'get.api.explorers.plans', error });
         res.status(400).send(error.message);
     }
 });
@@ -435,7 +466,7 @@ router.get('/quotaExtensionPlan', [authMiddleware, stripeMiddleware], async (req
 
         res.status(200).json(plan);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers.quotaExtensionPlan', error: error });
+        logger.error(error.message, { location: 'get.api.explorers.quotaExtensionPlan', error });
         res.status(400).send(error.message);
     }
 });
@@ -454,11 +485,11 @@ router.post('/:id/domains', authMiddleware, async (req, res) => {
         if (!explorer)
             throw new Error('Could not find explorer.');
 
-        await db.createExplorerDomain(explorer.id, data.domain);
+        const explorerDomain = await db.createExplorerDomain(explorer.id, data.domain);
 
-        res.sendStatus(200);
+        res.status(200).send({ id: explorerDomain.id });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.domains', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.explorers.id.domains', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -475,7 +506,7 @@ router.post('/:id/branding', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.branding', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.explorers.id.branding', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -500,7 +531,7 @@ router.post('/:id/settings', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.settings', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.explorers.settings', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -514,63 +545,69 @@ router.post('/', authMiddleware, async (req, res) => {
 
         const user = await db.getUser(data.uid, ['stripeCustomerId', 'canUseDemoPlan']);
 
-        let explorer;
+        let rpcServer;
         if (data.workspaceId) {
-            const workspace = await db.getWorkspaceById(data.workspaceId);
+            const workspace = user.workspaces.find(w => w.id == data.workspaceId);
             if (!workspace)
-                throw new Error('Invalid workspace.');
-
+                throw new Error('Could not find workspace');
             if (workspace.explorer)
                 throw new Error('This workspace already has an explorer.');
-
-            const provider = new ProviderConnector(workspace.rpcServer);
-            try {
-                await withTimeout(provider.fetchNetworkId());
-            } catch(error) {
-                throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
-            }
-
-            explorer = await db.createExplorerFromWorkspace(user.id, workspace.id);
+            rpcServer = workspace.rpcServer;
         }
-        else {
-            const provider = new ProviderConnector(data.rpcServer);
-            let networkId;
-            try {
-                networkId = await withTimeout(provider.fetchNetworkId());
-            } catch(error) {
-                networkId = null;
-            }
+        else
+            rpcServer = data.rpcServer;
 
+        let networkId;
+        const provider = new ProviderConnector(rpcServer);
+        try {
+            networkId = await withTimeout(provider.fetchNetworkId());
             if (!networkId)
-                throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
+                throw 'Error';
+        } catch(error) {
+            throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
+        }
 
-            const workspaceData = {
+        let options = data.workspaceId ?
+            { workspaceId: data.workspaceId } :
+            {
                 name: data.name,
-                networkId,
                 rpcServer: data.rpcServer,
-                tracing: data.tracing,
-                dataRetentionLimit: user.defaultDataRetentionLimit
-            }
+                networkId,
+                tracing: data.tracing === 'true' ? 'other' : null,
+            };
 
-            explorer = await db.createExplorerWithWorkspace(user.id, workspaceData);
-        }
+        if (data.faucet && data.faucet.amount && data.faucet.interval)
+            options['faucet'] = { amount: data.faucet.amount, interval: data.faucet.interval };
 
-        if (!explorer)
-            throw new Error('Could not create explorer.');
+        if (data.domains && Array.isArray(data.domains))
+            options['domains'] = data.domains;
 
-        let stripePlan;
+        options['token'] = data.token;
+        options['slug'] = data.slug;
+        options['totalSupply'] = data.totalSupply;
+        options['l1Explorer'] = data.l1Explorer;
+        options['branding'] = data.branding;
+
         if (!isStripeEnabled() || user.canUseDemoPlan) {
-            stripePlan = await db.getStripePlan(getDefaultPlanSlug());
-            if (!stripePlan)
-                throw new Error(`Can't setup explorer. Make sure you've run npx sequelize-cli db:seed:all`);
-
-            await db.createExplorerSubscription(user.id, explorer.id, stripePlan.id);
+            const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
+            options['subscription'] = {
+                stripePlanId: stripePlan.id,
+                stripeId: null,
+                cycleEndsAt: new Date(0),
+                status: 'active'
+            }
         }
-        else if (req.query.startSubscription) {
+
+        const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
+        if (!explorer)
+            throw new Error('Could not create explorer.')
+
+        if (!options['subscription'] && req.query.startSubscription) {
             if (!data.plan)
                 throw new Error('Missing plan parameter.');
 
-            stripePlan = await db.getStripePlan(data.plan);
+            const stripePlan = await db.getStripePlan(data.plan);
+
             if (!stripePlan || !stripePlan.public)
                 throw new Error(`Can't find plan.`);
 
@@ -599,31 +636,24 @@ router.post('/', authMiddleware, async (req, res) => {
 
         const fields = {
             id: explorer.id,
-            chainId: explorer.chainId,
             domain: explorer.domain,
             domains: explorer.domains,
-            l1Explorer: explorer.l1Explorer,
             name: explorer.name,
-            rpcServer: explorer.rpcServer,
             slug: explorer.slug,
-            admin: explorer.admin,
-            workspace: explorer.workspace
         };
-        fields['token'] = stripePlan && stripePlan.capabilities.nativeToken ? explorer.token : 'ether';
-        fields['themes'] = stripePlan && stripePlan.capabilities.branding ? explorer.themes : { 'default': {}};
 
-        if (data.faucet && data.faucet.amount && data.faucet.interval) {
-            const { id, address } = await db.createFaucet(data.uid, explorer.id, data.faucet.amount, data.faucet.interval);
+        if (explorer.faucet) {
             fields['faucet'] = {
-                id, address,
-                amount: data.faucet.amount,
-                interval: data.faucet.interval
+                id: explorer.faucet.id,
+                address: explorer.faucet.address,
+                amount: explorer.faucet.amount,
+                interval: explorer.faucet.interval
             }
         }
 
         res.status(200).send(fields);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'post.api.explorers', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -678,11 +708,17 @@ router.get('/search', async (req, res) => {
                 address: explorer.faucet.address,
                 amount: explorer.faucet.amount,
                 interval: explorer.faucet.interval
-            }
+            };
+
+        if (explorer.v2Dex && explorer.v2Dex.active)
+            fields['v2Dex'] = {
+                id: explorer.v2Dex.id,
+                routerAddress: explorer.v2Dex.routerAddress
+            };
 
         res.status(200).json({ explorer: fields });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers.search', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.explorers.search', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -701,7 +737,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
 
         res.status(200).json(explorer.toJSON());
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers.id', error: error, data: data, queryParams: req.params });
+        logger.error(error.message, { location: 'get.api.explorers.id', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
@@ -714,7 +750,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
         res.status(200).json(explorers)
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers', error: error, data: data });
+        logger.error(error.message, { location: 'get.api.explorers', error });
         res.status(400).send(error.message);
     }
 });

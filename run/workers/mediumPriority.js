@@ -8,7 +8,7 @@ priorities['medium'].forEach(jobName => {
     const worker = new Worker(
         jobName,
         async job => await jobs[jobName](job),
-        { maxStalledCount: 5, lockDuration: 300000, concurrency: 200, connection },
+        { maxStalledCount: 5, lockDuration: 300000, concurrency: 50, connection },
     );
     worker.on('failed', (job, error) => {
         logger.error(error.message, {

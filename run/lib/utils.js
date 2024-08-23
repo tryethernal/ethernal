@@ -2,12 +2,16 @@ const ethers = require('ethers');
 
 const DEFAULT_PROMISE_TIMEOUT = 10 * 1000;
 
+const sleep = (ms) => {
+    return new Promise((r) => setTimeout(r, ms))
+};
+
 const validateBNString = (str) => {
     try {
-        const bn = ethers.BigNumber.from(str)
+        const bn = ethers.BigNumber.from(str);
         return bn.gt(0) && !!ethers.utils.formatUnits(str, 'ether');
     } catch(error) {
-        return false
+        return false;
     }
 }
 
@@ -176,5 +180,6 @@ module.exports = {
     stringify,
     processRawRpcObject,
     formatErc721Metadata,
-    validateBNString
+    validateBNString,
+    sleep
 };

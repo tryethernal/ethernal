@@ -163,7 +163,6 @@ jobs:
           VUE_APP_FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
           VUE_APP_MESSAGING_SENDER_ID: ${{ secrets.MESSAGING_SENDER_ID }}
           VUE_APP_FIREBASE_APP_ID: ${{ secrets.VUE_APP_FIREBASE_APP_ID }}
-          VUE_APP_LOGROCKET_ID: ${{ secrets.LOGROCKET_ID }}
           VUE_APP_API_ROOT: ${{ secrets.API_ROOT }}
           VUE_APP_ENABLE_BILLING: true
           VUE_APP_MAIN_DOMAIN: ${{ secrets.MAIN_DOMAIN }}
@@ -177,7 +176,15 @@ jobs:
           VUE_APP_SOKETI_PORT: ${{ secrets.SOKETI_PORT }}
           VUE_APP_SOKETI_FORCE_TLS: ${{ secrets.SOKETI_FORCE_TLS }}
           VUE_APP_FEEDBACK_FIN_ENDPOINT: ${{ secrets.FEEDBACK_FIN_ENDPOINT }}
+          VUE_APP_VERSION: ${{ needs.create_release.outputs.current_version }}
+          VUE_APP_SENTRY_DSN_SECRET: ${{ secrets.SENTRY_DSN_SECRET }}
+          VUE_APP_SENTRY_DSN_PROJECT_ID: ${{ secrets.SENTRY_DSN_PROJECT_ID }}
           COMMIT_REF: ${{ github.sha }}
+          SENTRY_URL: ${{ secrets.SENTRY_URL }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_RELEASE: ${{ needs.create_release.outputs.current_version }}
 
       - uses: nwtgck/actions-netlify@v2.0.0
         id: netlify_deploy
@@ -244,6 +251,11 @@ jobs:
 
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
+      - name: Update version
+        run: |
+          flyctl secrets set VERSION=${{ needs.create_release.outputs.current_version }} --stage -a ethernal
+          flyctl secrets set VERSION=${{ needs.create_release.outputs.current_version }} --stage -a ethernal-pm2
+
       - name: Release backend
         run: flyctl deploy -c fly.toml -i registry.fly.io/ethernal:${{ github.sha }}
 
@@ -253,12 +265,13 @@ jobs:
       - name: Release Soketi server
         run: flyctl deploy -c fly.soketi.toml
 
-      - name: Create New Relic deployment marker
-        uses: newrelic/deployment-marker-action@v1
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_RELEASE_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_URL: ${{ secrets.SENTRY_URL }}
         with:
-          apiKey: ${{ secrets.NEW_RELIC_API_KEY }}
-          accountId: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
-          applicationId: ${{ secrets.NEW_RELIC_BACKEND_APPLICATION_ID }}
-          revision: "${{ needs.create_release.outputs.current_version }}"
-          changelog: "${{ needs.create_release.outputs.changes }}"
-          description: "Deployed commit ${{ github.sha }}"
+          environment: production
+          version: ethernal@${{ needs.create_release.outputs.current_version }}

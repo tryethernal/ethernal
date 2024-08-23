@@ -13,10 +13,14 @@
                     <v-col cols="6"><b>Compiler Version:</b> {{ contract.verification.compilerVersion }}</v-col>
                     <v-col cols="6"><b>EVM Version:</b> {{ contract.verification.evmVersion }}</v-col>
                 </v-row>
-                <v-divider class="my-6"></v-divider>
-                <v-row v-for="(source, idx) in contract.verification.sources" :key="idx">
+                <v-divider class="my-4"></v-divider>
+                <div class="mt-1 mb-4" v-if="hasOpenZeppelinImports">
+                    <a v-if="!showOppenzeppelinImports" @click="showOppenzeppelinImports = true" class="underlined">[+] Show OZ Imports</a>
+                    <a v-else @click="showOppenzeppelinImports = false" class="underlined">[-] Hide OZ Imports</a>
+                </div>
+                <v-row v-for="(source, idx) in displayedSources" :key="idx">
                     <v-col>
-                        <h5>File {{ idx + 1}} of {{ contract.verification.sources.length }}: {{ source.fileName }}</h5>
+                        <h5>File {{ contract.verification.sources.indexOf(source) + 1}} of {{ contract.verification.sources.length }}: {{ source.fileName }}</h5>
                         <editor class="editor" :ref="`editor-${idx}`" v-model="source.content" @init="editorInit" lang="solidity" theme="chrome" height="500"></editor>
                     </v-col>
                 </v-row>
@@ -79,7 +83,8 @@ export default {
         FormattedSolVar
     },
     data: () => ({
-        formattedConstructorArguments: true
+        formattedConstructorArguments: true,
+        showOppenzeppelinImports: false
     }),
     mounted() {
         for (let i = 0; i < this.contract.verification.sources.length; i++) {
@@ -147,7 +152,16 @@ export default {
             return this.contract.verification && this.contract.verification.constructorArguments;
         },
         displayLibraries() {
-            return this.contract.verification && Object.keys(this.contract.verification.libraries).length > 0;
+            return this.contract.verification && this.contract.verification.libraries && Object.keys(this.contract.verification.libraries).length > 0;
+        },
+        hasOpenZeppelinImports() {
+            return this.contract.verification.sources.find(s => s.fileName.startsWith('@openzeppelin/contracts'));
+        },
+        sourcesWithoutOppenZeppelinImports() {
+            return this.contract.verification.sources.filter(s => !s.fileName.startsWith('@openzeppelin/contracts'));
+        },
+        displayedSources() {
+            return this.showOppenzeppelinImports ? this.contract.verification.sources : this.sourcesWithoutOppenZeppelinImports;
         }
     }
 }

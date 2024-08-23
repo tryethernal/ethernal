@@ -13,7 +13,7 @@ describe('Contracts.vue', () => {
         const contracts = [
             {
                 address: '0x0',
-                timestamp: '2022-05-06T17:11:26.000Z',
+                creationTransaction: { timestamp: '2022-05-06T17:11:26.000Z' },
                 name: 'My Contract',
             },
             {
@@ -47,7 +47,7 @@ describe('Contracts.vue', () => {
     it('Should display a warning message for free users with 10 contracts', async () => {
         const contracts = []; 
         for (let i = 0; i < 10; i++)
-            contracts.push({ address: `0x${i}`, name: `0x${i}`, timestamp: '2022-05-06T17:11:26.000Z' });
+            contracts.push({ address: `0x${i}`, name: `0x${i}`, creationTransaction: { timestamp: '2022-05-06T17:11:26.000Z' }});
 
         jest.spyOn(helper.mocks.server, 'getContracts')
             .mockResolvedValue({ data: { items: contracts, total: 10 }});
@@ -66,7 +66,7 @@ describe('Contracts.vue', () => {
     it('Should not display a warning message for premium users with 10 contracts', async () => {
         const contracts = []; 
         for (let i = 0; i < 10; i++)
-            contracts.push({ address: `0x${i}`, name: `0x${i}`, timestamp: '2022-05-06T17:11:26.000Z' });
+            contracts.push({ address: `0x${i}`, name: `0x${i}`, creationTransaction: { timestamp: '2022-05-06T17:11:26.000Z' }});
 
         jest.spyOn(helper.mocks.server, 'getContracts')
             .mockResolvedValue({ data: { items: contracts, total: 10 }});
@@ -85,7 +85,7 @@ describe('Contracts.vue', () => {
     it('Should not display a warning message for public explorers', async () => {
         const contracts = []; 
         for (let i = 0; i < 10; i++)
-            contracts.push({ address: `0x${i}`, name: `0x${i}`, timestamp: '2022-05-06T17:11:26.000Z' });
+            contracts.push({ address: `0x${i}`, name: `0x${i}`, creationTransaction: { timestamp: '2022-05-06T17:11:26.000Z' }});
 
         jest.spyOn(helper.mocks.server, 'getContracts')
             .mockResolvedValue({ data: { items: contracts, total: 10 }});
