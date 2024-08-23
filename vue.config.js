@@ -31,6 +31,9 @@ module.exports = {
             allowedHosts: ['app.ethernal.local', '.ethernal.explorer'],
             headers: {
                 'Document-Policy': 'js-profiling'
+            },
+            proxy: {
+                '/api/[1-9]\\d*/(envelope|minidump|security|store)/': { target: process.env.SENTRY_URL }
             }
         },
         plugins: [
