@@ -144,8 +144,6 @@ jobs:
   deploy_front:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [create_release]
-    outputs:
-      netlify_deploy_id: ${{ steps.store_deploy_id.outputs.deploy_id }}
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -204,8 +202,13 @@ jobs:
         id: store_deploy_id
         run: |
           ID=$(echo ${{ steps.netlify_deploy.outputs.deploy-url }} | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
-          echo "$ID"
-          echo "deploy_id=$ID" >> $GITHUB_OUTPUT
+          echo $ID > deploy_id.txt
+
+      - name: Upload deploy ID
+        uses: actions/upload-artifact@v3
+        with:
+          name: netlify_deploy_id
+          path: deploy_id.txt
 
   deploy_back:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -242,9 +245,15 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
+      - name: Download Deploy ID
+        uses: actions/download-artifact@v3
+        with:
+          name: netlify_deploy_id
+
       - name: Release deploy
         run: |
-          curl -v -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/${{ needs.deploy_front.outputs.netlify_deploy_id }}/restore
+          deploy_id=$(cat deploy_id.txt)
+          curl -v -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/$deploy_id/restore
 
   release_back:
     if: startsWith(github.ref, 'refs/tags/v')
