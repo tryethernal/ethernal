@@ -2,22 +2,22 @@ const express = require('express');
 const { getAppUrl, getStripeSecretKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
 const db = require('../lib/firebase');
-const logger = require('../lib/logger');    
 const { sanitize } = require('../lib/utils');
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const router = express.Router();
+const { managedError, unmanagedError } = require('../lib/errors');
 
 const EXPLORER_TRIAL_DAYS = 7;
 
-router.post('/createUserCheckoutSession', [authMiddleware, stripeMiddleware], async (req, res) => {
+router.post('/createUserCheckoutSession', [authMiddleware, stripeMiddleware], async (req, res, next) => {
     const data = req.body.data;
 
     try {
         const user = await db.getUser(data.uid, ['stripeCustomerId']);
 
         if (!user)
-            throw new Error(`Couldn't find user. Check your auth token`);
+            return managedError(new Error(`Couldn't find user. Check your auth token`), req, res);
 
         const session = await stripe.checkout.sessions.create(sanitize({
             mode: 'subscription',
@@ -35,29 +35,28 @@ router.post('/createUserCheckoutSession', [authMiddleware, stripeMiddleware], as
 
         res.status(200).json({ url: session.url });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.stripe.createUserCheckoutSession', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/createExplorerCheckoutSession', [authMiddleware, stripeMiddleware], async (req, res) => {
+router.post('/createExplorerCheckoutSession', [authMiddleware, stripeMiddleware], async (req, res, next) => {
     const data = { ...req.query, ...req.body.data };
 
     try {
         if (!data.explorerId || !data.stripePlanSlug)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
 
         const user = await db.getUser(data.uid, ['stripeCustomerId', 'canTrial']);
         if (!user)
-            throw new Error(`Couldn't find user. Check your auth token`);
+            return managedError(new Error(`Couldn't find user. Check your auth token`), req, res);
 
         const selectedPlan = await db.getStripePlan(data.stripePlanSlug);
         if (!selectedPlan || !selectedPlan.public)
-            throw new Error(`Coouldn't find plan.`);
+            return managedError(new Error(`Couldn't find plan.`), req, res);
 
         const explorer = await db.getExplorerById(user.id, data.explorerId, true)
         if (!explorer)
-            throw new Error(`Couldn't find explorer.`);
+            return managedError(new Error(`Couldn't find explorer.`), req, res);
 
         const trial_settings = user.canTrial ? {
             end_behavior: { missing_payment_method: 'cancel' }
@@ -86,18 +85,17 @@ router.post('/createExplorerCheckoutSession', [authMiddleware, stripeMiddleware]
 
         res.status(200).json({ url: session.url });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.stripe.createExplorerCheckoutSession', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/createPortalSession', [authMiddleware, stripeMiddleware], async (req, res) => {
+router.post('/createPortalSession', [authMiddleware, stripeMiddleware], async (req, res, next) => {
     const data = { ...req.query, ...req.body.data };
 
     try {
         const user = await db.getUser(data.uid, ['stripeCustomerId']);
         if (!user)
-            throw new Error(`Couldn't find user.`);
+            return managedError(new Error(`Couldn't find user.`), req, res);
 
         const session = await stripe.billingPortal.sessions.create({
             customer: user.stripeCustomerId,
@@ -106,8 +104,7 @@ router.post('/createPortalSession', [authMiddleware, stripeMiddleware], async (r
 
         res.status(200).json({ url: session.url });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.stripe.createPortalSession', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 

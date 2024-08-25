@@ -54,7 +54,7 @@ describe(`GET ${BASE_URL}/createExplorerCheckoutSession`, () => {
             .send({ data: { explorerId: 1, stripePlanSlug: 'slug' }})
             .expect(400) 
             .then(({ text }) => {
-                expect(text).toEqual(`Coouldn't find plan.`);
+                expect(text).toEqual(`Couldn't find plan.`);
                 done();
             });
     });

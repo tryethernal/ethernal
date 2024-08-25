@@ -7,66 +7,65 @@ const router = express.Router();
 const { ProviderConnector } = require('../lib/rpc');
 const { encode, decode } = require('../lib/crypto');
 const { withTimeout, sanitize } = require('../lib/utils');
-const logger = require('../lib/logger');
 const authMiddleware = require('../middlewares/auth');
 const db = require('../lib/firebase');
+const { managedError, unmanagedError } = require('../lib/errors');
 
-router.get('/explorers', authMiddleware, async (req, res) => {
+router.get('/explorers', authMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.body.data };
 
     try {
         if (!data.token)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
 
         const decodedToken = decode(data.token);
         if (!decodedToken || !decodedToken.explorerId)
-            throw new Error('Invalid token.');
+            return managedError(new Error('Invalid token.'), req, res);
 
         const explorer = await db.getExplorerById(getDemoUserId(), decodedToken.explorerId);
         if (!explorer)
-            throw new Error('Could not find explorer.');
+            return managedError(new Error('Could not find explorer.'), req, res);
 
         const user = await db.getUser(data.uid);
         if (!user)
-            throw new Error('Could not find user.');
+            return managedError(new Error('Could not find user.'), req, res);
 
         if (!explorer.isDemo)
-            throw new Error('This token has already been used. Please create another demo explorer and try again.');
+            return managedError(new Error('This token has already been used. Please create another demo explorer and try again.'), req, res);
 
         res.status(200).send({ id: explorer.id, name: explorer.name, rpcServer: explorer.rpcServer, canTrial: user.canTrial });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.demo.explorers', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/migrateExplorer', authMiddleware, async (req, res) => {
+router.post('/migrateExplorer', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
     try {
         if (!data.token)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
 
         const decodedToken = decode(data.token);
         if (!decodedToken || !decodedToken.explorerId)
-            throw new Error('Invalid token.');
+            return managedError(new Error('Invalid token.'), req, res);
 
         const explorer = await db.getExplorerById(getDemoUserId(), decodedToken.explorerId);
         if (!explorer)
-            throw new Error('Could not find explorer.');
+            return managedError(new Error('Could not find explorer.'), req, res);
 
         if (!explorer.isDemo)
-            throw new Error('This token has already been used. Please create another demo explorer and try again.');
+            return managedError(new Error('This token has already been used. Please create another demo explorer and try again.'), req, res);
 
         const user = await db.getUser(data.uid, ['stripeCustomerId', 'canTrial']);
         if (!user)
-            throw new Error('Could not find user.');
+            return managedError(new Error('Could not find user.'), req, res);
 
         if (!user.canTrial)
-            throw new Error(`You've already used your trial.`);
+            return managedError(new Error(`You've already used your trial.`), req, res);
 
         const plan = await db.getStripePlan(getDemoTrialSlug());
         if (!plan)
-            throw new Error('Could not find plan.');
+            return managedError(new Error('Could not find plan.'), req, res);
 
         const subscription = await stripe.subscriptions.create({
             customer: user.stripeCustomerId,
@@ -79,20 +78,19 @@ router.post('/migrateExplorer', authMiddleware, async (req, res) => {
         });
 
         if (!subscription)
-            throw new Error('Error while starting trial. Please try again.')
+            return managedError(new Error('Error while starting trial. Please try again.'), req, res);
 
         res.status(200).send({ explorerId: explorer.id });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.demo.migrateExplorer', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/explorers', async (req, res) => {
+router.post('/explorers', async (req, res, next) => {
     const data = req.body;
     try {
         if (!data.rpcServer)
-            throw new Error('Missing parameters.');
+            return managedError(new Error('Missing parameters.'), req, res);
 
         let name = data.name;
         let slugGenerated = false;
@@ -111,16 +109,16 @@ router.post('/explorers', async (req, res) => {
 
         const forbiddenChains = (await axios.get('https://raw.githubusercontent.com/DefiLlama/chainlist/main/constants/chainIds.json')).data;
         if (forbiddenChains[networkId])
-            throw new Error(`You can't create a demo with this network id (${networkId} - ${forbiddenChains[networkId]}). If you'd still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we'll set one up for you.`);
+            return managedError(new Error(`You can't create a demo with this network id (${networkId} - ${forbiddenChains[networkId]}). If you'd still like an explorer for this chain. Please reach out to contact@tryethernal.com, and we'll set one up for you.`), req, res);
 
         if (!networkId)
-            throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
+            return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
 
         const user = await db.getUserById(getDemoUserId());
 
         const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
         if (!stripePlan)
-            throw new Error('Error setting up the explorer. Please retry.');
+            return managedError(new Error('Error setting up the explorer. Please retry.'), req, res);
 
         const options = {
             name, networkId,
@@ -142,12 +140,11 @@ router.post('/explorers', async (req, res) => {
 
         const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
         if (!explorer)
-            throw new Error('Could not create explorer. Please retry.');
+            return managedError(new Error('Could not create explorer. Please retry.'), req, res);
 
         res.status(200).send({ domain: `${explorer.slug}.${getAppDomain()}` });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.demo.explorers', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 

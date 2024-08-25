@@ -8,10 +8,11 @@ const browserSyncMiddleware = require('../middlewares/browserSync');
 const { processTransactions } = require('../lib/transactions');
 const { getAppDomain } = require('../lib/env');
 const { transactionFn } = require('../lib/codeRunner');
+const { managedError, unmanagedError } = require('../lib/errors');
 
 const router = express.Router();
 
-router.get('/failedProcessable', authMiddleware, async (req, res) => {
+router.get('/failedProcessable', authMiddleware, async (req, res, next) => {
     const data = req.query;
 
     try {
@@ -19,12 +20,11 @@ router.get('/failedProcessable', authMiddleware, async (req, res) => {
 
         res.status(200).json(transactions);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.transactions.failedProcessable', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/processable', authMiddleware, async (req, res) => {
+router.get('/processable', authMiddleware, async (req, res, next) => {
     const data = req.query;
 
     try {
@@ -32,24 +32,23 @@ router.get('/processable', authMiddleware, async (req, res) => {
 
         res.status(200).json(transactions)
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.transactions.processable', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res) => {
+router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.uid ||  !data.workspace || !data.block || !data.transaction)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
 
         const transaction = data.transaction;
         const receipt = data.transactionReceipt;
 
         const canUserSyncBlock = await db.canUserSyncBlock(data.user.id);
         if (!canUserSyncBlock)
-            throw new Error(`You are on a free plan with more than one workspace. Please upgrade your plan, or delete your extra workspaces here: https://app.${getAppDomain()}/settings.`);
+            return managedError(new Error(`You are on a free plan with more than one workspace. Please upgrade your plan, or delete your extra workspaces here: https://app.${getAppDomain()}/settings.`), req, res);
 
         const sTransactionReceipt = receipt ? stringifyBns(sanitize(receipt)) : null;
         const sTransaction = stringifyBns(sanitize(transaction));
@@ -64,66 +63,62 @@ router.post('/', [authMiddleware, browserSyncMiddleware], async (req, res) => {
 
        res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.transactions', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:hash/error', authMiddleware, async (req, res) => {
+router.post('/:hash/error', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.uid || !data.workspace || !req.params.hash || !data.error)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
 
         await db.storeFailedTransactionError(data.uid, data.workspace, req.params.hash, data.error);
 
        res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.transactions.hash.error', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:hash/process', authMiddleware, async (req, res) => {
+router.post('/:hash/process', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
     
     try {
         if (!data.uid || !data.workspace || !req.params.hash)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
 
         const transaction = await db.getTransaction(data.uid, data.workspace, req.params.hash);
         await processTransactions([transaction.id]);
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.transactions.hash.process', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:hash/tokenBalanceChanges', authMiddleware, async (req, res) => {
+router.post('/:hash/tokenBalanceChanges', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.uid || !data.workspace || !req.params.hash || !data.changes || !data.tokenTransferId)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
         
         await db.storeTokenBalanceChanges(data.uid, data.workspace, data.tokenTransferId, data.changes);
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.transactions.hash.tokenBalanceChanges', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:hash/trace', authMiddleware, async (req, res) => {
+router.post('/:hash/trace', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.uid || !data.workspace || !req.params.hash || !data.steps)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
         
         const trace = [];
         for (const step of data.steps) {
@@ -153,28 +148,26 @@ router.post('/:hash/trace', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.transactions.hash.trace', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:hash/storage', workspaceAuthMiddleware, async (req, res) => {
+router.post('/:hash/storage', workspaceAuthMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.body.data };
 
     try {
         if (!data.firebaseUserId || !data.workspace || !data.data)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
 
         await db.storeTransactionData(data.firebaseUserId, data.workspace, req.params.hash, data.data);
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.transactions.hash.storage', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/', workspaceAuthMiddleware, async (req, res) => {
+router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.params };
 
     try {
@@ -182,17 +175,16 @@ router.get('/', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(transactions);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.transactions', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/:hash', workspaceAuthMiddleware, async (req, res) => {
+router.get('/:hash', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
 
     try {
         if (!req.params.hash)
-            throw new Error('Missing parameter');
+            return managedError(new Error('Missing parameter'), req, res);
 
         const transaction = await db.getWorkspaceTransaction(data.workspace.id, req.params.hash);
         const customTransactionFunction = await db.getCustomTransactionFunction(data.workspace.id);
@@ -202,41 +194,37 @@ router.get('/:hash', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json({ ...transaction, ...customFields.overrides, extraFields: customFields.extraFields });
     } catch(error) {
-        console.log(error)
-        logger.error(error.message, { location: 'get.api.transactions.hash', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/:hash/tokenTransfers', workspaceAuthMiddleware, async (req, res) => {
+router.get('/:hash/tokenTransfers', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
 
     try {
         if (!req.params.hash)
-            throw new Error('Missing parameter');
+            return managedError(new Error('Missing parameter'), req, res);
 
         const result = await db.getTransactionTokenTransfers(data.workspace.id, req.params.hash, data.page, data.itemsPerPage, data.order);
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.transactions.hash.tokenTransfers', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/:hash/logs', workspaceAuthMiddleware, async (req, res) => {
+router.get('/:hash/logs', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
 
     try {
         if (!req.params.hash)
-            throw new Error('Missing parameter');
+            return managedError(new Error('Missing parameter'), req, res);
 
         const result = await db.getTransactionLogs(data.workspace.id, req.params.hash, data.page, data.itemsPerPage);
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.transactions.hash.logs', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 

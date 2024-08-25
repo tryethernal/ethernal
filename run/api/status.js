@@ -1,8 +1,8 @@
 const express = require('express');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
-const logger = require('../lib/logger');
 const { sanitize } = require('../lib/utils');
 const router = express.Router();
+const { managedError, unmanagedError } = require('../lib/errors');
 
 router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
@@ -11,10 +11,10 @@ router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
         const workspace = data.workspace;
 
         if (!workspace.statusPageEnabled && !data.authenticated)
-            return res.sendStatus(404);
+            return managedError(new Error('Status page not enabled'), req, res, 404);
 
         if ((workspace.integrityCheckStartBlockNumber === null || workspace.integrityCheckStartBlockNumber === undefined) && !workspace.rpcHealthCheckEnabled)
-            throw new Error('Status is not available on this workspace');
+            return managedError(new Error('Status is not available on this workspace'), req, res);
 
         const integrityCheck = workspace.integrityCheck || {};
         const rpcHealthCheck = workspace.rpcHealthCheck || {};
@@ -29,8 +29,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'api.status', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 

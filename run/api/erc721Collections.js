@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const logger = require('../lib/logger');
 const db = require('../lib/firebase');
 const { ERC721Connector } = require('../lib/rpc');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
+const { unmanagedError } = require('../lib/errors');
 
-router.get('/:address/totalSupply', workspaceAuthMiddleware, async (req, res) => {
+router.get('/:address/totalSupply', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
 
     try {
@@ -16,20 +16,18 @@ router.get('/:address/totalSupply', workspaceAuthMiddleware, async (req, res) =>
 
         res.status(200).json({ totalSupply });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.collections.address.totalSupply', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/:address/tokens', workspaceAuthMiddleware, async (req, res) => {
+router.get('/:address/tokens', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
     try {
         const result = await db.getContractErc721Tokens(data.workspace.id, req.params.address, data.page, data.itemsPerPage, data.orderBy, data.order);
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.collections.address.tokens', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 

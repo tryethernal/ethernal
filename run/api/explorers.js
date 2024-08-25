@@ -1,5 +1,4 @@
 const { getAppDomain, getDefaultPlanSlug, getDefaultExplorerTrialDays, getStripeSecretKey } = require('../lib/env');
-const Sentry = require('@sentry/node');
 const stripe = require('stripe')(getStripeSecretKey());
 const express = require('express');
 const router = express.Router();
@@ -9,65 +8,62 @@ const { managedError, unmanagedError } = require('../lib/errors');
 const { Explorer } = require('../models');
 const { withTimeout, validateBNString, sanitize } = require('../lib/utils');
 const { bulkEnqueue } = require('../lib/queue');
-const logger = require('../lib/logger');
 const PM2 = require('../lib/pm2');
 const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
 const stripeMiddleware = require('../middlewares/stripe');
 const secretMiddleware = require('../middlewares/secret');
 
-router.post('/:id/v2_dexes', authMiddleware, async (req, res) => {
+router.post('/:id/v2_dexes', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.routerAddress || !data.wrappedNativeTokenAddress)
-            throw new Error('Missing parameters');
+            return managedError(new Error('Missing parameters'), req, res);
 
         const explorer = await db.getExplorerById(data.user.id, req.params.id);
         if (!explorer || !explorer.workspace)
-            throw new Error('Could not find explorer.');
+            return managedError(new Error('Could not find explorer.'), req, res);
 
         let routerFactoryAddress;
         try {
             const dexConnector = new DexConnector(explorer.workspace.rpcServer, data.routerAddress);
             routerFactoryAddress = await dexConnector.getFactory();
         } catch(error) {
-            throw new Error(`Couldn't get factory address for router. Check that the factory method is present and returns an address.`);
+            return managedError(new Error(`Couldn't get factory address for router. Check that the factory method is present and returns an address.`), req, res);
         }
 
         if (!routerFactoryAddress || typeof routerFactoryAddress != 'string' || routerFactoryAddress.length != 42 || !routerFactoryAddress.startsWith('0x'))
-            throw new Error(`Invalid factory address.`);
+            return managedError(new Error(`Invalid factory address.`), req, res);
 
         const { id, routerAddress, factoryAddress } = await db.createExplorerV2Dex(data.uid, req.params.id, data.routerAddress, routerFactoryAddress, data.wrappedNativeTokenAddress);
 
         res.status(200).json({ id, routerAddress, factoryAddress });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.dexes', error, data });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:id/faucets', authMiddleware, async (req, res) => {
+router.post('/:id/faucets', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.amount || !data.interval)
-            throw new Error('Missing parameters');
+            return managedError(new Error('Missing parameters'), req, res);
         if (!validateBNString(data.amount))
-            throw new Error('Invalid amount.');
+            return managedError(new Error('Invalid amount.'), req, res);
         if (isNaN(parseFloat(data.interval)) || parseFloat(data.interval) <= 0)
-            throw new Error('Interval must be greater than 0.')
+            return managedError(new Error('Interval must be greater than 0.'), req, res);
 
         const { id, address } = await db.createFaucet(data.uid, req.params.id, data.amount, data.interval);
 
         res.status(200).json({ id, address });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.faucets', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/billing', [authMiddleware, stripeMiddleware], async (req, res) => {
+router.get('/billing', [authMiddleware, stripeMiddleware], async (req, res, next) => {
     const data = req.body.data;
 
     try {
@@ -106,32 +102,31 @@ router.get('/billing', [authMiddleware, stripeMiddleware], async (req, res) => {
         const totalCost = activeExplorers.reduce((acc, curr) => acc + curr.planCost, 0);
         res.status(200).json({ activeExplorers, totalCost });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers.billing', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:id/startTrial', authMiddleware, async (req, res) => {
+router.post('/:id/startTrial', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.stripePlanSlug)
-            throw new Error('Missing parameter');
+            return managedError(new Error('Missing parameter'), req, res);
 
         const user = await db.getUser(data.uid, ['stripeCustomerId', 'canTrial']);
         if (!user)
-            throw new Error('Could not find user.');
+            return managedError(new Error('Could not find user.'), req, res);
 
         if (!user.canTrial)
-            throw new Error(`You've already used your trial.`);
+            return managedError(new Error(`You've already used your trial.`), req, res);
 
         const explorer = await db.getExplorerById(user.id, req.params.id);
         if (!explorer)
-            throw new Error('Could not find explorer.');
+            return managedError(new Error('Could not find explorer.'), req, res);
 
         const plan = await db.getStripePlan(data.stripePlanSlug);
         if (!plan)
-            throw new Error('Could not find plan.');
+            return managedError(new Error('Could not find plan.'), req, res);
 
         const subscription = await stripe.subscriptions.create({
             customer: user.stripeCustomerId,
@@ -144,7 +139,7 @@ router.post('/:id/startTrial', authMiddleware, async (req, res) => {
         });
 
         if (!subscription)
-            throw new Error('Error while starting trial. Please try again.')
+            return managedError(new Error('Error while starting trial. Please try again.'), req, res);
 
         const customer = await stripe.customers.retrieve(subscription.customer);
 
@@ -153,12 +148,11 @@ router.post('/:id/startTrial', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.startTrial', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/syncExplorers', secretMiddleware, async (req, res) => {
+router.post('/syncExplorers', secretMiddleware, async (req, res, next) => {
     try {
         const explorers = await Explorer.findAll();
 
@@ -175,51 +169,49 @@ router.post('/syncExplorers', secretMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.syncExplorers', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.put('/:id/stopSync', [authMiddleware], async (req, res) => {
+router.put('/:id/stopSync', [authMiddleware], async (req, res, next) => {
     try {
         if (!req.params.id)
-            throw new Error('Missing parameters');
+            return managedError(new Error('Missing parameters'), req, res);
 
         const explorer = await db.getExplorerById(req.body.data.user.id, req.params.id);
         if (!explorer)
-            throw new Error(`Couldn't find explorer.`);
+            return managedError(new Error(`Couldn't find explorer.`), req, res);
 
         // We rely on the afterUpdate hook to update the pm2 process. The frontend needs to take care of waiting for the new state
         await db.stopExplorerSync(explorer.id);
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'put.api.explorers.id.stopSync', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.put('/:id/startSync', [authMiddleware], async (req, res) => {
+router.put('/:id/startSync', [authMiddleware], async (req, res, next) => {
     try {
         if (!req.params.id)
-            throw new Error('Missing parameters');
+            return managedError(new Error('Missing parameters'), req, res);
 
         const explorer = await db.getExplorerById(req.body.data.user.id, req.params.id);
 
         if (!explorer)
-            throw new Error(`Couldn't find explorer.`);
+            return managedError(new Error(`Couldn't find explorer.`), req, res);
 
         if (!explorer.stripeSubscription)
-            throw new Error(`No active subscription for this explorer.`);
+            return managedError(new Error(`No active subscription for this explorer.`), req, res);
 
         if (await explorer.hasReachedTransactionQuota())
-            throw new Error('Transaction quota reached. Upgrade your plan to resume sync.');
+            return managedError(new Error('Transaction quota reached. Upgrade your plan to resume sync.'), req, res);
 
         const provider = new ProviderConnector(explorer.workspace.rpcServer);
         try {
             await withTimeout(provider.fetchNetworkId());
         } catch(error) {
-            throw new Error(`This explorer's RPC is not reachable. Please update it in order to start syncing.`);
+            return managedError(new Error(`This explorer's RPC is not reachable. Please update it in order to start syncing.`), req, res);
         }
 
         // We rely on the afterUpdate hook to update the pm2 process. The frontend needs to take care of waiting for the new state
@@ -227,19 +219,18 @@ router.put('/:id/startSync', [authMiddleware], async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'put.api.explorers.id.startSync', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/:id/syncStatus', [authMiddleware], async (req, res) => {
+router.get('/:id/syncStatus', [authMiddleware], async (req, res, next) => {
     try {
         if (!req.params.id)
-            throw new Error('Missing parameters');
+            return managedError(new Error('Missing parameters'), req, res);
 
         const explorer = await db.getExplorerById(req.body.data.user.id, req.params.id);
         if (!explorer)
-            throw new Error(`Can't find explorer.`);
+            return managedError(new Error(`Can't find explorer.`), req, res);
 
         let status;
         if (explorer.workspace.rpcHealthCheck && !explorer.workspace.rpcHealthCheck.isReachable) {
@@ -256,17 +247,16 @@ router.get('/:id/syncStatus', [authMiddleware], async (req, res) => {
 
         res.status(200).json({ status });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers.id.syncStatus', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.delete('/:id/quotaExtension', [authMiddleware, stripeMiddleware], async (req, res) => {
+router.delete('/:id/quotaExtension', [authMiddleware, stripeMiddleware], async (req, res, next) => {
     try {
         const explorer = await db.getExplorerById(req.body.data.user.id, req.params.id);
 
         if (!explorer || !explorer.stripeSubscription)
-            throw new Error(`Can't find explorer.`);
+            return managedError(new Error(`Can't find explorer.`), req, res);
 
         if (!explorer.stripeSubscription.stripeQuotaExtension)
             return res.sendStatus(200);
@@ -279,29 +269,28 @@ router.delete('/:id/quotaExtension', [authMiddleware, stripeMiddleware], async (
 
         res.status(200).json({ stripeSubscription: explorer.stripeSubscription });
     } catch(error) {
-        logger.error(error.message, { location: 'delete.api.explorers.id.quotaExtension', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.put('/:id/quotaExtension', [authMiddleware, stripeMiddleware], async (req, res) => {
+router.put('/:id/quotaExtension', [authMiddleware, stripeMiddleware], async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.quota || !data.stripePlanSlug)
-            throw new Error('Missing parameters.');
+            return managedError(new Error('Missing parameters.'), req, res);
 
         if (data.quota < 10000)
-            throw new Error('Quota extension needs to be at least 10,000.');
+            return managedError(new Error('Quota extension needs to be at least 10,000.'), req, res);
 
         const explorer = await db.getExplorerById(data.user.id, req.params.id);
 
         if (!explorer || !explorer.stripeSubscription)
-            throw new Error(`Can't find explorer.`);
+            return managedError(new Error(`Can't find explorer.`), req, res);
 
         const stripePlan = await db.getStripePlan(data.stripePlanSlug);
         if (!stripePlan || !stripePlan.capabilities.quotaExtension)
-            throw new Error(`Can't find plan.`);
+            return managedError(new Error(`Can't find plan.`), req, res);
 
         const stripeQuotaExtension = explorer.stripeSubscription.stripeQuotaExtension;
         const items = [];
@@ -327,29 +316,28 @@ router.put('/:id/quotaExtension', [authMiddleware, stripeMiddleware], async (req
 
         res.status(200).json({ stripeSubscription: explorer.stripeSubscription });
     } catch(error) {
-        logger.error(error.message, { location: 'put.api.explorers.id.quotaExtension', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.put('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, res) => {
+router.put('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.newStripePlanSlug)
-            throw new Error('Missing parameters.');
+            return managedError(new Error('Missing parameters.'), req, res);
 
         const explorer = await db.getExplorerById(data.user.id, req.params.id);
 
         if (!explorer || !explorer.stripeSubscription)
-            throw new Error(`Can't find explorer.`);
+            return managedError(new Error(`Can't find explorer.`), req, res);
 
         if (explorer.stripeSubscription.stripePlan.slug != data.newStripePlanSlug && explorer.stripeSubscription.isPendingCancelation)
-            throw new Error(`Revert plan cancelation before choosing a new plan.`);
+            return managedError(new Error(`Revert plan cancelation before choosing a new plan.`), req, res);
 
         const stripePlan = await db.getStripePlan(data.newStripePlanSlug);
         if (!stripePlan || !stripePlan.public)
-            throw new Error(`Can't find plan.`);
+            return managedError(new Error(`Can't find plan.`), req, res);
 
         let subscription;
         if (explorer.stripeSubscription.stripeId) {
@@ -371,19 +359,18 @@ router.put('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, 
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.updateSubscription', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.delete('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, res) => {
+router.delete('/:id/subscription', [authMiddleware, stripeMiddleware], async (req, res, next) => {
     const data = req.body.data;
 
     try {
         const explorer = await db.getExplorerById(data.user.id, req.params.id);
 
         if (!explorer || !explorer.stripeSubscription)
-            throw new Error(`Can't find explorer.`);
+            return managedError(new Error(`Can't find explorer.`), req, res);
 
         if (explorer.stripeSubscription.stripeId) {
             const subscription = await stripe.subscriptions.retrieve(explorer.stripeSubscription.stripeId);
@@ -396,28 +383,27 @@ router.delete('/:id/subscription', [authMiddleware, stripeMiddleware], async (re
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.cancelSubscription', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:id/cryptoSubscription', [authMiddleware, stripeMiddleware], async (req, res) => {
+router.post('/:id/cryptoSubscription', [authMiddleware, stripeMiddleware], async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.stripePlanSlug)
-            throw new Error('Missing parameter');
+            return managedError(new Error('Missing parameter'), req, res);
 
         if (!data.user.cryptoPaymentEnabled)
-            throw new Error(`Crypto payment is not available for your account. Please reach out to contact@tryethernal.com if you'd like to enable it.`);
+            return managedError(new Error(`Crypto payment is not available for your account. Please reach out to contact@tryethernal.com if you'd like to enable it.`), req, res);
 
         const explorer = await db.getExplorerById(data.user.id, req.params.id, true);
         if (!explorer)
-            throw new Error(`Can't find explorer.`);
+            return managedError(new Error(`Can't find explorer.`), req, res);
 
         const stripePlan = await db.getStripePlan(data.stripePlanSlug);
         if (!stripePlan || !stripePlan.public)
-            throw new Error(`Can't find plan.`);
+            return managedError(new Error(`Can't find plan.`), req, res);
 
         await stripe.subscriptions.create({
             customer: data.user.stripeCustomerId,
@@ -433,12 +419,11 @@ router.post('/:id/cryptoSubscription', [authMiddleware, stripeMiddleware], async
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.startCryptoSubscription', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.delete('/:id', authMiddleware, async (req, res) => {
+router.delete('/:id', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
@@ -446,85 +431,80 @@ router.delete('/:id', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'delete.api.explorers.id', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/plans', [authMiddleware, stripeMiddleware], async (req, res) => {
+router.get('/plans', [authMiddleware, stripeMiddleware], async (req, res, next) => {
     try {
         const plans = await db.getExplorerPlans();
 
         res.status(200).json(plans);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers.plans', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/quotaExtensionPlan', [authMiddleware, stripeMiddleware], async (req, res) => {
+router.get('/quotaExtensionPlan', [authMiddleware, stripeMiddleware], async (req, res, next) => {
     try {
         const plan = await db.getQuotaExtensionPlan();
 
         res.status(200).json(plan);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers.quotaExtensionPlan', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:id/domains', authMiddleware, async (req, res) => {
+router.post('/:id/domains', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.domain)
-            throw new Error('Missing parameter');
+            return managedError(new Error('Missing parameter'), req, res);
 
         if (data.domain.endsWith(getAppDomain()))
-            throw new Error(`You can only have one ${getAppDomain()} domain. If you'd like a different one, update the "Ethernal Domain" field, in the "Settings" panel.`)
+            return managedError(new Error(`You can only have one ${getAppDomain()} domain. If you'd like a different one, update the "Ethernal Domain" field, in the "Settings" panel.`), req, res);
 
         const explorer = await db.getExplorerById(data.user.id, req.params.id);
         if (!explorer)
-            throw new Error('Could not find explorer.');
+            return managedError(new Error('Could not find explorer.'), req, res);
 
         const explorerDomain = await db.createExplorerDomain(explorer.id, data.domain);
 
         res.status(200).send({ id: explorerDomain.id });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.domains', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:id/branding', authMiddleware, async (req, res) => {
+router.post('/:id/branding', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
         const explorer = await db.getExplorerById(data.user.id, req.params.id);
         if (!explorer)
-            throw new Error('Could not find explorer.');
+            return managedError(new Error('Could not find explorer.'), req, res);
 
         await db.updateExplorerBranding(explorer.id, data);
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.id.branding', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:id/settings', authMiddleware, async (req, res) => {
+router.post('/:id/settings', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
         const explorer = await db.getExplorerById(data.user.id, req.params.id);
         if (!explorer || !explorer.workspace)
-            throw new Error('Could not find explorer.');
+            return managedError(new Error('Could not find explorer.'), req, res);
 
         if (data.workspace && data.workspace != explorer.workspace.name) {
             const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
             if (!workspace)
-                throw new Error('Invalid workspace.');
+                return managedError(new Error('Invalid workspace.'), req, res);
             else
                 await db.updateExplorerWorkspace(explorer.id, workspace.id);
         }
@@ -533,17 +513,16 @@ router.post('/:id/settings', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers.settings', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.workspaceId && !(data.rpcServer && data.name))
-            throw new Error('Missing parameters.');
+            return managedError(new Error('Missing parameters.'), req, res);
 
         const user = await db.getUser(data.uid, ['stripeCustomerId', 'canUseDemoPlan']);
 
@@ -551,9 +530,9 @@ router.post('/', authMiddleware, async (req, res) => {
         if (data.workspaceId) {
             const workspace = user.workspaces.find(w => w.id == data.workspaceId);
             if (!workspace)
-                throw new Error('Could not find workspace');
+                return managedError(new Error('Could not find workspace'), req, res);
             if (workspace.explorer)
-                throw new Error('This workspace already has an explorer.');
+                return managedError(new Error('This workspace already has an explorer.'), req, res);
             rpcServer = workspace.rpcServer;
         }
         else
@@ -566,7 +545,7 @@ router.post('/', authMiddleware, async (req, res) => {
             if (!networkId)
                 throw 'Error';
         } catch(error) {
-            throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
+            return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
         }
 
         let options = data.workspaceId ?
@@ -602,16 +581,16 @@ router.post('/', authMiddleware, async (req, res) => {
 
         const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
         if (!explorer)
-            throw new Error('Could not create explorer.')
+            return managedError(new Error('Could not create explorer.'), req, res);
 
         if (!options['subscription'] && req.query.startSubscription) {
             if (!data.plan)
-                throw new Error('Missing plan parameter.');
+                return managedError(new Error('Missing plan parameter.'), req, res);
 
             const stripePlan = await db.getStripePlan(data.plan);
 
             if (!stripePlan || !stripePlan.public)
-                throw new Error(`Can't find plan.`);
+                return managedError(new Error(`Can't find plan.`), req, res);
 
             let stripeParams = {
                 customer: user.stripeCustomerId,
@@ -626,7 +605,7 @@ router.post('/', authMiddleware, async (req, res) => {
             if (!user.cryptoPaymentEnabled) {
                 const stripeCustomer = await stripe.customers.retrieve(user.stripeCustomerId);
                 if (!stripeCustomer.default_source)
-                    throw new Error(`There doesn't seem to be a payment method associated to your account. If you never subscribed to an explorer plan, please start your first one using the dashboard. You can also reach out to support on Discord or at contact@tryethernal.com.`);
+                    return managedError(new Error(`There doesn't seem to be a payment method associated to your account. If you never subscribed to an explorer plan, please start your first one using the dashboard. You can also reach out to support on Discord or at contact@tryethernal.com.`), req, res);
             }
             else {
                 stripeParams['collection_method'] = 'send_invoice';
@@ -655,17 +634,16 @@ router.post('/', authMiddleware, async (req, res) => {
 
         res.status(200).send(fields);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.explorers', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/search', async (req, res) => {
+router.get('/search', async (req, res, next) => {
     const data = req.query;
 
     try {
         if (!data.domain)
-            throw new Error('Missing parameters.')
+            return managedError(new Error('Missing parameters.'), req, res);
 
         let explorer;
 
@@ -681,10 +659,10 @@ router.get('/search', async (req, res) => {
             explorer = await db.getPublicExplorerParamsByDomain(data.domain); // This method will return null if the current explorer plan doesn't have the "customDomain" capability
 
         if (!explorer)
-            throw new Error(`Couldn't find explorer.`);
+            return managedError(new Error(`Couldn't find explorer.`), req, res);
 
         if (!explorer.stripeSubscription)
-            throw new Error('This explorer is not active.');
+            return managedError(new Error('This explorer is not active.'), req, res);
 
         const capabilities = explorer.stripeSubscription.stripePlan.capabilities;
 
@@ -720,13 +698,7 @@ router.get('/search', async (req, res) => {
 
         res.status(200).json({ explorer: fields });
     } catch(error) {
-        Sentry.withScope(scope => {
-            scope.setContext('params', req.query);
-            scope.setTag('route', req.route.path);
-            scope.captureException(error);
-        });
-        logger.error(error.message, { location: 'get.api.explorers.search', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
@@ -735,20 +707,20 @@ router.get('/:id', authMiddleware, async (req, res, next) => {
 
     try {
         if (!data.id)
-            throw new Error('Missing parameters.')
+            return managedError(new Error('Missing parameters.'), req, res);
 
         const explorer = await db.getExplorerById(req.body.data.user.id, data.id);
 
         if (!explorer)
-            throw new Error('Could not find explorer.');
+            return managedError(new Error('Could not find explorer.'), req, res);
 
         res.status(200).json(explorer.toJSON());
     } catch(error) {
-        unmanagedError(error, req, next)
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', authMiddleware, async (req, res, next) => {
     const data = { ...req.body.data, ...req.query };
 
     try {
@@ -756,8 +728,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
         res.status(200).json(explorers)
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 

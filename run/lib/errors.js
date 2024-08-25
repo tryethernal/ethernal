@@ -7,7 +7,7 @@ const managedError = (error, req, res, status_code = 400) => {
             route: req.baseUrl + req.route.path,
             status_code
         }
-    })
+    });
     return res.status(status_code).send(error.message);
 };
 
@@ -16,7 +16,7 @@ const unmanagedError = (error, req, next) => {
     Sentry.setTags({
         route: req.baseUrl + req.route.path,
         status_code: 500
-})
+    });
     next(error);
 };
 

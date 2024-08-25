@@ -1,5 +1,4 @@
 const express = require('express');
-const logger = require('../lib/logger');
 const authMiddleware = require('../middlewares/auth');
 const secretMiddleware = require('../middlewares/secret');
 const { sanitize, stringifyBns, withTimeout } = require('../lib/utils');
@@ -9,52 +8,50 @@ const { ProviderConnector } = require('../lib/rpc');
 const PM2 = require('../lib/pm2');
 const { getPm2Host, getPm2Secret } = require('../lib/env');
 const router = express.Router();
+const { managedError, unmanagedError } = require('../lib/errors');
 
-router.post('/reprocessTransactionErrors', [secretMiddleware], async (req, res) => {
+router.post('/reprocessTransactionErrors', [secretMiddleware], async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.workspaceId)
-            throw new Error('Missing parameters.');
+            return managedError(new Error('Missing parameters.'), req, res);
 
         await enqueue('reprocessWorkspaceTransactionErrors', `reprocessWorkspaceTransactionErrors-${data.workspaceId}`, { workspaceId: data.workspaceId });
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.workspaces.reprocessWorkspaceTransactionErrors', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/reprocessTransactionTraces', [secretMiddleware], async (req, res) => {
+router.post('/reprocessTransactionTraces', [secretMiddleware], async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.workspaceId)
-            throw new Error('Missing parameters.');
+            return managedError(new Error('Missing parameters.'), req, res);
 
         await enqueue('reprocessWorkspaceTransactionTraces', `reprocessWorkspaceTransactionTraces-${data.workspaceId}`, { workspaceId: data.workspaceId });
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.workspaces.reprocessTransactions', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.delete('/:id', [authMiddleware], async (req, res) => {
+router.delete('/:id', [authMiddleware], async (req, res, next) => {
     const data = req.body.data;
 
     try {
         await db.deleteWorkspace(data.user.id, req.params.id);
         res.sendStatus(200);
-    } catch(error) { 
-        logger.error(error.message, { location: 'delete.api.workspaces', error });
-        res.status(400).send(error.message);
+    } catch(error) {
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
@@ -62,32 +59,30 @@ router.get('/', authMiddleware, async (req, res) => {
 
         res.status(200).json(workspaces);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.workspaces', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/:id', secretMiddleware, async (req, res) => {
+router.get('/:id', secretMiddleware, async (req, res, next) => {
     try {
         const workspace = await db.getWorkspaceById(req.params.id);
 
         res.status(200).json(workspace);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.workspaces.id', error, params: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.uid || !data.workspaceData || !data.name)
-            throw new Error('Missing parameters.');
+            return managedError(new Error('Missing parameters.'), req, res);
 
         const user = await db.getUser(data.uid, ['defaultDataRetentionLimit']);
         if (!user)
-            throw new Error('Could not find user.');
+            return managedError(new Error('Could not find user.'), req, res);
 
         let networkId;
         if (data.workspaceData.public) {
@@ -95,10 +90,10 @@ router.post('/', authMiddleware, async (req, res) => {
             try {
                 networkId = await withTimeout(provider.fetchNetworkId());
             } catch(error) {
-                networkId = null;
+                return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
             }
             if (!networkId)
-                throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
+                return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
         }
         else {
             networkId = data.workspaceData.networkId
@@ -119,24 +114,23 @@ router.post('/', authMiddleware, async (req, res) => {
         const workspace = await db.createWorkspace(data.uid, filteredWorkspaceData);
 
         if (!workspace)
-            throw new Error(`Couldn't create workspace`);
+            return managedError(new Error(`Couldn't create workspace`), req, res);
 
         if (!user.currentWorkspace)
             await db.setCurrentWorkspace(user.firebaseUserId, filteredWorkspaceData.name);
 
         res.status(200).json(workspace);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.workspaces', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/settings', authMiddleware, async (req, res) => {
+router.post('/settings', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.uid || !data.workspace || !data.settings)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
 
         const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
         if (workspace.public && data.settings.rpcServer != workspace.rpcServer) {
@@ -145,7 +139,7 @@ router.post('/settings', authMiddleware, async (req, res) => {
                 const networkId = await withTimeout(provider.fetchNetworkId());
                 data.settings.networkId = networkId;
             } catch(error) {
-                throw new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`);
+                return managedError(new Error(`Our servers can't query this rpc, please use a rpc that is reachable from the internet.`), req, res);
             }
             if (workspace.explorer && workspace.explorer.shouldSync) {
                 const pm2 = new PM2(getPm2Host(), getPm2Secret());
@@ -161,33 +155,31 @@ router.post('/settings', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.workspaces.settings', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/setCurrent', authMiddleware, async (req, res) => {
+router.post('/setCurrent', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.uid || !data.workspace)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
 
         await db.setCurrentWorkspace(data.uid, data.workspace);
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.workspaces.setCurrent', error });
-        res.status(400).send(error);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/reset', authMiddleware, async (req, res) => {
+router.post('/reset', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.uid || !data.workspace)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
 
         const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
 
@@ -203,8 +195,7 @@ router.post('/reset', authMiddleware, async (req, res) => {
 
         res.status(200).json({ needsBatchReset });
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.workspaces.reset', error });
-        res.status(400).send(error);
+        unmanagedError(error, req, next);
     }
 });
 
