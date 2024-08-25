@@ -1,9 +1,11 @@
 const { getAppDomain, getDefaultPlanSlug, getDefaultExplorerTrialDays, getStripeSecretKey } = require('../lib/env');
+const Sentry = require('@sentry/node');
 const stripe = require('stripe')(getStripeSecretKey());
 const express = require('express');
 const router = express.Router();
 const { isStripeEnabled } = require('../lib/flags');
 const { ProviderConnector, DexConnector } = require('../lib/rpc');
+const { managedError, unmanagedError } = require('../lib/errors');
 const { Explorer } = require('../models');
 const { withTimeout, validateBNString, sanitize } = require('../lib/utils');
 const { bulkEnqueue } = require('../lib/queue');
@@ -718,12 +720,17 @@ router.get('/search', async (req, res) => {
 
         res.status(200).json({ explorer: fields });
     } catch(error) {
+        Sentry.withScope(scope => {
+            scope.setContext('params', req.query);
+            scope.setTag('route', req.route.path);
+            scope.captureException(error);
+        });
         logger.error(error.message, { location: 'get.api.explorers.search', error, queryParams: req.params });
         res.status(400).send(error.message);
     }
 });
 
-router.get('/:id', authMiddleware, async (req, res) => {
+router.get('/:id', authMiddleware, async (req, res, next) => {
     const data = req.params;
 
     try {
@@ -737,8 +744,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
 
         res.status(200).json(explorer.toJSON());
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.explorers.id', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next)
     }
 });
 
