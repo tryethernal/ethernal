@@ -1,14 +1,14 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
-const logger = require('../lib/logger');
 const db = require('../lib/firebase');
 const { sanitize, formatErc721Metadata } = require('../lib/utils');
 const { ERC721Connector } = require('../lib/rpc');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const { enqueue } = require('../lib/queue');
+const { managedError, unmanagedError } = require('../lib/errors');
 
-router.get('/:address/:tokenId/transfers', workspaceAuthMiddleware, async (req, res) => {
+router.get('/:address/:tokenId/transfers', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
 
     try {
@@ -16,16 +16,15 @@ router.get('/:address/:tokenId/transfers', workspaceAuthMiddleware, async (req, 
 
         res.status(200).json(transfers);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.tokens.address.tokenId.transfers', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:address/:tokenId/reload', workspaceAuthMiddleware, async (req, res) => {
+router.post('/:address/:tokenId/reload', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.body.data;
     try {
         if (!data.workspace || !req.params.address || req.params.tokenId === undefined || req.params.tokenId === null)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
 
         const workspace = await db.getWorkspaceByName(req.query.firebaseUserId, data.workspace);
         await enqueue('reloadErc721Token',
@@ -38,12 +37,11 @@ router.post('/:address/:tokenId/reload', workspaceAuthMiddleware, async (req, re
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.tokens.address.tokenId.reload', error, queryParams: req.params });
-        res.status(400).send(error.messagae);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/:address/tokenIndex/:tokenIndex', workspaceAuthMiddleware, async (req, res) => {
+router.get('/:address/tokenIndex/:tokenIndex', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
 
     try {
@@ -86,12 +84,11 @@ router.get('/:address/tokenIndex/:tokenIndex', workspaceAuthMiddleware, async (r
 
         res.status(200).json(token);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.tokens.address.tokenIndex', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/:address/:tokenId', workspaceAuthMiddleware, async (req, res) => {
+router.get('/:address/:tokenId', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
 
     try {
@@ -129,8 +126,7 @@ router.get('/:address/:tokenId', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(token);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.tokens.address.tokenId', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 

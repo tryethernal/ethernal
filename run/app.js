@@ -9,7 +9,6 @@ if (getSentryDsn()) {
         dsn: getSentryDsn(),
         environment: getNodeEnv() || 'development',
         release: `ethernal@${getVersion()}`,
-        skipOpenTelemetrySetup: true,
         integrations: [
             nodeProfilingIntegration(),
             Sentry.postgresIntegration
@@ -31,7 +30,7 @@ const { ExpressAdapter } = require('@bull-board/express');
 const { createBullBoard } = require('@bull-board/api');
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
 
-const bullboardMiddlewere = require('./middlewares/bullboard');
+const bullboardMiddleware = require('./middlewares/bullboard');
 const queues = require('./queues');
 
 const api = require('./api');
@@ -51,7 +50,6 @@ app.use(express.json({
     }
 }));
 app.use(express.urlencoded({ limit: '25mb', extended: true }));
-
 app.use(cors({ origin: '*', methods: ['GET', 'POST', 'OPTIONS', 'DELETE', 'PUT'] }));
 
 if (process.env.NODE_ENV != 'production') {
@@ -80,7 +78,7 @@ createBullBoard({
 app.use('/api', api);
 app.use('/webhooks', webhooks);
 
-app.use('/bull', bullboardMiddlewere, serverAdapter.getRouter());
+app.use('/bull', bullboardMiddleware, serverAdapter.getRouter());
 
 if (process.env.SERVE_FRONTEND) {
     app.use(express.static('dist'));

@@ -1,4 +1,22 @@
 const { initializeApp } = require('firebase-admin/app');
+const { getNodeEnv, getSentryDsn, getVersion } = require('../lib/env');
+const Sentry = require('@sentry/node');
+
+if (getSentryDsn()) {
+    const { nodeProfilingIntegration } = require('@sentry/profiling-node');
+    Sentry.init({
+        dsn: getSentryDsn(),
+        environment: getNodeEnv() || 'development',
+        release: `ethernal@${getVersion()}`,
+        skipOpenTelemetrySetup: true,
+        integrations: [
+            nodeProfilingIntegration(),
+            Sentry.postgresIntegration
+        ],
+        tracesSampleRate: 1.0,
+        profilesSampleRate: 1.0
+    });
+}
 initializeApp();
 
 const { Worker } = require('bullmq');
@@ -14,6 +32,10 @@ priorities['high'].forEach(jobName => {
         { concurrency: 200, maxStalledCount: 5, connection },
     );
     worker.on('failed', (job, error) => {
+        Sentry.setTag('worker', 'highPriority');
+        Sentry.setTag('job', jobName);
+        Sentry.setContext('Job Data', job.data);
+        Sentry.captureException(error);
         return logger.error(error.message, {
             location: `workers.highPriority.${jobName}`,
             error: error,

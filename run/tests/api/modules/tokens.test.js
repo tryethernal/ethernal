@@ -30,6 +30,8 @@ describe('holderHistory', () => {
 
     it('should return an error if missing param', async () => {
         const req = {
+            baseUrl: '/',
+            route: { path: '/ok' },
             query: {
                 workspace: 'hardhat',
                 from: 'from',
@@ -62,6 +64,8 @@ describe('circulatingSupply', () => {
 
     it('should return an error if missing param', async () => {
         const req = {
+            baseUrl: '/',
+            route: { path: '/ok' },
             query: {
                 workspace: 'hardhat',
                 from: 'from',
