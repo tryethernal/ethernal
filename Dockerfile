@@ -42,6 +42,7 @@ COPY run/app.js .
 COPY run/index.js .
 COPY run/queues.js .
 COPY run/scheduler.js .
+COPY run/instrument.js .
 COPY run/workers ./workers/
 COPY run/package*.json ./
 
