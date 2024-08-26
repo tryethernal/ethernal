@@ -1,35 +1,34 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
-const logger = require('../lib/logger');
 const { withTimeout } = require('../lib/utils');
 const db = require('../lib/firebase');
 const authMiddleware = require('../middlewares/auth');
+const { managedError, unmanagedError } = require('../lib/errors');
 
-router.delete('/:id', authMiddleware, async (req, res) => {
+router.delete('/:id', authMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.body.data };
     try {
         if (!req.params.id)
-            throw new Error('Missing parameter');
+            return managedError(new Error('Missing parameter'), req, res);
 
         await db.deleteExplorerDomain(data.user.id, req.params.id);
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'delete.domains.id', error });
-        res.status(400).send(error);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/:id', authMiddleware, async (req, res) => {
+router.get('/:id', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
     try {
         if (!req.params.id)
-            throw new Error(`Missing parameters`);
+            return managedError(new Error(`Missing parameters`), req, res);
 
         const domain = await db.getExplorerDomainById(data.user.id, req.params.id);
         if (!domain)
-            throw new Error('Could not find domain');
+            return managedError(new Error('Could not find domain'), req, res);
 
         let dns_pointed_at, apx_hit, is_resolving, last_monitored_humanized, status, status_message, has_ssl;
         try {
@@ -43,8 +42,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
 
         res.status(200).json({ dns_pointed_at, apx_hit, is_resolving, last_monitored_humanized, status, status_message, has_ssl });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.domains.id', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 

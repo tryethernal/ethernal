@@ -1,8 +1,6 @@
 const CopyPlugin = require("copy-webpack-plugin");
 const WorkerPlugin = require('worker-plugin');
 const { sentryWebpackPlugin } = require("@sentry/webpack-plugin");
-process.env.VUE_APP_VERSION = process.env.COMMIT_REF ? process.env.COMMIT_REF.slice(-5) : '/';
-process.env.VUE_COMMIT_REF = process.env.COMMIT_REF;
 
 module.exports = {
     "transpileDependencies": [
@@ -39,7 +37,8 @@ module.exports = {
         plugins: [
             new CopyPlugin({
                 patterns: [
-                    { from: './_redirects', to: './' }
+                    { from: './_redirects', to: './' },
+                    { from: './_headers', to: './' }
                 ]
             }),
             new WorkerPlugin(),

@@ -1747,15 +1747,6 @@ describe('getContractLogs', () => {
                 done();
             });
     });
-
-    it('Should fail if contract does not exist', (done) => {
-        jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce(null);
-        db.getContractLogs(1, '0x123', '0x456')
-            .catch(res => {
-                expect(res.message).toEqual(`Can't find a contract at this address.`);
-                done();
-            });
-    });
 });
 
 describe('getContractByWorkspaceId', () => {

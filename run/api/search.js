@@ -2,16 +2,16 @@ const express = require('express');
 const { isGoogleApiEnabled } = require('../lib/flags');
 const axios = require('axios');
 const router = express.Router();
-const logger = require('../lib/logger');
+const { managedError, unmanagedError } = require('../lib/errors');
 const db = require('../lib/firebase');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
 
-router.get('/icons', authMiddleware, async (req, res) => {
+router.get('/icons', authMiddleware, async (req, res, next) => {
     const data = req.query;
     try {
         if (!data.icon)
-            throw new Error('Missing parameters');
+            return managedError(new Error('Missing parameters'), req, res);
 
         const { data: rawIcons } = await axios.get(`https://raw.githubusercontent.com/Templarian/MaterialDesign-SVG/master/meta.json`);
         const icons = rawIcons.filter(ri => {
@@ -23,19 +23,18 @@ router.get('/icons', authMiddleware, async (req, res) => {
 
         res.status(200).json(icons)
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.search', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/fonts', authMiddleware, async (req, res) => {
+router.get('/fonts', authMiddleware, async (req, res, next) => {
     const data = req.query;
     try {
         if (!isGoogleApiEnabled())
-            throw new Error('Enable Google Font API to use this endpoint.')
+            return managedError(new Error('Enable Google Font API to use this endpoint.'), req, res);
 
         if (!data.font)
-            throw new Error('Missing parameters');
+            return managedError(new Error('Missing parameters'), req, res);
 
         const { data: rawFonts } = await axios.get(`https://www.googleapis.com/webfonts/v1/webfonts?key=${process.env.GOOGLE_API_KEY}`);
         const fonts = rawFonts.items
@@ -44,19 +43,18 @@ router.get('/fonts', authMiddleware, async (req, res) => {
 
         res.status(200).json(fonts)
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.search', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/', workspaceAuthMiddleware, async (req, res) => {
+router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
     try {
         if (!data.type || !data.query || !data.workspace)
-            throw new Error('Missing parameters.');
+            return managedError(new Error('Missing parameters.'), req, res);
 
         if (['address', 'hash', 'number', 'text'].indexOf(data.type) == -1)
-            throw new Error('Invalid search type.');
+            return managedError(new Error('Invalid search type.'), req, res);
 
         let results = [];
         if (data.query.length > 2 || data.type == 'number') {
@@ -79,8 +77,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(results);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.search', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 

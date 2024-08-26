@@ -1477,7 +1477,7 @@ const getContractLogs = async (workspaceId, address, signature, page, itemsPerPa
     const contract = await workspace.findContractByAddress(address);
 
     if (!contract)
-        throw new Error(`Can't find a contract at this address.`);
+        return { items: [], total: 0 };
 
     const filteredLogs = await contract.getFilteredLogs(signature, page, itemsPerPage, orderBy, order);
     const logCount = await contract.countFilteredLogs(signature)

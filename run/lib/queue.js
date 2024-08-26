@@ -1,8 +1,6 @@
 const queues = require("../queues");
 const { sanitize } = require("./utils");
 
-const uniqueQueues = [];
-
 const MAX_BATCH_SIZE = 2000;
 
 const enqueue = (queueName, jobName, data, priority = 1, repeat, delay, unique) => {
@@ -12,7 +10,6 @@ const enqueue = (queueName, jobName, data, priority = 1, repeat, delay, unique) 
 
 const bulkEnqueue = (queueName, jobData, priority = 10, maxBatchSize = MAX_BATCH_SIZE) => {
     if (!queueName || !jobData || !jobData.length) return;
-
     const promises = [];
     const batchedJobs = [];
     for (let i = 0; i < jobData.length; i += maxBatchSize)
