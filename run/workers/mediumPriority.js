@@ -1,4 +1,4 @@
-require('../lib/instrument');
+require('../instrument');
 const { getNodeEnv } = require('../lib/env');
 const { Worker } = require('bullmq');
 const connection = require('../config/redis')[getNodeEnv()];
@@ -15,8 +15,5 @@ priorities['medium'].forEach(jobName => {
     );
     worker.on('failed', (job, error) => managedWorkerError(error, jobName, job.data, 'mediumPriority'));
 
-    if (getNodeEnv() == 'production')
-        logger.info(`Started worker "${jobName}" - Priority: medium`);
-    else
-        console.log(`Started worker "${jobName}" - Priority: medium`);
+    logger.info(`Started worker "${jobName}" - Priority: medium`);
 });
