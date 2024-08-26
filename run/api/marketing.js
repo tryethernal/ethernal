@@ -3,12 +3,12 @@ const axios = require('axios');
 const express = require('express');
 const router = express.Router();
 const db = require('../lib/firebase');
-const logger = require('../lib/logger');
 const { withTimeout } = require('../lib/utils');
 const { getDiscordFeedbackChannelWebhook } = require('../lib/env');
 const authMiddleware = require('../middlewares/auth');
+const { managedError, unmanagedError } = require('../lib/errors');
 
-router.post('/feedback', async (req, res) => {
+router.post('/feedback', async (req, res, next) => {
     const data = req.body;
     try {
         const content = `
@@ -21,19 +21,18 @@ ${data.message}
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.marketing.feedback', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/productRoadToken', authMiddleware, async (req, res) => {
+router.get('/productRoadToken', authMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.body.data };
     try {
         if (!process.env.PRODUCT_ROAD_TOKEN)
             return res.status(200).json({ token: null });
 
         if (!data.workspace)
-            throw new Error('Missing parameters.');
+            return managedError(new Error('Missing parameters.'), req, res);
 
         const prAuthSecret = process.env.PRODUCT_ROAD_TOKEN;
         const user = await db.getUser(data.uid);
@@ -47,23 +46,21 @@ router.get('/productRoadToken', authMiddleware, async (req, res) => {
 
         res.status(200).json({ token: token });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.marketing.productRoadToken', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', authMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.body.data };
     try {
         if (!data.workspace)
-            throw new Error('Missing parameters.');
+            return managedError(new Error('Missing parameters.'), req, res);
 
         const workspace = await db.getWorkspaceByName(data.uid, data.workspace);
 
         res.status(200).json({ isRemote: workspace.isRemote });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.marketing', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 

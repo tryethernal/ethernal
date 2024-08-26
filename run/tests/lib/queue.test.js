@@ -1,3 +1,7 @@
+// We do this to cancel the global mock in setupJestMock
+jest.mock('../../lib/queue', () => ({
+    ...jest.requireActual('../../lib/queue')
+}))
 require('../mocks/queues');
 
 const { bulkEnqueue } = require('../../lib/queue');
@@ -12,5 +16,4 @@ describe('bulkEnqueue', () => {
         await bulkEnqueue('test', jobData);
         expect(queues['test'].addBulk).toHaveBeenCalledTimes(5);
     });
-
 });

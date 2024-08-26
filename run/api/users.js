@@ -1,6 +1,5 @@
 const { getStripeSecretKey } = require('../lib/env');
 const stripe = require('stripe')(getStripeSecretKey());
-const logger = require('../lib/logger');
 const Analytics = require('../lib/analytics');
 const { isStripeEnabled, isSendgridEnabled, isFirebaseAuthEnabled } = require('../lib/flags');
 const { getAuth } = require('firebase-admin/auth');
@@ -13,6 +12,7 @@ const { randomUUID } = require('crypto');
 const authMiddleware = require('../middlewares/auth');
 const { encrypt, decode, firebaseHash } = require('../lib/crypto');
 const localAuth = require('../middlewares/passportLocalStrategy');
+const { managedError, unmanagedError } = require('../lib/errors');
 
 const analytics = new Analytics();
 
@@ -31,20 +31,20 @@ const findUser = async (email, nextPageToken) => {
     return result;    
 };
 
-router.post('/resetPassword', async (req, res) => {
+router.post('/resetPassword', async (req, res, next) => {
     const data = req.body;
 
     try {
         if (!data.token || !data.password)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
 
         const tokenData = decode(data.token);
 
         if (!tokenData.expiresAt || !tokenData.email)
-            throw new Error('Invalid link, please send another password reset request.')
+            return managedError(new Error('Invalid link, please send another password reset request.'), req, res);
 
         if (parseInt(tokenData.expiresAt) < Date.now())
-            throw new Error('This password reset link has expired.')
+            return managedError(new Error('This password reset link has expired.'), req, res);
 
         if (isFirebaseAuthEnabled()) {
             const user = await db.getUserByEmail(tokenData.email);
@@ -58,63 +58,59 @@ router.post('/resetPassword', async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.users.resetPassword', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/sendResetPasswordEmail', async (req, res) => {
+router.post('/sendResetPasswordEmail', async (req, res, next) => {
     const data = req.body;
 
     try {
         if (!isSendgridEnabled())
-            throw new Error('Sendgrid has not been enabled.');
+            return managedError(new Error('Sendgrid has not been enabled.'), req, res);
 
         if (!data.email)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
 
         await enqueue('sendResetPasswordEmail', `sendResetPasswordEmail-${Date.now()}`, { email: data.email });
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.users.sendResetPasswordEmail', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/getFirebaseHashes', async (req, res) => {
+router.post('/getFirebaseHashes', async (req, res, next) => {
     const data = req.query;
     try {
         if (data.secret != process.env.SECRET)
-            throw new Error(`Auth error`);
+            return managedError(new Error(`Auth error`), req, res);
 
         await enqueue('batchInsertFirebasePasswordHashes', `batchInsertFirebasePasswordHashes-${Date.now()}`, { secret: data.secret });
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.logs', error, params: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/signin', localAuth, async (req, res) => {
+router.post('/signin', localAuth, async (req, res, next) => {
     try {
         analytics.track(req.user.id, 'auth:user_signin');
         analytics.shutdown();
 
         res.status(200).json({ user: req.user });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.users.me.signin', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/signup', async (req, res) => {
+router.post('/signup', async (req, res, next) => {
     const data = req.body;
 
     try {
         if (!data.email || !data.password)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
 
         const apiKey = uuidAPIKey.create().apiKey;
         const encryptedKey = encrypt(apiKey);
@@ -147,12 +143,11 @@ router.post('/signup', async (req, res) => {
 
         res.status(200).json({ user });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.users', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/me/apiToken', authMiddleware, async (req, res) => {
+router.get('/me/apiToken', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
@@ -160,12 +155,11 @@ router.get('/me/apiToken', authMiddleware, async (req, res) => {
 
         res.status(200).json({ apiToken: user.apiToken });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.users.me.apiToken', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/me/setCurrentWorkspace', authMiddleware, async (req, res) => {
+router.post('/me/setCurrentWorkspace', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
@@ -173,29 +167,27 @@ router.post('/me/setCurrentWorkspace', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.users.me.setCurrentWorkspace', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/me', authMiddleware, async (req, res) => {
+router.get('/me', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
     try {
         const user = await db.getUser(data.uid, ['apiToken', 'apiKey', 'canTrial', 'canUseDemoPlan']);
 
         res.status(200).json(user);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.users.me', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.firebaseUserId)
-            throw new Error('Missing parameter.');
+            return managedError(new Error('Missing parameter.'), req, res);
 
         const apiKey = uuidAPIKey.create().apiKey;
         const encryptedKey = encrypt(apiKey);
@@ -223,8 +215,7 @@ router.post('/', async (req, res) => {
 
         res.status(200).json(user);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.users', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 

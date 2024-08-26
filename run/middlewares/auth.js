@@ -1,8 +1,13 @@
 const { getAuth } = require('firebase-admin/auth');
+const Sentry = require('@sentry/node');
 const db = require('../lib/firebase');
 const { sanitize }  = require('../lib/utils');
 const { decode, decrypt } = require('../lib/crypto');
 const logger = require('../lib/logger');
+
+const identifySentryUser = (user) => {
+    Sentry.setUser({ id, email } = user);
+};
 
 module.exports = async (req, res, next) => {
     if (req.user) next();
@@ -35,6 +40,7 @@ module.exports = async (req, res, next) => {
                 req.body.data.user = user;
                 req.body.data.uid = jwtData.firebaseUserId;
                 req.query.firebaseUserId = jwtData.firebaseUserId;
+                identifySentryUser(req.body.data.user);
                 next();
             }
             else
@@ -47,6 +53,7 @@ module.exports = async (req, res, next) => {
                 throw new Error('You must be signed in to do this.');
             req.body.data.user = await db.getUser(firebaseUser.user_id, ['apiKey', 'stripeCustomerId']);
             req.body.data.uid = firebaseUser.user_id;
+            identifySentryUser(req.body.data.user);
             next();
         }
         else if (data.uid && data.secret === process.env.AUTH_SECRET) {

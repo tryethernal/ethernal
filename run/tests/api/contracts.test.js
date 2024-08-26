@@ -328,11 +328,11 @@ describe(`GET ${BASE_URL}/:address/stats`, () => {
 
 describe(`GET ${BASE_URL}/:address/logs`, () => {
     it('Should fail if no contract at address', (done) => {
-        jest.spyOn(db, 'getContractLogs').mockRejectedValue(new Error(`Can't find a contract at 0x123.`));
+        jest.spyOn(db, 'getContractLogs').mockResolvedValueOnce({ total: 0, items: [] });
         request.get(`${BASE_URL}/0x123/logs?signature=0x456&firebaseUserId=123&workspace=My+Workspace`)
-            .expect(400)
-            .then(({ text }) => {
-                expect(text).toEqual(`Can't find a contract at 0x123.`);
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({ total: 0, items: []});
                 done();
             });
     });
