@@ -1,23 +1,5 @@
-const { getNodeEnv, getSentryDsn, getVersion } = require('./lib/env');
-
-const Sentry = require('@sentry/node');
-
-if (getSentryDsn()) {
-    const { nodeProfilingIntegration } = require('@sentry/profiling-node');
-
-    Sentry.init({
-        dsn: getSentryDsn(),
-        environment: getNodeEnv() || 'development',
-        release: `ethernal@${getVersion()}`,
-        integrations: [
-            nodeProfilingIntegration(),
-            Sentry.postgresIntegration
-        ],
-        tracesSampleRate: 1.0,
-        profilesSampleRate: 1.0
-    });
-}
-
+const { getSentryDsn } = require('./lib/env');
+require('./instrument');
 const express = require('express');
 const app = express();
 
@@ -42,7 +24,7 @@ initializeApp();
 
 app.use(express.json({
     limit: '25mb',
-    verify: function(req,res,buf) {
+    verify: function(req, res, buf) {
         var url = req.originalUrl;
         if (url.startsWith('/webhooks/stripe')) {
             req.rawBody = buf.toString()
@@ -87,6 +69,9 @@ if (process.env.SERVE_FRONTEND) {
     });
 }
 
-Sentry.setupExpressErrorHandler(app);
+if (getSentryDsn()) {
+    const Sentry = require('@sentry/node');
+    Sentry.setupExpressErrorHandler(app);
+}
 
 module.exports = app;

@@ -1,4 +1,4 @@
-require('../lib/instrument');
+require('../instrument');
 const { initializeApp } = require('firebase-admin/app');
 const { getNodeEnv } = require('../lib/env');
 initializeApp();
@@ -17,8 +17,5 @@ priorities['high'].forEach(jobName => {
     );
     worker.on('failed', (job, error) => managedWorkerError(error, jobName, job.data, 'highPriority'));
 
-    if (getNodeEnv() == 'production')
-        logger.info(`Started worker "${jobName}" - Priority: high`);
-    else
-        console.log(`Started worker "${jobName}" - Priority: high`);
+    logger.info(`Started worker "${jobName}" - Priority: high`);
 });
