@@ -1,29 +1,32 @@
 const express = require('express');
 const { pusher } = require('../lib/pusher');
-const logger = require('../lib/logger');
+const { managedError, unmanagedError } = require('../lib/errors');
 const { isPusherEnabled } = require('../lib/flags');
 const router = express.Router();
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 
-const presenceMiddleware = async (req, res, next) => {
+const presenceMiddleware = async (req, res, next) => {
     try {
         if (isPusherEnabled())
             next();
         else
-            res.sendStatus(404);
+            return managedError(new Error('Pusher is not enabled'), req, res);
     } catch(error) {
-        logger.error(error.message, { location: 'middleware.presenceMiddleware', error });
-        res.status(401).send(error);
+        unmanagedError(error, req, next);
     }
 };
 
-router.post('/authorization', [presenceMiddleware, workspaceAuthMiddleware], async (req, res) => {
+router.post('/authorization', [presenceMiddleware, workspaceAuthMiddleware], async (req, res, next) => {
     const socketId = req.body.socket_id;
     const channel = req.body.channel_name;
 
-    const authResponse = pusher.authorizeChannel(socketId, channel);
-    
-    res.status(200).send(authResponse);
+    try {
+        const authResponse = pusher.authorizeChannel(socketId, channel);
+        
+        res.status(200).send(authResponse);
+    } catch(error) {
+        unmanagedError(error, req, next);
+    }
 });
 
 module.exports = router;

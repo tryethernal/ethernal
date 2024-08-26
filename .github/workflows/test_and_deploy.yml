@@ -77,6 +77,7 @@ jobs:
     outputs:
       current_version: ${{ steps.get_changelog.outputs.version }}
       changes: ${{ steps.get_changelog.outputs.changes }}
+      release_name: ${{ steps.get_release.outputs.release_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -85,8 +86,12 @@ jobs:
 
       - name: Get tag
         id: get_tag
-        run: |
-          echo "current_version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: echo "current_version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Get release name
+        id: get_release
+        run: echo "release_name=ethernal@${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Get Changelog Entry
@@ -141,8 +146,6 @@ jobs:
     needs: [create_release]
     runs-on: ubuntu-latest
     environment: production
-    outputs:
-      deploy-url: ${{ steps.netlify_deploy.outputs.deploy-url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -184,7 +187,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-          SENTRY_RELEASE: ${{ needs.create_release.outputs.current_version }}
+          SENTRY_RELEASE: ${{ needs.create_release.outputs.release_name }}
 
       - uses: nwtgck/actions-netlify@v2.0.0
         id: netlify_deploy
@@ -194,6 +197,18 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      - name: Store deploy id
+        id: store_deploy_id
+        run: |
+          ID=$(echo ${{ steps.netlify_deploy.outputs.deploy-url }} | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
+          echo $ID > deploy_id.txt
+
+      - name: Upload deploy ID
+        uses: actions/upload-artifact@v3
+        with:
+          name: netlify_deploy_id
+          path: deploy_id.txt
 
   deploy_back:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -230,16 +245,15 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - name: Extract Netlify deploy id
-        id: extract_deploy_id
-        run: |
-          ID=$(echo "${{ needs.deploy_front.outputs.deploy-url }}" | sed 's/https:\/\/\(.*\)--tryethernal\.netlify\.app/\1/')
-          echo "DEPLOY_ID=$ID" >> $GITHUB_OUTPUT
-        shell: bash
+      - name: Download Deploy ID
+        uses: actions/download-artifact@v3
+        with:
+          name: netlify_deploy_id
 
       - name: Release deploy
         run: |
-          curl -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/${{ steps.extract_deploy_id.outputs.deploy_id }}/restore
+          deploy_id=$(cat deploy_id.txt)
+          curl -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" -X POST -d {} https://api.netlify.com/api/v1/sites/${{ secrets.NETLIFY_SITE_ID }}/deploys/$deploy_id/restore
 
   release_back:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -274,4 +288,4 @@ jobs:
           SENTRY_URL: ${{ secrets.SENTRY_URL }}
         with:
           environment: production
-          version: ethernal@${{ needs.create_release.outputs.current_version }}
+          version: ${{ needs.create_release.outputs.release_name }}

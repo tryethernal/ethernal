@@ -8,6 +8,7 @@ const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
 const processContractVerification = require('../lib/processContractVerification');
 const { holderHistory, circulatingSupply, holders, transfers } = require('./modules/tokens');
+const { managedError, unmanagedError } = require('../lib/errors');
 
 router.get('/:address/holderHistory', workspaceAuthMiddleware, holderHistory);
 router.get('/:address/circulatingSupply', workspaceAuthMiddleware, circulatingSupply);
@@ -175,59 +176,56 @@ router.get('/verificationStatus', async (req, res) => {
     });
 });
 
-router.get('/:address/stats', workspaceAuthMiddleware, async (req, res) => {
+router.get('/:address/stats', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
     try {
         if (!data.workspace || !req.params.address)
-            throw new Error('Missing parameter');
+            return managedError(new Error('Missing parameter'), req, res);
 
         const result = await db.getTokenStats(data.workspace.id, req.params.address);
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.address.stats', error, queryParams: req.query });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/:address/logs', workspaceAuthMiddleware, async (req, res) => {
+router.get('/:address/logs', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
 
     try {
         if (!data.workspace)
-            throw new Error(`Missing parameters`);
+            return managedError(new Error(`Missing parameters`), req, res);
 
         const logs = await db.getContractLogs(data.workspace.id, req.params.address, data.signature, data.page, data.itemsPerPage, data.orderBy, data.order);
 
         res.status(200).json(logs);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.logs', error, querParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/processable', authMiddleware, async (req, res) => {
+router.get('/processable', authMiddleware, async (req, res, next) => {
     const data = req.query;
 
     try {
         if (!data.firebaseUserId || !data.workspace)
-            throw new Error(`Missing parameters`);
+            return managedError(new Error(`Missing parameters`), req, res);
 
         const contracts = await db.getUnprocessedContracts(data.firebaseUserId, data.workspace);
 
         res.status(200).json(contracts);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.processable', error });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:address/watchedPaths', workspaceAuthMiddleware, async (req, res) => {
+router.post('/:address/watchedPaths', workspaceAuthMiddleware, async (req, res, next) => {
     const data = { ...req.query, ...req.body.data };
 
     try {
         if (!data.firebaseUserId || !data.workspace || !data.watchedPaths)
-            throw new Error(`Missing parameters`);
+            return managedError(new Error(`Missing parameters`), req, res);
 
         const sanitizedData = sanitize({
             watchedPaths: data.watchedPaths,
@@ -237,17 +235,16 @@ router.post('/:address/watchedPaths', workspaceAuthMiddleware, async (req, res) 
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.contracts.address.watchedPaths', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:address', authMiddleware, async (req, res) => {
+router.post('/:address', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
 
     try {
         if (!data.uid || !data.workspace)
-            throw new Error(`Missing parameters`);
+            return managedError(new Error(`Missing parameters`), req, res);
 
         const sanitizedData = sanitize({
             address: data.address,
@@ -260,22 +257,21 @@ router.post('/:address', authMiddleware, async (req, res) => {
 
         const canSyncData = await db.canUserSyncContract(data.uid, data.workspace, req.params.address);
         if (!canSyncData)
-            throw new Error('Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.');
+            return managedError(new Error('Free plan users are limited to 10 synced contracts. Upgrade to our Premium plan to sync more.'), req, res);
 
         await db.storeContractData(data.uid, data.workspace, req.params.address, sanitizedData);
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.contracts.address', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:address/tokenProperties', authMiddleware, async (req, res) => {
+router.post('/:address/tokenProperties', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
     try {
         if (!data.uid || !data.workspace)
-            throw new Error(`Missing parameters`);
+            return managedError(new Error(`Missing parameters`), req, res);
 
         const contract = await db.getWorkspaceContract(data.workspace.id, req.params.address);
         
@@ -305,39 +301,37 @@ router.post('/:address/tokenProperties', authMiddleware, async (req, res) => {
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.contracts.address.tokenProperties', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:address/remove', authMiddleware, async (req, res) => {
+router.post('/:address/remove', authMiddleware, async (req, res, next) => {
     const data = req.body.data;
     try {
         await db.removeContract(data.uid, data.workspace, req.params.address);
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.contracts.address.remove', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.post('/:address/verify', async (req, res) => {
+router.post('/:address/verify', async (req, res, next) => {
     const data = req.body;
     const address = req.params.address.toLowerCase();
     try {
          if (!data.explorerSlug || !data.compilerVersion || !data.code || !data.contractName)
-            throw new Error(`Missing parameter.`);
+            return managedError(new Error(`Missing parameter.`), req, res);
 
         const explorer = await db.getPublicExplorerParamsBySlug(data.explorerSlug);
 
         if (!explorer)
-            throw new Error('Could not find explorer, make sure you passed the correct slug.')
+            return managedError(new Error('Could not find explorer, make sure you passed the correct slug.'), req, res);
 
         const contract = await db.getContract(explorer.userId, explorer.workspaceId, address)
 
         if (!contract)
-            throw new Error(`Couldn't find contract at address ${address}`);
+            return managedError(new Error(`Couldn't find contract at address ${address}`), req, res);
 
         // if (contract.verificationStatus == 'pending')
         //     throw new Error('There already is an ongoing verification for this contract.');
@@ -358,16 +352,15 @@ router.post('/:address/verify', async (req, res) => {
         const result = await processContractVerification(db, payload);
 
         if (!result.verificationSucceded)
-            throw new Error(result.reason);
+            return managedError(new Error(result.reason), req, res);
 
         res.sendStatus(200);
     } catch(error) {
-        logger.error(error.message, { location: 'post.api.contracts.address.verify', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/:address', workspaceAuthMiddleware, async (req, res) => {
+router.get('/:address', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
 
     try {
@@ -375,12 +368,11 @@ router.get('/:address', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(contract);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.address', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 
-router.get('/', workspaceAuthMiddleware, async (req, res) => {
+router.get('/', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
 
     try {
@@ -388,8 +380,7 @@ router.get('/', workspaceAuthMiddleware, async (req, res) => {
 
         res.status(200).json(contracts);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts', error, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 });
 

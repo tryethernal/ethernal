@@ -17,7 +17,7 @@
                     <v-list-item-title class="logo">
                         {{ publicExplorer ? publicExplorer.name : 'Ethernal' }}
                     </v-list-item-title>
-                    <v-list-item-subtitle class="color--text">{{ version }}</v-list-item-subtitle>
+                    <v-list-item-subtitle class="color--text">v{{ version }}</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item v-if="currentWorkspace.browserSyncEnabled">
@@ -247,7 +247,6 @@ export default {
         Icon
     },
     data: () => ({
-        version: process.env.VUE_APP_VERSION,
         userLoggedIn: null,
         routerComponent: Vue.component({
             template: '<v-container fluid>Loading...</v-container>'
@@ -477,7 +476,8 @@ export default {
             'user',
             'isUserLoggedIn',
             'isUserAdmin',
-            'publicExplorerMode'
+            'publicExplorerMode',
+            'version'
         ]),
         hasNetworkInfo() {
             return !!(this.publicExplorer && this.publicExplorer.name && this.publicExplorer.domain && this.publicExplorer.token && this.publicExplorer.rpcServer);

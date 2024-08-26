@@ -4,6 +4,95 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.39.3] - 2024-08-26
+- Add instrumentation file to Dockerfile
+
+## [3.39.2] - 2024-08-26
+- Sentry API/worker instrumentation cleanup
+
+## [3.39.1] - 2024-08-26
+### Changed
+- Handle worker errors with Sentry
+
+## [3.39.0] - 2024-08-26
+### Changed
+- Integrate Sentry with all API endpoints to catch errors
+
+## [3.38.40] - 2024-08-23
+### Changed
+- Harmonize versioning
+
+## [3.38.39] - 2024-08-23
+### Changed
+- Versioning (hopefully everything works this time)
+
+## [3.38.38] - 2024-08-23
+### Removed
+- Debugging flag
+
+## [3.38.37] - 2024-08-23
+### Fixed
+- Env var name for release version in frontend
+
+## [3.38.36] - 2024-08-23
+### Changed
+- Use artifact to pass around deploy id because GA is stupid
+
+## [3.38.35] - 2024-08-23
+### Fixed
+- YAML syntax
+
+## [3.38.34] - 2024-08-23
+### Fixed
+- Netlify deploy id
+- Frontend release version
+
+## [3.38.33] - 2024-08-23
+### Fixed
+- Release name
+
+## [3.38.32] - 2024-08-23
+### Fixed
+- More debug logs
+
+## [3.38.31] - 2024-08-23
+### Fixed
+- Another typo in release name
+
+## [3.38.30] - 2024-08-23
+### Added
+- Debugging logs
+
+## [3.38.29] - 2024-08-23
+### Fixed
+- Typo in release name variable in deploy file
+
+## [3.38.28] - 2024-08-23
+### Fixed
+- Release name
+- Deploy URL
+
+## [3.38.27] - 2024-08-23
+### Fixed
+- Deploy to Netlify in deploy file
+
+## [3.38.26] - 2024-08-23
+### Fixed
+- Actually set release name
+
+## [3.38.25] - 2024-08-23
+### Fixed
+- Typo in deploy file
+- Github Actions decided to not pass around a variable anymore (???), so here is a tentative to fix that
+
+## [3.38.24] - 2024-08-23
+### Changed
+- Better release name setup
+
+## [3.38.23] - 2024-08-23
+### Added
+- _headers file for Netli
+
 ## [3.38.22] - 2024-08-23
 ### Added
 - _headers file for Netlify

@@ -1,63 +1,59 @@
-const logger = require('../../lib/logger');
 const db = require('../../lib/firebase');
+const { managedError, unmanagedError } = require('../../lib/errors');
 
-const holderHistory = async (req, res) => {
+const holderHistory = async (req, res, next) => {
     const data = req.query;
     try {
         if (!data.workspace || !data.from || !data.to)
-            throw new Error('Missing parameters.');
+            return managedError(new Error('Missing parameters.'), req, res);
 
         const history = await db.getTokenHolderHistory(data.workspace.id, req.params.address, data.from, data.to);
 
         res.status(200).json(history);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.modules.tokens.holderHistory', error: error, data: data });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 };
 
-const circulatingSupply = async (req, res) => {
+const circulatingSupply = async (req, res, next) => {
     const data = req.query;
     try {
         if (!data.workspace || !data.from || !data.to)
-            throw new Error('Missing parameters.');
+            return managedError(new Error('Missing parameters.'), req, res);
 
         const volume = await db.getTokenCirculatingSupply(data.workspace.id, req.params.address, data.from, data.to);
 
         res.status(200).json(volume);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.modules.tokens.circulatingSupply', error: error, data: data });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 };
 
-const holders = async (req, res) => {
+const holders = async (req, res, next) => {
     const data = req.query;
     try {
         if (!data.workspace || !req.params.address)
-            throw new Error('Missing parameter');
+            return managedError(new Error('Missing parameter'), req, res);
 
         const result = await db.getTokenHolders(data.workspace.id, req.params.address, data.page, data.itemsPerPage, data.orderBy, data.order);
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.modules.tokens.holders', error: error, data: data, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 };
 
-const transfers = async (req, res) => {
+const transfers = async (req, res, next) => {
     const data = req.query;
     try {
         if (!data.workspace || !req.params.address)
-            throw new Error('Missing parameter');
+            return managedError(new Error('Missing parameter'), req, res);
 
         const result = await db.getTokenTransfers(data.workspace.id, req.params.address, data.page, data.itemsPerPage, data.orderBy, data.order, data.fromBlock);
 
         res.status(200).json(result);
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.modules.tokens.transfers', error: error, data: data, queryParams: req.params });
-        res.status(400).send(error.message);
+        unmanagedError(error, req, next);
     }
 };
 

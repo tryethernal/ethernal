@@ -124,10 +124,10 @@ export default new Vuex.Store({
                     canUseDemoPlan: user.canUseDemoPlan
                 }));
 
+                Sentry.setUser({ id: user.id, email: user.email });
                 if (getters.hasAnalyticsEnabled) {
                     window.feedbackfin.config.user = { email: user.email };
                     this._vm.$posthog.identify(user.id, { email: user.email });
-                    Sentry.setUser({ email: user.email });
                     if (window.smartsupp) {
                         window.smartsupp('name', user.email);
                         window.smartsupp('email', user.email);
@@ -144,8 +144,14 @@ export default new Vuex.Store({
         },
         updateCurrentWorkspace({ commit }, currentWorkspace) {
             commit('SET_CURRENT_WORKSPACE', currentWorkspace);
-            if (currentWorkspace.explorer)
+            Sentry.setContext('Current Workspace', {
+                id: currentWorkspace.id,
+                name: currentWorkspace.name,
+                explorer: currentWorkspace.explorer ? { id: currentWorkspace.explorer.id, name: currentWorkspace.explorer.name } : null
+            });
+            if (currentWorkspace.explorer) {
                 commit('SET_PUBLIC_EXPLORER_DATA', currentWorkspace.explorer);
+            }
         },
         updateConnected({ commit }, connected) {
             commit('SET_CONNECTED', connected);
@@ -170,7 +176,7 @@ export default new Vuex.Store({
         }
     },
     getters: {
-        version: () => process.env.VERSION,
+        version: () => process.env.VUE_APP_VERSION,
         environment: () => process.env.NODE_ENV,
         sentryDSN: () => `${window.location.protocol}//${process.env.VUE_APP_SENTRY_DSN_SECRET}@${window.location.host}/${process.env.VUE_APP_SENTRY_DSN_PROJECT_ID}`,
         soketiHost: () => process.env.VUE_APP_SOKETI_HOST,
