@@ -20,4 +20,9 @@ const unmanagedError = (error, req, next) => {
     next(error);
 };
 
-module.exports = { managedError, unmanagedError };
+const managedWorkerError = (error, jobName, jobData, worker) => {
+    Sentry.setContext('Job Data', jobData);
+    return Sentry.captureException(error, { tags: { job: jobName, worker }});
+};
+
+module.exports = { managedError, unmanagedError, managedWorkerError };
