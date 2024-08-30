@@ -15,67 +15,35 @@ if (getSentryDsn()) {
         BullMQInstrumentation,
     } = require("opentelemetry-instrumentation-bullmq");
 
-    const { Queue, Worker, Job } = require('bullmq');
+    const { Queue, Worker } = require('bullmq');
 
     // Custom BullMQ integration for Sentry
     const bullMQIntegration = {
         name: 'bullmq',
         setupOnce(addGlobalEventProcessor) {
-
-            const originalAddJob = Job.prototype.addJob;
-            Job.prototype.addJob = async function (...args) {
-                const messageId = crypto.randomBytes(8).toString('hex');
-                const queueName = this.queueName;
-                const name = this.name;
-                await Sentry.startNewTrace(async () => {
-                    await Sentry.startSpan(
-                        {
-                            name: `${queueName}_producer_transaction`,
-                        },
-                        async parent => {
-                            await Sentry.startSpan(
-                                {
-                                    name: `${queueName}_producer`,
-                                    op: 'queue.publish',
-                                    attributes: {
-                                        'location': 'jobAdd',
-                                        'messaging.message.id': messageId,
-                                        'messaging.destination.name': queueName,
-                                        'messaging.system': 'bullmq'
-                                    }
-                                },
-                                async span => {
-                                    const traceHeader = Sentry.spanToTraceHeader(span);
-                                    const baggageHeader = Sentry.spanToBaggageHeader(span);
-                                    const instrumentationData = { traceHeader, baggageHeader, timestamp: Date.now(), messageId };
-                                    await originalAddJob.apply(this, args);
-                                    console.log(name)
-                                    return await redis.lpush(`span:${name}`, JSON.stringify(instrumentationData));
-                                }
-                            );
-                        }
-                    );
-                });
-            };
-
+            // Wrap Queue methods
             const originalAddQueue = Queue.prototype.add;
             Queue.prototype.add = async function (...args) {
-                const queueName = this.name;
                 const messageId = crypto.randomBytes(8).toString('hex');
-
-                await Sentry.startNewTrace(async () => {
-                    await Sentry.startSpan({
-                        name: `${queueName}_producer_transaction`
-                    },
-                    async parent => {
-                        await Sentry.startSpan(
+                Sentry.startSpan({
+                    name: 'queue_producer_transaction',
+                    op: 'queue.publish',
+                    attributes: {
+                        'sentry.op': 'queue.publish',
+                        'messaging.message.id': messageId,
+                        'messaging.destination.name': this.name,
+                        'messaging.system': 'bullmq'
+                    }
+                },
+                parent => {
+                    Sentry.startSpan(
                         {
-                            name: `${queueName}_producer`,
+                            name: 'queue_producer',
                             op: 'queue.publish',
                             attributes: {
-                                'location': 'queueAdd',
+                                'sentry.op': 'queue.publish',
                                 'messaging.message.id': messageId,
-                                'messaging.destination.name': queueName,
+                                'messaging.destination.name': this.name,
                                 'messaging.system': 'bullmq'
                             }
                         },
@@ -83,44 +51,51 @@ if (getSentryDsn()) {
                             const traceHeader = Sentry.spanToTraceHeader(span);
                             const baggageHeader = Sentry.spanToBaggageHeader(span);
                             const instrumentationData = { traceHeader, baggageHeader, timestamp: Date.now(), messageId };
-                            const job = await originalAddQueue.apply(this, args);
-                            return await redis.lpush(`span:${job.name}`, JSON.stringify(instrumentationData));
-                        });
-                    });
+                            await redis.lpush(`span:${args[0]}`, JSON.stringify(instrumentationData));
+                            await originalAddQueue.apply(this, args);
+                        }
+                    );
                 });
             };
 
             const originalRunWorker = Worker.prototype.processJob;
             Worker.prototype.processJob = async function(...args) {
                 const message = JSON.parse(await redis.lpop(`span:${args[0].name}`));
-                if (!message) {
+                if (!message)
                     return originalRunWorker.apply(this, args);
-                }
-                const queueName = args[0].queue.name;
 
+                console.log(`pulled span:${args[0].name}`)
                 const latency = Date.now() - message.timestamp;
-
-                // Create the parent span inside the continueTrace callback
                 Sentry.continueTrace(
                     { sentryTrace: message.traceHeader, baggage: message.baggageHeader },
                     () => {
                         Sentry.startSpan({
-                            name: `${queueName}_consumer_transaction`
-                        }, (parent) => { // Pass the transaction span as a callback
+                            name: 'queue_consumer_transaction',
+                            op: 'queue.process',
+                                attributes: {
+                                    'sentry.op': 'queue.process',
+                                    'messaging.message.id': message.messageId,
+                                    'messaging.destination.name': args[0].queue.name,
+                                    'messaging.message.receive.latency': latency,
+                                    'messaging.system': 'bullmq'
+                                }
+                        },
+                        parent => {
                             Sentry.startSpan({
-                                name: `${queueName}_consumer`,
+                                name: 'queue_consumer',
                                 op: 'queue.process',
                                 attributes: {
+                                    'sentry.op': 'queue.process',
                                     'messaging.message.id': message.messageId,
                                     'messaging.destination.name': args[0].queue.name,
                                     'messaging.message.receive.latency': latency,
                                     'messaging.system': 'bullmq'
                                 }
                             }, (span) => {
-                                originalRunWorker.apply(this, args);
-                                parent.setStatus({code: 1, message: 'ok'});
+                                originalRunWorker.apply(this, args)
+                                parent.setStatus({ code: 1, message: 'ok' });
                             });
-                        });
+                        })
                     }
                 );
             };
@@ -130,7 +105,7 @@ if (getSentryDsn()) {
     // registerInstrumentations({
     //     instrumentations: [
     //       new BullMQInstrumentation({
-    //         requireParentSpanForPublish: true
+    //         // requireParentSpanForPublish: true
     //       }),
     //     ],
     //   });
@@ -141,12 +116,11 @@ if (getSentryDsn()) {
         release: `ethernal@${getVersion()}`,
         integrations: [
             nodeProfilingIntegration(),
-            Sentry.postgresIntegration,
             bullMQIntegration,
         ],
         tracesSampleRate: 1.0,
         profilesSampleRate: 1.0,
-        // debug: true,
+        debug: true
     });
 
 

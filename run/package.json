@@ -18,6 +18,8 @@
   "dependencies": {
     "@bull-board/express": "^5.10.2",
     "@google-cloud/logging": "^9.8.3",
+    "@opentelemetry/instrumentation": "^0.52.1",
+    "@opentelemetry/sdk-trace-node": "^1.25.1",
     "@sendgrid/mail": "^7.7.0",
     "@sentry/node": "^8.25.0",
     "@sentry/profiling-node": "^8.25.0",
@@ -38,6 +40,7 @@
     "jsonwebtoken": "^8.5.1",
     "mixpanel": "^0.16.0",
     "momentjs": "^2.0.0",
+    "opentelemetry-instrumentation-bullmq": "^0.7.15",
     "passport": "^0.6.0",
     "passport-custom": "^1.1.1",
     "passport-local": "^1.0.0",
@@ -63,6 +66,8 @@
     "supertest": "^6.2.3"
   },
   "jest": {
-    "setupFiles": ["./tests/setupJestMocks.js"]
+    "setupFiles": [
+      "./tests/setupJestMocks.js"
+    ]
   }
 }

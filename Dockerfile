@@ -30,6 +30,7 @@ ENV SECRET=secret
 ENV PORT=8888
 ENV NODE_ENV=production
 ENV CORS_DOMAIN=*
+
 WORKDIR /app
 COPY run/api ./api
 COPY run/config ./config

@@ -1,8 +1,8 @@
 require('../instrument');
+const { Worker } = require('bullmq');
 const { initializeApp } = require('firebase-admin/app');
 const { getNodeEnv } = require('../lib/env');
 initializeApp();
-const { Worker } = require('bullmq');
 const connection = require('../config/redis')[getNodeEnv()];
 const jobs = require('../jobs');
 const logger = require('../lib/logger');
