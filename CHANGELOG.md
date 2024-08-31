@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.39.8] - 2024-08-31
+### Changed
+- Do not throw error if block sync returns null, it means the block already exists
+
 ## [3.39.7] - 2024-08-31
 ### Changed
 - Ignore all types of duplicate when inserting blocks
