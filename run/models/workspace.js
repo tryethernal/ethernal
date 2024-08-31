@@ -883,57 +883,67 @@ module.exports = (sequelize, DataTypes) => {
 
     async safeCreatePartialBlock(block) {
         return sequelize.transaction(async sequelizeTransaction => {
-            const transactions = block.transactions.map(transaction => {
-                return sanitize({
-                    workspaceId: this.id,
-                    blockHash: transaction.blockHash,
-                    blockNumber: transaction.blockNumber,
-                    creates: transaction.creates,
-                    data: transaction.data || transaction.input,
-                    parsedError: transaction.parsedError,
-                    rawError: transaction.rawError,
-                    from: transaction.from,
-                    gasLimit: transaction.gasLimit || block.gasLimit,
-                    gasPrice: transaction.gasPrice,
-                    hash: transaction.hash,
-                    methodLabel: transaction.methodLabel,
-                    methodName: transaction.methodName,
-                    methodSignature: transaction.methodSignature,
-                    nonce: transaction.nonce,
-                    r: transaction.r,
-                    s: transaction.s,
-                    timestamp: block.timestamp,
-                    to: transaction.to,
-                    transactionIndex: transaction.transactionIndex !== undefined && transaction.transactionIndex !== null ? transaction.transactionIndex : transaction.index,
-                    type_: transaction.type,
-                    v: transaction.v,
-                    value: transaction.value,
-                    state: 'syncing',
-                    raw: transaction
+            try {
+                const transactions = block.transactions.map(transaction => {
+                    return sanitize({
+                        workspaceId: this.id,
+                        blockHash: transaction.blockHash,
+                        blockNumber: transaction.blockNumber,
+                        creates: transaction.creates,
+                        data: transaction.data || transaction.input,
+                        parsedError: transaction.parsedError,
+                        rawError: transaction.rawError,
+                        from: transaction.from,
+                        gasLimit: transaction.gasLimit || block.gasLimit,
+                        gasPrice: transaction.gasPrice,
+                        hash: transaction.hash,
+                        methodLabel: transaction.methodLabel,
+                        methodName: transaction.methodName,
+                        methodSignature: transaction.methodSignature,
+                        nonce: transaction.nonce,
+                        r: transaction.r,
+                        s: transaction.s,
+                        timestamp: block.timestamp,
+                        to: transaction.to,
+                        transactionIndex: transaction.transactionIndex !== undefined && transaction.transactionIndex !== null ? transaction.transactionIndex : transaction.index,
+                        type_: transaction.type,
+                        v: transaction.v,
+                        value: transaction.value,
+                        state: 'syncing',
+                        raw: transaction
+                    });
                 });
-            });
 
-            return this.createBlock(sanitize({
-                baseFeePerGas: block.baseFeePerGas,
-                difficulty: block.difficulty,
-                extraData: block.extraData,
-                gasLimit: block.gasLimit,
-                gasUsed: block.gasUsed,
-                hash: block.hash,
-                miner: block.miner,
-                nonce: block.nonce,
-                number: block.number,
-                parentHash: block.parentHash,
-                timestamp: block.timestamp,
-                transactionsCount: block.transactions ? block.transactions.length : 0,
-                state: 'ready',
-                l1BlockNumber: block.l1BlockNumber,
-                raw: block.raw,
-                transactions
-            }), {
-                include: [ sequelize.models.Block.associations.transactions ],
-                transaction: sequelizeTransaction
-            });
+                const createdBlock = await this.createBlock(sanitize({
+                    baseFeePerGas: block.baseFeePerGas,
+                    difficulty: block.difficulty,
+                    extraData: block.extraData,
+                    gasLimit: block.gasLimit,
+                    gasUsed: block.gasUsed,
+                    hash: block.hash,
+                    miner: block.miner,
+                    nonce: block.nonce,
+                    number: block.number,
+                    parentHash: block.parentHash,
+                    timestamp: block.timestamp,
+                    transactionsCount: block.transactions ? block.transactions.length : 0,
+                    state: 'ready',
+                    l1BlockNumber: block.l1BlockNumber,
+                    raw: block.raw,
+                    transactions
+                }), {
+                    include: [ sequelize.models.Block.associations.transactions ],
+                    transaction: sequelizeTransaction
+                });
+
+                return createdBlock;
+            } catch(error) {
+                const blockAlreadyExists = error.errors && error.errors.find(e => e.path === 'number' && e.validatorKey === 'not_unique');
+                if (blockAlreadyExists)
+                    return blockAlreadyExists.instance;
+                else
+                    throw error;
+            }
         });
     }
 
