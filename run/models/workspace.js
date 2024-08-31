@@ -938,9 +938,9 @@ module.exports = (sequelize, DataTypes) => {
 
                 return createdBlock;
             } catch(error) {
-                const blockAlreadyExists = error.errors && error.errors.find(e => e.path === 'number' && e.validatorKey === 'not_unique');
+                const blockAlreadyExists = error.errors && error.errors.find(e => e.validatorKey === 'not_unique');
                 if (blockAlreadyExists)
-                    return blockAlreadyExists.instance;
+                    return null;
                 else
                     throw error;
             }
