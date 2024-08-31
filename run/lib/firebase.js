@@ -1210,7 +1210,7 @@ const syncPartialBlock = async (workspaceId, block) => {
 
     const newBlock = await workspace.safeCreatePartialBlock(block);
 
-    return newBlock.toJSON();
+    return newBlock ? newBlock.toJSON() : null;
 };
 
 const syncFullBlock = async (workspaceId, data) => {
