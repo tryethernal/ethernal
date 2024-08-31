@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.39.6] - 2024-08-31
+## [3.39.7] - 2024-08-31
 ### Changed
-- Do not update reserves
+- Ignore all types of duplicate when inserting blocks
 
 ## [3.39.5] - 2024-08-31
 ### Fixed
