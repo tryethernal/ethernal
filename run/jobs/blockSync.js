@@ -103,7 +103,7 @@ module.exports = async job => {
 
         const syncedBlock = await db.syncPartialBlock(workspace.id, processedBlock);
         if (!syncedBlock)
-            throw new Error("Couldn't store block");
+            return "Couldn't store block";
 
         const transactions = syncedBlock.transactions;
         const jobs = [];
