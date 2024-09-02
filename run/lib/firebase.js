@@ -1410,13 +1410,10 @@ const getTokenStats = async (workspaceId, address) => {
     const workspace = await Workspace.findByPk(workspaceId);
     const contract = await workspace.findContractByAddress(address);
 
-    if (!contract)
-        throw new Error(`Can't find contract at this address`);
-
-    const tokenHolderCount = await contract.countTokenHolders();
-    const transactionCount = await contract.countTransactions();
-    const tokenTransferCount = await contract.countTokenTransfers();
-    const tokenCirculatingSupply = await contract.getCurrentTokenCirculatingSupply();
+    const tokenHolderCount = contract ? await contract.countTokenHolders() : null;
+    const transactionCount = contract ? await contract.countTransactions() : null;
+    const tokenTransferCount = contract ? await contract.countTokenTransfers() : null;
+    const tokenCirculatingSupply = contract ? await contract.getCurrentTokenCirculatingSupply() : null;
 
     return {
         tokenHolderCount: tokenHolderCount,
