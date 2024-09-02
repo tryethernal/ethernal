@@ -91,6 +91,8 @@ import { mapGetters } from 'vuex';
 import FromWei from '../filters/FromWei.js';
 import HashLink from './HashLink.vue';
 
+const DEBOUNCING_DELAY = 3000;
+
 export default {
     name: 'TransactionsList',
     props: ['currentAddress', 'dense', 'blockNumber', 'address', 'withCount'],
@@ -105,7 +107,9 @@ export default {
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] },
         transactions: [],
         transactionCount: 0,
-        loading: false
+        loading: false,
+        lastUpdatedAt: 0,
+        debounced: false
     }),
     mounted() {
         this.currentOptions.sortBy = [this.blockNumber ? 'timestamp' : 'blockNumber'];
@@ -170,6 +174,16 @@ export default {
         },
         getTransactions(newOptions) {
             this.loading = true;
+            if (!this.lastUpdatedAt)
+                this.lastUpdatedAt = Date.now();
+            else if (this.lastUpdatedAt - DEBOUNCING_DELAY < Date.now() && !this.debounced) {
+                this.debounced = true;
+                return setTimeout(() => {
+                    this.lastUpdatedAt = Date.now();
+                    this.getTransactions(newOptions);
+                    this.debounced = false;
+                }, DEBOUNCING_DELAY);
+            }
 
             if (newOptions)
                 this.currentOptions = newOptions;
