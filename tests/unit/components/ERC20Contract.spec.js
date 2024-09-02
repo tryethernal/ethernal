@@ -15,10 +15,31 @@ const stubs = [
 ];
 
 describe('ERC20Contract.vue', () => {
-
     beforeEach(() => {
         jest.clearAllMocks();
         helper = new MockHelper();
+    });
+
+    it('Should display a message if the address is not a contract', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValueOnce({ data: null });
+
+        jest.spyOn(helper.mocks.server, 'getContractStats')
+            .mockResolvedValueOnce({ data: {
+                tokenHolderCount: null,
+                tokenTransferCount: null,
+                tokenCirculatingSupply: null,
+            }});
+
+        const wrapper = helper.mountFn(ERC20Contract, {
+            propsData: {
+                address: '0x123'
+            },
+            stubs
+        });
+
+        await flushPromises();
+        expect(wrapper.html()).toMatchSnapshot();
     });
 
     it('Should display contract info', async () => {
@@ -29,7 +50,7 @@ describe('ERC20Contract.vue', () => {
                 tokenTotalSupply: '1000000000',
                 tokenDecimals: 2,
                 address: '0x123',
-                creationTransaction: { hash: '0xabc' }
+                creationTransaction: { hash: '0xabc' }
             }});
 
         jest.spyOn(helper.mocks.server, 'getContractStats')
