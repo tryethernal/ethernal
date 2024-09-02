@@ -1691,11 +1691,18 @@ describe('getTokenStats', () => {
             });
     });
 
-    it('Should fail if contract does not exist', (done) => {
+    it('Should return null values if contract does not exist', (done) => {
         jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce(null);
         db.getTokenStats(1, '0x123')
-            .catch(res => {
-                expect(res.message).toEqual(`Can't find contract at this address`);
+            .then(res => {
+                expect(res).toEqual(
+                    {
+                        tokenHolderCount: null,
+                        transactionCount: null,
+                        tokenTransferCount: null,
+                        tokenCirculatingSupply: null
+                    }
+                );
                 done();
             });
     });
