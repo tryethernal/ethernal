@@ -99,6 +99,7 @@ module.exports = (sequelize, DataTypes) => {
                     logger.error(error.message, { location: 'models.transaction.safeCreateReceipt', error: error, receipt, transaction: this });
                     await storedReceipt.createLog(sanitize({
                         workspaceId: this.workspaceId,
+                        blockNumber: log.blockNumber || receipt.blockNumber,
                         raw: log
                     }), { transaction });
                 }

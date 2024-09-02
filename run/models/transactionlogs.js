@@ -126,10 +126,6 @@ module.exports = (sequelize, DataTypes) => {
             if (tokenTransfer)
                 await log.safeCreateTokenTransfer(tokenTransfer, options.transaction);
 
-            const reserves = getV2PoolReserves(log.raw)
-            if (reserves)
-                await log.insertV2PoolReserve(reserves, options.transcation);
-
             return trigger(`private-contractLog;workspace=${log.workspaceId};contract=${log.address}`, 'new', null);
         }
     },

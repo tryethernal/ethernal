@@ -18,6 +18,28 @@ const stubs = [
 describe('ERC721Collection.vue', () => {
     beforeEach(() => jest.clearAllMocks());
 
+    it('Should display a message if the address is not a contract', async () => {
+        jest.spyOn(helper.mocks.server, 'getContract')
+            .mockResolvedValueOnce({ data: null });
+
+        jest.spyOn(helper.mocks.server, 'getContractStats')
+            .mockResolvedValueOnce({ data: {
+                tokenHolderCount: null,
+                tokenTransferCount: null,
+                tokenCirculatingSupply: null,
+            }});
+
+        const wrapper = helper.mountFn(ERC721Collection, {
+            propsData: {
+                address: '0x123'
+            },
+            stubs
+        });
+
+        await flushPromises();
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should display contract info', async () => {
         jest.spyOn(helper.mocks.server, 'getContract')
             .mockResolvedValueOnce({ data: {

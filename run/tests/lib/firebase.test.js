@@ -1691,11 +1691,18 @@ describe('getTokenStats', () => {
             });
     });
 
-    it('Should fail if contract does not exist', (done) => {
+    it('Should return null values if contract does not exist', (done) => {
         jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce(null);
         db.getTokenStats(1, '0x123')
-            .catch(res => {
-                expect(res.message).toEqual(`Can't find contract at this address`);
+            .then(res => {
+                expect(res).toEqual(
+                    {
+                        tokenHolderCount: null,
+                        transactionCount: null,
+                        tokenTransferCount: null,
+                        tokenCirculatingSupply: null
+                    }
+                );
                 done();
             });
     });
@@ -1771,6 +1778,15 @@ describe('getContractByWorkspaceId', () => {
 });
 
 describe('getErc721TokenTransfers', () => {
+    it('Should return an empty array if the contract does not exist', (done) => {
+        jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce(null);
+        db.getErc721TokenTransfers(1, '0x123', 1)
+            .then(transfers => {
+                expect(transfers).toEqual([]);
+                done();
+            });
+    });
+
     it('Should return all erc721 tokens transfers for the token id', (done) => {
         db.getErc721TokenTransfers(1, '0x123', 1)
             .then(transfers => {
