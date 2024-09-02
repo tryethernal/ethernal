@@ -1515,6 +1515,9 @@ const getErc721TokenTransfers = async (workspaceId, contractAddress, tokenId) =>
     const workspace = await Workspace.findByPk(workspaceId);
     const contract = await workspace.findContractByAddress(contractAddress);
 
+    if (!contract)
+        return [];
+
     const transfers = await contract.getErc721TokenTransfersByTokenId(tokenId);
 
     return transfers.map(t => t.toJSON());
