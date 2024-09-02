@@ -11,6 +11,19 @@ describe('Block.vue', () => {
         jest.spyOn(Date, 'now').mockImplementation(() => new Date('2022-08-07T12:33:37.000Z'));
     });
 
+    it('Should show a message if the block does not exist', async () => {
+        jest.spyOn(helper.mocks.server, 'getBlock')
+            .mockResolvedValue({ data: null });
+
+        const wrapper = helper.mountFn(Block, {
+            propsData: { number: 1 },
+            stubs: ['Transactions-List']
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should show a message if the block is syncing', async() => {
         const block = {
             number: 1,

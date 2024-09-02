@@ -63,6 +63,8 @@
     "supertest": "^6.2.3"
   },
   "jest": {
-    "setupFiles": ["./tests/setupJestMocks.js"]
+    "setupFiles": [
+      "./tests/setupJestMocks.js"
+    ]
   }
 }

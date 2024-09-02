@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.39.10] - 2024-09-02
+### Fixed
+- Handle requests to non-existing contracts
+- Handle requests to invalid addresses for erc721 transfers
+
+## [3.39.9] - 2024-09-02
+### Fixed
+- Bug on block page when block does not exist
+
+## [3.39.8] - 2024-08-31
+### Changed
+- Do not throw error if block sync returns null, it means the block already exists
+
+## [3.39.7] - 2024-08-31
+### Changed
+- Ignore all types of duplicate when inserting blocks
+
+## [3.39.5] - 2024-08-31
+### Fixed
+- Fix bug when logs not formatted properly
+
+## [3.39.4] - 2024-08-31
+### Fixed
+- Concurrency issue with block sync
+
 ## [3.39.3] - 2024-08-26
 - Add instrumentation file to Dockerfile
 
