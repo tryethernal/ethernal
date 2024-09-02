@@ -1771,6 +1771,15 @@ describe('getContractByWorkspaceId', () => {
 });
 
 describe('getErc721TokenTransfers', () => {
+    it('Should return an empty array if the contract does not exist', (done) => {
+        jest.spyOn(workspace, 'findContractByAddress').mockResolvedValueOnce(null);
+        db.getErc721TokenTransfers(1, '0x123', 1)
+            .then(transfers => {
+                expect(transfers).toEqual([]);
+                done();
+            });
+    });
+
     it('Should return all erc721 tokens transfers for the token id', (done) => {
         db.getErc721TokenTransfers(1, '0x123', 1)
             .then(transfers => {
