@@ -1,10 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Block.vue Should show a message if the block does not exist 1`] = `
+<div class="container container--fluid">
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__text">
+      <div class="row">
+        <div class="col" align="center"><i aria-hidden="true" class="v-icon notranslate mdi mdi-cube-outline theme--light primary--text text--lighten-1" style="font-size: 200px; opacity: 0.25;"></i></div>
+      </div>
+      <div class="row">
+        <div class="text-body-1 text-center col">
+          This block has not been mined. Current block: <a href="/block/2" class="" style="text-decoration: none;">2</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Block.vue Should show a message if the block is syncing 1`] = `
 <div class="container container--fluid">
   <div class="row">
     <div class="col col-6">
-      <div role="alert" class="v-alert my-2 v-sheet theme--dark v-alert--dense v-alert--text warning--text" style="">
+      <div role="alert" class="v-alert my-2 v-sheet theme--dark v-alert--dense v-alert--text warning--text">
         <div class="v-alert__wrapper"><i aria-hidden="true" class="v-icon notranslate v-alert__icon mdi mdi-exclamation theme--dark warning--text"></i>
           <div class="v-alert__content">
             Some transactions in this block are still being processed (3 / 5).
