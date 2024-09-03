@@ -2189,7 +2189,7 @@ const canUserSyncContract = async (userId, workspaceName, address) => {
     const user = await User.findByAuthIdWithWorkspace(userId, workspaceName);
 
     if (!user)
-        throw new Error(`Couldn't find workspace "${workspaceName}".`);
+        return false;
 
     if (user.isPremium)
         return true;
