@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.39.16] - 2024-09-03
+### Fixed
+- Bug when trying to insert duplicate receipt
+- Bug when erc721 token does not exist
+
 ## [3.39.15] - 2024-09-03
 ### Fixed
 - Bug when user doesn't exist when checking if user can sync contract
