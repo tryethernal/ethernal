@@ -61,24 +61,36 @@ module.exports = (sequelize, DataTypes) => {
 
         return sequelize.transaction(async transaction => {
             await this.update({ state: 'ready' }, { transaction });
-            const storedReceipt = await this.createReceipt(stringifyBns(sanitize({
-                workspaceId: this.workspaceId,
-                blockHash: receipt.blockHash,
-                blockNumber: receipt.blockNumber,
-                byzantium: receipt.byzantium,
-                confirmations: receipt.confirmations,
-                contractAddress: receipt.contractAddress,
-                cumulativeGasUsed: receipt.cumulativeGasUsed,
-                from: receipt.from,
-                gasUsed: receipt.gasUsed,
-                logsBloom: receipt.logsBloom,
-                status: receipt.status,
-                to: receipt.to,
-                transactionHash: receipt.transactionHash !== undefined ? receipt.transactionHash : receipt.hash,
-                transactionIndex: receipt.transactionIndex !== undefined && receipt.transactionIndex !== null ? receipt.transactionIndex : receipt.index,
-                type: receipt.type,
-                raw: receipt
-            })), { transaction });
+            let storedReceipt;
+            try {
+                storedReceipt = await this.createReceipt(stringifyBns(sanitize({
+                    workspaceId: this.workspaceId,
+                    blockHash: receipt.blockHash,
+                    blockNumber: receipt.blockNumber,
+                    byzantium: receipt.byzantium,
+                    confirmations: receipt.confirmations,
+                    contractAddress: receipt.contractAddress,
+                    cumulativeGasUsed: receipt.cumulativeGasUsed,
+                    from: receipt.from,
+                    gasUsed: receipt.gasUsed,
+                    logsBloom: receipt.logsBloom,
+                    status: receipt.status,
+                    to: receipt.to,
+                    transactionHash: receipt.transactionHash !== undefined ? receipt.transactionHash : receipt.hash,
+                    transactionIndex: receipt.transactionIndex !== undefined && receipt.transactionIndex !== null ? receipt.transactionIndex : receipt.index,
+                    type: receipt.type,
+                    raw: receipt
+                })), { transaction });
+            } catch(error) {
+                const receiptAlreadyExists = error.errors && error.errors.find(e => e.validatorKey === 'not_unique');
+                if (receiptAlreadyExists)
+                    return null;
+                else
+                    throw error;
+            }
+
+            if (!storedReceipt)
+                throw new Error('Could not create receipt');
 
             for (let i = 0; i < receipt.logs.length; i++) {
                 const log = receipt.logs[i];
