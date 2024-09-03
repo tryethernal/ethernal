@@ -276,7 +276,7 @@ router.post('/:address/tokenProperties', authMiddleware, async (req, res, next) 
         const contract = await db.getWorkspaceContract(data.workspace.id, req.params.address);
         
         if (!contract)
-            return res.status(200).send(`Couldn't find contract at address ${req.params.address}.`);
+            return managedError(new Error('Could not find contract at this address.'), req, res);
 
         const newPatterns = data.properties.patterns ? [...new Set([...contract.patterns, ...data.properties.patterns])] : contract.patterns;
 
@@ -364,7 +364,7 @@ router.get('/:address', workspaceAuthMiddleware, async (req, res, next) => {
     const data = req.query;
 
     try {
-        const contract = await db.getWorkspaceContract(data.workspace.id, req.params.address)
+        const contract = await db.getWorkspaceContract(data.workspace.id, req.params.address);
 
         res.status(200).json(contract);
     } catch(error) {

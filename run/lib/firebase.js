@@ -1890,6 +1890,10 @@ const getWorkspaceContracts = async (workspaceId, page, itemsPerPage, orderBy, o
 
 const getWorkspaceContract = async (workspaceId, address) => {
     const workspace = await Workspace.findByPk(workspaceId);
+
+    if (!workspace)
+        return null;
+
     const contract = await workspace.findContractByAddress(address);
 
     return contract ? contract.toJSON() : null;

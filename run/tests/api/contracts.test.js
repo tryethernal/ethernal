@@ -444,13 +444,13 @@ describe(`POST ${BASE_URL}/:address/tokenProperties`, () => {
             });
     });
 
-    it('Should fail gracefully (200) if the contract does not exists', (done) => {
+    it('Should fail if the contract does not exists', (done) => {
         db.getWorkspaceContract.mockResolvedValue(null);
         request.post(`${BASE_URL}/0x123/tokenProperties`)
             .send({ data: { workspace: 'My Workspace', tokenProperties: { symbol: 'ETL', decimals: 18, name: 'Ethernal' }}})
-            .expect(200)
+            .expect(400)
             .then(({ text }) => {
-                expect(text).toEqual(`Couldn't find contract at address 0x123.`)
+                expect(text).toEqual(`Could not find contract at this address.`)
                 expect(db.storeContractData).not.toHaveBeenCalled();
                 done();
             });
