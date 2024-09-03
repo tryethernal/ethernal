@@ -18,7 +18,7 @@ const validateBNString = (str) => {
 const getEnv = () => process.env.NODE_ENV;
 
 const formatErc721Metadata = (tokenId, metadata) => {
-    if (!metadata || !tokenId)
+    if (!metadata || tokenId === null || tokenId === undefined)
         return {};
 
     const name = metadata.name || `#${tokenId}`;

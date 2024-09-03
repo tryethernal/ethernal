@@ -85,7 +85,7 @@ router.get('/:address/tokenIndex/:tokenIndex', workspaceAuthMiddleware, async (r
             tokenId: tokenId,
             owner: owner,
             URI: URI,
-            attributes: formatErc721Metadata(req.params.tokenId, metadata),
+            attributes: formatErc721Metadata(req.params.tokenIndex, metadata),
             metadata
         });
 
