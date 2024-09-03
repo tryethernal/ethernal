@@ -1,5 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ERC721Token.vue Should display a message when the token is not found 1`] = `
+<div class="container container--fluid" index="0">
+  <div class="v-card v-sheet v-sheet--outlined theme--light">
+    <div class="v-card__text">
+      <div class="row">
+        <div align="center" class="col"><i aria-hidden="true" class="v-icon notranslate mdi mdi-palette-advanced theme--light primary--text text--lighten-1" style="font-size: 200px; opacity: 0.25;"></i></div>
+      </div>
+      <div class="row">
+        <div class="text-body-1 text-center col">
+          We couldn't find a token with this id (<strong></strong>) at this address (<a href="/address/0x123" class="" type="address">0x123</a>).
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`ERC721Token.vue Should load & display an erc721 token 1`] = `
 <div class="container container--fluid" index="0">
   <erc721-token-transfer-modal-stub token="[object Object]" address="0x123"></erc721-token-transfer-modal-stub>
