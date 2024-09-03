@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`RpcConnector.vue Should display the correct info 1`] = `
-<header class="px-3 color--text v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px; overflow-x: auto; white-space: nowrap; border-bottom: thin solid rgba(0, 0, 0, 0.12);">
+<header class="px-3 color--text v-sheet theme--light v-toolbar v-toolbar--dense v-toolbar--flat" style="height: 48px; overflow-x: auto; white-space: nowrap; min-height: 50px; border-bottom: thin solid rgba(0, 0, 0, 0.12);">
   <div class="v-toolbar__content" style="height: 48px;"><button type="button" class="v-app-bar__nav-icon v-btn v-btn--icon v-btn--round theme--light v-size--default"><span class="v-btn__content"><i aria-hidden="true" class="v-icon notranslate mdi mdi-menu theme--light"></i></span></button> <button type="button" class="v-icon notranslate v-icon--link mdi mdi-magnify theme--light"></button>
     <transition-stub name="slide-x-transition">
       <div class="row" style="display: none;">
