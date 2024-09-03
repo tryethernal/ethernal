@@ -87,7 +87,7 @@ export default {
         showOppenzeppelinImports: false
     }),
     mounted() {
-        for (let i = 0; i < this.contract.verification.sources.length; i++) {
+        for (let i = 0; i < this.displayedSources.length; i++) {
             const editor = this.$refs[`editor-${i}`][0].editor;
             editor.setOptions({
                 readOnly: true,
