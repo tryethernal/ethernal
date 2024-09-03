@@ -1,5 +1,21 @@
 <template>
-    <v-container fluid>
+    <v-container v-if="notAToken && !loading" fluid>
+        <v-card outlined>
+            <v-card-text>
+                <v-row>
+                    <v-col align="center">
+                        <v-icon style="opacity: 0.25;" size="200" color="primary lighten-1">mdi-palette-advanced</v-icon>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col class="text-body-1 text-center">
+                        We couldn't find a token with this id (<strong>{{ tokenId }}</strong>) at this address (<router-link :type="'address'" :to="`/address/${hash}`">{{ hash }}</router-link>).
+                    </v-col>
+                </v-row>
+            </v-card-text>
+        </v-card>
+    </v-container>
+    <v-container v-else fluid>
         <ERC721-Token-Transfer-Modal ref="erc721TokenTransferModal" :address="hash" :token="token" />
 
         <v-alert text v-if="metadataReloaded" type="success">A metadata reload for this token has been queued for processing. It will be updated soon.</v-alert>
@@ -173,6 +189,7 @@ export default {
     },
     data: () => ({
         loading: false,
+        notAToken: false,
         metadataReloaded: false,
         transfers: [],
         contract: {},
@@ -201,7 +218,7 @@ export default {
             this.loading = true;
             this.server.getErc721TokenById(this.hash, this.tokenId)
                 .then(({ data }) => {
-                    if (!data) return;
+                    if (!data) return this.notAToken = true;
 
                     this.token = data;
                     if (this.token.contract)

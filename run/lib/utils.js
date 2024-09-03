@@ -17,11 +17,11 @@ const validateBNString = (str) => {
 
 const getEnv = () => process.env.NODE_ENV;
 
-const formatErc721Metadata = (metadata) => {
-    if (!metadata)
+const formatErc721Metadata = (tokenId, metadata) => {
+    if (!metadata || !tokenId)
         return {};
 
-    const name = metadata.name || `#${metadata.tokenId}`;
+    const name = metadata.name || `#${tokenId}`;
 
     let image_data;
     if (metadata.image_data)
