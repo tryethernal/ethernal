@@ -146,7 +146,7 @@ class WalletConnector {
     }
 
     send(to, value) {
-        return this.wallet.sendTransaction({ to, value });
+        return this.wallet.sendTransaction({ to, value: ethers.BigNumber.from(value) });
     }
 }
 
