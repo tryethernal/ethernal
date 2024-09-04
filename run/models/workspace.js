@@ -5,7 +5,7 @@ const {
   QueryTypes,
 } = require('sequelize');
 const moment = require('moment');
-const { sanitize, slugify } = require('../lib/utils');
+const { sanitize, slugify, processRawRpcObject } = require('../lib/utils');
 const { ProviderConnector } = require('../lib/rpc');
 const logger = require('../lib/logger');
 const { getMaxBlockForSyncReset } = require('../lib/env');
@@ -885,32 +885,38 @@ module.exports = (sequelize, DataTypes) => {
         return sequelize.transaction(async sequelizeTransaction => {
             try {
                 const transactions = block.transactions.map(transaction => {
+                    const processed = processRawRpcObject(
+                        transaction,
+                        Object.keys(sequelize.models.Transaction.rawAttributes),
+                        ['input', 'index']
+                    );
+
                     return sanitize({
                         workspaceId: this.id,
-                        blockHash: transaction.blockHash,
-                        blockNumber: transaction.blockNumber,
-                        creates: transaction.creates,
+                        blockHash: processed.blockHash,
+                        blockNumber: processed.blockNumber,
+                        creates: processed.creates,
                         data: transaction.data || transaction.input,
-                        parsedError: transaction.parsedError,
-                        rawError: transaction.rawError,
-                        from: transaction.from,
-                        gasLimit: transaction.gasLimit || block.gasLimit,
-                        gasPrice: transaction.gasPrice,
-                        hash: transaction.hash,
-                        methodLabel: transaction.methodLabel,
-                        methodName: transaction.methodName,
-                        methodSignature: transaction.methodSignature,
-                        nonce: transaction.nonce,
-                        r: transaction.r,
-                        s: transaction.s,
+                        parsedError: processed.parsedError,
+                        rawError: processed.rawError,
+                        from: processed.from,
+                        gasLimit: processed.gasLimit || block.gasLimit,
+                        gasPrice: processed.gasPrice,
+                        hash: processed.hash,
+                        methodLabel: processed.methodLabel,
+                        methodName: processed.methodName,
+                        methodSignature: processed.methodSignature,
+                        nonce: processed.nonce,
+                        r: processed.r,
+                        s: processed.s,
                         timestamp: block.timestamp,
-                        to: transaction.to,
+                        to: processed.to,
                         transactionIndex: transaction.transactionIndex !== undefined && transaction.transactionIndex !== null ? transaction.transactionIndex : transaction.index,
-                        type_: transaction.type,
-                        v: transaction.v,
-                        value: transaction.value,
+                        type_: processed.type,
+                        v: processed.v,
+                        value: processed.value,
                         state: 'syncing',
-                        raw: transaction
+                        raw: processed.raw
                     });
                 });
 
