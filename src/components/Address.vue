@@ -114,7 +114,7 @@
                 <v-tab-item value="transactions">
                     <v-card outlined class="mt-3">
                         <v-card-text>
-                            <Address-Transactions-List :address="address" />
+                            <Address-Transactions-List :address="address" :key="address" />
                         </v-card-text>
                     </v-card>
                 </v-tab-item>
@@ -122,38 +122,38 @@
                 <v-tab-item value="transfers">
                     <v-card outlined class="mt-3">
                         <v-card-text>
-                            <Address-Token-Transfers :address="address" />
+                            <Address-Token-Transfers :address="address" :key="address" />
                         </v-card-text>
                     </v-card>
                 </v-tab-item>
 
                 <v-tab-item value="erc20Balances">
-                    <Token-Balances :address="address" :patterns="['erc20']" />
+                    <Token-Balances :address="address" :patterns="['erc20']" :key="address" />
                 </v-tab-item>
 
                 <v-tab-item value="erc721Balances">
-                    <Token-Balances :address="address" :patterns="['erc721']" :dense="true" />
+                    <Token-Balances :address="address" :patterns="['erc721']" :dense="true" :key="address" />
                 </v-tab-item>
 
                 <template v-if="contract">
                     <v-tab-item value="interactions">
-                        <Contract-Interaction :address="address" />
+                        <Contract-Interaction :address="address" :key="address" />
                     </v-tab-item>
 
                     <v-tab-item value="code">
-                        <Contract-Code v-if="contract" :contract="contract" />
+                        <Contract-Code v-if="contract" :contract="contract" :key="address" />
                     </v-tab-item>
 
                     <v-tab-item value="logs">
                         <v-card outlined class="mt-3">
                             <v-card-text>
-                                <Contract-Logs :address="address" />
+                                <Contract-Logs :address="address" :key="address" />
                             </v-card-text>
                         </v-card>
                     </v-tab-item>
 
                     <v-tab-item v-if="currentWorkspace.storageEnabled" value="storage">
-                        <Contract-Storage :address="address" />
+                        <Contract-Storage :address="address" :key="address" />
                     </v-tab-item>
                 </template>
             </v-tabs-items>

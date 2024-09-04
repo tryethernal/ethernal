@@ -16,6 +16,7 @@
                         no-filter
                         autofocus
                         return-object
+                        :key="autocompleteKey"
                         @blur="showSearchBar=false"
                         @change="clearSearchBar()">
                         <template v-slot:item="data">
@@ -96,6 +97,7 @@ export default Vue.extend({
         showSearchBar: false,
         processingContracts: false,
         page: null,
+        autocompleteKey: 0
     }),
     created() {
         this.page = this.$route.path;
@@ -163,6 +165,7 @@ export default Vue.extend({
         searchSelectedItem(item) {
             if (!item)
                 return;
+            this.autocompleteKey++;
             switch(item.type) {
                 case 'address':
                 case 'contract':
