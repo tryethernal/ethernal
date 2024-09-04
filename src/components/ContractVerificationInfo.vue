@@ -99,8 +99,8 @@ export default {
     },
     methods: {
         editorInit() {
-            require('brace/ext/language_tools')
-            require('brace/theme/chrome')
+            import('brace/ext/language_tools')
+            import('brace/theme/chrome')
         },
         copyAbi() {
             const webhookField = document.querySelector('#copyAbi');

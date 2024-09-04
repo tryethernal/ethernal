@@ -30,7 +30,7 @@
                 <code>npm install hardhat-ethernal --save-dev</code><br>
             </p>
             <p>
-                Add <code>require('hardhat-ethernal');</code> in your <code>hardhat-config.js</code> file.
+                <!-- Add <code>require('hardhat-ethernal');</code> in your <code>hardhat-config.js</code> file. -->
             </p>
             <p>
                 Restart your node with <code class="mr-1">ETHERNAL_API_TOKEN={{ user.apiToken }} npx hardhat node</code><v-icon @click="copyHardhatCommand()" x-small>mdi-content-copy</v-icon><br><br>

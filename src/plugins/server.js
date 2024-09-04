@@ -4,7 +4,7 @@ const Decoder = require('@truffle/decoder');
 const Axios = require('axios');
 let setupCache;
 const DEBUG_AXIOS_CACHE_INTERCEPTOR = false;
-if (process.env.NODE_ENV == 'development' && DEBUG_AXIOS_CACHE_INTERCEPTOR)
+if (import.meta.env.NODE_ENV == 'development' && DEBUG_AXIOS_CACHE_INTERCEPTOR)
     ({ setupCache } = require('axios-cache-interceptor/dev'));
 else
     ({ setupCache } = require('axios-cache-interceptor'));
@@ -15,11 +15,11 @@ const axios = setupCache(Axios, {
 });
 const CACHE_TTL = 2000;
 
-import { Storage } from '../lib/storage';
-import { sanitize } from '../lib/utils';
-import { parseTrace } from '../lib/trace';
-import { findPatterns, formatErc721Metadata } from '../lib/contract';
-import { ERC721Connector } from '../lib/rpc';
+const { Storage } = require('../lib/storage');
+const { sanitize } = require('../lib/utils');
+const { parseTrace } = require('../lib/trace');
+const { findPatterns, formatErc721Metadata } = require('../lib/contract');
+const { ERC721Connector } = require('../lib/rpc');
 
 const serverFunctions = {
     // Private

@@ -183,7 +183,7 @@ import ExplorerDexParametersModal from './ExplorerDexParametersModal';
 import FromWei from '../filters/FromWei';
 import { mapGetters } from 'vuex';
 const { BNtoSignificantDigits, debounce } = require('@/lib/utils');
-import { ERC20Connector, V2DexRouterConnector } from '@/lib/rpc';
+const { ERC20Connector, V2DexRouterConnector } = require('@/lib/rpc');
 
 const DEFAULT_DEX_PARAMETERS = {
     transactionTimeout: 60 * 20,

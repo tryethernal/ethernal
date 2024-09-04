@@ -1,7 +1,7 @@
 const Pusher = require('pusher-js');
 import { sanitize } from '../lib/utils';
 const DEBUG_PUSHER = false;
-Pusher.logToConsole = process.env.NODE_ENV == 'development' && DEBUG_PUSHER;
+Pusher.logToConsole = import.meta.env.NODE_ENV == 'development' && DEBUG_PUSHER;
 
 export const pusherPlugin = {
 
