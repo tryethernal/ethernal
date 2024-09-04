@@ -5,7 +5,7 @@ const {
 } = require('sequelize');
 
 const Op = Sequelize.Op
-const { sanitize, stringifyBns } = require('../lib/utils');
+const { sanitize, stringifyBns, processRawRpcObject } = require('../lib/utils');
 const { trigger } = require('../lib/pusher');
 const logger = require('../lib/logger');
 let { getTransactionMethodDetails } = require('../lib/abi');
@@ -79,7 +79,7 @@ module.exports = (sequelize, DataTypes) => {
                     transactionHash: receipt.transactionHash !== undefined ? receipt.transactionHash : receipt.hash,
                     transactionIndex: receipt.transactionIndex !== undefined && receipt.transactionIndex !== null ? receipt.transactionIndex : receipt.index,
                     type: receipt.type,
-                    raw: receipt
+                    raw: receipt.raw
                 })), { transaction });
             } catch(error) {
                 const receiptAlreadyExists = error.errors && error.errors.find(e => e.validatorKey === 'not_unique');
@@ -93,7 +93,10 @@ module.exports = (sequelize, DataTypes) => {
                 throw new Error('Could not create receipt');
 
             for (let i = 0; i < receipt.logs.length; i++) {
-                const log = receipt.logs[i];
+                const log = processRawRpcObject(
+                    receipt.logs[i],
+                    Object.keys(sequelize.models.TransactionLog.rawAttributes)
+                );
                 try {
                     await storedReceipt.createLog(sanitize({
                         workspaceId: this.workspaceId,
@@ -105,14 +108,14 @@ module.exports = (sequelize, DataTypes) => {
                         topics: log.topics,
                         transactionHash: log.transactionHash,
                         transactionIndex: log.transactionIndex,
-                        raw: log
+                        raw: log.raw
                     }), { transaction });
                 } catch(error) {
                     logger.error(error.message, { location: 'models.transaction.safeCreateReceipt', error: error, receipt, transaction: this });
                     await storedReceipt.createLog(sanitize({
                         workspaceId: this.workspaceId,
                         blockNumber: log.blockNumber || receipt.blockNumber,
-                        raw: log
+                        raw: log.raw
                     }), { transaction });
                 }
             }

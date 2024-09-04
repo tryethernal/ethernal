@@ -192,12 +192,15 @@ describe('receiptSync', () => {
             }
         });
         ProviderConnector.mockImplementationOnce(() => ({
-            fetchTransactionReceipt: jest.fn().mockResolvedValueOnce({ transactionHash: '0x123' })
+            fetchTransactionReceipt: jest.fn().mockResolvedValueOnce({ blockNumber: 1, transactionHash: '0x123' })
         }));
 
         receiptSync({ data : { transactionHash: '0x123', workspaceId: 1 }})
             .then(() => {
-                expect(db.storeTransactionReceipt).toHaveBeenCalledWith(1, { transactionHash: '0x123' });
+                expect(db.storeTransactionReceipt).toHaveBeenCalledWith(1, {
+                    blockNumber: 1,
+                    raw: { transactionHash: '0x123' }
+                });
                 done();
             });
     });

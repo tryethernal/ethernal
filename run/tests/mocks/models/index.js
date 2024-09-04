@@ -11,6 +11,7 @@ jest.mock('../../../models/index.js', () => ({
     ExplorerV2Dex: require('./ExplorerV2Dex').ExplorerV2Dex,
     V2DexPair: require('./V2DexPair').V2DexPair,
     TransactionLog: require('./TransactionLog').TransactionLog,
+    TransactionReceipt: require('./TransactionReceipt').TransactionReceipt,
     V2DexPoolReserve: require('./V2DexPoolReserve').V2DexPoolReserve
 }));
 
@@ -26,6 +27,7 @@ const { Block } = require('./Block');
 const { ExplorerFaucet } = require('./ExplorerFaucet');
 const { V2DexPair } = require('./V2DexPair');
 const { TransactionLog } = require('./TransactionLog');
+const { TransactionReceipt } = require('./TransactionReceipt');
 const { V2DexPoolReserve } = require('./V2DexPoolReserve');
 
 module.exports = {
@@ -44,5 +46,6 @@ module.exports = {
     ExplorerFaucet,
     V2DexPair,
     TransactionLog,
-    V2DexPoolReserve
+    V2DexPoolReserve,
+    TransactionReceipt
 };

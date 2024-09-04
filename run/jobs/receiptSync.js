@@ -1,5 +1,6 @@
 const { ProviderConnector } = require('../lib/rpc');
 const { Workspace, Explorer, StripeSubscription, Transaction, TransactionReceipt, RpcHealthCheck } = require('../models');
+const { processRawRpcObject } = require('../lib/utils');
 const db = require('../lib/firebase');
 const { enqueue } = require('../lib/queue');
 const RateLimiter = require('../lib/rateLimiter');
@@ -95,7 +96,12 @@ module.exports = async job => {
         if (!receipt)
             throw new Error('Failed to fetch receipt');
 
-        return db.storeTransactionReceipt(transaction.id, receipt);
+        const processedReceipt = processRawRpcObject(
+            receipt,
+            Object.keys(TransactionReceipt.rawAttributes).concat(['logs']),
+        );
+
+        return db.storeTransactionReceipt(transaction.id, processedReceipt);
     } catch(error) {
         logger.error(error.message, { location: 'jobs.receiptSync', error, data });
         // await db.incrementFailedAttempts(transaction.workspace.id);
