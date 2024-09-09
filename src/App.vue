@@ -225,7 +225,7 @@
 
 <script>
 const axios = require('axios');
-import { Icon } from '@iconify/vue2';
+import { Icon } from '@iconify/vue';
 import WebFont from 'webfontloader';
 import Vue from 'vue';
 import detectEthereumProvider from '@metamask/detect-provider';

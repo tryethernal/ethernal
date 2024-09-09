@@ -1,7 +1,7 @@
 import path from 'path';
 import { defineConfig } from 'vite';
-import { createVuePlugin as vue } from 'vite-plugin-vue2';
 import commonjs from 'vite-plugin-commonjs';
+import vue from '@vitejs/plugin-vue'
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import vuetify from 'vite-plugin-vuetify';
 
@@ -10,7 +10,7 @@ export default defineConfig({
         vue(),
         commonjs(),
         nodePolyfills(),
-        vuetify({ autoImport: true }), // Set autoImport to true to correctly load Vuetify components
+        vuetify({ autoImport: true }), // Ensure autoImport is set to true
     ],
     resolve: {
         alias: {
@@ -25,4 +25,4 @@ export default defineConfig({
     define: {
         global: 'globalThis',
     },
-})
+});

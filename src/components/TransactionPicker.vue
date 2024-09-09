@@ -3,8 +3,8 @@
         <v-card-text v-if="transactions.length">
             <v-list three-line>
                 <v-list-item-group @change="selectedTransactionChanged" :value="selectedTransaction" active-class="primary--text">
-                    <template v-for="(transaction, index) in transactions">
-                        <v-list-item :key="transaction.hash" :value="transaction">
+                    <template v-for="(transaction, index) in transactions" :key="transaction.hash">
+                        <v-list-item :value="transaction">
                             <v-list-item-content>
                                 <v-list-item-title v-text="`${transaction.hash.slice(0, 15)}...`"></v-list-item-title>
                                 <v-list-item-subtitle>
