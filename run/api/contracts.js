@@ -349,10 +349,14 @@ router.post('/:address/verify', async (req, res, next) => {
             viaIR: data.viaIR
         });
 
-        const result = await processContractVerification(db, payload);
+        try {
+            const result = await processContractVerification(db, payload);
 
-        if (!result.verificationSucceded)
-            return managedError(new Error(result.reason), req, res);
+            if (!result.verificationSucceded)
+                throw new Error(result.reason);
+        } catch(error) {
+            return managedError(error, req, res);
+        }
 
         res.sendStatus(200);
     } catch(error) {
