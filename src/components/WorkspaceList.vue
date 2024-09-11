@@ -45,9 +45,9 @@ export default {
         errorMessage: null,
         workspaces: [],
         headers: [
+            { text: '', value: 'actions', width: '20%', align: 'center' },
             { text: 'Name', value: 'name', width: '30%' },
             { text: 'RPC Server', value: 'rpcServer' },
-            { text: '', value: 'actions', width: '20%', align: 'center' }
         ]
     }),
     mounted() {
