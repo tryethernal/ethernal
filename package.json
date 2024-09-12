@@ -50,6 +50,7 @@
     "highlightjs-line-numbers.js": "^2.8.0",
     "ipaddr.js": "^2.0.0",
     "momentjs": "^2.0.0",
+    "pinia": "^2.2.2",
     "posthog-js": "^1.88.1",
     "pusher-js": "^7.6.0",
     "stream-browserify": "^3.0.0",
