@@ -604,7 +604,7 @@ router.post('/', authMiddleware, async (req, res, next) => {
 
             if (!user.cryptoPaymentEnabled) {
                 const stripeCustomer = await stripe.customers.retrieve(user.stripeCustomerId);
-                if (!stripeCustomer.default_source)
+                if (!stripeCustomer.default_source && (!stripeCustomer.invoice_settings || !stripeCustomer.invoice_settings.default_payment_method))
                     return managedError(new Error(`There doesn't seem to be a payment method associated to your account. If you never subscribed to an explorer plan, please start your first one using the dashboard. You can also reach out to support on Discord or at contact@tryethernal.com.`), req, res);
             }
             else {
