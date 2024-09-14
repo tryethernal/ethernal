@@ -13,27 +13,10 @@ export const useUserStore = defineStore('user', {
     actions: {
         // TODO: Do not forget to update the code using updateUserPlan
 
-        updateCurrentWorkspace(workspace) {
-            Sentry.setContext('Current Workspace', {
-                id: workspace.id,
-                name: workspace.name,
-                explorer: workspace.explorer ? { id: workspace.explorer.id, name: workspace.explorer.name } : null
-            });
-            // TODO: Check if there is an explorer and set it in the correct store
-            this.currentWorkspace = workspace;
-        },
-
         updateUser(user) {
             if (user) {
-                this.id = user.id;
-                this.uid = user.firebaseUserId;
-                this.email = user.email;
-                this.loggedIn = true;
-                this.plan = user.plan;
-                this.apiToken = user.apiToken;
-                this.canTrial = user.canTrial;
-                this.cryptoPaymentEnabled = user.cryptoPaymentEnabled;
-                this.canUseDemoPlan = user.canUseDemoPlan;
+                for (const [key, value] of Object.entries(user))
+                    this[key] = value;
 
                 Sentry.setUser({ id: this.id, email: this.email });
             }
