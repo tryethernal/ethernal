@@ -7,7 +7,7 @@
                 color="primary"
             ></v-progress-circular>
         </v-overlay>
-        <v-system-bar height="40" v-html="banner" v-if="isPublicExplorer && banner" class="primary color--text text-center font-weight-bold" color="primary" app></v-system-bar>
+        <v-system-bar height="40" v-html="banner" v-if="explorerStore && banner" class="primary color--text text-center font-weight-bold" color="primary" app></v-system-bar>
         <v-navigation-drawer v-model="drawer" :style="styles" app v-if="canDisplaySides">
             <div class="custom-logo-wrapper" v-if="logo">
                 <img :src="logo" alt="logo" class="custom-logo" />
@@ -15,9 +15,9 @@
             <v-list-item v-else>
                 <v-list-item-content>
                     <v-list-item-title class="logo">
-                        {{ publicExplorer ? publicExplorer.name : 'Ethernal' }}
+                        {{ explorerStore ? explorerStore.name : 'Ethernal' }}
                     </v-list-item-title>
-                    <v-list-item-subtitle class="color--text">v{{ version }}</v-list-item-subtitle>
+                    <v-list-item-subtitle class="color--text">v{{ envStore.version }}</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item v-if="currentWorkspace.browserSyncEnabled">
@@ -39,7 +39,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link :to="'/accounts'" v-if="!isPublicExplorer || accounts.length || isUserAdmin">
+                <v-list-item link :to="'/accounts'" v-if="!explorerStore || currentWorkspaceStore.accounts || isUserAdmin">
                     <v-list-item-icon>
                         <v-icon>mdi-account-multiple</v-icon>
                     </v-list-item-icon>
@@ -93,7 +93,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link :to="'/analytics'" v-if="isPublicExplorer">
+                <v-list-item link :to="'/analytics'" v-if="explorerStore">
                     <v-list-item-icon>
                         <v-icon>mdi-chart-box</v-icon>
                     </v-list-item-icon>
@@ -102,7 +102,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link :to="'/faucet'" v-if="isPublicExplorer && publicExplorer.faucet">
+                <v-list-item link :to="'/faucet'" v-if="explorerStore && explorerStore.faucet">
                     <v-list-item-icon>
                         <v-icon>mdi-faucet</v-icon>
                     </v-list-item-icon>
@@ -111,7 +111,7 @@
                     </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item link :to="'/dex'" v-if="isPublicExplorer && publicExplorer.v2Dex">
+                <v-list-item link :to="'/dex'" v-if="explorerStore && explorerStore.v2Dex">
                     <v-list-item-icon>
                         <v-icon>mdi-swap-horizontal</v-icon>
                     </v-list-item-icon>
@@ -154,7 +154,7 @@
 
             <template v-slot:append>
                 <v-list dense nav>
-                    <v-list-item link v-if="isPublicExplorer && ethereum && hasNetworkInfo" @click="addNetworkToMetamask()">
+                    <v-list-item link v-if="explorerStore && ethereum && hasNetworkInfo" @click="addNetworkToMetamask()">
                         <v-list-item-icon>
                             <Icon icon="arcticons:metamask" width="24" height="24" />
                         </v-list-item-icon>
@@ -170,7 +170,7 @@
                             <v-list-item-title>{{ link.name }}</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <v-list-item target="_blank" :href="`https://doc.tryethernal.com`" v-if="!isPublicExplorer">
+                    <v-list-item target="_blank" :href="`https://doc.tryethernal.com`" v-if="!explorerStore">
                         <v-list-item-icon>
                             <v-icon>mdi-text-box-multiple</v-icon>
                         </v-list-item-icon>
@@ -178,7 +178,7 @@
                             <v-list-item-title>Documentation</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <v-list-item target="_blank" :href="`https://discord.gg/jEAprf45jj`" v-if="!isPublicExplorer">
+                    <v-list-item target="_blank" :href="`https://discord.gg/jEAprf45jj`" v-if="!explorerStore">
                         <v-list-item-icon>
                             <v-icon>mdi-forum</v-icon>
                         </v-list-item-icon>
@@ -194,7 +194,7 @@
                             <v-list-item-title>Feature Requests</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <v-list-item link @click="logOut()" v-if="isUserLoggedIn">
+                    <v-list-item link @click="logOut()" v-if="userStore.loggedIn">
                         <v-list-item-icon>
                             <v-icon class="red--text text--darken-3">mdi-logout</v-icon>
                         </v-list-item-icon>
@@ -202,7 +202,7 @@
                             <v-list-item-title class="red--text text--darken-3">Log Out</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <div class="caption text-center font-italic" v-if="isPublicExplorer">
+                    <div class="caption text-center font-italic" v-if="explorerStore">
                         Powered By <a href="https://tryethernal.com" target="_blank">Ethernal</a>
                     </div>
                 </v-list>
@@ -229,9 +229,11 @@ import { Icon } from '@iconify/vue';
 import WebFont from 'webfontloader';
 import Vue from 'vue';
 import detectEthereumProvider from '@metamask/detect-provider';
-import store from './plugins/store';
 import { pusherPlugin } from './plugins/pusher';
-import { mapGetters } from 'vuex';
+import { useCurrentWorkspaceStore } from './stores/currentWorkspace';
+import { useEnvStore } from './stores/env';
+import { useExplorerStore } from './stores/explorer';
+import { useUserStore } from './stores/user';
 import RpcConnector from './components/RpcConnector';
 import OnboardingModal from './components/OnboardingModal';
 import BrowserSyncExplainerModal from './components/BrowserSyncExplainerModal';
@@ -247,7 +249,6 @@ export default {
         Icon
     },
     data: () => ({
-        userLoggedIn: null,
         routerComponent: Vue.component({
             template: '<v-container fluid>Loading...</v-container>'
         }),
@@ -326,21 +327,21 @@ export default {
         addNetworkToMetamask() {
             if (!this.ethereum) return;
 
-            let domain = this.publicExplorer.domain;
-            if (this.publicExplorer.domains && this.publicExplorer.domains.length)
-                domain = this.publicExplorer.domains[0].domain;
+            let domain = this.explorerStore.domain;
+            if (this.explorerStore.domains && this.explorerStore.domains.length)
+                domain = this.explorerStore.domains[0].domain;
 
             this.ethereum.request({
                 method: 'wallet_addEthereumChain',
                 params: [
                     {
                         chainId: this.formattedExpectedChainId,
-                        chainName: this.publicExplorer.name,
-                        rpcUrls: [this.publicExplorer.rpcServer],
+                        chainName: this.explorerStore.name,
+                        rpcUrls: [this.explorerStore.rpcServer],
                         blockExplorerUrls: [`https://${domain}`],
                         nativeCurrency: {
-                            name: this.publicExplorer.token,
-                            symbol: this.publicExplorer.token,
+                            name: this.explorerStore.token,
+                            symbol: this.explorerStore.token,
                             decimals: 18
                         }
                     }
@@ -369,11 +370,10 @@ export default {
         },
         authStateChanged(user) {
             const currentPath = this.$router.currentRoute.path;
-            const publicExplorerMode = store.getters.publicExplorerMode;
 
-            store.dispatch('updateUser', user);
+            this.userStore.updateUser(user);
 
-            if (currentPath != '/auth' && !user && !publicExplorerMode) {
+            if (currentPath != '/auth' && !user && !this.explorerStore) {
                 return this.$router.push('/auth');
             }
             if (currentPath == '/auth' && user) {
@@ -383,7 +383,7 @@ export default {
             }
         },
         setupPublicExplorer() {
-            const data = this.publicExplorer;
+            const data = this.explorerStore;
 
             if (data.themes) {
                 const lightTheme = data.themes.light || {};
@@ -458,7 +458,7 @@ export default {
                 this.appBarComponent = 'rpc-connector';
                 this.routerComponent = 'router-view';
 
-                if (!this.publicExplorerMode && this.isMarketingEnabled) {
+                if (!this.explorerStore && this.envStore.isMarketingEnabled()) {
                     this.server.getProductRoadToken().then(res => this.prAuthToken = res.data.token);
                     this.server.getMarketingFlags().then(({ data: { isRemote }}) => this.isRemote = !!isRemote);
                 }
@@ -466,27 +466,20 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'hasAnalyticsEnabled',
-            'isMarketingEnabled',
-            'accounts',
-            'isPublicExplorer',
-            'publicExplorer',
-            'currentWorkspace',
-            'user',
-            'isUserLoggedIn',
-            'isUserAdmin',
-            'publicExplorerMode',
-            'version'
+        ...mapStores([
+            useCurrentWorkspaceStore,
+            useEnvStore,
+            useExplorerStore,
+            useUserStore
         ]),
         hasNetworkInfo() {
-            return !!(this.publicExplorer && this.publicExplorer.name && this.publicExplorer.domain && this.publicExplorer.token && this.publicExplorer.rpcServer);
+            return !!(this.explorerStore && this.explorerStore.name && this.explorerStore.domain && this.explorerStore.token && this.explorerStore.rpcServer);
         },
         formattedExpectedChainId() {
             return `0x${parseInt(this.currentWorkspace.networkId).toString(16)}`;
         },
         isAuthPage() { return this.$route.path.indexOf('/auth') > -1 },
-        canDisplaySides() { return (this.isUserLoggedIn || this.isPublicExplorer) && !this.isAuthPage },
+        canDisplaySides() { return (this.userStore.loggedIn || this.explorerStore) && !this.isAuthPage },
         explorerToken() { return this.$route.query.explorerToken },
         justMigrated() { return !!this.$route.query.justMigrated }
     }

@@ -21,12 +21,15 @@ import ExplorerAnalytics from '../components/ExplorerAnalytics.vue';
 import ExplorerFaucet from '../components/ExplorerFaucet.vue';
 import ExplorerDex from '../components/ExplorerDex.vue';
 
+import { useUserStore } from '../stores/user';
+
 const auth = () => {
     return { currentUser: router.app.$store.getters.user };
 }
 
 const redirectIfLoggedIn = function (to, from, next) {
-    if (auth().currentUser.id) {
+    const userStore = useUserStore();
+    if (userStore.id) {
         next(to || { path: '/transactions' });
     }
     else next();

@@ -7,7 +7,9 @@ export const useUserStore = defineStore('user', {
     state: () => ({
         id: null,
         plan: 'free',
-        onboarded: false
+        onboarded: false,
+        loggedIn: false,
+        isAdmin: false
     }),
 
     actions: {
@@ -19,6 +21,7 @@ export const useUserStore = defineStore('user', {
                     this[key] = value;
 
                 Sentry.setUser({ id: this.id, email: this.email });
+                this.loggedIn = true;
             }
             else {
                 this.$reset();

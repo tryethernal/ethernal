@@ -1,4 +1,7 @@
 import { ethers } from 'ethers';
+import { useEnvStore } from '../stores/env';
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
+import { useExplorerStore } from '../stores/explorer';
 const Web3 = require('web3');
 const Decoder = require('@truffle/decoder');
 const Axios = require('axios');
@@ -341,11 +344,13 @@ const serverFunctions = {
 };
 
 export const serverPlugin = {
-    install(Vue, options) {
-        const store = options.store;
+    install(Vue) {
+        const envStore = useEnvStore();
+        const currentWorkspaceStore = useCurrentWorkspaceStore();
+        const explorerStore = useExplorerStore();
 
         const _rpcServer = function() {
-            return store.getters.currentWorkspace.rpcServer;
+            return currentWorkspaceStore.rpcServer;
         };
 
         axios.interceptors.request.use(
@@ -359,462 +364,462 @@ export const serverPlugin = {
 
         Vue.prototype.server = {
             getV2DexStatus(id) {
-                const resource = `${store.getters.apiRoot}/api/v2_dexes/${id}/status`;
+                const resource = `${envStore.apiRoot}/api/v2_dexes/${id}/status`;
                 return axios.get(resource);
             },
 
             getNativeTokenBalance(address) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                 };
 
-                const resource = `${store.getters.apiRoot}/api/addresses/${address}/nativeTokenBalance`;
+                const resource = `${envStore.apiRoot}/api/addresses/${address}/nativeTokenBalance`;
                 return axios.get(resource, { params });
             },
 
             deleteV2Dex(id) {
-                const resource = `${store.getters.apiRoot}/api/v2_dexes/${id}`;
+                const resource = `${envStore.apiRoot}/api/v2_dexes/${id}`;
                 return axios.delete(resource);
             },
 
             activateV2Dex(id) {
-                const resource = `${store.getters.apiRoot}/api/v2_dexes/${id}/activate`;
+                const resource = `${envStore.apiRoot}/api/v2_dexes/${id}/activate`;
                 return axios.put(resource);
             },
 
             deactivateV2Dex(id) {
-                const resource = `${store.getters.apiRoot}/api/v2_dexes/${id}/deactivate`;
+                const resource = `${envStore.apiRoot}/api/v2_dexes/${id}/deactivate`;
                 return axios.put(resource);
             },
 
             getLatestPairsWithReserve(options) {
-                const id = store.getters.publicExplorer.v2Dex.id;
-                const resource = `${store.getters.apiRoot}/api/v2_dexes/${id}/pairs`;
+                const id = explorerStore.v2Dex.id;
+                const resource = `${envStore.apiRoot}/api/v2_dexes/${id}/pairs`;
                 return axios.get(resource, { params: options });
             },
 
             getV2DexQuote(from, to, amount, direction, slippageTolerance) {
-                const id = store.getters.publicExplorer.v2Dex.id;
+                const id = explorerStore.v2Dex.id;
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     from, to, amount, direction, slippageTolerance
                 };
 
-                const resource = `${store.getters.apiRoot}/api/v2_dexes/${id}/quote`;
+                const resource = `${envStore.apiRoot}/api/v2_dexes/${id}/quote`;
                 return axios.get(resource, { params });
             },
 
             getV2DexTokens() {
-                const id = store.getters.publicExplorer.v2Dex.id;
+                const id = explorerStore.v2Dex.id;
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name
                 };
 
-                const resource = `${store.getters.apiRoot}/api/v2_dexes/${id}/tokens`;
+                const resource = `${envStore.apiRoot}/api/v2_dexes/${id}/tokens`;
                 return axios.get(resource, { params });
             },
 
             createExplorerV2Dex(id, routerAddress, wrappedNativeTokenAddress) {
-                const resource = `${store.getters.apiRoot}/api/explorers/${id}/v2_dexes`;
+                const resource = `${envStore.apiRoot}/api/explorers/${id}/v2_dexes`;
                 return axios.post(resource, { data: { routerAddress, wrappedNativeTokenAddress }});
             },
 
             getTxCount24h() {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                 };
 
-                const resource = `${store.getters.apiRoot}/api/stats/txCount24h`;
+                const resource = `${envStore.apiRoot}/api/stats/txCount24h`;
                 return axios.get(resource, { params });
             },
 
             getTxCountTotal() {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                 };
-                const resource = `${store.getters.apiRoot}/api/stats/txCountTotal`;
+                const resource = `${envStore.apiRoot}/api/stats/txCountTotal`;
                 return axios.get(resource, { params });
             },
 
             getActiveWalletCount() {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                 };
-                const resource = `${store.getters.apiRoot}/api/stats/activeWalletCount`;
+                const resource = `${envStore.apiRoot}/api/stats/activeWalletCount`;
                 return axios.get(resource, { params });
             },
 
             getFaucetTransactionHistory(id, options) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     ...options
                 };
 
-                const resource = `${store.getters.apiRoot}/api/faucets/${id}/transactionHistory`;
+                const resource = `${envStore.apiRoot}/api/faucets/${id}/transactionHistory`;
                 return axios.get(resource, { params });
             },
 
             getFaucetTokenVolume(id, from, to) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     from, to
                 };
 
-                const resource = `${store.getters.apiRoot}/api/faucets/${id}/tokenVolume`;
+                const resource = `${envStore.apiRoot}/api/faucets/${id}/tokenVolume`;
                 return axios.get(resource, { params });
             },
 
             getFaucetRequestVolume(id, from, to) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     from, to
                 };
 
-                const resource = `${store.getters.apiRoot}/api/faucets/${id}/requestVolume`;
+                const resource = `${envStore.apiRoot}/api/faucets/${id}/requestVolume`;
                 return axios.get(resource, { params });
             },
 
             deleteFaucet(id) {
-                const resource = `${store.getters.apiRoot}/api/faucets/${id}`;
+                const resource = `${envStore.apiRoot}/api/faucets/${id}`;
                 return axios.delete(resource);
             },
 
             getFaucetPrivateKey(id) {
-                const resource = `${store.getters.apiRoot}/api/faucets/${id}/privateKey`;
+                const resource = `${envStore.apiRoot}/api/faucets/${id}/privateKey`;
                 return axios.get(resource);
             },
 
             requestFaucetToken(id, address) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     address
                 };
 
-                const resource = `${store.getters.apiRoot}/api/faucets/${id}/drip`;
+                const resource = `${envStore.apiRoot}/api/faucets/${id}/drip`;
                 return axios.post(resource, { data });
             },
 
             deactivateFaucet(id) {
-                const resource = `${store.getters.apiRoot}/api/faucets/${id}/deactivate`;
+                const resource = `${envStore.apiRoot}/api/faucets/${id}/deactivate`;
                 return axios.put(resource);
             },
 
             activateFaucet(id) {
-                const resource = `${store.getters.apiRoot}/api/faucets/${id}/activate`;
+                const resource = `${envStore.apiRoot}/api/faucets/${id}/activate`;
                 return axios.put(resource);
             },
 
             getFaucetBalance(id) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                 };
-                const resource = `${store.getters.apiRoot}/api/faucets/${id}/balance`;
+                const resource = `${envStore.apiRoot}/api/faucets/${id}/balance`;
                 return axios.get(resource, { params });
             },
 
             updateFaucet(id, amount, interval) {
-                const resource = `${store.getters.apiRoot}/api/faucets/${id}`;
+                const resource = `${envStore.apiRoot}/api/faucets/${id}`;
                 return axios.put(resource, { data: { amount, interval }});
             },
 
             createExplorerFaucet(explorerId, amount, interval) {
-                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/faucets`;
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/faucets`;
                 return axios.post(resource, { data: { amount, interval }});
             },
 
             getExplorerBilling() {
-                const resource = `${store.getters.apiRoot}/api/explorers/billing`;
+                const resource = `${envStore.apiRoot}/api/explorers/billing`;
                 return axios.get(resource);
             },
 
             getQuotaExtensionPlan() {
-                const resource = `${store.getters.apiRoot}/api/explorers/quotaExtensionPlan`;
+                const resource = `${envStore.apiRoot}/api/explorers/quotaExtensionPlan`;
                 return axios.get(resource);
             },
 
             cancelQuotaExtension(explorerId) {
-                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/quotaExtension`;
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/quotaExtension`;
                 return axios.delete(resource);
             },
 
             updateQuotaExtension(explorerId, stripePlanSlug, quota) {
-                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/quotaExtension`;
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/quotaExtension`;
                 return axios.put(resource, { data: { stripePlanSlug, quota }});
             },
 
             startTrial(explorerId, stripePlanSlug) {
-                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/startTrial`;
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/startTrial`;
                 return axios.post(resource, { data: { stripePlanSlug }});
             },
 
             migrateDemoExplorer(token) {
-                const resource = `${store.getters.apiRoot}/api/demo/migrateExplorer`;
+                const resource = `${envStore.apiRoot}/api/demo/migrateExplorer`;
                 return axios.post(resource, { data: { token }});
             },
 
             getExplorerFromToken(token) {
-                const resource = `${store.getters.apiRoot}/api/demo/explorers`;
+                const resource = `${envStore.apiRoot}/api/demo/explorers`;
                 return axios.get(resource, { params: { token }});
             },
 
             createDemoExplorer(name, rpcServer, nativeToken) {
-                const resource = `${store.getters.apiRoot}/api/demo/explorers`;
+                const resource = `${envStore.apiRoot}/api/demo/explorers`;
                 return axios.post(resource, { name, rpcServer, nativeToken });
             },
 
             startExplorerSync(id) {
-                const resource = `${store.getters.apiRoot}/api/explorers/${id}/startSync`;
+                const resource = `${envStore.apiRoot}/api/explorers/${id}/startSync`;
                 return axios.put(resource);
             },
 
             stopExplorerSync(id) {
-                const resource = `${store.getters.apiRoot}/api/explorers/${id}/stopSync`;
+                const resource = `${envStore.apiRoot}/api/explorers/${id}/stopSync`;
                 return axios.put(resource);
             },
 
             getExplorerSyncStatus(id) {
-                const resource = `${store.getters.apiRoot}/api/explorers/${id}/syncStatus`;
+                const resource = `${envStore.apiRoot}/api/explorers/${id}/syncStatus`;
                 return axios.get(resource);
             },
 
             deleteWorkspace(id) {
-                const resource = `${store.getters.apiRoot}/api/workspaces/${id}`;
+                const resource = `${envStore.apiRoot}/api/workspaces/${id}`;
                 return axios.delete(resource);
             },
 
             getExplorerDomainStatus(domainId) {
-                const resource = `${store.getters.apiRoot}/api/domains/${domainId}`;
+                const resource = `${envStore.apiRoot}/api/domains/${domainId}`;
                 return axios.get(resource);
             },
 
             addExplorerDomain(explorerId, domain) {
                 const data = { domain };
-                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/domains`;
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/domains`;
                 return axios.post(resource, { data });
             },
 
             removeExplorerDomain(domainId) {
-                const resource = `${store.getters.apiRoot}/api/domains/${domainId}`;
+                const resource = `${envStore.apiRoot}/api/domains/${domainId}`;
                 return axios.delete(resource);
             },
 
             deleteExplorer(explorerId) {
-                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}`;
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}`;
                 return axios.delete(resource);
             },
 
             startCryptoSubscription(stripePlanSlug, explorerId) {
                 const data = { stripePlanSlug };
-                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/cryptoSubscription`;
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/cryptoSubscription`;
                 return axios.post(resource, { data });
             },
 
             createExplorer(workspaceId) {
                 const data = { workspaceId };
-                const resource = `${store.getters.apiRoot}/api/explorers`;
+                const resource = `${envStore.apiRoot}/api/explorers`;
                 return axios.post(resource, { data });
             },
 
             cancelExplorerSubscription(explorerId) {
-                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/subscription`;
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/subscription`;
                 return axios.delete(resource);
             },
 
             updateExplorerSubscription(explorerId, newStripePlanSlug) {
                 const data = { newStripePlanSlug };
-                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/subscription`;
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/subscription`;
                 return axios.put(resource, { data });
             },
 
             getExplorerPlans() {
-                const resource = `${store.getters.apiRoot}/api/explorers/plans`;
+                const resource = `${envStore.apiRoot}/api/explorers/plans`;
                 return axios.get(resource);
             },
 
             getCompilerVersions() {
-                const resource = `${store.getters.apiRoot}/api/external/compilers`;
+                const resource = `${envStore.apiRoot}/api/external/compilers`;
                 return axios.get(resource);
             },
 
             updateExplorerBranding(explorerId, data) {
-                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/branding`;
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/branding`;
                 return axios.post(resource, { data }, { cache: { ttl: 0 }});
             },
 
             getExplorerMode(domain) {
-                const resource = `${store.getters.apiRoot}/api/explorers/search?domain=${domain}`;
+                const resource = `${envStore.apiRoot}/api/explorers/search?domain=${domain}`;
                 return axios.get(resource, { cache: { ttl: 100 }});
             },
 
             updateExplorerSettings(explorerId, data) {
-                const resource = `${store.getters.apiRoot}/api/explorers/${explorerId}/settings`;
+                const resource = `${envStore.apiRoot}/api/explorers/${explorerId}/settings`;
                 return axios.post(resource, { data }, { cache: { ttl: 0 }});
             },
 
             searchIcon(query) {
-                const resource = `${store.getters.apiRoot}/api/search/icons?icon=${query}`;
+                const resource = `${envStore.apiRoot}/api/search/icons?icon=${query}`;
                 return axios.get(resource, { cache: { ttl: 100 }});
             },
 
             searchFont(query) {
-                const resource = `${store.getters.apiRoot}/api/search/fonts?font=${query}`;
+                const resource = `${envStore.apiRoot}/api/search/fonts?font=${query}`;
                 return axios.get(resource, { cache: { ttl: 100 }});
             },
 
             getExplorers(params) {
-                const resource = `${store.getters.apiRoot}/api/explorers`;
+                const resource = `${envStore.apiRoot}/api/explorers`;
                 return axios.get(resource, { params });
             },
 
             getExplorer(slug) {
-                const resource = `${store.getters.apiRoot}/api/explorers/${slug}`;
+                const resource = `${envStore.apiRoot}/api/explorers/${slug}`;
                 return axios.get(resource);
             },
 
             getExplorerStatus() {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                 };
-                const resource = `${store.getters.apiRoot}/api/status`;
+                const resource = `${envStore.apiRoot}/api/status`;
                 return axios.get(resource, { params });
             },
 
             resetPassword(token, password) {
-                const resource = `${store.getters.apiRoot}/api/users/resetPassword`;
+                const resource = `${envStore.apiRoot}/api/users/resetPassword`;
                 return axios.post(resource, { token, password });
             },
 
             sendResetPasswordEmail(email) {
-                const resource = `${store.getters.apiRoot}/api/users/sendResetPasswordEmail`;
+                const resource = `${envStore.apiRoot}/api/users/sendResetPasswordEmail`;
                 return axios.post(resource, { email });
             },
 
             signUp(email, password, explorerToken) {
-                const resource = `${store.getters.apiRoot}/api/users/signup`;
+                const resource = `${envStore.apiRoot}/api/users/signup`;
                 return axios.post(resource, { email, password, explorerToken });
             },
 
             signIn(email, password, explorerToken) {
-                const resource = `${store.getters.apiRoot}/api/users/signin`;
+                const resource = `${envStore.apiRoot}/api/users/signin`;
                 return axios.post(resource, { email, password, explorerToken });
             },
 
             getAddressTokenTransfers(address, options) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     ...options
                 };
-                const resource = `${store.getters.apiRoot}/api/addresses/${address}/tokenTransfers`;
+                const resource = `${envStore.apiRoot}/api/addresses/${address}/tokenTransfers`;
                 return axios.get(resource, { params });
             },
 
             getAddressStats(address) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                 };
-                const resource = `${store.getters.apiRoot}/api/addresses/${address}/stats`;
+                const resource = `${envStore.apiRoot}/api/addresses/${address}/stats`;
                 return axios.get(resource, { params });
             },
 
             getTransactionTokenBalanceChanges(transactionHash, options) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     ...options
                 };
-                const resource = `${store.getters.apiRoot}/api/transactions/${transactionHash}/tokenBalanceChanges`;
+                const resource = `${envStore.apiRoot}/api/transactions/${transactionHash}/tokenBalanceChanges`;
                 return axios.get(resource, { params });
             },
 
             getTransactionTokenTransfers(transactionHash, options) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     ...options
                 };
-                const resource = `${store.getters.apiRoot}/api/transactions/${transactionHash}/tokenTransfers`;
+                const resource = `${envStore.apiRoot}/api/transactions/${transactionHash}/tokenTransfers`;
                 return axios.get(resource, { params });
             },
 
             getTransactionLogs(transactionHash, options) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     ...options
                 };
-                const resource = `${store.getters.apiRoot}/api/transactions/${transactionHash}/logs`;
+                const resource = `${envStore.apiRoot}/api/transactions/${transactionHash}/logs`;
                 return axios.get(resource, { params });
             },
 
             getContractLogs(address, options) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     ...options
                 };
-                const resource = `${store.getters.apiRoot}/api/contracts/${address}/logs`;
+                const resource = `${envStore.apiRoot}/api/contracts/${address}/logs`;
                 return axios.get(resource, { params });
             },
 
             updateContractWatchedPaths(address, paths) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     watchedPaths: paths
                 };
-                const resource = `${store.getters.apiRoot}/api/contracts/${address}/watchedPaths`;
+                const resource = `${envStore.apiRoot}/api/contracts/${address}/watchedPaths`;
                 return axios.post(resource, { data });
             },
 
             getProcessableContracts() {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                 };
-                const resource = `${store.getters.apiRoot}/api/contracts/processable`;
+                const resource = `${envStore.apiRoot}/api/contracts/processable`;
                 return axios.get(resource, { params });
             },
 
             getContractStats(address) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name
                 };
-                const resource = `${store.getters.apiRoot}/api/contracts/${address}/stats`;
+                const resource = `${envStore.apiRoot}/api/contracts/${address}/stats`;
                 return axios.get(resource, { params });
             },
 
             getTokenTransfers(address, options) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     ...options
                 };
-                const resource = `${store.getters.apiRoot}/api/contracts/${address}/transfers`;
+                const resource = `${envStore.apiRoot}/api/contracts/${address}/transfers`;
                 return axios.get(resource, { params });
             },
 
             getTokenHolders(address, options) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     ...options
                 };
-                const resource = `${store.getters.apiRoot}/api/contracts/${address}/holders`;
+                const resource = `${envStore.apiRoot}/api/contracts/${address}/holders`;
                 return axios.get(resource, { params });
             },
 
@@ -822,12 +827,12 @@ export const serverPlugin = {
                 const tokens = [];
                 return new Promise((resolve, reject) => {
                     const data = {
-                        firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                        workspace: store.getters.currentWorkspace.name,
+                        firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                        workspace: currentWorkspaceStore.name,
                     };
-                    const resource = `${store.getters.apiRoot}/api/erc721Tokens/${contractAddress}`;
+                    const resource = `${envStore.apiRoot}/api/erc721Tokens/${contractAddress}`;
 
-                    const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
+                    const erc721Connector = new ERC721Connector(currentWorkspaceStore.rpcServer, contractAddress, { metadata: true, enumerable: true });
                     const promises = [];
                     for (let i = 0; i < indexes.length; i++) {
                         promises.push(erc721Connector.fetchTokenByIndex(indexes[i])
@@ -844,35 +849,35 @@ export const serverPlugin = {
 
             setTokenProperties(contractAddress, properties) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     properties: properties
                 };
-                const resource = `${store.getters.apiRoot}/api/contracts/${contractAddress}/tokenProperties`;
+                const resource = `${envStore.apiRoot}/api/contracts/${contractAddress}/tokenProperties`;
                 return axios.post(resource, { data });
             },
 
             getErc721TokenTransfers(contractAddress, tokenId) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                 };
-                const resource = `${store.getters.apiRoot}/api/erc721Tokens/${contractAddress}/${tokenId}/transfers`;
+                const resource = `${envStore.apiRoot}/api/erc721Tokens/${contractAddress}/${tokenId}/transfers`;
                 return axios.get(resource, { params });
             },
 
             reloadErc721Token(contractAddress, tokenId) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                 };
-                const resource = `${store.getters.apiRoot}/api/erc721Tokens/${contractAddress}/${tokenId}/reload`;
+                const resource = `${envStore.apiRoot}/api/erc721Tokens/${contractAddress}/${tokenId}/reload`;
                 return axios.post(resource, { data });
             },
 
             getErc721TotalSupply(contractAddress) {
-                if (!store.getters.isPublicExplorer) {
-                    const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
+                if (!explorerStore) {
+                    const erc721Connector = new ERC721Connector(currentWorkspaceStore.rpcServer, contractAddress, { metadata: true, enumerable: true });
                     return new Promise((resolve, reject) => {
                         erc721Connector.totalSupply()
                             .then(res => resolve({ data: { totalSupply: res }}))
@@ -881,17 +886,17 @@ export const serverPlugin = {
                 }
                 else {
                     const params = {
-                        firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                        workspace: store.getters.currentWorkspace.name,
+                        firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                        workspace: currentWorkspaceStore.name,
                     };
-                    const resource = `${store.getters.apiRoot}/api/erc721Collections/${contractAddress}/totalSupply`;
+                    const resource = `${envStore.apiRoot}/api/erc721Collections/${contractAddress}/totalSupply`;
                     return axios.get(resource, { params });
                 }
             },
 
             getErc721TokenByIndex(contractAddress, tokenIndex) {
-                if (!store.getters.isPublicExplorer) {
-                    const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
+                if (!explorerStore) {
+                    const erc721Connector = new ERC721Connector(currentWorkspaceStore.rpcServer, contractAddress, { metadata: true, enumerable: true });
                     return erc721Connector.tokenByIndex(tokenIndex)
                         .then(tokenId => {
                             if (!tokenId) return null;
@@ -904,17 +909,17 @@ export const serverPlugin = {
                 }
                 else {
                     const params = {
-                        firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                        workspace: store.getters.currentWorkspace.name,
+                        firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                        workspace: currentWorkspaceStore.name,
                     };
-                    const resource = `${store.getters.apiRoot}/api/erc721Tokens/${contractAddress}/tokenIndex/${tokenIndex}`;
+                    const resource = `${envStore.apiRoot}/api/erc721Tokens/${contractAddress}/tokenIndex/${tokenIndex}`;
                     return axios.get(resource, { params });
                 }
             },
 
             getErc721TokenById(contractAddress, tokenId) {
-                if (!store.getters.isPublicExplorer) {
-                    const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
+                if (!explorerStore) {
+                    const erc721Connector = new ERC721Connector(currentWorkspaceStore.rpcServer, contractAddress, { metadata: true, enumerable: true });
                     return new Promise((resolve, reject) => {
                         erc721Connector.fetchTokenById(tokenId)
                             .then(res => resolve({ data: formatErc721Metadata(res) }))
@@ -923,24 +928,24 @@ export const serverPlugin = {
                 }
                 else {
                     const params = {
-                        firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                        workspace: store.getters.currentWorkspace.name,
+                        firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                        workspace: currentWorkspaceStore.name,
                     };
-                    const resource = `${store.getters.apiRoot}/api/erc721Tokens/${contractAddress}/${tokenId}`;
+                    const resource = `${envStore.apiRoot}/api/erc721Tokens/${contractAddress}/${tokenId}`;
                     return axios.get(resource, { params });
                 }
             },
 
             getErc721Tokens(contractAddress, options, loadingEnabled) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     ...options
                 };
 
-                if (!store.getters.isPublicExplorer || !loadingEnabled) {
+                if (!explorerStore || !loadingEnabled) {
                     return new Promise((resolve, reject) => {
-                        const erc721Connector = new ERC721Connector(store.getters.currentWorkspace.rpcServer, contractAddress, { metadata: true, enumerable: true });
+                        const erc721Connector = new ERC721Connector(currentWorkspaceStore.rpcServer, contractAddress, { metadata: true, enumerable: true });
                         const promises = [];
                         const indexes = Array.from({ length: options.itemsPerPage }, (_, i) => options.itemsPerPage * (options.page - 1) + i);
                         for (let i = 0; i < indexes.length; i++)
@@ -955,261 +960,261 @@ export const serverPlugin = {
                     });
                 }
                 else {
-                    const resource = `${store.getters.apiRoot}/api/erc721Collections/${contractAddress}/tokens`;
+                    const resource = `${envStore.apiRoot}/api/erc721Collections/${contractAddress}/tokens`;
                     return axios.get(resource, { params });
                 }
             },
 
             submitExplorerLead(email) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     email: email,
                 };
-                const resource = `${store.getters.apiRoot}/api/marketing/submitExplorerLead`;
+                const resource = `${envStore.apiRoot}/api/marketing/submitExplorerLead`;
                 return axios.post(resource, { data });
             },
 
             getMarketingFlags() {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                 };
-                const resource = `${store.getters.apiRoot}/api/marketing`;
+                const resource = `${envStore.apiRoot}/api/marketing`;
                 return axios.get(resource, { params });
             },
 
             verifyContract(address, data) {
-                const resource = `${store.getters.apiRoot}/api/contracts/${address}/verify`;
+                const resource = `${envStore.apiRoot}/api/contracts/${address}/verify`;
                 return axios.post(resource, data);
             },
 
             getTokenTransferVolume(from, to, address, type) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     from, to, address, type
                 };
-                const resource = `${store.getters.apiRoot}/api/stats/tokenTransferVolume`;
+                const resource = `${envStore.apiRoot}/api/stats/tokenTransferVolume`;
                 return axios.get(resource, { params });
             },
 
             getTokenHolderHistory(from, to, address) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     from: from,
                     to: to
                 };
-                const resource = `${store.getters.apiRoot}/api/contracts/${address}/holderHistory`;
+                const resource = `${envStore.apiRoot}/api/contracts/${address}/holderHistory`;
                 return axios.get(resource, { params });
             },
 
             getTokenCirculatingSupply(from, to, address) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     from: from,
                     to: to
                 };
-                const resource = `${store.getters.apiRoot}/api/contracts/${address}/circulatingSupply`;
+                const resource = `${envStore.apiRoot}/api/contracts/${address}/circulatingSupply`;
                 return axios.get(resource, { params });
             },
 
             getTransactionVolume(from, to) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     from, to
                 };
-                const resource = `${store.getters.apiRoot}/api/stats/transactions`;
+                const resource = `${envStore.apiRoot}/api/stats/transactions`;
                 return axios.get(resource, { params });
             },
 
             getUniqueWalletCount(from, to) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     from, to
                 };
-                const resource = `${store.getters.apiRoot}/api/stats/uniqueWalletCount`;
+                const resource = `${envStore.apiRoot}/api/stats/uniqueWalletCount`;
                 return axios.get(resource, { params });
             },
 
             getCumulativeWalletCount(from, to) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     from, to
                 };
-                const resource = `${store.getters.apiRoot}/api/stats/cumulativeWalletCount`;
+                const resource = `${envStore.apiRoot}/api/stats/cumulativeWalletCount`;
                 return axios.get(resource, { params });
             },
 
             getCumulativeDeployedContractCount(from, to) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     from, to
                 };
-                const resource = `${store.getters.apiRoot}/api/stats/cumulativeDeployedContractCount`;
+                const resource = `${envStore.apiRoot}/api/stats/cumulativeDeployedContractCount`;
                 return axios.get(resource, { params });
             },
 
             getDeployedContractCount(from, to) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     from, to
                 };
-                const resource = `${store.getters.apiRoot}/api/stats/deployedContractCount`;
+                const resource = `${envStore.apiRoot}/api/stats/deployedContractCount`;
                 return axios.get(resource, { params });
             },
 
             getAverageGasPrice(from, to) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     from, to
                 };
-                const resource = `${store.getters.apiRoot}/api/stats/averageGasPrice`;
+                const resource = `${envStore.apiRoot}/api/stats/averageGasPrice`;
                 return axios.get(resource, { params });
             },
 
             getAverageTransactionFee(from, to) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     from, to
                 };
-                const resource = `${store.getters.apiRoot}/api/stats/averageTransactionFee`;
+                const resource = `${envStore.apiRoot}/api/stats/averageTransactionFee`;
                 return axios.get(resource, { params });
             },
 
             getTokenBalances(address, patterns) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     patterns: patterns
                 };
-                const resource = `${store.getters.apiRoot}/api/addresses/${address}/balances`;
+                const resource = `${envStore.apiRoot}/api/addresses/${address}/balances`;
                 return axios.get(resource, { params });
             },
 
             search(type, query) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     type: type,
                     query: query
                 };
 
-                const resource = `${store.getters.apiRoot}/api/search`;
+                const resource = `${envStore.apiRoot}/api/search`;
                 return axios.get(resource, { params });
             },
 
             getBlocks(options, withCount) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     ...options, withCount
                 };
-                const resource = `${store.getters.apiRoot}/api/blocks`;
+                const resource = `${envStore.apiRoot}/api/blocks`;
                 return axios.get(resource, { params, cache: { ttl: CACHE_TTL }});
             },
 
             getBlock(number, withTransactions = true) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     withTransactions: withTransactions
                 };
-                const resource = `${store.getters.apiRoot}/api/blocks/${number}`;
+                const resource = `${envStore.apiRoot}/api/blocks/${number}`;
                 return axios.get(resource, { params });
             },
 
             getBlockTransactions(blockNumber, options, withCount) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     ...options, withCount
                 };
-                const resource = `${store.getters.apiRoot}/api/blocks/${blockNumber}/transactions`;
-                return axios.get(resource, { params, cache: { ttl: store.getters.currentWorkspace.public ? CACHE_TTL : 0 }});
+                const resource = `${envStore.apiRoot}/api/blocks/${blockNumber}/transactions`;
+                return axios.get(resource, { params, cache: { ttl: currentWorkspaceStore.public ? CACHE_TTL : 0 }});
             },
 
             getTransactions(options, withCount) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     ...options, withCount
                 };
-                const resource = `${store.getters.apiRoot}/api/transactions`;
-                return axios.get(resource, { params, cache: { ttl: store.getters.currentWorkspace.public ? CACHE_TTL : 0 }});
+                const resource = `${envStore.apiRoot}/api/transactions`;
+                return axios.get(resource, { params, cache: { ttl: currentWorkspaceStore.public ? CACHE_TTL : 0 }});
             },
 
             getTransaction(hash) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                 };
-                const resource = `${store.getters.apiRoot}/api/transactions/${hash}`;
+                const resource = `${envStore.apiRoot}/api/transactions/${hash}`;
                 return axios.get(resource, { params });
             },
 
             getContracts(options) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     ...options
                 };
-                const resource = `${store.getters.apiRoot}/api/contracts`;
+                const resource = `${envStore.apiRoot}/api/contracts`;
                 return axios.get(resource, { params });
             },
 
             getContract(address) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                 };
-                const resource = `${store.getters.apiRoot}/api/contracts/${address.toLowerCase()}`;
+                const resource = `${envStore.apiRoot}/api/contracts/${address.toLowerCase()}`;
                 return axios.get(resource, { params, cache: { ttl: 5000 } });
             },
 
             getAddressTransactions(address, options) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     ...options
                 };
-                const resource = `${store.getters.apiRoot}/api/addresses/${address}/transactions`;
+                const resource = `${envStore.apiRoot}/api/addresses/${address}/transactions`;
                 return axios.get(resource, { params });
             },
 
             getAccounts(options) {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     ...options
                 };
-                const resource = `${store.getters.apiRoot}/api/accounts`;
+                const resource = `${envStore.apiRoot}/api/accounts`;
                 return axios.get(resource, { params });
             },
 
             async getCurrentUser() {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId
                 };
-                const resource = `${store.getters.apiRoot}/api/users/me`;
+                const resource = `${envStore.apiRoot}/api/users/me`;
                 return axios.get(resource, { params });
             },
 
             setCurrentWorkspace(workspace) {
                 const data = {
                     workspace: workspace,
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId
                 };
-                const resource = `${store.getters.apiRoot}/api/users/me/setCurrentWorkspace`;
+                const resource = `${envStore.apiRoot}/api/users/me/setCurrentWorkspace`;
                 return axios.post(resource, { data });
             },
 
@@ -1217,7 +1222,7 @@ export const serverPlugin = {
                 const params = {
                     domain: domain
                 };
-                const resource = `${store.getters.apiRoot}/api/explorers/search`;
+                const resource = `${envStore.apiRoot}/api/explorers/search`;
                 return axios.get(resource, { params });
             },
 
@@ -1225,25 +1230,25 @@ export const serverPlugin = {
                 const params = {
                     slug: slug
                 };
-                const resource = `${store.getters.apiRoot}/api/explorers/search`;
+                const resource = `${envStore.apiRoot}/api/explorers/search`;
                 return axios.get(resource, { params });
             },
 
             getProcessableTransactions() {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name
                 };
-                const resource = `${store.getters.apiRoot}/api/transactions/processable`;
+                const resource = `${envStore.apiRoot}/api/transactions/processable`;
                 return axios.get(resource, { params });
             },
 
             getFailedProcessableTransactions() {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name
                 };
-                const resource = `${store.getters.apiRoot}/api/transactions/failedProcessable`;
+                const resource = `${envStore.apiRoot}/api/transactions/failedProcessable`;
                 return axios.get(resource, { params });
             },
 
@@ -1251,29 +1256,29 @@ export const serverPlugin = {
                 const data = {
                     name: name,
                     workspaceData: workspaceData,
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId
                 };
-                const resource = `${store.getters.apiRoot}/api/workspaces`;
+                const resource = `${envStore.apiRoot}/api/workspaces`;
                 return axios.post(resource, { data });
             },
 
             getWorkspaces() {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId
                 };
 
-                const resource = `${store.getters.apiRoot}/api/workspaces`;
+                const resource = `${envStore.apiRoot}/api/workspaces`;
                 return axios.get(resource, { params });
             },
 
             syncBalance(address, balance, workspace) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: workspace || store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: workspace || currentWorkspaceStore.name,
                     balance: balance
                 };
 
-                const resource = `${store.getters.apiRoot}/api/accounts/${address}/syncBalance`;
+                const resource = `${envStore.apiRoot}/api/accounts/${address}/syncBalance`;
                 return axios.post(resource, { data });
             },
 
@@ -1282,139 +1287,139 @@ export const serverPlugin = {
                     explorerId, stripePlanSlug, successUrl, cancelUrl
                 };
 
-                const resource = `${store.getters.apiRoot}/api/stripe/createExplorerCheckoutSession`;
+                const resource = `${envStore.apiRoot}/api/stripe/createExplorerCheckoutSession`;
                 return axios.post(resource, { data });
             },
 
             createStripeUserCheckoutSession() {
-                const resource = `${store.getters.apiRoot}/api/stripe/createUserCheckoutSession`;
+                const resource = `${envStore.apiRoot}/api/stripe/createUserCheckoutSession`;
                 return axios.post(resource);
             },
 
             createStripePortalSession(returnUrl) {
                 const data = { returnUrl };
-                const resource = `${store.getters.apiRoot}/api/stripe/createPortalSession`;
+                const resource = `${envStore.apiRoot}/api/stripe/createPortalSession`;
                 return axios.post(resource, { data });
             },
 
             updateWorkspaceSettings(settings) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     settings: settings
                 };
 
-                const resource = `${store.getters.apiRoot}/api/workspaces/settings`;
+                const resource = `${envStore.apiRoot}/api/workspaces/settings`;
                 return axios.post(resource, { data });
             },
 
             importContract(contractAddress) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name
                 };
 
-                const resource = `${store.getters.apiRoot}/api/contracts/${contractAddress}`;
+                const resource = `${envStore.apiRoot}/api/contracts/${contractAddress}`;
                 return axios.post(resource, { data });
             },
 
             getProductRoadToken() {
                 const params = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name
                 };
 
-                const resource = `${store.getters.apiRoot}/api/marketing/productRoadToken`;
+                const resource = `${envStore.apiRoot}/api/marketing/productRoadToken`;
                 return axios.get(resource, { params });
             },
 
             syncTransactionData(hash, transactionData) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     data: transactionData
                 };
 
-                const resource = `${store.getters.apiRoot}/api/transactions/${hash}/storage`;
+                const resource = `${envStore.apiRoot}/api/transactions/${hash}/storage`;
                 return axios.post(resource, { data });
             },
 
             reprocessTransaction(transactionHash) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     transaction: transactionHash
                 };
 
-                const resource = `${store.getters.apiRoot}/api/transactions/${transactionHash}/process`;
+                const resource = `${envStore.apiRoot}/api/transactions/${transactionHash}/process`;
                 return axios.post(resource, { data });
             },
 
             removeContract(address) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name
                 };
 
-                const resource = `${store.getters.apiRoot}/api/contracts/${address}/remove`;
+                const resource = `${envStore.apiRoot}/api/contracts/${address}/remove`;
                 return axios.post(resource, { data });
             },
 
             resetWorkspace() {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name
                 };
 
-                const resource = `${store.getters.apiRoot}/api/workspaces/reset`;
+                const resource = `${envStore.apiRoot}/api/workspaces/reset`;
                 return axios.post(resource, { data });
             },
 
             syncContractData(address, name, abi, watchedPaths) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     address: address,
                     name: name,
                     abi: abi,
                     watchedPaths: watchedPaths
                 };
 
-                const resource = `${store.getters.apiRoot}/api/contracts/${address}`;
+                const resource = `${envStore.apiRoot}/api/contracts/${address}`;
                 return axios.post(resource, { data });
             },
 
             storeAccountPrivateKey(account, privateKey) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     privateKey: privateKey
                 };
 
-                const resource = `${store.getters.apiRoot}/api/accounts/${account}/privateKey`;
+                const resource = `${envStore.apiRoot}/api/accounts/${account}/privateKey`;
                 return axios.post(resource, { data });
             },
 
             syncFailedTransactionError(transactionHash, error) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     error: error
                 };
 
-                const resource = `${store.getters.apiRoot}/api/transactions/${transactionHash}/error`;
+                const resource = `${envStore.apiRoot}/api/transactions/${transactionHash}/error`;
                 return axios.post(resource, { data });
             },
 
             syncTokenBalanceChanges(transactionHash, tokenTransferId, changes) {
                 const data = {
-                    firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                    workspace: store.getters.currentWorkspace.name,
+                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
+                    workspace: currentWorkspaceStore.name,
                     tokenTransferId: tokenTransferId,
                     changes: changes
                 };
 
-                const resource = `${store.getters.apiRoot}/api/transactions/${transactionHash}/tokenBalanceChanges`;
+                const resource = `${envStore.apiRoot}/api/transactions/${transactionHash}/tokenBalanceChanges`;
                 return axios.post(resource, { data });
             },
 
