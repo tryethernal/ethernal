@@ -936,13 +936,18 @@ module.exports = (sequelize, DataTypes) => {
                     state: 'ready',
                     l1BlockNumber: block.l1BlockNumber,
                     raw: block.raw,
-                    transactions
-                }), {
-                    include: [ sequelize.models.Block.associations.transactions ],
-                    transaction: sequelizeTransaction
+                }), { transaction: sequelizeTransaction });
+
+                const transactionsToInsert = transactions.map(t => {
+                    return {
+                        ...t,
+                        blockId: createdBlock.id
+                    }
                 });
 
-                return createdBlock;
+                await sequelize.models.Transaction.bulkCreate(transactionsToInsert, { transaction: sequelizeTransaction });
+
+                return { toJSON: () => ({ ...createdBlock.toJSON(), transactions: transactionsToInsert }) };
             } catch(error) {
                 const blockAlreadyExists = error.errors && error.errors.find(e => e.validatorKey === 'not_unique');
                 if (blockAlreadyExists)
