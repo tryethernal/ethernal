@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.40.9] - 2024-09-17
+### Changed
+- DB optimization when finding contract by hashed bytecode
+
 ## [3.40.8] - 2024-09-16
 ### Changed
 - Better Sentry worker instrumentation
