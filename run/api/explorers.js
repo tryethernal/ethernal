@@ -429,6 +429,15 @@ router.delete('/:id', authMiddleware, async (req, res, next) => {
     try {
         await db.deleteExplorer(data.user.id, req.params.id);
 
+        const explorer = await db.getExplorerById(data.user.id, req.params.id);
+        if (explorer)
+            return managedError(new Error(`Could not delete explorer.`), req, res);
+
+        if (data.deleteWorkspace)
+            await enqueue('deleteWorkspace', `deleteWorkspace-${req.params.id}`, {
+                workspaceId: explorer.workspaceId
+            });
+
         res.sendStatus(200);
     } catch(error) {
         unmanagedError(error, req, next);
@@ -578,6 +587,9 @@ router.post('/', authMiddleware, async (req, res, next) => {
                 status: 'active'
             }
         }
+
+        if (stripePlan.capabilities.customStartingBlock)
+            options['integrityCheckStartBlockNumber'] = data.integrityCheckStartBlockNumber;
 
         const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
         if (!explorer)
