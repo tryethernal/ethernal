@@ -931,6 +931,45 @@ describe(`POST ${BASE_URL}/:id/settings`, () => {
 });
 
 describe(`POST ${BASE_URL}`, () => {
+    it('Should create the explorer with a starting block', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: { customStartingBlock: true }});
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
+
+        request.post(BASE_URL)
+            .send({ data: { rpcServer: 'test.rpc', name: 'explorer', plan: 'slug', startingBlock: 1 }})
+            .expect(200)
+            .then(({ body }) => {
+                expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
+                    rpcServer: 'test.rpc',
+                    name: 'explorer',
+                    networkId: 1,
+                    integrityCheckStartBlockNumber: 1
+                });
+                expect(body).toEqual({ id: 1 });
+                done();
+            });
+    });
+
+    it('Should ignore the starting block param', (done) => {
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: {}});
+        jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
+
+        request.post(BASE_URL)
+            .send({ data: { rpcServer: 'test.rpc', name: 'explorer', plan: 'slug', startingBlock: 1 }})
+            .expect(200)
+            .then(({ body }) => {
+                expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
+                    rpcServer: 'test.rpc',
+                    name: 'explorer',
+                    networkId: 1
+                });
+                expect(body).toEqual({ id: 1 });
+                done();
+            });
+    });
+
     it('Should create both the explorer and workspace', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: {}});
