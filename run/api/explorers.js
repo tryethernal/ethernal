@@ -578,8 +578,17 @@ router.post('/', authMiddleware, async (req, res, next) => {
         options['l1Explorer'] = data.l1Explorer;
         options['branding'] = data.branding;
 
-        if (!isStripeEnabled() || user.canUseDemoPlan) {
-            const stripePlan = await db.getStripePlan(getDefaultPlanSlug());
+        const usingDefaultPlan = !isStripeEnabled() || user.canUseDemoPlan;
+        const planSlug = usingDefaultPlan ? getDefaultPlanSlug() : data.plan;
+
+        if (!planSlug)
+            return managedError(new Error('Missing plan parameter.'), req, res);
+
+        const stripePlan = await db.getStripePlan(planSlug);
+        if (!stripePlan || !stripePlan.public)
+            return managedError(new Error(`Can't find plan.`), req, res);
+
+        if (usingDefaultPlan) {
             options['subscription'] = {
                 stripePlanId: stripePlan.id,
                 stripeId: null,
@@ -589,21 +598,13 @@ router.post('/', authMiddleware, async (req, res, next) => {
         }
 
         if (stripePlan.capabilities.customStartingBlock)
-            options['integrityCheckStartBlockNumber'] = data.integrityCheckStartBlockNumber;
+            options['integrityCheckStartBlockNumber'] = data.startingBlock;
 
         const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
         if (!explorer)
             return managedError(new Error('Could not create explorer.'), req, res);
 
-        if (!options['subscription'] && req.query.startSubscription) {
-            if (!data.plan)
-                return managedError(new Error('Missing plan parameter.'), req, res);
-
-            const stripePlan = await db.getStripePlan(data.plan);
-
-            if (!stripePlan || !stripePlan.public)
-                return managedError(new Error(`Can't find plan.`), req, res);
-
+        if (!usingDefaultPlan && req.query.startSubscription) {
             let stripeParams = {
                 customer: user.stripeCustomerId,
                 items: [

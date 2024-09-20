@@ -3,6 +3,7 @@ const {
   Model
 } = require('sequelize');
 const Analytics = require('../lib/analytics');
+const { enqueue } = require('../lib/queue');
 const analytics = new Analytics();
 
 module.exports = (sequelize, DataTypes) => {
