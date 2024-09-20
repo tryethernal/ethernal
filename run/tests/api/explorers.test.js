@@ -933,10 +933,11 @@ describe(`POST ${BASE_URL}/:id/settings`, () => {
 describe(`POST ${BASE_URL}`, () => {
     it('Should create both the explorer and workspace', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: {}});
         jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
 
         request.post(BASE_URL)
-            .send({ data: { rpcServer: 'test.rpc', name: 'explorer' }})
+            .send({ data: { rpcServer: 'test.rpc', name: 'explorer', plan: 'slug' }})
             .expect(200)
             .then(({ body }) => {
                 expect(body).toEqual({ id: 1 });
@@ -967,7 +968,8 @@ describe(`POST ${BASE_URL}`, () => {
     });
 
     it('Should return an error if explorer cannot be created', (done) => {
-        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
+        jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }], canUseDemoPlan: true });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: {}});
         jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce(null);
 
         request.post(BASE_URL)
@@ -1055,7 +1057,7 @@ describe(`POST ${BASE_URL}`, () => {
     it('Should not start a subscription if crypto payment not enabled & no payment method', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, stripeCustomerId: 'customerId', workspaces: [{ id: 1, rpcServer: 'test' }] });
         jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
-        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, stripePriceId: 'priceId' });
+        jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, stripePriceId: 'priceId', capabilities: {} });
         mockCustomersRetrieve.mockResolvedValueOnce({ default_source: null })
 
         request.post(`${BASE_URL}?startSubscription=true`)
