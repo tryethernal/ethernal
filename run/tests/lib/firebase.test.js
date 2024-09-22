@@ -528,7 +528,7 @@ describe('markWorkspaceForDeletion', () => {
         jest.spyOn(Workspace, 'findByPk').mockResolvedValueOnce({ update });
         db.markWorkspaceForDeletion(1)
             .then(() => {
-                expect(update).toHaveBeenCalledWith({ pendingDeletion: true });
+                expect(update).toHaveBeenCalledWith({ pendingDeletion: true, public: false });
                 done();
             });
     });

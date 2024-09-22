@@ -490,7 +490,7 @@ const markWorkspaceForDeletion = async (workspaceId) => {
     if (!workspace)
         throw new Error('Could not find workspace');
 
-    return workspace.update({ pendingDeletion: true });
+    return workspace.update({ pendingDeletion: true, public: false });
 };
 
 const updateQuicknodeSubscription = async (qnId, qnEndpointId, stripePlanId) => {

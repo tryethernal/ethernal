@@ -12,6 +12,12 @@ exports[`HashLink.vue Should display a shortened link to the address 1`] = `
 <!----></span>
 `;
 
+exports[`HashLink.vue Should display an external link if embedded 1`] = `
+<span><!----> <a href="//explorer.tryethernal.com/address/0xed5af388653567af2f388e6224dc7c4b3241c544" target="_blank">0xed5af3...c544</a> <!----> <span>
+        &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
+<!----></span>
+`;
+
 exports[`HashLink.vue Should display custom label 1`] = `
 <span><!----> <a href="/address/0xed5af388653567af2f388e6224dc7c4b3241c544" class="">My Address</a> <!----> <span>
         &nbsp;<button type="button" class="v-icon notranslate v-icon--link mdi mdi-content-copy theme--light" style="font-size: 12px;"></button><input type="hidden" id="copyElement-0xed5af388653567af2f388e6224dc7c4b3241c544" value="0xed5af388653567af2f388e6224dc7c4b3241c544"></span>
