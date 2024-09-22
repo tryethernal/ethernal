@@ -6,7 +6,10 @@
             </template>
             Verified contract.
         </v-tooltip>
-        <router-link v-if="hash && !unlink" :to="link()">{{ name }}</router-link>
+        <template v-if="hash && !unlink">
+            <a v-if="embedded" :href="externalLink" target="_blank">{{ name }}</a>
+            <router-link v-else :to="link">{{ name }}</router-link>
+        </template>
         <template v-else>{{ name }}</template>
         <span v-if="tokenId">
             &nbsp;(<router-link :to="`/address/${hash}/${tokenId}`">#{{ tokenId }}</router-link>)
@@ -74,7 +77,8 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'publicExplorer'
+            'publicExplorer',
+            'embedded'
         ]),
         formattedHash() {
             if (!this.hash) return;
@@ -101,10 +105,11 @@ export default {
                 return this.contractName ? this.contractName : this.formattedHash;
             }
             return this.formattedHash;
-        }
+        },
+        link() { return `/${[this.type, this.hash].join('/')}`; },
+        externalLink() { return `//${this.publicExplorer.domain}/${[this.type, this.hash].join('/')}`; }
     },
     methods: {
-        link() { return `/${[this.type, this.hash].join('/')}`; },
         copyHash() {
             const webhookField = document.querySelector(`#copyElement-${this.hash}`);
             webhookField.setAttribute('type', 'text');
