@@ -368,7 +368,7 @@ router.post('/:id/subscription', [authMiddleware, stripeMiddleware], async (req,
     const data = req.body.data;
 
     try {
-        if (!data.plan)
+        if (!data.planSlug)
             return managedError(new Error('Missing parameters.'), req, res);
 
         const explorer = await db.getExplorerById(data.user.id, req.params.id);
@@ -379,7 +379,7 @@ router.post('/:id/subscription', [authMiddleware, stripeMiddleware], async (req,
         if (explorer.stripeSubscription)
             return managedError(new Error(`Explorer already has a subscription.`), req, res);
 
-        const stripePlan = await db.getStripePlan(data.plan);
+        const stripePlan = await db.getStripePlan(data.planSlug);
         if (!stripePlan || !stripePlan.public)
             return managedError(new Error(`Can't find plan.`), req, res);
 
@@ -477,7 +477,7 @@ router.delete('/:id', authMiddleware, async (req, res, next) => {
         else if (explorer.stripeSubscription)
             return managedError(new Error(`Can't delete an explorer with an active subscription.`), req, res);
 
-        await db.deleteExplorer(data.user.id, req.params.id);
+        await db.deleteExplorer(data.user.id, explorer.id);
 
         if (data.deleteWorkspace)
             await db.markWorkspaceForDeletion(explorer.workspaceId);
@@ -492,6 +492,7 @@ router.delete('/:id', authMiddleware, async (req, res, next) => {
 
         res.sendStatus(200);
     } catch(error) {
+        console.log(error);
         unmanagedError(error, req, next);
     }
 });
