@@ -1062,7 +1062,7 @@ describe(`POST ${BASE_URL}`, () => {
         jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
 
         request.post(BASE_URL)
-            .send({ data: { rpcServer: 'test.rpc', name: 'explorer', plan: 'slug', startingBlock: 1 }})
+            .send({ data: { rpcServer: 'test.rpc', name: 'explorer', plan: 'slug', fromBlock: 1 }})
             .expect(200)
             .then(({ body }) => {
                 expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
@@ -1082,7 +1082,7 @@ describe(`POST ${BASE_URL}`, () => {
         jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
 
         request.post(BASE_URL)
-            .send({ data: { rpcServer: 'test.rpc', name: 'explorer', plan: 'slug', startingBlock: 1 }})
+            .send({ data: { rpcServer: 'test.rpc', name: 'explorer', plan: 'slug', fromBlock: 1 }})
             .expect(200)
             .then(({ body }) => {
                 expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {

@@ -616,7 +616,7 @@ router.post('/', authMiddleware, async (req, res, next) => {
                 name: data.name,
                 rpcServer: data.rpcServer,
                 networkId,
-                tracing: data.tracing === 'true' ? 'other' : null,
+                tracing: data.tracing ? 'other' : null,
             };
 
         if (data.faucet && data.faucet.amount && data.faucet.interval)
@@ -651,7 +651,7 @@ router.post('/', authMiddleware, async (req, res, next) => {
         }
 
         if (stripePlan.capabilities.customStartingBlock)
-            options['integrityCheckStartBlockNumber'] = data.startingBlock;
+            options['integrityCheckStartBlockNumber'] = data.fromBlock;
 
         const explorer = await db.createExplorerFromOptions(user.id, sanitize(options));
         if (!explorer)
