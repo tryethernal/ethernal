@@ -95,6 +95,9 @@ module.exports = (sequelize, DataTypes) => {
                 const integrityCheckStartBlockNumber = block.number < 1000 ? 0 : block.number;
                 await workspace.update({ integrityCheckStartBlockNumber });
               }
+              else if (workspace.integrityCheckStartBlockNumber && block.number == workspace.integrityCheckStartBlockNumber) {
+                await enqueue('integrityCheck', `integrityCheck-${workspace.id}`, { workspaceId: workspace.id });
+              }
             }
             if (options.transaction)
               return options.transaction.afterCommit(afterCreateFn);

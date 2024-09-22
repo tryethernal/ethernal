@@ -6,6 +6,7 @@ import vuetify from './plugins/vuetify';
 import router from './plugins/router';
 import demoRouter from './plugins/demoRouter';
 import ssoRouter from './plugins/ssoRouter';
+import embeddedRouter from './plugins/embeddedRouter';
 import { serverPlugin } from './plugins/server';
 import store from './plugins/store';
 import posthogPlugin from "./plugins/posthog";
@@ -15,6 +16,7 @@ import 'ace-mode-solidity/build/remix-ide/mode-solidity.js';
 import App from './App.vue';
 import Demo from './Demo.vue';
 import SSO from './SSO.vue';
+import Embedded from './Embedded.vue';
 
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
@@ -42,6 +44,14 @@ if (store.getters.hasDemoEnabled && window.location.pathname.startsWith('/demo')
         store: store,
         router: demoRouter,
         render: h => h(Demo)
+    }).$mount('#app');
+}
+else if (window.location.pathname.startsWith('/embedded')) {
+    new Vue({
+        vuetify,
+        store: store,
+        router: embeddedRouter,
+        render: h => h(Embedded)
     }).$mount('#app');
 }
 else if (window.location.pathname.endsWith('/sso')) {

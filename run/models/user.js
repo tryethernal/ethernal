@@ -166,7 +166,7 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
-    createExplorerFromOptions({ workspaceId, rpcServer, name, networkId, tracing, faucet, token, slug, totalSupply, l1Explorer, branding, qnEndpointId, domains = [], isDemo = false, subscription }) {
+    createExplorerFromOptions({ workspaceId, rpcServer, name, networkId, tracing, faucet, token, slug, totalSupply, l1Explorer, branding, qnEndpointId, domains = [], isDemo = false, subscription, integrityCheckStartBlockNumber }) {
         if (!workspaceId && (!rpcServer || !name || !networkId))
             throw new Error('Missing parameters');
 
@@ -192,6 +192,7 @@ module.exports = (sequelize, DataTypes) => {
                     rpcServer: rpcServer,
                     tracing: tracing,
                     dataRetentionLimit: this.defaultDataRetentionLimit,
+                    integrityCheckStartBlockNumber: integrityCheckStartBlockNumber,
                     browserSyncEnabled: false,
                     storageEnabled: false,
                     erc721LoadingEnabled: false,

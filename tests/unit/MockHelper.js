@@ -96,6 +96,7 @@ class MockHelper {
             user: jest.fn(() => {
                 return { ...this.storeState.user, plan: this.storeState.user.plan || 'free' }
             }),
+            embedded: jest.fn(() => false),
             nativeToken: jest.fn(() => 'Ether'),
             isPublicExplorer: jest.fn(() => false),
             isUserAdmin: jest.fn(() => true),
