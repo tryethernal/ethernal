@@ -129,7 +129,7 @@ module.exports = async job => {
         }
     }
 
-    const matchingLocalContract = hashedBytecode ? await db.getContractByHashedBytecode(user.firebaseUserId, workspace.name, hashedBytecode) : null;
+    const matchingLocalContract = hashedBytecode ? await db.getContractByHashedBytecode(workspace.id, hashedBytecode) : null;
 
     if (matchingLocalContract && matchingLocalContract.address != contract.address) {
         await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, {

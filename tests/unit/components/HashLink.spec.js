@@ -10,6 +10,22 @@ describe('HashLink.vue', () => {
         helper = new MockHelper();
     });
 
+    it('Should display an external link if embedded', async () => {
+        const wrapper = helper.mountFn(HashLink, {
+            propsData: {
+                type: 'address',
+                hash: '0xed5af388653567af2f388e6224dc7c4b3241c544'
+            },
+            getters: {
+                embedded: jest.fn(() => true),
+                publicExplorer: jest.fn(() => ({ domain: 'explorer.tryethernal.com' }))
+            }
+        });
+        await flushPromises();
+
+        expect(wrapper.html()).toMatchSnapshot();
+    });
+
     it('Should display faucet name', async () => {
         const wrapper = helper.mountFn(HashLink, {
             propsData: {

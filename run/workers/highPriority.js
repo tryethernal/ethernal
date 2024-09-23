@@ -1,4 +1,5 @@
 require('../instrument');
+const Sentry = require('@sentry/node');
 const { initializeApp } = require('firebase-admin/app');
 const { getNodeEnv } = require('../lib/env');
 initializeApp();
@@ -12,7 +13,13 @@ const { managedWorkerError } = require('../lib/errors');
 priorities['high'].forEach(jobName => {
     const worker = new Worker(
         jobName,
-        async job => await jobs[jobName](job),
+        job => {
+            return Sentry.startSpan(
+                { name: jobName }, () => {
+                    return jobs[jobName](job)
+                }
+            )
+        },
         { concurrency: 200, maxStalledCount: 5, connection },
     );
     worker.on('failed', (job, error) => managedWorkerError(error, jobName, job.data, 'highPriority'));

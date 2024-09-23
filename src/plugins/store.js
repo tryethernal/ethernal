@@ -7,6 +7,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
+        embedded: false,
         user: {},
         currentBlock: {},
         publicExplorer: null,
@@ -27,6 +28,9 @@ export default new Vuex.Store({
         connected: false
     },
     mutations: {
+        SET_EMBEDDED(state, embedded) {
+            state.embedded = embedded;
+        },
         SET_ACCOUNTS(state, accounts) {
             if (accounts.length)
                 state.accounts = accounts;
@@ -91,6 +95,9 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        setEmbedded({ commit }, embedded) {
+            commit('SET_EMBEDDED', embedded);
+        },
         startBrowserSync({ commit, getters }) {
             const rpcListenerWorker = new Worker('../workers/blockSyncer.worker.js', { type: 'module' });
             rpcListenerWorker.onmessage = () => commit('UPDATE_BROWSER_SYNC_STATUS', false);
@@ -207,6 +214,7 @@ export default new Vuex.Store({
         currentBlock: state => state.currentBlock,
         currentWorkspace: state => state.currentWorkspace,
         connected: state => state.connected,
+        embedded: state => state.embedded,
         nativeTokenSymbol: state => state.publicExplorer && state.publicExplorer.token || 'ETH',
         nativeTokenAddress: () => '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
         chains: () => ({

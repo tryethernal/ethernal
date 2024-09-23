@@ -224,8 +224,7 @@
 </template>
 
 <script>
-const axios = require('axios');
-import { Icon } from '@iconify/vue';
+import { Icon } from '@iconify/vue2';
 import WebFont from 'webfontloader';
 import Vue from 'vue';
 import detectEthereumProvider from '@metamask/detect-provider';
@@ -274,7 +273,7 @@ export default {
         if (localStorage.getItem('ssoApiToken'))
             localStorage.removeItem('ssoApiToken');
 
-        axios.get(`${store.getters.apiRoot}/api/explorers/search?domain=${window.location.host}`)
+        this.server.searchExplorer(window.location.host)
             .then(({ data }) => {
                 if (data.explorer) {
                     store.dispatch('setPublicExplorerData', data.explorer);

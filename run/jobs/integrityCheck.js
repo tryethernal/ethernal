@@ -68,8 +68,8 @@ module.exports = async job => {
         Mostly to avoid starting in recovery mode. Also, maybe there is a reason the
         sync hasn't been intiated yet.
     */
-    const blockCount = await workspace.countBlocks();
-    if (blockCount == 0)
+    const existingBlocks = await workspace.getBlocks({ limit: 1 });
+    if (!existingBlocks.length)
         return 'No block synced yet';
 
     const [lowestBlock] = await workspace.getBlocks({

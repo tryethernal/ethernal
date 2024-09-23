@@ -363,6 +363,11 @@ export const serverPlugin = {
         );
 
         Vue.prototype.server = {
+            searchExplorer(domain) {
+                const resource = `${store.getters.apiRoot}/api/explorers/search`;
+                return axios.get(resource, { params: { domain }});
+            },
+
             getV2DexStatus(id) {
                 const resource = `${envStore.apiRoot}/api/v2_dexes/${id}/status`;
                 return axios.get(resource);

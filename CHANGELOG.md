@@ -4,6 +4,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.41.0] - 2024-09-23
+### Added
+- fromBlock parameter to the explorer creation endpoint (available on request)
+- Explorer cancelation / subscription endpoints
+- Embedded transaction trace endpoint
+
+## [3.40.12] - 2024-09-19
+### Fixed
+- Bug with some blocks when tracing is activated
+
+## [3.40.11] - 2024-09-17
+### Changed
+- Optimization when inserting blocks with a lot of transactions
+
+## [3.40.10] - 2024-09-17
+### Fixed
+- Bug when calling getContractByHashedBytecode
+
+## [3.40.9] - 2024-09-17
+### Changed
+- DB optimization when finding contract by hashed bytecode
+
+## [3.40.8] - 2024-09-16
+### Changed
+- Better Sentry worker instrumentation
+
+## [3.40.7] - 2024-09-14
+### Changed
+- Make sure rate limited receipt syncs are not duplicated
+
+## [3.40.6] - 2024-09-14
+### Changed
+- More thorough payment source check
+
+## [3.40.5] - 2024-09-12
+### Fixed
+- Bug preventing proper error propagation
+
 ## [3.40.4] - 2024-09-11
 ### Changed
 - Updated UI in workspace list

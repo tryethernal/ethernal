@@ -8,6 +8,7 @@ import { useEnvStore } from './stores/env';
 import router from './plugins/router';
 import demoRouter from './plugins/demoRouter';
 import ssoRouter from './plugins/ssoRouter';
+import embeddedRouter from './plugins/embeddedRouter';
 import { serverPlugin } from './plugins/server';
 import posthogPlugin from "./plugins/posthog";
 import { firestorePlugin } from 'vuefire';
@@ -16,6 +17,7 @@ import 'ace-mode-solidity/build/remix-ide/mode-solidity.js';
 import App from './App.vue';
 import Demo from './Demo.vue';
 import SSO from './SSO.vue';
+import Embedded from './Embedded.vue';
 
 const pinia = createPinia();
 
@@ -47,6 +49,14 @@ if (envStore.hasDemoEnabled() && window.location.pathname.startsWith('/demo')) {
         vuetify,
         router: demoRouter,
         render: h => h(Demo)
+    }).$mount('#app');
+}
+else if (window.location.pathname.startsWith('/embedded')) {
+    new Vue({
+        vuetify,
+        store: store,
+        router: embeddedRouter,
+        render: h => h(Embedded)
     }).$mount('#app');
 }
 else if (window.location.pathname.endsWith('/sso')) {

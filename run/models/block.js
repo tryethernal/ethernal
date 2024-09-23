@@ -81,8 +81,9 @@ module.exports = (sequelize, DataTypes) => {
             const afterCreateFn = async () => {
               if (workspace.tracing == 'other') {
                 const jobs = [];
-                for (let i = 0; i < block.transactions.length; i++) {
-                  const transaction = block.transactions[i];
+                const transactions = await block.getTransactions();
+                for (let i = 0; i < transactions.length; i++) {
+                  const transaction = transactions[i];
                   jobs.push({
                     name: `processTransactionTrace-${workspace.id}-${transaction.hash}`,
                     data: { transactionId: transaction.id }
@@ -93,6 +94,9 @@ module.exports = (sequelize, DataTypes) => {
               if (workspace.integrityCheckStartBlockNumber === null && workspace.explorer) {
                 const integrityCheckStartBlockNumber = block.number < 1000 ? 0 : block.number;
                 await workspace.update({ integrityCheckStartBlockNumber });
+              }
+              else if (workspace.integrityCheckStartBlockNumber && block.number == workspace.integrityCheckStartBlockNumber) {
+                await enqueue('integrityCheck', `integrityCheck-${workspace.id}`, { workspaceId: workspace.id });
               }
             }
             if (options.transaction)

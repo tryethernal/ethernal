@@ -490,7 +490,7 @@ const markWorkspaceForDeletion = async (workspaceId) => {
     if (!workspace)
         throw new Error('Could not find workspace');
 
-    return workspace.update({ pendingDeletion: true });
+    return workspace.update({ pendingDeletion: true, public: false });
 };
 
 const updateQuicknodeSubscription = async (qnId, qnEndpointId, stripePlanId) => {
@@ -2029,11 +2029,17 @@ const getContractData = async (userId, workspace, address) => {
     return contract ? contract.toJSON() : null;
 };
 
-const getContractByHashedBytecode = async (userId, workspace, hashedBytecode) => {
-    if (!userId || !workspace || !hashedBytecode) throw new Error('Missing parameter.');
+const getContractByHashedBytecode = async (workspaceId, hashedBytecode) => {
+    if (!workspaceId || !hashedBytecode) throw new Error('Missing parameter.');
 
-    const user = await User.findByAuthIdWithWorkspace(userId, workspace);
-    const contract = await user.workspaces[0].findContractByHashedBytecode(hashedBytecode);
+    const workspace = await Workspace.findByPk(workspaceId);
+    if (!workspace)
+        throw new Error('Cannot find workspace');
+
+    const contract = await Contract.findOne({
+        attributes: ['id', 'address', 'abi'],
+        where: { workspaceId, hashedBytecode },
+    });
 
     return contract ? contract.toJSON() : null;
 };
