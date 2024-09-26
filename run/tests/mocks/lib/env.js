@@ -35,5 +35,6 @@ jest.mock('../../../lib/env', () => ({
     getRedisTlsSentinel: jest.fn(() => 'a'),
     getMaxV2DexPairsForTrial: jest.fn(() => 100),
     getSentryDsn: jest.fn(() => null),
-    getVersion: jest.fn(() => 'a')
+    getVersion: jest.fn(() => 'a'),
+    getRedisUrl: jest.fn(() => 'a')
 }));

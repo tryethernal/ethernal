@@ -1,9 +1,5 @@
 const Mutex = require('redis-semaphore').Mutex
-const { getNodeEnv } = require('./env');
-const Redis = require('ioredis');
-const config = require('../config/redis')[getNodeEnv()];
-
-const redis = new Redis(config);
+const redis = require('../lib/redis');
 
 class Lock {
 

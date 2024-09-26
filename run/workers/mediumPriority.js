@@ -1,8 +1,7 @@
 require('../instrument');
 const Sentry = require('@sentry/node');
-const { getNodeEnv } = require('../lib/env');
 const { Worker } = require('bullmq');
-const connection = require('../config/redis')[getNodeEnv()];
+const connection = require('../lib/redis');
 const jobs = require('../jobs');
 const logger = require('../lib/logger');
 const priorities = require('./priorities.json');

@@ -1,10 +1,9 @@
 require('../instrument');
 const Sentry = require('@sentry/node');
 const { initializeApp } = require('firebase-admin/app');
-const { getNodeEnv } = require('../lib/env');
 initializeApp();
 const { Worker } = require('bullmq');
-const connection = require('../config/redis')[getNodeEnv()];
+const connection = require('../lib/redis');
 const jobs = require('../jobs');
 const logger = require('../lib/logger');
 const priorities = require('./priorities.json');
