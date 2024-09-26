@@ -1,5 +1,5 @@
 const { Queue } = require('bullmq');
-const connection = require('./config/redis')[process.env.NODE_ENV || 'production'];
+const connection = require('./lib/redis');
 const priorities = require('./workers/priorities.json');
 
 const queues = {};
