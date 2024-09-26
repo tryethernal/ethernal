@@ -1,10 +1,10 @@
 <template>
     <v-container fluid>
-        <v-card outlined style="height: 100%">
+        <v-card border flat style="height: 100%">
             <v-card-text>
                 <v-row>
                     <v-col cols="3" class="pb-0">
-                        <v-select @change="initAllCharts" hide-details="true" dense primary outlined label="Time Range" :items="ranges" v-model="selectedTimeRange" item-text="label" item-value="value">
+                        <v-select @update:model-value="initAllCharts" hide-details="true" density="compact" primary variant="outlined" label="Time Range" :items="ranges" v-model="selectedTimeRange" item-title="label" item-value="value">
                         </v-select>
                     </v-col>
                 </v-row>
@@ -91,7 +91,7 @@ export default {
             this.getCumulativeDeployedContractCount();
         },
         getTransactionVolume() {
-            this.server.getTransactionVolume(this.from, this.to)
+            this.$server.getTransactionVolume(this.from, this.to)
                 .then(({ data }) => {
                     this.charts['transactionVolume'] = {
                         xLabels: data.map(t => t.date),
@@ -101,7 +101,7 @@ export default {
                 .catch(console.log);
         },
         getErc20TransferVolume() {
-            this.server.getTokenTransferVolume(this.from, this.to, null, 'erc20')
+            this.$server.getTokenTransferVolume(this.from, this.to, null, 'erc20')
                 .then(({ data }) => {
                     this.charts['erc20TransferVolume'] = {
                         xLabels: data.map(t => t.date),
@@ -111,7 +111,7 @@ export default {
                 .catch(console.log);
         },
         getAverageGasPrice() {
-            this.server.getAverageGasPrice(this.from, this.to)
+            this.$server.getAverageGasPrice(this.from, this.to)
                 .then(({ data }) => {
                     this.charts['averageGasPrice'] = {
                         xLabels: data.map(t => t.date),
@@ -121,7 +121,7 @@ export default {
                 .catch(console.log);
         },
         getAverageTransactionFee() {
-            this.server.getAverageTransactionFee(this.from, this.to)
+            this.$server.getAverageTransactionFee(this.from, this.to)
                 .then(({ data }) => {
                     this.charts['averageTransactionFee'] = {
                         xLabels: data.map(t => t.date),
@@ -131,7 +131,7 @@ export default {
                 .catch(console.log);
         },
         getUniqueWalletCount() {
-            this.server.getUniqueWalletCount(this.from, this.to)
+            this.$server.getUniqueWalletCount(this.from, this.to)
                 .then(({ data }) => {
                     this.charts['uniqueWalletCount'] = {
                         xLabels: data.map(t => t.date),
@@ -141,7 +141,7 @@ export default {
                 .catch(console.log);
         },
         getCumulativeWalletCount() {
-            this.server.getCumulativeWalletCount(this.from, this.to)
+            this.$server.getCumulativeWalletCount(this.from, this.to)
                 .then(({ data }) => {
                     this.charts['cumulativeWalletCount'] = {
                         xLabels: data.map(t => t.date),
@@ -151,7 +151,7 @@ export default {
                 .catch(console.log);
         },
         getDeployedContractCount() {
-            this.server.getDeployedContractCount(this.from, this.to)
+            this.$server.getDeployedContractCount(this.from, this.to)
                 .then(({ data }) => {
                     this.charts['deployedContractCount'] = {
                         xLabels: data.map(t => t.date),
@@ -161,7 +161,7 @@ export default {
                 .catch(console.log);
         },
         getCumulativeDeployedContractCount() {
-            this.server.getCumulativeDeployedContractCount(this.from, this.to)
+            this.$server.getCumulativeDeployedContractCount(this.from, this.to)
                 .then(({ data }) => {
                     this.charts['cumulativeDeployedContractCount'] = {
                         xLabels: data.map(t => t.date),

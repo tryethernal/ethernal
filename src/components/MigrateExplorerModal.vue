@@ -1,6 +1,6 @@
 <template>
     <v-dialog v-model="dialog" :max-width="user.canTrial || justMigrated ? 600 : 1800" :persistent="true">
-        <v-card outlined v-if="explorerId" :class="{'pa-4': !user.canTrial && !justMigrated }">
+        <v-card border flat v-if="explorerId" :class="{'pa-4': !user.canTrial && !justMigrated }">
             <v-card-title v-if="!user.canTrial && !justMigrated">Setup up your explorer</v-card-title>
             <v-card-title v-else>
                 <template v-if="!finalized">
@@ -12,8 +12,8 @@
                         color="primary"></v-progress-circular>
                         Finalizing your explorer
                 </template>
-                <span v-else class="success--text">
-                    <v-icon class="success--text mr-2">mdi-check-circle-outline</v-icon>Your explorer is ready!
+                <span v-else class="text-success">
+                    <v-icon class="text-success mr-2">mdi-check-circle-outline</v-icon>Your explorer is ready!
                 </span>
             </v-card-title>
             <template v-if="user.canTrial || justMigrated">
@@ -75,7 +75,7 @@ export default {
             this.justMigrated = !!options.justMigrated;
 
             if (this.user.canTrial)
-                this.server.migrateDemoExplorer(this.explorerToken)
+                this.$server.migrateDemoExplorer(this.explorerToken)
                     .then(this.waitForMigration)
                     .catch(console.log);
             else if (this.justMigrated)
@@ -87,7 +87,7 @@ export default {
             });
         },
         waitForMigration() {
-            this.server.getExplorer(this.explorerId)
+            this.$server.getExplorer(this.explorerId)
                 .then(({ data }) => {
                     if (data.isDemo || data.userId != this.user.id)
                         return setTimeout(this.waitForMigration, 3000);

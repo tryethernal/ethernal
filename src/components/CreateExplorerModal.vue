@@ -9,7 +9,7 @@
                 <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
                 <v-row>
                     <v-col cols="12">
-                        <v-select primary outlined label="Select Existing Workspace" v-model="workspace" item-text="name"
+                        <v-select primary variant="outlined" label="Select Existing Workspace" v-model="workspace" item-title="name"
                             v-if="workspaces.length"
                             :items="workspaces" return-object clearable class="mt-2">
                             <template v-slot:item="{ item }">
@@ -76,7 +76,7 @@ export default {
     methods: {
         open() {
             this.dialog = true;
-            this.server.getWorkspaces()
+            this.$server.getWorkspaces()
                 .then(({ data }) => this.workspaces = data.filter(w => !w.explorer))
                 .catch(console.log);
 
@@ -88,7 +88,7 @@ export default {
         selectWorkspace() {
             this.loading = true;
             this.errorMessage = null;
-            this.server.createExplorer(this.workspace.id)
+            this.$server.createExplorer(this.workspace.id)
                 .then(({ data }) => {
                     this.explorer = data;
                     this.$emit('explorerCreated');

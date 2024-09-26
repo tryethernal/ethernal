@@ -1,15 +1,15 @@
 <template>
     <v-container fluid>
-        <v-alert v-if="notAContract" dense text type="warning">There doesn't seem to be a contract at this address</v-alert>
+        <v-alert v-if="notAContract" density="compact" text type="warning">There doesn't seem to be a contract at this address</v-alert>
         <v-row class="mb-1">
             <v-col cols="12" lg="5">
-                <v-card outlined style="height: 100%">
+                <v-card border flat style="height: 100%">
                     <v-skeleton-loader v-if="loadingContract" type="list-item"></v-skeleton-loader>
                     <template v-if="contract.name">
                         <v-card-title>
-                            <v-tooltip top v-if="contract.verification">
-                                <template v-slot:activator="{on, attrs}">
-                                    <v-icon v-bind="attrs" v-on="on" class="success--text mr-1" small v-if="contract.verification">mdi-check-circle</v-icon>
+                            <v-tooltip location="top" v-if="contract.verification">
+                                <template v-slot:activator="{props}">
+                                    <v-icon v-bind="props" class="text-success mr-1" size="small" v-if="contract.verification">mdi-check-circle</v-icon>
                                 </template>
                                 Verified contract.
                             </v-tooltip>
@@ -17,7 +17,7 @@
                             <template v-if="isUserAdmin">
                                 <v-spacer></v-spacer>
                                 <Remove-Contract-Confirmation-Modal ref="removeContractConfirmationModal" />
-                                <v-btn x-small icon @click="openRemoveContractConfirmationModal()">
+                                <v-btn size="x-small" icon @click="openRemoveContractConfirmationModal()">
                                     <v-icon color="red">mdi-delete</v-icon>
                                 </v-btn>
                             </template>
@@ -25,13 +25,13 @@
                     </template>
                     <v-card-subtitle style="display: flex;" class="justify-space-between">
                         <v-skeleton-loader v-if="loadingContract" type="chip"></v-skeleton-loader>
-                        <v-chip v-else v-for="(pattern, idx) in contract.patterns" :key="idx" x-small class="success mr-2">
+                        <v-chip v-else v-for="(pattern, idx) in contract.patterns" :key="idx" size="x-small" class="bg-success mr-2">
                             {{ formatContractPattern(pattern) }}
                         </v-chip>
                         <template v-if="isUserAdmin && !contract.name">
                             <v-spacer></v-spacer>
                             <Remove-Contract-Confirmation-Modal ref="removeContractConfirmationModal" />
-                            <v-btn x-small icon @click="openRemoveContractConfirmationModal()">
+                            <v-btn size="x-small" icon @click="openRemoveContractConfirmationModal()">
                                 <v-icon color="red">mdi-delete</v-icon>
                             </v-btn>
                         </template>
@@ -80,7 +80,7 @@
             <v-col cols="12" lg="7">
                 <v-row>
                     <v-col cols="12">
-                        <v-card outlined>
+                        <v-card border flat>
                             <v-card-subtitle>Balance</v-card-subtitle>
                             <v-skeleton-loader v-if="loadingStats" type="list-item"></v-skeleton-loader>
                             <v-card-text v-else class="text-h4" align="center">
@@ -92,7 +92,7 @@
 
                 <v-row>
                     <v-col cols="12" lg="6">
-                        <v-card outlined style="height: 100%;">
+                        <v-card border flat style="height: 100%;">
                             <v-card-subtitle>Transactions</v-card-subtitle>
                             <v-skeleton-loader v-if="loadingStats" type="list-item"></v-skeleton-loader>
                             <v-card-text v-else class="text-h4" align="center">
@@ -106,7 +106,7 @@
                     </v-col>
 
                     <v-col cols="12" lg="6">
-                        <v-card outlined style="height: 100%;">
+                        <v-card border flat style="height: 100%;">
                             <v-card-subtitle>ERC-20 Transfers</v-card-subtitle>
                             <v-skeleton-loader v-if="loadingStats" type="list-item"></v-skeleton-loader>
                             <v-card-text v-else class="text-h4" align="center">
@@ -197,7 +197,7 @@ export default {
         notAContract: false
     }),
     mounted() {
-        this.server.getAccountBalance(this.address).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
+        this.$server.getAccountBalance(this.address).then(balance => this.balance = ethers.BigNumber.from(balance).toString());
         this.$root.$on('contractVerified', () => this.loadContract(this.address));
     },
     methods: {
@@ -206,7 +206,7 @@ export default {
         formatContractPattern: formatContractPattern,
         loadContract(address) {
             this.loadingContract = true;
-            this.server.getContract(address)
+            this.$server.getContract(address)
                 .then(({ data }) => {
                     if (data) {
                         this.contract = data;
@@ -225,7 +225,7 @@ export default {
             immediate: true,
             handler(address) {
                 this.loadContract(address);
-                this.server.getAddressStats(address)
+                this.$server.getAddressStats(address)
                     .then(({ data }) => {
                         this.receivedTransactionCount = data.receivedTransactionCount;
                         this.sentErc20TokenTransferCount = data.sentErc20TokenTransferCount;

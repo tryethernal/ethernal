@@ -5,9 +5,9 @@
         <Formatted-Sol-Var :input="{ type: 'string' }" :value="JSON.stringify(log.raw)" :notInteractive="true" :isArrayEl="true" class="ml-4" />
     </div>
     <div v-else-if="short" class="my-3">
-        <v-tooltip top :open-delay="150" color="grey darken-1" content-class="tooltip">
-            <template v-slot:activator="{ on, attrs }">
-                <v-chip class="primary lighten-1" v-bind="attrs" v-on="on" label small>
+        <v-tooltip location="top" :open-delay="150" color="grey-darken-1" content-class="tooltip">
+            <template v-slot:activator="{ props }">
+                <v-chip class="bg-primary-lighten-1" v-bind="props" label size="small">
                     <span class="color--text event-name">{{ eventLabel }}</span>
                 </v-chip>
             </template>
@@ -81,7 +81,7 @@ export default {
 
         // if (this.parsedLog) return;
 
-        this.server.getContract(this.log.address)
+        this.$server.getContract(this.log.address)
             .then(({ data }) => {
                 if (data) {
                     this.contract = data.proxyContract || data;

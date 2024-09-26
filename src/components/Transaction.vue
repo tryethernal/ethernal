@@ -34,7 +34,7 @@
         <template v-else-if="transaction.hash && !loading">
             <v-row>
                 <v-col>
-                    <v-alert dense text type="warning" class="my-2" v-if="transaction.state == 'syncing'">
+                    <v-alert density="compact" text type="warning" class="my-2" v-if="transaction.state == 'syncing'">
                         Transaction has been picked up by the indexer, and is currently still being processed.
                         Once it's finished, additional data will be displayed.
                     </v-alert>
@@ -44,9 +44,9 @@
                     <v-spacer></v-spacer>
                     <v-col align="right">
                         <v-progress-circular v-show="processing" indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>
-                        <v-menu :right="true">
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn icon v-bind="attrs" v-on="on">
+                        <v-menu :location="true ? 'right' : undefined">
+                            <template v-slot:activator="{ props }">
+                                <v-btn icon v-bind="props">
                                     <v-icon>mdi-dots-vertical</v-icon>
                                 </v-btn>
                             </template>
@@ -57,25 +57,25 @@
                     </v-col>
                 </template>
             </v-row>
-            <v-chip small class="success mr-2" v-show="txStatus == 'succeeded'">
-                <v-icon small class="white--text mr-1">mdi-check</v-icon>Transaction Succeeded
+            <v-chip size="small" class="bg-success mr-2" v-show="txStatus == 'succeeded'">
+                <v-icon size="small" class="text-white mr-1">mdi-check</v-icon>Transaction Succeeded
             </v-chip>
-            <v-chip small class="error mr-2" v-show="txStatus == 'failed'">
-                <v-icon small class="white--text mr-1">mdi-alert-circle</v-icon>
+            <v-chip size="small" class="bg-error mr-2" v-show="txStatus == 'failed'">
+                <v-icon size="small" class="text-white mr-1">mdi-alert-circle</v-icon>
                 Transaction Failed
             </v-chip>
-            <v-chip small class="grey mr-2" v-show="txStatus == 'unknown'">
-                <v-icon small class="white--text mr-1">mdi-help-circle</v-icon>
+            <v-chip size="small" class="bg-grey mr-2" v-show="txStatus == 'unknown'">
+                <v-icon size="small" class="text-white mr-1">mdi-help-circle</v-icon>
                 Unknown Transaction Status
             </v-chip>
-            <v-chip small v-if="!transaction.to">
-                <v-icon small class="mr-1">mdi-file</v-icon>
+            <v-chip size="small" v-if="!transaction.to">
+                <v-icon size="small" class="mr-1">mdi-file</v-icon>
                 Contract Creation
             </v-chip>
             <v-row class="mt-2" v-if="transaction.parsedError || transaction.rawError">
                 <v-col>
                     <div class="text-overline">Error Message</div>
-                    <v-card outlined>
+                    <v-card border flat>
                         <v-card-text style="white-space: pre-wrap;" v-if="transaction.parsedError">
                             {{ transaction.parsedError }}
                         </v-card-text>
@@ -100,7 +100,7 @@
                 <v-col cols="5" class="text-truncate" v-else>
                     <div class="text-overline">Contract Created</div>
                     <Hash-Link v-if="transaction.receipt" :type="'address'" :hash="transaction.receipt.contractAddress" :fullHash="true" :withName="true" />
-                    <v-chip small class="grey white--text" v-else>
+                    <v-chip size="small" class="bg-grey text-white" v-else>
                         Address Not Available
                     </v-chip>
                 </v-col>
@@ -109,7 +109,7 @@
                 <v-col lg="2" md="6" sm="12" v-if="transaction.receipt">
                     <div class="text-overline">Gas Used</div>
                     <span v-if="transaction.receipt">{{ parseInt(transaction.receipt.gasUsed).toLocaleString() }}</span>
-                    <v-chip small class="grey white--text" v-else>
+                    <v-chip size="small" class="bg-grey text-white" v-else>
                         Not Available
                     </v-chip>
                 </v-col>
@@ -120,7 +120,7 @@
                 <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Cost</div>
                     <span v-if="transaction.receipt">{{ transaction.receipt.gasUsed * getGasPriceFromTransaction(transaction) | fromWei('ether', chain.token) }}</span>
-                    <v-chip small class="grey white--text" v-else>
+                    <v-chip size="small" class="bg-grey text-white" v-else>
                         Not Available
                     </v-chip>
                 </v-col>
@@ -160,7 +160,7 @@
             <v-row class="my-2" v-if="transaction.tokenTransferCount > 0">
                 <v-col>
                     <h3 class="mb-2">Token Transfers</h3>
-                    <v-card outlined>
+                    <v-card border flat>
                         <v-card-text>
                             <Transaction-Token-Transfers :hash="transaction.hash" :withTokenData="true" />
                         </v-card-text>
@@ -184,7 +184,7 @@
             <v-row class="my-2" v-if="transaction.traceSteps.length">
                 <v-col>
                     <h3 class="mb-2">Trace</h3>
-                    <v-card outlined class="pb-2">
+                    <v-card border flat class="pb-2">
                         <v-card-text class="pt-2">
                             <Trace-Step v-for="step in transaction.traceSteps" :step="step" :key="step.id" />
                         </v-card-text>
@@ -256,7 +256,7 @@ export default {
         loading: false
     }),
     mounted() {
-        this.pusherUnsubscribe = this.pusher.onNewTransaction(data => {
+        this.pusherUnsubscribe = this.$pusher.onNewTransaction(data => {
             if (data.hash == this.hash)
                 this.loadTransaction(this.hash);
         }, this);
@@ -277,7 +277,7 @@ export default {
         commify: ethers.utils.commify,
         loadTransaction(hash) {
             this.loading = true;
-            this.server.getTransaction(hash)
+            this.$server.getTransaction(hash)
                 .then(({ data }) => this.transaction = data)
                 .catch(console.log)
                 .finally(() => this.loading = false);
@@ -288,7 +288,7 @@ export default {
                 .reprocessTransaction(this.hash)
                 .then(() => {
                     if (!this.isPublicExplorer)
-                        this.server.processTransaction(this.currentWorkspace, this.transaction)
+                        this.$server.processTransaction(this.currentWorkspace, this.transaction)
                             .catch(console.log)
                             .finally(() => this.processing = false);
                     else

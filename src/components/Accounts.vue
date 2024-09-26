@@ -1,17 +1,16 @@
 <template>
     <v-container fluid>
-        <v-card outlined>
+        <v-card border flat>
             <v-card-text>
                 <Add-Account-Modal ref="addAccountModalRef" v-if="isUserAdmin" />
                 <Unlock-Account-Modal ref="openUnlockAccountModalRef" v-if="isUserAdmin" />
-                <v-data-table
+                <v-data-table-server
                     :loading="loading"
                     no-data-text="No Accounts"
                     :items="accounts"
-                    :sort-by="currentOptions.sortBy[0]"
+                    :sort-by="[{ key: currentOptions.sortBy[0], order: currentOptions.sortDesc[0] === false ? 'asc' : 'desc' }]"
                     :must-sort="true"
-                    :sort-desc="true"
-                    :server-items-length="accountCount"
+                    :items-length="accountCount"
                     :footer-props="{
                         itemsPerPageOptions: [10, 25, 100]
                     }"
@@ -21,10 +20,10 @@
                         No Accounts Available
                     </template>
                     <template v-slot:item.address="{ item }">
-                        <v-tooltip top>
-                            <template v-slot:activator="{ on, attrs }">
+                        <v-tooltip location="top">
+                            <template v-slot:activator="{ props }">
                                 <span v-show="item.privateKey">
-                                    <v-icon v-bind="attrs" v-on="on" small class="mr-2">mdi-lock-open-outline</v-icon>
+                                    <v-icon v-bind="props" size="small" class="mr-2">mdi-lock-open-outline</v-icon>
                                 </span>
                             </template>
                             <span>Account has been unlocked with private key.</span>
@@ -34,16 +33,16 @@
                     <template v-slot:top>
                         <v-toolbar flat dense class="py-0" v-if="isUserAdmin">
                             <v-spacer></v-spacer>
-                            <v-tooltip bottom>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-btn id="resyncAllAccounts" :disabled="loading" v-bind="attrs" v-on="on" small depressed color="primary" class="mr-2" @click="syncAccounts()">
-                                        <v-icon small class="mr-1">mdi-sync</v-icon>Resync
+                            <v-tooltip location="bottom">
+                                <template v-slot:activator="{ props }">
+                                    <v-btn id="resyncAllAccounts" :disabled="loading" v-bind="props" size="small" variant="flat" color="primary" class="mr-2" @click="syncAccounts()">
+                                        <v-icon size="small" class="mr-1">mdi-sync</v-icon>Resync
                                     </v-btn>
                                 </template>
                                 This will send a request with the 'eth_accounts' method to the RPC server, and add returned addresses to your accounts list.
                             </v-tooltip>
-                            <v-btn small depressed color="primary" class="mr-2" @click="openAddAccountModal()">
-                                <v-icon small class="mr-1">mdi-plus</v-icon>Add Account
+                            <v-btn size="small" variant="flat" color="primary" class="mr-2" @click="openAddAccountModal()">
+                                <v-icon size="small" class="mr-1">mdi-plus</v-icon>Add Account
                             </v-btn>
                         </v-toolbar>
                     </template>
@@ -56,7 +55,7 @@
                     <template v-slot:item.actions="{ item }" v-if="isUserAdmin">
                         <a href="#" @click.prevent="openUnlockAccountModal(item)">Set Private Key</a>
                     </template>
-                </v-data-table>
+                </v-data-table-server>
             </v-card-text>
         </v-card>
     </v-container>
@@ -64,6 +63,9 @@
 <script>
 const ethers = require('ethers');
 import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 
 import AddAccountModal from './AddAccountModal';
 import UnlockAccountModal from './UnlockAccountModal';
@@ -92,7 +94,7 @@ export default {
         pusherUnsubscribe: null
     }),
     mounted() {
-        this.pusherUnsubscribe = this.pusher.onUpdatedAccount(() => this.getAccounts());
+        this.pusherUnsubscribe = this.$pusher.onUpdatedAccount(() => this.getAccounts());
         if (this.isUserAdmin)
             this.headers.push({ text: 'Actions', value: 'actions' });
     },
@@ -102,11 +104,11 @@ export default {
     methods: {
         syncAccounts() {
             this.loading = true;
-            this.server.getRpcAccounts(this.rpcServer)
+            this.$server.getRpcAccounts(this.rpcServer)
                 .then(accounts => {
                     const promises = [];
                     for (let i = 0; i < accounts.length; i++)
-                        promises.push(this.server.syncBalance(accounts[i], '0'));
+                        promises.push(this.$server.syncBalance(accounts[i], '0'));
 
                     Promise.all(promises).then(() => this.getAccounts());
                 })
@@ -123,13 +125,13 @@ export default {
                 itemsPerPage: this.currentOptions.itemsPerPage,
                 order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
             };
-            this.server.getAccounts(options)
+            this.$server.getAccounts(options)
                 .then(({ data }) => {
-                    this.$store.dispatch('updateAccounts', data.items)
+                    this.currentWorkspaceStore.updateAccounts(data.items);
                     this.accounts = data.items;
                     this.accountCount = data.total;
                     for (let i = 0; i < this.accounts.length; i++) {
-                        this.server.getAccountBalance(this.accounts[i].address)
+                        this.$server.getAccountBalance(this.accounts[i].address)
                             .then(rawBalance => {
                                 const balance = ethers.BigNumber.from(rawBalance).toString();
                                 this.accounts[i].balance = balance;
@@ -151,6 +153,7 @@ export default {
         }
     },
     computed: {
+        ...mapStores(useCurrentWorkspaceStore),
         ...mapGetters([
             'rpcServer',
             'chain',

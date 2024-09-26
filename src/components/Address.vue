@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-card v-if="loadingContract" outlined>
+        <v-card v-if="loadingContract" border>
             <v-card-text>
                 <v-row>
                     <v-col cols="4">
@@ -17,10 +17,10 @@
         <template v-else>
             <v-row class="mb-1">
                 <v-col cols="12" lg="5" v-if="contract">
-                    <v-card outlined style="height: 100%">
+                    <v-card border flat style="height: 100%">
                         <v-card-title v-if="contract.name">{{ contract.name }}</v-card-title>
                         <v-card-subtitle v-if="contract.patterns.length > 0">
-                            <v-chip v-for="(pattern, idx) in contract.patterns" :key="idx" x-small class="success mr-2">
+                            <v-chip v-for="(pattern, idx) in contract.patterns" :key="idx" size="x-small" class="bg-success mr-2">
                                 {{ formatContractPattern(pattern) }}
                             </v-chip>
                         </v-card-subtitle>
@@ -61,7 +61,7 @@
                 <v-col cols="12" lg="7">
                     <v-row>
                         <v-col cols="12">
-                            <v-card outlined>
+                            <v-card border flat>
                                 <v-card-subtitle>Balance</v-card-subtitle>
                                 <v-skeleton-loader v-if="loadingStats" type="list-item"></v-skeleton-loader>
                                 <v-card-text v-else class="text-h4" align="center">
@@ -73,7 +73,7 @@
 
                     <v-row>
                         <v-col cols="12" lg="6">
-                            <v-card outlined style="height: 100%;">
+                            <v-card border flat style="height: 100%;">
                                 <v-card-subtitle>Transactions</v-card-subtitle>
                                 <v-skeleton-loader v-if="loadingStats" type="list-item"></v-skeleton-loader>
                                 <v-card-text v-else class="text-h4" align="center">
@@ -87,7 +87,7 @@
                         </v-col>
 
                         <v-col cols="12" lg="6">
-                            <v-card outlined style="height: 100%;">
+                            <v-card border flat style="height: 100%;">
                                 <v-card-subtitle>ERC-20 Transfers</v-card-subtitle>
                                 <v-skeleton-loader v-if="loadingStats" type="list-item"></v-skeleton-loader>
                                 <v-card-text v-else class="text-h4" align="center">
@@ -110,53 +110,53 @@
                 <v-tab v-if="contract && currentWorkspace.storageEnabled" id="storageTab" href="#storage">Storage</v-tab>
             </v-tabs>
 
-            <v-tabs-items :value="tab">
-                <v-tab-item value="transactions">
-                    <v-card outlined class="mt-3">
+            <v-tabs-window :value="tab">
+                <v-tab-window-item value="transactions">
+                    <v-card border flat class="mt-3">
                         <v-card-text>
                             <Address-Transactions-List :address="address" :key="address" />
                         </v-card-text>
                     </v-card>
-                </v-tab-item>
+                </v-tab-window-item>
 
-                <v-tab-item value="transfers">
-                    <v-card outlined class="mt-3">
+                <v-tab-window-item value="transfers">
+                    <v-card border flat class="mt-3">
                         <v-card-text>
                             <Address-Token-Transfers :address="address" :key="address" />
                         </v-card-text>
                     </v-card>
-                </v-tab-item>
+                </v-tab-window-item>
 
-                <v-tab-item value="erc20Balances">
+                <v-tab-window-item value="erc20Balances">
                     <Token-Balances :address="address" :patterns="['erc20']" :key="address" />
-                </v-tab-item>
+                </v-tab-window-item>
 
-                <v-tab-item value="erc721Balances">
+                <v-tab-window-item value="erc721Balances">
                     <Token-Balances :address="address" :patterns="['erc721']" :dense="true" :key="address" />
-                </v-tab-item>
+                </v-tab-window-item>
 
                 <template v-if="contract">
-                    <v-tab-item value="interactions">
+                    <v-tab-window-item value="interactions">
                         <Contract-Interaction :address="address" :key="address" />
-                    </v-tab-item>
+                    </v-tab-window-item>
 
-                    <v-tab-item value="code">
+                    <v-tab-window-item value="code">
                         <Contract-Code v-if="contract" :contract="contract" :key="address" />
-                    </v-tab-item>
+                    </v-tab-window-item>
 
-                    <v-tab-item value="logs">
-                        <v-card outlined class="mt-3">
+                    <v-tab-window-item value="logs">
+                        <v-card border flat class="mt-3">
                             <v-card-text>
                                 <Contract-Logs :address="address" :key="address" />
                             </v-card-text>
                         </v-card>
-                    </v-tab-item>
+                    </v-tab-window-item>
 
-                    <v-tab-item v-if="currentWorkspace.storageEnabled" value="storage">
+                    <v-tab-window-item v-if="currentWorkspace.storageEnabled" value="storage">
                         <Contract-Storage :address="address" :key="address" />
-                    </v-tab-item>
+                    </v-tab-window-item>
                 </template>
-            </v-tabs-items>
+            </v-tabs-window>
         </template>
     </v-container>
 </template>
@@ -203,7 +203,7 @@ export default {
         receivedErc20TransferCount: null
     }),
     mounted() {
-        this.server.getNativeTokenBalance(this.address).then(({ data: { balance }}) => this.balance = balance);
+        this.$server.getNativeTokenBalance(this.address).then(({ data: { balance }}) => this.balance = balance);
     },
     methods: {
         formatContractPattern
@@ -212,12 +212,12 @@ export default {
         address: {
             immediate: true,
             handler(address) {
-                this.server.getContract(address)
+                this.$server.getContract(address)
                     .then(({ data }) => this.contract = data)
                     .catch(console.log)
                     .finally(() => this.loadingContract = false);
 
-                this.server.getAddressStats(address)
+                this.$server.getAddressStats(address)
                     .then(({ data }) => {
                         this.sentTransactionCount = data.sentTransactionCount;
                         this.receivedTransactionCount = data.receivedTransactionCount;

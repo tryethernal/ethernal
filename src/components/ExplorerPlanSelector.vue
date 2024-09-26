@@ -4,13 +4,13 @@
         <v-row justify="center">
             <template v-if="loading">
                 <v-col  cols="3">
-                    <v-card outlined><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
+                    <v-card border flat><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
                 </v-col>
                 <v-col  cols="3">
-                    <v-card outlined><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
+                    <v-card border flat><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
                 </v-col>
                 <v-col  cols="3">
-                    <v-card outlined><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
+                    <v-card border flat><v-skeleton-loader type="article, actions"></v-skeleton-loader></v-card>
                 </v-col>
             </template>
             <v-col v-else cols="3" v-for="(plan, idx) in plans" :key="idx">
@@ -56,7 +56,7 @@ export default {
     }),
     mounted() {
         this.loading = true;
-        this.server.getExplorerPlans()
+        this.$server.getExplorerPlans()
             .then(({ data }) => this.plans = data.sort((a, b) => a.price - b.price && b.price > 0))
             .catch(console.log)
             .finally(() => this.loading = false);
@@ -74,7 +74,7 @@ export default {
         },
         createPlan(slug) {
             if (this.user.cryptoPaymentEnabled) {
-                this.server.startCryptoSubscription(slug, this.explorerId)
+                this.$server.startCryptoSubscription(slug, this.explorerId)
                     .then(() => {
                         this.$emit('planCreated', slug);
                     })
@@ -85,7 +85,7 @@ export default {
                     .finally(() => this.selectedPlanSlug = null);
             }
             else if (this.user.canTrial) {
-                this.server.startTrial(this.explorerId, slug)
+                this.$server.startTrial(this.explorerId, slug)
                     .then(() => window.location.assign(`//app.${this.mainDomain}/explorers/${this.explorerId}`))
                     .catch(error => {
                         console.log(error);
@@ -96,7 +96,7 @@ export default {
             else {
                 const successUrl = this.stripeSuccessUrl || `http://app.${this.mainDomain}/explorers/${this.explorerId}?justCreated=true`;
                 const cancelUrl = this.stripeCancelUrl || `http://app.${this.mainDomain}/explorers/${this.explorerId}`;
-                this.server.createStripeExplorerCheckoutSession(this.explorerId, this.selectedPlanSlug, successUrl, cancelUrl)
+                this.$server.createStripeExplorerCheckoutSession(this.explorerId, this.selectedPlanSlug, successUrl, cancelUrl)
                     .then(({ data }) => window.location.assign(data.url))
                     .catch(error => {
                         console.log(error);
@@ -128,7 +128,7 @@ Are you sure you want to change plan?`;
                     return this.selectedPlanSlug = null;
             }
 
-            this.server.updateExplorerSubscription(this.explorerId, slug)
+            this.$server.updateExplorerSubscription(this.explorerId, slug)
                 .then(() => this.$emit('planUpdated', slug))
                 .catch(error => {
                     console.log(error);
@@ -153,7 +153,7 @@ Are you sure you want to cancel?`;
 
             if (!confirm(confirmationMessage)) return this.selectedPlanSlug = null;
 
-            this.server.cancelExplorerSubscription(this.explorerId)
+            this.$server.cancelExplorerSubscription(this.explorerId)
                 .then(() => {
                     this.$emit('planCanceled');
                 })

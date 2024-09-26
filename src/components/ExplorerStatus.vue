@@ -4,12 +4,12 @@
             <h2>Explorer</h2>
             <v-row class="mt-2">
                 <v-col cols="3" v-if="syncStatus || loading">
-                    <v-alert :class="`${explorerClass}--text`" :type="explorerClass" border="left" colored-border elevation="2">
+                    <v-alert :class="`${explorerClass}--text`" :type="explorerClass" border="start" border-color elevation="2">
                         <small style="position: absolute;">Sync Status</small>
                         <div class="text-right">
-                            <v-tooltip left>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-icon v-bind="attrs" v-on="on" small>mdi-information</v-icon>
+                            <v-tooltip location="left">
+                                <template v-slot:activator="{ props }">
+                                    <v-icon v-bind="props" size="small">mdi-information</v-icon>
                                 </template>
                                 <template v-if="syncStatus == 'healthy'">Syncing is working properly. Blocks & transactions should appear in near real-time in the explorer.</template>
                                 <template v-if="syncStatus == 'recovering'">Syncing is not working properly. We are working on getting things back up. In the meantime, blocks won't be synced in real-time but batched every 5 minutes.</template>
@@ -20,12 +20,12 @@
                     </v-alert>
                 </v-col>
                 <v-col cols="3" v-if="isLatestCheckedBlockAvailable && isStartingBlockAvailable || loading">
-                    <v-alert class="primary--text" border="left" colored-border elevation="2">
+                    <v-alert class="text-primary" border="start" border-color elevation="2">
                         <small style="position: absolute;">Block Integrity</small>
                         <div class="text-right">
-                            <v-tooltip left>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-icon v-bind="attrs" v-on="on" small>mdi-information</v-icon>
+                            <v-tooltip location="left">
+                                <template v-slot:activator="{ props }">
+                                    <v-icon v-bind="props" size="small">mdi-information</v-icon>
                                 </template>
                                 The explorer is regularly checking that all blocks are accounted for, and that none are missing.<br>
                                 This means that we can guarantee that all blocks between #{{ startingBlock }} and #{{ latestCheckedBlock }}
@@ -37,7 +37,7 @@
                     </v-alert>
                 </v-col>
                 <v-col cols="3" v-if="latestCheckedAt || loading">
-                    <v-alert class="primary--text" border="left" colored-border elevation="2">
+                    <v-alert class="text-primary" border="start" border-color elevation="2">
                         <small>Latest Check</small>
                         <div v-if="latestCheckedAt" class="mt-4 text-h4 text-center">
                             {{ moment(latestCheckedAt) | moment('h:mma') }}<br>
@@ -52,12 +52,12 @@
             <h2>RPC</h2>
             <v-row class="mt-2">
                 <v-col cols="3" v-if="isRpcReachable !== null && isRpcReachable !== undefined || loading">
-                    <v-alert :class="`${rpcClass}--text`" :type="rpcClass" border="left" colored-border elevation="2">
+                    <v-alert :class="`${rpcClass}--text`" :type="rpcClass" border="start" border-color elevation="2">
                         <small style="position: absolute;">Status</small>
                         <div class="text-right">
-                            <v-tooltip left>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-icon v-bind="attrs" v-on="on" small>mdi-information</v-icon>
+                            <v-tooltip location="left">
+                                <template v-slot:activator="{ props }">
+                                    <v-icon v-bind="props" size="small">mdi-information</v-icon>
                                 </template>
                                 <template v-if="isRpcReachable">We are able to query the RPC endpoint for new blocks.</template>
                                 <template v-else>
@@ -70,7 +70,7 @@
                     </v-alert>
                 </v-col>
                 <v-col cols="3" v-if="rpcHealthCheckedAt || loading">
-                    <v-alert class="primary--text" border="left" colored-border elevation="2">
+                    <v-alert class="text-primary" border="start" border-color elevation="2">
                         <small>Latest Check</small>
                         <div v-if="rpcHealthCheckedAt" class="mt-4 text-h4 text-center">
                             {{ moment(rpcHealthCheckedAt) | moment('h:mm:ssa') }}<br>
@@ -104,7 +104,7 @@ export default {
     methods: {
         moment: moment,
         fetchStatus() {
-            this.server.getExplorerStatus()
+            this.$server.getExplorerStatus()
                 .then(({ data }) => {
                     this.syncStatus = data.syncStatus;
                     this.latestCheckedBlock = data.latestCheckedBlock;

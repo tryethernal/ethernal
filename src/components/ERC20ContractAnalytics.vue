@@ -2,7 +2,7 @@
     <v-container fluid>
         <v-row>
             <v-col cols="3" class="pb-0">
-                <v-select @change="initAllCharts()" hide-details="true" dense color="primary" outlined label="Time Range" :items="ranges" v-model="selectedTimeRange" item-text="label" item-value="value">
+                <v-select @update:model-value="initAllCharts()" hide-details="true" density="compact" color="primary" variant="outlined" label="Time Range" :items="ranges" v-model="selectedTimeRange" item-title="label" item-value="value">
                 </v-select>
             </v-col>
         </v-row>
@@ -55,7 +55,7 @@ export default {
             this.getTokenHolderHistory(address || this.address);
         },
         getTransferVolume(address) {
-            this.server.getTokenTransferVolume(this.from, this.to, address)
+            this.$server.getTokenTransferVolume(this.from, this.to, address)
                 .then(({ data }) => {
                     this.charts['transferVolume'] = {
                         xLabels: data.map(t => t.date),
@@ -65,7 +65,7 @@ export default {
                 .catch(console.log);
         },
         getCirculatingSupply(address) {
-            this.server.getTokenCirculatingSupply(this.from, this.to, address)
+            this.$server.getTokenCirculatingSupply(this.from, this.to, address)
                 .then(({ data }) => {
                     this.charts['circulatingSupply'] = {
                         xLabels: data.map(t => t.date),
@@ -80,7 +80,7 @@ export default {
                 .catch(console.log);
         },
         getTokenHolderHistory(address) {
-            this.server.getTokenHolderHistory(this.from, this.to, address)
+            this.$server.getTokenHolderHistory(this.from, this.to, address)
                 .then(({ data }) => {
                     this.charts['tokenHolderHistory'] = {
                         xLabels: data.map(t => t.date),

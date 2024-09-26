@@ -1,10 +1,10 @@
 <template>
     <v-container fluid>
-        <v-card outlined>
+        <v-card border flat>
             <v-card-text>
                 <template v-if="isUserAdmin">
-                    <v-alert v-if="removedContract" dense text type="success">Contract at address <b>{{ removedContract }}</b> has been successfully removed.</v-alert>
-                    <v-alert dense text v-show="!canImport" type="warning">Free plan users are limited to 10 synced contracts. Remove some contracts or <Upgrade-Link @goToBilling="goToBilling" :emit="true">upgrade</Upgrade-Link> to the Premium plan for more.</v-alert>
+                    <v-alert v-if="removedContract" density="compact" text type="success">Contract at address <b>{{ removedContract }}</b> has been successfully removed.</v-alert>
+                    <v-alert density="compact" text v-show="!canImport" type="warning">Free plan users are limited to 10 synced contracts. Remove some contracts or <Upgrade-Link @goToBilling="goToBilling" :emit="true">upgrade</Upgrade-Link> to the Premium plan for more.</v-alert>
                     <Import-Contract-Modal ref="importContractModal" />
                     <Remove-Contract-Confirmation-Modal @refresh="getContracts" ref="removeContractConfirmationModal" />
                 </template>
@@ -24,8 +24,8 @@
                     <template v-slot:top v-if="isUserAdmin">
                         <v-toolbar flat dense class="py-0">
                             <v-spacer></v-spacer>
-                            <v-btn small depressed color="primary" class="mr-2" @click="openImportContractModal()">
-                                <v-icon small class="mr-1">mdi-import</v-icon>Import Contract
+                            <v-btn size="small" variant="flat" color="primary" class="mr-2" @click="openImportContractModal()">
+                                <v-icon size="small" class="mr-1">mdi-import</v-icon>Import Contract
                             </v-btn>
                         </v-toolbar>
                     </template>
@@ -33,7 +33,7 @@
                         No contracts found
                     </template>
                     <template v-slot:item.tags="{ item }">
-                        <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" x-small class="success mr-2">
+                        <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" size="x-small" class="bg-success mr-2">
                             {{ formatContractPattern(pattern) }}
                         </v-chip>
                     </template>
@@ -42,9 +42,9 @@
                     </template>
                     <template v-slot:item.timestamp="{ item }">
                         <template v-if="item.creationTransaction">
-                            <v-tooltip top :open-delay="150" color="grey darken-3">
-                                <template v-slot:activator="{ on, attrs }">
-                                    <span v-bind="attrs" v-on="on">
+                            <v-tooltip location="top" :open-delay="150" color="grey-darken-3">
+                                <template v-slot:activator="{ props }">
+                                    <span v-bind="props">
                                         {{ moment(item.creationTransaction.timestamp) | moment('MM/DD h:mm:ss A') }}
                                     </span>
                                 </template>
@@ -53,7 +53,7 @@
                         </template>
                     </template>
                     <template v-slot:item.actions="{ item }" v-if="isUserAdmin">
-                        <v-btn color="error" x-small icon @click="openRemoveContractConfirmationModal(item.address)">
+                        <v-btn color="error" size="x-small" icon @click="openRemoveContractConfirmationModal(item.address)">
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
                     </template>
@@ -115,8 +115,8 @@ export default {
         if (this.currentWorkspace.isAdmin)
             this.headers.push({ text: '', value: 'remove' });
 
-        this.newContractPusherHandler = this.pusher.onNewContract(() => this.getContracts(this.currentOptions), this);
-        this.destroyedContractPusherHandler = this.pusher.onDestroyedContract(() => this.getContracts(this.currentOptions), this);
+        this.newContractPusherHandler = this.$pusher.onNewContract(() => this.getContracts(this.currentOptions), this);
+        this.destroyedContractPusherHandler = this.$pusher.onDestroyedContract(() => this.getContracts(this.currentOptions), this);
     },
     destroyed() {
         this.newContractPusherHandler.unbind(null, null, this);
@@ -137,7 +137,7 @@ export default {
                 order: this.currentOptions.sortDesc[0] === false ? 'ASC' : 'DESC'
             };
 
-            this.server.getContracts(options)
+            this.$server.getContracts(options)
                 .then(({ data }) => {
                     this.contracts = data.items;
                     this.contractCount = data.total;

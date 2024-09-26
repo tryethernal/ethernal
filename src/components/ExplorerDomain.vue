@@ -1,14 +1,14 @@
 <template>
     <v-list-item :disabled="loading" class="pl-0">
         <Explorer-Domain-DNS-Info-Modal ref="explorerDomainDnsInfo" />
-        <v-btn style="width: inherit; height: inherit;" @click.stop="deleteDomain()" icon><v-icon small :color="loading ? 'grey' : 'error'">mdi-delete</v-icon></v-btn>
-        <v-btn style="width: inherit; height: inherit;" class="mr-2" @click.stop="loadDnsStatus()" icon><v-icon small :color="loading ? 'grey' : 'primary'">mdi-refresh</v-icon></v-btn>
-        <v-list-item-content clas="my-0">
+        <v-btn style="width: inherit; height: inherit;" @click.stop="deleteDomain()" icon><v-icon size="small" :color="loading ? 'grey' : 'error'">mdi-delete</v-icon></v-btn>
+        <v-btn style="width: inherit; height: inherit;" class="mr-2" @click.stop="loadDnsStatus()" icon><v-icon size="small" :color="loading ? 'grey' : 'primary'">mdi-refresh</v-icon></v-btn>
+        <div clas="my-0">
             <v-list-item-subtitle>
                 <a :href="`//${domain.domain}`" target="_blank">{{  domain.domain }}</a>&nbsp;|&nbsp;
                 <span v-if="loading && !deleting">Fetching DNS status...</span>
                 <template v-else-if="dnsStatus.status_message">
-                    <v-icon small :color="status ? 'success' : 'error'">{{ status ? 'mdi-check' : 'mdi-close' }}</v-icon>
+                    <v-icon size="small" :color="status ? 'success' : 'error'">{{ status ? 'mdi-check' : 'mdi-close' }}</v-icon>
                     <a style="text-decoration: underline;" @click.stop="showDnsInfo()">
                         <template v-if="status">{{ dnsStatus.status_message }}</template>
                         <template v-else>Incomplete DNS setup</template>
@@ -16,7 +16,7 @@
                 </template>
                 <span v-else>DNS status not available yet.</span>
             </v-list-item-subtitle>
-        </v-list-item-content>
+        </div>
     </v-list-item>
 </template>
 
@@ -40,7 +40,7 @@ export default {
     methods: {
         loadDnsStatus() {
             this.loading = true;
-            this.server.getExplorerDomainStatus(this.domain.id)
+            this.$server.getExplorerDomainStatus(this.domain.id)
                 .then(({ data }) => this.dnsStatus = data)
                 .catch(console.log)
                 .finally(() => this.loading = false);
@@ -50,7 +50,7 @@ export default {
                 return;
             this.loading = true;
             this.deleting = true;
-            this.server.removeExplorerDomain(this.domain.id)
+            this.$server.removeExplorerDomain(this.domain.id)
                 .then(() => this.$emit('deleted'))
                 .catch(console.log)
                 .finally(() => {

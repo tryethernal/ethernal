@@ -1,7 +1,7 @@
 <template>
 <v-dialog v-model="dialog" max-width="600">
     <v-card>
-        <v-card-title class="headline">Remove contract</v-card-title>
+        <v-card-title class="text-h5">Remove contract</v-card-title>
 
         <v-card-text>
             <v-alert type="error" v-if="errorMessage"> {{ errorMessage }}</v-alert>
@@ -17,7 +17,7 @@
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="close()">Close</v-btn>
+            <v-btn color="primary" variant="text" @click="close()">Close</v-btn>
             <v-btn id="removeContract" color="primary" :loading="loading" @click.stop="removeContract()">Remove</v-btn>
         </v-card-actions>
     </v-card>
@@ -52,7 +52,7 @@ export default {
         },
         removeContract: function() {
             this.loading = true;
-            this.server.removeContract(this.address)
+            this.$server.removeContract(this.address)
                 .then(() => {
                     if (this.$router.currentRoute.path != '/contracts')
                         this.$router.push({ path: '/contracts', query: { removedContract: this.address }});

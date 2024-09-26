@@ -1,10 +1,10 @@
 <template>
     <v-card elevation="0">
         <v-card-text v-if="(!user.plan || user.plan == 'free') && user.onboarded && !isPublic">
-            <v-alert dense text type="error">Free plan users are limited to one workspace. <a href="#" @click.stop="goToBilling()">Upgrade</a> to our Premium plan to create more.</v-alert>
+            <v-alert density="compact" text type="error">Free plan users are limited to one workspace. <a href="#" @click.stop="goToBilling()">Upgrade</a> to our Premium plan to create more.</v-alert>
         </v-card-text>
         <v-card-text v-else>
-            <v-alert v-show="errorMessage" dense text type="error" v-html="errorMessage"></v-alert>
+            <v-alert v-show="errorMessage" density="compact" text type="error" v-html="errorMessage"></v-alert>
             <template v-if="!isPublic">
                 <div class="mb-2">
                     <v-alert type="warning" class="my-2" v-if="isUsingSafari">
@@ -12,9 +12,9 @@
                         If you want to connect to a remote chain, or are not using Safari, you can ignore this message.
                     </v-alert>
                     <a id="detectServers" href="#" @click.prevent="detectNetwork()">Detect Networks</a>&nbsp;
-                    <v-tooltip top>
-                        <template v-slot:activator="{ on }">
-                            <v-icon small v-on="on">mdi-help-circle-outline</v-icon>
+                    <v-tooltip location="top">
+                        <template v-slot:activator="{ props }">
+                            <v-icon size="small" v-bind="props">mdi-help-circle-outline</v-icon>
                         </template>
                         This will send a RPC request asking for a network ID to 127.0.0.1 on http and ws protocols on commonly used ports (7545, 8545 and 9545).<br>The address will be displayed below if the request is successful.
                     </v-tooltip>
@@ -31,14 +31,14 @@
             <v-form @submit.prevent="createWorkspace(name, rpcServer)" v-model="valid">
                 <v-text-field
                     :rules="[v => !!v || 'Name is required']"
-                    outlined v-model="name" id="workspaceName" label="Name*" placeholder="My Ethereum Project" hide-details="auto" class="mb-2" required></v-text-field>
+                    variant="outlined" v-model="name" id="workspaceName" label="Name*" placeholder="My Ethereum Project" hide-details="auto" class="mb-2" required></v-text-field>
                 <v-text-field
                     :rules="[
                         v => this.isUrlValid(v) || 'RPC needs to be a valid URL',
                         v => !!v || 'RPC server is required'
                     ]"
-                    outlined v-model="rpcServer" id="workspaceServer" label="RPC Server*" placeholder="ws://localhost:8545" hide-details="auto" class="mb-2" required></v-text-field>
-                <v-select v-if="!isPublic" outlined required label="Chain" v-model="chain" :items="availableChains" hide-details="auto"></v-select>
+                    variant="outlined" v-model="rpcServer" id="workspaceServer" label="RPC Server*" placeholder="ws://localhost:8545" hide-details="auto" class="mb-2" required></v-text-field>
+                <v-select v-if="!isPublic" variant="outlined" required label="Chain" v-model="chain" :items="availableChains" hide-details="auto"></v-select>
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -76,7 +76,7 @@ export default {
             this.loading = true;
             if (!this.isPublic) {
                 try {
-                    this.workspace = await this.server.initRpcServer(rpcServer);
+                    this.workspace = await this.$server.initRpcServer(rpcServer);
                 } catch(error) {
                     this.loading = false;
                     if (error.message.indexOf('Invalid URL') > -1)
@@ -119,7 +119,7 @@ export default {
                 this.workspace = { name, rpcServer, settings: {}};
             }
 
-            this.server.createWorkspace(name, { ...this.workspace, chain: this.chain, public: this.isPublic })
+            this.$server.createWorkspace(name, { ...this.workspace, chain: this.chain, public: this.isPublic })
                 .then(({ data }) => this.$emit('workspaceCreated', data))
                 .catch(error => {
                     if (error.response && error.response.data)
@@ -131,7 +131,7 @@ export default {
         },
         detectNetwork() {
             this.noNetworks = false;
-            this.server.searchForLocalChains().then((res) => {
+            this.$server.searchForLocalChains().then((res) => {
                 this.detectedNetworks = res;
                 if (!res.length) {
                     this.noNetworks = true;

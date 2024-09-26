@@ -1,10 +1,10 @@
 <template>
     <div>
-        <v-card outlined class="mb-4">
+        <v-card border flat class="mb-4">
             <v-skeleton-loader v-if="loading" class="col-4" type="list-item-three-line"></v-skeleton-loader>
             <div v-else>
                 <v-card-text>
-                    <v-alert dense type="info" text class="mb-5" v-if="!accounts.length && isUserAdmin">
+                    <v-alert density="compact" type="info" text class="mb-5" v-if="!accounts.length && isUserAdmin">
                         To call contracts with loaded accounts, go to the "Accounts" tab and sync them from your chain, or add them using a private key or the impersonification feature.
                     </v-alert>
                     <div class="mb-5" v-if="accounts.length">
@@ -14,32 +14,32 @@
                     <v-row v-else>
                         <v-col cols="5">
                             <v-select
-                                outlined
-                                dense
+                                variant="outlined"
+                                density="compact"
                                 label="Select from address"
                                 v-model="from"
-                                item-text="address"
+                                item-title="address"
                                 :items="accounts"
                                 return-object>
                                 <template v-slot:item="{ item }">
-                                    <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
+                                    <v-icon size="small" class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
                                     {{ item.address }}
                                 </template>
                                 <template v-slot:selection="{ item }">
-                                    <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
+                                    <v-icon size="small" class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
                                     {{ item.address }}
                                 </template>
                             </v-select>
                             <v-text-field
-                                outlined
-                                dense
+                                variant="outlined"
+                                density="compact"
                                 type="number"
                                 v-model="gasPrice"
                                 label="Gas Price (wei)">
                             </v-text-field>
                             <v-text-field
-                                outlined
-                                dense
+                                variant="outlined"
+                                density="compact"
                                 type="number"
                                 hide-details="auto"
                                 v-model="gasLimit"

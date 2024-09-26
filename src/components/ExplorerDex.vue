@@ -5,12 +5,12 @@
             <Explorer-Dex-Parameters-Modal @parametersChanged="dexParametersChanged" ref="explorerDexParametersModal" />
             <v-row>
                 <v-col align="center">
-                    <v-icon style="opacity: 0.25;" size="150" color="primary lighten-1">mdi-swap-horizontal</v-icon>
+                    <v-icon style="opacity: 0.25;" size="150" color="primary-lighten-1">mdi-swap-horizontal</v-icon>
                 </v-col>
             </v-row>
             <v-row justify="center" align="center" class="mb-10 my-0">
                 <v-col md="6" sm="12">
-                    <v-card outlined class="rounded-card rounded-xl">
+                    <v-card border flat class="rounded-card rounded-xl">
                         <div class="my-5 mx-5 d-flex justify-space-between">
                             <template v-if="connectedAccount">
                                 <small>Connected Account: <Hash-Link :withName="false" :type="'address'" :hash="connectedAccount" /></small>
@@ -21,17 +21,17 @@
                             </v-btn>
                         </div>
                         <div class="pa-12 pt-0">
-                            <v-card-title class="primary--text d-flex justify-center align-center">{{ publicExplorer.name }} DEX</v-card-title>
+                            <v-card-title class="text-primary d-flex justify-center align-center">{{ publicExplorer.name }} DEX</v-card-title>
                             <v-card-text class="pb-0">
                                 <v-alert text type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
                                 <div align="center">
                                     <v-text-field
-                                        dense
+                                        density="compact"
                                         class="rounded-xl large-text"
-                                        @input="quoteDirection = 'exactIn'"
+                                        @update:model-value="quoteDirection = 'exactIn'"
                                         placeholder="0.0"
                                         persistent-placeholder
-                                        outlined
+                                        variant="outlined"
                                         type="number"
                                         label="Sell"
                                         hide-details="auto"
@@ -43,38 +43,38 @@
                                                     <a v-if="BNtoSignificantDigits(balanceOf(sellToken.address)) > 0" @click="sellAmount = formatEther(balanceOf(sellToken.address))">{{ sellToken && sellToken.address ? BNtoSignificantDigits(balanceOf(sellToken.address)) : '-' }}</a>
                                                     <template v-else>{{ connectedAccount && sellToken && sellToken.address ? BNtoSignificantDigits(balanceOf(sellToken.address)) || 0 : '-' }}</template>
                                                 </small>
-                                                <v-btn v-if="!loadingTokens" outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill" @click="openSellTokenSelectionModal()">
+                                                <v-btn v-if="!loadingTokens" variant="outlined" class="mt-3 text-primary text-no-wrap tokenSelector rounded-pill" @click="openSellTokenSelectionModal()">
                                                     {{ sellToken.tokenSymbol || 'Select a token' }}
-                                                    <v-icon class="primary--text">mdi-chevron-down</v-icon>
+                                                    <v-icon class="text-primary">mdi-chevron-down</v-icon>
                                                 </v-btn>
-                                                <v-btn v-else outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill">
+                                                <v-btn v-else variant="outlined" class="mt-3 text-primary text-no-wrap tokenSelector rounded-pill">
                                                     <v-progress-circular :size="20" :width="2" indeterminate color="primary"></v-progress-circular>
                                                 </v-btn>
                                             </div>
                                         </template>
                                     </v-text-field>
-                                    <v-btn icon @click="invert()" class="my-3" outlined color="primary">
+                                    <v-btn icon @click="invert()" class="my-3" variant="outlined" color="primary">
                                         <v-icon color="primary">mdi-swap-vertical</v-icon>
                                     </v-btn>
                                     <v-text-field
-                                        dense
+                                        density="compact"
                                         type="number"
                                         class="rounded-xl large-text"
-                                        @input="quoteDirection = 'exactOut'"
+                                        @update:model-value="quoteDirection = 'exactOut'"
                                         placeholder="0.0"
                                         persistent-placeholder
                                         hide-details="auto"
-                                        outlined
+                                        variant="outlined"
                                         v-model="buyAmount"
                                         label="Buy">
                                         <template v-slot:append>
                                             <div class="pl-4 py-1 mt-1 mb-3 text-right">
                                                 <small class="pr-1 balance">Balance: {{ connectedAccount && buyToken && buyToken.address ? BNtoSignificantDigits(balanceOf(buyToken.address)) : '-' }}</small>
-                                                <v-btn v-if="!loadingTokens" outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill" @click="openBuyTokenSelectionModal()">
+                                                <v-btn v-if="!loadingTokens" variant="outlined" class="mt-3 text-primary text-no-wrap tokenSelector rounded-pill" @click="openBuyTokenSelectionModal()">
                                                     {{ buyToken.tokenSymbol || 'Select a token' }}
-                                                    <v-icon class="primary--text">mdi-chevron-down</v-icon>
+                                                    <v-icon class="text-primary">mdi-chevron-down</v-icon>
                                                 </v-btn>
-                                                <v-btn v-else outlined class="mt-3 primary--text text-no-wrap tokenSelector rounded-pill">
+                                                <v-btn v-else variant="outlined" class="mt-3 text-primary text-no-wrap tokenSelector rounded-pill">
                                                     <v-progress-circular :size="20" :width="2" indeterminate color="primary"></v-progress-circular>
                                                 </v-btn>
                                             </div>
@@ -97,10 +97,10 @@
                                         </template>
                                         <div class="d-flex">
                                             <template v-if="needsApproval && quotable && validCombination">
-                                                <v-btn :disabled="transaction.loading" class="swap flex-grow-1" large color="primary" @click="approve()">Approve {{ sellToken.tokenSymbol }}</v-btn>
+                                                <v-btn :disabled="transaction.loading" class="swap flex-grow-1" size="large" color="primary" @click="approve()">Approve {{ sellToken.tokenSymbol }}</v-btn>
                                                 <v-icon>mdi-chevron-right</v-icon>
                                             </template>
-                                            <v-btn class="swap flex-grow-1" large :disabled="swapButtonDisabled" color="primary" @click="swap()">{{ swapButtonText }}</v-btn>
+                                            <v-btn class="swap flex-grow-1" size="large" :disabled="swapButtonDisabled" color="primary" @click="swap()">{{ swapButtonText }}</v-btn>
                                         </div>
                                     </div>
                                 </div>
@@ -133,16 +133,16 @@
                                 </div>
                                 <div v-if="transaction.status" class="mt-8" align="middle">
                                     <template v-if="transaction.status == 'loading'">
-                                        <span class="primary--text font-weight-bold">{{ transaction.text }}</span>
+                                        <span class="text-primary font-weight-bold">{{ transaction.text }}</span>
                                         <v-progress-linear height="5" rounded indeterminate color="primary"></v-progress-linear>
                                     </template>
                                     <template v-else-if="transaction.status == 'success'">
-                                        <v-icon style="vertical-align: text-bottom" small class="mr-1" color="success">mdi-check-circle</v-icon>
-                                        <span class="success--text font-weight-bold">{{ transaction.text }} <Hash-Link :type="'transaction'" :hash="transaction.hash" :notCopiable="true" :customLabel="'See transaction'" /></span>
+                                        <v-icon style="vertical-align: text-bottom" size="small" class="mr-1" color="success">mdi-check-circle</v-icon>
+                                        <span class="text-success font-weight-bold">{{ transaction.text }} <Hash-Link :type="'transaction'" :hash="transaction.hash" :notCopiable="true" :customLabel="'See transaction'" /></span>
                                     </template>
                                     <template v-if="transaction.status == 'failed'">
-                                        <v-icon style="vertical-align: text-bottom" small class="mr-1" color="error">mdi-alert-circle</v-icon>
-                                        <span class="error--text font-weight-bold">{{ transaction.text }} <Hash-Link :type="'transaction'" :hash="transaction.hash" :notCopiable="true" :customLabel="'See transaction'" /></span>
+                                        <v-icon style="vertical-align: text-bottom" size="small" class="mr-1" color="error">mdi-alert-circle</v-icon>
+                                        <span class="text-error font-weight-bold">{{ transaction.text }} <Hash-Link :type="'transaction'" :hash="transaction.hash" :notCopiable="true" :customLabel="'See transaction'" /></span>
                                     </template>
                                 </div>
                             </v-card-text>
@@ -152,11 +152,11 @@
             </v-row>
         </template>
         <template v-else>
-            <v-card outlined>
+            <v-card border flat>
                 <v-card-text>
                     <v-row>
                         <v-col align="center">
-                            <v-icon style="opacity: 0.25;" size="200" color="primary lighten-1">mdi-swap-horizontal</v-icon>
+                            <v-icon style="opacity: 0.25;" size="200" color="primary-lighten-1">mdi-swap-horizontal</v-icon>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -268,7 +268,7 @@ export default{
 
             if (!this.debouncedGetQuote)
                 this.debouncedGetQuote = debounce(amount => {
-                    this.server.getV2DexQuote(this.sellToken.address, this.buyToken.address, amount, this.quoteDirection, this.dexParameters.slippageToleranceInBps)
+                    this.$server.getV2DexQuote(this.sellToken.address, this.buyToken.address, amount, this.quoteDirection, this.dexParameters.slippageToleranceInBps)
                         .then(({ data: { quote }}) => {
                             if (this.quoteDirection == 'exactIn' && this.amountIn != amount || this.quoteDirection == 'exactOut' && this.amountOut != amount)
                                 return this.executionInfo = {};
@@ -365,7 +365,7 @@ export default{
             };
             this.loadingTokens = true;
             this.tokens = [nativeToken];
-            this.server.getV2DexTokens()
+            this.$server.getV2DexTokens()
                 .then(({ data: { tokens }}) => {
                     this.tokens = [nativeToken, ...tokens];
 
@@ -376,11 +376,11 @@ export default{
                 .finally(() => this.loadingTokens = false);
         },
         loadBalances() {
-            this.server.getTokenBalances(this.connectedAccount, ['erc20'])
+            this.$server.getTokenBalances(this.connectedAccount, ['erc20'])
                 .then(({ data: balances }) => {
                     balances.forEach(b => this.balances[b.tokenContract.address] = b.currentBalance || '0');
                 });
-            this.server.getNativeTokenBalance(this.connectedAccount)
+            this.$server.getNativeTokenBalance(this.connectedAccount)
                 .then(({ data: { balance } }) => this.$set(this.balances, this.nativeTokenAddress, balance));
         },
         onRpcConnectionStatusChanged(data) {

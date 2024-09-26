@@ -1,8 +1,8 @@
 <template>
-    <v-card outlined class="mb-4">
+    <v-card border flat class="mb-4">
         <Create-Workspace-Modal ref="createWorkspaceModal" />
         <v-card-text>
-            <v-alert v-if="errorMessage" dense text type="error" v-html="errorMessage"></v-alert>
+            <v-alert v-if="errorMessage" density="compact" text type="error" v-html="errorMessage"></v-alert>
             <v-data-table
                 :loading="loading"
                 :no-data-text="'No workspaces'"
@@ -11,18 +11,18 @@
                 <template v-slot:top>
                     <v-toolbar flat dense class="py-0">
                         <v-spacer></v-spacer>
-                        <v-btn depressed color="primary" class="mr-2" @click="openCreateWorkspaceModal()"><v-icon>mdi-plus</v-icon>New Workspace</v-btn>
+                        <v-btn variant="flat" color="primary" class="mr-2" @click="openCreateWorkspaceModal()"><v-icon>mdi-plus</v-icon>New Workspace</v-btn>
                     </v-toolbar>
                 </template>
                 <template v-slot:item.name="{ item }">
-                    {{ item.name }} <v-chip x-small class="ml-2" v-if="item.id == currentWorkspace.id">current</v-chip>
+                    {{ item.name }} <v-chip size="x-small" class="ml-2" v-if="item.id == currentWorkspace.id">current</v-chip>
                 </template>
                 <template v-slot:item.rpcServer="{ item }">
                     <div style="max-width: 60ch; text-overflow: ellipsis; overflow: hidden;">{{ shortRpcUrl(item.rpcServer) }}</div>
                 </template>
                 <template v-slot:item.actions="{ item }">
-                    <v-btn :disabled="disabled || item.id == currentWorkspace.id" icon><v-icon small @click="switchWorkspace(item.name)">mdi-swap-horizontal</v-icon></v-btn>
-                    <v-btn :disabled="disabled" icon><v-icon color="error" small @click="deleteWorkspace(item)">mdi-delete</v-icon></v-btn>
+                    <v-btn :disabled="disabled || item.id == currentWorkspace.id" icon><v-icon size="small" @click="switchWorkspace(item.name)">mdi-swap-horizontal</v-icon></v-btn>
+                    <v-btn :disabled="disabled" icon><v-icon color="error" size="small" @click="deleteWorkspace(item)">mdi-delete</v-icon></v-btn>
                 </template>
             </v-data-table>
         </v-card-text>
@@ -71,7 +71,7 @@ export default {
             this.loading = true;
             this.disabled = true;
 
-            this.server.deleteWorkspace(workspace.id)
+            this.$server.deleteWorkspace(workspace.id)
                 .then(this.getWorkspaces)
                 .catch(error => {
                     this.errorMessage = error.response && error.response.data || 'Error while deleting the workspace. Please retry';
@@ -82,11 +82,11 @@ export default {
                 });
         },
         switchWorkspace(name) {
-            this.server.setCurrentWorkspace(name).then(() => document.location.reload());
+            this.$server.setCurrentWorkspace(name).then(() => document.location.reload());
         },
         getWorkspaces() {
             this.loading = true;
-            this.server.getWorkspaces()
+            this.$server.getWorkspaces()
                 .then(({ data }) => this.workspaces = data)
                 .catch(console.log)
                 .finally(() => this.loading = false);

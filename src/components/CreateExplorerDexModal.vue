@@ -1,7 +1,7 @@
 <template>
     <v-dialog v-model="dialog" max-width="600">
         <v-card>
-            <v-card-title class="headline">
+            <v-card-title class="text-h5">
                 Create Dex
                 <v-spacer></v-spacer>
                 <v-btn icon @click="close(false)"><v-icon>mdi-close</v-icon></v-btn>
@@ -15,9 +15,9 @@
                             <v-text-field
                                 prepend-inner-icon="mdi-swap-horizontal"
                                 class="mt-1"
-                                dense
+                                density="compact"
                                 name="routerAddress"
-                                outlined
+                                variant="outlined"
                                 required
                                 :rules="[
                                     v => !!v || 'A valid address is required',
@@ -28,9 +28,9 @@
                                 label="Router Address"></v-text-field>
                             <v-text-field
                                 class="mt-1"
-                                dense
+                                density="compact"
                                 name="wrappedNativeTokenAddress"
-                                outlined
+                                variant="outlined"
                                 required
                                 :rules="[
                                     v => !!v || 'A valid address is required',
@@ -79,7 +79,7 @@ export default {
         },
         create() {
             this.loading = true;
-            this.server.createExplorerV2Dex(this.options.explorerId, this.routerAddress, this.wrappedNativeTokenAddress)
+            this.$server.createExplorerV2Dex(this.options.explorerId, this.routerAddress, this.wrappedNativeTokenAddress)
                 .then(() => this.close(true))
                 .catch(error => {
                     this.loading = false;

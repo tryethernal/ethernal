@@ -3,7 +3,7 @@
         <template v-if="explorer && explorer.faucet">
             <v-row>
                 <v-col cols="6">
-                    <v-card outlined class="my-6">
+                    <v-card border flat class="my-6">
                         <v-card-text>
                             <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
                             <v-alert text type="success" v-if="successMessage">{{ successMessage }}</v-alert>
@@ -19,8 +19,8 @@
 
                             <v-form :disabled="!faucet.active || switchLoading || loading" @submit.prevent="updateFaucet()" v-model="valid">
                                 <v-text-field
-                                    dense
-                                    outlined
+                                    density="compact"
+                                    variant="outlined"
                                     required
                                     :rules="[
                                         v => !!v || 'Amount is required',
@@ -34,8 +34,8 @@
                                     label="Drip Amount"></v-text-field>
                                 <v-text-field
                                     class="mt-2"
-                                    dense
-                                    outlined
+                                    density="compact"
+                                    variant="outlined"
                                     required
                                     :rules="[
                                         v => !!v || 'Interval is required',
@@ -54,18 +54,18 @@
                             </v-form>
                         </v-card-text>
                     </v-card>
-                    <h4 class="error--text">Danger Zone</h4>
+                    <h4 class="text-error">Danger Zone</h4>
                     <Explorer-Faucet-Settings-Danger-Zone @delete="loadExplorer" :explorerId="explorer.id" :faucetId="faucet.id" />
                 </v-col>
             </v-row>
         </template>
         <template v-else-if="explorer">
-            <v-card outlined>
+            <v-card border flat>
                 <Create-Explorer-Faucet-Modal ref="createExplorerFaucetModal" />
                 <v-card-text>
                     <v-row>
                         <v-col align="center">
-                            <v-icon style="opacity: 0.25;" size="200" color="primary lighten-1">mdi-faucet</v-icon>
+                            <v-icon style="opacity: 0.25;" size="200" color="primary-lighten-1">mdi-faucet</v-icon>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -91,7 +91,7 @@
             </v-card>
         </template>
         <template v-else>
-            <v-card outlined>
+            <v-card border flat>
                 <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
             </v-card>
         </template>
@@ -100,8 +100,8 @@
 
 <script>
 const ethers = require('ethers');
-import { mapGetters } from 'vuex';
-import store from '../plugins/store';
+import { mapStores } from 'pinia';
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import CreateExplorerFaucetModal from './CreateExplorerFaucetModal';
 import ExplorerFaucetSettingsDangerZone from './ExplorerFaucetSettingsDangerZone';
 import HashLink from './HashLink';
@@ -132,7 +132,7 @@ export default {
     }),
     mounted() {
         this.loadExplorer();
-        this.pusherUnsubscribe = this.pusher.onNewTransaction(data => {
+        this.pusherUnsubscribe = this.$pusher.onNewTransaction(data => {
             if (this.faucet && (data.from == this.faucet.address || data.to == this.faucet.address))
                 this.refreshFaucetBalance();
         }, this);
@@ -152,7 +152,7 @@ export default {
         },
         refreshFaucetBalance() {
             if (this.faucet && this.faucet.id)
-                this.server.getFaucetBalance(this.faucet.id)
+                this.$server.getFaucetBalance(this.faucet.id)
                     .then(({ data }) => this.balance = data.balance)
                     .catch(console.log);
         },
@@ -160,13 +160,13 @@ export default {
             this.loading = true;
             this.errorMessage = null;
             this.successMessage = null;
-            this.server.updateFaucet(this.faucet.id, this.faucet.amount, this.faucet.interval)
+            this.$server.updateFaucet(this.faucet.id, this.faucet.amount, this.faucet.interval)
                 .then(() => this.successMessage = 'Settings updated.')
                 .catch(error => this.errorMessage = error.response && error.response.data || 'Error while updating faucet. Please retry.')
                 .finally(() => this.loading = false);
         },
         loadExplorer() {
-            this.server.getExplorer(this.explorerId)
+            this.$server.getExplorer(this.explorerId)
                 .then(({ data }) => {
                     this.explorer = data;
                     this.faucet = data.faucet;
@@ -191,9 +191,9 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'currentWorkspace'
-        ]),
+        ...mapStores(
+            useCurrentWorkspaceStore
+        ),
         mainExplorerDomain() {
             if (!this.explorer)
                 return null;
@@ -220,8 +220,8 @@ export default {
     },
     watch: {
         faucet() {
-            if (this.explorer && this.explorer.workspaceId == this.currentWorkspace.id)
-                store.dispatch('updateFaucetSettings', this.faucet);
+            if (this.explorer && this.explorer.workspaceId == this.currentWorkspaceStore.id)
+                this.explorerStore.updateExplorer({ faucet: this.faucet });
         }
     },
 }

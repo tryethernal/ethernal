@@ -1,6 +1,6 @@
 <template>
     <v-dialog v-model="dialog" max-width="350">
-        <v-card outlined>
+        <v-card border flat>
             <v-card-title>
                 Transaction Settings
                 <v-spacer></v-spacer>
@@ -9,19 +9,19 @@
             <v-card-text>
                 Slippage tolerance
                 <div class="d-flex">
-                    <v-chip-group mandatory active-class="primary--text text--accent-4" v-model="slippageTolerance">
-                        <v-chip small class="mr-2" :value="0.1">0.1%</v-chip>
-                        <v-chip small class="mr-2" :value="0.5">0.5%</v-chip>
-                        <v-chip small class="mr-2" :value="1">1%</v-chip>
+                    <v-chip-group mandatory selected-class="primary--text text--accent-4" v-model="slippageTolerance">
+                        <v-chip size="small" class="mr-2" :value="0.1">0.1%</v-chip>
+                        <v-chip size="small" class="mr-2" :value="0.5">0.5%</v-chip>
+                        <v-chip size="small" class="mr-2" :value="1">1%</v-chip>
                     </v-chip-group>
                     <v-text-field
-                        dense
+                        density="compact"
                         reverse
                         type="number"
                         class="rounded-xl ml-5"
                         prefix="%"
                         hide-details="auto"
-                        outlined
+                        variant="outlined"
                         v-model="slippageTolerance">
                     </v-text-field>
                 </div>
@@ -29,13 +29,13 @@
                 Transaction deadline
                 <v-text-field
                     style="max-width: 140px;"
-                    dense
+                    density="compact"
                     reverse
                     type="number"
                     class="rounded-xl mt-1"
                     prefix="minutes"
                     hide-details="auto"
-                    outlined
+                    variant="outlined"
                     v-model="transactionTimeoutInMinutes"></v-text-field>
             </v-card-text>
         </v-card>

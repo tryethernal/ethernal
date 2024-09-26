@@ -77,14 +77,13 @@ class ERC20Connector {
 
 class ContractConnector {
 
-    INTERFACE_IDS = {
-         '721': '0x80ac58cd',
-         '721Metadata': '0x5b5e139f',
-         '721Enumerable': '0x780e9d63'
-     };
-
     constructor(server, address, abi) {
         if (!server || !address || !abi) throw '[ContractConnector] Missing parameter';
+        this.INTERFACE_IDS = {
+            '721': '0x80ac58cd',
+            '721Metadata': '0x5b5e139f',
+            '721Enumerable': '0x780e9d63'
+        };
         this.provider = getProvider(server);
         this.contract = new ethers.Contract(address, abi, this.provider);
     }

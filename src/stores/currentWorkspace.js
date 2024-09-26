@@ -3,12 +3,19 @@ import { defineStore } from 'pinia';
 
 import { useExplorerStore } from './explorer';
 import { useUserStore } from './user';
+import { useEnvStore } from './env';
 
 export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
     state: () => ({
         id: null,
+        userId: null,
+        name: null,
+        public: null,
+        rpcServer: null,
         accounts: [],
-        currentBlock: null,
+        currentBlock: {
+            number: 0
+        },
         browserSyncStatus: null
     }),
 
@@ -27,8 +34,7 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
         },
 
         updateCurrentWorkspace(workspace) {
-            for (const [key, value] of Object.entries(workspace))
-                this[key] = value;
+            this.$patch(workspace);
 
             if (workspace.explorer)
                 useExplorerStore().updateExplorer(workspace.explorer);
@@ -44,6 +50,12 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
                 name: this.name,
                 explorer: workspace.explorer ? { id: workspace.explorer.id, name: workspace.explorer.name } : null
             });
+        }
+    },
+
+    getters: {
+        chain(state) {
+            return this.explorer || useEnvStore().chains[state.chain || 'ethereum'];
         }
     }
 });

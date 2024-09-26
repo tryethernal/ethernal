@@ -1,7 +1,7 @@
 <template>
 <v-dialog v-model="dialog" max-width="430">
     <v-card>
-        <v-card-title class="headline">Add Account</v-card-title>
+        <v-card-title class="text-h5">Add Account</v-card-title>
 
         <v-card-text>
             <v-alert type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
@@ -10,15 +10,15 @@
             <div>
                 Private keys are encrypted server side with AES 256 CBC, and stored encrypted. We strongly recommend to not use accounts with any value.
             </div>
-            <v-text-field id="privateKey" hide-details="auto" outlined class="mt-2" v-model="privateKey" label="Private Key*" required></v-text-field>
+            <v-text-field id="privateKey" hide-details="auto" variant="outlined" class="mt-2" v-model="privateKey" label="Private Key*" required></v-text-field>
             <v-divider class="my-3"></v-divider>
             <div>Or impersonate an account.</div>
-            <v-text-field id="accountAddress" outlined v-model="accountAddress" label="Account Address*" required></v-text-field>
+            <v-text-field id="accountAddress" variant="outlined" v-model="accountAddress" label="Account Address*" required></v-text-field>
         </v-card-text>
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="close()">Close</v-btn>
+            <v-btn color="primary" variant="text" @click="close()">Close</v-btn>
             <v-btn id="submitAccount" color="primary" :loading="loading" :disabled="!privateKey && !accountAddress" @click.stop="unlockAccount(privateKey, accountAddress)">Add</v-btn>
         </v-card-actions>
     </v-card>
@@ -63,21 +63,21 @@ export default {
                 if (privateKey) {
                     const wallet = new ethers.Wallet(privateKey);
                     walletAddress = wallet.address.toLowerCase();
-                    promises.push(this.server.storeAccountPrivateKey(wallet.address, privateKey));
+                    promises.push(this.$server.storeAccountPrivateKey(wallet.address, privateKey));
                 }
 
                 if (accountAddress) {
-                    promises.push(this.server.impersonateAccount(this.currentWorkspace.rpcServer, accountAddress));
+                    promises.push(this.$server.impersonateAccount(this.currentWorkspace.rpcServer, accountAddress));
                 }
 
                 Promise.all(promises).then(res => {
                     if (res[0] && walletAddress) {
-                        this.server.syncBalance(walletAddress, '0')
+                        this.$server.syncBalance(walletAddress, '0')
                             .then(() => this.successMessage = 'Account added.')
                             .catch(() => this.errorMessage = 'Error while adding account.');
                     }
                     else if ((res[0] || res[1]) && accountAddress) {
-                        this.server.syncBalance(accountAddress, '0')
+                        this.$server.syncBalance(accountAddress, '0')
                             .then(() => this.successMessage = 'Account added.')
                             .catch(() => this.errorMessage = 'Error while adding account.');
                     }

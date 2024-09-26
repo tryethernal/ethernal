@@ -1,39 +1,45 @@
 const Pusher = require('pusher-js');
+import { storeToRefs } from 'pinia';
+import { useEnvStore } from '../stores/env';
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
+import { useUserStore } from '../stores/user';
 import { sanitize } from '../lib/utils';
 const DEBUG_PUSHER = false;
 Pusher.logToConsole = import.meta.env.NODE_ENV == 'development' && DEBUG_PUSHER;
 
-export const pusherPlugin = {
-
-    async install(Vue, options) {
-        const store = options.store;
+export default {
+    install(app) {
+        const envStore = useEnvStore();
+        const currentWorkspaceStore = useCurrentWorkspaceStore();
+        const userStore = useUserStore();
         const apiToken = localStorage.getItem('apiToken');
-        const pusherKey = store.getters.pusherKey;
+
+        const { pusherKey, soketiHost, soketiPort, soketiForceTLS } = storeToRefs(envStore);
 
         const pusher = pusherKey ?
             new Pusher(pusherKey, {
-                wsHost: store.getters.soketiHost,
-                wsPort: store.getters.soketiPort,
-                forceTLS: store.getters.soketiForceTLS,
+                wsHost: soketiHost,
+                wsPort: soketiPort,
+                forceTLS: soketiForceTLS,
                 enabledTransports: ['ws', 'wss'],
                 userAuthentication: {
                     headersProvider: () => apiToken ? { 'Authorization': `Bearer ${apiToken}` } : {}
                 },
                 channelAuthorization: {
-                    endpoint: `${store.getters.apiRoot}/api/pusher/authorization`,
+                    endpoint: `${envStore.apiRoot}/api/pusher/authorization`,
                     headersProvider: () => apiToken ? { 'Authorization': `Bearer ${apiToken}` } : {},
                     params: sanitize({
-                        firebaseUserId: store.getters.currentWorkspace.firebaseUserId,
-                        workspace: store.getters.currentWorkspace.name
+                        firebaseUserId: storeToRefs(userStore).firebaseUserId,
+                        workspace: storeToRefs(currentWorkspaceStore).name
                     })
                 }
             }) : {
                 subscribe: () => ({ bind: () => {}, unbind: () => {} }),
             }
 
-        Vue.prototype.pusher = {
+        const $pusher = {
             onNewContractLog(handler, address, context) {
-                const workspaceId = store.getters.currentWorkspace.id;
+                const workspaceId = currentWorkspaceStore.id;
                 const channelString = `private-contractLog;workspace=${workspaceId};contract=${address}`;
                 const channel = pusher.subscribe(channelString);
                 channel.bind('new', handler, context);
@@ -41,7 +47,7 @@ export const pusherPlugin = {
             },
 
             onUpdatedAccount(handler, context) {
-                const workspaceId = store.getters.currentWorkspace.id;
+                const workspaceId = currentWorkspaceStore.id;
                 const channelString = `private-accounts;workspace=${workspaceId}`;
                 const channel = pusher.subscribe(channelString);
                 channel.bind('updated', handler, context);
@@ -49,39 +55,39 @@ export const pusherPlugin = {
             },
 
             onNewFailedTransactions(handler, context) {
-                const workspaceId = store.getters.currentWorkspace.id;
+                const workspaceId = currentWorkspaceStore.id;
                 const channel = pusher.subscribe(`private-failedTransactions;workspace=${workspaceId}`);
                 return channel.bind('new', handler, context);
             },
 
             onNewProcessableTransactions(handler, context) {
-                const workspaceId = store.getters.currentWorkspace.id;
+                const workspaceId = currentWorkspaceStore.id;
                 const channel = pusher.subscribe(`private-processableTransactions;workspace=${workspaceId}`);
                 return channel.bind('new', handler, context);
             },
 
             onNewBlock(handler, context) {
-                const workspaceId = store.getters.currentWorkspace.id;
+                const workspaceId = currentWorkspaceStore.id;
                 const channelString = `private-blocks;workspace=${workspaceId}`;
                 const channel = pusher.subscribe(channelString);
                 return channel.bind('new', handler, context);
             },
 
             onNewContract(handler, context) {
-                const workspaceId = store.getters.currentWorkspace.id;
+                const workspaceId = currentWorkspaceStore.id;
                 const channel = pusher.subscribe(`private-contracts;workspace=${workspaceId}`);
                 return channel.bind('new', handler, context);
             },
 
             onDestroyedContract(handler, context) {
-                const workspaceId = store.getters.currentWorkspace.id;
+                const workspaceId = currentWorkspaceStore.id;
                 const channelString = `private-contracts;workspace=${workspaceId}`;
                 const channel = pusher.subscribe(channelString);
                 return channel.bind('destroyed', handler, context);
             },
 
             onNewTransaction(handler, context, address) {
-                const workspaceId = store.getters.currentWorkspace.id;
+                const workspaceId = currentWorkspaceStore.id;
                 const params = [`workspace=${workspaceId}`];
                 if (address)
                     params.push(`address=${address}`)
@@ -92,7 +98,7 @@ export const pusherPlugin = {
             },
 
             onNewToken(handler, context) {
-                const workspaceId = store.getters.currentWorkspace.id;
+                const workspaceId = currentWorkspaceStore.id;
                 const channelString = `private-tokens;workspace=${workspaceId}`;
                 const channel = pusher.subscribe(channelString);
                 channel.bind('new', handler, context);
@@ -100,7 +106,7 @@ export const pusherPlugin = {
             },
 
             onNewNft(handler, context) {
-                const workspaceId = store.getters.currentWorkspace.id;
+                const workspaceId = currentWorkspaceStore.id;
                 const channelString = `private-nft;workspace=${workspaceId}`;
                 const channel = pusher.subscribe(channelString);
                 channel.bind('new', handler, context);
@@ -108,12 +114,14 @@ export const pusherPlugin = {
             },
 
             onUserUpdated(handler, context) {
-                const userId = store.getters.user.id;
+                const userId = userStore.id;
                 const channelString = `private-cache-users;id=${userId}`;
                 const channel = pusher.subscribe(channelString);
                 channel.bind('updated', handler, context);
                 return () => pusher.unsubscribe(channelString);
             }
         }
+
+        app.config.globalProperties.$pusher = $pusher;
     }
 };

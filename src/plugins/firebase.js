@@ -9,13 +9,15 @@ firebase.initializeApp(FIREBASE_CONFIG);
 const _auth = firebase.auth;
 
 export const dbPlugin = {
-    install(Vue) {
-        Vue.prototype.db = {
+    install(app) {
+        const $db = {
             getIdToken: function() {
                 if (!_auth().currentUser) return new Promise(resolve => resolve(null));
                 return _auth().currentUser.getIdToken();
             }
         };
+
+        app.config.globalProperties.$db = $db;
     }
 };
 

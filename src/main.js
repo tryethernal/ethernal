@@ -1,18 +1,19 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
+import 'vuetify/styles'
+import { createApp } from 'vue';
 import * as Sentry from "@sentry/vue";
 
 import vuetify from './plugins/vuetify';
 import { createPinia } from 'pinia'
-import { useEnvStore } from './stores/env';
 import router from './plugins/router';
 import demoRouter from './plugins/demoRouter';
 import ssoRouter from './plugins/ssoRouter';
 import embeddedRouter from './plugins/embeddedRouter';
-import { serverPlugin } from './plugins/server';
+import serverPlugin from './plugins/server';
 import posthogPlugin from "./plugins/posthog";
-import { firestorePlugin } from 'vuefire';
+import pusherPlugin from "./plugins/pusher";
 import 'ace-mode-solidity/build/remix-ide/mode-solidity.js';
+import dt from './filters/dt';
+import FromWei from './filters/FromWei';
 
 import App from './App.vue';
 import Demo from './Demo.vue';
@@ -21,55 +22,41 @@ import Embedded from './Embedded.vue';
 
 const pinia = createPinia();
 
-Vue.config.productionTip = false;
-Vue.use(VueRouter);
-Vue.use(firestorePlugin);
-Vue.use(require('vue-moment'));
-Vue.use(serverPlugin);
-Vue.use(posthogPlugin);
-Vue.use(pinia);
+const createVueApp = (rootComponent, options) => {
+    const app = createApp(rootComponent);
 
-const envStore = useEnvStore();
+    Sentry.init({
+        app,
+        environment: import.meta.env.MODE,
+        release: `ethernal@${import.meta.env.VITE_VERSION}`,
+        dsn: `${window.location.protocol}//${import.meta.env.VITE_SENTRY_DSN_SECRET}@${window.location.host}/${import.meta.env.VITE_SENTRY_DSN_PROJECT_ID}`,
+        integrations: [
+            Sentry.browserTracingIntegration({ router }),
+            Sentry.browserProfilingIntegration(),
+        ],
+        tracesSampleRate: 1.0,
+        tracePropagationTargets: [/.*/],
+        enabled: false,
+    });
 
-Sentry.init({
-    Vue,
-    environment: envStore.environment,
-    release: `ethernal@${envStore.version}`,
-    dsn: envStore.sentryDSN,
-    integrations: [
-        Sentry.browserTracingIntegration({ router }),
-        Sentry.browserProfilingIntegration(),
-    ],
-    tracesSampleRate: 1.0,
-    tracePropagationTargets: [/.*/]
-});
+    app.use(pinia);
+    if (options.router)
+        app.use(options.router);
+    app.use(vuetify);
+    app.use(serverPlugin);
+    app.use(posthogPlugin);
+    app.use(pusherPlugin);
 
-if (envStore.hasDemoEnabled() && window.location.pathname.startsWith('/demo')) {
-    new Vue({
-        vuetify,
-        router: demoRouter,
-        render: h => h(Demo)
-    }).$mount('#app');
+    app.config.globalProperties.$dt = dt;
+    app.config.globalProperties.$fromWei = FromWei;
+    return app;
 }
-else if (window.location.pathname.startsWith('/embedded')) {
-    new Vue({
-        vuetify,
-        store: store,
-        router: embeddedRouter,
-        render: h => h(Embedded)
-    }).$mount('#app');
-}
-else if (window.location.pathname.endsWith('/sso')) {
-    new Vue({
-        vuetify,
-        router: ssoRouter,
-        render: h => h(SSO)
-    }).$mount('#app');
-}
-else {
-    new Vue({
-        vuetify,
-        router,
-        render: h => h(App)
-    }).$mount('#app');
-}
+
+if (import.meta.env.VITE_DEMO_ENABLED && window.location.pathname.startsWith('/demo'))
+    createVueApp(Demo, { router: demoRouter }).mount('#app');
+else if (window.location.pathname.startsWith('/embedded'))
+    createVueApp(Embedded, { router: embeddedRouter, provided: { embedded: true } }).mount('#app');
+else if (window.location.pathname.endsWith('/sso'))
+    createVueApp(SSO, { router: ssoRouter }).mount('#app');
+else
+    createVueApp(App, { router }).mount('#app');

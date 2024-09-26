@@ -1,5 +1,5 @@
 <template>
-    <v-card outlined class="my-2">
+    <v-card border flat class="my-2">
         <v-card-text>
             <v-data-table
                 :hide-default-footer="balanceChanges.length <= 10"
@@ -24,11 +24,11 @@
                     {{ item.currentBalance | fromWei(decimals[item.address], symbols[item.address], unformatted) }}
                 </template>
                 <template v-slot:item.change="{ item }">
-                    <span v-if="changeDirection(item.diff) > 0" class="success--text">
+                    <span v-if="changeDirection(item.diff) > 0" class="text-success">
                         +{{ item.diff | fromWei(decimals[item.address], symbols[item.address], unformatted) }}
                     </span>
                     <span v-if="changeDirection(item.diff) === 0">0</span>
-                    <span v-if="changeDirection(item.diff) < 0" class="error--text">
+                    <span v-if="changeDirection(item.diff) < 0" class="text-error">
                         {{ item.diff | fromWei(decimals[item.address], symbols[item.address], unformatted) }}
                     </span>
                 </template>
@@ -73,7 +73,7 @@ export default {
                 this.$set(this.decimals, this.balanceChanges[i].address, 18);
                 this.$set(this.symbols, this.balanceChanges[i].address, '');
 
-                this.server.getContract(this.token)
+                this.$server.getContract(this.token)
                     .then(({ data }) => {
                         const contract = data;
                         if (!contract) return;

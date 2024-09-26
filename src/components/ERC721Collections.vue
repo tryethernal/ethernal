@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-card outlined>
+        <v-card border flat>
             <v-card-text>
                 <v-data-table
                     :loading="loading"
@@ -28,7 +28,7 @@
                         {{ item.tokenTotalSupply ? parseInt(item.tokenTotalSupply).toLocaleString() : 'N/A' }}
                     </template>
                     <template v-slot:item.tags="{ item }">
-                        <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" x-small class="success mr-2">
+                        <v-chip v-for="(pattern, idx) in item.patterns" :key="idx" size="x-small" class="bg-success mr-2">
                             {{ formatContractPattern(pattern) }}
                         </v-chip>
                     </template>
@@ -78,8 +78,8 @@ export default {
         destroyedContractPusherHandler: null
     }),
     mounted: function() {
-        this.newNftPusherHandler = this.pusher.onNewNft(() => this.getTokens(this.currentOptions), this);
-        this.destroyedContractPusherHandler = this.pusher.onDestroyedContract(() => this.getTokens(this.currentOptions), this);
+        this.newNftPusherHandler = this.$pusher.onNewNft(() => this.getTokens(this.currentOptions), this);
+        this.destroyedContractPusherHandler = this.$pusher.onDestroyedContract(() => this.getTokens(this.currentOptions), this);
     },
     destroyed() {
         this.newNftPusherHandler();
@@ -100,7 +100,7 @@ export default {
                 pattern: 'erc721'
             };
 
-            this.server.getContracts(options)
+            this.$server.getContracts(options)
                 .then(({ data }) => {
                     this.tokens = data.items;
                     this.tokenCount = data.total;

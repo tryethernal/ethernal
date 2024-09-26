@@ -1,9 +1,9 @@
 <template>
     <v-container fluid>
-        <v-card outlined>
+        <v-card border flat>
             <v-card-text>
                 <Create-Explorer-Modal ref="createExplorerModalRef" @explorerCreated="getExplorers" />
-                <v-card v-if="!explorers.length && !loading" flat outlined>
+                <v-card v-if="!explorers.length && !loading" flat border>
                     <v-card-title>Public Explorers</v-card-title>
                     <v-card-text>
                         At the moment, only your account is able to use this explorer.
@@ -23,21 +23,20 @@
                         </ul>
 
                         <div class="mt-4" align="center">
-                            <v-btn depressed color="primary" class="mr-2" @click="openCreateExplorerModal()">
+                            <v-btn variant="flat" color="primary" class="mr-2" @click="openCreateExplorerModal()">
                                 <v-icon class="mr-1">mdi-plus</v-icon>Create Explorer
                             </v-btn>
                         </div>
                     </v-card-text>
                 </v-card>
                 <template v-else>
-                    <v-alert v-if="deletedExplorer" dense text type="success">Explorer "<b>{{ deletedExplorer }}</b>" has been successfully deleted.</v-alert>
-                    <v-data-table
+                    <v-alert v-if="deletedExplorer" density="compact" text type="success">Explorer "<b>{{ deletedExplorer }}</b>" has been successfully deleted.</v-alert>
+                    <v-data-table-server
                         :loading="loading"
                         :items="explorers"
                         :must-sort="true"
-                        :sort-desc="true"
-                        :server-items-length="explorerCount"
-                        :sort-by="currentOptions.sortBy[0]"
+                        :sort-by="[{ key: currentOptions.sortBy[0], order: currentOptions.sortDesc[0] === false ? 'asc' : 'desc' }]"
+                        :items-length="explorerCount"
                         :footer-props="{
                             itemsPerPageOptions: [10, 25, 100]
                         }"
@@ -46,15 +45,15 @@
                         <template v-slot:top>
                             <v-toolbar flat dense class="py-0">
                                 <v-spacer></v-spacer>
-                                <v-btn small depressed color="primary" class="mr-2" @click="openCreateExplorerModal()">
-                                    <v-icon small class="mr-1">mdi-plus</v-icon>Create Explorer
+                                <v-btn size="small" variant="flat" color="primary" class="mr-2" @click="openCreateExplorerModal()">
+                                    <v-icon size="small" class="mr-1">mdi-plus</v-icon>Create Explorer
                                 </v-btn>
                             </v-toolbar>
                         </template>
                         <template v-slot:item.name="{ item }">
-                            <v-tooltip top>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-icon v-bind="attrs" v-on="on" small :color="statusClass(item.stripeSubscription) + ' lignthen'" class="mr-2">{{ statusIcon(item.stripeSubscription) }}</v-icon>
+                            <v-tooltip location="top">
+                                <template v-slot:activator="{ props }">
+                                    <v-icon v-bind="props" size="small" :color="statusClass(item.stripeSubscription) + ' lignthen'" class="mr-2">{{ statusIcon(item.stripeSubscription) }}</v-icon>
                                 </template>
                                 {{ statusText(item.stripeSubscription) }}
                             </v-tooltip>
@@ -63,9 +62,9 @@
                         <template v-slot:item.domain="{ item }">
                             <template v-if="item.domains.length > 0">
                                 <a :href="`http://${ item.domains[0].domain }`" target="_blank">{{ item.domains[0].domain }}</a>
-                                <v-tooltip top v-if="item.domains.length > 1">
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-chip v-bind="attrs" v-on="on" class="ml-2" x-small>+ {{ item.domains.length - 1 }}</v-chip>
+                                <v-tooltip location="top" v-if="item.domains.length > 1">
+                                    <template v-slot:activator="{ props }">
+                                        <v-chip v-bind="props" class="ml-2" size="x-small">+ {{ item.domains.length - 1 }}</v-chip>
                                     </template>
                                     <ul>
                                         <li v-for="(domain, idx) in item.domains.slice(1)" :key="idx">{{ domain.domain }}</li>
@@ -82,7 +81,7 @@
                         <template v-slot:item.workspace="{ item }">
                             {{ item.workspace.name }}
                         </template>
-                    </v-data-table>
+                    </v-data-table-server>
                 </template>
             </v-card-text>
         </v-card>
@@ -128,7 +127,7 @@ export default {
                 order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc',
                 orderBy: this.currentOptions.sortBy[0]
             };
-            this.server.getExplorers(options)
+            this.$server.getExplorers(options)
                 .then(({ data }) => {
                     this.explorers = data.items;
                     this.explorerCount = data.total;

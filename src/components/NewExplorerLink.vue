@@ -6,8 +6,8 @@
                     v-model="link.url"
                     :rules="[v => !!v] || 'URL is required'"
                     small
-                    outlined
-                    dense
+                    variant="outlined"
+                    density="compact"
                     label="URL *">
                 </v-text-field>
             </v-col>
@@ -16,19 +16,19 @@
                     v-model="link.name"
                     :rules="[v => !!v] || 'Name is required'"
                     small
-                    outlined
-                    dense
+                    variant="outlined"
+                    density="compact"
                     label="Name *">
                 </v-text-field>
             </v-col>
             <v-col cols="4" :class="{ 'pb-1': index == 0, 'py-0': index > 0 }">
-                <v-autocomplete small outlined dense :append-icon="link.icon ? `${link.icon}` : ''"
+                <v-autocomplete small variant="outlined" density="compact" :append-icon="link.icon ? `${link.icon}` : ''"
                     label="Icon"
                     v-model="link.icon"
                     :items="icons"
                     :loading="loading"
-                    :search-input.sync="queryIcon"
-                    item-text="name"
+                    :search.sync="queryIcon"
+                    item-title="name"
                     :item-value="getItemValue"
                     auto-select-first
                     persistent-hint
@@ -38,7 +38,7 @@
                         {{ data.item.name }}
                     </template>
                     <template v-slot:append-outer>
-                        <v-btn icon small  @click="remove()">
+                        <v-btn icon size="small"  @click="remove()">
                             <v-icon color="error">mdi-delete</v-icon>
                         </v-btn>
                     </template>
@@ -81,7 +81,7 @@ export default {
             if (!query) return;
 
             this.loading = true;
-            this.server.searchIcon(query)
+            this.$server.searchIcon(query)
                 .then(({ data }) => this.icons = data)
                 .catch(console.log)
                 .finally(() => this.loading = false);

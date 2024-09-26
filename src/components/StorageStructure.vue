@@ -2,7 +2,7 @@
     <div>
         <Add-Tracked-Key-Modal ref="addTrackedKeyModal" />
         {{storage.label}}
-        <v-btn @click.stop="openAddTrackedKeyModal(storage.index)" color="primary" icon outlined x-small v-if="storage.children != null">
+        <v-btn @click.stop="openAddTrackedKeyModal(storage.index)" color="primary" icon variant="outlined" size="x-small" v-if="storage.children != null">
             <v-icon>mdi-plus</v-icon>
         </v-btn>
         <Storage-Structure v-bind:storage="child" v-for="(child, idx) in storage.children" :key="idx" class="ml-4" @addStorageStructureChild="addStorageStructureChild" />

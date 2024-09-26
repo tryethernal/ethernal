@@ -1,17 +1,17 @@
 <template>
-    <v-card outlined>
+    <v-card border flat>
         <v-card-text>
-            <v-alert v-if="successMessage" dense text type="success">{{ successMessage }}</v-alert>
-            <v-alert v-if="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
+            <v-alert v-if="successMessage" density="compact" text type="success">{{ successMessage }}</v-alert>
+            <v-alert v-if="errorMessage" density="compact" text type="error">{{ errorMessage }}</v-alert>
             <v-form @submit.prevent="updateExplorerSettings()" v-model="valid">
                 <v-row>
                     <v-col>
                         <v-select
-                            outlined
-                            dense
+                            variant="outlined"
+                            density="compact"
                             label="Associated Workspace"
                             v-model="currentWorkspace"
-                            item-text="name"
+                            item-title="name"
                             :items="workspaces"
                             return-object>
                             <template v-slot:item="{ item }">
@@ -22,14 +22,14 @@
                             </template>
                         </v-select>
                         <v-text-field
-                            dense
-                            outlined
+                            density="compact"
+                            variant="outlined"
                             v-model="explorer.name"
                             label="Name"></v-text-field>
                         <v-text-field
                             class="mb-2"
-                            dense
-                            outlined
+                            density="compact"
+                            variant="outlined"
                             v-model="explorer.slug"
                             :suffix="`.${mainDomain}`"
                             hint="Your explorer will always be reachable at this address"
@@ -37,8 +37,8 @@
                             label="Ethernal Domain"></v-text-field>
                         <v-text-field
                             class="mb-2"
-                            dense
-                            outlined
+                            density="compact"
+                            variant="outlined"
                             :disabled="!capabilities.nativeToken"
                             :hint="capabilities.nativeToken ? '' : 'Upgrade your plan to customize your native token symbol.'"
                             v-model="explorer.token"
@@ -46,8 +46,8 @@
                             label="Native Token Symbol"></v-text-field>
                         <v-text-field
                             class="mb-2"
-                            dense
-                            outlined
+                            density="compact"
+                            variant="outlined"
                             type="number"
                             :disabled="!capabilities.totalSupply"
                             :hint="capabilities.totalSupply ? `In ether: ${formatTotalSupply()}` : 'Upgrade your plan to display a total supply.'"
@@ -56,8 +56,8 @@
                             v-model="explorer.totalSupply"
                             label="Total Supply (in wei)"></v-text-field>
                         <v-text-field
-                            dense
-                            outlined
+                            density="compact"
+                            variant="outlined"
                             :rules="[v => !v || this.isUrlValid(v) || 'Invalid URL']"
                             persistent-hint
                             placeholder="https://etherscan.io"
@@ -120,7 +120,7 @@ export default {
             if (this.capabilities.l1Explorer)
                 settings['l1Explorer'] = this.explorer.l1Explorer;
 
-            this.server.updateExplorerSettings(this.explorer.id, settings)
+            this.$server.updateExplorerSettings(this.explorer.id, settings)
                 .then(() => {
                     this.successMessage = 'Settings updated.';
                     this.$emit('updated');

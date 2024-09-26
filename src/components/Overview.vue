@@ -1,14 +1,14 @@
 <template>
-    <v-container fluid>
+    <v-container fluid theme="ethernal">
         <v-row>
-            <v-col cols="12" sm="6" lg="3" v-if="publicExplorer && publicExplorer.totalSupply">
-                <Stat-Number :title="'Total Supply'" :value="publicExplorer.totalSupply" :long="true" />
+            <v-col cols="12" sm="6" lg="3" v-if="explorerStore.totalSupply">
+                <Stat-Number :title="'Total Supply'" :value="explorerStore.totalSupply" :long="true" />
             </v-col>
         </v-row>
 
         <v-row>
             <v-col cols="12" sm="6" lg="3">
-                <Stat-Number :type="'link'" :title="'Latest Block'" :value="currentBlock.number" :loading="!currentBlock.number" :href="`/block/${currentBlock.number}`" />
+                <Stat-Number :type="'link'" :title="'Latest Block'" :value="currentWorkspaceStore.currentBlock.number" :loading="!currentWorkspaceStore.currentBlock.number" :href="`/block/${currentWorkspaceStore.currentBlock.number}`" />
             </v-col>
             <v-col cols="12" sm="6" lg="3">
                 <Stat-Number :title="'24h Tx Count'" :value="txCount24h" :loading="txCount24hLoading" />
@@ -34,20 +34,20 @@
 
         <v-row>
             <v-col cols="12" md="6">
-                <v-card outlined>
-                    <v-card-subtitle>Latest Blocks</v-card-subtitle>
-                        <v-card-text>
-                            <Block-List :dense="true" />
-                        </v-card-text>
+                <v-card border flat>
+                    <template v-slot:subtitle>
+                        <div class="pt-2">Latest Blocks</div>
+                    </template>
+                    <Block-List :dense="true" class="px-4 pb-4" />
                 </v-card>
             </v-col>
 
             <v-col cols="12" md="6">
-                <v-card outlined>
-                    <v-card-subtitle>Latest Transactions</v-card-subtitle>
-                        <v-card-text>
-                            <Transactions-List :dense="true"></Transactions-List>
-                        </v-card-text>
+                <v-card border flat>
+                    <template v-slot:subtitle>
+                        <div class="pt-2">Latest Transactions</div>
+                    </template>
+                    <Transactions-List :dense="true" class="px-4 pb-4" />
                 </v-card>
             </v-col>
         </v-row>
@@ -59,7 +59,10 @@ const ethers = require('ethers');
 const formatUnits = ethers.utils.formatUnits;
 const BigNumber = ethers.BigNumber;
 const moment = require('moment');
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
+import { useExplorerStore } from '../stores/explorer';
 
 import TransactionsList from './TransactionsList';
 import BlockList from './BlockList';
@@ -102,27 +105,27 @@ export default {
         moment: moment,
         getActiveWalletCount() {
             this.activeWalletCountLoading = true;
-            this.server.getActiveWalletCount()
+            this.$server.getActiveWalletCount()
                 .then(({ data: { count }}) => this.activeWalletCount = count)
                 .catch(console.log)
                 .finally(() => this.activeWalletCountLoading = false);
         },
         getTxCountTotal() {
             this.txCountTotalLoading = true;
-            this.server.getTxCountTotal()
+            this.$server.getTxCountTotal()
                 .then(({ data: { count }}) => this.txCountTotal = count)
                 .catch(console.log)
                 .finally(() => this.txCountTotalLoading = false);
         },
         getTxCount24h() {
             this.txCount24hLoading = true;
-            this.server.getTxCount24h()
+            this.$server.getTxCount24h()
                 .then(({ data: { count }}) => this.txCount24h = count)
                 .catch(console.log)
                 .finally(() => this.txCount24hLoading = false);
         },
         getTransactionVolume() {
-            this.server.getTransactionVolume(this.from, this.to)
+            this.$server.getTransactionVolume(this.from, this.to)
                 .then(({ data }) => {
                     this.charts['transactionVolume'] = {
                         xLabels: data.map(t => t.date),
@@ -132,7 +135,7 @@ export default {
                 .catch(console.log);
         },
         getWalletVolume() {
-            this.server.getUniqueWalletCount(this.from, this.to)
+            this.$server.getUniqueWalletCount(this.from, this.to)
                 .then(({ data }) => {
                     this.charts['uniqueWalletCount'] = {
                         xLabels: data.map(t => t.date),
@@ -143,13 +146,9 @@ export default {
         },
     },
     computed: {
-        ...mapGetters([
-            'currentBlock',
-            'isPublicExplorer',
-            'publicExplorer'
-        ]),
+        ...mapStores(useCurrentWorkspaceStore, useExplorerStore),
         formattedTotalSupply() {
-            return formatUnits(BigNumber.from(this.publicExplorer.totalSupply), 18).split('.')[0];
+            return formatUnits(BigNumber.from(this.explorerStore.totalSupply), 18).split('.')[0];
         }
     }
 }

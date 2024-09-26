@@ -1,5 +1,8 @@
 import { ethers } from 'ethers';
+import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useEnvStore } from '../stores/env';
+import { useUserStore } from '../stores/user';
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import { useExplorerStore } from '../stores/explorer';
 const Web3 = require('web3');
@@ -170,7 +173,6 @@ const serverFunctions = {
             });
 
             if (data.options.pkey) {
-                console.log(data.options.pkey)
                 signer = new ethers.Wallet(data.options.pkey, provider);
             }
             else {
@@ -343,14 +345,18 @@ const serverFunctions = {
     }
 };
 
-export const serverPlugin = {
-    install(Vue) {
+export default {
+    install(app) {
         const envStore = useEnvStore();
         const currentWorkspaceStore = useCurrentWorkspaceStore();
         const explorerStore = useExplorerStore();
+        const userStore = useUserStore();
+
+        const { firebaseUserId } = storeToRefs(userStore);
+        const { name: workspace } = storeToRefs(currentWorkspaceStore);
 
         const _rpcServer = function() {
-            return currentWorkspaceStore.rpcServer;
+            return storeToRefs(currentWorkspaceStore).rpcServer;
         };
 
         axios.interceptors.request.use(
@@ -362,9 +368,9 @@ export const serverPlugin = {
             }
         );
 
-        Vue.prototype.server = {
+        const $server = {
             searchExplorer(domain) {
-                const resource = `${store.getters.apiRoot}/api/explorers/search`;
+                const resource = `${envStore.apiRoot}/api/explorers/search`;
                 return axios.get(resource, { params: { domain }});
             },
 
@@ -374,10 +380,7 @@ export const serverPlugin = {
             },
 
             getNativeTokenBalance(address) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, };
 
                 const resource = `${envStore.apiRoot}/api/addresses/${address}/nativeTokenBalance`;
                 return axios.get(resource, { params });
@@ -407,8 +410,7 @@ export const serverPlugin = {
             getV2DexQuote(from, to, amount, direction, slippageTolerance) {
                 const id = explorerStore.v2Dex.id;
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value, workspace: workspace.value,
                     from, to, amount, direction, slippageTolerance
                 };
 
@@ -419,8 +421,7 @@ export const serverPlugin = {
             getV2DexTokens() {
                 const id = explorerStore.v2Dex.id;
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name
+                    firebaseUserId: firebaseUserId.value, workspace: workspace.value,
                 };
 
                 const resource = `${envStore.apiRoot}/api/v2_dexes/${id}/tokens`;
@@ -433,10 +434,7 @@ export const serverPlugin = {
             },
 
             getTxCount24h() {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, };
 
                 const resource = `${envStore.apiRoot}/api/stats/txCount24h`;
                 return axios.get(resource, { params });
@@ -444,26 +442,21 @@ export const serverPlugin = {
 
             getTxCountTotal() {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value, workspace: workspace.value,
                 };
                 const resource = `${envStore.apiRoot}/api/stats/txCountTotal`;
                 return axios.get(resource, { params });
             },
 
             getActiveWalletCount() {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, };
                 const resource = `${envStore.apiRoot}/api/stats/activeWalletCount`;
                 return axios.get(resource, { params });
             },
 
             getFaucetTransactionHistory(id, options) {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value, workspace: workspace.value,
                     ...options
                 };
 
@@ -472,22 +465,14 @@ export const serverPlugin = {
             },
 
             getFaucetTokenVolume(id, from, to) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    from, to
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, from, to };
 
                 const resource = `${envStore.apiRoot}/api/faucets/${id}/tokenVolume`;
                 return axios.get(resource, { params });
             },
 
             getFaucetRequestVolume(id, from, to) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    from, to
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, from, to };
 
                 const resource = `${envStore.apiRoot}/api/faucets/${id}/requestVolume`;
                 return axios.get(resource, { params });
@@ -504,11 +489,7 @@ export const serverPlugin = {
             },
 
             requestFaucetToken(id, address) {
-                const data = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    address
-                };
+                const data = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, address };
 
                 const resource = `${envStore.apiRoot}/api/faucets/${id}/drip`;
                 return axios.post(resource, { data });
@@ -525,10 +506,7 @@ export const serverPlugin = {
             },
 
             getFaucetBalance(id) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, };
                 const resource = `${envStore.apiRoot}/api/faucets/${id}/balance`;
                 return axios.get(resource, { params });
             },
@@ -693,10 +671,8 @@ export const serverPlugin = {
             },
 
             getExplorerStatus() {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, };
+
                 const resource = `${envStore.apiRoot}/api/status`;
                 return axios.get(resource, { params });
             },
@@ -722,108 +698,85 @@ export const serverPlugin = {
             },
 
             getAddressTokenTransfers(address, options) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    ...options
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
+
                 const resource = `${envStore.apiRoot}/api/addresses/${address}/tokenTransfers`;
                 return axios.get(resource, { params });
             },
 
             getAddressStats(address) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, };
+
                 const resource = `${envStore.apiRoot}/api/addresses/${address}/stats`;
                 return axios.get(resource, { params });
             },
 
             getTransactionTokenBalanceChanges(transactionHash, options) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    ...options
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
+
                 const resource = `${envStore.apiRoot}/api/transactions/${transactionHash}/tokenBalanceChanges`;
                 return axios.get(resource, { params });
             },
 
             getTransactionTokenTransfers(transactionHash, options) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    ...options
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
+
                 const resource = `${envStore.apiRoot}/api/transactions/${transactionHash}/tokenTransfers`;
                 return axios.get(resource, { params });
             },
 
             getTransactionLogs(transactionHash, options) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    ...options
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
+
                 const resource = `${envStore.apiRoot}/api/transactions/${transactionHash}/logs`;
                 return axios.get(resource, { params });
             },
 
             getContractLogs(address, options) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    ...options
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
+
                 const resource = `${envStore.apiRoot}/api/contracts/${address}/logs`;
                 return axios.get(resource, { params });
             },
 
             updateContractWatchedPaths(address, paths) {
                 const data = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     watchedPaths: paths
                 };
+
                 const resource = `${envStore.apiRoot}/api/contracts/${address}/watchedPaths`;
                 return axios.post(resource, { data });
             },
 
             getProcessableContracts() {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                 };
+
                 const resource = `${envStore.apiRoot}/api/contracts/processable`;
                 return axios.get(resource, { params });
             },
 
             getContractStats(address) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, };
+
                 const resource = `${envStore.apiRoot}/api/contracts/${address}/stats`;
                 return axios.get(resource, { params });
             },
 
             getTokenTransfers(address, options) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    ...options
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
+
                 const resource = `${envStore.apiRoot}/api/contracts/${address}/transfers`;
                 return axios.get(resource, { params });
             },
 
             getTokenHolders(address, options) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    ...options
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
+
                 const resource = `${envStore.apiRoot}/api/contracts/${address}/holders`;
                 return axios.get(resource, { params });
             },
@@ -831,10 +784,8 @@ export const serverPlugin = {
             getErc721TokensFrom(contractAddress, indexes) {
                 const tokens = [];
                 return new Promise((resolve, reject) => {
-                    const data = {
-                        firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                        workspace: currentWorkspaceStore.name,
-                    };
+                    const data = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, };
+
                     const resource = `${envStore.apiRoot}/api/erc721Tokens/${contractAddress}`;
 
                     const erc721Connector = new ERC721Connector(currentWorkspaceStore.rpcServer, contractAddress, { metadata: true, enumerable: true });
@@ -854,28 +805,25 @@ export const serverPlugin = {
 
             setTokenProperties(contractAddress, properties) {
                 const data = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     properties: properties
                 };
+
                 const resource = `${envStore.apiRoot}/api/contracts/${contractAddress}/tokenProperties`;
                 return axios.post(resource, { data });
             },
 
             getErc721TokenTransfers(contractAddress, tokenId) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, };
+
                 const resource = `${envStore.apiRoot}/api/erc721Tokens/${contractAddress}/${tokenId}/transfers`;
                 return axios.get(resource, { params });
             },
 
             reloadErc721Token(contractAddress, tokenId) {
-                const data = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                };
+                const data = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, };
+
                 const resource = `${envStore.apiRoot}/api/erc721Tokens/${contractAddress}/${tokenId}/reload`;
                 return axios.post(resource, { data });
             },
@@ -890,10 +838,8 @@ export const serverPlugin = {
                     });
                 }
                 else {
-                    const params = {
-                        firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                        workspace: currentWorkspaceStore.name,
-                    };
+                    const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, };
+
                     const resource = `${envStore.apiRoot}/api/erc721Collections/${contractAddress}/totalSupply`;
                     return axios.get(resource, { params });
                 }
@@ -913,10 +859,7 @@ export const serverPlugin = {
                         });
                 }
                 else {
-                    const params = {
-                        firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                        workspace: currentWorkspaceStore.name,
-                    };
+                    const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, };
                     const resource = `${envStore.apiRoot}/api/erc721Tokens/${contractAddress}/tokenIndex/${tokenIndex}`;
                     return axios.get(resource, { params });
                 }
@@ -932,21 +875,14 @@ export const serverPlugin = {
                     });
                 }
                 else {
-                    const params = {
-                        firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                        workspace: currentWorkspaceStore.name,
-                    };
+                    const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, };
                     const resource = `${envStore.apiRoot}/api/erc721Tokens/${contractAddress}/${tokenId}`;
                     return axios.get(resource, { params });
                 }
             },
 
             getErc721Tokens(contractAddress, options, loadingEnabled) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    ...options
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, ...options };
 
                 if (!explorerStore || !loadingEnabled) {
                     return new Promise((resolve, reject) => {
@@ -971,20 +907,15 @@ export const serverPlugin = {
             },
 
             submitExplorerLead(email) {
-                const data = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    email: email,
-                };
+                const data = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, email };
+
                 const resource = `${envStore.apiRoot}/api/marketing/submitExplorerLead`;
                 return axios.post(resource, { data });
             },
 
             getMarketingFlags() {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, };
+
                 const resource = `${envStore.apiRoot}/api/marketing`;
                 return axios.get(resource, { params });
             },
@@ -995,71 +926,45 @@ export const serverPlugin = {
             },
 
             getTokenTransferVolume(from, to, address, type) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    from, to, address, type
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, from, to, address, type };
                 const resource = `${envStore.apiRoot}/api/stats/tokenTransferVolume`;
                 return axios.get(resource, { params });
             },
 
             getTokenHolderHistory(from, to, address) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    from: from,
-                    to: to
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, from, to, address };
                 const resource = `${envStore.apiRoot}/api/contracts/${address}/holderHistory`;
                 return axios.get(resource, { params });
             },
 
             getTokenCirculatingSupply(from, to, address) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    from: from,
-                    to: to
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, from, to, address };
                 const resource = `${envStore.apiRoot}/api/contracts/${address}/circulatingSupply`;
                 return axios.get(resource, { params });
             },
 
             getTransactionVolume(from, to) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    from, to
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, from, to };
                 const resource = `${envStore.apiRoot}/api/stats/transactions`;
                 return axios.get(resource, { params });
             },
 
             getUniqueWalletCount(from, to) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    from, to
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, from, to };
                 const resource = `${envStore.apiRoot}/api/stats/uniqueWalletCount`;
                 return axios.get(resource, { params });
             },
 
             getCumulativeWalletCount(from, to) {
-                const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
-                    from, to
-                };
+                const params = { firebaseUserId: firebaseUserId.value, workspace: workspace.value, from, to };
                 const resource = `${envStore.apiRoot}/api/stats/cumulativeWalletCount`;
                 return axios.get(resource, { params });
             },
 
             getCumulativeDeployedContractCount(from, to) {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     from, to
                 };
                 const resource = `${envStore.apiRoot}/api/stats/cumulativeDeployedContractCount`;
@@ -1068,8 +973,8 @@ export const serverPlugin = {
 
             getDeployedContractCount(from, to) {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     from, to
                 };
                 const resource = `${envStore.apiRoot}/api/stats/deployedContractCount`;
@@ -1078,8 +983,8 @@ export const serverPlugin = {
 
             getAverageGasPrice(from, to) {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     from, to
                 };
                 const resource = `${envStore.apiRoot}/api/stats/averageGasPrice`;
@@ -1088,8 +993,8 @@ export const serverPlugin = {
 
             getAverageTransactionFee(from, to) {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     from, to
                 };
                 const resource = `${envStore.apiRoot}/api/stats/averageTransactionFee`;
@@ -1098,8 +1003,8 @@ export const serverPlugin = {
 
             getTokenBalances(address, patterns) {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     patterns: patterns
                 };
                 const resource = `${envStore.apiRoot}/api/addresses/${address}/balances`;
@@ -1108,20 +1013,19 @@ export const serverPlugin = {
 
             search(type, query) {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     type: type,
                     query: query
                 };
-
                 const resource = `${envStore.apiRoot}/api/search`;
                 return axios.get(resource, { params });
             },
 
             getBlocks(options, withCount) {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     ...options, withCount
                 };
                 const resource = `${envStore.apiRoot}/api/blocks`;
@@ -1130,8 +1034,8 @@ export const serverPlugin = {
 
             getBlock(number, withTransactions = true) {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     withTransactions: withTransactions
                 };
                 const resource = `${envStore.apiRoot}/api/blocks/${number}`;
@@ -1140,8 +1044,8 @@ export const serverPlugin = {
 
             getBlockTransactions(blockNumber, options, withCount) {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     ...options, withCount
                 };
                 const resource = `${envStore.apiRoot}/api/blocks/${blockNumber}/transactions`;
@@ -1150,8 +1054,8 @@ export const serverPlugin = {
 
             getTransactions(options, withCount) {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     ...options, withCount
                 };
                 const resource = `${envStore.apiRoot}/api/transactions`;
@@ -1160,8 +1064,8 @@ export const serverPlugin = {
 
             getTransaction(hash) {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                 };
                 const resource = `${envStore.apiRoot}/api/transactions/${hash}`;
                 return axios.get(resource, { params });
@@ -1169,8 +1073,8 @@ export const serverPlugin = {
 
             getContracts(options) {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     ...options
                 };
                 const resource = `${envStore.apiRoot}/api/contracts`;
@@ -1179,8 +1083,8 @@ export const serverPlugin = {
 
             getContract(address) {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                 };
                 const resource = `${envStore.apiRoot}/api/contracts/${address.toLowerCase()}`;
                 return axios.get(resource, { params, cache: { ttl: 5000 } });
@@ -1188,8 +1092,8 @@ export const serverPlugin = {
 
             getAddressTransactions(address, options) {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     ...options
                 };
                 const resource = `${envStore.apiRoot}/api/addresses/${address}/transactions`;
@@ -1198,8 +1102,8 @@ export const serverPlugin = {
 
             getAccounts(options) {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     ...options
                 };
                 const resource = `${envStore.apiRoot}/api/accounts`;
@@ -1208,7 +1112,7 @@ export const serverPlugin = {
 
             async getCurrentUser() {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId
+                    firebaseUserId
                 };
                 const resource = `${envStore.apiRoot}/api/users/me`;
                 return axios.get(resource, { params });
@@ -1216,8 +1120,8 @@ export const serverPlugin = {
 
             setCurrentWorkspace(workspace) {
                 const data = {
-                    workspace: workspace,
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId
+                    workspace: workspace.value,
+                    firebaseUserId
                 };
                 const resource = `${envStore.apiRoot}/api/users/me/setCurrentWorkspace`;
                 return axios.post(resource, { data });
@@ -1241,8 +1145,8 @@ export const serverPlugin = {
 
             getProcessableTransactions() {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                 };
                 const resource = `${envStore.apiRoot}/api/transactions/processable`;
                 return axios.get(resource, { params });
@@ -1250,8 +1154,8 @@ export const serverPlugin = {
 
             getFailedProcessableTransactions() {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                 };
                 const resource = `${envStore.apiRoot}/api/transactions/failedProcessable`;
                 return axios.get(resource, { params });
@@ -1261,7 +1165,7 @@ export const serverPlugin = {
                 const data = {
                     name: name,
                     workspaceData: workspaceData,
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId
+                    firebaseUserId
                 };
                 const resource = `${envStore.apiRoot}/api/workspaces`;
                 return axios.post(resource, { data });
@@ -1269,17 +1173,17 @@ export const serverPlugin = {
 
             getWorkspaces() {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId
+                    firebaseUserId
                 };
 
                 const resource = `${envStore.apiRoot}/api/workspaces`;
                 return axios.get(resource, { params });
             },
 
-            syncBalance(address, balance, workspace) {
+            syncBalance(address, balance, _workspace) {
                 const data = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: workspace || currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: _workspace || workspace.value,
                     balance: balance
                 };
 
@@ -1309,8 +1213,8 @@ export const serverPlugin = {
 
             updateWorkspaceSettings(settings) {
                 const data = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     settings: settings
                 };
 
@@ -1320,8 +1224,8 @@ export const serverPlugin = {
 
             importContract(contractAddress) {
                 const data = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                 };
 
                 const resource = `${envStore.apiRoot}/api/contracts/${contractAddress}`;
@@ -1330,8 +1234,8 @@ export const serverPlugin = {
 
             getProductRoadToken() {
                 const params = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                 };
 
                 const resource = `${envStore.apiRoot}/api/marketing/productRoadToken`;
@@ -1340,8 +1244,8 @@ export const serverPlugin = {
 
             syncTransactionData(hash, transactionData) {
                 const data = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     data: transactionData
                 };
 
@@ -1351,8 +1255,8 @@ export const serverPlugin = {
 
             reprocessTransaction(transactionHash) {
                 const data = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     transaction: transactionHash
                 };
 
@@ -1362,8 +1266,8 @@ export const serverPlugin = {
 
             removeContract(address) {
                 const data = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                 };
 
                 const resource = `${envStore.apiRoot}/api/contracts/${address}/remove`;
@@ -1372,8 +1276,8 @@ export const serverPlugin = {
 
             resetWorkspace() {
                 const data = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                 };
 
                 const resource = `${envStore.apiRoot}/api/workspaces/reset`;
@@ -1382,8 +1286,8 @@ export const serverPlugin = {
 
             syncContractData(address, name, abi, watchedPaths) {
                 const data = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     address: address,
                     name: name,
                     abi: abi,
@@ -1396,8 +1300,8 @@ export const serverPlugin = {
 
             storeAccountPrivateKey(account, privateKey) {
                 const data = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     privateKey: privateKey
                 };
 
@@ -1407,8 +1311,8 @@ export const serverPlugin = {
 
             syncFailedTransactionError(transactionHash, error) {
                 const data = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     error: error
                 };
 
@@ -1418,8 +1322,8 @@ export const serverPlugin = {
 
             syncTokenBalanceChanges(transactionHash, tokenTransferId, changes) {
                 const data = {
-                    firebaseUserId: currentWorkspaceStore.firebaseUserId,
-                    workspace: currentWorkspaceStore.name,
+                    firebaseUserId: firebaseUserId.value,
+                    workspace: workspace.value,
                     tokenTransferId: tokenTransferId,
                     changes: changes
                 };
@@ -1432,7 +1336,7 @@ export const serverPlugin = {
 
             async processContracts(rpcServer) {
                 try {
-                    const contracts = (await Vue.prototype.server.getProcessableContracts()).data;
+                    const contracts = (await this.getProcessableContracts()).data;
                     const provider = serverFunctions._getProvider(rpcServer);
                     for (let i = 0; i < contracts.length; i++) {
                         const contract = contracts[i];
@@ -1441,7 +1345,7 @@ export const serverPlugin = {
                             const bytecode = await provider.getCode(contract.address);
                             if (bytecode.length > 0)
                                 properties = { ...properties, bytecode: bytecode };
-                            await Vue.prototype.server.setTokenProperties(contract.address, properties);
+                            await this.setTokenProperties(contract.address, properties);
                         } catch(error) {
                             console.log(`Error processing contract ${contract.address}`);
                             console.log(error);
@@ -1461,7 +1365,7 @@ export const serverPlugin = {
 
                         if (transaction.receipt.status === 0 || transaction.receipt.status === false) {
                             serverFunctions.fetchErrorData(transaction, rpcServer)
-                                .then(result => Vue.prototype.server.syncFailedTransactionError(transaction.hash, result))
+                                .then(result => this.syncFailedTransactionError(transaction.hash, result))
                                 .catch(console.log);
                         }
                     }
@@ -1489,7 +1393,7 @@ export const serverPlugin = {
                         }
 
                         if (changes.length > 0)
-                            Vue.prototype.server.syncTokenBalanceChanges(transaction.hash, transfer.id, changes);
+                            this.syncTokenBalanceChanges(transaction.hash, transfer.id, changes);
                     } catch(error) {
                         console.log(error);
                         continue;
@@ -1588,5 +1492,7 @@ export const serverPlugin = {
             },
             transferErc721Token: serverFunctions.transferErc721Token
         };
+
+        app.config.globalProperties.$server = $server;
     }
 };

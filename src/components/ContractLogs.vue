@@ -69,7 +69,7 @@ export default {
         moment: moment,
         onPagination(options) {
             this.getTransfers(options);
-            this.pusherChannelHandler = this.pusher.onNewContractLog(() => this.getTransfers(this.currentOptions), this.address, this);
+            this.pusherChannelHandler = this.$pusher.onNewContractLog(() => this.getTransfers(this.currentOptions), this.address, this);
         },
         getTransfers(newOptions) {
             this.loading = true;
@@ -84,7 +84,7 @@ export default {
                 order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
             };
 
-            this.server.getContractLogs(this.address, options)
+            this.$server.getContractLogs(this.address, options)
                 .then(({ data }) => {
                     this.logs = data.items;
                     this.logCount = data.total;
@@ -97,7 +97,7 @@ export default {
         address: {
             immediate: true,
             handler(address) {
-                this.server.getContract(address)
+                this.$server.getContract(address)
                     .then(({ data }) => this.contract = data)
                     .finally(() => this.loading = false);
             }

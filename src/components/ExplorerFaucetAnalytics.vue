@@ -1,9 +1,9 @@
 <template>
-    <v-card outlined>
+    <v-card border flat>
         <v-card-text>
             <v-row>
                 <v-col cols="3" class="pb-0">
-                    <v-select @change="initAllCharts" hide-details="true" dense primary outlined label="Time Range" :items="ranges" v-model="selectedTimeRange" item-text="label" item-value="value">
+                    <v-select @update:model-value="initAllCharts" hide-details="true" density="compact" primary variant="outlined" label="Time Range" :items="ranges" v-model="selectedTimeRange" item-title="label" item-value="value">
                     </v-select>
                 </v-col>
             </v-row>
@@ -53,7 +53,7 @@ export default {
             this.getTokenVolume();
         },
         getRequestVolume() {
-            this.server.getFaucetRequestVolume(this.id, this.from, this.to)
+            this.$server.getFaucetRequestVolume(this.id, this.from, this.to)
                 .then(({ data }) => {
                     this.charts['requestVolume'] = {
                         xLabels: data.map(t => t.date),
@@ -63,7 +63,7 @@ export default {
                 .catch(console.log);
         },
         getTokenVolume() {
-            this.server.getFaucetTokenVolume(this.id, this.from, this.to)
+            this.$server.getFaucetTokenVolume(this.id, this.from, this.to)
                 .then(({ data }) => {
                     this.charts['tokenVolume'] = {
                         xLabels: data.map(t => t.date),

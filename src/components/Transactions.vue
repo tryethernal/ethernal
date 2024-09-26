@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-card outlined>
+        <v-card border flat>
             <v-card-text>
                 <Transactions-List></Transactions-List>
             </v-card-text>

@@ -2,8 +2,8 @@
     <div>
         <div class="pb-1 font-weight-bold">{{ method.name }}</div>
         <v-text-field
-            outlined
-            dense
+            variant="outlined"
+            density="compact"
             hide-details="auto"
             class="py-1 col-3"
             v-model="params[inputIdx]"
@@ -14,7 +14,7 @@
         </v-text-field>
         <div>=> {{ outputSignature }}</div>
         <div id="call" v-show="results.length">
-            <v-card outlined v-for="(val, idx) in results" :key="idx" class="my-1">
+            <v-card border flat v-for="(val, idx) in results" :key="idx" class="my-1">
                 <v-card-text class="py-2 ma-0 px-1">
                     <div style="white-space: pre;">
                         <Formatted-Sol-Var :input="val.input" :value="val.value" />
@@ -22,10 +22,10 @@
                 </v-card-text>
             </v-card>
         </div>
-        <div id="call" class="grey lighten-3 pa-2" v-show="error">
+        <div id="call" class="bg-grey-lighten-3 pa-2" v-show="error">
             {{ error }}
         </div>
-        <v-btn :disabled="!active" :loading="loading" class="mt-1" depressed :color="theme == 'dark' ? '' : 'primary'" @click="callMethod()">Query</v-btn>
+        <v-btn :disabled="!active" :loading="loading" class="mt-1" variant="flat" :color="theme == 'dark' ? '' : 'primary'" @click="callMethod()">Query</v-btn>
     </div>
 </template>
 <script>
@@ -63,7 +63,7 @@ export default {
                     from: this.options.from.address
                 };
 
-                this.server.callContractReadMethod(this.contract, this.signature, options, processedParams, this.rpcServer, provider)
+                this.$server.callContractReadMethod(this.contract, this.signature, options, processedParams, this.rpcServer, provider)
                     .then(res => {
                         this.results = Array.isArray(res) ? this.processResult(res) : this.processResult([res]);
                     })

@@ -11,8 +11,8 @@
                         |<br>
                         |-->
                     </span>
-                    <v-chip small class="primary mr-2">{{ step.op }}</v-chip>
-                    <v-chip v-if="step.contract && step.contract.proxyContract" small class="primary mr-2">PROXY</v-chip>
+                    <v-chip size="small" class="bg-primary mr-2">{{ step.op }}</v-chip>
+                    <v-chip v-if="step.contract && step.contract.proxyContract" size="small" class="bg-primary mr-2">PROXY</v-chip>
                     <template v-if="step.value && step.value != '' && step.value != '0'">[{{ step.value | fromWei('ether', chain.token) }}] </template>
                     <Hash-Link :type="'address'" :hash="step.address" :notCopiable="true" :fullHash="true" :withName="true" /><span v-if="transactionDescription">.{{ transactionDescription.functionFragment.name }}(</span>
                     <template v-if="transactionDescription">

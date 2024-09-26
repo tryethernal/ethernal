@@ -1,7 +1,7 @@
 <template>
 <v-dialog v-model="dialog" max-width="700">
     <v-card>
-        <v-card-title class="headline">
+        <v-card-title class="text-h5">
             New Workspace
             <v-spacer></v-spacer>
             <v-btn icon @click="close(false)"><v-icon>mdi-close</v-icon></v-btn>
@@ -37,7 +37,7 @@ export default {
             resolve(workspaceCreated);
         },
         onWorkspaceCreated: function(workspaceData) {
-            this.server.setCurrentWorkspace(workspaceData.name)
+            this.$server.setCurrentWorkspace(workspaceData.name)
                 .then(() => document.location = '/overview');
         },
         goToBilling: function() {

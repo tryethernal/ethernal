@@ -1,6 +1,6 @@
 <template>
     <v-dialog v-model="dialog" max-width="600">
-        <v-card outlined>
+        <v-card border flat>
             <v-card-title>
                 <template>Add Domain Alias</template>
                 <v-spacer></v-spacer>
@@ -13,14 +13,14 @@
                     <v-text-field
                         class="mt-2"
                         :rules="[v => !!this.domainOrigin || 'Invalid format']"
-                        dense
-                        outlined
+                        density="compact"
+                        variant="outlined"
                         v-model="domain"
                         persistent-hint
                         label="Domain Alias"></v-text-field>
                     <template v-if="domainOrigin">
                         <div class="mb-1">Log in to the account you have with your DNS provider, and add the following record:</div>
-                        <div style="border-radius: 5px;" class="mb-1 pa-2 black white--text font-weight-medium">{{ domainOrigin }} A 37.16.1.34</div>
+                        <div style="border-radius: 5px;" class="mb-1 pa-2 bg-black text-white font-weight-medium">{{ domainOrigin }} A 37.16.1.34</div>
                     </template>
                     <v-card-actions>
                         <v-spacer></v-spacer>
@@ -50,7 +50,7 @@ export default {
         save() {
             this.loading = true;
             this.errorMessage = null;
-            this.server.addExplorerDomain(this.explorer.id, this.domainOrigin)
+            this.$server.addExplorerDomain(this.explorer.id, this.domainOrigin)
                 .then(() => this.close(true))
                 .catch(error => {
                     this.loading = false;

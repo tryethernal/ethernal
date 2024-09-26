@@ -67,7 +67,7 @@ export default {
                 order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
             };
 
-            this.server.getTokenHolders(this.address, options)
+            this.$server.getTokenHolders(this.address, options)
                 .then(({ data }) => {
                     this.holders = data.items;
                     this.holderCount = data.total;

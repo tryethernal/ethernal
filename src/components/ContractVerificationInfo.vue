@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-card outlined class="mb-4">
+        <v-card border flat class="mb-4">
             <v-card-text>
                 <v-row>
                     <v-col cols="6"><b>Contract Name:</b> {{ contract.verification.contractName }}</v-col>
@@ -27,7 +27,7 @@
             </v-card-text>
         </v-card>
 
-        <v-card v-if="displayConstructorArguments" outlined class="mb-6">
+        <v-card v-if="displayConstructorArguments" border class="mb-6">
             <v-card-title>
                 Constructor Arguments
                 <v-spacer></v-spacer>
@@ -45,7 +45,7 @@
             </v-card-text>
         </v-card>
 
-        <v-card v-if="displayLibraries" outlined class="mb-6">
+        <v-card v-if="displayLibraries" border class="mb-6">
             <v-card-title>Libraries</v-card-title>
             <v-card-text>
                 <div v-for="(libraryName, idx) in Object.keys(contract.verification.libraries)" :key="idx">
@@ -54,13 +54,13 @@
             </v-card-text>
         </v-card>
 
-        <v-card v-if="contract.abi" outlined class="mb-6">
+        <v-card v-if="contract.abi" border class="mb-6">
             <v-card-title>ABI</v-card-title>
             <v-card-text>
-                <v-textarea dense outlined disabled :value="JSON.stringify(contract.abi)">
+                <v-textarea density="compact" variant="outlined" disabled :model-value="JSON.stringify(contract.abi)">
                     <template v-slot:append>
                         <v-btn icon @click="copyAbi()">
-                            <v-icon small>mdi-content-copy</v-icon>
+                            <v-icon size="small">mdi-content-copy</v-icon>
                         </v-btn>
                     </template>
                 </v-textarea>

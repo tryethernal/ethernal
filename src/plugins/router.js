@@ -1,4 +1,4 @@
-import VueRouter from 'vue-router';
+import { createWebHistory, createRouter } from 'vue-router';
 import Blocks from '../components/Blocks.vue';
 import Block from '../components/Block.vue';
 import Transactions from '../components/Transactions.vue';
@@ -22,10 +22,6 @@ import ExplorerFaucet from '../components/ExplorerFaucet.vue';
 import ExplorerDex from '../components/ExplorerDex.vue';
 
 import { useUserStore } from '../stores/user';
-
-const auth = () => {
-    return { currentUser: router.app.$store.getters.user };
-}
 
 const redirectIfLoggedIn = function (to, from, next) {
     const userStore = useUserStore();
@@ -67,11 +63,11 @@ const routes = [
     { path: '/status', component: ExplorerStatus, beforeEnter: redirectIfLoggedOut },
     { path: '/faucet', component: ExplorerFaucet, beforeEnter: redirectIfLoggedOut },
     { path: '/dex', component: ExplorerDex, beforeEnter: redirectIfLoggedOut },
-    { path: '*', redirect: '/overview' }
+    { path: '/:pathMatch(.*)*', name: 'not-found', component: Overview }
 ];
 
-const router = new VueRouter({
-    mode: 'history',
+const router = createRouter({
+    history: createWebHistory(),
     routes: routes
 });
 

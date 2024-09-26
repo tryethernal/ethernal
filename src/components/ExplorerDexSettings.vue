@@ -3,7 +3,7 @@
         <template v-if="explorer && explorer.v2Dex">
             <v-row>
                 <v-col cols="6">
-                    <v-card outlined class="my-6">
+                    <v-card border flat class="my-6">
                         <v-card-text>
                             <v-switch @click.prevent="toggleDex()" :loading="loading || active === null" class="mt-1" v-model="active" inset :label="`${v2Dex.active ? 'Active' : 'Inactive'}`"></v-switch>
                             <strong>URL:</strong> <a :href="`//${mainExplorerDomain}/dex`" target="_blank">https://{{ mainExplorerDomain }}/dex</a><br>
@@ -12,9 +12,9 @@
                             <strong>Wrapped Native Token:</strong> <Hash-Link :contract="explorer.v2Dex.wrappedNativeTokenContract" :type="'address'" :hash="explorer.v2Dex.wrappedNativeTokenContract.address" :withTokenName="true" :withName="true" /><br>
                             <v-divider class="my-4"></v-divider>
                             <strong>Pairs synchronization status:</strong>
-                            <v-progress-linear v-if="pairSyncProgress != null" :query="pairSyncProgress == null" :value="pairSyncProgress" rounded height="15">
+                            <v-progress-linear v-if="pairSyncProgress != null" :query="pairSyncProgress == null" :model-value="pairSyncProgress" rounded height="15">
                                 <template v-slot:default="{ value }">
-                                    <small class="white--text">{{ value.toFixed(2) }}% ({{ pairCount }} / {{ totalPairs }})</small>
+                                    <small class="text-white">{{ value.toFixed(2) }}% ({{ pairCount }} / {{ totalPairs }})</small>
                                 </template>
                             </v-progress-linear>
                             <v-progress-linear v-else indeterminate rounded height="15"></v-progress-linear>
@@ -22,18 +22,18 @@
                             <template v-else-if="maxPairs">You can only sync up to {{ maxPairs }} pairs during your trial. Contact support to remove this limit.</template>
                         </v-card-text>
                     </v-card>
-                    <h4 class="error--text">Danger Zone</h4>
+                    <h4 class="text-error">Danger Zone</h4>
                     <Explorer-Dex-Settings-Danger-Zone @delete="deletedExplorer" :v2DexId="v2Dex.id" />
                 </v-col>
             </v-row>
         </template>
         <template v-else-if="explorer">
-            <v-card outlined>
+            <v-card border flat>
                 <Create-Explorer-Dex-Modal ref="createExplorerDexModal" />
                 <v-card-text>
                     <v-row>
                         <v-col align="center">
-                            <v-icon style="opacity: 0.25;" size="200" color="primary lighten-1">mdi-swap-horizontal</v-icon>
+                            <v-icon style="opacity: 0.25;" size="200" color="primary-lighten-1">mdi-swap-horizontal</v-icon>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -57,7 +57,7 @@
             </v-card>
         </template>
         <template v-else>
-            <v-card outlined>
+            <v-card border flat>
                 <v-skeleton-loader type="list-item-three-line"></v-skeleton-loader>
             </v-card>
         </template>
@@ -65,8 +65,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-import store from '../plugins/store';
+import { mapStores } from 'pinia';
+import { useExplorerStore } from '../stores/explorer';
+import { useEnvStore } from '../stores/env';
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 import CreateExplorerDexModal from './CreateExplorerDexModal';
 import ExplorerDexSettingsDangerZone from './ExplorerDexSettingsDangerZone';
 import HashLink from './HashLink';
@@ -103,7 +105,7 @@ export default {
         },
         loadExplorer() {
             this.loading = true;
-            this.server.getExplorer(this.explorerId)
+            this.$server.getExplorer(this.explorerId)
                 .then(({ data }) => {
                     this.v2Dex = data.v2Dex;
                     if (this.v2Dex) {
@@ -116,7 +118,7 @@ export default {
                 .finally(() => this.loading = false);
         },
         loadStatus() {
-            this.server.getV2DexStatus(this.v2Dex.id)
+            this.$server.getV2DexStatus(this.v2Dex.id)
                 .then(({ data }) => {
                     this.pairCount = data.pairCount;
                     this.totalPairs = data.totalPairs;
@@ -142,7 +144,7 @@ export default {
         },
         toggleDex() {
             this.loading = true;
-            const fn = this.v2Dex.active ? this.server.deactivateV2Dex : this.server.activateV2Dex;
+            const fn = this.v2Dex.active ? this.$server.deactivateV2Dex : this.$server.activateV2Dex;
             fn(this.v2Dex.id)
                 .then(() => this.v2Dex = { ...this.v2Dex, active: !this.v2Dex.active })
                 .catch(console.log)
@@ -150,10 +152,11 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'currentWorkspace',
-            'maxV2DexPairsForTrial'
-        ]),
+        ...mapStores(
+            useCurrentWorkspaceStore,
+            useEnvStore,
+            useExplorerStore
+        ),
         pairSyncProgress() {
             if (this.pairCount == null || this.totalPairs == null)
                 return null;
@@ -170,14 +173,14 @@ export default {
             if (!this.explorer.stripeSubscription)
                 return 0;
             if (this.explorer.stripeSubscription.isTrialing || this.explorer.isDemo)
-                return this.maxV2DexPairsForTrial;
+                return this.envStore.maxV2DexPairsForTrial;
             return null;
         }
     },
     watch: {
         v2Dex() {
-            if (this.explorer && this.explorer.workspaceId == this.currentWorkspace.id)
-                store.dispatch('updateV2DexSettings', this.v2Dex);
+            if (this.explorer && this.explorer.workspaceId == this.currentWorkspaceStore.id)
+                this.explorerStore.updateExplorer({ v2Dex: this.v2Dex });
         }
     },
 }

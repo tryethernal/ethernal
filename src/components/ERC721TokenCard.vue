@@ -45,7 +45,7 @@ export default {
         unfetchable: false
     }),
     mounted() {
-        this.server.getErc721TokenByIndex(this.contractAddress, this.index)
+        this.$server.getErc721TokenByIndex(this.contractAddress, this.index)
             .then(({ data }) => {
                 if (!data)
                     return this.unfetchable = true;

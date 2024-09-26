@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <template v-if="justCreated">
-            <v-card outlined>
+            <v-card border flat>
                 <v-card-text>
                     <v-progress-circular
                         class="mr-2"
@@ -45,7 +45,7 @@
             </v-row>
             <v-row v-if="!sso">
                 <v-col cols="6">
-                    <h4 class="error--text">Danger Zone</h4>
+                    <h4 class="text-error">Danger Zone</h4>
                     <Explorer-Danger-Zone :key="JSON.stringify(capabilities)" :explorer="explorer" />
                 </v-col>
             </v-row>
@@ -85,11 +85,11 @@ export default {
     }),
     methods: {
         loadExplorer(id) {
-            this.server.getWorkspaces()
+            this.$server.getWorkspaces()
                 .then(({ data }) => this.workspaces = data)
                 .catch(console.log);
 
-            this.server.getExplorer(id)
+            this.$server.getExplorer(id)
                 .then(({ data }) => {
                     this.explorer = data;
                     if (this.explorer.stripeSubscription) {

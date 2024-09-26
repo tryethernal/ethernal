@@ -4,7 +4,7 @@
             You need Metamask in order to interact with this contract
         </div>
         <div v-show="ethereum">
-            <v-alert outlined dense type="error" v-if="chainId && !isChainValid">
+            <v-alert variant="outlined" density="compact" type="error" v-if="chainId && !isChainValid">
                 Invalid chain id <b>{{ chainId }}</b> ({{ parseInt(chainId, 16) }}), expecting <b>{{ formattedExpectedChainId }}</b> ({{ currentWorkspace.networkId }}). Click <a @click.stop="switchMetamaskChain()">here</a> to switch network in Metamask.
             </v-alert>
             <div v-if="connectedAccount">

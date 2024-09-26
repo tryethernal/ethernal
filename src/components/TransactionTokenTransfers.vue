@@ -52,7 +52,7 @@ export default {
                 order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
             };
 
-            this.server.getTransactionTokenTransfers(this.hash, options)
+            this.$server.getTransactionTokenTransfers(this.hash, options)
                 .then(({ data }) => {
                     this.transfers = data.items;
                     this.transferCount = data.total;

@@ -1,13 +1,13 @@
 <template>
     <v-container fluid>
-        <v-card outlined v-if="contractLoading">
+        <v-card border flat v-if="contractLoading">
             <v-card-text>
                 <v-skeleton-loader class="col-4" type="list-item-three-line"></v-skeleton-loader>
             </v-card-text>
         </v-card>
         <template v-else-if="isStorageAvailable">
             <h4>Variables</h4>
-            <v-card outlined class="mb-4">
+            <v-card border flat class="mb-4">
                 <v-skeleton-loader v-if="variableLoading" class="col-4" type="list-item-three-line"></v-skeleton-loader>
                 <v-card-text v-if="storage.structure && !variableLoading && !error">
                     <Storage-Structure :storage="node" @addStorageStructureChild="addStorageStructureChild" v-for="(node, key, idx) in storage.structure.nodes" :key="idx" />
@@ -34,7 +34,7 @@
                 </v-col>
                 <v-col cols="9">
                     <h4>Data</h4>
-                    <v-card outlined>
+                    <v-card border flat>
                         <v-skeleton-loader v-if="dataLoading" class="col-5" type="list-item-three-line"></v-skeleton-loader>
                         <v-card-text>
                             <Transaction-Data v-if="!dataLoading" @decodeTx="decodeTx" :transaction="selectedTransaction" :abi="contract.abi" :key="selectedTransaction.hash" />
@@ -44,7 +44,7 @@
             </v-row>
         </template>
         <template v-else>
-            <v-card outlined>
+            <v-card border flat>
                 <v-card-text v-if="isUserAdmin">
                     Storage is not available on this contract. This is because the AST is not available. It can be for the following reasons:
                     <ul>
@@ -105,8 +105,8 @@ export default {
         decodeTx(transaction) {
             if (!this.isStorageAvailable) return;
             this.dataLoading = true;
-            this.server.decodeData(this.contract, this.currentWorkspace.rpcServer, transaction.blockNumber).then((data) => {
-                this.server.syncTransactionData(transaction.hash, data)
+            this.$server.decodeData(this.contract, this.currentWorkspace.rpcServer, transaction.blockNumber).then((data) => {
+                this.$server.syncTransactionData(transaction.hash, data)
                     .then(() => this.selectedTransaction.storage = data)
                     .finally(() => this.dataLoading = false);
             });
@@ -114,7 +114,7 @@ export default {
         addStorageStructureChild(struct, idx, newKey) {
             this.variableLoading = true;
             this.contract.watchedPaths.push([...struct.path, newKey]);
-            this.server.updateContractWatchedPaths(this.address, JSON.stringify(this.contract.watchedPaths))
+            this.$server.updateContractWatchedPaths(this.address, JSON.stringify(this.contract.watchedPaths))
                 .then(this.decodeContract);
         },
         decodeContract() {
@@ -128,7 +128,7 @@ export default {
             if (this.dependenciesNeded())
                 return this.variableLoading = false;
 
-            this.server.getStructure(this.contract, this.currentWorkspace.rpcServer)
+            this.$server.getStructure(this.contract, this.currentWorkspace.rpcServer)
                 .then(storage => this.storage = storage)
                 .catch(message => {
                     this.error = true;
@@ -144,7 +144,7 @@ export default {
             return false;
         },
         resetStorage() {
-            this.server.syncContractData(this.address, null, null, JSON.stringify([]))
+            this.$server.syncContractData(this.address, null, null, JSON.stringify([]))
                 .then(() => {
                     this.contract.watchedPaths = [];
                     this.decodeContract();
@@ -155,14 +155,14 @@ export default {
         address: {
             immediate: true,
             handler(address) {
-                this.server.getContract(address)
+                this.$server.getContract(address)
                     .then(({ data }) => {
                         this.contract = data;
                         this.decodeContract();
                     })
                     .finally(() => this.contractLoading = false);
 
-                this.server.getAddressTransactions(address)
+                this.$server.getAddressTransactions(address)
                     .then(({ data: { items }}) => this.transactions = items);
             }
         }

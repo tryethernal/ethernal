@@ -1,11 +1,10 @@
 <template>
-    <v-data-table
+    <v-data-table-server
         :loading="loading"
         :headers="headers"
-        :sort-by="sortBy"
+        :sort-by="[{ key: sortBy, order: 'desc' }]"
         :must-sort="true"
-        :sort-desc="true"
-        :server-items-length="count"
+        :items-length="count"
         :hide-default-header="dense"
         item-key="id"
         :items="transfers"
@@ -20,7 +19,7 @@
             <Hash-Link :type="'transaction'" :hash="item.transaction.hash" />
         </template>
         <template v-slot:item.type="{ item }">
-            <v-chip x-small class="success mr-2" v-if="type[item.token]">
+            <v-chip size="x-small" class="bg-success mr-2" v-if="type[item.token]">
                 {{ formatContractPattern(type[item.token]) }}
             </v-chip>
             <span v-else>N/A</span>
@@ -35,11 +34,11 @@
             <router-link :to="'/block/' + item.transaction.blockNumber">{{ item.transaction.blockNumber }}</router-link>
         </template>
         <template v-slot:item.src="{ item }">
-            <v-chip x-small class="mr-2" v-if="item.src === address">self</v-chip>
+            <v-chip size="x-small" class="mr-2" v-if="item.src === address">self</v-chip>
             <Hash-Link :type="'address'" :hash="item.src" :fullHash="!dense" :withName="true" :withTokenName="true" />
         </template>
         <template v-slot:item.dst="{ item }">
-            <v-chip x-small class="mr-2" v-if="item.dst === address">self</v-chip>
+            <v-chip size="x-small" class="mr-2" v-if="item.dst === address">self</v-chip>
             <Hash-Link :type="'address'" :hash="item.dst" :fullHash="!dense" :withName="true" :withTokenName="true" />
         </template>
         <template v-slot:item.token="{ item }">
@@ -48,7 +47,7 @@
         <template v-slot:item.amount="{ item }">
             {{ item.amount | fromWei(decimals[item.token], symbols[item.token], unformatted) }}
         </template>
-    </v-data-table>
+    </v-data-table-server>
 </template>
 <script>
 const moment = require('moment');

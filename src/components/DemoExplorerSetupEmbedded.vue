@@ -5,12 +5,12 @@
                 <v-row>
                     <v-col>
                         <v-text-field
-                            append-outer-icon="mdi-arrow-right"
+                            append-icon="mdi-arrow-right"
                             :rules="[
                                 v => this.isUrlValid(v) || 'RPC needs to be a valid URL',
                                 v => !!v || 'RPC server is required'
                             ]"
-                            outlined v-model="rpcServer" label="RPC URL" placeholder="https://my.rpc.com:8545" required>
+                            variant="outlined" v-model="rpcServer" label="RPC URL" placeholder="https://my.rpc.com:8545" required>
                         <template slot="append-outer">
                             <v-btn style="height: 56px;" :loading="loading" color="primary" :disabled="!valid" type="submit">Get Started</v-btn>
                         </template>
@@ -19,8 +19,8 @@
                 </v-row>
             </v-form>
             <v-card elevation="0" v-else>
-                <v-card-title class="success--text">
-                    <v-icon class="success--text mr-2">mdi-check-circle</v-icon>
+                <v-card-title class="text-success">
+                    <v-icon class="text-success mr-2">mdi-check-circle</v-icon>
                     Your explorer is ready!
                 </v-card-title>
                 <v-card-text>
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import store from '../plugins/store';
+import { useUserStore } from '../stores/user';
 
 export default {
     name: 'DemoExplorerSetupEmbedded',
@@ -44,15 +44,16 @@ export default {
         domain: null
     }),
     mounted() {
-        this.server.getCurrentUser()
-            .then(({ data }) => store.dispatch('updateUser', data))
-            .catch(() => store.dispatch('updateUser', null));
+        const userStore = useUserStore();
+        this.$server.getCurrentUser()
+            .then(({ data }) => userStore.updateUser(data))
+            .catch(() => userStore.updateUser(null));
     },
     methods: {
         submit() {
             this.loading = true;
             this.domain = null;
-            this.server.createDemoExplorer(this.name, this.rpcServer, this.nativeToken)
+            this.$server.createDemoExplorer(this.name, this.rpcServer, this.nativeToken)
                 .then(({ data }) => {
                     this.domain = data.domain;
                     this.$posthog.capture('explorer:explorer_create', {

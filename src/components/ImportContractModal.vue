@@ -1,7 +1,7 @@
 <template>
 <v-dialog v-model="dialog" max-width="600">
     <v-card>
-        <v-card-title class="headline">Import a third-party contract</v-card-title>
+        <v-card-title class="text-h5">Import a third-party contract</v-card-title>
 
         <v-card-text>
             <v-alert text v-if="!canImport" type="error">Free plan users are limited to 10 synced contracts. Remove some contracts or <Upgrade-Link @goToBilling="goToBilling" :emit="true">upgrade</Upgrade-Link> to the Premium plan for more.</v-alert>
@@ -19,8 +19,8 @@
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click.stop="close()">Close</v-btn>
-            <v-btn id="importContract" color="primary" :loading="loading" :disabled="!contractAddress" text @click.stop="importContract()">Import</v-btn>
+            <v-btn color="primary" variant="text" @click.stop="close()">Close</v-btn>
+            <v-btn id="importContract" color="primary" :loading="loading" :disabled="!contractAddress" variant="text" @click.stop="importContract()">Import</v-btn>
         </v-card-actions>
     </v-card>
 </v-dialog>
@@ -65,7 +65,7 @@ export default {
             this.successMessage = null;
             this.errorMessage = null;
             this.loading = true;
-            this.server.importContract(this.contractAddress)
+            this.$server.importContract(this.contractAddress)
                 .then(() => {
                         this.successMessage = `Contract has been imported at address <a class="white--text" href="/address/${this.contractAddress}">${this.contractAddress}</a>. If available, metadata will be automatically imported from Etherscan in a few seconds...`
                 })

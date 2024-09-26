@@ -3,7 +3,7 @@
         <template v-if="!totalSupply || totalSupply > 0">
             <v-row>
                 <v-col v-if="loading">
-                    <v-card outlined>
+                    <v-card border flat>
                         <v-skeleton-loader type="list-item"></v-skeleton-loader>
                     </v-card>
                 </v-col>
@@ -19,7 +19,7 @@
                         v-model="page"
                         :length="length"
                         :total-visible="7"
-                        @input="pageChanged">
+                        @update:model-value="pageChanged">
                     </v-pagination>
                 </v-col>
             </v-row>
@@ -27,7 +27,7 @@
         <template v-if="totalSupply === '0'">
             <v-row>
                 <v-col>
-                    <v-card outlined>
+                    <v-card border flat>
                         <v-card-text>There are no tokens in this collection, or the contract is missing the totalSupply() method.</v-card-text>
                     </v-card>
                 </v-col>
@@ -56,7 +56,7 @@ export default {
     }),
     mounted() {
         this.loading = true;
-        this.server.getErc721TotalSupply(this.address)
+        this.$server.getErc721TotalSupply(this.address)
             .then(({ data: { totalSupply }}) => {
                 this.totalSupply = totalSupply;
                 if (this.totalSupply)

@@ -56,7 +56,7 @@ export default {
                 order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
             };
 
-            this.server.getAddressTokenTransfers(this.address, options)
+            this.$server.getAddressTokenTransfers(this.address, options)
                 .then(({ data }) => {
                     this.transfers = data.items;
                     this.transferCount = data.total;

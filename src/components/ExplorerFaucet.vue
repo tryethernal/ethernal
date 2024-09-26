@@ -3,13 +3,13 @@
         <template v-if="publicExplorer.faucet">
             <v-row>
                 <v-col align="center">
-                    <v-icon style="opacity: 0.25;" size="150" color="primary lighten-1">mdi-faucet</v-icon>
+                    <v-icon style="opacity: 0.25;" size="150" color="primary-lighten-1">mdi-faucet</v-icon>
                 </v-col>
             </v-row>
             <v-row justify="center" align="center" class="mb-10 my-0">
                 <v-col md="6" sm="12">
-                    <v-card outlined class="rounded-card rounded-xl pa-12" v-if="publicExplorer.faucet">
-                        <v-card-title class="primary--text d-flex justify-center align-center">{{ publicExplorer.name }} Faucet - Get {{ tokenSymbol }} Tokens</v-card-title>
+                    <v-card border flat class="rounded-card rounded-xl pa-12" v-if="publicExplorer.faucet">
+                        <v-card-title class="text-primary d-flex justify-center align-center">{{ publicExplorer.name }} Faucet - Get {{ tokenSymbol }} Tokens</v-card-title>
                         <v-card-text class="pb-0">
                             <v-alert text type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
                             <v-alert text type="success" v-if="transactionHash">Tokens sent successfully! <Hash-Link :type="'transaction'" :hash="transactionHash" :customLabel="'See transaction'" /></v-alert>.
@@ -17,9 +17,9 @@
                                 <v-text-field
                                     prepend-inner-icon="mdi-wallet-outline"
                                     class="mt-1"
-                                    dense
+                                    density="compact"
                                     name="address"
-                                    outlined
+                                    variant="outlined"
                                     required
                                     :rules="[
                                         v => !!v || 'A valid address is required',
@@ -37,7 +37,7 @@
                                 <ul>
                                     <li v-for="(request, idx) in slicedRequests" :key="idx">
                                         <Hash-Link :withName="false" :type="'address'" :hash="request.address" /> -
-                                        <span v-if="durationUntilNextRequest(request.availableAt) <= 0" class="success--text">
+                                        <span v-if="durationUntilNextRequest(request.availableAt) <= 0" class="text-success">
                                             <a class="underlined" @click.prevent="requestFor(request.address)">Request now</a>
                                         </span>
                                         <span v-else>Request in {{ humanizeDuration(request.availableAt) }}</span>
@@ -72,11 +72,11 @@
             </v-row>
         </template>
         <template v-else>
-            <v-card outlined>
+            <v-card border flat>
                 <v-card-text>
                     <v-row>
                         <v-col align="center">
-                            <v-icon style="opacity: 0.25;" size="200" color="primary lighten-1">mdi-faucet</v-icon>
+                            <v-icon style="opacity: 0.25;" size="200" color="primary-lighten-1">mdi-faucet</v-icon>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -129,7 +129,7 @@ export default{
             return;
 
         this.refreshFaucetBalance();
-        this.pusherUnsubscribe = this.pusher.onNewTransaction(data => {
+        this.pusherUnsubscribe = this.$pusher.onNewTransaction(data => {
             if (data.from == this.publicExplorer.faucet.address || data.to == this.publicExplorer.faucet.address)
                 this.refreshFaucetBalance();
         }, this);
@@ -147,7 +147,7 @@ export default{
             this.requestTokens();
         },
         refreshFaucetBalance() {
-            this.server.getFaucetBalance(this.publicExplorer.faucet.id)
+            this.$server.getFaucetBalance(this.publicExplorer.faucet.id)
                 .then(({ data }) => this.balance = data.balance)
                 .catch(console.log);
         },
@@ -155,7 +155,7 @@ export default{
             this.loading = true;
             this.transactionHash = null;
             this.errorMessage = false;
-            this.server.requestFaucetToken(this.publicExplorer.faucet.id, address || this.address)
+            this.$server.requestFaucetToken(this.publicExplorer.faucet.id, address || this.address)
                 .then(({ data }) => {
                     this.transactionHash = data.hash;
                     this.updateRequests({ address: this.address.toLowerCase(), availableAt: moment().add(data.cooldown, 'minutes').toDate() });

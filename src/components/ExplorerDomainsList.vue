@@ -1,5 +1,5 @@
 <template>
-    <v-card outlined :disabled="disabled">
+    <v-card border flat :disabled="disabled">
         <New-Explorer-Domain-Modal ref="newExplorerDomainModal" />
         <v-card-text>
             <v-alert v-if="disabled" text type="warning">Upgrade your plan to activate domain aliases.</v-alert>
@@ -36,7 +36,7 @@ export default {
     },
     methods: {
         reloadDomains() {
-            this.server.getExplorer(this.explorer.id)
+            this.$server.getExplorer(this.explorer.id)
                 .then(({ data }) => this.domains = data.domains)
                 .catch(console.log);
         },

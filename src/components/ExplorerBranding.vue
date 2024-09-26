@@ -1,18 +1,18 @@
 <template>
-    <v-card outlined :disabled="disabled">
+    <v-card border flat :disabled="disabled">
         <v-form @submit.prevent="update()" v-model="valid">
             <v-card-text>
                 <v-alert v-if="disabled" text type="warning">Upgrade your plan to activate branding customization.</v-alert>
-                <v-alert v-if="successMessage" dense text type="success">{{ successMessage }}</v-alert>
-                <v-alert v-if="errorMessage" dense text type="error">{{ errorMessage }}</v-alert>
+                <v-alert v-if="successMessage" density="compact" text type="success">{{ successMessage }}</v-alert>
+                <v-alert v-if="errorMessage" density="compact" text type="error">{{ errorMessage }}</v-alert>
                 <v-row>
                     <v-col v-if="themes.light" cols="6">
                         <div v-for="(key, idx) in Object.keys(themes.light)" :key="idx">
                             <v-text-field
                                 @focus="selectedColorPicker = key"
                                 @blur="selectedColorPicker = null"
-                                outlined
-                                dense
+                                variant="outlined"
+                                density="compact"
                                 v-model="themes.light[key]"
                                 :label="key.charAt(0).toUpperCase() + key.slice(1) + ' Color'">
                                 <template v-slot:prepend>
@@ -28,8 +28,8 @@
                     </v-col>
                     <v-col cols="6">
                         <v-text-field
-                            dense
-                            outlined
+                            density="compact"
+                            variant="outlined"
                             v-model="themes.logo"
                             label="Logo URL">
                             <template v-slot:prepend v-if="themes.logo">
@@ -37,27 +37,27 @@
                             </template>
                         </v-text-field>
                         <v-text-field
-                            dense
-                            outlined
+                            density="compact"
+                            variant="outlined"
                             v-model="themes.favicon"
                             label="Favicon URL">
                             <template v-slot:prepend v-if="themes.favicon">
                                 <v-img :src="themes.favicon" class="mb-4"></v-img>
                             </template>
                         </v-text-field>
-                        <v-autocomplete outlined dense append-icon=""
+                        <v-autocomplete variant="outlined" density="compact" append-icon=""
                             label="Font"
                             :hint="'Font needs to be available on Google Fonts (default is Roboto)'"
                             v-model="themes.font"
                             :items="fonts"
                             :loading="fontSearchLoading"
-                            :search-input.sync="queryFont"
+                            :search.sync="queryFont"
                             hide-no-data
                             persistent-hint
                             no-filter></v-autocomplete>
                         <v-text-field
-                            dense
-                            outlined
+                            density="compact"
+                            variant="outlined"
                             v-model="themes.banner"
                             label="Banner Text"></v-text-field>
                         <h4 class="mb-2">Links</h4>
@@ -124,7 +124,7 @@ export default {
             this.loading = true;
             this.successMessage = null;
             this.errorMessage = null;
-            this.server.updateExplorerBranding(this.explorer.id, this.themes)
+            this.$server.updateExplorerBranding(this.explorer.id, this.themes)
                 .then(() => {
                     this.successMessage = 'Branding updated successfully.';
                 })
@@ -141,7 +141,7 @@ export default {
             if (!query || query == this.themes.font) return;
 
             this.fontSearchLoading = true;
-            this.server.searchFont(this.queryFont)
+            this.$server.searchFont(this.queryFont)
                 .then(({ data }) => this.fonts = data)
                 .catch(console.log)
                 .finally(() => this.fontSearchLoading = false);

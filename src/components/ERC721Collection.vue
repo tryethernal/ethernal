@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-card v-if="loadingContract" outlined>
+        <v-card v-if="loadingContract" border>
             <v-card-text>
                 <v-row>
                     <v-col cols="4">
@@ -15,11 +15,11 @@
             </v-card-text>
         </v-card>
         <template v-else>
-            <v-card v-if="notAContract" outlined>
+            <v-card v-if="notAContract" border>
                 <v-card-text>
                     <v-row>
                         <v-col align="center">
-                            <v-icon style="opacity: 0.25;" size="200" color="primary lighten-1">mdi-file</v-icon>
+                            <v-icon style="opacity: 0.25;" size="200" color="primary-lighten-1">mdi-file</v-icon>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -32,18 +32,18 @@
             <template v-else>
                 <v-row class="mb-1">
                     <v-col cols="12" lg="5">
-                        <v-card outlined style="height: 100%">
+                        <v-card border flat style="height: 100%">
                             <v-card-title>
-                                <v-tooltip top v-if="contract.verification">
-                                    <template v-slot:activator="{on, attrs}">
-                                        <v-icon v-bind="attrs" v-on="on" class="success--text mr-1" small v-if="contract.verification">mdi-check-circle</v-icon>
+                                <v-tooltip location="top" v-if="contract.verification">
+                                    <template v-slot:activator="{props}">
+                                        <v-icon v-bind="props" class="text-success mr-1" size="small" v-if="contract.verification">mdi-check-circle</v-icon>
                                     </template>
                                     Verified contract.
                                 </v-tooltip>
                                 {{ contract.tokenName }}
                             </v-card-title>
                             <v-card-subtitle>
-                                <v-chip v-for="(pattern, idx) in contract.patterns" :key="idx" x-small class="success mr-2">
+                                <v-chip v-for="(pattern, idx) in contract.patterns" :key="idx" size="x-small" class="bg-success mr-2">
                                     {{ formatContractPattern(pattern) }}
                                 </v-chip>
                             </v-card-subtitle>
@@ -90,7 +90,7 @@
                             </v-col>
 
                             <v-col cols="12" sm="6" lg="6">
-                                <v-card outlined style="height: 100%">
+                                <v-card border flat style="height: 100%">
                                     <v-card-subtitle v-if="metamaskData.account && metamaskData.isReady">
                                         <div style="position: absolute;">Your Balance</div>
                                         <div class="text-right" v-if="metamaskData.account">
@@ -124,7 +124,7 @@
 
                 <v-tabs-items :value="tab">
                     <v-tab-item value="transactions">
-                        <v-card outlined class="mt-3">
+                        <v-card border flat class="mt-3">
                             <v-card-text>
                                 <Address-Transactions-List :address="address" />
                             </v-card-text>
@@ -132,7 +132,7 @@
                     </v-tab-item>
 
                     <v-tab-item value="transfers">
-                        <v-card outlined class="mt-3">
+                        <v-card border flat class="mt-3">
                             <v-card-text>
                                 <ERC-721-Token-Transfers :address="address" />
                             </v-card-text>
@@ -140,7 +140,7 @@
                     </v-tab-item>
 
                     <v-tab-item value="holders">
-                        <v-card outlined class="mt-3">
+                        <v-card border flat class="mt-3">
                             <v-card-text>
                                 <ERC-20-Token-Holders :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
                             </v-card-text>
@@ -160,7 +160,7 @@
                     </v-tab-item>
 
                     <v-tab-item value="analytics">
-                        <v-card outlined class="mt-3">
+                        <v-card border flat class="mt-3">
                             <v-card-text>
                                 <ERC-20-Contract-Analytics :address="address" :tokenDecimals="contract.tokenDecimals" :tokenSymbol="contract.tokenSymbol" />
                             </v-card-text>
@@ -225,7 +225,7 @@ export default {
             this.metamaskData = data;
             if (data.account && data.isReady) {
                 this.loadingBalance = true;
-                this.server.callContractReadMethod(
+                this.$server.callContractReadMethod(
                     { address: this.address, abi: ERC721_ABI },
                     'balanceOf(address)',
                     { from: null },
@@ -244,7 +244,7 @@ export default {
         address: {
             immediate: true,
             handler(address) {
-                this.server.getContract(address)
+                this.$server.getContract(address)
                     .then(({ data }) => {
                         if (data)
                             this.contract = data;
@@ -253,7 +253,7 @@ export default {
                     })
                     .finally(() => this.loadingContract = false);
 
-                this.server.getContractStats(address)
+                this.$server.getContractStats(address)
                     .then(({ data }) => this.contractStats = data)
                     .finally(() => this.loadingStats = false);
             }

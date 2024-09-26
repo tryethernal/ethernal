@@ -6,24 +6,24 @@
             <v-tab href="#account">Account</v-tab>
         </v-tabs>
 
-        <v-tabs-items :value="tab">
-            <v-tab-item value="workspace">
+        <v-tabs-window :value="tab">
+            <v-tab-window-item value="workspace">
                 <v-row class="px-4 py-2">
                     <v-col lg="6">
-                        <v-alert v-show="updateSuccess" dense text type="success">Settings updated</v-alert>
-                        <v-alert v-show="updateError || errorMessage" dense text type="error">{{ errorMessage  || 'Error while updating settings' }}</v-alert>
+                        <v-alert v-show="updateSuccess" density="compact" text type="success">Settings updated</v-alert>
+                        <v-alert v-show="updateError || errorMessage" density="compact" text type="error">{{ errorMessage  || 'Error while updating settings' }}</v-alert>
                         <h4>General</h4>
-                        <v-card outlined class="mb-4">
+                        <v-card border flat class="mb-4">
                             <v-card-text>
                                 <v-text-field
-                                    outlined
+                                    variant="outlined"
                                     v-model="settings.name"
                                     hide-details="auto"
                                     id="name"
                                     label="Workspace Name">
                                 </v-text-field>
                                 <v-text-field
-                                    outlined
+                                    variant="outlined"
                                     class="mt-3"
                                     v-model="settings.rpcServer"
                                     hide-details="auto"
@@ -31,38 +31,38 @@
                                     label="RPC Server">
                                 </v-text-field>
                                 <template v-if="!isPublicExplorer">You will need to restart the CLI or the Hardhat node for a server change to take effect.</template>
-                                <v-select id="chain" class="mt-3" item-text="label" item-value="slug" outlined required label="Chain" v-model="settings.chain" :items="availableChains" hide-details="auto"></v-select>
+                                <v-select id="chain" class="mt-3" item-title="label" item-value="slug" variant="outlined" required label="Chain" v-model="settings.chain" :items="availableChains" hide-details="auto"></v-select>
                                 <v-row class="mt-2 pb-1 mr-2">
                                     <v-spacer></v-spacer>
-                                    <v-btn id="updateOptions" :loading="loading" depressed color="primary" class="mt-1" @click="update()">Update</v-btn>
+                                    <v-btn id="updateOptions" :loading="loading" variant="flat" color="primary" class="mt-1" @click="update()">Update</v-btn>
                                 </v-row>
                             </v-card-text>
                         </v-card>
 
                         <h4>Default Contracts Call Options</h4>
-                        <v-card outlined class="mb-4">
+                        <v-card border flat class="mb-4">
                             <v-skeleton-loader type="list-item-three-line" v-if="optionsLoader"></v-skeleton-loader>
                             <v-card-text v-else>
                                <v-select
                                     id="defaultAccount"
-                                    outlined
+                                    variant="outlined"
                                     label="Default From Account"
                                     hide-details="auto"
                                     v-model="settings.defaultAccount"
-                                    item-text="address"
+                                    item-title="address"
                                     :items="accounts">
                                     <template v-slot:item="{ item }">
-                                        <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
+                                        <v-icon size="small" class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
                                         {{ item.address }}
                                     </template>
                                     <template v-slot:selection="{ item }">
-                                        <v-icon small class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
+                                        <v-icon size="small" class="mr-1" v-if="item.privateKey">mdi-lock-open-outline</v-icon>
                                         {{ item.address }}
                                     </template>
                                 </v-select>
                                 <v-text-field
                                     id="gasPrice"
-                                    outlined
+                                    variant="outlined"
                                     v-model="settings.gasPrice"
                                     class="mt-4"
                                     hide-details="auto"
@@ -70,7 +70,7 @@
                                 </v-text-field>
                                 <v-text-field
                                     id="gasLimit"
-                                    outlined
+                                    variant="outlined"
                                     v-model="settings.gasLimit"
                                     class="mt-4"
                                     hide-details="auto"
@@ -79,7 +79,7 @@
 
                                 <v-row class="mt-2 pb-1 mr-2">
                                     <v-spacer></v-spacer>
-                                    <v-btn id="updateCallOptions" :loading="loading" depressed color="primary" class="mt-1" @click="update()">Update</v-btn>
+                                    <v-btn id="updateCallOptions" :loading="loading" variant="flat" color="primary" class="mt-1" @click="update()">Update</v-btn>
                                 </v-row>
                             </v-card-text>
                         </v-card>
@@ -88,17 +88,17 @@
                         <Workspace-List />
 
                         <h4>Advanced Options</h4>
-                        <v-card outlined class="mb-4">
+                        <v-card border flat class="mb-4">
                             <v-skeleton-loader type="list-item-three-line" v-if="advancedOptionsLoading"></v-skeleton-loader>
                             <v-card-text v-else>
                                 <v-row>
                                     <v-col align-self="center">
-                                        Transactions Tracing <a style="text-decoration: none" target="_blank" href="https://doc.tryethernal.com/dashboard-pages/transactions#trace"><v-icon small>mdi-help-circle-outline</v-icon></a>
+                                        Transactions Tracing <a style="text-decoration: none" target="_blank" href="https://doc.tryethernal.com/dashboard-pages/transactions#trace"><v-icon size="small">mdi-help-circle-outline</v-icon></a>
                                     </v-col>
                                     <v-col>
-                                        <v-select dense outlined hide-details="auto" label="Status"
+                                        <v-select density="compact" variant="outlined" hide-details="auto" label="Status"
                                             :items="advancedOptionsDesc[0].choices"
-                                            item-text="label"
+                                            item-title="label"
                                             item-value="slug"
                                             v-model="settings.tracing">
                                         </v-select>
@@ -106,15 +106,15 @@
                                 </v-row>
                                 <v-row class="mt-2 pb-1 mr-1">
                                     <v-spacer></v-spacer>
-                                    <v-btn :loading="advancedOptionsLoading" depressed color="primary" class="mt-2" @click="updateAdvancedOptions()">Update</v-btn>
+                                    <v-btn :loading="advancedOptionsLoading" variant="flat" color="primary" class="mt-2" @click="updateAdvancedOptions()">Update</v-btn>
                                 </v-row>
                             </v-card-text>
                         </v-card>
 
-                        <h4 class="error--text">Danger Zone</h4>
-                        <v-sheet outlined class="pa-0 error" rounded>
+                        <h4 class="text-error">Danger Zone</h4>
+                        <v-sheet border class="pa-0 bg-error" rounded>
                             <v-card class="elevation-0">
-                                <v-card-text class="font-weight-medium error--text">
+                                <v-card-text class="font-weight-medium text-error">
                                     <v-row>
                                         Resetting this workspace will remove all accounts/transactions/blocks/contracts from your dashboard.
                                         You will need to resync them.
@@ -122,28 +122,31 @@
                                     </v-row>
                                     <v-row class="mt-2 pb-1">
                                         <v-spacer></v-spacer>
-                                        <v-btn id="resetWorkspace" :loading="resetWorkspaceLoading" depressed color="error" class="mt-2" @click="resetWorkspace()"><v-icon>mdi-sync</v-icon>Reset Workspace</v-btn>
+                                        <v-btn id="resetWorkspace" :loading="resetWorkspaceLoading" variant="flat" color="error" class="mt-2" @click="resetWorkspace()"><v-icon>mdi-sync</v-icon>Reset Workspace</v-btn>
                                     </v-row>
                                 </v-card-text>
                             </v-card>
                         </v-sheet>
                     </v-col>
                 </v-row>
-            </v-tab-item>
+            </v-tab-window-item>
 
-            <v-tab-item v-if="isBillingEnabled" value="billing">
+            <v-tab-window-item v-if="isBillingEnabled" value="billing">
                 <Billing />
-            </v-tab-item>
+            </v-tab-window-item>
 
-            <v-tab-item value="account">
+            <v-tab-window-item value="account">
                 <Account />
-            </v-tab-item>
-        </v-tabs-items>
+            </v-tab-window-item>
+        </v-tabs-window>
     </v-container>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 
 import WorkspaceList from './WorkspaceList';
 import Billing from './Billing';
@@ -209,7 +212,7 @@ export default {
         if (!this.tab)
             this.tab = 'workspace';
 
-        this.server.getAccounts({ page: -1 })
+        this.$server.getAccounts({ page: -1 })
             .then(({ data: { items } }) => this.accounts = items)
             .catch(console.log);
 
@@ -231,10 +234,10 @@ export default {
             this.updateSuccess = false;
             this.updateError = false;
 
-            this.server.updateWorkspaceSettings({ advancedOptions: { tracing: this.settings.tracing }})
+            this.$server.updateWorkspaceSettings({ advancedOptions: { tracing: this.settings.tracing }})
                 .then(() => {
                     this.updateSuccess = true;
-                    this.$store.dispatch('updateCurrentWorkspace', this.settings);
+                    this.currentWorkspaceStore.updateCurrentWorkspace(this.settings);
                 })
                 .catch(() => this.updateError = true)
                 .finally(() => this.advancedOptionsLoading = false);
@@ -246,7 +249,7 @@ export default {
             this.errorMessage = null;
 
             if (!this.isPublicExplorer)
-                this.server.initRpcServer(this.settings.rpcServer)
+                this.$server.initRpcServer(this.settings.rpcServer)
                     .then(this.updateWorkspaceSettings)
                     .catch((error) => {
                         this.errorMessage = error.reason || error.message;
@@ -256,7 +259,7 @@ export default {
                 this.updateWorkspaceSettings();
         },
         updateWorkspaceSettings() {
-            this.server.updateWorkspaceSettings({
+            this.$server.updateWorkspaceSettings({
                 name: this.settings.name,
                 rpcServer: this.settings.rpcServer,
                 chain: this.settings.chain,
@@ -268,7 +271,7 @@ export default {
             })
             .then(() => {
                 this.updateSuccess = true;
-                this.$store.dispatch('updateCurrentWorkspace', this.settings);
+                this.currentWorkspaceStore.updateCurrentWorkspace(this.settings);
             })
             .catch(error => {
                 this.updateError = true;
@@ -282,7 +285,7 @@ export default {
         resetWorkspace() {
             if (confirm(`Are you sure you want to reset the workspace ${this.currentWorkspace.name}? This action is definitive.`)) {
                 this.resetWorkspaceLoading = true;
-                this.server.resetWorkspace()
+                this.$server.resetWorkspace()
                     .then(({ data }) => {
                         if (data.needsBatchReset)
                             alert('Your workspace is being reset. It might take some time for all the data to be cleared.')
@@ -298,6 +301,7 @@ export default {
         }
     },
     computed: {
+        ...mapStores(useCurrentWorkspaceStore),
         ...mapGetters([
             'isPublicExplorer',
             'isBillingEnabled',

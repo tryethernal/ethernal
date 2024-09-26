@@ -9,7 +9,8 @@ export const useUserStore = defineStore('user', {
         plan: 'free',
         onboarded: false,
         loggedIn: false,
-        isAdmin: false
+        isAdmin: false,
+        firebaseUserId: null
     }),
 
     actions: {
@@ -17,8 +18,7 @@ export const useUserStore = defineStore('user', {
 
         updateUser(user) {
             if (user) {
-                for (const [key, value] of Object.entries(user))
-                    this[key] = value;
+                this.$patch(user);
 
                 Sentry.setUser({ id: this.id, email: this.email });
                 this.loggedIn = true;

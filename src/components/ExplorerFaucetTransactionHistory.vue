@@ -1,13 +1,12 @@
 <template>
-    <v-card outlined>
+    <v-card border flat>
         <v-card-text>
-            <v-data-table
+            <v-data-table-server
                 :loading="loading"
                 :items="transactions"
-                :sort-by="currentOptions.sortBy[0]"
+                :sort-by="[{ key: currentOptions.sortBy[0], order: currentOptions.sortDesc[0] === false ? 'asc' : 'desc' }]"
                 :must-sort="true"
-                :sort-desc="true"
-                :server-items-length="transactionCount"
+                :items-length="transactionCount"
                 :headers="headers"
                 :footer-props="{
                     itemsPerPageOptions: [10, 25, 100]
@@ -32,7 +31,7 @@
                 <template v-slot:item.amount="{ item }">
                     {{ item.amount | fromWei('ether', tokenSymbol) }}
                 </template>
-            </v-data-table>
+            </v-data-table-server>
         </v-card-text>
     </v-card>
 </template>
@@ -66,7 +65,7 @@ export default {
     mounted() {
         this.currentOptions = { page: 1, itemsPerPage: 10, sortBy: ['createdAt'], sortDesc: [true] };
 
-        this.pusherUnsubscribe = this.pusher.onNewTransaction(transaction => {
+        this.pusherUnsubscribe = this.$pusher.onNewTransaction(transaction => {
             if (this.publicExplorer.faucet.address == transaction.from)
                 this.getTransactions(this.currentOptions);
         }, this, this.address);
@@ -90,7 +89,7 @@ export default {
                 orderBy: this.currentOptions.sortBy[0]
             };
 
-            this.server.getFaucetTransactionHistory(this.publicExplorer.faucet.id, options)
+            this.$server.getFaucetTransactionHistory(this.publicExplorer.faucet.id, options)
                 .then(({ data }) => {
                     this.transactions = data.transactions;
                     this.transactionCount = data.count;

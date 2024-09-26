@@ -2,8 +2,8 @@
     <div>
         <div class="font-weight-bold">{{ method.name }}</div>
         <v-text-field
-            outlined
-            dense
+            variant="outlined"
+            density="compact"
             hide-details="auto"
             class="py-1"
             v-model="params[inputIdx]"
@@ -11,7 +11,7 @@
             :disabled="!active"
             :label="inputSignature(input)">
         </v-text-field>
-        <div class="grey lighten-3 pa-2 mt-1" v-show="result.txHash || result.message">
+        <div class="bg-grey-lighten-3 pa-2 mt-1" v-show="result.txHash || result.message">
             <div v-show="result.message">{{ result.message }}</div>
             <div v-show="result.txHash">
                 Tx: <a :href="`/transaction/${result.txHash}`" target="_blank">{{ result.txHash }}</a>
@@ -21,8 +21,8 @@
             </div>
             <div v-show="receipt.status != undefined" class="mt-1">
                 Status: {{ receipt.status ? 'Succeeded' : 'Failed' }}
-                <v-icon small v-show="receipt.status" color="success lighten-1" class="mr-2 align-with-text">mdi-check-circle</v-icon>
-                <v-icon small v-show="!receipt.status" color="error lighten-1" class="mr-2 align-with-text">mdi-alert-circle</v-icon>
+                <v-icon size="small" v-show="receipt.status" color="success-lighten-1" class="mr-2 align-with-text">mdi-check-circle</v-icon>
+                <v-icon size="small" v-show="!receipt.status" color="error-lighten-1" class="mr-2 align-with-text">mdi-alert-circle</v-icon>
             </div>
             <div v-show="noReceipt && noWaitFunction">
                 Couldn't get receipt.
@@ -32,8 +32,8 @@
         <div class="col-4 px-0 py-1">
             <v-text-field
                 small
-                outlined
-                dense
+                variant="outlined"
+                density="compact"
                 v-model="valueInEth"
                 type="number"
                 hide-details="auto"
@@ -41,8 +41,8 @@
                 :label="`Value (in ${chain.token})`">
             </v-text-field>
         </div>
-        <v-btn :disabled="!active" v-if="senderMode == 'metamask'" :loading="loading" depressed class="mt-1" :color="theme == 'dark' ? '' : 'primary'" @click="sendWithMetamask()">Query</v-btn>
-        <v-btn :disabled="!active" v-else :loading="loading" depressed class="mt-1" :color="theme == 'dark' ? '' : 'primary'" @click="sendMethod()">Query</v-btn>
+        <v-btn :disabled="!active" v-if="senderMode == 'metamask'" :loading="loading" variant="flat" class="mt-1" :color="theme == 'dark' ? '' : 'primary'" @click="sendWithMetamask()">Query</v-btn>
+        <v-btn :disabled="!active" v-else :loading="loading" variant="flat" class="mt-1" :color="theme == 'dark' ? '' : 'primary'" @click="sendMethod()">Query</v-btn>
     </div>
 </template>
 <script>
@@ -144,7 +144,7 @@ export default {
                     processedParams[i] = processMethodCallParam(this.params[i], this.method.inputs[i].type);
                 }
 
-                this.server.callContractWriteMethod(this.contract, this.signature, options, processedParams, this.rpcServer)
+                this.$server.callContractWriteMethod(this.contract, this.signature, options, processedParams, this.rpcServer)
                     .then((pendingTx) => {
                         this.result.txHash = pendingTx.hash;
 

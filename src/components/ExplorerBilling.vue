@@ -1,5 +1,5 @@
 <template>
-    <v-card outlined class="flex-grow-1">
+    <v-card border flat class="flex-grow-1">
         <Update-Explorer-Plan-Modal ref="updateExplorerPlanModal" />
         <Explorer-Quota-Management-Modal ref="explorerQuotaManagementModal" />
         <v-card-text v-if="explorer.stripeSubscription">
@@ -46,7 +46,7 @@ export default {
         moment,
         openStripePortal() {
             this.stripePortalLoading = true;
-            this.server.createStripePortalSession(`http://app.${this.mainDomain}/explorers/${this.explorer.id}`)
+            this.$server.createStripePortalSession(`http://app.${this.mainDomain}/explorers/${this.explorer.id}`)
                 .then(({ data }) => document.location.href = data.url)
                 .catch(() => this.stripePortalLoading = false );
         },

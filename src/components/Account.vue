@@ -3,9 +3,9 @@
         <v-row>
             <v-col cols="6">
                 <h4>Api Token</h4>
-                <v-card outlined class="mb-4">
+                <v-card border flat class="mb-4">
                     <v-card-text v-if="apiToken">
-                        <v-text-field id="apiToken" append-icon="mdi-content-copy" readonly @click:append="copyToken()" outlined dense hide-details="auto" :value="apiToken" v-show="apiToken"></v-text-field>
+                        <v-text-field id="apiToken" append-icon="mdi-content-copy" readonly @click:append="copyToken()" variant="outlined" density="compact" hide-details="auto" :model-value="apiToken" v-show="apiToken"></v-text-field>
                         <input type="hidden" id="copyElement" :value="apiToken">
                     </v-card-text>
                     <v-card-text v-else>

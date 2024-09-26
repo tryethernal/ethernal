@@ -11,6 +11,7 @@
 </template>
 <script>
 import Explorer from './components/Explorer.vue';
+import { useUserStore } from './stores/user';
 
 export default {
     name: 'Explorers',
@@ -23,9 +24,9 @@ export default {
     }),
     mounted() {
         localStorage.setItem('ssoApiToken', this.$route.query.apiToken);
-        this.server.getCurrentUser()
+        this.$server.getCurrentUser()
             .then(({ data: { user }}) => {
-                this.$store.dispatch('updateUser', user);
+                useUserStore().updateUser(user);
                 this.explorerId = this.$route.query.explorerId;
             })
             .catch(error => {

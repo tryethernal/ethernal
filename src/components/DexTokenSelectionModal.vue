@@ -1,17 +1,17 @@
 <template>
     <v-dialog v-model="dialog" max-width="400" content-class="roundedModal">
-        <v-card outlined>
+        <v-card border flat>
             <v-card-title class="mb-4">
                 Select a token
             </v-card-title>
             <v-card-text class="px-0">
                 <v-text-field
-                    dense
+                    density="compact"
                     class="rounded-xl px-6"
                     placeholder="Search name or paste address"
                     hide-details="auto"
                     persistent-placeholder
-                    outlined
+                    variant="outlined"
                     v-model="filter">
                     <template v-slot:append>
                         <div class="py-6"></div>
@@ -26,7 +26,7 @@
                         <v-list-item-icon class="mr-3">
                             <v-icon>mdi-alpha-t-circle</v-icon>
                         </v-list-item-icon>
-                        <v-list-item-content>
+
                             <v-list-item-title>
                                 {{ token.tokenSymbol }}
                                 <span class="float-right">
@@ -36,7 +36,7 @@
                             <v-list-item-subtitle v-if="token.address != nativeTokenAddress">
                                 <Hash-Link :contract="{ tokenName: token.tokenName, tokenSymbol: token.tokenSymbol }" :type="'address'" :hash="token.address" :notCopiable="true" :unlink="true" />
                             </v-list-item-subtitle>
-                        </v-list-item-content>
+
                     </v-list-item>
                 </template>
                 <div class="text-center" v-else>

@@ -1,12 +1,12 @@
 <template>
     <v-container fluid>
         <h4>ABI</h4>
-        <v-card outlined class="mb-4">
+        <v-card border flat class="mb-4">
             <v-skeleton-loader v-if="loading" class="col-4" type="list-item-three-line"></v-skeleton-loader>
             <template v-else>
                 <Import-Artifact-Modal ref="importArtifactModal" v-if="isUserAdmin" />
-                <v-card-text v-if="isContractVerified" class="pb-0 success--text">
-                    <v-icon class="success--text mr-1" small>mdi-check-circle</v-icon>Verified contract.
+                <v-card-text v-if="isContractVerified" class="pb-0 text-success">
+                    <v-icon class="text-success mr-1" size="small">mdi-check-circle</v-icon>Verified contract.
                 </v-card-text>
                 <v-card-text v-if="contract.abi">
                     An ABI has been uploaded.<span v-if="isUserAdmin"> (<a href="#" @click.stop="openImportArtifactModal()">Edit</a>)</span>
@@ -34,7 +34,7 @@
             @rpcConnectionStatusChanged="onRpcConnectionStatusChanged" />
 
         <h4>Read Methods</h4>
-        <v-card outlined class="mb-4">
+        <v-card border flat class="mb-4">
             <v-skeleton-loader v-if="loading" class="col-4" type="list-item-three-line"></v-skeleton-loader>
             <div v-else>
                 <v-card-text v-if="contract.abi">
@@ -51,7 +51,7 @@
         </v-card>
 
         <h4>Write Methods</h4>
-        <v-card outlined class="mb-4">
+        <v-card border flat class="mb-4">
             <v-skeleton-loader v-if="loading" class="col-4" type="list-item-three-line"></v-skeleton-loader>
             <div v-else>
                 <v-card-text v-if="contract.abi">
@@ -139,7 +139,7 @@ export default {
                 .then(reload => reload ? this.loadContract(this.address) : null);
         },
         loadContract(address) {
-            this.server.getContract(address)
+            this.$server.getContract(address)
                 .then(({ data }) => {
                     if (!data) return;
 

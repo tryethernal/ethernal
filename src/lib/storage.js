@@ -177,10 +177,9 @@ var StructureNode = class StructureNode {
 
 var _Structure = class Structure {
 
-    nodes = [];
-    index = 0;
-
     constructor(variables) {
+        this.nodes = [];
+        this.index = 0;
         this.variables = variables;
         variables.forEach(this.addStructureNode, this);
     }
@@ -193,9 +192,6 @@ var _Structure = class Structure {
 };
 
 var _Storage = class Storage {
-    structure;
-    data;
-    instanceDecoder;
 
     constructor(instanceDecoder) {
         this.instanceDecoder = instanceDecoder;

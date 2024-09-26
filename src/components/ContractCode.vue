@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <v-alert v-if="contractVerified" text type="success">Contract has been verified successfully!</v-alert>
-        <v-card outlined v-if="loading">
+        <v-card border flat v-if="loading">
             <v-card-text>
                 <v-skeleton-loader class="col-4" type="list-item-three-line"></v-skeleton-loader>
             </v-card-text>
@@ -12,13 +12,13 @@
                 <Contract-Verification v-else :address="contract.address" />
             </template>
 
-            <v-card outlined class="mb-6">
+            <v-card border flat class="mb-6">
                 <v-card-title>Bytecode</v-card-title>
                 <v-card-text v-if="contract.bytecode">
-                    <v-textarea dense outlined disabled :value="contract.bytecode">
+                    <v-textarea density="compact" variant="outlined" disabled :model-value="contract.bytecode">
                         <template v-slot:append>
                             <v-btn icon @click="copyBytecode()">
-                                <v-icon small>mdi-content-copy</v-icon>
+                                <v-icon size="small">mdi-content-copy</v-icon>
                             </v-btn>
                         </template>
                     </v-textarea>
@@ -29,7 +29,7 @@
                 </v-card-text>
             </v-card>
 
-            <v-card outlined>
+            <v-card border flat>
                 <v-card-title>Assembly</v-card-title>
                 <v-card-text>
                     <div v-if="highlightedAsm" class="hljs" v-html="highlightedAsm"></div>

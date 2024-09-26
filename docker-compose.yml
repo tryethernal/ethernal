@@ -93,7 +93,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.front
-    env_file: .env.development
+    env_file: .env
 
   pm2:
     ports:

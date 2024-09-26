@@ -1,15 +1,18 @@
-import * as Sentry from "@sentry/vue";
 import { defineStore } from 'pinia';
 
 export const useExplorerStore = defineStore('explorer', {
     state: () => ({
-        id: null
+        id: null,
+        name: null,
+        rpcServer: null
     }),
 
     actions: {
         updateExplorer(explorer) {
-            for (const [key, value] of Object.entries(explorer))
-                this[key] = value;
+            if (explorer)
+                this.$patch(explorer);
+            else
+                this.$reset();
         }
     }
 });

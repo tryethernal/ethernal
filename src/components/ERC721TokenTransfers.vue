@@ -46,7 +46,7 @@ export default {
             this.loading = true;
 
             if (this.tokenId)
-                this.server.getErc721TokenTransfers(this.address, this.tokenId)
+                this.$server.getErc721TokenTransfers(this.address, this.tokenId)
                     .then(({ data }) => {
                         this.transfers = data;
                         this.transferCount = data.length;
@@ -64,7 +64,7 @@ export default {
                     order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
                 };
 
-                this.server.getTokenTransfers(this.address, options)
+                this.$server.getTokenTransfers(this.address, options)
                     .then(({ data }) => {
                         this.transfers = data.items;
                         this.transferCount = data.total;

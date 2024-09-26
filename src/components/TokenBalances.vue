@@ -1,12 +1,11 @@
 <template>
     <v-container fluid>
-        <v-card outlined>
+        <v-card border flat>
             <v-card-text>
                 <v-data-table
                     :loading="loading"
                     :items="balances"
-                    :sort-by="'currentBalance'"
-                    :sort-desc="true"
+                    :sort-by="[{ key: 'currentBalance', order: 'desc' }]"
                     :headers="headers">
                 <template v-slot:top>
                     <v-toolbar dense flat v-if="!dense">
@@ -53,7 +52,7 @@ export default {
     methods: {
         getTokenBalances() {
             this.loading = true;
-            this.server.getTokenBalances(this.address, this.patterns)
+            this.$server.getTokenBalances(this.address, this.patterns)
                 .then(({ data }) => this.balances = data)
                 .catch(console.log)
                 .finally(() => this.loading = false);
