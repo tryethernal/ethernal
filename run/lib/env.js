@@ -33,5 +33,5 @@ module.exports = {
     getMaxV2DexPairsForTrial: () => process.env.MAX_V2_DEX_PAIRS_FOR_TRIAL || 20,
     getSentryDsn: () => process.env.SENTRY_DSN,
     getVersion: () => process.env.VERSION,
-    getRedisUrl: () => 'redis://redis',
+    getRedisUrl: () => process.env.REDIS_URL
 };
