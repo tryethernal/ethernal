@@ -1,0 +1,28 @@
+app = "ethernal-redis"
+kill_signal = "SIGINT"
+kill_timeout = 5
+processes = []
+
+[build]
+  image = "redis:latest"
+
+[env]
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+  private_network = true
+
+[[services]]
+  internal_port = 6379 # Redis instance
+  protocol = "tcp"
+
+  [services.concurrency]
+    hard_limit = 1000
+    soft_limit = 500
+    type = "connections"
+  
+  # Open port 10000 for plaintext connections.
+  [[services.ports]]
+    handlers = []
+    port = 6379
