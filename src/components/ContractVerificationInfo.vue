@@ -21,7 +21,7 @@
                 <v-row v-for="(source, idx) in displayedSources" :key="idx">
                     <v-col>
                         <h5>File {{ contract.verification.sources.indexOf(source) + 1}} of {{ contract.verification.sources.length }}: {{ source.fileName }}</h5>
-                        <editor class="editor" :ref="`editor-${idx}`" v-model="source.content" @init="editorInit" lang="solidity" theme="chrome" height="500"></editor>
+                        <v-ace-editor :options="{ useWorker: false }" :max-lines="25" showPrintMargin="false" useWorker="false" readonly :ref="`editor-${idx}`" :value="source.content" lang="solidity" theme="chrome" style="height: 500px"></v-ace-editor>
                     </v-col>
                 </v-row>
             </v-card-text>
@@ -72,36 +72,26 @@
 
 <script>
 const ethers = require('ethers');
-const editor = require('vue2-ace-editor');
+import ace from 'ace-builds';
+import themeChromeUrl from 'ace-builds/src-noconflict/theme-chrome?url';
+import langSolidityUrl from 'ace-mode-solidity/build/remix-ide/mode-solidity.js?url';
+ace.config.setModuleUrl('ace/theme/chrome', themeChromeUrl);
+ace.config.setModuleUrl('ace/mode/solidity', langSolidityUrl);
+import { VAceEditor } from 'vue3-ace-editor';
 import FormattedSolVar from './FormattedSolVar';
 
 export default {
     name: 'ContractVerificationInfo',
     props: ['contract'],
     components: {
-        editor,
+        VAceEditor,
         FormattedSolVar
     },
     data: () => ({
         formattedConstructorArguments: true,
         showOppenzeppelinImports: false
     }),
-    mounted() {
-        for (let i = 0; i < this.displayedSources.length; i++) {
-            const editor = this.$refs[`editor-${i}`][0].editor;
-            editor.setOptions({
-                readOnly: true,
-                showPrintMargin: false,
-                useWorker: false,
-                maxLines: 25
-            });
-        }
-    },
     methods: {
-        editorInit() {
-            import('brace/ext/language_tools')
-            import('brace/theme/chrome')
-        },
         copyAbi() {
             const webhookField = document.querySelector('#copyAbi');
             webhookField.setAttribute('type', 'text');

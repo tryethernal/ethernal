@@ -4,20 +4,22 @@
             You need Metamask in order to interact with this contract
         </div>
         <div v-show="ethereum">
-            <v-alert variant="outlined" density="compact" type="error" v-if="chainId && !isChainValid">
-                Invalid chain id <b>{{ chainId }}</b> ({{ parseInt(chainId, 16) }}), expecting <b>{{ formattedExpectedChainId }}</b> ({{ currentWorkspace.networkId }}). Click <a @click.stop="switchMetamaskChain()">here</a> to switch network in Metamask.
+            <v-alert class="mb-2" variant="outlined" density="compact" type="error" v-if="chainId && !isChainValid">
+                Invalid chain id <b>{{ chainId }}</b> ({{ parseInt(chainId, 16) }}), expecting <b>{{ formattedExpectedChainId }}</b> ({{ currentWorkspaceStore.networkId }}). Click <a @click.stop="switchMetamaskChain()">here</a> to switch network in Metamask.
             </v-alert>
             <div v-if="connectedAccount">
                 <b>Connected Metamask account:</b> {{ connectedAccount }}
             </div>
-            <v-btn style="width: 100%" :loading="loading" id="connectMetamask" v-else :color="theme == 'dark' ? '' : 'primary'" @click="connectMetamask()">Connect With Metamask</v-btn>
+            <v-btn style="width: 100%" :loading="loading" id="connectMetamask" v-else @click="connectMetamask()">Connect With Metamask</v-btn>
         </div>
     </div>
 </template>
 
 <script>
 import detectEthereumProvider from '@metamask/detect-provider';
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
+import { useExplorerStore } from '../stores/explorer';
 
 export default {
     name: 'Metamask',
@@ -60,9 +62,9 @@ export default {
             this.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: this.formattedExpectedChainId }]})
                 .catch((switchError) => {
                     if (switchError.code === 4902) {
-                        let domain = this.publicExplorer.domain;
-                        if (this.publicExplorer.domains && this.publicExplorer.domains.length)
-                            domain = this.publicExplorer.domains[0].domain;
+                        let domain = this.explorerStore.domain;
+                        if (this.explorerStore.domains && this.explorerStore.domains.length)
+                            domain = this.explorerStore.domains[0].domain;
 
                         this.ethereum.request({
                             method: 'wallet_addEthereumChain',
@@ -93,17 +95,12 @@ export default {
         'chainId': function() { this.emitConnectionStatus() }
     },
     computed: {
-        ...mapGetters([
-            'rpcServer',
-            'publicExplorer',
-            'currentWorkspace',
-            'theme'
-        ]),
+        ...mapStores(useCurrentWorkspaceStore, useExplorerStore),
         isChainValid: function() {
             return this.formattedExpectedChainId === this.chainId;
         },
         formattedExpectedChainId: function() {
-            return `0x${parseInt(this.currentWorkspace.networkId).toString(16)}`;
+            return `0x${parseInt(this.currentWorkspaceStore.networkId).toString(16)}`;
         }
     }
 }

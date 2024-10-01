@@ -16,7 +16,14 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
         currentBlock: {
             number: 0
         },
-        browserSyncStatus: null
+        browserSyncStatus: null,
+        defaultAccount: null,
+        gasLimit: null,
+        gasPrice: null,
+        networkId: null,
+        tracing: null,
+        chainSlug: null,
+        storageEnabled: null
     }),
 
     actions: {
@@ -35,6 +42,7 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
 
         updateCurrentWorkspace(workspace) {
             this.$patch(workspace);
+            this.chainSlug = workspace.chain;
 
             if (workspace.explorer)
                 useExplorerStore().updateExplorer(workspace.explorer);
@@ -55,7 +63,7 @@ export const useCurrentWorkspaceStore = defineStore('currentWorkspace', {
 
     getters: {
         chain(state) {
-            return this.explorer || useEnvStore().chains[state.chain || 'ethereum'];
+            return this.explorer || useEnvStore().chains[state.chainSlug || 'ethereum'];
         }
     }
 });

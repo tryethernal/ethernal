@@ -6,7 +6,7 @@
                     :loading="loading"
                     :items="tokens"
                     :headers="headers"
-                    :sort-by="[{ key: currentOptions.sortBy[0], order: currentOptions.sortDesc[0] === false ? 'asc' : 'desc' }]"
+                    :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
                     :must-sort="true"
                     :items-length="tokenCount"
                     :footer-props="{
@@ -48,24 +48,24 @@ export default {
         tokenCount: 0,
         headers: [
             {
-                text: 'Address',
-                value: 'address'
+                title: 'Address',
+                key: 'address'
             },
             {
-                text: 'Name',
-                value: 'tokenName'
+                title: 'Name',
+                key: 'tokenName'
             },
             {
-                text: 'Symbol',
-                value: 'tokenSymbol'
+                title: 'Symbol',
+                key: 'tokenSymbol'
             },
             {
-                text: '',
-                value: 'tags',
+                title: '',
+                key: 'tags',
                 sortable: false
             }
         ],
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] },
+        currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'timestamp', order: 'desc', pattern: 'erc20' },
         newTokenPusherHandler: null,
         destroyedContractPusherHandler: null
     }),
@@ -78,21 +78,24 @@ export default {
         this.destroyedContractPusherHandler.unbind(null, null, this);
     },
     methods: {
-        getTokens: function(newOptions) {
+        getTokens({ page, itemsPerPage, sortBy } = {}) {
             this.loading = true;
 
-            if (newOptions)
-                this.currentOptions = newOptions;
+            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
+                return this.loading = false;
 
-            const options = {
-                page: this.currentOptions.page,
-                itemsPerPage: this.currentOptions.itemsPerPage,
-                orderBy: this.currentOptions.sortBy[0],
-                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc',
+            if (this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.sortBy == sortBy[0].key && this.currentOptions.sort == sortBy[0].order)
+                return this.loading = false;
+
+            this.currentOptions = {
+                page,
+                itemsPerPage,
+                orderBy: sortBy[0].key,
+                order: sortBy[0].order,
                 pattern: 'erc20'
             };
 
-            this.$server.getContracts(options)
+            this.$server.getContracts(this.currentOptions)
                 .then(({ data }) => {
                     this.tokens = data.items;
                     this.tokenCount = data.total;

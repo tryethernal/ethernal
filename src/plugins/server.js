@@ -1,5 +1,4 @@
 import { ethers } from 'ethers';
-import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useEnvStore } from '../stores/env';
 import { useUserStore } from '../stores/user';
@@ -21,7 +20,6 @@ const axios = setupCache(Axios, {
 });
 const CACHE_TTL = 2000;
 
-const { Storage } = require('../lib/storage');
 const { sanitize } = require('../lib/utils');
 const { parseTrace } = require('../lib/trace');
 const { findPatterns, formatErc721Metadata } = require('../lib/contract');
@@ -29,22 +27,6 @@ const { ERC721Connector } = require('../lib/rpc');
 
 const serverFunctions = {
     // Private
-    _getDependenciesArtifact: function(contract) {
-        return contract.ast.dependencies ? Object.entries(contract.ast.dependencies).map(dep => dep[1]) : [];
-    },
-    _buildStructure: async function(contract, rpcServer) {
-        var web3 = new Web3(serverFunctions._getWeb3Provider(rpcServer));
-        var parsedArtifact = JSON.parse(contract.ast.artifact);
-        var instanceDecoder = await Decoder.forArtifactAt(parsedArtifact, contract.address, {
-            provider: web3.currentProvider,
-            projectInfo: {
-                artifacts: [...Object.values(contract.ast.dependencies).map(dep => JSON.parse(dep)), parsedArtifact]
-            }
-        });
-        var storage = new Storage(instanceDecoder);
-        await storage.buildStructure();
-        return storage;
-    },
     _getWeb3Provider: function(url) {
         const rpcServer = new URL(url);
 
@@ -356,7 +338,7 @@ export default {
         const { name: workspace } = storeToRefs(currentWorkspaceStore);
 
         const _rpcServer = function() {
-            return storeToRefs(currentWorkspaceStore).rpcServer;
+            return storeToRefs(currentWorkspaceStore).rpcServer.value;
         };
 
         axios.interceptors.request.use(
@@ -1112,7 +1094,7 @@ export default {
 
             async getCurrentUser() {
                 const params = {
-                    firebaseUserId
+                    firebaseUserId: firebaseUserId.value
                 };
                 const resource = `${envStore.apiRoot}/api/users/me`;
                 return axios.get(resource, { params });
@@ -1120,8 +1102,8 @@ export default {
 
             setCurrentWorkspace(workspace) {
                 const data = {
-                    workspace: workspace.value,
-                    firebaseUserId
+                    workspace: workspace,
+                    firebaseUserId: firebaseUserId.value
                 };
                 const resource = `${envStore.apiRoot}/api/users/me/setCurrentWorkspace`;
                 return axios.post(resource, { data });
@@ -1165,7 +1147,7 @@ export default {
                 const data = {
                     name: name,
                     workspaceData: workspaceData,
-                    firebaseUserId
+                    firebaseUserId: firebaseUserId.value
                 };
                 const resource = `${envStore.apiRoot}/api/workspaces`;
                 return axios.post(resource, { data });
@@ -1173,7 +1155,7 @@ export default {
 
             getWorkspaces() {
                 const params = {
-                    firebaseUserId
+                    firebaseUserId: firebaseUserId.value
                 };
 
                 const resource = `${envStore.apiRoot}/api/workspaces`;

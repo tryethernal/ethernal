@@ -8,25 +8,27 @@ export const useUserStore = defineStore('user', {
         id: null,
         plan: 'free',
         onboarded: false,
-        loggedIn: false,
         isAdmin: false,
-        firebaseUserId: null
+        firebaseUserId: null,
+        apiToken: null,
+        canUseDemoPlan: null,
+        cryptoPaymentEnabled: null,
+        canTrial: null
     }),
 
     actions: {
         // TODO: Do not forget to update the code using updateUserPlan
 
         updateUser(user) {
+            const env = useEnvStore();
+
             if (user) {
                 this.$patch(user);
 
                 Sentry.setUser({ id: this.id, email: this.email });
-                this.loggedIn = true;
-            }
-            else {
-                this.$reset();
 
-                const env = useEnvStore();
+                if (user.apiToken)
+                    localStorage.setItem('apiToken', user.apiToken);
 
                 if (env.hasAnalyticsEnabled) {
                     window.feedbackfin.config.user = { email: this.email };
@@ -37,6 +39,23 @@ export const useUserStore = defineStore('user', {
                     }
                 }
             }
+            else {
+                this.$reset();
+                Sentry.setUser(null);
+                localStorage.clear();
+                if (env.hasAnalyticsEnabled) {
+                    window.feedbackfin.config.user = null;
+                    this._vm.$posthog.reset();
+                    if (window.smartsupp) {
+                        window.smartsupp('name', null);
+                        window.smartsupp('email', null);
+                    }
+                }
+            }
         }
+    },
+
+    getters: {
+        loggedIn: () => localStorage.getItem('apiToken') !== null
     }
 });

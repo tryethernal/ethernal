@@ -17,18 +17,19 @@
     </div>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useUserStore } from '@/stores/user';
 
 export default {
     name: 'Account',
     data: () => ({
-        apiToken: null,
+        apiToken: null
     }),
     mounted() {
-        this.apiToken = this.user.apiToken
+        this.apiToken = this.userStore.apiToken
     },
     methods: {
-        copyToken: function() {
+        copyToken() {
             const webhookField = document.querySelector('#copyElement');
             webhookField.setAttribute('type', 'text');
             webhookField.select();
@@ -46,9 +47,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'user'
-        ])
+        ...mapStores(useUserStore)
     }
 }
 </script>

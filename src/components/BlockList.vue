@@ -76,7 +76,7 @@ export default {
             if (item.state == 'syncing')
                 return 'isSyncing'
         },
-        getBlocks({ page, itemsPerPage, sortBy }) {
+        getBlocks({ page, itemsPerPage, sortBy } = {}) {
             this.loading = true;
 
             if (!page || !itemsPerPage || !sortBy || !sortBy.length)

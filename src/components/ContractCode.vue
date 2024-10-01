@@ -7,9 +7,9 @@
             </v-card-text>
         </v-card>
         <template v-else>
-            <template v-if="isPublicExplorer">
+            <template v-if="explorerStore">
                 <Contract-Verification-Info v-if="isVerifiedContract" :contract="contract" />
-                <Contract-Verification v-else :address="contract.address" />
+                <Contract-Verification @contractVerified="contractVerified = true" v-else :address="contract.address" />
             </template>
 
             <v-card border flat class="mb-6">
@@ -43,7 +43,8 @@
 <script>
 import 'highlight.js/styles/vs2015.css';
 const hljs = require('highlight.js');
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useExplorerStore } from '../stores/explorer';
 import ContractVerification from './ContractVerification';
 import ContractVerificationInfo from './ContractVerificationInfo';
 
@@ -58,9 +59,6 @@ export default {
         loading: false,
         contractVerified: false
     }),
-    mounted() {
-        this.$root.$on('contractVerified', () => this.contractVerified = true);
-    },
     methods: {
         copyBytecode() {
             const webhookField = document.querySelector('#copyBytecode');
@@ -80,9 +78,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'isPublicExplorer'
-        ]),
+        ...mapStores(useExplorerStore),
         isVerifiedContract() {
             return this.contract.verification;
         },

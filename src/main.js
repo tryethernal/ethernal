@@ -11,9 +11,11 @@ import embeddedRouter from './plugins/embeddedRouter';
 import serverPlugin from './plugins/server';
 import posthogPlugin from "./plugins/posthog";
 import pusherPlugin from "./plugins/pusher";
-import 'ace-mode-solidity/build/remix-ide/mode-solidity.js';
+
 import dt from './filters/dt';
 import FromWei from './filters/FromWei';
+
+import userMixin from './mixins/user';
 
 import App from './App.vue';
 import Demo from './Demo.vue';
@@ -46,6 +48,8 @@ const createVueApp = (rootComponent, options) => {
     app.use(serverPlugin);
     app.use(posthogPlugin);
     app.use(pusherPlugin);
+
+    app.mixin(userMixin);
 
     app.config.globalProperties.$dt = dt;
     app.config.globalProperties.$fromWei = FromWei;

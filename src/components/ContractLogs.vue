@@ -1,12 +1,12 @@
 <template>
     <v-container fluid>
-        <v-data-table
+        <v-data-table-server
             :loading="loading"
             :items="logs"
-            :sort-by="currentOptions.sortBy[0]"
+            :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
             :must-sort="true"
             :sort-desc="true"
-            :server-items-length="logCount"
+            :items-length="logCount"
             :headers="headers"
             :footer-props="{
                 itemsPerPageOptions: [10, 25, 100]
@@ -18,8 +18,8 @@
             </template>
             <template v-slot:item.timestamp="{ item }">
                 <div class="my-2 text-left">
-                    {{ moment(item.receipt.transaction.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
-                    <small>{{ moment(item.receipt.transaction.timestamp).fromNow() }}</small>
+                    {{ $dt.shortDate(item.receipt.transaction.timestamp) }}<br>
+                    <small>{{ $dt.fromNow(item.receipt.transaction.timestamp) }}</small>
                 </div>
             </template>
             <template v-slot:item.transactionHash="{ item }">
@@ -28,14 +28,12 @@
             <template v-slot:item.blockNumber="{ item }">
                 <router-link :to="'/block/' + item.receipt.blockNumber">{{ item.receipt.blockNumber }}</router-link>
             </template>
-        </v-data-table>
+        </v-data-table-server>
     </v-container>
 </template>
 
 <script>
-const moment = require('moment');
 import HashLink from './HashLink';
-import FromWei from '../filters/FromWei';
 import TransactionEvent from './TransactionEvent';
 
 export default {
@@ -45,19 +43,16 @@ export default {
         HashLink,
         TransactionEvent
     },
-    filters: {
-        FromWei
-    },
     data: () => ({
         loading: true,
         logs: [],
         logCount: 0,
         contract: {},
         headers: [
-            { text: 'Log', value: 'log', sortable: false },
-            { text: 'Emitted On', value: 'timestamp' },
-            { text: 'Transaction', value: 'transactionHash', sortable: false },
-            { text: 'Block', value: 'blockNumber' }
+            { title: 'Log', key: 'log', sortable: false },
+            { title: 'Emitted On', key: 'timestamp' },
+            { title: 'Transaction', key: 'transactionHash', sortable: false },
+            { title: 'Block', key: 'blockNumber' }
         ],
         currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] },
         pusherChannelHandler: null
@@ -66,25 +61,27 @@ export default {
         this.pusherChannelHandler.unbind(null, null, this);
     },
     methods: {
-        moment: moment,
         onPagination(options) {
             this.getTransfers(options);
             this.pusherChannelHandler = this.$pusher.onNewContractLog(() => this.getTransfers(this.currentOptions), this.address, this);
         },
-        getTransfers(newOptions) {
+        getTransfers({ page, itemsPerPage, sortBy } = {}) {
             this.loading = true;
 
-            if (newOptions)
-                this.currentOptions = newOptions;
+            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
+                return this.loading = false;
 
-            const options = {
-                page: this.currentOptions.page,
-                itemsPerPage: this.currentOptions.itemsPerPage,
-                orderBy: this.currentOptions.sortBy[0],
-                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
+            if (this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.sortBy == sortBy[0].key && this.currentOptions.sort == sortBy[0].order)
+                return this.loading = false;
+
+            this.currentOptions = {
+                page,
+                itemsPerPage,
+                orderBy: sortBy[0].key,
+                order: sortBy[0].order
             };
 
-            this.$server.getContractLogs(this.address, options)
+            this.$server.getContractLogs(this.address, this.currentOptions)
                 .then(({ data }) => {
                     this.logs = data.items;
                     this.logCount = data.total;

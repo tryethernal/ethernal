@@ -17,19 +17,19 @@
                 <v-divider vertical></v-divider>
                 <v-col lg="2" md="12" sm="12">
                     <v-list-subheader class="text-overline">Mined On</v-list-subheader>
-                    {{ moment(block.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
-                    <small>{{ moment(block.timestamp).fromNow() }}</small>
+                    {{ $dt.shortDate(block.timestamp) }}<br>
+                    <small>{{ $dt.fromNow(block.timestamp) }}</small>
                 </v-col>
                 <v-divider vertical></v-divider>
                 <v-col lg="4" md="12" sm="12">
                     <v-list-subheader class="text-overline">Hash</v-list-subheader>
                     <span style="overflow-wrap: break-word;">{{ block.hash }}</span>
                 </v-col>
-                <template v-if="publicExplorer && publicExplorer.l1Explorer && block.l1BlockNumber">
+                <template v-if="explorerStore && explorerStore.l1Explorer && block.l1BlockNumber">
                     <v-divider vertical></v-divider>
                     <v-col lg="2" md="12" sm="12">
                         <v-list-subheader class="text-overline">L1 Block</v-list-subheader>
-                        <a :href="`${publicExplorer.l1Explorer}/block/${block.l1BlockNumber}`" target="_blank">{{ commify(block.l1BlockNumber) }}</a>
+                        <a style="text-decoration: none;" :href="`${explorerStore.l1Explorer}/block/${block.l1BlockNumber}`" target="_blank">{{ commify(block.l1BlockNumber) }}</a>
                     </v-col>
                 </template>
             </v-row>
@@ -48,7 +48,7 @@
                     </v-row>
                     <v-row>
                         <v-col class="text-body-1 text-center">
-                            This block has not been mined. Current block: <router-link style="text-decoration: none;" :to="'/block/' + currentBlock.number">{{ currentBlock.number && commify(currentBlock.number) }}</router-link>
+                            This block has not been mined. Current block: <router-link style="text-decoration: none;" :to="'/block/' + currentWorkspaceStore.currentBlock.number">{{ currentWorkspaceStore.currentBlock.number && commify(currentWorkspaceStore.currentBlock.number) }}</router-link>
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -74,9 +74,12 @@
 </template>
 
 <script>
-const moment = require('moment');
 const ethers = require('ethers');
-import { mapGetters } from 'vuex';
+
+import { mapStores } from 'pinia';
+import { useExplorerStore } from '../stores/explorer';
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
+
 import TransactionsList from './TransactionsList';
 
 export default {
@@ -100,7 +103,6 @@ export default {
         this.pusherChannelHandler.unbind(null, null, this);
     },
     methods: {
-        moment,
         commify: ethers.utils.commify,
         loadBlock(number) {
             this.loading = true;
@@ -116,10 +118,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'publicExplorer',
-            'currentBlock'
-        ]),
+        ...mapStores(useExplorerStore, useCurrentWorkspaceStore),
         syncing() {
             return this.block && this.block.syncedTransactionCount < this.block.transactionsCount;
         }

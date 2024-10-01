@@ -22,16 +22,12 @@
                     </v-col>
 
                     <v-col cols="12" md="6">
-                        <Line-Chart :title="'Average Transaction Fee'" :xLabels="charts['averageTransactionFee'].xLabels" :data="charts['averageTransactionFee'].data" :tokenSymbol="chain.token || 'ETH'" :floating="true" :index="3" />
+                        <Line-Chart :title="'Average Transaction Fee'" :xLabels="charts['averageTransactionFee'].xLabels" :data="charts['averageTransactionFee'].data" :tokenSymbol="currentWorkspaceStore.chain.token || 'ETH'" :floating="true" :index="3" />
                     </v-col>
 
                     <v-col cols="12" md="6">
                         <Line-Chart :title="'Active Wallets Count'" :xLabels="charts['uniqueWalletCount'].xLabels" :data="charts['uniqueWalletCount'].data" :tooltipUnit="'wallet'" :index="4" />
                     </v-col>
-
-                    <!-- <v-col cols="12" md="6">
-                        <Line-Chart :title="'Cumulative Wallets Count'" :xLabels="charts['cumulativeWalletCount'].xLabels" :data="charts['cumulativeWalletCount'].data" :tooltipUnit="'wallet'" :index="5" />
-                    </v-col> -->
 
                     <v-col cols="12" md="6">
                         <Line-Chart :title="'Deployed Contracts Count'" :xLabels="charts['deployedContractCount'].xLabels" :data="charts['deployedContractCount'].data" :tooltipUnit="'contract'" :index="6" />
@@ -49,7 +45,8 @@
 <script>
 const moment = require('moment');
 const ethers = require('ethers');
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 import LineChart from './LineChart';
 
 export default {
@@ -172,9 +169,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'chain',
-        ]),
+        ...mapStores(useCurrentWorkspaceStore),
         from() {
             return this.selectedTimeRange > 0 ? new Date(new Date() - this.selectedTimeRange * 24 * 3600 * 1000) : new Date(0);
         },

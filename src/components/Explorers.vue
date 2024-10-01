@@ -35,7 +35,7 @@
                         :loading="loading"
                         :items="explorers"
                         :must-sort="true"
-                        :sort-by="[{ key: currentOptions.sortBy[0], order: currentOptions.sortDesc[0] === false ? 'asc' : 'desc' }]"
+                        :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
                         :items-length="explorerCount"
                         :footer-props="{
                             itemsPerPageOptions: [10, 25, 100]
@@ -43,12 +43,11 @@
                         :headers="headers"
                         @update:options="getExplorers">
                         <template v-slot:top>
-                            <v-toolbar flat dense class="py-0">
-                                <v-spacer></v-spacer>
+                            <div class="d-flex justify-end">
                                 <v-btn size="small" variant="flat" color="primary" class="mr-2" @click="openCreateExplorerModal()">
                                     <v-icon size="small" class="mr-1">mdi-plus</v-icon>Create Explorer
                                 </v-btn>
-                            </v-toolbar>
+                            </div>
                         </template>
                         <template v-slot:item.name="{ item }">
                             <v-tooltip location="top">
@@ -72,7 +71,7 @@
                                 </v-tooltip>
                             </template>
                             <template v-else>
-                                <a :href="`http://${ item.slug }.${ mainDomain }`" target="_blank">{{ item.slug }}.{{ mainDomain }}</a>
+                                <a :href="`http://${ item.slug }.${ envStore.mainDomain }`" target="_blank">{{ item.slug }}.{{ envStore.mainDomain }}</a>
                             </template>
                         </template>
                         <template v-slot:item.rpcServer="{ item }">
@@ -89,7 +88,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useEnvStore } from '../stores/env';
+
 import CreateExplorerModal from './CreateExplorerModal.vue';
 import { shortRpcUrl } from '../lib/utils';
 
@@ -103,31 +104,35 @@ export default {
         explorerCount: 0,
         headers: [],
         loading: true,
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['id'], sortDesc: [true] },
+        currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'id', order: 'desc' },
     }),
     mounted() {
         this.headers.push(
-            { text: 'Name', value: 'name' },
-            { text: 'Workspace', value: 'workspace', sortable: false },
-            { text: 'Domains', value: 'domain', sortable: false },
-            { text: 'RPC', value: 'rpcServer', sortable: false }
+            { title: 'Name', key: 'name' },
+            { title: 'Workspace', key: 'workspace', sortable: false },
+            { title: 'Domains', key: 'domain', sortable: false },
+            { title: 'RPC', key: 'rpcServer', sortable: false }
         );
     },
     methods: {
         shortRpcUrl,
-        getExplorers(newOptions) {
+        getExplorers({ page, itemsPerPage, sortBy } = {}) {
             this.loading = true;
 
-            if (newOptions)
-                this.currentOptions = newOptions;
+            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
+                return this.loading = false;
 
-            const options = {
-                page: this.currentOptions.page,
-                itemsPerPage: this.currentOptions.itemsPerPage,
-                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc',
-                orderBy: this.currentOptions.sortBy[0]
+            if (this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.sortBy == sortBy[0].key && this.currentOptions.sort == sortBy[0].order)
+                return this.loading = false;
+
+            this.currentOptions = {
+                page,
+                itemsPerPage,
+                orderBy: sortBy[0].key,
+                order: sortBy[0].order
             };
-            this.$server.getExplorers(options)
+
+            this.$server.getExplorers(this.currentOptions)
                 .then(({ data }) => {
                     this.explorers = data.items;
                     this.explorerCount = data.total;
@@ -161,9 +166,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'mainDomain'
-        ]),
+        ...mapStores(useEnvStore),
         deletedExplorer() {
             return this.$route.query.deletedExplorer ? this.$route.query.deletedExplorer : null;
         }

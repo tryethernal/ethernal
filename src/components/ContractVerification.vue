@@ -227,6 +227,11 @@ export default {
         canSubmit: false,
         loading: false
     }),
+    setup(props, { emit }) {
+        const emitContractVerified = () => emit('contractVerified');
+
+        return { emitContractVerified };
+    },
     mounted() {
         this.parameters.address = this.address;
         this.parameters.slug = this.publicExplorer.slug;
@@ -292,7 +297,7 @@ export default {
             this.$server.verifyContract(this.address, data)
                 .then(() => {
                     this.verificationSuccess = true;
-                    this.$root.$emit('contractVerified');
+                    this.emitContractVerified();
                 })
                 .catch(({ response: { data }}) => this.verificationErrorMessage =`Verification failed. ${data}`)
                 .finally(() => {

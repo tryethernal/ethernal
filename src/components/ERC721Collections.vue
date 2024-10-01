@@ -2,14 +2,14 @@
     <v-container fluid>
         <v-card border flat>
             <v-card-text>
-                <v-data-table
+                <v-data-table-server
                     :loading="loading"
                     :items="tokens"
                     :headers="headers"
-                    :sort-by="currentOptions.sortBy[0]"
+                    :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
                     :must-sort="true"
                     :sort-desc="true"
-                    :server-items-length="tokenCount"
+                    :items-length="tokenCount"
                     :footer-props="{
                         itemsPerPageOptions: [10, 25, 100]
                     }"
@@ -32,7 +32,7 @@
                             {{ formatContractPattern(pattern) }}
                         </v-chip>
                     </template>
-                </v-data-table>
+                </v-data-table-server>
             </v-card-text>
         </v-card>
     </v-container>
@@ -52,28 +52,28 @@ export default {
         tokenCount: 0,
         headers: [
             {
-                text: 'Address',
-                value: 'address'
+                title: 'Address',
+                key: 'address'
             },
             {
-                text: 'Name',
-                value: 'tokenName'
+                title: 'Name',
+                key: 'tokenName'
             },
             {
-                text: 'Symbol',
-                value: 'tokenSymbol'
+                title: 'Symbol',
+                key: 'tokenSymbol'
             },
             {
-                text: 'Total Supply',
-                value: 'tokenTotalSupply'
+                title: 'Total Supply',
+                key: 'tokenTotalSupply'
             },
             {
-                text: '',
-                value: 'tags',
+                title: '',
+                key: 'tags',
                 sortable: false
             }
         ],
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['timestamp'], sortDesc: [true] },
+        currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'timestamp', order: 'desc', pattern: 'erc721' },
         newNftPusherHandler: null,
         destroyedContractPusherHandler: null
     }),
@@ -86,17 +86,20 @@ export default {
         this.destroyedContractPusherHandler.unbind(null, null, this);
     },
     methods: {
-        getTokens: function(newOptions) {
+        getTokens({ page, itemsPerPage, sortBy } = {}) {
             this.loading = true;
 
-            if (newOptions)
-                this.currentOptions = newOptions;
+            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
+                return this.loading = false;
+
+            if (this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.sortBy == sortBy[0].key && this.currentOptions.sort == sortBy[0].order)
+                return this.loading = false;
 
             const options = {
-                page: this.currentOptions.page,
-                itemsPerPage: this.currentOptions.itemsPerPage,
-                orderBy: this.currentOptions.sortBy[0],
-                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc',
+                page,
+                itemsPerPage,
+                orderBy: sortBy[0].key,
+                order: sortBy[0].order,
                 pattern: 'erc721'
             };
 

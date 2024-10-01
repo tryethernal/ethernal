@@ -25,17 +25,21 @@ import { useUserStore } from '../stores/user';
 
 const redirectIfLoggedIn = function (to, from, next) {
     const userStore = useUserStore();
-    if (userStore.id) {
+    if (userStore.loggedIn)
         next(to || { path: '/transactions' });
-    }
-    else next();
+    else
+        next();
 };
 
 const redirectIfLoggedOut = function (to, from, next) {
     if (to.hash && to.hash.startsWith('#'))
         to.query.tab = to.hash.split('#')[1];
 
-    next();
+    const userStore = useUserStore();
+    if (userStore.loggedIn)
+        next();
+    else
+        next({ path: '/auth' });
 };
 
 const routes = [

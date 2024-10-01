@@ -58,7 +58,7 @@
             <v-card-title>Private Explorer Plan</v-card-title>
             <v-row class="ml-1 mb-1">
                 <v-col cols="4">
-                    <v-card style="height: 100%" border>
+                    <v-card style="height: 100%" border flat>
                         <v-card-title>
                             Free
                             <v-spacer></v-spacer>
@@ -74,7 +74,7 @@
                     </v-card>
                 </v-col>
                 <v-col cols="4">
-                    <v-card style="height: 100%" border>
+                    <v-card style="height: 100%" border flat>
                         <v-card-title>
                             Premium - $20/month
                             <v-spacer></v-spacer>
@@ -118,8 +118,11 @@
     </v-container>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+
 import { useUserStore } from '../stores/user';
+import { useEnvStore } from '../stores/env';
+
 import CreateExplorerModal from './CreateExplorerModal.vue';
 
 export default {
@@ -198,12 +201,9 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'user',
-            'mainDomain'
-        ]),
+        ...mapStores(useUserStore, useEnvStore),
         isPremium() {
-            return this.user.plan == 'premium';
+            return this.userStore.plan == 'premium';
         },
         justUpgraded() {
             return this.$route.query.status == 'upgraded';

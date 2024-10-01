@@ -218,8 +218,7 @@ export default {
             this.$refs.browserSyncExplainerModal.open();
         },
         logOut() {
-            this.$posthog.reset();
-            localStorage.clear();
+            this.userStore.updateUser(null);
             document.location.reload();
         },
         launchOnboarding() {

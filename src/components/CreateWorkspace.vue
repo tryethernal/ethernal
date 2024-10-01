@@ -1,6 +1,6 @@
 <template>
     <v-card elevation="0">
-        <v-card-text v-if="(!user.plan || user.plan == 'free') && user.onboarded && !isPublic">
+        <v-card-text v-if="(!userStore.plan || userStore.plan == 'free') && userStore.onboarded && !isPublic">
             <v-alert density="compact" text type="error">Free plan users are limited to one workspace. <a href="#" @click.stop="goToBilling()">Upgrade</a> to our Premium plan to create more.</v-alert>
         </v-card-text>
         <v-card-text v-else>
@@ -50,7 +50,9 @@
 </template>
 <script>
 const ipaddr = require('ipaddr.js');
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useEnvStore } from '@/stores/env';
+import { useUserStore } from '@/stores/user';
 
 export default {
     name: 'CreateWorkspace',
@@ -69,7 +71,7 @@ export default {
         valid: false
     }),
     mounted() {
-        this.availableChains = Object.values(this.chains).map((chain) => ({ text: chain.name, value: chain.slug }));
+        this.availableChains = Object.values(this.envStore.chains).map((chain) => ({ text: chain.name, value: chain.slug }));
     },
     methods: {
         async createWorkspace(name, rpcServer) {
@@ -151,11 +153,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'user',
-            'chains',
-            'mainDomain'
-        ]),
+        ...mapStores(useEnvStore, useUserStore),
         isUsingSafari() {
             return navigator.vendor.match(/apple/i) && !navigator.userAgent.match(/crios/i) && !navigator.userAgent.match(/fxios/i);
         },

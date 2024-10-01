@@ -15,6 +15,8 @@
                     <v-card-text>
                         <v-form @submit.prevent="signIn" v-model="valid">
                             <v-text-field
+                                variant="outlined"
+                                color="primary"
                                 :rules="[
                                     v => !!v || 'Email is required',
                                     v => /.+@.+\..+/.test(v) || 'Email must be valid',
@@ -33,7 +35,7 @@
                                     <small><a @click="switchMode('forgottenPwd')">Forgot My Password</a></small>
                                 </div>
                                 <v-spacer></v-spacer>
-                                <v-btn :disabled="!valid" :loading="loading" color="primary" type="submit">Sign In</v-btn>
+                                <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Sign In</v-btn>
                             </v-card-actions>
                         </v-form>
                     </v-card-text>
@@ -62,7 +64,7 @@
                                     <small><a @click="switchMode('forgottenPwd')">Forgot My Password</a></small>
                                 </div>
                                 <v-spacer></v-spacer>
-                                <v-btn :disabled="!valid" :loading="loading" color="primary" type="submit">Sign Up</v-btn>
+                                <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Sign Up</v-btn>
                             </v-card-actions>
                         </v-form>
                     </v-card-text>
@@ -87,7 +89,7 @@
                                     <small><a @click="switchMode('signup')">Sign Up</a></small>
                                 </div>
                                 <v-spacer></v-spacer>
-                                <v-btn :disabled="!valid" :loading="loading" color="primary" type="submit">Submit</v-btn>
+                                <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Submit</v-btn>
                             </v-card-actions>
                         </v-form>
                     </v-card-text>
@@ -109,7 +111,7 @@
                                     <small><a @click="switchMode('signin')">Sign In</a></small><br>
                                 </div>
                                 <v-spacer></v-spacer>
-                                <v-btn :disabled="!valid" :loading="loading" color="primary" type="submit">Submit</v-btn>
+                                <v-btn variant="flat" :disabled="!valid" :loading="loading" color="primary" type="submit">Submit</v-btn>
                             </v-card-actions>
                         </v-form>
                     </v-card-text>

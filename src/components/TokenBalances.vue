@@ -7,17 +7,16 @@
                     :items="balances"
                     :sort-by="[{ key: 'currentBalance', order: 'desc' }]"
                     :headers="headers">
-                <template v-slot:top>
-                    <v-toolbar dense flat v-if="!dense">
-                        <v-spacer></v-spacer>
+                <template v-slot:top v-if="!dense">
+                    <div class="d-flex justify-end">
                         <v-switch v-model="unformatted" label="Unformatted Balances"></v-switch>
-                    </v-toolbar>
+                    </div>
                 </template>
                 <template v-slot:item.token="{ item }">
                     <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" :contract="item.tokenContract" />
                 </template>
                 <template v-slot:item.currentBalance="{ item }">
-                    {{ item.currentBalance | fromWei(item.tokenContract && item.tokenContract.tokenDecimals, item.tokenContract && item.tokenContract.tokenSymbol, unformatted) }}
+                    {{ $fromWei(item.currentBalance, item.tokenContract && item.tokenContract.tokenDecimals, item.tokenContract && item.tokenContract.tokenSymbol, unformatted) }}
                 </template>
                 </v-data-table>
             </v-card-text>

@@ -2,13 +2,13 @@
     <v-container fluid>
         <v-card border flat>
             <v-card-text>
-                <Add-Account-Modal ref="addAccountModalRef" v-if="isUserAdmin" />
-                <Unlock-Account-Modal ref="openUnlockAccountModalRef" v-if="isUserAdmin" />
+                <Add-Account-Modal ref="addAccountModalRef" v-if="userStore.isAdmin" />
+                <Unlock-Account-Modal ref="openUnlockAccountModalRef" v-if="userStore.isAdmin" />
                 <v-data-table-server
                     :loading="loading"
                     no-data-text="No Accounts"
                     :items="accounts"
-                    :sort-by="[{ key: currentOptions.sortBy[0], order: currentOptions.sortDesc[0] === false ? 'asc' : 'desc' }]"
+                    :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
                     :must-sort="true"
                     :items-length="accountCount"
                     :footer-props="{
@@ -31,8 +31,7 @@
                         <Hash-Link :type="'address'" :hash="item.address" />
                     </template>
                     <template v-slot:top>
-                        <v-toolbar flat dense class="py-0" v-if="isUserAdmin">
-                            <v-spacer></v-spacer>
+                        <div class="d-flex justify-end">
                             <v-tooltip location="bottom">
                                 <template v-slot:activator="{ props }">
                                     <v-btn id="resyncAllAccounts" :disabled="loading" v-bind="props" size="small" variant="flat" color="primary" class="mr-2" @click="syncAccounts()">
@@ -44,15 +43,15 @@
                             <v-btn size="small" variant="flat" color="primary" class="mr-2" @click="openAddAccountModal()">
                                 <v-icon size="small" class="mr-1">mdi-plus</v-icon>Add Account
                             </v-btn>
-                        </v-toolbar>
+                        </div>
                     </template>
                     <template v-slot:item.balance="{ item }">
                         <span v-if="item.balance">
-                            {{ item.balance | fromWei('ether', chain.token) }}
+                            {{ $fromWei(item.balance, 'ether', currentWorkspaceStore.chain.token) }}
                         </span>
                         <span v-else>N/A</span>
                     </template>
-                    <template v-slot:item.actions="{ item }" v-if="isUserAdmin">
+                    <template v-slot:item.actions="{ item }" v-if="userStore.isAdmin">
                         <a href="#" @click.prevent="openUnlockAccountModal(item)">Set Private Key</a>
                     </template>
                 </v-data-table-server>
@@ -62,15 +61,15 @@
 </template>
 <script>
 const ethers = require('ethers');
-import { mapGetters } from 'vuex';
 import { mapStores } from 'pinia';
 
 import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
+import { useUserStore } from '../stores/user';
+import { useExplorerStore } from '../stores/explorer';
 
 import AddAccountModal from './AddAccountModal';
 import UnlockAccountModal from './UnlockAccountModal';
 import HashLink from './HashLink';
-import FromWei from '../filters/FromWei';
 
 export default {
     name: 'Accounts',
@@ -79,24 +78,21 @@ export default {
         AddAccountModal,
         UnlockAccountModal
     },
-    filters: {
-        FromWei
-    },
     data: () => ({
         accounts: [],
         accountCount: 0,
         headers: [
-            { text: 'Address', value: 'address' },
-            { text: 'Balance', value: 'balance' }
+            { title: 'Address', key: 'address' },
+            { title: 'Balance', key: 'balance' }
         ],
         loading: false,
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['address'], sortDesc: [true] },
+        currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'address', order: 'desc' },
         pusherUnsubscribe: null
     }),
     mounted() {
         this.pusherUnsubscribe = this.$pusher.onUpdatedAccount(() => this.getAccounts());
-        if (this.isUserAdmin)
-            this.headers.push({ text: 'Actions', value: 'actions' });
+        if (this.userStore.isAdmin)
+            this.headers.push({ title: 'Actions', key: 'actions' });
     },
     destroyed() {
         this.pusherUnsubscribe();
@@ -104,28 +100,33 @@ export default {
     methods: {
         syncAccounts() {
             this.loading = true;
-            this.$server.getRpcAccounts(this.rpcServer)
+            this.$server.getRpcAccounts(this.currentWorkspaceStore.rpcServer)
                 .then(accounts => {
                     const promises = [];
                     for (let i = 0; i < accounts.length; i++)
                         promises.push(this.$server.syncBalance(accounts[i], '0'));
 
-                    Promise.all(promises).then(() => this.getAccounts());
+                    Promise.all(promises).then(() => this.getAccounts(this.currentOptions));
                 })
                 .catch(() => this.loading = false);
         },
-        getAccounts(newOptions) {
+        getAccounts({ page, itemsPerPage, sortBy } = {}) {
             this.loading = true;
 
-            if (newOptions)
-                this.currentOptions = newOptions;
+            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
+                return this.loading = false;
 
-            const options = {
-                page: this.currentOptions.page,
-                itemsPerPage: this.currentOptions.itemsPerPage,
-                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
+            if (this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.sortBy == sortBy[0].key && this.currentOptions.sort == sortBy[0].order)
+                return this.loading = false;
+
+            this.currentOptions = {
+                page,
+                itemsPerPage,
+                orderBy: sortBy[0].key,
+                order: sortBy[0].order
             };
-            this.$server.getAccounts(options)
+
+            this.$server.getAccounts(this.currentOptions)
                 .then(({ data }) => {
                     this.currentWorkspaceStore.updateAccounts(data.items);
                     this.accounts = data.items;
@@ -153,13 +154,7 @@ export default {
         }
     },
     computed: {
-        ...mapStores(useCurrentWorkspaceStore),
-        ...mapGetters([
-            'rpcServer',
-            'chain',
-            'isPublicExplorer',
-            'isUserAdmin'
-        ])
+        ...mapStores(useCurrentWorkspaceStore, useUserStore, useExplorerStore),
     }
 }
 </script>

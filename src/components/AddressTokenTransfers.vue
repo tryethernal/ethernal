@@ -4,7 +4,7 @@
             :transfers="transfers"
             :headers="headers"
             :loading="loading"
-            :sortBy="currentOptions.sortBy[0]"
+            :sort-by="[{ key: currentOptions.orderBy, order: currentOptions.order }]"
             :count="transferCount"
             :withTransactionData="true"
             :withTokenData="true"
@@ -29,34 +29,37 @@ export default {
         transfers: [],
         transferCount: 0,
         headers: [
-            { text: 'Mined On', value: 'timestamp' },
-            { text: 'Transaction', value: 'transactionHash', sortable: false },
-            { text: 'Block', value: 'blockNumber' },
-            { text: 'From', value: 'src' },
-            { text: 'To', value: 'dst' },
-            { text: 'Amount', value: 'amount' }
+            { title: 'Mined On', key: 'timestamp' },
+            { title: 'Transaction', key: 'transactionHash', sortable: false },
+            { title: 'Block', key: 'blockNumber' },
+            { title: 'From', key: 'src' },
+            { title: 'To', key: 'dst' },
+            { title: 'Amount', key: 'amount' }
         ],
-        currentOptions: { page: 1, itemsPerPage: 10, sortBy: ['blockNumber'], sortDesc: [true] }
+        currentOptions: { page: 1, itemsPerPage: 10, orderBy: 'blockNumber', order: 'desc' }
     }),
     methods: {
         moment: moment,
         onPagination(options) {
             this.getTransfers(options);
         },
-        getTransfers(newOptions) {
+        getTransfers({ page, itemsPerPage, sortBy } = {}) {
             this.loading = true;
 
-            if (newOptions)
-                this.currentOptions = newOptions;
+            if (!page || !itemsPerPage || !sortBy || !sortBy.length)
+                return this.loading = false;
 
-            const options = {
-                page: this.currentOptions.page,
-                itemsPerPage: this.currentOptions.itemsPerPage,
-                orderBy: this.currentOptions.sortBy[0],
-                order: this.currentOptions.sortDesc[0] === false ? 'asc' : 'desc'
+            if (this.currentOptions.page == page && this.currentOptions.itemsPerPage == itemsPerPage && this.currentOptions.sortBy == sortBy[0].key && this.currentOptions.sort == sortBy[0].order)
+                return this.loading = false;
+
+            this.currentOptions = {
+                page,
+                itemsPerPage,
+                orderBy: sortBy[0].key,
+                order: sortBy[0].order
             };
 
-            this.$server.getAddressTokenTransfers(this.address, options)
+            this.$server.getAddressTokenTransfers(this.address, this.currentOptions)
                 .then(({ data }) => {
                     this.transfers = data.items;
                     this.transferCount = data.total;

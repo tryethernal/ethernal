@@ -38,17 +38,19 @@
                 type="number"
                 hide-details="auto"
                 :disabled="!active"
-                :label="`Value (in ${chain.token})`">
+                :label="`Value (in ${currentWorkspaceStore.chain.token})`">
             </v-text-field>
         </div>
-        <v-btn :disabled="!active" v-if="senderMode == 'metamask'" :loading="loading" variant="flat" class="mt-1" :color="theme == 'dark' ? '' : 'primary'" @click="sendWithMetamask()">Query</v-btn>
-        <v-btn :disabled="!active" v-else :loading="loading" variant="flat" class="mt-1" :color="theme == 'dark' ? '' : 'primary'" @click="sendMethod()">Query</v-btn>
+        <v-btn :disabled="!active" v-if="senderMode == 'metamask'" :loading="loading" variant="flat" class="mt-1" @click="sendWithMetamask()">Query</v-btn>
+        <v-btn :disabled="!active" v-else :loading="loading" variant="flat" class="mt-1" @click="sendMethod()">Query</v-btn>
     </div>
 </template>
 <script>
 const Web3 = require('web3');
 const ethers = require('ethers');
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
+import { useExplorerStore } from '@/stores/explorer';
 import { sanitize, processMethodCallParam } from '../lib/utils';
 import { formatErrorFragment } from '../lib/abi';
 
@@ -69,7 +71,7 @@ export default {
         loading: false
     }),
     methods: {
-        sendWithMetamask: function() {
+        sendWithMetamask() {
             this.loading = true;
             this.result = {
                 txHash: null,
@@ -114,7 +116,7 @@ export default {
                     }
                 });
         },
-        sendMethod: async function() {
+        async sendMethod() {
             try {
                 this.loading = true;
                 this.receipt = {};
@@ -218,7 +220,7 @@ export default {
                 this.loading = false;
             }
         },
-        inputSignature: function(input) {
+        inputSignature(input) {
             if (input.type == 'tuple') {
                 return `${input.name ? input.name : 'tuple'}(${input.components.map((cpt) => `${cpt.type}${cpt.name ? ` ${cpt.name}` : ''}`).join(', ')})`;
             }
@@ -227,17 +229,11 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'rpcServer',
-            'currentWorkspace',
-            'chain',
-            'isPublicExplorer',
-            'theme'
-        ]),
-        value: function() {
+        ...mapStores(useCurrentWorkspaceStore, useExplorerStore),
+        value() {
             return this.web3.utils.toWei(this.valueInEth.toString(), 'ether');
         },
-        outputSignature: function() {
+        outputSignature() {
             const res = [];
             const outputs = this.method.outputs;
             for (var i = 0; i < outputs.length; i++) {

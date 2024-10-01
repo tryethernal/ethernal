@@ -35,5 +35,24 @@ export default createVuetify({
             darken: 3
         },
         themes: { ethernal, light: ethernal, dark: ethernal }
+    },
+    defaults: {
+        VTextField: { color: 'primary', variant: 'outlined' },
+        VSelect: { color: 'primary', variant: 'outlined' },
+        VTextarea: { color: 'primary', variant: 'outlined' },
+        VCheckbox: { color: 'primary', variant: 'outlined' },
+        VRadio: { color: 'primary', variant: 'outlined' },
+        VSwitch: { color: 'primary', variant: 'outlined' },
+        VAutocomplete: { color: 'primary', variant: 'outlined' },
+        VCombobox: { color: 'primary', variant: 'outlined' },
+        VFileInput: { color: 'primary', variant: 'outlined' },
+        VSlider: { color: 'primary', variant: 'outlined' },
+
+        VProgressLinear: { color: 'primary' },
+
+        VBtn: { color: 'primary', variant: 'flat' },
+
+        VStepperVertical: { color: 'primary' },
+        VStepperVerticalItem: { color: 'primary' }
     }
 });

@@ -4,7 +4,11 @@ export const useExplorerStore = defineStore('explorer', {
     state: () => ({
         id: null,
         name: null,
-        rpcServer: null
+        rpcServer: null,
+        token: null,
+        l1Explorer: null,
+        domain: null,
+        domains: []
     }),
 
     actions: {

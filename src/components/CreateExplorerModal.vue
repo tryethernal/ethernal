@@ -1,22 +1,24 @@
 <template>
     <v-dialog v-model="dialog" :max-width="stepperIndex * 900" :persistent="true">
-        <v-stepper vertical v-model="stepperIndex">
-            <h3 class="mx-6 mt-4">
-                Create Explorer<v-btn style="position: relative;float: right;" icon @click="close()" ><v-icon>mdi-close</v-icon></v-btn>
-            </h3>
-            <v-stepper-step step="1" :complete="stepperIndex > 1">Enter Setup Info</v-stepper-step>
-            <v-stepper-content step="1" class="pt-0">
+        <v-stepper-vertical v-model="stepperIndex">
+            <v-stepper-vertical-item value="1" :complete="stepperIndex > 1">
+                <template v-slot:title>
+                    <h4>Enter Setup Info</h4>
+                </template>
+                <template v-slot:prev></template>
+                <template v-slot:next></template>
                 <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
                 <v-row>
                     <v-col cols="12">
-                        <v-select primary variant="outlined" label="Select Existing Workspace" v-model="workspace" item-title="name"
+                        <v-select label="Select Existing Workspace" v-model="workspace"
                             v-if="workspaces.length"
+                            item-title="name"
                             :items="workspaces" return-object clearable class="mt-2">
-                            <template v-slot:item="{ item }">
-                                {{ item.name }}<small class="ml-2">({{ item.rpcServer }} | {{  item.networkId }})</small>
+                            <template v-slot:item="{ props, item }">
+                                <v-list-item class="py-2" v-bind="props" :subtitle="`${item.raw.rpcServer} | ${item.raw.networkId}`"></v-list-item>
                             </template>
                             <template v-slot:selection="{ item }">
-                                {{ item.name }}<small class="ml-2">({{ item.rpcServer }} | {{  item.networkId }})</small>
+                                {{ item.raw.name }} ({{ item.raw.rpcServer }} | {{ item.raw.networkId }})
                             </template>
                         </v-select>
                         <template v-if="!workspace">
@@ -25,34 +27,42 @@
                         </template>
                         <v-card-actions v-else>
                             <v-spacer></v-spacer>
-                            <v-btn id="selectWorkspace" :loading="loading" color="primary" @click="selectWorkspace()">Continue</v-btn>
+                            <v-btn id="selectWorkspace" :loading="loading" @click="selectWorkspace()">Continue</v-btn>
                         </v-card-actions>
                     </v-col>
                 </v-row>
-            </v-stepper-content>
+            </v-stepper-vertical-item>
 
-            <v-stepper-step v-if="isBillingEnabled" step="2" :complete="stepperIndex > 2">Choose A Plan</v-stepper-step>
-            <v-stepper-content v-if="isBillingEnabled" step="2" class="pt-0">
+            <v-stepper-vertical-item v-if="envStore.isBillingEnabled" value="2" :complete="stepperIndex > 2">
+                <template v-slot:title>
+                    <h4>Choose A Plan</h4>
+                </template>
+                <template v-slot:prev></template>
+                <template v-slot:next></template>
                 <v-card>
                     <v-card-text>
                         <v-alert text type="error" v-if="errorMessage">{{ errorMessage }}</v-alert>
-                        <ul style="list-style: none;" v-if="!user.cryptoPaymentEnabled || user.canTrial" class="mb-4 pl-0">
-                            <li v-if="!user.cryptoPaymentEnabled">To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
-                            <li v-if="user.canTrial">Each plan includes a 7 day free trial - No credit card needed.</li>
+                        <ul style="list-style: none;" v-if="!userStore.cryptoPaymentEnabled || userStore.canTrial" class="mb-4 pl-0">
+                            <li v-if="!userStore.cryptoPaymentEnabled">To setup crypto payment (Explorer 150 or above), reach out to contact@tryethernal.com.</li>
+                            <li v-if="userStore.canTrial">Each plan includes a 7 day free trial - No credit card needed.</li>
                         </ul>
                         <Explorer-Plan-Selector v-if="explorer"
                             :explorerId="explorer.id"
-                            :stripeSuccessUrl="`http://app.${mainDomain}/explorers/${explorer.id}?justCreated=true`"
-                            :stripeCancelUrl="`http://app.${mainDomain}/explorers/${explorer.id}`"
+                            :stripeSuccessUrl="`http://app.${envStore.mainDomain}/explorers/${explorer.id}?justCreated=true`"
+                            :stripeCancelUrl="`http://app.${envStore.mainDomain}/explorers/${explorer.id}`"
                             @planCreated="planCreated"></Explorer-Plan-Selector>
                     </v-card-text>
                 </v-card>
-            </v-stepper-content>
-        </v-stepper>
+            </v-stepper-vertical-item>
+        </v-stepper-vertical>
     </v-dialog>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useUserStore } from '../stores/user';
+import { useExplorerStore } from '../stores/explorer';
+import { useEnvStore } from '../stores/env';
+
 import CreateWorkspace from './CreateWorkspace.vue';
 import ExplorerPlanSelector from './ExplorerPlanSelector.vue';
 
@@ -93,7 +103,7 @@ export default {
                     this.explorer = data;
                     this.$emit('explorerCreated');
 
-                    if (this.isBillingEnabled && !this.user.canUseDemoPlan)
+                    if (this.envStore.isBillingEnabled && !this.userStore.canUseDemoPlan)
                         this.stepperIndex = 2;
                     else
                         this.$router.push({ path: `/explorers/${this.explorer.id}?status=success`});
@@ -126,11 +136,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'user',
-            'mainDomain',
-            'isBillingEnabled'
-        ])
+        ...mapStores(useUserStore, useExplorerStore, useEnvStore)
     }
 }
 </script>

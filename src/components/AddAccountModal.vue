@@ -1,11 +1,11 @@
 <template>
-<v-dialog v-model="dialog" max-width="430">
+<v-dialog v-model="dialog" max-width="500">
     <v-card>
         <v-card-title class="text-h5">Add Account</v-card-title>
 
         <v-card-text>
-            <v-alert type="error" v-if="errorMessage" v-html="errorMessage"></v-alert>
-            <v-alert type="success" v-if="successMessage">{{ successMessage }}</v-alert>
+            <v-alert class="mb-2" type="error" v-if="errorMessage" :text="errorMessage"></v-alert>
+            <v-alert class="mb-2" type="success" v-if="successMessage">{{ successMessage }}</v-alert>
             <div>Enter a private key to add the corresponding account.</div>
             <div>
                 Private keys are encrypted server side with AES 256 CBC, and stored encrypted. We strongly recommend to not use accounts with any value.
@@ -26,7 +26,8 @@
 </template>
 <script>
 const ethers = require('ethers');
-import { mapGetters } from 'vuex';
+import { mapStores } from 'pinia';
+import { useCurrentWorkspaceStore } from '@/stores/currentWorkspace';
 
 export default {
     name: 'AddAccountModal',
@@ -67,7 +68,7 @@ export default {
                 }
 
                 if (accountAddress) {
-                    promises.push(this.$server.impersonateAccount(this.currentWorkspace.rpcServer, accountAddress));
+                    promises.push(this.$server.impersonateAccount(this.currentWorkspaceStore.rpcServer, accountAddress));
                 }
 
                 Promise.all(promises).then(res => {
@@ -82,7 +83,7 @@ export default {
                             .catch(() => this.errorMessage = 'Error while adding account.');
                     }
                     else
-                        this.errorMessage = `Couldn't unlockAccount, make sure either <code>evm_unlockUnknownAccount</code> or <code>hardhat_impersonateAccount</code> is supported by your endpoint.`
+                        this.errorMessage = `Couldn't unlockAccount, make sure either "evm_unlockUnknownAccount" or "hardhat_impersonateAccount" is supported by your endpoint.`
                 })
                 .catch(console.log)
                 .finally(() => this.loading = false);
@@ -107,9 +108,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'currentWorkspace'
-        ])
+        ...mapStores(useCurrentWorkspaceStore)
     }
 }
 </script>

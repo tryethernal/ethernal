@@ -2,7 +2,7 @@
     <v-data-table-server
         :loading="loading"
         :headers="headers"
-        :sort-by="[{ key: sortBy, order: 'desc' }]"
+        :sort-by="sortBy"
         :must-sort="true"
         :items-length="count"
         :hide-default-header="dense"
@@ -10,10 +10,9 @@
         :items="transfers"
         @update:options="onPagination">
         <template v-slot:top v-if="!dense">
-            <v-toolbar dense flat>
-                <v-spacer></v-spacer>
+            <div class="d-flex justify-end">
                 <v-switch v-model="unformatted" label="Unformatted Amounts"></v-switch>
-            </v-toolbar>
+            </div>
         </template>
         <template v-slot:item.transactionHash="{ item }">
             <Hash-Link :type="'transaction'" :hash="item.transaction.hash" />
@@ -26,8 +25,8 @@
         </template>
         <template v-slot:item.timestamp="{ item }">
             <div class="my-2 text-left">
-                {{ moment(item.transaction.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
-                <small>{{ moment(item.transaction.timestamp).fromNow() }}</small>
+                {{ $dt.shortDate(item.transaction.timestamp) }}<br>
+                <small>{{ $dt.fromNow(item.transaction.timestamp) }}</small>
             </div>
         </template>
         <template v-slot:item.blockNumber="{ item }">
@@ -45,14 +44,13 @@
             <Hash-Link :type="'address'" :hash="item.token" :withName="true" :withTokenName="true" :tokenId="item.tokenId" :contract="item.contract" />
         </template>
         <template v-slot:item.amount="{ item }">
-            {{ item.amount | fromWei(decimals[item.token], symbols[item.token], unformatted) }}
+            {{ $fromWei(item.amount, decimals[item.token], symbols[item.token], unformatted) }}
         </template>
     </v-data-table-server>
 </template>
 <script>
 const moment = require('moment');
 import HashLink from './HashLink';
-import FromWei from '../filters/FromWei';
 import { formatContractPattern } from '@/lib/utils';
 
 export default {
@@ -60,9 +58,6 @@ export default {
     props: ['transfers', 'headers', 'dense', 'loading', 'sortBy', 'count', 'address'],
     components: {
         HashLink
-    },
-    filters: {
-        FromWei
     },
     data: () => ({
         unformatted: false,
@@ -86,19 +81,14 @@ export default {
                 if (!contract)
                     continue;
 
-                contract.tokenDecimals ?
-                    this.$set(this.decimals, this.transfers[i].token, contract.tokenDecimals) :
-                    this.$set(this.decimals, this.transfers[i].token, 0);
-
-                contract.tokenSymbol ?
-                    this.$set(this.symbols, this.transfers[i].token, contract.tokenSymbol) :
-                    this.$set(this.symbols, this.transfers[i].token, '');
+                this.decimals[this.transfers[i].token] = contract.tokenDecimals || 0;
+                this.symbols[this.transfers[i].token] = contract.tokenSymbol || '';
 
                 if (contract.patterns.indexOf('erc20') > -1)
-                    this.$set(this.type, this.transfers[i].token, 'erc20');
+                    this.type[this.transfers[i].token] = 'erc20';
 
                 if (contract.patterns.indexOf('erc721') > -1)
-                    this.$set(this.type, this.transfers[i].token, 'erc721');
+                    this.type[this.transfers[i].token] = 'erc721';
             }
         }
     },
