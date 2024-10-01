@@ -36,5 +36,6 @@ jest.mock('../../../lib/env', () => ({
     getMaxV2DexPairsForTrial: jest.fn(() => 100),
     getSentryDsn: jest.fn(() => null),
     getVersion: jest.fn(() => 'a'),
-    getRedisUrl: jest.fn(() => 'a')
+    getRedisUrl: jest.fn(() => 'a'),
+    getRedisFamily: jest.fn(() => 4)
 }));
