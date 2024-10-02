@@ -414,6 +414,7 @@ describe(`POST ${BASE_URL}/:address/tokenProperties`, () => {
             has721Metadata: false,
             has721Enumerable: false
         };
+        db.getWorkspaceByName.mockResolvedValue({ id: 1 });
         db.getWorkspaceContract.mockResolvedValue({ patterns: [] });
         request.post(`${BASE_URL}/0x123/tokenProperties`)
             .send({ data: { workspace: 'My Workspace', properties }})
@@ -431,6 +432,7 @@ describe(`POST ${BASE_URL}/:address/tokenProperties`, () => {
         const properties = {
             patterns: ['erc20', 'proxy']
         };
+        db.getWorkspaceByName.mockResolvedValue({ id: 1 });
         db.getWorkspaceContract.mockResolvedValue({ patterns: ['erc20'] });
         request.post(`${BASE_URL}/0x123/tokenProperties`)
             .send({ data: { workspace: 'My Workspace', properties }})
@@ -445,6 +447,7 @@ describe(`POST ${BASE_URL}/:address/tokenProperties`, () => {
     });
 
     it('Should fail if the contract does not exists', (done) => {
+        db.getWorkspaceByName.mockResolvedValue({ id: 1 });
         db.getWorkspaceContract.mockResolvedValue(null);
         request.post(`${BASE_URL}/0x123/tokenProperties`)
             .send({ data: { workspace: 'My Workspace', tokenProperties: { symbol: 'ETL', decimals: 18, name: 'Ethernal' }}})

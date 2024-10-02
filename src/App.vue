@@ -296,7 +296,7 @@ export default {
                         this.migrateExplorer();
                     else
                         data.currentWorkspace ?
-                            this.initWorkspace(data.currentWorkspace) :
+                            this.initWorkspace({ ...data.currentWorkspace, firebaseUserId: data.firebaseUserId }) :
                             this.launchOnboarding();
                 })
                 .catch(() => {
