@@ -1,5 +1,5 @@
 const { ProviderConnector } = require('../lib/rpc');
-const { Workspace, Explorer, StripeSubscription, StripePlan, RpcHealthCheck, Block } = require('../models');
+const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, Block } = require('../models');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 const { processRawRpcObject } = require('../lib/utils');
@@ -13,6 +13,7 @@ module.exports = async job => {
         return 'Missing parameter';
 
     const workspace = await Workspace.findOne({
+        attributes: ['id', 'rpcHealthCheckEnabled', 'rateLimitInterval', 'rateLimitMaxInInterval', 'name', 'rpcServer', 'browserSyncEnabled'],
         where: {
             name: data.workspace,
             '$user.firebaseUserId$': data.userId
@@ -24,11 +25,7 @@ module.exports = async job => {
                 as: 'explorer',
                 include: {
                     model: StripeSubscription,
-                    as: 'stripeSubscription',
-                    include: {
-                        model: StripePlan,
-                        as: 'stripePlan'
-                    }
+                    as: 'stripeSubscription'
                 }
             },
             {
@@ -55,10 +52,6 @@ module.exports = async job => {
 
     if (workspace.browserSyncEnabled)
         await db.updateBrowserSync(workspace.id, false);
-
-    const existingBlock = await db.getWorkspaceBlock(workspace.id, data.blockNumber);
-    if (existingBlock)
-        return 'Block already exists in this workspace';
 
     if (data.source == 'recovery' && workspace.integrityCheck && workspace.integrityCheck.isHealthy)
         await db.updateWorkspaceIntegrityCheck(workspace.id, { status: 'recovering' });
@@ -93,15 +86,12 @@ module.exports = async job => {
         if (!block)
             return "Couldn't fetch block from provider";
 
-        if (await workspace.explorer.hasReachedTransactionQuota())
-            return 'Transaction quota reached';
-    
         const processedBlock = processRawRpcObject(
             block,
             Object.keys(Block.rawAttributes).concat(['transactions'])
         );
 
-        const syncedBlock = await db.syncPartialBlock(workspace.id, processedBlock);
+        const syncedBlock = await workspace.safeCreatePartialBlock(processedBlock);
         if (!syncedBlock)
             return "Couldn't store block";
 
@@ -123,8 +113,8 @@ module.exports = async job => {
 
         return 'Block synced';
     } catch(error) {
+        console.log(error);
         logger.error(error.message, { location: 'jobs.blockSync', error, data });
-        // await db.incrementFailedAttempts(workspace.id);
         throw error;
     }
 };

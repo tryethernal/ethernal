@@ -920,23 +920,35 @@ module.exports = (sequelize, DataTypes) => {
                     });
                 });
 
-                const createdBlock = await this.createBlock(sanitize({
-                    baseFeePerGas: block.baseFeePerGas,
-                    difficulty: block.difficulty,
-                    extraData: block.extraData,
-                    gasLimit: block.gasLimit,
-                    gasUsed: block.gasUsed,
-                    hash: block.hash,
-                    miner: block.miner,
-                    nonce: block.nonce,
-                    number: block.number,
-                    parentHash: block.parentHash,
-                    timestamp: block.timestamp,
-                    transactionsCount: block.transactions ? block.transactions.length : 0,
-                    state: 'ready',
-                    l1BlockNumber: block.l1BlockNumber,
-                    raw: block.raw,
-                }), { transaction: sequelizeTransaction });
+                const [createdBlock] = await sequelize.models.Block.bulkCreate(
+                    [
+                        sanitize({
+                            workspaceId: this.id,
+                            baseFeePerGas: block.baseFeePerGas,
+                            difficulty: block.difficulty,
+                            extraData: block.extraData,
+                            gasLimit: block.gasLimit,
+                            gasUsed: block.gasUsed,
+                            hash: block.hash,
+                            miner: block.miner,
+                            nonce: block.nonce,
+                            number: block.number,
+                            parentHash: block.parentHash,
+                            timestamp: block.timestamp,
+                            transactionsCount: block.transactions ? block.transactions.length : 0,
+                            state: 'ready',
+                            l1BlockNumber: block.l1BlockNumber,
+                            raw: block.raw,
+                        })
+                    ],
+                    {
+                        ignoreDuplicates: true,
+                        transaction: sequelizeTransaction,
+                        returning: true
+                    }
+                );
+
+                // console.log(createdBlock);
 
                 const transactionsToInsert = transactions.map(t => {
                     return {
@@ -945,9 +957,9 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 });
 
-                await sequelize.models.Transaction.bulkCreate(transactionsToInsert, { transaction: sequelizeTransaction });
+                await sequelize.models.Transaction.bulkCreate(transactionsToInsert, { ignoreDuplicates: true, transaction: sequelizeTransaction });
 
-                return { toJSON: () => ({ ...createdBlock.toJSON(), transactions: transactionsToInsert }) };
+                return { ...createdBlock.toJSON(), transactions: transactionsToInsert };
             } catch(error) {
                 const blockAlreadyExists = error.errors && error.errors.find(e => e.validatorKey === 'not_unique');
                 if (blockAlreadyExists)
