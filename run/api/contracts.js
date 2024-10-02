@@ -273,8 +273,11 @@ router.post('/:address/tokenProperties', authMiddleware, async (req, res, next) 
         if (!data.uid || !data.workspace)
             return managedError(new Error(`Missing parameters`), req, res);
 
-        const contract = await db.getWorkspaceContract(data.workspace.id, req.params.address);
-        
+        const workspace = await db.getWorkspaceByName(data.user.firebaseUserId, data.workspace);
+        if (!workspace)
+            return managedError(new Error('Could not find workspace.'), req, res);
+
+        const contract = await db.getWorkspaceContract(workspace.id, req.params.address);
         if (!contract)
             return managedError(new Error('Could not find contract at this address.'), req, res);
 
