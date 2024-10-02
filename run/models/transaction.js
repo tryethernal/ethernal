@@ -127,6 +127,7 @@ module.exports = (sequelize, DataTypes) => {
                 );
             } catch(error) {
                 logger.error(error.message, { location: 'models.transaction.safeCreateReceipt', error: error, receipt, transaction: this });
+                storedLogs = [];
                 for (let i = 0; i < processedLogs.length; i++) {
                     const log = processedLogs[i];
                     storedLogs.push([
@@ -134,6 +135,8 @@ module.exports = (sequelize, DataTypes) => {
                             [
                                 sanitize({
                                     workspaceId: this.workspaceId,
+                                    transactionReceiptId: storedReceipt.id,
+                                    transactionId: this.id,
                                     blockNumber: log.blockNumber || receipt.blockNumber,
                                     raw: log.raw
                                 })
