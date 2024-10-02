@@ -19,7 +19,7 @@ priorities['high'].forEach(jobName => {
                 }
             )
         },
-        { concurrency: 200, maxStalledCount: 5, lockDuration: 1000 * 60 * 30, connection },
+        { concurrency: 200, maxStalledCount: 5, lockDuration: 1000 * 60, connection },
     );
     worker.on('failed', (job, error) => managedWorkerError(error, jobName, job.data, 'highPriority'));
 
