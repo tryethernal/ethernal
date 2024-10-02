@@ -16,7 +16,7 @@ beforeEach(() => jest.resetAllMocks());
 
 describe('receiptSync', () => {
     it('Should throw an error if receipt is not available', (done) => {
-        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
             workspace: {
                 id: 1,
                 public: true,
@@ -31,7 +31,7 @@ describe('receiptSync', () => {
             fetchTransactionReceipt: jest.fn().mockResolvedValueOnce(null)
         }));
 
-        receiptSync({ data : { transactionHash: '0x123', workspaceId: 1 }})
+        receiptSync({ data : { transactionId: 1, transactionHash: '0x123', workspaceId: 1 }})
             .catch(error => {
                 expect(error.message).toEqual('Failed to fetch receipt');
                 done();
@@ -39,7 +39,7 @@ describe('receiptSync', () => {
     });
 
     it('Should return if already a receipt', (done) => {
-        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
             workspace: {
                 rpcServer: 'rpc',
                 public: true,
@@ -50,7 +50,7 @@ describe('receiptSync', () => {
             receipt: {}
         });
 
-        receiptSync({ data : { transactionHash: '0x123', workspaceId: 1 }})
+        receiptSync({ data : { transactionId: 1, transactionHash: '0x123', workspaceId: 1 }})
             .then(res => {
                 expect(res).toEqual('Receipt has already been synced');
                 done();
@@ -58,7 +58,7 @@ describe('receiptSync', () => {
     });
 
     it('Should re-enqueue if rate limited', (done) => {
-        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
             id: 1,
             hash: '0x123',
             workspace: {
@@ -76,10 +76,11 @@ describe('receiptSync', () => {
             fetchTransactionReceipt: jest.fn().mockRejectedValueOnce({ message: 'Rate limited' })
         }));
 
-        receiptSync({ opts: { priority: 1 }, data : { transactionHash: '0x123', workspaceId: 1, source: 'cli-light', rateLimited: true }})
+        receiptSync({ opts: { priority: 1 }, data : { transactionId: 1, transactionHash: '0x123', workspaceId: 1, source: 'cli-light', rateLimited: true }})
             .then(res => {
                 expect(enqueue).toHaveBeenCalledWith('receiptSync', 'receiptSync-1-0x123', {
                     transactionHash: '0x123',
+                    transactionId: 1,
                     workspaceId: 1,
                     source: 'cli-light',
                     rateLimited: true
@@ -90,7 +91,7 @@ describe('receiptSync', () => {
     });
 
     it('Should return if RPC is unreachable', (done) => {
-        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
             workspace: {
                 rpcServer: 'rpc',
                 public: true,
@@ -105,7 +106,7 @@ describe('receiptSync', () => {
             },
         });
 
-        receiptSync({ data : { transactionHash: '0x123', workspaceId: 1 }})
+        receiptSync({ data : { transactionId: 1, transactionHash: '0x123', workspaceId: 1 }})
             .then(res => {
                 expect(res).toEqual('RPC is unreachable');
                 done();
@@ -113,9 +114,9 @@ describe('receiptSync', () => {
     });
 
     it('Should return if no transaction', (done) => {
-        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce(null);
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce(null);
 
-        receiptSync({ data : { transactionHash: '0x123', workspaceId: 1 }})
+        receiptSync({ data : { transactionId: 1, transactionHash: '0x123', workspaceId: 1 }})
             .then(res => {
                 expect(res).toEqual('Missing transaction');
                 done();
@@ -123,7 +124,7 @@ describe('receiptSync', () => {
     });
 
     it('Should return if no subscription', (done) => {
-        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
             workspace: {
                 rpcServer: 'rpc',
                 public: true,
@@ -136,7 +137,7 @@ describe('receiptSync', () => {
             fetchTransactionReceipt: jest.fn().mockResolvedValue(null)
         }));
 
-        receiptSync({ data : { transactionHash: '0x123', workspaceId: 1 }})
+        receiptSync({ data : { transactionId: 1, transactionHash: '0x123', workspaceId: 1 }})
             .then(res => {
                 expect(res).toEqual('No active subscription');
                 done();
@@ -144,7 +145,7 @@ describe('receiptSync', () => {
     });
 
     it('Should return if private workspace', (done) => {
-        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
             workspace: {
                 public: false,
                 rpcServer: 'rpc',
@@ -154,7 +155,7 @@ describe('receiptSync', () => {
             }
         });
 
-        receiptSync({ data : { transactionHash: '0x123', workspaceId: 1 }})
+        receiptSync({ data : { transactionId: 1, transactionHash: '0x123', workspaceId: 1 }})
             .then(res => {
                 expect(res).toEqual('Cannot sync on private workspace');
                 done();
@@ -162,7 +163,7 @@ describe('receiptSync', () => {
     });
 
     it('Should return if disabled sync', (done) => {
-        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
             workspace: {
                 public: true,
                 rpcServer: 'rpc',
@@ -172,7 +173,7 @@ describe('receiptSync', () => {
             }
         });
 
-        receiptSync({ data : { transactionHash: '0x123', workspaceId: 1 }})
+        receiptSync({ data : { transactionId: 1, transactionHash: '0x123', workspaceId: 1 }})
             .then(res => {
                 expect(res).toEqual('Disabled sync');
                 done();
@@ -180,7 +181,8 @@ describe('receiptSync', () => {
     });
 
     it('Should store the receipt', (done) => {
-        jest.spyOn(Transaction, 'findOne').mockResolvedValueOnce({
+        const safeCreateReceipt = jest.fn().mockResolvedValueOnce();
+        jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
             id: 1,
             workspace: {
                 rpcServer: 'rpc',
@@ -189,15 +191,16 @@ describe('receiptSync', () => {
                     shouldSync: true,
                     stripeSubscription: { status: 'active' }
                 }
-            }
+            },
+            safeCreateReceipt
         });
         ProviderConnector.mockImplementationOnce(() => ({
             fetchTransactionReceipt: jest.fn().mockResolvedValueOnce({ blockNumber: 1, transactionHash: '0x123' })
         }));
 
-        receiptSync({ data : { transactionHash: '0x123', workspaceId: 1 }})
+        receiptSync({ data : { transactionId: 1, transactionHash: '0x123', workspaceId: 1 }})
             .then(() => {
-                expect(db.storeTransactionReceipt).toHaveBeenCalledWith(1, {
+                expect(safeCreateReceipt).toHaveBeenCalledWith({
                     blockNumber: 1,
                     raw: { transactionHash: '0x123' }
                 });
