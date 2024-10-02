@@ -2,6 +2,7 @@
 module.exports = {
     // High priority
     blockSync: require('./blockSync'),
+    processBlock: require('./processBlock'),
     batchBlockSync: require('./batchBlockSync'),
     sendResetPasswordEmail: require('./sendResetPasswordEmail'),
     updateExplorerSyncingProcess: require('./updateExplorerSyncingProcess'),
