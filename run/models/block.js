@@ -4,10 +4,8 @@ const {
   Sequelize
 } = require('sequelize');
 const { trigger } = require('../lib/pusher');
-const { enqueue, bulkEnqueue } = require('../lib/queue');
-const { getNodeEnv } = require('../lib/env');
+const { enqueue } = require('../lib/queue');
 const moment = require('moment');
-const STALLED_BLOCK_REMOVAL_DELAY = getNodeEnv() == 'production' ? 5 * 60 * 1000 : 15 * 60 * 1000;
 
 module.exports = (sequelize, DataTypes) => {
   class Block extends Model {
@@ -75,42 +73,16 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     hooks: {
         async afterCreate(block, options) {
-          const workspace = await block.getWorkspace({ include: 'explorer' });
-          if (workspace.public) {
-            await enqueue('removeStalledBlock', `removeStalledBlock-${block.id}`, { blockId: block.id }, null, null, STALLED_BLOCK_REMOVAL_DELAY);
-            const afterCreateFn = async () => {
-              if (workspace.tracing == 'other') {
-                const jobs = [];
-                const transactions = await block.getTransactions();
-                for (let i = 0; i < transactions.length; i++) {
-                  const transaction = transactions[i];
-                  jobs.push({
-                    name: `processTransactionTrace-${workspace.id}-${transaction.hash}`,
-                    data: { transactionId: transaction.id }
-                  });
-                }
-                await bulkEnqueue('processTransactionTrace', jobs);
-              }
-              if (workspace.integrityCheckStartBlockNumber === null && workspace.explorer) {
-                const integrityCheckStartBlockNumber = block.number < 1000 ? 0 : block.number;
-                await workspace.update({ integrityCheckStartBlockNumber });
-              }
-              else if (workspace.integrityCheckStartBlockNumber && block.number == workspace.integrityCheckStartBlockNumber) {
-                await enqueue('integrityCheck', `integrityCheck-${workspace.id}`, { workspaceId: workspace.id });
-              }
-            }
-            if (options.transaction)
-              return options.transaction.afterCommit(afterCreateFn);
-            else
-              return afterCreateFn();
-          }
+          const afterCreateFn = () => enqueue('processBlock', `processBlock-${block.id}`, { blockId: block.id });
+          if (options.transaction)
+            return options.transaction.afterCommit(afterCreateFn);
+          else
+            return afterCreateFn();
         },
         async afterSave(block, options) {
             const afterSaveFn = async () => {
                 // We only refresh the frontend in real time if that's a recent block to avoid spamming requests
-                const workspace = await block.getWorkspace();
-                const [latestBlock] = await workspace.getBlocks({ order: [['number', 'DESC']], limit: 1 });
-                if (latestBlock.number - block.number < 10)
+                if (Date.now() / 1000 - block.timestamp < 60 * 10)
                   trigger(`private-blocks;workspace=${block.workspaceId}`, 'new', { number: block.number, withTransactions: block.transactionsCount > 0 });
             };
 
