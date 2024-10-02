@@ -40,8 +40,8 @@ describe('blockSync', () => {
         blockSync({ opts: { priority: 1 }, data : { userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
                 expect(bulkEnqueue).toHaveBeenCalledWith('receiptSync', [
-                    { name: 'receiptSync-1-0x123', data: { transactionHash: '0x123', workspaceId: 1 }},
-                    { name: 'receiptSync-1-0x456', data: { transactionHash: '0x456', workspaceId: 1 }}
+                    { name: 'receiptSync-1-0x123', data: { transactionId: 1, transactionHash: '0x123', workspaceId: 1 }},
+                    { name: 'receiptSync-1-0x456', data: { transactionId: 2, transactionHash: '0x456', workspaceId: 1 }}
                 ], 1);
                 expect(res).toEqual('Block synced');
                 done();

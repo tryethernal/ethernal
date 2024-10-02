@@ -1,5 +1,5 @@
 const { ProviderConnector } = require('../lib/rpc');
-const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, Block } = require('../models');
+const { Workspace, Explorer, StripeSubscription, RpcHealthCheck, IntegrityCheck, Block } = require('../models');
 const db = require('../lib/firebase');
 const logger = require('../lib/logger');
 const { processRawRpcObject } = require('../lib/utils');
@@ -23,14 +23,22 @@ module.exports = async job => {
             {
                 model: Explorer,
                 as: 'explorer',
+                attributes: ['id', 'shouldSync'],
                 include: {
                     model: StripeSubscription,
-                    as: 'stripeSubscription'
+                    as: 'stripeSubscription',
+                    attributes: ['id']
                 }
             },
             {
                 model: RpcHealthCheck,
-                as: 'rpcHealthCheck'
+                as: 'rpcHealthCheck',
+                attributes: ['id', 'isReachable']
+            },
+            {
+                model: IntegrityCheck,
+                as: 'integrityCheck',
+                attributes: ['id', 'isHealthy', 'isRecovering']
             }
         ]
     });
@@ -102,6 +110,7 @@ module.exports = async job => {
             jobs.push({
                 name: `receiptSync-${workspace.id}-${transaction.hash}`,
                 data: {
+                    transactionId: transaction.id,
                     transactionHash: transaction.hash,
                     workspaceId: workspace.id,
                     source: data.source,

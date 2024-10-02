@@ -943,12 +943,10 @@ module.exports = (sequelize, DataTypes) => {
                     ],
                     {
                         ignoreDuplicates: true,
-                        transaction: sequelizeTransaction,
-                        returning: true
+                        returning: true,
+                        transaction: sequelizeTransaction
                     }
                 );
-
-                // console.log(createdBlock);
 
                 const transactionsToInsert = transactions.map(t => {
                     return {
@@ -957,9 +955,13 @@ module.exports = (sequelize, DataTypes) => {
                     }
                 });
 
-                await sequelize.models.Transaction.bulkCreate(transactionsToInsert, { ignoreDuplicates: true, transaction: sequelizeTransaction });
+                const storedTransactions = await sequelize.models.Transaction.bulkCreate(transactionsToInsert, {
+                    ignoreDuplicates: true,
+                    returning: true,
+                    transaction: sequelizeTransaction
+                });
 
-                return { ...createdBlock.toJSON(), transactions: transactionsToInsert };
+                return { ...createdBlock, transactions: storedTransactions };
             } catch(error) {
                 const blockAlreadyExists = error.errors && error.errors.find(e => e.validatorKey === 'not_unique');
                 if (blockAlreadyExists)
