@@ -21,7 +21,7 @@ priorities['high'].forEach(jobName => {
                 }
             )
         },
-        { concurrency: 200, maxStalledCount: 5, connection },
+        { concurrency: 50, lockDuration: 300000, maxStalledCount: 5, connection },
     );
     worker.on('failed', (job, error) => managedWorkerError(error, jobName, job.data, 'highPriority'));
 
