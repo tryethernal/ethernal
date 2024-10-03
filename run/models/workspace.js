@@ -290,10 +290,10 @@ module.exports = (sequelize, DataTypes) => {
 
     async getTransactionCount(since) {
         let query = `
-            SELECT SUM(count) AS count
+            SELECT COALESCE(SUM(count), 0) AS count
             FROM transaction_volume_daily
             WHERE "workspaceId" = :workspaceId
-                AND timestamp >= DATE_TRUNC('day', timestamp :since)::timestamp
+                AND timestamp >= timestamp :since
         `;
 
         if (!since) {
