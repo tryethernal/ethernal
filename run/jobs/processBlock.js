@@ -55,7 +55,7 @@ module.exports = async job => {
         await bulkEnqueue('processTransactionTrace', jobs);
     }
 
-    if (block.workspace.integrityCheckStartBlockNumber) {
+    if (block.workspace.integrityCheckStartBlockNumber === undefined || block.workspace.integrityCheckStartBlockNumber === null) {
         const integrityCheckStartBlockNumber = block.number < 1000 ? 0 : block.number;
         await block.workspace.update({ integrityCheckStartBlockNumber });
     }
