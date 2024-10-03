@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.42.17] - 2024-10-04
+### Fixed
+- Integrity check start block number
+
 ## [3.42.16] - 2024-10-03
 ### Changed
 - HP worker settings
