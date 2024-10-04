@@ -638,7 +638,7 @@ router.post('/', authMiddleware, async (req, res, next) => {
             return managedError(new Error('Missing plan parameter.'), req, res);
 
         const stripePlan = await db.getStripePlan(planSlug);
-        if (!stripePlan || !stripePlan.public)
+        if (!stripePlan)
             return managedError(new Error(`Can't find plan.`), req, res);
 
         if (usingDefaultPlan || stripePlan.capabilities.skipBilling) {
