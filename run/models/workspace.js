@@ -290,7 +290,7 @@ module.exports = (sequelize, DataTypes) => {
 
     async getTransactionCount(since) {
         let query = `
-            SELECT COALESCE(SUM(count), 0) AS count
+            SELECT COUNT(1) AS count
             FROM transaction_events
             WHERE "workspaceId" = :workspaceId
                 AND timestamp >= timestamp :since
