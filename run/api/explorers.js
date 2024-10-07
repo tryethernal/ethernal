@@ -380,7 +380,7 @@ router.post('/:id/subscription', [authMiddleware, stripeMiddleware], async (req,
             return managedError(new Error(`Explorer already has a subscription.`), req, res);
 
         const stripePlan = await db.getStripePlan(data.planSlug);
-        if (!stripePlan || !stripePlan.public)
+        if (!stripePlan)
             return managedError(new Error(`Can't find plan.`), req, res);
 
         if (!stripePlan.capabilities.skipBilling)
