@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.42.23] - 2024-10-10
+### Added
+- Fly deployment files
+
+### Fixed
+- Race condition when adding domains during explorer creations through the API
+
 ## [3.42.22] - 2024-10-07
 ### Fixed
 - Allow non public plan subscription
