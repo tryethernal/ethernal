@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
             }
         });
         if (contract)
-            await contract.safeDestroy({ transaction });
+            await contract.safeDestroy(transaction);
 
         const event = await this.getEvent();
         if (event)
