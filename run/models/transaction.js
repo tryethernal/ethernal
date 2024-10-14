@@ -50,6 +50,15 @@ module.exports = (sequelize, DataTypes) => {
         for (let i = 0; i < traceSteps.length; i++)
             await traceSteps[i].destroy(transaction);
 
+        const contract = await sequelize.models.Contract.findOne({
+            where: {
+                address: this.to,
+                workspaceId: this.workspaceId,
+            }
+        });
+        if (contract)
+            await contract.safeDestroy({ transaction });
+
         const event = await this.getEvent();
         if (event)
             await event.destroy({ transaction });
