@@ -1498,18 +1498,22 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     safeDestroyBlocks(ids) {
-        return sequelize.transaction(async transaction => {
-            const blocks = await this.getBlocks({ where: { id: ids }});
-            for (let i = 0; i < blocks.length; i++)
-                await blocks[i].safeDestroy(transaction);
+        return sequelize.transaction(
+            { deferrable: Sequelize.Deferrable.SET_DEFERRED },
+            async transaction => {
+                const blocks = await this.getBlocks({ where: { id: ids }});
+                for (let i = 0; i < blocks.length; i++)
+                    await blocks[i].safeDestroy(transaction);
             return;
         });
     }
 
     safeDestroyContracts(ids) {
-        return sequelize.transaction(async transaction => {
-            const contracts = await this.getContracts({ where: { id: ids }});
-            for (let i = 0; i < contracts.length; i++)
+        return sequelize.transaction(
+            { deferrable: Sequelize.Deferrable.SET_DEFERRED },
+            async transaction => {
+                const contracts = await this.getContracts({ where: { id: ids }});
+                for (let i = 0; i < contracts.length; i++)
                 await contracts[i].safeDestroy(transaction);
             return;
         });
