@@ -56,6 +56,7 @@ module.exports = (sequelize, DataTypes) => {
                 workspaceId: this.workspaceId,
             }
         });
+
         if (contract)
             await contract.safeDestroy(transaction);
 
@@ -95,6 +96,7 @@ module.exports = (sequelize, DataTypes) => {
                 ],
                 {
                     ignoreDuplicates: true,
+                    individualHooks: true,
                     returning: true,
                     transaction
                 }
