@@ -51,10 +51,7 @@ module.exports = (sequelize, DataTypes) => {
             await traceSteps[i].destroy(transaction);
 
         const contract = await sequelize.models.Contract.findOne({
-            where: {
-                address: this.to,
-                workspaceId: this.workspaceId,
-            }
+            where: { transactionId: this.id }
         });
 
         if (contract)
