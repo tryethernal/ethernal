@@ -180,7 +180,6 @@ module.exports = (sequelize, DataTypes) => {
                     throw new Error('There is already an explorer associated to this workspace');
                 workspace.update({
                     public: true,
-                    tracing: tracing,
                     dataRetentionLimit: this.defaultDataRetentionLimit,
                     integrityCheckStartBlockNumber: integrityCheckStartBlockNumber,
                     browserSyncEnabled: false,
