@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.42.30] - 2024-10-16
+### Fixed
+- Bug when explorer are created from a workspace
+
 ## [3.42.29] - 2024-10-16
 ### Fixed
 - Add not null constraint on transactions("blockId")
