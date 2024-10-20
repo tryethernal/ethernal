@@ -90,7 +90,7 @@ module.exports = async job => {
         } catch(error) {
             if (error.message == 'Rate limited') {
                 const priority = job.opts.priority || (data.source == 'cli-light' ? 1 : 10);
-                await enqueue('receiptSync', `receiptSync-${workspace.id}-${transaction.hash}`, {
+                await enqueue('receiptSync', `receiptSync-${workspace.id}-${transaction.hash}-${Date.now()}`, {
                     transactionId: transaction.id,
                     transactionHash: transaction.hash,
                     workspaceId: workspace.id,

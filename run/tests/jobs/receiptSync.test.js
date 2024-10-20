@@ -58,6 +58,7 @@ describe('receiptSync', () => {
     });
 
     it('Should re-enqueue if rate limited', (done) => {
+        jest.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
         jest.spyOn(Transaction, 'findByPk').mockResolvedValueOnce({
             id: 1,
             hash: '0x123',
@@ -78,7 +79,7 @@ describe('receiptSync', () => {
 
         receiptSync({ opts: { priority: 1 }, data : { transactionId: 1, transactionHash: '0x123', workspaceId: 1, source: 'cli-light', rateLimited: true }})
             .then(res => {
-                expect(enqueue).toHaveBeenCalledWith('receiptSync', 'receiptSync-1-0x123', {
+                expect(enqueue).toHaveBeenCalledWith('receiptSync', 'receiptSync-1-0x123-1609459200000', {
                     transactionHash: '0x123',
                     transactionId: 1,
                     workspaceId: 1,
