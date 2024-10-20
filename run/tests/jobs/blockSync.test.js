@@ -49,6 +49,7 @@ describe('blockSync', () => {
     });
 
     it('Should re-enqueue if rate limited', (done) => {
+        jest.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
         jest.spyOn(Workspace, 'findOne').mockResolvedValueOnce({
             id: 1,
             name: 'ws',
@@ -71,7 +72,7 @@ describe('blockSync', () => {
 
         blockSync({ opts: { priority: 1 }, data : { source: 'cli-light', rateLimited: true, userId: '123', workspace: 'My Workspace', blockNumber: 1 }})
             .then(res => {
-                expect(enqueue).toHaveBeenCalledWith('blockSync', 'blockSync-1-1', {
+                expect(enqueue).toHaveBeenCalledWith('blockSync', 'blockSync-1-1-1609459200000', {
                     userId: 'abc',
                     workspace: 'ws',
                     blockNumber: 1,
