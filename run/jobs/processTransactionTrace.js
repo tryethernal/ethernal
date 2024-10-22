@@ -27,7 +27,7 @@ module.exports = async job => {
     if (!transaction.workspace.explorer.stripeSubscription)
         return 'No active subscription';
 
-    const tracer = new Tracer(transaction.workspace.rpcServer, db);
+    const tracer = new Tracer(transaction.workspace.rpcServer, db, transaction.workspace.tracing);
     await tracer.process(transaction);
     await tracer.saveTrace(transaction.workspace.user.firebaseUserId, transaction.workspace.name);
 

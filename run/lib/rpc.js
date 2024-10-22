@@ -207,16 +207,57 @@ class ProviderConnector {
 }
 
 class Tracer {
-    constructor(server, db) {
+    constructor(server, db, type = 'other') {
         if (!server) throw '[Tracer] Missing parameter';
         this.provider = getProvider(server);
         this.db = db;
+        this.type = type;
+        this.parsedTrace = [];
     }
 
-    async process(transaction) {
+    process(transaction) {
+        if (this.type == 'geth')
+            return this.processGeth(transaction);
+
+        return this.processOther(transaction);
+    }
+
+    recursiveTraceParser(step, depth = 1) {
+        this.parsedTrace.push(sanitize({
+            value: step.value,
+            op: step.type,
+            address: step.to,
+            input: step.input,
+            returnData: step.output,
+            depth: depth,
+            contractHashedBytecode: '0x'
+        }))
+        if (step.calls) {
+            for (const call of step.calls) {
+                this.recursiveTraceParser(call, depth + 1);
+            }
+        }
+    }
+
+    async processGeth(transaction) {
         try {
             this.transaction = transaction;
-            const rawTrace = await withTimeout(this.provider.send('debug_traceTransaction', [transaction.hash, {}]));
+            const rawTrace = await withTimeout(this.provider.send('debug_traceTransaction', [transaction.hash, { "tracer": "callTracer", "tracerConfig": { "withLog": true }}]));
+            if (!rawTrace.calls)
+                return;
+            for (let call of rawTrace.calls)
+                this.recursiveTraceParser(call);
+        } catch(error) {
+            if (!error.error || error.error.code != '-32601') {
+                throw error;
+            }
+        }
+    }
+
+    async processOther(transaction) {
+        try {
+            this.transaction = transaction;
+            const rawTrace = await withTimeout(this.provider.send('debug_traceTransaction', [transaction.hash, { "enableMemory": true, "enableStack": true }]));
             this.parsedTrace = await parseTrace(transaction.from, rawTrace, this.provider);
         } catch(error) {
             if (!error.error || error.error.code != '-32601') {

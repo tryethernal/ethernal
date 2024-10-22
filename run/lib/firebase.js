@@ -1165,7 +1165,7 @@ const getTransactionForProcessing = transactionId => {
             {
                 model: Workspace,
                 as: 'workspace',
-                attributes: ['id', 'name', 'public', 'rpcServer'],
+                attributes: ['id', 'name', 'public', 'rpcServer', 'tracing'],
                 include: [
                     {
                         model: User,
