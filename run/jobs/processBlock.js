@@ -43,7 +43,7 @@ module.exports = async job => {
 
     await enqueue('removeStalledBlock', `removeStalledBlock-${block.id}`, { blockId: block.id }, null, null, STALLED_BLOCK_REMOVAL_DELAY);
 
-    if (block.workspace.tracing == 'other') {
+    if (block.workspace.tracing && block.workspace.tracing != 'hardhat') {
         const jobs = [];
         for (let i = 0; i < block.transactions.length; i++) {
             const transaction = block.transactions[i];

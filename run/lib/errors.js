@@ -1,4 +1,5 @@
 const Sentry = require('@sentry/node');
+const logger = require('./logger');
 
 const managedError = (error, req, res, status_code = 400) => {
     Sentry.setContext('params', { ...req.params, ...req.query });
@@ -22,6 +23,7 @@ const unmanagedError = (error, req, next) => {
 
 const managedWorkerError = (error, jobName, jobData, worker) => {
     Sentry.setContext('Job Data', jobData);
+    logger.error(error.message, error, { jobName, worker, jobData });
     return Sentry.captureException(error, { tags: { job: jobName, worker }});
 };
 

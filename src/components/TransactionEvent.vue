@@ -26,7 +26,7 @@
                     <ul>
                         <li v-for="(topic, idx) in log.topics" :key="idx">{{ topic }}</li>
                     </ul>
-                    <div class="log-data"><b>Data:</b> {{ log.data }}</div>
+                    <div class="raw-input"><b>Data:</b> {{ log.data }}</div>
                 </template>
             </span>
         </v-tooltip>
@@ -100,13 +100,6 @@ export default {
 }
 </script>
 <style scoped>
-.log-data {
-    max-width: 71ch;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
 .event-name {
     display: block;
     max-width: 11ch;

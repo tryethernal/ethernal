@@ -616,7 +616,7 @@ router.post('/', authMiddleware, async (req, res, next) => {
                 name: data.name,
                 rpcServer: data.rpcServer,
                 networkId,
-                tracing: data.tracing ? 'other' : null,
+                tracing: data.tracing || 'other',
             };
 
         if (data.faucet && data.faucet.amount && data.faucet.interval)

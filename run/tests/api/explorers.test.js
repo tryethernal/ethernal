@@ -1056,20 +1056,21 @@ describe(`POST ${BASE_URL}/:id/settings`, () => {
 });
 
 describe(`POST ${BASE_URL}`, () => {
-    it('Should create the explorer with a starting block', (done) => {
+    it('Should create the explorer with a starting block and a geth tracer', (done) => {
         jest.spyOn(db, 'getUser').mockResolvedValueOnce({ id: 1, workspaces: [{ id: 2 }] });
         jest.spyOn(db, 'getStripePlan').mockResolvedValueOnce({ public: true, id: 1, capabilities: { customStartingBlock: true }});
         jest.spyOn(db, 'createExplorerFromOptions').mockResolvedValueOnce({ id: 1 });
 
         request.post(BASE_URL)
-            .send({ data: { rpcServer: 'test.rpc', name: 'explorer', plan: 'slug', fromBlock: 1 }})
+            .send({ data: { tracing: 'geth', rpcServer: 'test.rpc', name: 'explorer', plan: 'slug', fromBlock: 1 }})
             .expect(200)
             .then(({ body }) => {
                 expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
                     rpcServer: 'test.rpc',
                     name: 'explorer',
                     networkId: 1,
-                    integrityCheckStartBlockNumber: 1
+                    integrityCheckStartBlockNumber: 1,
+                    tracing: 'geth'
                 });
                 expect(body).toEqual({ id: 1 });
                 done();
@@ -1088,7 +1089,8 @@ describe(`POST ${BASE_URL}`, () => {
                 expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
                     rpcServer: 'test.rpc',
                     name: 'explorer',
-                    networkId: 1
+                    networkId: 1,
+                    tracing: 'other'
                 });
                 expect(body).toEqual({ id: 1 });
                 done();
