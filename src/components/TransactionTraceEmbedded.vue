@@ -35,7 +35,7 @@ export default {
                     this.$store.dispatch('updateCurrentWorkspace', { ...explorer.workspace, firebaseUserId: explorer.admin.firebaseUserId });
                     this.$store.dispatch('setEmbedded', true);
                     this.server.getTransaction(hash)
-                        .then(({ data: { traceSteps }}) => this.traceSteps = traceSteps)
+                        .then(({ data: { traceSteps }}) => this.traceSteps = traceSteps || [])
                         .catch(console.log)
                         .finally(() => this.loading = false);
                 })
