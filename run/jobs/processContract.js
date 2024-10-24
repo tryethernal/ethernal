@@ -44,25 +44,32 @@ const findPatterns = async (rpcServer, contractAddress, abi) => {
     return tokenData;
 };
 
-const fetchEtherscanData = async (address, chain) => {
-    let scannerHost = 'etherscan.io';
+const fetchEtherscanData = async (address, workspace) => {
+    let scannerHost = 'api.etherscan.io/api';
     let apiKey = getScannerKey('ETHERSCAN');
-    switch (chain) {
+    let headers = {};
+
+    switch (workspace.chain) {
         case 'arbitrum':
-            scannerHost = 'arbiscan.io';
+            scannerHost = 'api.arbiscan.io/api';
             apiKey = getScannerKey('ARBISCAN');
             break;
         case 'bsc':
-            scannerHost = 'bscscan.com';
+            scannerHost = 'api.bscscan.com/api';
             apiKey = getScannerKey('BSSCAN');
             break;
         case 'matic':
-            scannerHost = 'polygonscan.com';
+            scannerHost = 'api.polygonscan.com/api';
             apiKey = getScannerKey('POLYGONSCAN');
             break;
         case 'avax':
-            scannerHost = 'snowtrace.io';
+            scannerHost = 'api.snowtrace.io/api';
             apiKey = getScannerKey('SNOWTRACE');
+            break;
+        case 'buildbear':
+            scannerHost = `api.buildbear.io/v1/explorer/${workspace.name}`;
+            apiKey = getScannerKey('BUILDBEAR');
+            headers['Authorization'] = `Bearer ${apiKey}`;
             break;
         default:
         break;
@@ -71,20 +78,41 @@ const fetchEtherscanData = async (address, chain) => {
     if (!apiKey)
         return null;
 
-    const endpoint = `https://api.${scannerHost}/api?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`;
-    const response = await withTimeout(axios.get(endpoint));
-
+    const endpoint = `https://${scannerHost}?module=contract&action=getsourcecode&address=${address}&apikey=${apiKey}`;
+    const response = await withTimeout(axios.get(endpoint, { headers }));
     return response ? response.data : null;
 };
 
 const findScannerMetadata = async (workspace, contract) => {
-    const scannerData = await fetchEtherscanData(contract.address, workspace.chain);
+    const scannerData = await fetchEtherscanData(contract.address, workspace);
 
     if (scannerData && scannerData.message != 'NOTOK' && scannerData.result[0].ContractName != '') {
-        const abi = JSON.parse(scannerData.result[0].ABI || '[]')
+        const abi = JSON.parse(scannerData.result[0].ABI || '[]');
+
+        const sources = scannerData.result[0].SourceCode;
+        let parsedSources;
+        if (sources.startsWith('{{'))
+            parsedSources = JSON.parse(sources.substring(1, sources.length - 1)).sources;
+        else
+            parsedSources = {
+                [`${scannerData.result[0].ContractName.split('.sol')[0]}.sol`]: { content: sources }
+            };
+
+        const verificationData = scannerData.result[0].ABI == 'Contract source code not verified' ?
+        null :
+        {
+            compilerVersion: scannerData.result[0].CompilerVersion,
+            constructorArguments: scannerData.result[0].ConstructorArguments,
+            runs: scannerData.result[0].Runs,
+            contractName: scannerData.result[0].ContractName.split('.sol')[0],
+            evmVersion: scannerData.result[0].EvmVersion,
+            sources: parsedSources,
+            libraries: scannerData.result[0].Library,
+        };
 
         return {
-            name: scannerData.result[0].ContractName,
+            name: scannerData.result[0].ContractName.split('.sol')[0],
+            verificationData,
             abi: abi,
             proxy: scannerData.result[0].Proxy == '1' ? scannerData.result[0].Implementation : null
         };
@@ -151,6 +179,9 @@ module.exports = async job => {
 
     if (metadata.proxy)
         await db.storeContractData(user.firebaseUserId, workspace.name, metadata.proxy, { address: metadata.proxy });
+
+    if (scannerMetadata.verificationData)
+        await db.storeContractVerificationData(workspace.id, contract.address, scannerMetadata.verificationData);
 
     await db.storeContractData(user.firebaseUserId, workspace.name, contract.address, metadata);
 

@@ -166,7 +166,7 @@ module.exports = (sequelize, DataTypes) => {
         }));
     }
 
-    createExplorerFromOptions({ workspaceId, rpcServer, name, networkId, tracing, faucet, token, slug, totalSupply, l1Explorer, branding, qnEndpointId, domains = [], isDemo = false, subscription, integrityCheckStartBlockNumber }) {
+    createExplorerFromOptions({ workspaceId, rpcServer, name, networkId, chain = 'ethereum', tracing = 'other', faucet, token, slug, totalSupply, l1Explorer, branding, qnEndpointId, domains = [], isDemo = false, subscription, integrityCheckStartBlockNumber }) {
         if (!workspaceId && (!rpcServer || !name || !networkId))
             throw new Error('Missing parameters');
 
@@ -199,7 +199,7 @@ module.exports = (sequelize, DataTypes) => {
                 workspace = await this.createWorkspace(sanitize({
                     name: name,
                     public: true,
-                    chain: 'ethereum',
+                    chain: chain,
                     networkId: networkId,
                     rpcServer: rpcServer,
                     tracing: tracing,
