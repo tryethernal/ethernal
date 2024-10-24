@@ -615,6 +615,7 @@ router.post('/', authMiddleware, async (req, res, next) => {
             {
                 name: data.name,
                 rpcServer: data.rpcServer,
+                chain: data.chain,
                 networkId,
                 tracing: data.tracing || 'other',
             };

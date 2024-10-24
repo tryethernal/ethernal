@@ -48,9 +48,9 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     safeCreateVerification(verificationData) {
-        const { compilerVersion, evmVersion, runs, sources, libraries, constructorArguments, contractName } = verificationData;
+        const { compilerVersion, evmVersion = 'Default', runs, sources, libraries, constructorArguments, contractName } = verificationData;
 
-        if (!compilerVersion || !evmVersion || !sources)
+        if (!compilerVersion || !sources)
             throw new Error('Missing parameter');
 
         return sequelize.transaction(async transaction => {
