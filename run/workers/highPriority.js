@@ -9,8 +9,6 @@ const logger = require('../lib/logger');
 const priorities = require('./priorities.json');
 const { managedWorkerError } = require('../lib/errors');
 
-console.log(connection)
-
 priorities['high'].forEach(jobName => {
     const worker = new Worker(
         jobName,
