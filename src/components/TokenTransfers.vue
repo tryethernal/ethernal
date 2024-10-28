@@ -49,7 +49,6 @@
     </v-data-table-server>
 </template>
 <script>
-const moment = require('moment');
 import HashLink from './HashLink';
 import { formatContractPattern } from '@/lib/utils';
 
@@ -69,7 +68,6 @@ export default {
         this.loadContractData();
     },
     methods: {
-        moment: moment,
         formatContractPattern: formatContractPattern,
         onPagination(pagination) {
             this.$emit('pagination', pagination);

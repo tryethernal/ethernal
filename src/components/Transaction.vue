@@ -40,7 +40,7 @@
                     </v-alert>
                     <h2 class="text-truncate mb-2">Tx {{ transaction.hash }}</h2>
                 </v-col>
-                <template v-if="!isPublicExplorer">
+                <template v-if="!explorerStore">
                     <v-spacer></v-spacer>
                     <v-col align="right">
                         <v-progress-circular v-show="processing" indeterminate class="mr-2" size="16" width="2" color="primary"></v-progress-circular>
@@ -115,18 +115,18 @@
                 </v-col>
                 <v-col lg="2" md="6" sm="12" v-if="transaction.receipt">
                     <div class="text-overline">Gas Price</div>
-                    {{ getGasPriceFromTransaction(transaction) | fromWei('gwei', chain.token) }}
+                    {{ $fromWei(getGasPriceFromTransaction(transaction), 'gwei', currentWorkspaceStore.chain.token) }}
                 </v-col>
                 <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Cost</div>
-                    <span v-if="transaction.receipt">{{ transaction.receipt.gasUsed * getGasPriceFromTransaction(transaction) | fromWei('ether', chain.token) }}</span>
+                    <span v-if="transaction.receipt">{{ $fromWei(transaction.receipt.gasUsed * getGasPriceFromTransaction(transaction), 'ether', currentWorkspaceStore.chain.token) }}</span>
                     <v-chip size="small" class="bg-grey text-white" v-else>
                         Not Available
                     </v-chip>
                 </v-col>
                 <v-col lg="2" md="6" sm="12">
                     <div class="text-overline">Value</div>
-                    {{ transaction.value | fromWei('ether', chain.token) }}
+                    {{  $fromWei(transaction.value, 'ether', currentWorkspaceStore.chain.token) }}
                 </v-col>
             </v-row>
             <v-row class="mb-4">
@@ -138,16 +138,16 @@
                         </v-col>
                         <v-col lg="3" md="6" sm="12">
                             <div class="text-overline">Mined At</div>
-                            {{ moment(transaction.block.timestamp) | moment('MM/DD h:mm:ss A') }}<br>
-                            <small>{{ moment(transaction.block.timestamp).fromNow() }}</small>
+                            {{ $dt.shortDate(transaction.timestamp) }}<br>
+                            <small>{{ $dt.fromNow(transaction.timestamp) }}</small>
                         </v-col>
                         <v-col lg="3" md="6" sm="12">
                             <div class="text-overline">Gas Limit</div>
                             {{ parseInt(transaction.gasLimit || transaction.block.gasLimit).toLocaleString() }}
                         </v-col>
-                        <v-col v-if="publicExplorer && publicExplorer.l1Explorer && transaction.block.l1BlockNumber" lg="3" md="6" sm="12">
+                        <v-col v-if="explorerStore && explorerStore.l1Explorer && transaction.block.l1BlockNumber" lg="3" md="6" sm="12">
                             <div class="text-overline">L1 Block</div>
-                            <a :href="`${publicExplorer.l1Explorer}/block/${transaction.block.l1BlockNumber}`" target="_blank">{{ commify(transaction.block.l1BlockNumber) }}</a>
+                            <a :href="`${explorerStore.l1Explorer}/block/${transaction.block.l1BlockNumber}`" target="_blank">{{ commify(transaction.block.l1BlockNumber) }}</a>
                         </v-col>
                         <v-col lg="3" md="6" sm="12" v-for="(field, idx) in transaction.extraFields" :key="idx">
                             <div class="text-overline">{{ field.name }}</div>
@@ -207,15 +207,16 @@
 <script>
 const moment = require('moment');
 const ethers = require('ethers');
+import { mapStores } from 'pinia';
+import { useExplorerStore } from '../stores/explorer';
+import { useCurrentWorkspaceStore } from '../stores/currentWorkspace';
 const { getGasPriceFromTransaction } = require('../lib/utils');
-import { mapGetters } from 'vuex';
 import HashLink from './HashLink';
 import TransactionData from './TransactionData';
 import TraceStep from './TraceStep';
 import TransactionTokenTransfers from './TransactionTokenTransfers';
 import TokensBalanceDiff from './TokensBalanceDiff';
 import CustomField from './CustomField';
-import FromWei from '../filters/FromWei';
 
 export default {
     name: 'Transaction',
@@ -227,9 +228,6 @@ export default {
         TransactionTokenTransfers,
         TokensBalanceDiff,
         CustomField
-    },
-    filters: {
-        FromWei
     },
     data: () => ({
         contract: null,
@@ -287,8 +285,8 @@ export default {
             this.server
                 .reprocessTransaction(this.hash)
                 .then(() => {
-                    if (!this.isPublicExplorer)
-                        this.$server.processTransaction(this.currentWorkspace, this.transaction)
+                    if (!this.explorerStore)
+                        this.$server.processTransaction(this.currentWorkspaceStore, this.transaction)
                             .catch(console.log)
                             .finally(() => this.processing = false);
                     else
@@ -301,13 +299,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'user',
-            'chain',
-            'currentWorkspace',
-            'isPublicExplorer',
-            'publicExplorer'
-        ]),
+        ...mapStores(useExplorerStore, useCurrentWorkspaceStore),
         txStatus() {
             if (!this.transaction.receipt)
                 return 'unknown';
