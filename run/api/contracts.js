@@ -46,7 +46,7 @@ router.get('/getabi', async (req, res) => {
         return res.status(200).json({
             status: "1",
             message: "OK",
-            result: contract.abi
+            result: JSON.stringify(contract.abi)
         });
     } catch(error) {
         logger.error(error.message, { location: 'get.api.contracts.sourceCode', error, queryParams: req.query });
@@ -122,7 +122,7 @@ router.get('/sourceCode', async (req, res) => {
 });
 
 router.post('/verify', async (req, res) => {
-    const data = req.body;
+    const data = { ...req.body, ...req.query };
     let lock, isLockAcquired;
 
     try {
