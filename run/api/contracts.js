@@ -24,11 +24,12 @@ router.get('/getabi', async (req, res) => {
 
         const contractAddress = data.address.toLowerCase();
 
-        logger.info('Logging headers', { headers: req.headers });
-
         let explorer;
         if (req.headers['apx-incoming-host']) {
             explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
+        }
+        else if (req.headers['ethernal-host']) {
+            explorer = await db.getPublicExplorerParamsByDomain(req.headers['ethernal-host'])
         }
         else if (data['apikey']) {
             explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
