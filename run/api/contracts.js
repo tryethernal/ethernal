@@ -3,6 +3,7 @@ const router = express.Router();
 const logger = require('../lib/logger');
 const Lock = require('../lib/lock');
 const db = require('../lib/firebase');
+const { getAppDomain } = require('../lib/env');
 const { sanitize, sleep } = require('../lib/utils');
 const workspaceAuthMiddleware = require('../middlewares/workspaceAuth');
 const authMiddleware = require('../middlewares/auth');
@@ -28,8 +29,9 @@ router.get('/getabi', async (req, res) => {
         if (req.headers['apx-incoming-host']) {
             explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
         }
-        else if (req.headers['ethernal-host']) {
-            explorer = await db.getPublicExplorerParamsByDomain(req.headers['ethernal-host'])
+        else if (req.headers['ethernal-host'] && req.headers['ethernal-host'].endsWith(getAppDomain())) {
+            const host = req.headers['ethernal-host'].split(getAppDomain())[0];
+            explorer = await db.getPublicExplorerParamsBySlug(host);
         }
         else if (data['apikey']) {
             explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
