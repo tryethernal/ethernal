@@ -24,6 +24,8 @@ router.get('/getabi', async (req, res) => {
 
         const contractAddress = data.address.toLowerCase();
 
+        logger.log('Logging headers', { headers: req.headers });
+
         let explorer;
         if (req.headers['apx-incoming-host']) {
             explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
@@ -83,7 +85,7 @@ router.get('/sourceCode', async (req, res) => {
             for (let i = 0; i < 3; i++) {
                 await sleep(2000);
                 contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
-                if (contract)
+                if (contract) 
                     break;
             }
         }
