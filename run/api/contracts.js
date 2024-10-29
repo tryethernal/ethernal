@@ -15,6 +15,49 @@ router.get('/:address/circulatingSupply', workspaceAuthMiddleware, circulatingSu
 router.get('/:address/holders', workspaceAuthMiddleware, holders);
 router.get('/:address/transfers', workspaceAuthMiddleware, transfers);
 
+router.get('/getabi', async (req, res) => {
+    const data = req.query;
+
+    try {
+        if (!data.address)
+            throw new Error('Missing parameters.')
+
+        const contractAddress = data.address.toLowerCase();
+
+        let explorer;
+        if (req.headers['apx-incoming-host']) {
+            explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
+        }
+        else if (data['apikey']) {
+            explorer = await db.getPublicExplorerParamsBySlug(data['apikey']);
+        }
+
+        if (!explorer)
+            throw new Error('Could not find explorer. If you are using the apiKey param, make sure it is correct.');
+
+        let contract = await db.getContractByWorkspaceId(explorer.workspaceId, contractAddress);
+        if (!contract || !contract.verification || !contract.verification.sources.length)
+            return res.status(200).json({
+                status: "0",
+                message: "NOTOK",
+                result: "Contract source code not verified"
+            });
+
+        return res.status(200).json({
+            status: "1",
+            message: "OK",
+            result: contract.abi
+        });
+    } catch(error) {
+        logger.error(error.message, { location: 'get.api.contracts.sourceCode', error, queryParams: req.query });
+        res.status(200).json({
+            status: "0",
+            message: "OK",
+            result: `Request failed: ${error.message}`
+        });
+    }
+});
+
 router.get('/sourceCode', async (req, res) => {
     const data = req.query;
 
@@ -83,7 +126,7 @@ router.post('/verify', async (req, res) => {
     let lock, isLockAcquired;
 
     try {
-        if (!data.sourceCode || !data.contractaddress || !data.compilerversion || !data.contractname || data.constructorArguements === undefined)
+        if (!data.sourceCode || !data.contractaddress || !data.compilerversion || !data.contractname)
             throw new Error('Missing parameters.')
 
         const contractAddress = data.contractaddress.toLowerCase();
