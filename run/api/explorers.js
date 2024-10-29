@@ -5,6 +5,7 @@ const router = express.Router();
 const { isStripeEnabled } = require('../lib/flags');
 const { ProviderConnector, DexConnector } = require('../lib/rpc');
 const { enqueue } = require('../lib/queue');
+const logger = require('../lib/logger');
 const { managedError, unmanagedError } = require('../lib/errors');
 const { Explorer } = require('../models');
 const { withTimeout, validateBNString, sanitize } = require('../lib/utils');
@@ -457,6 +458,8 @@ router.post('/:id/cryptoSubscription', [authMiddleware, stripeMiddleware], async
 
 router.delete('/:id', authMiddleware, async (req, res, next) => {
     const data = { ...req.body.data, ...req.query };
+
+    logger.error('Deleting explorer', { location: 'delete.api.explorers', data });
 
     try {
         const explorer = await db.getExplorerById(data.user.id, req.params.id);
