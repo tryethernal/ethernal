@@ -54,7 +54,7 @@ router.get('/getabi', async (req, res) => {
             result: JSON.stringify(contract.abi)
         });
     } catch(error) {
-        logger.error(error.message, { location: 'get.api.contracts.sourceCode', error, queryParams: req.query });
+        logger.error(error.message, { location: 'get.api.contracts.getabi', error, queryParams: req.query, headers: req.headers });
         res.status(200).json({
             status: "0",
             message: "OK",
