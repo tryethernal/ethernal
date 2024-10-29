@@ -30,7 +30,7 @@ router.get('/getabi', async (req, res) => {
             explorer = await db.getPublicExplorerParamsByDomain(req.headers['apx-incoming-host'])
         }
         else if (req.headers['ethernal-host'] && req.headers['ethernal-host'].endsWith(getAppDomain())) {
-            const host = req.headers['ethernal-host'].split(getAppDomain())[0];
+            const host = req.headers['ethernal-host'].split(`.${getAppDomain()}`)[0];
             explorer = await db.getPublicExplorerParamsBySlug(host);
         }
         else if (data['apikey']) {
