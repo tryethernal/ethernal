@@ -24,7 +24,7 @@ router.get('/getabi', async (req, res) => {
 
         const contractAddress = data.address.toLowerCase();
 
-        logger.log('Logging headers', { headers: req.headers });
+        logger.info('Logging headers', { headers: req.headers });
 
         let explorer;
         if (req.headers['apx-incoming-host']) {
