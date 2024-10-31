@@ -1089,8 +1089,7 @@ describe(`POST ${BASE_URL}`, () => {
                 expect(db.createExplorerFromOptions).toHaveBeenCalledWith(1, {
                     rpcServer: 'test.rpc',
                     name: 'explorer',
-                    networkId: 1,
-                    tracing: 'other'
+                    networkId: 1
                 });
                 expect(body).toEqual({ id: 1 });
                 done();
